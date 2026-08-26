@@ -128,7 +128,7 @@ BEH-001–BEH-006 are fixed. In particular, general and application execution re
 
 ## Risks / Open Questions
 
-- The SR-002 normative supplements now close the exact file, constructor-provenance, construction-phase, and occurrence inventories. Any newly discovered affected path or closeable is Design Impact; implementation may not improvise an alias, default, or generic escape hatch.
+- The SR-004 normative supplements close the exact file, constructor-provenance, construction-phase, Mixed Team factory/manager, and occurrence inventories. Any newly discovered affected path or closeable remains Design Impact; implementation may not improvise an alias, default, cached factory, or generic escape hatch.
 - Implementation must prove the precise Codex/Claude issuance timing; it may not broaden the issuer back into a manager to avoid that proof.
 
 ## Requirement-To-Use-Case Coverage

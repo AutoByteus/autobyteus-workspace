@@ -1,6 +1,6 @@
 # Provider Composition Transition Inventory
 
-Status: Normative implementation and proof supplement. Revised by SR-002 from the current tree to close ARCH-REV-001 AR-001–AR-003.
+Status: Normative implementation and proof supplement. Revised by SR-004 from IR-001 current source to close CRR-001 CR-001 while preserving ARCH-REV-003's accepted architecture.
 
 ## Add — Production
 
@@ -41,10 +41,12 @@ Status: Normative implementation and proof supplement. Revised by SR-002 from th
 | `autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts` | issue/cache `IssuedAgentToolMcpSession` through issuer only; expose the cached descriptor to query construction |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts` | expose the named Claude provider-config adaptation from the descriptor |
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | accept and propagate only the run-session releaser for defensive member cleanup |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts` | make `agentToolMcpRunSessionReleaser` required/non-null; propagate the one root-selected identity; remove the process service import, fallback, cached instance, and getter export; retain optional `createTeamManager` only as a bounded test seam |
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | remove ambient/broad MCP lookup and revoke the exact member run via required propagated releaser |
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts` | propagate the required releaser into configured member handles |
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts` | propagate the required releaser into task-Agent member handles |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts` | remain Host/Authority-internal low-level mechanics; align issue/revoke primitives to the immutable issued-resource contract; expose no execution-facing broad manager |
+| `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | require/non-null-check `mixedTeamRunBackendFactory`; remove default constructor/options and factory selection; keep `initializeProcessInstance` as the only process creation entry; make `getInstance()` no-argument lookup-only and fail before initialization |
+| `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts` | remain Host/Authority-internal low-level mechanics; align issue/revoke primitives to the immutable issued-resource contract; remove the now-unused process-global run-session releaser getter export |
 
 The Codex and Claude backend-factory constructor files remain low-level provider constructors and do not need semantic edits: `agent-provider-factory-builder.ts` supplies every governed argument explicitly. Their existing defaults remain available only to unrelated low-level/test construction under the approved scope guardrail.
 
@@ -58,6 +60,7 @@ The Codex and Claude backend-factory constructor files remain low-level provider
 | scope `BuiltKernel`, `buildScope` tuple, eight constructor parameters, and `sessionManager!` | complete private kernel and fixed `abortConstruction` |
 | direct provider construction and positional provider defaults in the two supported execution roots | `AgentProviderFactoryBuilder.createForExecution` |
 | broad `AgentToolMcpSessionManager` imports from governed provider, run-cleanup, and mixed-Team files | issuer or run-session releaser, according to responsibility |
+| `getAgentToolMcpRunSessionReleaser`, `getMixedTeamRunBackendFactory`, its cached instance, optional factory releaser, and `AgentTeamRunManager`'s default/lazy factory construction | exact execution-owner Authority releaser -> required Mixed Team factory -> required Team manager; process manager lookup only after explicit initialization |
 
 ## Add — Durable Tests
 
@@ -66,7 +69,7 @@ The Codex and Claude backend-factory constructor files remain low-level provider
 | `autobyteus-server-ts/tests/fixtures/agent-tool-mcp-run-session-releaser-fixtures.ts` | exact frozen no-op releaser and recording releaser with ordered run/owner observations; no broad manager, singleton, or optional fallback |
 | `autobyteus-server-ts/tests/unit/agent-execution/agent-provider-factory-builder.test.ts` | all nineteen process leaves and two execution inputs required/non-null; exact constructor mapping; shared/fresh identity matrix; two calls are isolated |
 | `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts` | K0–K8 cut points, completion replacement, transfer, constructor/outer abort, reverse disposal, idempotency, and error ordering |
-| `autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts` | exact root/helper occurrence rules, old-symbol closure, least-privilege propagation, kernel privacy, and synthetic omission/null/undefined fixtures |
+| `autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts` | exact root/helper occurrence rules, old-symbol closure, least-privilege propagation, Mixed Team factory/manager construction closure, kernel privacy, and synthetic omission/null/undefined fixtures |
 
 ## Modify — Durable Tests And Fixtures
 
@@ -77,7 +80,7 @@ These rows are the closed source-edit inventory produced by the current-tree sym
 | `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | preserve existing application boundary guards and delegate only the new non-overlapping provider/authority obligations to the focused architecture test |
 | `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts` | use exact builder/authority-factory inputs; assert complete kernel, capability identity, lifecycle, and construction abort |
 | `autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts` | distinct general/application authority/factory/run identities under one Host and builder |
-| `autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts` | explicit builder/completed authority, no ambient providers, and Team-before-Agent-before-authority close |
+| `autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts` | explicit builder/completed authority; construct the conflict manager with an explicit factory/no-op releaser; prove `AgentTeamRunManager.getInstance()` fails before initialization and returns only the supervisor-initialized identity; preserve Team-before-Agent-before-authority close |
 | `autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts` | use a fresh recording narrow releaser; prove post-issue create/restore failure revocation and primary-plus-cleanup/quarantine behavior |
 | `autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts` | exact releaser and idempotent duplicate cleanup |
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts` | issuer/issued descriptor plus the post-issue later-failure witness |
@@ -106,14 +109,24 @@ These rows are the closed source-edit inventory produced by the current-tree sym
 | `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts` | pass the explicit no-op releaser to the direct manager fixture; preserve configured/task Team materialization, commit/settlement, cancellation, freeze, and interrupt behavior |
 | `autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts` | pass the explicit no-op releaser; preserve exact configured/task AgentRun command routing and unknown-run rejection |
 | `autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts` | pass the explicit no-op releaser through the direct manager factory; preserve joined child materialization/readiness under overlapping commands |
+| `autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts` | pass the explicit no-op releaser at all three direct factories; preserve exact Team context, root mismatch, restore provenance, and external identity behavior |
+| `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts` | pass the explicit no-op releaser at both direct factories; add omission/null/undefined constructor rejection while preserving create/restore context assertions |
+| `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts` | pass the explicit no-op releaser at both context-only backend factories; preserve configured/delegated nested physical-scope, handoff, and binding assertions |
+| `autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts` | keep an explicit backend-factory fixture; add constructor omission/null/undefined rejection and lookup-before-initialization failure without changing root lifecycle assertions |
 | `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-native-activation.test.ts` | pass a fresh recording releaser to every direct handle; preserve native restore/create/platform-binding behavior, assert no revocation on successful activation, and record the exact run if a tested abort/teardown path revokes |
 | `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts` | pass the explicit no-op releaser; preserve task-delegation notification and ordinary member-input projection behavior |
 
 The two renamed MCP tests in the Rename/Move table are also modified: the Host test covers only process routes/factory/close; the scoped-Authority test covers ASSEMBLING/COMPLETED/ABORTED, atomic ledger insertion, readiness, issue blocking, scoped revoke, and idempotent/aggregate close.
 
+## Verify Unchanged — Durable Tests
+
+| Path | Required No-Edit Proof |
+| --- | --- |
+| `autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` | all six direct manager constructions already supply explicit fake backend factories; retain create/restore/persistence/termination behavior and include the file in the exact manager-construction occurrence set without adding a releaser or global fallback |
+
 ## Narrow Releaser Test Fixture Contract
 
-`autobyteus-server-ts/tests/fixtures/agent-tool-mcp-run-session-releaser-fixtures.ts` is the single test-only construction boundary for direct `AgentRunManager`, `MixedTeamManager`, and `MixedAgentMemberHandle` sites. It imports only `AgentToolMcpRunSessionReleaser` and `AgentToolMcpSessionOwnerIdentity`; it must not import the Host, full Authority, session service/manager, registry, process getter, or either execution root.
+`autobyteus-server-ts/tests/fixtures/agent-tool-mcp-run-session-releaser-fixtures.ts` is the single test-only construction boundary for direct `AgentRunManager`, `MixedTeamRunBackendFactory`, `MixedTeamManager`, and `MixedAgentMemberHandle` sites. It imports only `AgentToolMcpRunSessionReleaser` and `AgentToolMcpSessionOwnerIdentity`; it must not import the Host, full Authority, session service/manager, registry, process getter, or either execution root.
 
 The fixture exports exactly these two factories:
 
@@ -130,7 +143,7 @@ export function createRecordingAgentToolMcpRunSessionReleaser(): Readonly<{
 - The no-op releaser is frozen, returns `0` for both operations, and is used only when the test's subject does not exercise Agent Tools MCP cleanup.
 - Each recording fixture owns fresh private ordered arrays, records a copied/frozen owner criterion, returns `0`, and exposes snapshots through its two getter methods. Tests cannot mutate the recorder's buffers.
 - Tests whose assertions include cleanup use the recording fixture and prove the exact run ID, call count/order when material, or deliberate absence of revocation on the successful path. Tests with no MCP cleanup subject use the explicit no-op fixture so the required boundary is visible without inventing unrelated session state.
-- Neither factory accepts options, performs lookup, falls back to a process singleton, or exposes a broad fake manager. Every governed constructor receives the non-null `agentToolMcpRunSessionReleaser` property directly from a fresh fixture selected by its Modify row.
+- Neither fixture factory accepts options, performs lookup, falls back to a process singleton, or exposes a broad fake manager. Every governed constructor, including context-only Mixed Team backend-factory tests, receives the non-null `agentToolMcpRunSessionReleaser` property directly from a fresh fixture selected by its Modify row.
 
 ## Current-Tree Occurrence Closure
 
@@ -139,8 +152,8 @@ The focused architecture test owns an exact checked allowlist, not a handwritten
 1. Both host files must bind `getWorkspaceManager()` to one local, call `createProcessAgentProviderFactoryBuilder({ workspaceManager })` exactly once, pass that same workspace local to the helper, `GeneralProcessRunSupervisor`, and `buildApplicationPlatformRuntime`, and pass the same builder local to supervisor and platform.
 2. The process composition helper must require/non-null-check its workspace input and construct the remaining eighteen named leaves with no null/undefined/default omission. Table-driven builder negative fixtures remove, null, and explicitly `undefined` every one of the nineteen final leaves; helper fixtures cover missing/null/undefined workspace; a second table covers both `createForExecution` inputs.
 3. `GeneralProcessRunSupervisor`, `ApplicationExecutionScope`, the kernel builder's callers, and both host roots must have zero provider-specific constructor/getter calls and zero positional `undefined` provider construction.
-4. The following governed production files must have zero `AgentToolMcpSessionManager`, `getAgentToolMcpSessionService`, whole Host, or full Authority imports: Codex bootstrapper; Claude manager/session/state; `AgentRunManager`; `AgentRunResourceManager`; `MixedTeamManager`; configured/task registries; member handle. Positive type assertions require the exact issuer or releaser chain named in the contract.
-5. The current old-symbol production occurrence set is the following exact twenty paths. Every path is dispositioned in Modify, Rename, or Remove above. After cutover, old Runtime/application-scope/scoped-manager/broad-manager symbols have zero governed production occurrences.
+4. The following governed production files must have zero `AgentToolMcpSessionManager`, `getAgentToolMcpSessionService`, `getAgentToolMcpRunSessionReleaser`, whole Host, or full Authority imports: Codex bootstrapper; Claude manager/session/state; `AgentRunManager`; `AgentRunResourceManager`; `MixedTeamRunBackendFactory`; `MixedTeamManager`; configured/task registries; member handle. `AgentTeamRunManager` must also have zero Mixed Team factory getter/import and no lazy factory creation. Positive type assertions require the exact issuer, releaser, or prebound backend-factory chain named in the contract.
+5. The pre-cutover SR-002 old-symbol production occurrence set was the following exact twenty paths. Every path is dispositioned in Modify, Rename, or Remove above. On IR-001 and after SR-004, old Runtime/application-scope/scoped-manager/broad-manager symbols have zero governed production occurrences outside architecture-test negative literals.
 
 ```text
 autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
@@ -165,7 +178,7 @@ autobyteus-server-ts/src/compositions/build-studio-server.ts
 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
 ```
 
-6. The current old-symbol durable-test occurrence set is the following exact eleven paths. Every path is dispositioned above; after cutover the old symbols have zero test occurrences.
+6. The pre-cutover SR-002 old-symbol durable-test occurrence set was the following exact eleven paths. Every path is dispositioned above; after cutover the old symbols have zero executable test occurrences outside negative architecture literals.
 
 ```text
 autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
@@ -180,7 +193,7 @@ autobyteus-server-ts/tests/unit/agent-tools/mcp/application-agent-tool-mcp-sessi
 autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
 autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
 ```
-7. The architecture test also enumerates every durable test containing `new AgentRunManager(...)`, `AgentRunManager.initializeProcessInstance(...)`, `new MixedTeamManager(...)`, or `new MixedAgentMemberHandle(...)`. The exact current set is fifteen paths, grouped below by governed constructor.
+7. The architecture test enumerates every durable test containing `new AgentRunManager(...)`, `AgentRunManager.initializeProcessInstance(...)`, `new MixedTeamRunBackendFactory(...)`, `new MixedTeamManager(...)`, or `new MixedAgentMemberHandle(...)`. The exact current sets are grouped below by governed constructor; a file may appear in more than one set when it deliberately constructs more than one layer.
 
 `AgentRunManager` direct-construction tests (seven):
 
@@ -192,6 +205,15 @@ autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback
 autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts
 autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
 autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+```
+
+`MixedTeamRunBackendFactory` direct-construction tests (four):
+
+```text
+autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts
 ```
 
 `MixedTeamManager` direct-construction tests (three):
@@ -212,10 +234,23 @@ autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-t
 autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
 ```
 
-8. Each governed constructor call in those fifteen files must contain a non-null `agentToolMcpRunSessionReleaser` supplied directly by the no-op or recording fixture required by its Modify row. The focused architecture test fails if the property is omitted, null, explicitly `undefined`, cast from an omission (`as never`/`as any`), sourced from an ambient getter, or backed by a broad session manager. Table-driven synthetic fixtures cover omission/null/undefined for all three constructor families.
-9. The architecture test derives the three direct-constructor path sets from current source and compares them with the three exact allowlists above. A newly matching test file therefore fails closed until its fixture purpose and preserved behavior are added to the Modify inventory; an allowlisted file with no matching constructor also fails as stale inventory.
-10. Scope outward contracts and runtime/orchestration files must not import the private kernel type or raw run managers. Kernel construction must not expose a generic disposer registry, incomplete result, optional dependency record, or later bind method.
-11. The architecture test scans governed roots recursively and fails closed on unresolved imports or a newly matching file not present in the exact target allowlist. Low-level provider constructor tests remain outside the root prohibition but cannot be imported by a supported root.
+8. Each governed constructor call in those sets must contain a non-null `agentToolMcpRunSessionReleaser` supplied directly by the no-op or recording fixture required by its Modify row. The focused architecture test fails if the property is omitted, null, explicitly `undefined`, cast from an omission (`as never`/`as any`), sourced from an ambient getter, or backed by a broad session manager. Table-driven synthetic fixtures cover omission/null/undefined for all four constructor families.
+9. The architecture test derives the four direct-constructor path sets from current source and compares them with the four exact allowlists above. A newly matching test file therefore fails closed until its fixture purpose and preserved behavior are added to the Modify inventory; an allowlisted file with no matching constructor also fails as stale inventory.
+10. `AgentTeamRunManager` construction is governed separately. Direct durable-test construction occurs only in the following two files, and each supplies a non-null `mixedTeamRunBackendFactory`; process initialization occurs only in the general-supervisor ownership test and supplies a real factory bound to the no-op releaser.
+
+```text
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts
+```
+
+```text
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+```
+
+The target production root set contains exactly two `new MixedTeamRunBackendFactory(...)` calls: `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts` and `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts`. Each options literal contains exactly the one production dependency `agentToolMcpRunSessionReleaser`, sourced from its own Authority `.runSessions`; neither passes the optional test-only `createTeamManager` seam. The first passes that factory to `AgentTeamRunManager.initializeProcessInstance(...)`; the second passes it to a non-singleton `new AgentTeamRunManager(...)`. The factory file has zero self-construction/cache/getter and zero process releaser getter. The manager file's `getInstance()` contains no `new`, accepts no options, and throws before initialization.
+11. Synthetic architecture fixtures reject omission/null/undefined for `MixedTeamRunBackendFactory.agentToolMcpRunSessionReleaser` and `AgentTeamRunManager.mixedTeamRunBackendFactory`; they also reject `getAgentToolMcpRunSessionReleaser()`, `getMixedTeamRunBackendFactory()`, zero-argument factory/manager construction, and `AgentTeamRunManager.getInstance(options)`. Positive fixtures use the no-op releaser and explicit factory. A focused lifecycle test proves lookup-before-initialization failure and lookup-after-supervisor identity.
+12. Scope outward contracts and runtime/orchestration files must not import the private kernel type or raw run managers. Kernel construction must not expose a generic disposer registry, incomplete result, optional dependency record, or later bind method.
+13. The architecture test scans governed roots recursively and fails closed on unresolved imports or a newly matching file not present in the exact target allowlist. Low-level provider constructor tests remain outside the provider-root prohibition, but Agent Tools releaser defaults receive no low-level exception and cannot be imported by a supported root.
 
 ## Kernel Cut-Point Proof Matrix
 
@@ -239,8 +274,8 @@ autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-t
 | Proof | Required Evidence |
 | --- | --- |
 | Build/type/lint | affected package typecheck, lint, `git diff --check` |
-| Unit | builder, Host, Authority, manager failure cleanup, kernel cut points, lifecycle |
-| Integration | Codex, Claude, AutoByteus factory behavior; MCP routes; standalone; Brief Team prompt |
+| Unit | builder, Host, Authority, manager failure cleanup, required Mixed Team factory/manager inputs, lookup-only process access, kernel cut points, lifecycle |
+| Integration | Codex, Claude, AutoByteus factory behavior; Mixed Team create/restore identity; MCP routes; standalone; Brief Team prompt |
 | Existing scope baseline | scope contracts, isolation, stream/publication/task cleanup |
 | Realistic API/E2E | Studio and standalone Agent/Team launch, configured tools, task delegation, publication, streaming, recovery/reentry, cleanup |
 | Durable-test review | every added/modified repository test receives proportional source review before delivery |

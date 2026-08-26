@@ -2,11 +2,11 @@
 
 ## Current-State Read
 
-The finalized outer architecture is healthy: Studio and standalone have explicit composition roots; `GeneralProcessRunSupervisor` and `ApplicationExecutionScope` own separate mutable execution families; the scope exposes seven narrow capabilities. Pressure remains below that boundary. Both roots repeat provider-specific construction and use positional defaults. `AgentToolsMcpRuntime` combines process endpoint/catalog infrastructure with execution-family capability issuance. Providers receive a broad session manager. Scope construction mixes public owner behavior with partial, tuple-based private assembly. Codex can issue a capability before later preparation fails, leaving a pre-attachment cleanup gap.
+The finalized outer architecture is healthy: Studio and standalone have explicit composition roots; `GeneralProcessRunSupervisor` and `ApplicationExecutionScope` own separate mutable execution families; the scope exposes seven narrow capabilities. IR-001 implements the reviewed Host/Authority/provider/kernel correction successfully on both maintained roots. CRR-001 found one residual construction bypass below those roots: `MixedTeamRunBackendFactory` still permits an omitted releaser to select the process session service, exposes a cached zero-argument factory, and `AgentTeamRunManager` can select that factory through default/lazy construction. The fallback is not reached by the confirmed maintained composition, but it contradicts the approved clean cut and leaves the scoped Authority non-authoritative for an alternate Mixed Team construction path.
 
 ## Intended Change
 
-Keep the passed outer scope, but introduce one fixed-purpose immutable provider builder whose nineteen process inputs have one composition owner; split Agent Tools MCP into process Host and execution-family Authority with construction-only assembly plus issuer/releaser ports; make the run-preparation owner revoke pre-attachment sessions on failure; and move private application kernel construction/unwind into one complete K0–K8 builder transaction.
+Keep the passed outer scope and the sound IR-001 Host/Authority/provider/kernel implementation. Complete the same design by making the execution root the sole Mixed Team releaser selector: `MixedTeamRunBackendFactory` requires and propagates one exact releaser, `AgentTeamRunManager` requires an explicit factory at construction/initialization, and process lookup can only return an already initialized manager. Remove the ambient releaser import, zero-argument/cached factory, and default manager construction; do not add a replacement fallback.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -33,10 +33,10 @@ Keep the passed outer scope, but introduce one fixed-purpose immutable provider 
 - Current design issue found: `Yes`
 - Root cause: boundary/ownership issue, duplicated policy/coordination, file responsibility drift.
 - Refactor needed now: `Yes`
-- Evidence: two roots repeat construction; one MCP object crosses process and execution lifecycles; broad manager leaks below required capability; private scope assembly is partial/positional.
-- Design response: Host/Authority/Issuer split, fixed builder, narrow failure releaser, complete private kernel.
+- Evidence: the original mixed-level provider/session construction is corrected by IR-001; CRR-001 proves one remaining Mixed Team factory/manager path can independently select process authority when inputs are omitted.
+- Design response: preserve Host/Authority/Issuer, fixed builder, narrow failure releaser, and private kernel; extend their authoritative direction through required Mixed Team factory and manager construction.
 - Refactor rationale: each added boundary owns concrete policy/state/lifecycle; none is pass-through-only.
-- Deferral: logical application-agent addressing is separately approved; provider-local defaults outside supported roots remain but are forbidden at these roots.
+- Deferral: logical application-agent addressing is separately approved. Unrelated provider-local defaults remain outside supported roots, but Agent Tools releaser selection is not a provider-local default and receives no exception in Mixed Team execution.
 
 ## Terminology
 
@@ -57,7 +57,7 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 - Policy: `No backward compatibility; remove legacy code paths.`
 - Remove old Runtime/session-scope/session-manager composition shapes.
 - No alias, wrapper, dual path, or legacy fallback is allowed.
-- Provider-local defaults outside supported roots are not declared legacy; architecture enforcement prevents their application/general root use.
+- Provider-local defaults outside supported roots are not declared legacy; architecture enforcement prevents their application/general root use. The Mixed Team releaser fallback and cached/default factory are in the governed execution chain and are removed without alias or replacement fallback.
 
 ## Persisted Data / State Transition Decision
 
@@ -87,8 +87,8 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 
 - DS-001: `buildStudioServer -> AgentToolsMcpHost + AgentProviderFactoryBuilder -> GeneralProcessRunSupervisor -> ApplicationPlatformRuntime -> ApplicationExecutionScope -> configured HTTP/WS surfaces`.
 - DS-002: `startStandaloneApplicationHost -> same process owners -> GeneralProcessRunSupervisor -> selected ApplicationPlatformRuntime -> ApplicationExecutionScope -> listen/recover`.
-- DS-003: `application command -> orchestration capability -> ApplicationExecutionScope -> AgentRunManager -> builder-produced provider backend -> provider client`.
-- DS-004: `general GraphQL/run command -> GeneralProcessRunSupervisor service -> AgentRunManager -> builder-produced provider backend -> provider client`.
+- DS-003: `application command -> orchestration capability -> ApplicationExecutionScope -> scope-owned Agent/Team manager -> factory bound to application Authority issuer/releaser -> provider or Mixed Team backend`.
+- DS-004: `general GraphQL/run command -> GeneralProcessRunSupervisor service -> process-owned Agent/Team manager -> factory bound to general Authority issuer/releaser -> provider or Mixed Team backend`.
 
 ## Spine Narratives (Mandatory)
 
@@ -96,7 +96,7 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 | --- | --- | --- | --- | --- |
 | DS-001 | Studio creates process infrastructure once, then two non-identical execution authorities/families, then exposes existing routes. | composition, Host, builder, supervisor, platform, scope | Studio root | definitions/config |
 | DS-002 | Standalone repeats the ownership shape for one selected app without mode-switch assembly. | standalone root, Host, builder, supervisor, platform, scope | standalone root | CLI/static/watch |
-| DS-003/004 | Run owner obtains exact factories from the builder; provider obtains only its execution issuer. | command, scope/supervisor, manager, backend, provider | execution owner | provider adapters |
+| DS-003/004 | Run owner obtains exact provider factories and constructs one Mixed Team factory with the same execution Authority's releaser; managers can propagate but cannot select authority. | command, scope/supervisor, manager, backend, provider | execution owner | provider adapters |
 | DS-005 | Failed preparation cleans run/backend and revokes all sessions for the claimed run before claim completion. | manager, releaser, claim | AgentRunManager | aggregate errors |
 | DS-006 | Authority issues/records resource; adapter converts descriptor without exposing trust controls. | authority, issued resource, adapter | Authority | registry/catalog |
 | DS-007 | Kernel builder validates input, begins the construction-only authority, builds plain graph objects, completes the authority, builds factories/Agent/Team graphs, freezes one kernel, and transfers it once; failure aborts/closes only the acquired authority in reverse. | builder, authority assembly, full authority, kernel | kernel builder | factories/stores |
@@ -114,6 +114,7 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 - Builder owns provider-construction policy only.
 - Execution owners own mutable run families.
 - AgentRunManager owns claim/preparation/failure cleanup.
+- Each execution owner selects one `AgentToolMcpRunSessionReleaser`, constructs one `MixedTeamRunBackendFactory`, and injects it into its Team manager; neither factory nor manager owns authority selection.
 - Kernel builder owns one construction attempt.
 - Scope owns capability admission and full application kernel lifecycle.
 
@@ -133,6 +134,7 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 | application session scope + scoped manager | overlapping trusted owner | Authority/ports | In This Change | no alias |
 | duplicated root provider construction | repeated/default policy | builder | In This Change | exact roots |
 | broad manager in providers | excess privilege | issuer/resource | In This Change | adapters retained |
+| Mixed Team ambient releaser fallback, cached zero-argument factory, and manager default factory | lower layer can select process authority | required root-selected releaser -> required factory -> required manager input | In This Change | `getInstance` becomes lookup-only |
 | partial kernel/tuple/8 args/non-null capture | incomplete assembly contract | kernel builder/result | In This Change | private only |
 
 ## Return Or Event Spine(s)
@@ -145,6 +147,7 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 - Authority assembly: `begin -> expose releaser -> complete exactly once` or `abort`; no issuer exists while incomplete.
 - Authority: `assert open/readiness -> create registry session -> record ledger -> return issued resource`; insertion failure revokes before return.
 - Kernel builder: `K0 validate -> K1 begin authority -> K2 publication/resource prerequisites -> K3 complete authority -> K4 provider factories -> K5 Agent graph -> K6 Team graph -> K7 freeze kernel -> K8 transfer`; failure reverses the exact construction ledger.
+- Mixed Team construction: `execution owner -> exact authority.runSessions -> new MixedTeamRunBackendFactory(required releaser) -> AgentTeamRunManager(required factory) -> backend factory -> MixedTeamManager -> configured/task registries -> member handle`; every arrow propagates one identity and no inner node performs lookup.
 - Claude session: `first query -> issue -> cache descriptor -> query`; supported retry reuses it.
 
 ## Off-Spine Concerns Around The Spine
@@ -159,7 +162,7 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 
 ## Ownership Boundaries
 
-The Host is authoritative above registry/catalog/dispatcher. The scoped Authority is authoritative above its ledger and low-level session service. Execution owners see Authority ports, not Host internals. Providers see only issuer/resource. Scope callers see scope capabilities, never kernel managers. Composition callers use the fixed builder, never provider internals.
+The Host is authoritative above registry/catalog/dispatcher. The scoped Authority is authoritative above its ledger and low-level session service. Execution owners see Authority ports, not Host internals, and are the only Mixed Team releaser-selection points. Providers see only issuer/resource. Mixed Team factories/managers receive required constructor inputs and only propagate them. Scope callers see scope capabilities, never kernel managers. Composition callers use the fixed builder, never provider internals.
 
 ## Boundary Encapsulation Map
 
@@ -168,6 +171,7 @@ The Host is authoritative above registry/catalog/dispatcher. The scoped Authorit
 | Host | registry/catalog/dispatcher/service | route registrars/composition | direct registry/catalog getter | add exact Host operation |
 | Authority | ledger/session service/readiness | execution owner/manager | raw service plus Authority | add narrow issuer/releaser |
 | Builder | provider dependencies/constructors | supervisor/kernel builder | direct provider constructors | extend named builder input/output |
+| Mixed Team factory | one execution-family releaser + Team backend construction | supervisor/kernel builder through required Team manager input | process releaser getter, cached/default factory, lazy manager construction | require the missing input; never add lookup |
 | Scope | kernel/managers/authority | orchestration/stream/lifecycle | scope + raw manager | add scope capability method |
 
 ## Exact Process Provider Composition Boundary
@@ -207,19 +211,35 @@ No K2/K4–K7 constructor starts a listener, run, session, worker, or background
 
 Before the platform runtime is returned, a scope-constructor or later platform-assembly failure invokes the fixed idempotent construction abort once. After return, only normal quiesce/close is legal. Cleanup preserves the original error if it succeeds; if cleanup also fails, all reverse disposers still run and `AggregateError` contains the primary at index 0 followed by cleanup errors in actual reverse order.
 
+## Exact Mixed Team Releaser And Manager Boundary
+
+`MixedTeamRunBackendFactoryOptions.agentToolMcpRunSessionReleaser` is required, non-null, and runtime-validated by the constructor. `createTeamManager` remains an optional bounded test seam for existing context/backend tests, but supplying it does not make the releaser optional. The production factory has no import of `agent-tool-mcp-session-service.ts`, no call to `getAgentToolMcpRunSessionReleaser()`, no default options object, and no cached/getter export. It propagates its fixed releaser to every real `MixedTeamManager`, configured-member registry, task-Agent registry, and member handle created beneath it.
+
+`AgentTeamRunManagerOptions.mixedTeamRunBackendFactory` is likewise required, non-null, and runtime-validated. The constructor has no default options object. `initializeProcessInstance(options)` remains the sole process-manager creation entry and requires that factory. `getInstance()` takes no options, never constructs, and throws a clear not-initialized error until the general supervisor has initialized the process owner; existing process-facing callers retain lookup semantics after initialization. Application execution continues to use an ordinary non-singleton manager with the application factory.
+
+The identity allocation is exact:
+
+| Execution Family | Releaser Source | Factory Construction | Manager Construction |
+| --- | --- | --- | --- |
+| general process | `GeneralProcessRunSupervisor`'s completed Authority `.runSessions` | one explicit `new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser })` | `AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory, ... })` |
+| application | kernel builder's completed application Authority `.runSessions` | one explicit `new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser })` | one explicit non-singleton `new AgentTeamRunManager({ mixedTeamRunBackendFactory, ... })` |
+| isolated durable test | shared no-op or recording narrow releaser fixture | explicit factory input | explicit real/fake factory input as appropriate to the test subject |
+
+This is not a new factory-builder layer: the existing backend factory already owns Mixed Team construction. The correction removes authority selection from that lower layer and removes lazy/default manager construction. No manager map, service locator, generic dependency record, compatibility getter, or second Team path is introduced.
+
 ## Durable Direct-Constructor Boundary Proof
 
-The accepted production architecture is unchanged by the SR-003 correction. The transition must, however, keep the new required releaser boundary explicit in every maintained test that directly constructs `AgentRunManager`, `MixedTeamManager`, or `MixedAgentMemberHandle`; making the production parameter optional would recreate the ambient authority bypass this design removes.
+The accepted production architecture is unchanged by the SR-003 and SR-004 corrections. The transition must keep the required releaser boundary explicit in every maintained test that directly constructs `AgentRunManager`, `MixedTeamRunBackendFactory`, `MixedTeamManager`, or `MixedAgentMemberHandle`; making a production parameter optional would recreate the ambient authority bypass this design removes.
 
-One test-only fixture file owns two least-privilege choices: a frozen no-op `AgentToolMcpRunSessionReleaser` for tests where MCP cleanup is outside the test subject, and a fresh recording releaser for tests that assert cleanup or the deliberate absence of cleanup. The fixture exposes no Host, Authority, registry, broad session manager, or process getter. The normative transition inventory maps the preserved behavior and chosen fixture for each site and closes the current constructor surface as exactly seven direct Agent-manager tests, three direct Team-manager tests, and five direct member-handle tests.
+One test-only fixture file owns two least-privilege choices: a frozen no-op `AgentToolMcpRunSessionReleaser` for tests where MCP cleanup is outside the test subject, and a fresh recording releaser for tests that assert cleanup or the deliberate absence of cleanup. The fixture exposes no Host, Authority, registry, broad session manager, or process getter. The normative transition inventory maps the preserved behavior and chosen fixture for each site and closes the current constructor surface as exactly seven direct Agent-manager tests, four direct Mixed Team backend-factory tests, three direct Team-manager tests, and five direct member-handle tests. Direct `AgentTeamRunManager` construction/initialization is separately guarded for a required non-null backend factory and lookup-only process access.
 
-The focused architecture test derives those three occurrence sets from source, compares them to the exact normative path lists, and requires a non-null `agentToolMcpRunSessionReleaser` at every governed construction. Omission, null, explicit `undefined`, unsafe casts that hide omission, ambient getter sourcing, and broad-manager fakes are rejected by positive occurrence guards plus synthetic negative fixtures. New direct-constructor tests fail closed until their fixture purpose and preserved assertion are designed; removed constructor sites make the allowlist fail as stale.
+The focused architecture test derives all occurrence sets from source, compares them to exact normative path lists, and requires the appropriate non-null `agentToolMcpRunSessionReleaser` or `mixedTeamRunBackendFactory` at every governed construction. Omission, null, explicit `undefined`, unsafe casts that hide omission, ambient getter sourcing, broad-manager fakes, and cached/default factory access are rejected by positive occurrence guards plus synthetic negative fixtures. New direct-constructor tests fail closed until their fixture purpose and preserved assertion are designed; removed constructor sites make the allowlist fail as stale.
 
 ## Dependency Rules
 
-Allowed: composition -> Host/builder/execution owners; platform -> scope; execution owner -> builder and Authority ports; builder -> provider adapters/factories; provider -> issuer -> descriptor -> adapter; run cleanup -> releaser.
+Allowed: composition -> Host/builder/execution owners; platform -> scope; execution owner -> builder and Authority ports; execution owner -> required Mixed Team backend factory -> required Team manager; builder -> provider adapters/factories; provider -> issuer -> descriptor -> adapter; run cleanup -> releaser.
 
-Forbidden: supported roots -> provider constructors/default globals; provider/scope -> whole Host or registry/catalog; provider -> Authority/releaser; caller -> both scope and raw manager; string/token lookup, generic container, optional dependency dictionary, manager map, later bind, compatibility alias.
+Forbidden: supported roots -> provider constructors/default globals; Mixed Team factory/manager -> process releaser getter, cached factory, default/lazy manager construction, whole Host, or full Authority; provider/scope -> whole Host or registry/catalog; provider -> Authority/releaser; caller -> both scope and raw manager; string/token lookup, generic container, optional dependency dictionary, manager map, later bind, compatibility alias.
 
 ## Interface Boundary Mapping
 
@@ -231,6 +251,8 @@ Forbidden: supported roots -> provider constructors/default globals; provider/sc
 | issuer.issueForRun | run MCP resource | issue/record | run owner input | immutable return |
 | releaser.revokeForRun | run resources | revoke exact run | runId | idempotent |
 | builder.createForExecution | provider factory family | explicit construction | definition service + issuer | fixed method |
+| MixedTeamRunBackendFactory constructor | one Mixed Team backend family | fix and propagate cleanup authority | exact execution-family releaser | required; no lookup/cache |
+| AgentTeamRunManager constructor/initialize | root Team execution family | own roots over one prebound backend factory | exact backend factory identity | process lookup never constructs |
 | kernelBuilder.build | app kernel | exact K0–K8 assemble/unwind/transfer | nine-field scope build input | private complete output |
 
 ## Interface Boundary Check
@@ -242,6 +264,8 @@ Forbidden: supported roots -> provider constructors/default globals; provider/sc
 | construction assembly | Yes | Yes | Low | one fixed completion; no generic deferred binding |
 | issuer/releaser | Yes | Yes | Low | keep separate privileges |
 | provider builder | Yes | Yes | Low | forbid token lookup/options |
+| Mixed Team backend factory | Yes | Yes | Low | require one execution releaser; remove cache/getter |
+| Team run manager construction | Yes | Yes | Low | require factory; lookup-only process accessor |
 | kernel builder | Yes | Yes | Low | private complete result |
 
 ## Main Domain Subject Naming Check
@@ -262,6 +286,7 @@ Forbidden: supported roots -> provider constructors/default globals; provider/sc
 | route/catalog/session mechanics | Agent Tools MCP | Extend | already owns mechanics | N/A |
 | provider adaptation | Codex/Claude materializers | Reuse/tighten | correct vendor boundary | N/A |
 | run failure cleanup | AgentRunManager/resource manager | Extend | already owns claim/resources | N/A |
+| Mixed Team cleanup propagation | MixedTeamRunBackendFactory/Manager | Tighten | existing factory is the correct propagation owner but not an authority selector | N/A |
 | outer application behavior | ApplicationExecutionScope | Reuse | passed authoritative owner | N/A |
 | provider policy | Agent execution provider area | Create New owned file | duplicated in two roots | existing roots are wrong owners |
 
@@ -284,6 +309,8 @@ Forbidden: supported roots -> provider constructors/default globals; provider/sc
 | `agent-provider-factory-builder.ts` | providers | Builder | construction policy | one fixed policy | provider adapters |
 | `create-process-agent-provider-factory-builder.ts` | composition | Process composition | exact provider-source selection from host workspace + eighteen current sources | one provider provenance owner | current process getters/exports |
 | `application-execution-scope-kernel-builder.ts` | platform execution | Kernel builder | ordered assembly/unwind | one attempt lifecycle | scope internals |
+| `mixed-team-run-backend-factory.ts` | Team execution | Mixed Team backend factory | required releaser propagation and backend/context construction | existing cohesive owner; remove lookup/cache | current Team contexts/managers |
+| `agent-team-run-manager.ts` | Team execution | root Team lifecycle owner | required backend factory plus lookup-only process identity | prevents lazy authority selection | existing root lifecycle |
 
 ## Reusable Owned Structures Check
 
@@ -320,6 +347,8 @@ The exact Add/Modify/Rename/Remove table in `provider-composition-transition-inv
 | `src/agent-tools/mcp/*session-authority*.ts` | Files | Authority | trusted scoped lifecycle/contracts | same capability area | routes/provider code |
 | `src/agent-execution/providers/agent-provider-factory-builder.ts` | File | Builder | provider construction policy | provider ownership | mutable runs/lookup tokens |
 | `src/compositions/create-process-agent-provider-factory-builder.ts` | File | Process composition | exact host-workspace + eighteen-leaf provider source selection | keeps globals at the composition edge | returned dependency bag/default selection |
+| `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts` | File | Mixed Team backend factory | propagate one root-selected releaser through nested Team construction | correct Team construction depth | process getter/cache/default authority |
+| `src/agent-team-execution/services/agent-team-run-manager.ts` | File | root Team lifecycle owner | require one prebound backend factory; lookup initialized process owner | preserves general/application separation | lazy factory/manager construction |
 | `src/application-platform/execution/*kernel-builder.ts` | File | Kernel builder | app private assembly | scope implementation depth | public routes/capabilities |
 
 ## Folder Boundary Check
@@ -336,6 +365,7 @@ The exact Add/Modify/Rename/Remove table in `provider-composition-transition-inv
 | --- | --- | --- | --- |
 | provider composition | `owner -> builder.createForExecution({definition, issuer})` | `new Codex...(undefined, ...)` | explicit policy |
 | capability | `provider -> issuer -> descriptor` | `provider -> Runtime/Authority/manager` | least privilege |
+| Mixed Team authority | `owner -> required releaser -> factory -> required manager` | `factory -> process getter` or cached zero-argument factory | one authoritative direction |
 | assembly | `begin authority -> complete with publication -> CompleteKernel` | `partial bag -> generic deferred bind -> tuple -> 8 args` | typed cycle resolution and ownership transfer |
 | cleanup | `manager -> releaser.revokeForRun(runId)` | wait for whole-scope close | exact lifecycle |
 
@@ -346,6 +376,8 @@ The exact Add/Modify/Rename/Remove table in `provider-composition-transition-inv
 | old Runtime alias | reduce rename edits | Rejected | clean Host rename |
 | manager adapter around Authority | ease provider migration | Rejected | issuer/releaser directly |
 | optional builder inputs/defaults | preserve constructors | Rejected | complete named input |
+| optional Mixed Team releaser / cached default factory | preserve low-level construction | Rejected | explicit no-op/recording test fixture or exact root Authority releaser |
+| lazy Team manager construction on first lookup | preserve existing accessor convenience | Rejected | supervisor initialization followed by lookup-only `getInstance()` |
 | dual old/new scope assembly | transition ease | Rejected | one kernel builder cutover |
 
 ## Derived Layering (If Useful)
@@ -357,11 +389,11 @@ Composition -> execution owners -> run manager -> provider factory/backend -> pr
 1. Add exact authority/resource/assembly contracts, fixed process-input/builder contracts, and their focused tests.
 2. Implement the Host rename/split plus scoped Authority transaction; update route callers while the old execution-facing shapes are removed in the same cut.
 3. Add the single process-provider composition helper and fixed builder; adapt Codex/Claude to issuer/resource/provider configs and preserve AutoByteus inputs explicitly.
-4. Add the manager failed-preparation releaser and exact mixed-member propagation before switching either execution root.
+4. Add the manager failed-preparation releaser and exact mixed-member propagation; require the releaser at `MixedTeamRunBackendFactory`, remove its ambient/cache path, and require that factory at `AgentTeamRunManager` before switching either execution root.
 5. Implement K0–K8 kernel builder and switch `ApplicationExecutionScope` atomically to the one-kernel constructor.
 6. Switch the general supervisor and both host roots to the same builder identity and distinct completed authorities.
-7. Remove old runtime/scope/manager/partial assembly symbols and all direct root provider construction; do not leave an intermediate alias/default path.
-8. Cut over all fifteen governed direct-constructor test files to the exact no-op or recording releaser fixtures, then run the derived constructor-set guards, old-symbol allowlists, omission/null/undefined fixtures, kernel cut points, focused tests, full source review, API/E2E, durable-test review, and delivery verification.
+7. Remove old runtime/scope/manager/partial assembly symbols, direct root provider construction, the Mixed Team releaser getter import/fallback, cached factory/getter, and lazy/default Team manager construction; do not leave an intermediate alias/default path.
+8. Cut over all governed direct-constructor test files to the exact no-op or recording releaser fixtures and explicit backend factories, then run derived constructor-set guards, old-symbol/ambient-getter allowlists, omission/null/undefined fixtures, lookup-before-initialization proof, kernel cut points, focused tests, full source review, API/E2E, durable-test review, and delivery verification.
 
 No temporary compatibility alias or dual public path may survive any committed implementation state.
 
@@ -370,6 +402,7 @@ No temporary compatibility alias or dual public path may survive any committed i
 - More named contracts, but each owns or exposes one concrete responsibility and replaces broader/duplicated shapes.
 - Provider-local issuer is slightly wider than passing a prebuilt config, but source timing proves provider preparation owns when issuance can occur.
 - Defaults remain outside supported roots to avoid unrelated churn; hard guards prevent material regression.
+- Requiring a no-op releaser in context-only factory tests adds explicit setup, but that cost is preferable to production optionality and keeps the trust boundary visible.
 
 ## Risks
 
@@ -377,7 +410,8 @@ No temporary compatibility alias or dual public path may survive any committed i
 - A poorly implemented builder could become a service locator; the exact nineteen-leaf contract and recursive occurrence/fixture guards prevent that shape.
 - A generic deferred capability binder would hide the construction cycle; only the fixed assembly transaction is permitted.
 - Renaming Host touches both composition roots and route tests; clean occurrence checks are mandatory.
+- Process callers that reach `AgentTeamRunManager.getInstance()` before supervisor initialization now fail closed instead of constructing an authority-less manager; maintained host order must be re-proved.
 
 ## Guidance For Implementation
 
-Implement the exact normative contract before changing callers. Keep all new input objects recursively `Readonly`, runtime-validated, and complete. Use private fields and frozen outward projections. Do not expose the dependency record, construction assembly, or kernel. Preserve provider error semantics and existing retry. Aggregate cleanup errors in the defined order. Use only the normative narrow releaser fixtures at governed direct test constructors; do not make the production releaser optional to accommodate tests. Treat the exact transition inventory, derived constructor occurrence sets, current-tree old-symbol allowlists, per-field omission fixtures, and K0–K8 cut points as completion criteria, not optional cleanup.
+Implement the exact normative contract before changing callers. Keep all new input objects recursively `Readonly`, runtime-validated, and complete. Use private fields and frozen outward projections. Do not expose the dependency record, construction assembly, or kernel. Preserve provider error semantics and existing retry. Aggregate cleanup errors in the defined order. Require the exact releaser at every `MixedTeamRunBackendFactory`, require that factory at every `AgentTeamRunManager` creation/initialization, and make `getInstance()` lookup-only. Use only the normative narrow releaser fixtures at governed direct tests; do not make production inputs optional to accommodate tests. Treat the exact transition inventory, derived constructor occurrence sets, ambient-getter removal, per-field omission fixtures, lookup-before-init proof, and K0–K8 cut points as completion criteria, not optional cleanup.

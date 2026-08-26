@@ -180,11 +180,25 @@ The bootstrapper receives only `AgentToolMcpSessionIssuer`. The existing issuanc
 
 `ClaudeSessionDependencies.agentToolMcpSessionIssuer` is required in the builder-created path and propagated by `ClaudeSessionManager`. `ClaudeSession` and `ClaudeAgentToolsMcpSessionState` depend only on the issuer. Lazy issuance and cached descriptor/resource remain session-owned. Query failure retains the issued session for supported retry; run/scope lifecycle revokes it.
 
-Low-level/test constructors may retain unrelated provider defaults under the approved scope guardrail, but no governed root may omit any builder input. Any retained generic default for Agent Tools must be exposed as the narrow issuer/releaser projection; provider and mixed-Team files have zero broad manager/service imports.
+Low-level/test constructors may retain unrelated provider defaults under the approved scope guardrail, but no governed root may omit any builder input. Agent Tools authority is not an unrelated provider default: provider and Mixed Team files have zero broad manager/service imports and no issuer/releaser getter fallback.
 
 ### AutoByteus
 
 AutoByteus obtains no MCP issuer. The builder supplies every existing process collaborator explicitly and preserves native behavior.
+
+### Mixed Team Releaser Propagation
+
+Mixed Team execution receives no issuer. The execution owner selects its completed Authority's `runSessions` projection exactly once and constructs:
+
+```ts
+new MixedTeamRunBackendFactory({
+  agentToolMcpRunSessionReleaser: authority.runSessions,
+});
+```
+
+`MixedTeamRunBackendFactoryOptions.agentToolMcpRunSessionReleaser` is required and constructor-validated. The factory has no process session-service import, no releaser getter, no default options object, and no cached/default factory export. It passes the same releaser to each real `MixedTeamManager`, which propagates it through configured/task registries to member handles.
+
+`AgentTeamRunManagerOptions.mixedTeamRunBackendFactory` is required and constructor-validated. General execution creates the process manager only through `initializeProcessInstance({ mixedTeamRunBackendFactory, ... })`; application execution constructs its non-singleton manager with its application factory. `AgentTeamRunManager.getInstance()` is lookup-only, accepts no options, and throws before process initialization. Therefore neither the factory nor the manager can infer or select an execution authority.
 
 ## 7. Exact Application Kernel Contract
 
@@ -233,7 +247,7 @@ The kernel is private to `application-platform/execution`. `abortConstruction` i
 | K3 | `assembly.complete({ executionCapabilities: { publishedArtifactPublisher: publicationService }, assertExecutionCapabilitiesReady: () => undefined })` | replace K1 ledger entry atomically with `authority.close` | if completion throws, K1 `abort`; after completion, `authority.close()` | builder ledger owns full authority |
 | K4 | `providerBuilder.createForExecution({agentDefinitionService, authority.issuer})` | none | none | builder locals |
 | K5 | `AgentRunManager` with factory set, activation registry, memory recorder, and `authority.runSessions`; identity/history/provisioning/activation/Agent service graph | none; no run admitted/started | none | builder locals |
-| K6 | member context/activity services, `AgentTeamRunManager`, configured/task registries receiving `authority.runSessions`, Team service graph | none; no Team admitted/started | none | builder locals |
+| K6 | construct `MixedTeamRunBackendFactory` with `authority.runSessions`; construct `AgentTeamRunManager` with that required factory; member context/activity services and Team service graph | none; no Team admitted/started | none | builder locals |
 | K7 | shutdown coordinator, stream source, projection service, and the frozen kernel of eight owned dependencies plus `abortConstruction` | kernel receives fixed `abortConstruction`; no new closeable | if freeze/assembly throws, ledger authority close | builder locals plus ledger |
 | K8 | transfer | clear builder ledger only after complete kernel exists | none after transfer | returned kernel exclusively owns authority |
 
@@ -287,7 +301,7 @@ type GeneralProcessRunSupervisorInput = Readonly<{
 // add agentProviderFactoryBuilder: AgentProviderFactoryBuilder.
 ```
 
-The supervisor consumes only `authority.issuer` for its builder call and `authority.runSessions` for its Agent/mixed-Team cleanup graph; it retains the full authority only because it owns that execution family's normal close. Application platform passes only the authority factory and builder into the private scope construction boundary.
+The supervisor consumes only `authority.issuer` for its builder call and `authority.runSessions` for its Agent cleanup and required Mixed Team factory; it passes that factory to the process `AgentTeamRunManager`. It retains the full authority only because it owns that execution family's normal close. Application platform passes only the authority factory and builder into the private scope construction boundary, whose K6 performs the identical application-local factory/manager binding.
 
 ```text
 host composition
@@ -312,6 +326,7 @@ Allowed:
 - Studio/standalone -> process provider composition + Host + general supervisor + platform runtime;
 - process provider composition -> exact process sources in section 4 -> builder;
 - execution owner -> builder + its own Authority ports;
+- execution owner -> exact `authority.runSessions` -> required Mixed Team factory -> required Team manager;
 - builder -> provider factories/adapters and exact named process collaborators;
 - provider -> issuer -> issued descriptor -> provider materializer;
 - run/resource/mixed-member cleanup -> run-session releaser;
@@ -320,7 +335,9 @@ Allowed:
 Forbidden:
 
 - supported roots/scope/supervisor -> provider-specific constructors/getters or positional defaults;
-- provider/mixed-Team/run cleanup -> whole Host, full Authority, broad MCP manager/service, registry, or catalog;
+- provider/mixed-Team/run cleanup -> whole Host, full Authority, broad MCP manager/service, registry, catalog, or releaser getter;
+- Mixed Team backend factory -> optional/default releaser, cached factory, or process session service;
+- Team manager -> optional/default backend factory or lazy construction from `getInstance()`;
 - kernel builder -> generic disposer/container, incomplete result, later runtime binding, non-null assertion, optional dependency dictionary;
 - caller -> scope plus raw manager;
 - string/token lookup, `Record<string, unknown>` dependency bag, provider map, mutable registration, manager map, compatibility alias, or mode-switched host builder.
