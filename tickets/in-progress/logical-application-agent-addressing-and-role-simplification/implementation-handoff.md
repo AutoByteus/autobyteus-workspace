@@ -9,130 +9,121 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/logical-application-agent-addressing-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/logical-application-agent-addressing-transition-inventory.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/current-personal-refresh-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/application-worker-operation-completion-contract.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md` (`CRR-001`)
+- Triggering downstream reports and records:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md` (`CRR-003` / `CR-002`)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/crr-001-descriptor-address-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-execution-coverage-report.md` (`API-REV-001` / `APIE2E-F001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-revision-record.md`
 
 ## Current Implementation Summary
 
-The implementation makes the clean logical-addressing cut across the shared contracts, SDKs, server authorization/input/stream paths, maintained applications, persistence projectors, generated package maps, documentation, and focused coverage. The only public target is now `{ bindingId, memberAddress }`; authorization is the sole logical-to-physical translator; downstream execution and emitted stream address evidence come from the authorized descriptor; redundant application-role `runtimeKind` fields and retired helpers are absent; existing JSON supersets remain directly readable without migration or rewrite. `IR-002` closes `CR-001` by removing the remaining raw caller-address use after authorization and adding durable unit/architecture guards.
+`IR-003` implements the architecture-approved SR-003 completion boundary over the accepted IR-002 logical-address implementation. Application work now remains correlated until an actual result, remote error, write failure, or transport/process close. The two transport clients no longer own elapsed-time outcomes. A new application-engine control-request owner applies the existing 30-second deadline only to definition load and stop; after its deadline fires it closes the client, awaits supervisor stop, and only then rejects with the timeout while retaining cleanup failures. Host-stdin loss closes the worker bridge before runtime cleanup, while normal stop keeps the bridge open through runtime stop and its response.
 
-- Implementation cycle: `Rework`
+No public contract, JSON-RPC frame, maintained-application service, persisted data, migration, logical-address behavior, provider behavior, retry, cancellation, async-status, or idempotency mechanism changed.
+
+- Implementation cycle: `Design Impact Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-001`, `SR-002`
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`
+- Triggering finding IDs: `CR-002`, `APIE2E-F001`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Expose only binding plus root/logical-member selection. | `autobyteus-application-sdk-contracts/src/application-agent-{bindings,member-address,target-url}.ts`; `autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts` | Exact root/member contract, canonical rooted member validation, exact-key fail-closed authorization, Agent/Team root derivation, and exact member resolution implemented. |
-| BEH-002 | Maintained application code selects logical members, not physical IDs. | `autobyteus-application-backend-sdk/src/application-agent-target-address.ts`; `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`; maintained application services | Root builder supports Agent and Team bindings; member builder exact-matches logical address; Socratic selects `/tutor` without extracting a run ID. |
-| BEH-003 | Translate once and keep scope/runtime boundaries narrow. | `application-execution-scope-contracts.ts`; authorization service; `application-orchestration-host-service.ts`; application stream runtime source/subscription | Frozen descriptor owns binding/address/runtime; input dispatch and stream selection consume only exact resolved runtime IDs; emitted event address is cloned from `descriptor.address`, never the caller input. |
-| BEH-004 | Use one canonical root/member URL and READY/event equality. | shared URL codec; frontend SDK validators/parser; Studio and standalone websocket registration; communication tests | Root/member round-trip and exact frame equality implemented. Raw request URL preserves one encoded rooted member segment in both hosts; transport/reconnect/close semantics remain unchanged. |
-| BEH-005 | Remove redundant application-role classification while retaining physical/provider identity. | application binding models, launch/provisioning, publish-artifact producer paths, application services | Team binding members are exactly address/display/run ID and producers are exactly run ID/display. Provider/launch `runtimeKind` remains untouched. |
-| BEH-006 | Read existing persisted JSON supersets directly and keep the physical column. | `application-run-binding-record-codec.ts`; `application-execution-producer-projector.ts`; binding store, event journal, metadata store | Current-schema projectors ignore unknown extras, reject missing current fields, perform no rewrite during reads, and continue writing the physical `AGENT_TEAM_MEMBER` storage constant. No schema/migration change. |
-| BEH-007 | Move all supported packages/applications atomically with preserved outcomes. | three SDK packages, both maintained applications, tracked vendor source maps, server/app tests, module/SDK docs | Retired public helpers/shapes are absent; generated maps use the new contract; package build/validation and focused Studio/standalone behavior checks pass. |
+| BEH-001 | Expose only binding plus root/logical-member selection. | Shared application SDK contracts and authorization service. | Preserved from IR-002; exact `{ bindingId, memberAddress }` contract and fail-closed authorization remain unchanged. |
+| BEH-002 | Maintained applications select logical members, not physical IDs. | Backend SDK builders and Socratic `/tutor` selection. | Preserved unchanged. |
+| BEH-003 | Translate once and keep scope/runtime boundaries narrow. | Authorization descriptor, host dispatch, stream source/subscription. | Preserved unchanged; authorized descriptor remains the sole post-authorization address/runtime authority. |
+| BEH-004 | Use one canonical root/member URL and READY/event equality. | Shared URL codec and Studio/standalone communication paths. | Preserved unchanged. |
+| BEH-005 | Remove redundant application-role classification while retaining physical/provider identity. | Binding member and producer models/projectors. | Preserved unchanged. |
+| BEH-006 | Read persisted JSON supersets directly and keep the physical storage column. | Current-schema binding/producer/context projectors and stores. | Preserved unchanged; no schema or migration delta. |
+| BEH-007 | Move supported consumers atomically and preserve the synchronous application outcome. | `application-engine-client.ts`; `application-worker-host-bridge-client.ts`; `application-engine-controller.ts`; `application-engine-control-request.ts`; launcher and worker entry. | Live application/nested capability requests have no transport timer. Load/stop alone use abort-before-timeout-failure control. Real result/error and transport failure semantics remain explicit. |
 
 ## Key Files Or Areas
 
-- Public contract and codecs: `autobyteus-application-sdk-contracts/src/application-agent-*`
-- Backend/frontend SDK boundaries: `autobyteus-application-backend-sdk/src/application-agent-target-address.ts`, `autobyteus-application-frontend-sdk/src/application-agent-*`
-- Sole translator and private runtime boundary: `application-agent-target-authorization-service.ts`, `application-execution-scope-contracts.ts`
-- Input/stream/websocket paths: application orchestration host, runtime source/subscription, Studio and standalone websocket registration
-- Direct-use persisted projections: binding record codec/store, execution producer projector/event journal, agent-run metadata store
-- Maintained consumers: Brief Studio and Socratic Math Teacher backend sources plus tracked SDK vendor maps
-- Architecture guard: `autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts`
+- Correlation-only host client: `autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts`
+- Synchronous work boundary and stop control caller: `autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts`
+- Definition-load control caller: `autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts`
+- Exact lifecycle deadline owner: `autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts`
+- Nested host-capability correlation and close: `autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts`
+- Host-stdin versus normal-stop teardown ordering: `autobyteus-server-ts/src/application-engine/worker/application-worker-entry.ts`
+- Focused architecture guard: `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`
+- Completion-coupling integration: `autobyteus-server-ts/tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts`
 
 ## Important Assumptions
 
-- `ApplicationAgentMemberAddress` remains limited to configured canonical rooted Team members; task-agent addressing is not a supported public surface.
-- Physical run IDs remain private execution/correlation data in bindings and internal runtime targets.
-- The unchanged SQLite `runtime_kind` column remains required physical storage and is written from one derived constant.
-- A fresh implementation-time fetch confirmed `origin/personal` remains the exact reviewed `4108786f4058ca83fd036df84666a2c846fd6401`.
+- `ApplicationEngineController` remains the outward synchronous application-work owner; callers do not receive or choose a timeout.
+- Definition load and application stop are the only current host-side lifecycle control operations permitted to use the new deadline owner.
+- A genuine process/transport close is still an error and does not imply retry or exactly-once behavior.
+- `origin/personal` remains the exact reviewed `4108786f4058ca83fd036df84666a2c846fd6401`; no merge or base movement occurred in IR-003.
 
 ## Known Risks
 
-- Credentialed provider execution, the complete dual-host business/recovery matrix, exact package parity across the complete maintained inventory, and Electron verification remain downstream responsibilities.
-- Implementation checks exercised real SQLite, websocket, worker/package, Studio ownership, and standalone selection paths narrowly; they are not API/E2E sign-off.
+- The three real cold/reentry witnesses that established APIE2E-F001 remain downstream API/E2E responsibilities: Studio cold restart, Brief cold standalone work, and Socratic standalone restart/recovery.
+- A live application operation can now wait as long as the actual provider/domain work takes. This is the approved synchronous contract, not an availability guarantee or cancellation mechanism.
+- Complete dual-host/provider/recovery/package-parity/Electron evidence remains downstream after source review.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Behavior Change` and `Refactor`
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Shared Structure Looseness`, and `Duplicated Policy Or Coordination`
+- Reviewed change posture: `Behavior Preservation` and `Boundary Refactor`
+- Reviewed root-cause classification: `Duplicated Policy Or Coordination` in transport clients, corrected by one lifecycle-control owner while preserving the controller completion boundary
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: the public selector, translator, scope target, persistence projection, and role contraction each have one concrete owner; no parallel selector/translator or cross-boundary binding lookup remains.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes` — CRR-003 was returned through SR-003 and ARCH-REV-003 before implementation.
+- Evidence / notes: application work cannot import the control helper; the architecture guard fixes the control importer/call count at launcher load and controller stop.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: retired Team-root-only helper, old target union, role enum, producer/member role fields, and old examples were removed rather than aliased. The largest changed production file is 483 effective non-empty lines and its task delta is a one-line role-field removal.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` — pending timeout handles and live-work timer branches were removed from both correlation clients.
+- Shared structures remain tight: `Yes` — pending entries contain only resolve/reject; lifecycle control has one exact load/stop method union.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; every changed production source is below 500 effective non-empty lines and the largest IR-003 delta is well below 220 changed lines.
 
-## Persisted Data Transition Check (When Applicable)
+## Persisted Data Transition Check
 
-- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`
-- Design-spec decision reference: `DS-006`, `DS-009`; REQ-007; AC-014–AC-016
-- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: real-SQLite binding reads accept old JSON supersets, return current shape, and do not change bytes; absent read state remains absent; journal and metadata fixtures accept redundant old `runtimeKind` while retaining dispatch/restore semantics; writes retain the physical constant.
-- Migration implementation and focused checks, only when `Migration Required`: `N/A`
-- Deviation from the reviewed transition decision: `None`
+- Approved decision: `Directly Usable — No Migration` for the logical-address data transition; `Not Affected` for SR-003 completion coupling.
+- Design references: `DS-006`, `DS-009`, `DS-010–DS-012`; `REQ-007–REQ-008`; `AC-014–AC-018`.
+- Implementation follows the approved decision without migration or version-specific fallback: `Yes`.
+- Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
-- Workspace dependencies were installed with `pnpm install --frozen-lockfile`.
-- Application packaging requires built shared contracts, backend/frontend SDKs, and devkit. Generated `dist` outputs were removed after validation; tracked maintained-application source maps remain synchronized.
-- The standalone integration requires a generated Brief package fixture; it passed after rebuilding that normal prerequisite. An earlier clean-tree invocation correctly failed because the fixture had intentionally been removed.
+- Normal build/test prerequisites were generated in dependency order: shared contracts/backend SDK for server build; application devkit/frontend SDK plus Brief package for the imported-package integration.
+- The first clean-tree Brief test invocation reported its expected missing generated package fixture. After building the normal prerequisite package, all 3 Brief integration cases passed. Generated `dist` outputs were removed before handoff.
 
 ## Local Implementation Checks Run
 
-All results below are implementation-scoped local checks, not downstream API/E2E sign-off.
+All results are implementation-scoped local checks, not downstream API/E2E sign-off.
 
-- `pnpm --filter @autobyteus/application-sdk-contracts test` — Pass, 6/6.
-- `pnpm --filter @autobyteus/application-backend-sdk test` — Pass, 10/10.
-- `pnpm --filter @autobyteus/application-frontend-sdk test` — Pass, 12/12 plus type tests.
-- Affected server unit/architecture selection — Pass, 27 files / 149 tests.
-- Narrow server integrations for communication websocket, application context capabilities, Brief imported package, and Studio-owned run configuration — Pass, 4 files / 9 tests.
-- Standalone application server integration with regenerated Brief package — Pass, 2/2.
-- Final architecture/binding store/websocket/Studio regression selection — Pass for each governed selection; binding store 3/3, architecture 6/6, websocket 1/1, Studio ownership 3/3.
-- `IR-002` focused stream-subscription, runtime-source, communication-session, websocket, and architecture selection — Pass, 5 files / 22 tests; the core regression proves descriptor address wins after caller normalization/difference and later mutation while `descriptor.runtime` remains the streaming input.
-- `IR-002` server build-config TypeScript no-emit with the normal contracts build prerequisite — Pass.
+- SR-003 focused selection — Pass, 6 files / 38 tests: engine client, worker bridge, control owner, controller, completion-coupling integration, and architecture boundary suite.
+- Existing application-context capability integration — Pass, 1 file / 2 tests.
+- Existing Brief imported-package integration after its normal generated-package prerequisite — Pass, 1 file / 3 tests.
+- `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass after the normal shared-contract prerequisite build.
 - `pnpm --filter autobyteus-server-ts build` — Pass, including sanitized built-module/bootstrap smoke.
-- `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
-- Brief and Socratic `typecheck:backend` — Pass.
-- Shared contracts/backend/frontend/devkit builds — Pass with prerequisite order.
-- `pnpm --filter @autobyteus/application-devkit test` — Pass, 21/21.
-- Brief and Socratic package `build` plus `validate` — Pass; generated package outputs cleaned afterward.
-- Fresh `git fetch origin personal` guard — Pass; exact reviewed ref unchanged.
-- Retired-name/export scans, architecture occurrence guards, changed-source effective-line guard, and `git diff --check` — Pass.
+- Occurrence scans — Pass: neither correlation client contains `setTimeout`, `30_000`, `timeoutMs`, or a timeout handle; the control helper is imported in production only by launcher and controller.
+- Changed-production effective-line guard and `git diff --check` — Pass.
 
-## Frontend Rendered-Result Check (When Applicable)
+## Frontend Rendered-Result Check
 
-Not Applicable — this changes SDK/wire validation and maintained application connection data, not rendered layout, styling, labels, or user interaction design. Narrow websocket and maintained-application package checks cover the implementation boundary; downstream owns full browser/Electron journeys.
+Not Applicable — SR-003 changes backend worker correlation and lifecycle control only. It does not alter a rendered surface, labels, layout, interaction states, or frontend contract.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Exercise Agent root, Team root, `/tutor`, and a nested member through both Studio and standalone URLs; verify exact READY/event target equality and root-versus-member stream filtering.
-- Run Socratic Start Lesson and follow-up inputs without any application-side physical target selection.
-- Restart/recover from existing binding, pending journal, and run metadata rows containing redundant old JSON fields; verify no rewrite and unchanged physical correlation.
-- Compare complete maintained package bytes/maps and run artifact publication, reentry, terminal release, cleanup, and provider matrix.
-- Verify malformed, old, extra-key, unknown-member, terminal-binding, query/fragment, and noncanonical URL/address cases fail closed.
+- Rerun APIE2E-F001's exact three cold witnesses first and assert the HTTP/GraphQL caller receives the actual completion/domain-error rather than an internal 30-second timeout while work continues.
+- Retain coverage of genuine remote error, host/bridge write failure, worker close, and restart/reentry cleanup; do not convert them into retries.
+- Reconfirm exact logical root/member URL, READY/event address, input, stream filtering, binding recovery, artifact publication, and dual-host parity from API-REV-001.
+- Confirm definition-load and stop timeout evidence shows the worker is stopped before the timeout becomes observable.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Independent coverage investigation, durable-test decisions, complete API/E2E execution, environment evidence, package parity, and Electron verification remain owned by `api_e2e_engineer` after source review passes.
+Yes. Independent durable-coverage reconciliation and the complete realistic API/E2E matrix remain owned by `api_e2e_engineer` after affected source review passes.

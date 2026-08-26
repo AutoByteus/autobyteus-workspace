@@ -12,6 +12,27 @@ const createHandle = () => ({
 });
 
 describe("ApplicationEngineController", () => {
+  it("completion-couples every application-work method without a request deadline", async () => {
+    const controller = new ApplicationEngineController();
+    const handle = createHandle();
+    controller.attach("app-1", handle as never);
+
+    await Promise.all([
+      controller.invokeApplicationQuery("app-1", {} as never),
+      controller.invokeApplicationCommand("app-1", {} as never),
+      controller.routeApplicationRequest("app-1", {} as never),
+      controller.executeApplicationGraphql("app-1", {} as never),
+      controller.openApplicationWebSocket("app-1", {} as never),
+      controller.deliverApplicationWebSocketMessage("app-1", {} as never),
+      controller.closeApplicationWebSocket("app-1", {} as never),
+      controller.invokeApplicationEventHandler("app-1", {} as never),
+      controller.invokeApplicationArtifactHandler("app-1", {} as never),
+    ]);
+
+    expect(handle.client.request).toHaveBeenCalledTimes(9);
+    for (const call of handle.client.request.mock.calls) expect(call).toHaveLength(2);
+  });
+
   it("owns the exact attached handle, status, invocation, and listener identity", async () => {
     const controller = new ApplicationEngineController();
     const handle = createHandle();

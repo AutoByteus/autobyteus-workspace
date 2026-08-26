@@ -14,12 +14,12 @@ type JsonRpcId = string;
 type PendingRequest = {
   resolve: (value: unknown) => void;
   reject: (error: Error) => void;
-  timeoutHandle: NodeJS.Timeout;
 };
 
 export class ApplicationWorkerHostBridgeClient {
   private readonly pendingRequests = new Map<JsonRpcId, PendingRequest>();
   private nextRequestId = 1;
+  private closeError: Error | null = null;
 
   constructor(
     private readonly writeFrame: (frame: Record<string, unknown>) => Promise<void>,
@@ -31,6 +31,13 @@ export class ApplicationWorkerHostBridgeClient {
 
   async invokeWebSocketAction(input: ApplicationWorkerWebSocketActionInput): Promise<unknown> {
     return this.request(APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION, input as unknown as Record<string, unknown>);
+  }
+
+  close(error: Error): void {
+    if (this.closeError) return;
+    this.closeError = error;
+    for (const pending of this.pendingRequests.values()) pending.reject(error);
+    this.pendingRequests.clear();
   }
 
   handleResponse(payload: Record<string, unknown>): boolean {
@@ -76,30 +83,22 @@ export class ApplicationWorkerHostBridgeClient {
   }
 
   private async request(method: string, params: Record<string, unknown>): Promise<unknown> {
+    if (this.closeError) throw this.closeError;
     const id = `host:${this.nextRequestId++}`;
     const promise = new Promise<unknown>((resolve, reject) => {
-      const timeoutHandle = setTimeout(() => {
-        this.pendingRequests.delete(id);
-        reject(new Error(`Application host bridge request timed out: ${method}`));
-      }, 30_000);
-      this.pendingRequests.set(id, {
-        resolve: (value) => {
-          clearTimeout(timeoutHandle);
-          resolve(value);
-        },
-        reject: (error) => {
-          clearTimeout(timeoutHandle);
-          reject(error);
-        },
-        timeoutHandle,
-      });
+      this.pendingRequests.set(id, { resolve, reject });
     });
 
-    await this.writeFrame({
+    void this.writeFrame({
       jsonrpc: "2.0",
       id,
       method,
       params,
+    }).catch((error) => {
+      const pending = this.pendingRequests.get(id);
+      if (!pending) return;
+      this.pendingRequests.delete(id);
+      pending.reject(error instanceof Error ? error : new Error(String(error)));
     });
     return promise;
   }
