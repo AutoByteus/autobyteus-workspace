@@ -2,12 +2,12 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current requirements revision ID: `RER-001`
+- Status: `Draft`
+- Current requirements revision ID: `RER-002`
 - Request / ticket: Clarify and enforce the distinct orchestration semantics of `send_message_to` and `delegate_task`
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-26
-- Approval state and reference: Awaiting explicit user decision on DEC-001 and approval of the proposed intended behavior
+- Approval state and reference: User requested an interactive visualization on 2026-08-26 before deciding DEC-001 or approving intended behavior; Requirements Visualization handoff pending/active under RER-002
 
 ## Problem And Desired Outcome
 
@@ -126,12 +126,12 @@
 
 ## UI, Interaction, And Experience Requirements
 
-- Applicable: `No — backend/system-prompt/tool-contract behavior only`
-- Linked UI/UX or interaction supplement: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md` (contract decision aid, not UI/UX)
-- Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: `N/A — not applicable`
+- Applicable: `No target product UI; Yes — interactive Requirements Visualization requested to clarify backend orchestration semantics`
+- Linked UI/UX or interaction supplement: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md`; `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md`
+- Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: Requirements visualizer repository/root and review URL pending Product Design & Prototyping return; final product prototype and final UI/UX specification are `N/A — not requested`
 - Product prototype ticket record and folder (externally owned): `N/A — not applicable`
-- Prototype revision or commit: `N/A — not applicable`
-- UI/UX user-confirmation reference: `N/A — not applicable`
+- Prototype revision or commit: Requirements visualizer revision pending
+- UI/UX user-confirmation reference: Requirements clarification decision pending; no final UI/UX approval applies
 - Approved visual-reference baseline: `N/A — not applicable`
 - Normative visual and interaction details, including the approved final references: `N/A — not applicable`
 - Explicitly illustrative fixture content or permitted implementation variation: Decision-table example addresses and run IDs are illustrative; their intent/tool/selector relationships are normative if approved.
@@ -169,6 +169,7 @@
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md` | Concise normative intent/tool/selector decision aid with positive and negative examples | REQ-001–REQ-007, REQ-010; AC-001–AC-008 | Proposed | Behavior-defining; included in user approval basis |
+| `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md` | Focus the exploratory visualizer on the existing-execution versus fresh-task-execution model and DEC-001 | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Ready for cross-team handoff | Requirements-owned request brief; not a final UI/UX specification |
 
 ## Assumptions
 
@@ -214,9 +215,9 @@
 - Scope and non-goals are clear: `Yes`
 - Requirements and acceptance criteria are testable and traceable: `Yes`
 - Applicable scenarios are covered: `Yes`
-- Prototype and supplemental evidence is integrated consistently: `Yes`
+- Prototype and supplemental evidence is integrated consistently: `No — requirements visualizer return pending`
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and open decisions are visible: `Yes`
 - User approval received: `No`
 - Architecture-ready: `No`
-- Remaining blocker: User decision on DEC-001 and explicit approval of the intended behavior and decision-table supplement.
+- Remaining blocker: Requirements Visualization return/review, user decision on DEC-001, and explicit approval of the intended behavior and decision-table supplement.

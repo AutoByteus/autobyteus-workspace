@@ -9,8 +9,8 @@
 - Base or reference revision: `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Dedicated task worktree and branch created successfully; canonical draft artifacts created under `tickets/in-progress/send-message-delegate-task-semantics/`.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-001`
-- Investigation status: Coherent baseline complete; awaiting user decision/approval
+- Current requirements revision ID: `RER-002`
+- Investigation status: Requirements Visualization Needed; focused cross-team handoff package ready
 
 ## Initial Request And Clarifications
 
@@ -18,6 +18,7 @@
 - Clarifications received: None after intake.
 - User-supplied facts and constraints: `send_message_to` and `delegate_task` are distinct orchestration modes; `delegate_task` creates a task Agent or task AgentTeam instance; using delegation and then sending the same assignment again to the original mounted recipient is semantically wrong because that recipient definition/configured execution is not the task execution that owns the delegated work.
 - Initial ambiguity: The word “synchronous” may mean communication with an already existing/live recipient rather than blocking request/response timing. The phrase “first delegate task, later send a message again doesn't make sense” may mean (A) forbid redundant re-dispatch of the same work to the logical recipient, or (B) forbid every delegator-to-task-assignee ordinary follow-up. Current authoritative behavior explicitly permits genuine follow-up by exact run ID, so the distinction is material.
+- Later user request: On 2026-08-26 the user explicitly asked Requirements Engineering to send the requirement to Product Prototyper so they can review a visualized requirement before deciding/approving it.
 
 ## Product And Domain Understanding
 
@@ -51,6 +52,7 @@
 | SRC-014 | 2026-08-26 | Doc | `autobyteus-server-ts/docs/modules/agent_tools.md` and adjacent active docs | Audit consistency | Some wording still mentions relative/direct-child task constraints that differ from current absolute/universal runtime contract | Include documentation consistency requirement |
 | SRC-015 | 2026-08-26 | Command | `rg` scans; `git log`/`git blame`; targeted `sed` source traces | Find active contracts and provenance | Collaboration wording was currentized during universal delegation work but remains too terse for the observed behavioral failure | Record static evidence; live probe not required before user semantics decision |
 | SRC-016 | 2026-08-26 | Command | `test -d node_modules` in dedicated worktree | Assess executable test availability | No root or server `node_modules` is installed in this worktree | Static source/test inspection is adequate for requirements; downstream validation must install/prepare dependencies |
+| SRC-017 | 2026-08-26 | User | “Can you send a message to the product prototype? I want to see the visualized requirement.” | Apply the Product Experience Evidence Gate | User explicitly requests an interactive requirements visualization before approval | Classify `Requirements Visualization Needed` and send the focused cumulative package through dynamic handoff rules |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -114,14 +116,14 @@
 
 ## Product Prototype Decision
 
-- Prototype needed: `No`
-- Decision rationale: This is backend/system-prompt/tool-contract behavior. No UI hierarchy, interaction journey, visual state, or user-facing product layout decision would be clarified by a runnable prototype.
+- Prototype needed: `Yes — Requirements Visualization` (exploratory; not a final product prototype)
+- Decision rationale: Although the target behavior is backend/system-prompt/tool-contract behavior, the user explicitly requested a visualized requirement. A small interactive visualizer can materially clarify the difference between configured/mounted execution, fresh delegated execution, logical address, exact run ID, and the two DEC-001 policy options.
 - Requirement / behavior IDs involved: BEH-001–BEH-007; REQ-001–REQ-011
-- Product decisions or uncertainties to resolve: DEC-001 is a semantic policy choice best resolved directly with the user.
-- Critical journey and states: Ordinary message; fresh task activation; exact-run clarification; result/review; activation failure.
+- Product decisions or uncertainties to resolve: DEC-001—preserve genuine exact-run clarification after delegation while forbidding duplicate work dispatch (recommended Option A), or prohibit all delegator-to-assignee ordinary follow-up (Option B). The visualizer must also prove that a logical-address message after delegation targets the mounted/configured ingress, not the fresh task execution.
+- Critical journey and states: Initial mounted AgentTeam topology; ordinary message to configured Agent/AgentTeam ingress; fresh Agent task activation; fresh AgentTeam task activation; incorrect duplicate logical-address work message; genuine exact-run clarification; formal result submission/review; delegation activation failure.
 - Known constraints and non-goals: No runtime lifecycle/schema/router/UI change; no combined tool or heuristic enforcement.
-- Alternative evidence path / next action when no prototype is used: User reviews requirements plus `orchestration-decision-table.md`; downstream architecture investigates the minimum consistent prompt/tool/docs/test change.
-- Prototype request artifact / message reference: N/A — not applicable
+- Alternative evidence path / next action when no prototype is used: N/A — user explicitly selected visualization.
+- Prototype request artifact / message reference: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md`; dynamic handoff message pending/recorded after delivery confirmation
 - Established separate prototype repository/root and ticket reference, when applicable: N/A — not applicable
 
 ## Prototype Findings
@@ -142,6 +144,7 @@
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md` | Requirements Engineering | Make the message/delegation/result/review choice concrete with examples | Contract semantics only | REQ-001–REQ-007, REQ-010; AC-001–AC-008 | Proposed | Behavior-defining; awaiting user approval |
+| `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md` | Requirements Engineering | Define the focused exploratory question, scenarios, and review objective for Product Prototyper | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Ready for handoff | Request brief; user approval applies to decisions later clarified, not to this brief as a final UI/UX spec |
 
 ## Assumptions, Unknowns, And Risks
 
