@@ -10,6 +10,7 @@
 | SR-004 | `/code_reviewer` / `code-review-report.md` / CRR-001 | CR-001 | Design Impact Rework | Mixed Team authority selection clean cut completed; ready for architecture re-review |
 | SR-005 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 | AR-004 | Design Impact Rework | Complete root-owned Mixed Team construction preserved; ready for architecture re-review |
 | SR-006 | `/code_reviewer` / `code-review-report.md` / CRR-003 | CR-002, CR-003, CR-004 | Design Impact Rework | Complete task identity, provider-input, and Agent-manager execution-family closure; ready for re-review |
+| SR-007 | `/delivery_engineer` / `latest-base-integration-conflict-report.md` / DR-001 | latest-Personal 14-path semantic junction | Design Impact Rework | Current stopped-run configuration and ownership integrated into explicit roots; ready for architecture re-review |
 
 ## Revision Entries
 
@@ -111,3 +112,26 @@
 - Downstream impact: implementation and API/E2E remain paused until architecture review passes SR-006. After implementation/source review, the exact eight failed files run first without initializing unrelated globals, followed by the complete provider/Team/context/dual-host matrix.
 - Next recipient: `/architecture_reviewer` with the cumulative SR-006 solution package plus CRR-003/API-REV-001 trigger artifacts.
 - Remaining gaps or risks: implementation must preserve original AgentRun admission/observer state while normalizing only the copied provider dispatch; use the stored-only Team reader identity in both task/context paths; and prove exact general/application non-identity plus all source-derived occurrence guards.
+
+### SR-007 — Latest Personal stopped-run configuration and ownership reconciliation
+
+- Trigger: `/delivery_engineer` / `latest-base-integration-conflict-report.md` / DR-001 latest-base refresh against `origin/personal` `b52fe5aebdb962ce361529f9e797affeb30d719a`.
+- Triggering finding IDs: delivery `Design Impact`; seven content conflicts across fourteen changed-both paths, including two modify/delete junctions. No merge was started and the protected checkpoint remains `ce9f2b6da2463ac789386acd5ec417188528c8c7`.
+- Prior authoritative result: the checkpoint had passed ARCH-REV-006, IR-003, CRR-004 (94.7), API-REV-002 (96%), and CRR-005; those results remain historical evidence but are not an integrated-current-base delivery candidate.
+- Current solution result: `Design Impact Rework Complete — Ready for Architecture Re-review`.
+- Why recorded: latest Personal adds user-reachable stopped Agent/Team model configuration, sequential Save/restore lanes, current model validation, and an application-binding ownership guard on the exact general/application construction surfaces this ticket restructures. Mechanical side selection would either lose current behavior or restore the deleted broad application run-services authority.
+- Resolution:
+  - preserved Personal's Agent per-run lifecycle lane, Team per-root lane, validate-all-before-write, canonical reread/results, UI/GraphQL behavior, and fail-closed application ownership guard;
+  - retained the approved Host/Authority/provider/context/task/Mixed Team/private-kernel architecture and kept `create-application-run-services.ts` plus its obsolete test deleted;
+  - made each maintained host select one model catalog and construct one narrow validator identity shared into its general and application roots, without adding the validator to the provider builder;
+  - required the validator at `StandaloneAgentRunLifecycleService` and `AgentTeamRunManager`, required the root-created lifecycle at `AgentRunService`, and made `getAgentRunService()` lookup-only so no leaf can recreate validation/lifecycle authority;
+  - kept `ApplicationRunOwnershipService` in outer orchestration, exposed only its read projection through `ApplicationPlatformRuntime.hostManagement`, and kept `ApplicationExecutionScope` at exactly seven capabilities with no stopped-run mutation;
+  - dispositioned all fourteen overlaps, the current Personal durable feature suite, nine direct AgentRunService test-construction files, updated K0–K8 counts, omission cases, and realistic Studio/standalone proof.
+- Reachability disposition: latest-base integration, Studio stopped Agent/Team edits, and application-owned guard are `Reachable`; a direct application-scope stopped-run configuration command is `Not Reachable` and rejected. Validator instance identity is an explicit construction contract, not a new mutable-state premise.
+- Approved behavior or requirement IDs affected: BEH-001–BEH-007; REQ-001–REQ-009; AC-001–AC-016. REQ-009/AC-013–AC-016 refine the current-base preservation and exact construction proof without changing user-visible behavior.
+- Persisted-data disposition: `Directly Usable — No Migration / Not Affected`; current Agent metadata, Team V2 trees, bindings/lookups, package state, and UI projections use Personal's current readers/writers unchanged.
+- Canonical artifacts updated: `requirements.md`, `investigation-notes.md`, `design-spec.md`, `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, `latest-personal-run-configuration-integration-analysis.md`, and this revision record.
+- Requirements disposition: requirements are refined for the current-base behavior and explicit lifecycle/validator boundary. No public contract, execution multiplicity, manager/session unification, generic state machine, compatibility path, migration, or logical-addressing work is added.
+- Downstream impact: merge/implementation remains paused until architecture Pass. After Pass, implementation must perform one semantic merge and route through source review, API/E2E, proportional durable-test review, then delivery's fresh base audit and Electron build.
+- Next recipient: `/architecture_reviewer` with the cumulative SR-007 solution package plus DR-001 blocker/evidence and all prior review artifacts.
+- Remaining gaps or risks: source review must audit all fourteen overlaps, exact validator/lifecycle identity, lookup-only service access, ownership zero-write behavior, deleted-path absence, and the complete previously passed provider/Authority/task/context/cleanup matrix. A newly discovered governed construction occurrence is Design Impact rather than permission to add a default.

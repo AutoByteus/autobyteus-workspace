@@ -1,6 +1,171 @@
 # Provider Composition Transition Inventory
 
-Status: Normative cumulative implementation and proof supplement. SR-006 starts from current HEAD `3806ca36e46495ba28d5957a330a502eb22bd973`, where the accepted SR-005 Host/Authority/provider/kernel/Mixed Team transition is already implemented. “Retain” rows are current accepted source, not new SR-006 edits; “Add” and “Modify” rows are the exact remaining transition for CRR-003 CR-002–CR-004.
+Status: Normative cumulative implementation and proof supplement. SR-007 starts from protected checkpoint `ce9f2b6da2463ac789386acd5ec417188528c8c7` and semantically integrates latest Personal `b52fe5aebdb962ce361529f9e797affeb30d719a`. The SR-007 section below overrides any later historical SR-006 row that calls a now-overlapping path “no planned edit.” All earlier provider/Authority/kernel/task/context/Mixed Team obligations remain cumulative.
+
+## SR-007 — Latest Personal Semantic Integration Override
+
+### Exact authority and construction delta
+
+| Contract / Owner | Exact Current Target | Forbidden Escape |
+| --- | --- | --- |
+| host model validation | each maintained host selects one process `ModelCatalogService`, constructs one `ModelConfigValidationService(catalog)`, and passes the same narrow `RunModelConfigValidator` identity to general supervisor and application platform | leaf catalog getter, second validator policy, provider-builder field |
+| `GeneralProcessRunSupervisorInput` | eight top-level / nine leaf required values, adding `modelConfigValidator` to the accepted context/provider/Authority input | AppConfig/model catalog, optional/default validator |
+| `ApplicationPlatformBuildInput` | required `modelConfigValidator`, forwarded unchanged into the scope build input | validation or run mutation at platform builder |
+| `ApplicationExecutionScopeBuildInput` | eleven top-level / twelve leaf required values; K0 validates the validator operation | new outward capability, generic dependencies bag |
+| `StandaloneAgentRunLifecycleService` | required `modelConfigValidator`; remains sole Agent activation/restore/stopped-config transition-lane owner | `new ModelConfigValidationService()`, catalog getter, optional validator |
+| `AgentRunService` | required root-created `lifecycleService`; process accessor is bound lookup-only and fails before supervisor construction | lazy service/lifecycle/manager/validator construction |
+| `AgentTeamRunManagerOptions` | required `memoryDir`, Mixed factory, task identity, and `modelConfigValidator`; stores remain owner-created defaults | AppConfig, Mixed factory, task identity, or validator fallback |
+| outer application runtime | orchestration creates one read-only `ApplicationRunOwnershipService`; runtime exposes only `hostManagement.runOwnership` | raw binding/lookup stores, manager, or stopped-config scope command |
+| Studio run configuration | `StudioRunModelConfigService` checks platform ownership then uses general Agent resume/Team history and update facades | application scope/store/manager access or cross-family fallback |
+
+### Exact 14 changed-both path disposition
+
+| Path | Current Disposition |
+| --- | --- |
+| `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts` | **Modify:** preserve ticket provider/Authority/context/task/cleanup assembly; adopt Personal Agent lifecycle, resume/history facades, and exact validator propagation |
+| `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | **Modify:** preserve required execution-family inputs/lookup-only singleton; adopt Personal root-lane model-config algorithm with required validator |
+| `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts` | **Modify:** preserve one scope/kernel; pass validator; expose outer read-only run ownership |
+| `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts` | **Remove remains authoritative:** do not restore; transplant current lifecycle behavior into the scope kernel |
+| `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | **Modify:** union latest ownership rules with scope/provider rules and deleted-file expectations |
+| `autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` | **Modify:** combine exact task/factory inputs with stopped-update and transition-lane cases using explicit validator |
+| `autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts` | **Remove remains authoritative:** do not restore; scope/kernel tests own allocator/definition/non-global/shutdown/validator identity proof |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | **Audit auto-merge:** retain normalized ticket input and Personal model/session behavior; no resolver or broad MCP authority |
+| `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts` | **Audit auto-merge:** retain explicit manager/allocator construction and Personal stopped-config delegation |
+| `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts` | **Audit auto-merge:** keep sibling capability assembly; create/return read-only ownership from existing gate/stores |
+| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | **Audit auto-merge + modify:** preserve Host/builder/two Authorities/close order; construct validator and guarded Studio config service |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts` | **Audit auto-merge:** preserve normalized input/issuer plus current model-session assertions |
+| `autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts` | **Audit auto-merge:** retain binding provenance/ownership and capability-only host construction |
+| `autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts` | **Audit auto-merge + modify:** preserve non-identical execution families and prove validator/ownership projection without manager escape |
+
+### Add / retain from latest Personal
+
+These source owners and their current algorithms enter through the semantic
+merge. They are not reimplemented in parallel:
+
+```text
+autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+autobyteus-server-ts/src/agent-team-execution/services/team-run-model-config-mutator.ts
+autobyteus-server-ts/src/llm-management/services/model-config-validation-service.ts
+autobyteus-server-ts/src/run-history/domain/run-model-config.ts
+autobyteus-server-ts/src/run-history/services/agent-run-model-config-commit.ts
+autobyteus-server-ts/src/run-history/services/agent-run-resume-config-service.ts
+autobyteus-server-ts/src/run-history/services/team-run-history-service.ts
+autobyteus-server-ts/src/run-history/services/studio-run-model-config-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts
+autobyteus-server-ts/src/api/graphql/types/run-model-config.ts
+```
+
+The Personal rename from
+`standalone-agent-run-activation-service.ts` to
+`standalone-agent-run-lifecycle-service.ts` is retained; the old file/test and
+the discarded revision-based `run-model-config-revision.ts` representation stay
+absent. The current sequential lane is the only transition authority.
+
+### Modify — additional production paths
+
+| Path | Exact Change |
+| --- | --- |
+| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | construct the same explicit validator policy as Studio and pass it to general/application roots |
+| `autobyteus-server-ts/src/llm-management/services/model-config-validation-service.ts` | require catalog constructor capability; remove `getModelCatalogService()` import/default |
+| `autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts` | require validator; preserve Personal per-run lane/results/commit-reread |
+| `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts` | require exact lifecycle; retain stopped-update delegation; make `getAgentRunService()` lookup-only |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts` | add required validator; keep exactly seven outward capabilities |
+| `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts` | K0 validator check; K5 exact lifecycle; K6 same validator at Team manager; preserve K0–K8 unwind/transfer |
+| `autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts` | add read-only `hostManagement.runOwnership`; no store/manager or mutation capability |
+| `autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts` | consume configured guarded Studio service; no default direct general/application lookup |
+| `autobyteus-server-ts/src/api/graphql/types/{agent-run.ts,agent-team-run.ts,run-history.ts,team-run-history.ts}` | retain Personal query/mutation/result mapping through configured Studio service |
+
+### Durable coverage — exact SR-007 add/retain set
+
+```text
+autobyteus-server-ts/tests/unit/llm-management/model-config-validation-service.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-config-mutator.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts
+autobyteus-server-ts/tests/unit/run-history/services/studio-run-model-config-service.test.ts
+autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts
+autobyteus-server-ts/tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts
+autobyteus-server-ts/tests/unit/api/graphql/studio-application-api-services.test.ts
+autobyteus-server-ts/tests/unit/api/graphql/types/agent-run.test.ts
+autobyteus-server-ts/tests/unit/api/graphql/types/agent-team-run.test.ts
+autobyteus-server-ts/tests/unit/api/graphql/types/run-history.test.ts
+autobyteus-server-ts/tests/unit/api/graphql/types/team-run-history.test.ts
+autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+autobyteus-web/components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+autobyteus-web/services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+autobyteus-web/stores/__tests__/existingRunModelConfigStore.spec.ts
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+autobyteus-web/tests/e2e/existing-run-model-config-probe.mjs
+```
+
+### Durable coverage — exact SR-007 modify set
+
+| Path / Set | Required Update / Preserved Proof |
+| --- | --- |
+| `autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts` | standalone constructs one validator and shares it into general/application roots; close/unwind unchanged |
+| `autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts` | source-derive both maintained host constructions and exact validator/context propagation; forbid root/leaf defaults |
+| `autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts` | eight/nine input shape; exact validator reaches lifecycle and Team manager; process service lookup fails before bind |
+| `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts` | eleven/twelve input shape; K0 omission/null/undefined; K5/K6 identity and unwind |
+| `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts` | required validator; outward seven-capability surface unchanged |
+| `autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts` | same host validator reaches non-identical execution families; read-only ownership only |
+| `autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` | current stopped-config and race cases plus exact factory/task/validator construction |
+| every direct `AgentRunService` constructor file listed below | supply exact lifecycle fixture; preserve the file's existing create/restore/termination/history subject |
+| `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | union current application-ownership dependency rules with deleted old-factory/test and seven-capability proof |
+
+Direct `AgentRunService` constructor closure is exactly:
+
+```text
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts
+autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-create-service.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-restore-service.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-termination-service.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+```
+
+### Current-tree occurrence and omission closure
+
+The architecture guards derive current source sets and fail on drift:
+
+1. exactly two maintained host constructions of
+   `ModelConfigValidationService`, each with the selected catalog;
+2. zero no-argument validator constructions and zero model-catalog getter
+   imports in validator, Agent lifecycle, Team manager, general supervisor, or
+   application kernel;
+3. exactly two production `StandaloneAgentRunLifecycleService` constructions,
+   in general supervisor and application kernel, each using the root validator;
+4. every production `AgentRunService` construction passes that lifecycle;
+   `getAgentRunService()` has no `new` branch and fails before bind;
+5. exactly two production Team-manager construction/initialization sites; each
+   spells `memoryDir`, Mixed factory, task identity, and validator;
+6. general/application validator references match their host-selected identity,
+   while managers, task identities, Authorities, and lanes remain non-identical;
+7. scope capabilities still equal the accepted seven-member set and contain no
+   run-config command;
+8. omission, `null`, and explicit `undefined` fail for validator at host/root,
+   scope K0, Agent lifecycle, and Team manager; lifecycle omission fails at
+   `AgentRunService`;
+9. deleted `create-application-run-services.ts` and
+   `application-run-services.test.ts` remain absent; unresolved governed imports
+   fail closed.
+
+### SR-007 focused and realistic verification
+
+| Proof | Required Result |
+| --- | --- |
+| merge | latest Personal ancestor, zero unmerged paths, exact 14 overlap audit, no resurrected deleted files |
+| Agent configuration | inactive update, active/archive reject, validation outcomes, Save/restore ordering, commit reread and indeterminate result |
+| Team configuration | configured Agent/Team address resolution, validate-all-before-write, root lane ordering, active/archive/admission rejection, external-channel race |
+| ownership | startup wait, lookup/binding provenance, status matrix, mismatch/missing fail closed, zero general write while live/unreadable |
+| boundary | seven scope capabilities, read-only platform ownership, no raw manager/store/catalog, lookup-only general Agent service |
+| regression | prior provider/Authority/context/task/cleanup suite plus Personal GraphQL/web model-setting suite and realistic Studio/standalone runs |
+| delivery | fresh current-base audit, Electron build, user verification after all upstream gates pass |
 
 ## Retain — Accepted Production Additions At Current HEAD
 
@@ -152,7 +317,6 @@ Every path below is an exact edit target; there are no wildcard “relevant test
 These accepted tests remain mandatory evidence but need no representation-only edit. If implementation compilation proves a source change necessary, it is Design Impact against this exact inventory rather than permission for opportunistic churn.
 
 ```text
-autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
 autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts
 autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
 autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
@@ -250,7 +414,7 @@ autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.
 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
 ```
 
-Each Agent manager literal contains all seven exact fields; its recorder is the same identity passed into the resource manager behind its activation registry, each Team manager literal contains `memoryDir`, `mixedTeamRunBackendFactory`, and `taskExecutionIdentity`, and both roots construct the normalizer/task identity from their own explicit inputs. `agent-run-manager.ts` may contain its static initializer forwarding the already-complete options but no `new` with defaults.
+Each Agent manager literal contains all seven exact fields; its recorder is the same identity passed into the resource manager behind its activation registry, each Team manager literal contains `memoryDir`, `mixedTeamRunBackendFactory`, `taskExecutionIdentity`, and `modelConfigValidator`, and both roots construct the normalizer/task identity from their own explicit inputs. Both roots construct an Agent lifecycle with that validator and pass the lifecycle to `AgentRunService`. `agent-run-manager.ts` may contain its static initializer forwarding the already-complete options but no `new` with defaults.
 
 Within each root, one `AgentRunIdentityAllocator` identity must be passed to `AgentRunProvisioningService`, `AgentRunService`, `TeamRunService`, and `createTaskExecutionIdentityCapabilities`; no sibling constructs or retrieves another allocator. The capability's `.agentRuns` is that identity, and its derived `.taskTeams` is the pair carried to the Team manager.
 
@@ -283,7 +447,7 @@ The exact eleven-file set is the code block under “Direct AgentRun constructor
 
 Production occurrences of `ContextFileLocalPathResolver` are limited to its own class and the new Agent-run normalizer. Production `ContextFileOwnerResolver` construction is limited to the normalizer assembly and process context REST registration; both pass a named stored-only locations capability with explicit non-empty `memoryDir`. AutoByteus processor, Codex mapper, Claude manager/state/session, provider builders/factories, `AgentRun`, and Team/task files have zero resolver/owner/AppConfig/Team-location imports. The normalizer has zero provider import. `ContextFileLayout`, `ContextFileLocalPathResolver`, `ContextFileOwnerResolver`, `ContextFileReadService`, and `ContextFileFinalizationService` contain no default AppConfig/Team-owner constructor path. The REST route is the only governed context-service AppConfig edge and shares one resolver identity across read/finalization.
 
-`general-process-run-supervisor.ts` has zero AppConfig import/type/property access and requires the exact seven-top-level/eight-leaf input. Only the two maintained host composition roots project AppConfig into its explicit `memoryDir` and frozen context-path environment; their values equal those passed into application-platform construction.
+`general-process-run-supervisor.ts` has zero AppConfig/model-catalog import/type/property access and requires the exact eight-top-level/nine-leaf input. Only the two maintained host composition roots project AppConfig into its explicit `memoryDir` and frozen context-path environment, select the model catalog, and construct the validator; those context and validator identities equal the ones passed into application-platform construction.
 
 Production `createContextFilePathEnvironment` calls occur exactly in `build-studio-server.ts` and `start-standalone-application-host.ts`. Each host passes one object identity to both its supervisor and application-platform build. The process REST edge instead projects only the `appDataDir` and `memoryDir` leaves it consumes; it must not construct or depend on the execution-only `baseUrl` value. The value factory has zero AppConfig/service import and no extra fields.
 
@@ -305,11 +469,12 @@ Every factory has required releaser + callback; both production callbacks consum
 
 Table-driven fixtures independently reject omission, null and explicit `undefined` for:
 
-- ten application scope top-level fields plus both leaves of `contextFilePathEnvironment`;
-- seven general supervisor top-level fields plus both leaves of `contextFilePathEnvironment`;
+- eleven application scope top-level fields plus both leaves of `contextFilePathEnvironment`, including the validator;
+- eight general supervisor top-level fields plus both leaves of `contextFilePathEnvironment`, including the validator;
 - seven Agent manager fields;
 - `AgentRun.providerInputNormalizer`;
 - Team manager memoryDir, backend factory, and task identity;
+- Agent lifecycle validator, Agent service lifecycle, and Team manager validator;
 - RootTeamRun/task-service task identity;
 - task capability allocator;
 - ContextFile layout roots and local resolver layout/owner/base URL;

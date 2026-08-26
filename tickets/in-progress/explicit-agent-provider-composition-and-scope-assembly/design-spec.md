@@ -2,7 +2,7 @@
 
 ## Current-State Read
 
-The finalized outer architecture is healthy: Studio and standalone have explicit composition roots; `GeneralProcessRunSupervisor` and `ApplicationExecutionScope` own separate mutable execution families; the scope exposes seven narrow capabilities. ARCH-REV-005 and IR-002 close the Mixed Team manager/member construction family. CRR-003 then traced API-REV-001's deterministic failures one level deeper: each `RootTeamRun` still constructs task identity through the process allocator, all three provider families can construct a context-path resolver backed by the process Team manager, and governed direct `AgentRunManager` fixtures still select an optional resource/activation sidecar chain. The first two are supported production boundary violations masked by host startup order; the third is transition incompleteness, not a product defect.
+The finalized outer architecture remains healthy: Studio and standalone have explicit composition roots; `GeneralProcessRunSupervisor` and `ApplicationExecutionScope` own separate mutable execution families; the scope exposes seven narrow capabilities. ARCH-REV-005 and IR-002 close the Mixed Team manager/member construction family. CRR-003 then traced API-REV-001's deterministic failures one level deeper: each `RootTeamRun` still constructs task identity through the process allocator, all three provider families can construct a context-path resolver backed by the process Team manager, and governed direct `AgentRunManager` fixtures still select an optional resource/activation sidecar chain. The first two are supported production boundary violations masked by host startup order; the third is transition incompleteness, not a product defect. The reviewed implementation closed those paths and passed ARCH-REV-006, CRR-004, API-REV-002, and CRR-005. Delivery then found latest Personal `b52fe5aebdb962ce361529f9e797affeb30d719a` changes the same assembly surfaces to add stopped-run configuration and application ownership. Those current behaviors are sound, but their old application run-services factory conflicts with the approved scope/kernel and their validator can still be selected by lower-level defaults.
 
 ## Intended Change
 
@@ -11,6 +11,7 @@ Keep the passed outer scope and sound Host/Authority/provider/kernel/Mixed Team 
 1. Build one `AgentRunIdentityAllocator` from the exact family Agent manager plus the existing stored-only V2 Team-tree reader, derive one `TaskTeamRunIdentityFactory` from that same allocator, freeze them as `TaskExecutionIdentityCapabilities`, and require the pair through `AgentTeamRunManager -> RootTeamRun -> TaskDelegationService`.
 2. Build one `AgentRunProviderInputNormalizer` from the execution root's explicit path roots and stored-only Team-tree reader. Host composition passes `memoryDir` plus the narrow context-path environment to both execution roots; neither receives broad AppConfig for this selection. Require the normalizer at `AgentRunManager`, pass it into each `AgentRun`, and normalize a copied provider dispatch immediately before backend invocation. Remove context-owner resolution from AutoByteus, Codex, and Claude provider code. At the sibling process REST composition edge, build one explicit stored-tree owner resolver and share it across context-file finalization/read so transport does not select either mutable Team manager.
 3. Make `AgentRunManager` a complete lifecycle consumer rather than an infrastructure assembler: require all three backend factories, activation registry, memory recorder, provider-input normalizer, and run-session releaser. General and application roots construct their exact resource/activation graphs explicitly; direct tests use an isolated explicit fixture.
+4. Reconcile latest Personal without restoring the deleted factory. Host composition creates one narrow model-config validator over the selected process model catalog and passes it to the general supervisor and application platform. The supervisor and application kernel pass it to their exact Agent lifecycle and Team manager. The lifecycle and Team manager require that validator, `AgentRunService` requires the root-created lifecycle, and the process Agent service accessor is lookup-only rather than a lazy construction path. Outer orchestration owns the read-only application binding lease; `ApplicationPlatformRuntime.hostManagement` exposes it to Studio, while `ApplicationExecutionScope` remains exactly seven-capability and exposes no stopped-run mutation.
 
 No manager is unified, no execution-family router or late binding is added, and RootTeamRun remains the sole task lifecycle/state/persistence/event owner.
 
@@ -24,13 +25,15 @@ No manager is unified, no execution-family router or late binding is added, and 
 | BEH-004 | Operational | REQ-006; AC-008–009 | provider prep failure | manager/bootstrap trace | immediate per-run revocation | DS-005 |
 | BEH-005 | System | REQ-007; AC-005, AC-010–011 | scope/general build/close | manager/root sources | complete resource/activation graph + kernel reverse unwind | DS-002, DS-007, DS-008 |
 | BEH-006 | Contract | REQ-008; AC-012 | all existing consumers | passed upstream package | behavior/data unchanged | all |
+| BEH-007 | User/System | REQ-009; AC-013–AC-016 | Studio stopped Agent/Team settings and application-owned guard | latest Personal lifecycle/manager/ownership/Studio paths | preserve exact sequential saves, canonical results and fail-closed ownership while using explicit roots | DS-012–DS-016 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact | Purpose | Related IDs | Relationship | Status |
 | --- | --- | --- | --- | --- |
-| `provider-composition-and-agent-tools-authority-contract.md` | exact boundary/types/lifecycle | REQ-001–007 | normative structural contract | Approved |
+| `provider-composition-and-agent-tools-authority-contract.md` | exact boundary/types/lifecycle | REQ-001–009 | normative structural contract | Current SR-007 |
 | `provider-composition-transition-inventory.md` | files/tests/guards | all | implementation completeness | Current |
+| `latest-personal-run-configuration-integration-analysis.md` | current-base authority, owners, conflicts, spines, proof | REQ-008–009; AC-012–016 | normative semantic merge constraint | Current |
 | upstream future review + CRR-006 evidence | triggering audit | all | source evidence | Read-only |
 
 ## Task Design Health Assessment (Mandatory)
@@ -39,8 +42,8 @@ No manager is unified, no execution-family router or late binding is added, and 
 - Current design issue found: `Yes`
 - Root cause: boundary/ownership issue, duplicated policy/coordination, file responsibility drift.
 - Refactor needed now: `Yes`
-- Evidence: IR-002 closes Mixed Team member construction, while CRR-003 proves that RootTeamRun task identity and provider context mapping still reacquire process managers and that the exact direct-manager transition is incomplete.
-- Design response: preserve Host/Authority/Issuer, fixed builder, narrow failure releaser, private kernel, and required Mixed Team callback; extend one complete execution family through RootTeamRun task identity, AgentRun provider-input normalization, and explicit AgentRunManager infrastructure.
+- Evidence: the reviewed ticket closes the prior execution-family gaps. DR-001 proves latest Personal adds reachable stopped-run and ownership behavior on the same roots, including two modify/delete conflicts; mechanical selection would either lose current behavior or restore a boundary that was deliberately removed.
+- Design response: preserve Host/Authority/Issuer, fixed builder, narrow failure releaser, private kernel, required Mixed Team callback, task/context/manager closure, and add only an explicit validator leaf plus outer read-only application ownership projection. Transplant current Personal lifecycle behavior into existing owners; do not add a scope capability.
 - Refactor rationale: each added boundary owns concrete policy/state/lifecycle; none is pass-through-only.
 - Deferral: logical application-agent addressing is separately approved. Unrelated provider-local defaults remain outside supported roots, but Agent Tools releaser selection is not a provider-local default and receives no exception in Mixed Team execution.
 
@@ -56,6 +59,8 @@ No manager is unified, no execution-family router or late binding is added, and 
 - **Task execution identity capabilities:** one immutable pair containing the exact family Agent-run allocator and the task-Team identity factory derived from that allocator; it owns no lifecycle or lookup.
 - **Provider-input normalizer:** one execution-family-bound, provider-neutral transformation that copies an admitted message and replaces only resolvable finalized/draft context-file locators with existing local paths immediately before backend dispatch.
 - **Context-file path environment:** one frozen `{appDataDir, baseUrl}` value created at a composition edge; it owns validation of the two shared context-path leaves and is not a configuration service.
+- **Run-model-config validator:** the narrow stateless `validate` capability of `ModelConfigValidationService`, selected once from the process model catalog by host composition.
+- **Application ownership lease:** startup-gated, read-only binding/lookup proof that a durable run remains governed by an application binding; it is not an execution-manager lookup.
 
 ## Design Reading Order
 
@@ -89,7 +94,7 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 | DS-004 | Primary End-to-End | 002,003,006 | general Agent/Team command | provider thread/session | supervisor / AgentRunManager | exact general issuer, resources, normalizer |
 | DS-005 | Return-Event | 004 | post-issue prep failure | revoked session + claim outcome | AgentRunManager | closes resource gap |
 | DS-006 | Bounded Local | 003 | issue input | provider-specific MCP config | Authority + adapter | translation boundary |
-| DS-007 | Bounded Local | 005 | validate the exact ten-field scope build input | complete kernel transfer or reverse authority unwind | kernel builder | revised exact K0–K8 assembly invariant |
+| DS-007 | Bounded Local | 005,007 | validate the exact eleven-field scope build input | complete kernel transfer or reverse authority unwind | kernel builder | revised exact K0–K8 assembly invariant |
 | DS-008 | Return-Event | 001,005,006 | host close | process MCP Host close | host composition | safe lifetime order |
 | DS-009 | Primary End-to-End | 002,006 | application/general `delegate_task` | prepared Agent or task Team identity inside the same root | RootTeamRun / TaskDelegationService | no process allocator fallback |
 | DS-010 | Bounded Local | 003,006 | admitted Agent input with context locators | provider-formatted input | AgentRun | one copied, exact-family normalization before provider |
@@ -104,6 +109,11 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 - DS-009: `root-local task command -> TaskDelegationService -> required TaskExecutionIdentityCapabilities -> exact family Agent allocator or derived task-Team factory -> durable mutation -> live RootTeamRun commit`.
 - DS-010: `AgentRun admitted dispatch -> copy message/context files -> exact ContextFileLocalPathResolver over stored V2 Team trees -> replace only resolved local URIs -> AutoByteus/Codex/Claude formatter`.
 - DS-011: `Team send -> launch/restore durably establishes V2 tree -> /context-files/finalize -> explicit REST layout/stored owner resolver -> durable file + locator -> DS-010 provider dispatch`.
+- DS-012: `ExistingRunConfigEditor -> GraphQL -> StudioRunModelConfigService -> runtime runOwnership -> general AgentRunService -> StandaloneAgentRunLifecycleService lane -> validator -> metadata commit/reread -> canonical result`.
+- DS-013: `ExistingRunConfigEditor -> GraphQL -> StudioRunModelConfigService -> runOwnership -> general TeamRunService -> AgentTeamRunManager root lane -> TeamRunModelConfigMutator -> validator fan-out -> V2 commit/reread -> canonical result`.
+- DS-014: `application binding launch/recovery -> lookup + binding stores -> startup gate -> ApplicationRunOwnershipService -> runtime host-management projection -> Studio guard -> active lock or general delegation`.
+- DS-015: `host model catalog -> one ModelConfigValidationService -> general supervisor + application platform -> application scope -> exact Agent lifecycle/Team manager`.
+- DS-016: `ownership mismatch/unreadable -> zero general write`, and `persistence uncertainty -> canonical reread -> explicit non-success result`.
 
 ## Spine Narratives (Mandatory)
 
@@ -119,10 +129,13 @@ Behavior -> spines -> Host/Authority and provider boundaries -> kernel/lifecycle
 | DS-009 | Each RootTeamRun owns task sequencing and consumes the immutable identity pair selected by its execution root; Agent and nested task-Team allocation never searches for a manager. | RootTeamRun, task service, identity pair | RootTeamRun | durable V2 tree collision reader |
 | DS-010 | AgentRun retains the original admitted/observed message, creates one provider copy at actual dispatch, resolves supported context locators against the durable current Team tree, and gives providers only the copy. | AgentRun, normalizer, provider adapter | AgentRun | context layout/tree read model |
 | DS-011 | The UI launches/restores the Team before finalizing the attachment; the process route uses only explicit roots and the durable V2 owner projection, returns the unchanged locator contract, and later input normalization resolves the same stored owner. | Team send, launch/restore, context REST, stored tree, AgentRun | context REST registration + AgentRun | draft cleanup and safe file move |
+| DS-012/013 | Studio first checks the outer application lease, then delegates only released general runs to the concrete Agent run lane or Team root lane; each owner validates and persists atomically. | UI, GraphQL, Studio facade, ownership reader, general facades, lifecycle/manager, stores | Studio facade + lifecycle owner | model catalog and UI mapping |
+| DS-014 | The platform's existing orchestration stores provide one read-only ownership result after startup recovery; no manager or store escapes. | binding/lookup stores, startup gate, ownership service, runtime | ApplicationRunOwnershipService | terminal transition updates |
+| DS-015/016 | Hosts select validation explicitly; uncertainty returns outward without speculative mutation or a second authority. | model catalog, validator, roots, result mapper | host/lifecycle owner | validation schema and messages |
 
 ## Spine Actors / Main-Line Nodes
 
-Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProcessRunSupervisor, ApplicationPlatformRuntime, ApplicationExecutionScope, process context REST composition, AgentRunManager, provider backend/client, scoped Authority.
+Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProcessRunSupervisor, ApplicationPlatformRuntime, ApplicationExecutionScope, StudioRunModelConfigService, ApplicationRunOwnershipService, StandaloneAgentRunLifecycleService, AgentTeamRunManager, process context REST composition, provider backend/client, scoped Authority.
 
 ## Ownership Map
 
@@ -139,6 +152,9 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 - Each execution owner selects one `AgentToolMcpRunSessionReleaser`, binds one complete manager-construction callback over its Agent/memory/activity/context/workspace identities, constructs one `MixedTeamRunBackendFactory`, and injects it into its Team manager; neither factory nor recursive manager may infer missing dependencies.
 - Kernel builder owns one construction attempt.
 - Scope owns capability admission and full application kernel lifecycle.
+- Host composition owns selection of the process model catalog and the one narrow run-model-config validator supplied to both execution roots.
+- `StandaloneAgentRunLifecycleService` owns Agent activation/restore plus the per-run stopped-config lane; `AgentTeamRunManager` owns the distinct per-root Team lane.
+- Outer application orchestration owns binding/lookup state and its read-only ownership lease. `ApplicationPlatformRuntime` exposes only that lease; Studio owns the guard/delegation use case.
 
 ## Thin Entry Facades / Public Wrappers
 
@@ -148,6 +164,8 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 | `routeDependencies` | AgentToolsMcpHost | transport registrar integration | execution/session policy |
 | `AgentToolMcpSessionIssuer` | scoped Authority | minimum provider privilege | revocation/close/routes |
 | context-file HTTP handlers | context REST composition | transport/status mapping | Team-manager selection or path authority defaults |
+| `hostManagement.runOwnership` | ApplicationRunOwnershipService | read-only Studio guard across the platform boundary | stores, managers, mutation |
+| Studio run-model-config service | general lifecycle owners + application ownership lease | guard and GraphQL use-case result | application scope internals or direct persistence |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -162,17 +180,23 @@ Composition roots, AgentToolsMcpHost, AgentProviderFactoryBuilder, GeneralProces
 | `AgentRunManager` optional factories/activation/sidecar/recorder construction | lifecycle owner also selects infrastructure and direct fixtures reach ambient process state | complete required manager input assembled by each execution root | In This Change | no test-driven production optionality |
 | Mixed Team ambient releaser fallback, cached zero-argument factory, default manager construction, and manager default factory | lower layer can select or lose the execution family | required root-selected releaser + required root-owned manager-construction capability -> required factory -> required manager input | In This Change | callback carries complete general/application identities; `getInstance` becomes lookup-only |
 | partial kernel/tuple/8 args/non-null capture | incomplete assembly contract | kernel builder/result | In This Change | private only |
+| latest Personal edits to deleted `create-application-run-services.ts` and its test | obsolete broad owner after scope transition | current lifecycle behavior in kernel/scope tests | Latest-Base Integration | file/test remain deleted |
+| default model validator/catalog selection below maintained roots | hidden process policy selection | host-selected `ModelConfigValidationService.validate` capability | Latest-Base Integration | one explicit identity passed to both roots |
 
 ## Return Or Event Spine(s)
 
 - DS-005: `provider error -> AgentRunManager cleanup -> run-session releaser -> Authority ledger/registry revoke -> claim failure/quarantine -> aggregate error`.
 - DS-008: lifecycle errors are accumulated at their owner and returned without skipping later required cleanup.
+- DS-016: ownership mismatch/unreadability returns an active lock or `INTERNAL_ERROR` and performs no general write; persistence uncertainty returns the current canonical reread without speculative restore/retry.
 
 ## Bounded Local / Internal Spines
 
 - Authority assembly: `begin -> expose releaser -> complete exactly once` or `abort`; no issuer exists while incomplete.
 - Authority: `assert open/readiness -> create registry session -> record ledger -> return issued resource`; insertion failure revokes before return.
 - Kernel builder: `K0 validate -> K1 begin authority -> K2 stored-tree/context/resource/publication prerequisites -> K3 complete authority -> K4 provider factories -> K5 complete Agent graph + identity pair -> K6 Team graph consuming that pair -> K7 freeze kernel -> K8 transfer`; failure reverses the exact construction ledger.
+- Agent stopped configuration: `run lane -> canonical read/active/archive gates -> validate -> commit/reread -> canonical result`; restore/command activation uses the same lane.
+- Team stopped configuration: `root lane -> current package/active/archive gates -> resolve all targets -> validate all -> one V2 write/reread -> canonical result`; external restore uses the same lane.
+- Application ownership: `startup gate -> lookup/provenance agreement -> binding membership/status -> live/released result`; no mutation or manager access.
 - Mixed Team construction: `execution owner -> exact authority.runSessions + exact execution-family dependency closure -> new MixedTeamRunBackendFactory(required releaser, required createTeamManager) -> AgentTeamRunManager(required factory) -> backend factory invokes root callback -> MixedTeamManager -> configured/task registries -> member handle`; recursive roots reuse the same callback, every arrow preserves one family, and no inner node performs lookup.
 - Root task identity: `execution root -> stored-only Team tree reader + exact Agent manager/metadata -> AgentRunIdentityAllocator -> TaskTeamRunIdentityFactory -> frozen TaskExecutionIdentityCapabilities -> AgentTeamRunManager -> RootTeamRun -> TaskDelegationService`; both fields are required, immutable, and carried by identity.
 - Provider input: `execution root -> explicit context path roots + stored-only Team tree reader -> ContextFileOwnerResolver -> ContextFileLocalPathResolver -> AgentRunProviderInputNormalizer -> AgentRun -> provider`; AutoByteus/Codex/Claude contain no context-owner construction.
@@ -228,17 +252,17 @@ This is a fixed composition policy, not a DI container: there are no lookup toke
 
 The existing publication/session construction cycle remains solved by one typed construction transaction. `AgentToolMcpSessionAuthorityFactory.begin({scopeIdentity})` returns only `runSessions`, `complete(...)`, and `abort()`, cannot issue sessions, follows `ASSEMBLING -> COMPLETED | ABORTED`, and never leaves the private kernel builder.
 
-`ApplicationExecutionScopeBuildInput` has exactly ten required top-level fields and eleven required leaves: `scopeIdentity`, `memoryDir`, `contextFilePathEnvironment` (`appDataDir`, `baseUrl`), canonical Agent/Team definition services, authority factory, provider builder, workspace manager, publication binding reader, and delivery sink. `contextFilePathEnvironment` is one cohesive immutable value because draft-path resolution needs application data and configured-origin identity while final-path resolution reuses the already-required `memoryDir`; it is not a general configuration bag.
+`ApplicationExecutionScopeBuildInput` has exactly eleven required top-level fields and twelve required leaves: `scopeIdentity`, `memoryDir`, `contextFilePathEnvironment` (`appDataDir`, `baseUrl`), canonical Agent/Team definition services, authority factory, provider builder, workspace manager, publication binding reader, delivery sink, and `modelConfigValidator`. `contextFilePathEnvironment` is one cohesive immutable value because draft-path resolution needs application data and configured-origin identity while final-path resolution reuses the already-required `memoryDir`; it is not a general configuration bag. The validator is a separate one-operation LLM-management capability, not a provider-builder leaf or a generic dependency bag.
 
 | Phase | Main Work | Owned Closeable / Transfer Rule |
 | --- | --- | --- |
-| K0 | validate every top-level field and both context-path leaves | none |
+| K0 | validate every top-level field, both context-path leaves, and the validator operation | none |
 | K1 | begin scoped authority assembly | ledger owns `assembly.abort` |
 | K2 | build one stored-only V2 Team-tree location reader; exact context-file layout, owner resolver, local-path resolver, and provider-input normalizer; memory, run-file, relay, resource, activation, stores, and publication prerequisites | plain non-started objects; no closer |
 | K3 | complete authority with publication capability and current no-op external readiness callback | atomically replace abort with full `authority.close` |
 | K4 | create fresh provider factory set from canonical Agent definitions + authority issuer | plain factories; no closer |
-| K5 | build the complete Agent graph: required-factory/activation/recorder/normalizer/releaser `AgentRunManager`, metadata/history, one explicit `AgentRunIdentityAllocator` over the same stored-only Team reader, one derived immutable `TaskExecutionIdentityCapabilities`, and Agent services | no run admitted; no closer |
-| K6 | build activity/context services and Team graph; require the K5 task-identity capability at `AgentTeamRunManager`; use the existing required Mixed Team callback for exact graph-local Agent/memory/activity/context/workspace/releaser identities | no Team admitted; no closer |
+| K5 | build the complete Agent graph: required-factory/activation/recorder/normalizer/releaser `AgentRunManager`, metadata/history, one explicit `AgentRunIdentityAllocator` over the same stored-only Team reader, one derived immutable `TaskExecutionIdentityCapabilities`, and one lifecycle service using the required validator; pass that lifecycle explicitly to Agent services | no run admitted; no closer |
+| K6 | build activity/context services and Team graph; require the K5 task-identity capability and the same validator at `AgentTeamRunManager`; use the existing required Mixed Team callback for exact graph-local Agent/memory/activity/context/workspace/releaser identities | no Team admitted; no closer |
 | K7 | build shutdown, stream and projection owners; freeze the complete kernel plus fixed `abortConstruction` | ledger still owns authority |
 | K8 | transfer complete kernel to scope | clear builder ledger; kernel/scope exclusively owns authority |
 
@@ -317,11 +341,20 @@ The manager removes imports/default construction for provider factories, `RunFil
 
 The general supervisor explicitly constructs `AgentRunMemoryRecorder -> AgentRunResourceManager -> AgentRunActivationRegistry` from its run-file service, general no-op artifact relay, exact authority releaser, and memory recorder. The exact same recorder identity is passed to the resource manager and AgentRunManager, so attachment/detachment and forwarded-command recording cannot split. The application kernel owns and proves the corresponding same-identity graph. Direct tests use an explicit narrow infrastructure fixture; production parameters never become optional to reduce test setup.
 
+`StandaloneAgentRunLifecycleService` requires the root-selected
+`RunModelConfigValidator`; `AgentRunService` requires the corresponding
+root-created lifecycle service and cannot create one from process defaults.
+`getAgentRunService()` remains the configured public/general accessor but is
+lookup-only: it fails before the supervisor binds the service and never creates
+a manager, lifecycle, validator, catalog, or workspace dependency. This is the
+same fail-closed construction rule already accepted for the process Team
+manager, not a new execution owner.
+
 ## Exact Mixed Team Releaser And Manager Boundary
 
 The accepted SR-005 boundary remains unchanged. `MixedTeamRunBackendFactoryOptions` has exactly two required inputs: the execution-family `agentToolMcpRunSessionReleaser` and typed `createTeamManager(MixedTeamManagerConstructionInput)`. The callback consumes the factory-owned releaser and binds the root's exact Agent manager, memory location, activity inspector, member-context builder, workspace, recursive factory, task-root resolver, and callbacks. There is no default manager, cached factory/getter, ambient releaser, or optional callback.
 
-`AgentTeamRunManagerOptions` now requires non-empty `memoryDir` and `taskExecutionIdentity` beside the already-required backend factory; the manager removes its AppConfig memory-root fallback. The manager passes the same pair into every fresh/restored `RootTeamRun`; configured child Teams and task Teams continue to reuse the Mixed Team callback. `initializeProcessInstance(options)` is the only process-manager creation entry; `getInstance()` remains no-argument lookup-only and fails before initialization.
+`AgentTeamRunManagerOptions` now requires non-empty `memoryDir`, `taskExecutionIdentity`, and `modelConfigValidator` beside the already-required backend factory; the manager removes its AppConfig memory-root and model-validator fallbacks. The manager passes the same pair into every fresh/restored `RootTeamRun`; configured child Teams and task Teams continue to reuse the Mixed Team callback. `initializeProcessInstance(options)` is the only process-manager creation entry; `getInstance()` remains no-argument lookup-only and fails before initialization.
 
 | Family | Task Identity | Mixed Team Closure | Forbidden |
 | --- | --- | --- | --- |
@@ -380,12 +413,12 @@ Forbidden:
 | provider builder | provider factory family | explicit construction | definition service + issuer | fixed policy |
 | `AgentRunProviderInputNormalizer.normalizeForProvider` | provider-bound command copy | resolve current logical context locators once | execution-family path environment + stored Team tree | no provider dependency |
 | process context-file REST composition | context-file transport/storage | build explicit layout and stored owner resolver once | AppConfig-selected roots at route registration | no mutable execution-manager dependency |
-| general supervisor constructor | general execution family | assemble/own/close one complete family | seven top-level / eight-leaf narrow input | no AppConfig or application owner |
+| general supervisor constructor | general execution family | assemble/own/close one complete family | eight top-level / nine-leaf narrow input | no AppConfig or application owner |
 | `AgentRunManager` constructor | Agent execution family | consume complete factories/resources/normalizer/releaser | exact root-owned identities | seven required fields |
 | `TaskExecutionIdentityCapabilities` | task allocation | Agent/task-Team identity allocation | exact execution family | immutable pair |
 | `AgentTeamRunManager` / `RootTeamRun` | Team root/task execution | bind exact memory root and carry pair to root-local task owner | memory root + same pair identity | live task ownership unchanged |
 | Mixed Team backend factory | recursive Team backend family | bind releaser + root manager construction | exact callback/releaser | no default |
-| kernel builder | application kernel | K0–K8 assemble/unwind/transfer | ten top-level / eleven-leaf build input | private complete output |
+| kernel builder | application kernel | K0–K8 assemble/unwind/transfer | eleven top-level / twelve-leaf build input | private complete output |
 
 ## Interface Boundary Check
 
@@ -401,6 +434,8 @@ Forbidden:
 | Agent manager input | Yes | Yes | Low | remove all optional/default leaves |
 | Mixed Team backend factory | Yes | Yes | Low | preserve SR-005 callback |
 | kernel builder | Yes | Yes | Low | private complete result |
+| application ownership lease | Yes | binding provenance + run ID | Low | expose read-only at platform boundary |
+| run-model-config validator | Yes per host | exact model-catalog identity | Low | inject into both roots; no default below |
 
 ## Main Domain Subject Naming Check
 
@@ -426,6 +461,8 @@ Forbidden:
 | Team task lifecycle | RootTeamRun/TaskDelegationService | Preserve/tighten | sole current task owner | N/A |
 | Mixed Team recursion | existing factory/manager callback | Preserve | SR-005 is correct | N/A |
 | outer application behavior | ApplicationExecutionScope | Preserve | passed owner | N/A |
+| stopped-run model validation | LLM management `ModelConfigValidationService` | Reuse/inject | current Personal owner is stateless and exact | no new validator abstraction/file |
+| application run ownership | application orchestration stores/startup gate | Reuse/extend | current Personal owner matches binding subject | expose read-only through runtime |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -435,7 +472,8 @@ Forbidden:
 | Agent execution | provider builder, complete manager graph, input normalizer | 003–005,010 | builder/execution root/manager/run | Extend | no provider context lookup |
 | Team execution | task identity, Root task lifecycle, Mixed recursion | 006,009 | execution root/RootTeamRun | Extend boundary only | one family identity |
 | Application platform execution | private kernel/scope lifecycle | 002,003,007–010 | builder/scope | Extend | outward API unchanged |
-| Composition | process wiring/order/path roots | 001,002,004,008–010 | host roots + context REST edge | Modify | no mode builder |
+| Composition | process wiring/order/path roots/validator | 001,002,004,008–010,015 | host roots + context REST edge | Modify | no mode builder |
+| Run configuration | stopped Agent/Team save and application guard | 012–016 | Studio facade + concrete lifecycle owners | Preserve/integrate | no generic state machine or scope mutation API |
 
 ## Draft File Responsibility Mapping
 
@@ -446,7 +484,9 @@ Forbidden:
 | `context-file-path-environment.ts` | context-files | execution composition | validate/freeze app-data root + configured origin | reused by the general/application roots within each maintained host | no AppConfig access; REST does not consume it |
 | `agent-run-manager.ts` | Agent execution | manager | consume complete graph; claim/run lifecycle | existing lifecycle owner | existing resources |
 | `application-execution-scope-kernel-builder.ts` | platform execution | kernel builder | exact K0–K8 app assembly | one attempt lifecycle | all graph-local owners |
-| `general-process-run-supervisor.ts` | general execution | supervisor | exact general assembly | one family lifecycle | process infrastructure |
+| `general-process-run-supervisor.ts` | general execution | supervisor | exact general assembly + run/history facades | one family lifecycle | process infrastructure |
+| `application-run-ownership-service.ts` | application orchestration | ownership lease | reconcile startup-gated binding/lookup evidence | one read-only subject | existing stores |
+| `studio-run-model-config-service.ts` | run history use case | Studio guard | ownership check then general delegation | one UI/GraphQL use case | existing facades |
 | `context-file-layout.ts` / resolver files | context-files | context subsystem | accept explicit execution roots/origin | existing parser/path owner | no new resolver |
 
 ## Reusable Owned Structures Check
@@ -469,6 +509,8 @@ Forbidden:
 | Task identity pair | Yes: Agent allocator + derived Team factory | Yes | Low | same identity through root |
 | Manager options | Yes: seven required fields | Yes | Low | runtime validate each |
 | Kernel | Yes | Yes | Low | private/complete |
+| Validator capability | Yes: `validate` only | N/A | Low | no catalog/getter below roots |
+| Ownership input/result | Yes: run ID + optional canonical provenance -> boolean | N/A | Low | no manager/store escape |
 
 ## Final File Responsibility Mapping
 
@@ -477,6 +519,8 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 ## Applied Patterns
 
 - Factory/builder for fixed provider construction policy.
+- Read-only lease for outer application binding ownership.
+- Existing distinct per-run/per-root transition lanes for stopped configuration; no common generic state machine.
 - Authority with capability ports for trusted session lifecycle.
 - Adapter for provider-neutral descriptor to vendor configuration.
 - Construction transaction for K0–K8 ownership transfer.
@@ -491,6 +535,7 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | `src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts` | Add | Team execution construction | validate/freeze exact allocator + derived Team factory | run/task lifecycle, manager lookup |
 | `src/context-files/domain/context-file-path-environment.ts` | Add | context-file composition | validate/freeze app-data root + absolute base URL | AppConfig access, memory root, service lookup |
 | `src/agent-execution/services/agent-run-manager.ts` | Modify | Agent lifecycle | require complete execution inputs | default/global construction |
+| `src/agent-execution/services/{standalone-agent-run-lifecycle-service.ts,agent-run-service.ts}` | Modify | Agent lifecycle facade | require the host-selected validator at the lane owner and require that exact lifecycle at the facade; make process access lookup-only | model-catalog getter, lazy lifecycle/service construction |
 | `src/agent-execution/domain/agent-run.ts` | Modify | Agent run | invoke required normalizer before backend | context owner/provider branching |
 | `src/agent-team-execution/services/agent-team-run-manager.ts` | Modify | Team roots | carry task capability to every root | allocator construction/default |
 | `src/agent-team-execution/domain/root-team-run.ts` | Modify | Team root | pass capability to task owner | global selection |
@@ -499,7 +544,11 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | `src/context-files/{store,services}` | Modify | context-files | accept explicit roots/origin for governed resolver | execution-manager selection |
 | `src/api/rest/context-files.ts` | Modify | process context transport | compose one explicit layout/stored owner projection for read/finalization | AppConfig/Team-manager selection below route edge |
 | `src/application-platform/execution/application-execution-scope-kernel-builder.ts` | Modify | app kernel | K0–K8 exact graph | outward API/ambient config |
-| `src/agent-execution/runtime/general-process-run-supervisor.ts` | Modify | general owner | exact narrow-input general graph | AppConfig/application owner/global fallback |
+| `src/agent-execution/runtime/general-process-run-supervisor.ts` | Modify | general owner | exact narrow-input general graph + current resume/history facades + explicit validator | AppConfig/application owner/global fallback |
+| `src/application-orchestration/services/application-run-ownership-service.ts` | Add from Personal | application orchestration | startup-gated read-only binding lease | manager or mutation |
+| `src/run-history/services/studio-run-model-config-service.ts` | Add from Personal | Studio run-history use case | guard application ownership then delegate to general facades | stores/managers/application scope |
+| `src/llm-management/services/model-config-validation-service.ts` | Add from Personal | LLM management | current schema/model validation over a required catalog capability | run lifecycle/persistence or catalog getter/default |
+| `src/application-platform/runtime/{application-platform-runtime-contracts.ts,build-application-platform-runtime.ts,create-application-orchestration-services.ts}` | Modify | platform | keep scope; expose read-only ownership; inject validator | raw manager/store or new scope command |
 
 ## Folder Boundary Check
 
@@ -510,6 +559,8 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | `agent-team-execution/task-delegation` | root task capability/owner | Yes | Low | identity pair supports existing task owner |
 | `context-files` | path/owner infrastructure | Yes | Low | keeps parsing/path safety below Agent execution |
 | `application-platform/execution` | domain-control assembly | Yes | Low | scope/private kernel |
+| `run-history/services` | Studio run configuration | Yes | Low | guard/use-case facade over existing lifecycle/history owners |
+| `application-orchestration/services` | binding ownership | Yes | Low | read-only lease belongs with binding stores/startup gate |
 
 ## Concrete Examples / Shape Guidance
 
@@ -521,6 +572,7 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | provider composition | `owner -> builder.createForExecution({definition, issuer})` | positional `undefined` or defaults | explicit policy |
 | Mixed Team | `root dependencies + releaser -> required callback -> recursive manager` | default manager/process getter | family closure |
 | assembly | `begin -> K2 graph -> complete -> kernel transfer` | partial bag/generic binder | exact lifecycle |
+| stopped config | `Studio guard -> exact Agent/Team lane -> validate -> commit/reread` | direct manager/store access or generic state machine | current owners and fail-closed ordering |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -533,6 +585,9 @@ The exact Add/Modify/Remove/test inventory in `provider-composition-transition-i
 | old Runtime/manager aliases | reduce edits | Rejected | clean Host/Authority ports |
 | optional Mixed Team releaser/callback/default manager | preserve low-level construction | Rejected | accepted SR-005 exact callback |
 | dual old/new assembly or normalizer | transition ease | Rejected | atomic cutover |
+| restore deleted run-services factory/test | easiest conflict resolution | Rejected | transplant current behavior into kernel/current scope tests |
+| add application scope run-config capability | symmetry with general updates | Rejected: no supported caller | keep exactly seven scope capabilities |
+| move ownership into execution scope | centralize application concerns | Rejected: wrong subject/owner | outer orchestration lease through runtime host management |
 
 ## Derived Layering (If Useful)
 
@@ -540,24 +595,26 @@ Composition -> execution owner -> complete manager/root capability -> AgentRun/R
 
 ## Change / Refactor Sequence
 
-1. Add exact task-identity and provider-input-normalizer contracts/tests; add explicit context path environment and resolver inputs; make the process context REST edge construct and share the explicit stored-owner projection.
-2. Make `AgentRunManager`/`AgentRun` complete consumers; update both roots and every direct fixture atomically.
-3. Require task identity through Team manager -> RootTeamRun -> TaskDelegationService; remove allocator/factory defaults and update direct fixtures.
-4. Remove AutoByteus/Codex/Claude context resolver construction and prove formatting of already-normalized absolute, remote, data, missing, draft, final Agent, and nested Team-member inputs.
-5. Align K0–K8 with the ten-field/eleven-leaf build input, stored reader reuse, Agent identity before Team manager, and existing authority unwind.
-6. Preserve and re-prove SR-005 Mixed Team callbacks, issuer/releaser lifecycle, general/application non-identity, and Team-before-Agent shutdown.
-7. Run source-derived occurrence/omission guards and the exact eight CRR-003 failing files first; then focused provider/Team/context coverage, complete server source review, realistic Studio/standalone API/E2E, durable-test review, and delivery verification.
+1. Perform one semantic merge of latest Personal; preserve all nonoverlap current-base work and resolve the exact 14 overlaps using the SR-007 supplement. Keep the two deleted run-services paths absent.
+2. Add the explicit host-selected validator field through both host roots, general supervisor/platform/scope input, Agent lifecycle, and Team manager; merge the current Personal lifecycle/manager algorithms without defaults.
+3. Create/expose the current Personal ownership lease only from outer orchestration/runtime and construct the guarded Studio run-model-config service from platform ownership plus general facades; do not change the scope API.
+4. Reconcile the seven conflicting and seven auto-merged overlaps, then update source-derived guards and exact tests before broader verification.
+5. Preserve and re-prove the prior provider-composition transition: exact task identity; provider-input normalization; complete Agent manager; required Mixed Team callback/releaser; Host/Authority lifecycle; context REST owner projection; provider adapters; and general/application non-identity.
+6. Align K0–K8 with the eleven-top-level/twelve-leaf application input, the eight-top-level/nine-leaf general input, stored-reader reuse, Agent identity before Team manager, the required validator/lifecycle identities, and existing Authority unwind.
+7. Run source-derived occurrence/omission guards and the exact eight CRR-003 failure files first; then focused provider/Team/context coverage and latest-Personal Agent/Team save-race, ownership, GraphQL/web, Studio/standalone, cleanup, and delivery matrices.
 
 No compatibility alias, dual path, initialization of unrelated globals, or migration may survive any committed state.
 
 ## Key Tradeoffs
 
-- The scope build input adds one cohesive context-path environment instead of allowing lower layers to rediscover AppConfig; explicitness is worth the two leaf values.
+- The scope build input carries one cohesive context-path environment and one narrow validator instead of allowing lower layers to rediscover AppConfig or the model catalog; explicitness is worth the three added leaves.
 - The general supervisor replaces broad AppConfig with the same explicit memory/context projection; this adds one top-level field but removes unused configuration authority from the execution owner.
 - Stored-only Team-tree reads avoid an execution-manager cycle and may scan durable root packages rather than an active-manager map. Current logical context/identity operations are control-path calls, not event-stream loops; the modest read cost is preferable to a manager router. Correctness depends on existing write-before-live/fail-stop invariants, now explicit proof obligations.
 - One AgentRun normalizer adds a narrow operation but deletes three provider policies and makes the provider boundary uniform.
 - Complete AgentRunManager construction makes tests more explicit; the narrow fixture absorbs repetition without weakening production contracts.
 - Defaults outside governed execution paths are not evidence of correctness; architecture guards enforce the supported roots while this ticket changes only the reachable authority spine.
+- One extra validator reference crosses each root, but it replaces ambient catalog selection and carries a single operation. Sharing the host-created identity avoids duplicate policy without making it a mutable execution owner.
+- Keeping application run configuration out of the scope may appear asymmetric; it is correct because no supported application caller owns that command and the Studio guard targets general history editing.
 
 ## Risks
 
@@ -566,7 +623,10 @@ No compatibility alias, dual path, initialization of unrelated globals, or migra
 - A context resolver that still reads `appConfigProvider` or a process Team manager would preserve the defect under a new wrapper; exact constructor identity and forbidden-import guards prevent this.
 - Direct fixtures could hide missing production fields inside a broad bag; the fixture exports named test infrastructure only and occurrence guards inspect constructor literals.
 - Existing issuer/releaser and Mixed Team cleanup timing must remain unchanged while the execution-family graph is completed.
+- Auto-merged overlap can compile while losing semantics; all 14 overlaps require source review against the exact matrix.
+- If the validator is omitted at a nested constructor, defaults can silently reappear; exact identity and omission guards are mandatory.
+- If ownership is moved into the scope or Studio reads stores directly, the authoritative platform boundary is bypassed.
 
 ## Guidance For Implementation
 
-Implement the normative contracts before callers. Keep all new inputs recursively readonly, runtime-validated, and complete. Reuse one stored-only Team location reader per execution-family construction for both identity and context-owner resolution. Build one task-identity capability and one provider-input normalizer per execution family; pass them by identity, never rediscover them. Normalize only a copy at `AgentRun`'s backend-dispatch boundary. Keep provider adapters free of context-owner/AppConfig/Team-manager imports. Require all seven `AgentRunManager` fields and the task capability at every Team-root constructor. Preserve the accepted required Mixed Team callback/releaser and Authority lifecycle. Treat the exact transition inventory, all eight CRR-003 fixture dispositions, source-derived constructor sets, ambient-getter bans, K0–K8 cuts, dual-family non-identity, RootTeamRun task lifecycle, and realistic Studio/standalone proof as completion criteria.
+Implement the normative contracts before callers. Keep all new inputs recursively readonly, runtime-validated, and complete. Reuse one stored-only Team location reader per execution-family construction for both identity and context-owner resolution. Build one task-identity capability and one provider-input normalizer per execution family; pass them by identity, never rediscover them. Normalize only a copy at `AgentRun`'s backend-dispatch boundary. Keep provider adapters free of context-owner/AppConfig/Team-manager imports. Require all seven `AgentRunManager` fields and the task capability at every Team-root constructor. Require the host-selected validator at both exact roots, every Agent lifecycle, and every Team manager; require the root-created lifecycle at `AgentRunService`, and make the process Agent service accessor lookup-only. Preserve the accepted required Mixed Team callback/releaser and Authority lifecycle. Treat the exact transition inventory, all eight CRR-003 fixture dispositions, source-derived constructor sets, ambient-getter bans, K0–K8 cuts, dual-family non-identity, RootTeamRun task lifecycle, DS-012–DS-016, current Personal result/ordering/ownership semantics, all 14 overlap dispositions, and realistic Studio/standalone proof as completion criteria.

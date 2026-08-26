@@ -3,12 +3,12 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: `Complete — Design-ready`
-- Investigation Goal: establish exact process/provider/session ownership, supported construction and failure spines, clean-cut transition, and proof surface.
+- Current Status: `Complete — Refined for SR-007 latest-Personal integration`
+- Investigation Goal: establish exact process/provider/session ownership, supported construction and failure spines, clean-cut transition, proof surface, and latest-Personal stopped-run configuration/application-ownership reconciliation.
 - Scope Classification: `Large`
-- Scope Classification Rationale: two execution roots, three provider families, MCP capability lifecycle, scope assembly, and tests change; public behavior does not.
+- Scope Classification Rationale: two execution roots, three provider families, MCP capability lifecycle, scope assembly, latest-Personal stopped-run/ownership junction, and tests change; current public behavior is preserved.
 - Scope Summary: explicit provider/Agent Tools composition plus complete general/application execution-family closure for run resources, Root task identity, provider-bound context normalization, and private scope assembly.
-- Primary Questions Resolved: process versus execution-local dependencies; reachable default paths; exact trusted authority; issuance/unwind timing; task identity and stored-tree cycle break; provider-input ownership; complete manager assembly; lifecycle/multiplicity; transition inventory.
+- Primary Questions Resolved: process versus execution-local dependencies; reachable default paths; exact trusted authority; issuance/unwind timing; task identity and stored-tree cycle break; provider-input ownership; complete manager assembly; lifecycle/multiplicity; latest-Personal run-config/ownership owners and spines; semantic merge transition inventory.
 
 ## Request Context
 
@@ -22,18 +22,19 @@ The user authorized continued design improvements, specifically required the Age
 - Current Branch: `codex/explicit-agent-provider-composition-and-scope-assembly`
 - Current Worktree: same as task workspace root
 - Bootstrap Base Branch: finalized `codex/application-execution-scope-boundary-hardening`
-- Remote Refresh Result: `origin/personal` fetched at `306de420ca8830478529b40bd6dfda6694b742a9`; this task intentionally starts from the finalized scope commit not yet on Personal.
+- Bootstrap Remote Snapshot: `origin/personal` at `306de420ca8830478529b40bd6dfda6694b742a9`. Delivery fetched mandatory current Personal `b52fe5aebdb962ce361529f9e797affeb30d719a` (22 commits beyond the snapshot).
 - Expected Base: `0811503a6c547698e7b77e1064d98890101acc1b`
-- Expected Finalization Target: ticket branch; ordered integration only after the scope feature.
-- Bootstrap Blockers: None.
-- Notes For Downstream Agents: HEAD `3806ca36e46495ba28d5957a330a502eb22bd973` contains IR-002 over the reviewed provider/authority implementation. CRR-003 supersedes CRR-002 Pass; implementation/API-E2E remain paused. Logical addressing is excluded.
+- Expected Finalization Target: ticket branch containing one history-preserving semantic merge of current Personal; target-branch integration remains separate.
+- Current Blocker: design-led semantic integration of latest Personal; delivery performed read-only merge preview only and started no merge.
+- Notes For Downstream Agents: protected checkpoint HEAD `ce9f2b6da2463ac789386acd5ec417188528c8c7` contains the CRR-004/API-REV-002/CRR-005-reviewed provider/authority result plus delivery records. Do not edit delivery-owned untracked artifacts. Implementation remains paused until SR-007 passes architecture review. Logical addressing is excluded.
 
 ## Supplemental Task Artifact Inventory
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related IDs | Status | Approval | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `provider-composition-and-agent-tools-authority-contract.md` | Normative boundary contract | Host/Authority/Issuer/resource, builder, kernel, lifecycle | requirements, design | REQ-001–REQ-007; AC-001–AC-011 | Current | User-approved scope | Architecture review |
-| `provider-composition-transition-inventory.md` | Exact transition/proof map | Add/modify/rename/remove and coverage obligations | design | REQ-001–REQ-008; AC-001–AC-012 | Current | N/A | Architecture review |
+| `provider-composition-and-agent-tools-authority-contract.md` | Normative boundary contract | Host/Authority/Issuer/resource, builder, kernel, validator/lifecycle | requirements, design | REQ-001–REQ-009; AC-001–AC-016 | Current SR-007 | User-approved scope | Architecture review |
+| `provider-composition-transition-inventory.md` | Exact transition/proof map | Add/modify/rename/remove, latest-base conflict disposition, and coverage obligations | design | REQ-001–REQ-009; AC-001–AC-016 | Current | N/A | Architecture review |
+| `latest-personal-run-configuration-integration-analysis.md` | Latest-base semantic reconciliation | authority split, reachability, owners, DS-012–DS-016, conflicts, exact construction and proof | requirements, design | REQ-008, REQ-009; AC-012–AC-016 | Current | N/A; preserves approved/current behavior | Architecture review |
 | upstream `future-architecture-simplification-review.md` | Triggering assessment | source-backed smells, spines, sequencing | all | all | Read-only upstream | N/A | None |
 
 ## Source Log
@@ -68,6 +69,14 @@ The user authorized continued design improvements, specifically required the Age
 | 2026-08-26 | Code | `agent-run-command-observer*.ts`, `agent-run-memory-recorder.ts`, `runtime-memory-event-accumulator.ts`, and AutoByteus backend/processor dispatch | validate copied-input observer impact | the only production command observer is the memory recorder; it records only external provider runs, whose current Codex/Claude locator formatters do not mutate the admitted message. AutoByteus processor mutates its provider message but native runs are not recorded by this observer | Keep the original claimed message authoritative for admission/observer persistence and normalize a separate provider copy; add direct no-mutation proof |
 | 2026-08-26 | Command | `rg -l` occurrence audits for `new AgentRunManager`, `new AgentRun`, `new AgentTeamRunManager`, `new RootTeamRun`, `new TaskDelegationService`, `new TaskTeamRunIdentityFactory`, `toCodexUserInput`, Claude context resolver fields, and AutoByteus processor tests | close SR-006 production/test surface | current HEAD has two supported-root Agent-manager sites plus seven direct runtime-test files (and manager/architecture sources), one production plus eleven direct-test AgentRun files, two supported-root Team-manager sites plus three direct-test files (and manager/architecture sources), one production plus three direct-test RootTeamRun files, one production plus one direct-test TaskDelegationService file, one TaskTeam factory production call, and exact provider-mapping test sets | Add closed Modify/Verify rows and source-derived occurrence guards |
 
+| 2026-08-26 | Delivery evidence | `latest-base-integration-conflict-report.md`, DR-001 logs/inventories, `git status`, `git rev-parse`, `git merge-base` | establish actual latest-base junction and safety state | current Personal `b52fe5a...`, protected checkpoint `ce9f2b6...`, 22/16 divergence, 14 overlaps, seven conflicts, no merge/unmerged paths | Design semantic integration only |
+| 2026-08-26 | Git/source | `git show origin/personal:<path>`, `git diff 306de420..origin/personal`, commit/path correlation for `a4c2595f8`, `72ea90db1`, `370f1f5fa` | trace current stopped-run and ownership behavior | Agent update lives in `StandaloneAgentRunLifecycleService` per-run lane; Team update lives in `AgentTeamRunManager` root lane; Studio guard uses read-only application binding ownership | Preserve owners; map into current scope/supervisor |
+| 2026-08-26 | Code | latest Personal `model-config-validation-service.ts`, run-model-config domain, Agent metadata commit, Team mutator, lifecycle/manager/service files | establish exact data/result/persistence contracts | strict current catalog validation, no partial Team write, canonical reread, explicit indeterminate results, no revision model | Add exact validator input and preserve sequential lanes |
+| 2026-08-26 | Code | latest Personal application ownership service, orchestration/runtime contracts, Studio config service/composition | locate authoritative boundary | ownership is outer startup-gated binding/lookup state; Studio service guards general facades; runtime exposes read-only host-management projection | Keep outside application scope; no raw store/manager access |
+| 2026-08-26 | Code/tests | latest Personal Agent lifecycle, Team manager, ownership, Studio config tests; current scope/kernel/general-supervisor tests | map durable proof and obsolete-test disposition | Save/restore races and zero-write guards have durable coverage; deleted `application-run-services.test.ts` only proves allocator identities already covered by current scope test | Combine fixtures; do not restore removed owner/test |
+| 2026-08-26 | Code/occurrence audit | latest Personal `agent-run-service.ts`, lifecycle/manager defaults, `ModelConfigValidationService` constructor, and every direct `new AgentRunService` occurrence | close the validator/lane construction surface | lifecycle and Team manager default the validator; AgentRunService can recreate lifecycle and its process accessor can lazily recreate the service. Nine durable files directly construct AgentRunService | Require root-created lifecycle, make the process accessor lookup-only, and record the exact nine-file fixture transition |
+| 2026-08-26 | Design principles | Product-Reachability and Authoritative Boundary checks against the new junction | prevent speculative capability growth | application direct run-config mutation is not supported; validator is a narrow process capability; application ownership remains an outer concern | DS-012–DS-016 and explicit dependency rules |
+
 ## Relevant Existing Behavior And Production Paths
 
 | Behavior ID | Kind | Current Supported Trigger / Contract | Current Production Path And Lifecycle | Current Outcome / Invariants | Evidence |
@@ -78,6 +87,7 @@ The user authorized continued design improvements, specifically required the Age
 | BEH-004 | Operational | provider preparation fails after session issue | run claim -> backend/bootstrap -> issue -> later failure -> manager cleanup | claim cleanup exists; immediate pre-attachment session cleanup is incomplete | manager/bootstrap trace |
 | BEH-005 | System | application platform builds/closes scope | partial locals -> tuple -> scope; close -> Team -> Agent -> sessions | correct outward scope, fragile private assembly | scope source/tests |
 | BEH-006 | Contract | existing clients/stores/packages | unchanged public/persistence paths | current schemas and behavior are authoritative | passed upstream package |
+| BEH-007 | User/System | Studio reads or saves stopped general Agent/Team model settings, including runs whose durable identity is still held by an application binding | UI/GraphQL -> Studio run-config facade -> application ownership lease -> general run lifecycle/root lane -> validation -> atomic metadata/V2 commit -> canonical result | exact result/editability, Save/restore serialization, all-target Team validation, live application lock, zero unsafe general write | latest Personal source/tests plus delivery overlap evidence |
 
 ## Product-Reachability Premises
 
@@ -95,6 +105,10 @@ The user authorized continued design improvements, specifically required the Age
 | direct AgentRunManager fixture default chain proves a product defect | `Not Reachable as a product premise; governing transition applies` | both maintained roots construct explicit resource/activation infrastructure; separately, REQ-008 governs the changed direct fixtures | direct tests omit activation registry/sidecars -> manager default -> run-file service -> process Team lookup | no runtime defect is attributed, but the claimed exact constructor transition is incomplete and tests must receive explicit infrastructure |
 | copying provider input changes supported command-observer persistence | `Not Reachable under current production consumers` | the sole production observer is `AgentRunMemoryRecorder`, which records only external runtimes | Codex/Claude currently read locators without mutating the admitted message; AutoByteus mutation occurs only on native runs excluded by the recorder | using an explicit provider copy preserves current durable observer input while removing incidental native mutation; direct tests must prove original input remains unchanged |
 | one mounted Studio app needs its own manager family | `Unclear` and out of scope | no independent lifecycle trigger found | current platform runtime owns one family across mounted apps | per-app registry would add prohibited routing machinery |
+| latest Personal integration is optional after reviewed delivery proof | `Not Reachable as an acceptable delivery state` | recorded base-refresh contract requires the ticket branch to include the tracked current Personal state | delivery fetch -> 22 new commits -> read-only merge preview -> 14 overlaps/7 conflicts -> no integrated candidate | prior CRR/API evidence is not an integrated-current-base delivery candidate |
+| Studio stopped general Agent/Team configuration reaches new transition owners | `Reachable` | existing run Settings UI/GraphQL read/update operations | UI -> GraphQL -> `StudioRunModelConfigService` -> ownership guard -> general Agent lifecycle or Team root lane -> validator -> durable commit/reread | wrong merge can lose current saves, race restore, or cross execution families |
+| a live application-owned run reaches the Studio ownership guard | `Reachable` | application binding launch/recovery creates lookup/provenance and Studio history can address the durable run | application stores/startup gate -> `ApplicationRunOwnershipService` -> runtime host management -> Studio guard | prevents general-family mutation of application-owned state; mismatch/unreadable must fail closed |
+| application scope needs a stopped-run configuration capability | `Not Reachable` | no application REST/WS/worker command exposes direct stopped-run config edit | current application launch settings use launch overrides/bindings; no caller crosses the scope boundary for this command | adding a scope capability would broaden the authoritative boundary without owned benefit |
 
 ## Design Health Assessment Evidence
 
@@ -134,6 +148,8 @@ The user authorized continued design improvements, specifically required the Age
 
 ## Runtime / Probe Findings
 
+DR-001 performed a read-only `git merge-tree --write-tree` preview: seven conflicts across 14 changed-both paths, zero actual merge, zero unmerged index entries. Static source correlation proved the conflicts are semantic, not volume alone: latest Personal changes the exact manager/platform owners the ticket restructures. The current worktree remains at protected checkpoint `ce9f2b6da2463ac789386acd5ec417188528c8c7`.
+
 Initial design discovery used static production-path tracing. IR-001 and CRR-001 later supplied executable evidence: the focused 8-file/80-test selection and build-config TypeScript passed, while source review found CR-001. IR-002/CRR-002 then passed the Mixed Team correction, but API-REV-001 deterministically failed eight changed files and CRR-003 traced the failure to the deeper task/context/default chains above. These failures validate the source paths; they do not justify initializing unrelated globals. Downstream must rerun the exact eight files first, then the retained focused and realistic matrix.
 
 ## External / Public Source Findings
@@ -166,14 +182,20 @@ None. This is repository-internal architecture and no current external contract 
 16. Context path resolution has two additional ambient leaves: `ContextFileLayout` reads app-data/memory roots and `ContextFileLocalPathResolver` reads the configured base URL. Both host composition roots already own these values. One two-field validator/factory creates a narrow frozen `{appDataDir, baseUrl}` identity beside explicit `memoryDir`, so neither execution owner receives AppConfig or a generic configuration bag.
 17. The only production `AgentRunCommandObserver` is the memory recorder and it records external providers only. Codex/Claude do not mutate the admitted message during current locator formatting; AutoByteus mutation is outside that durable observer path. Normalizing a separate dispatch copy therefore preserves supported persistence while making input ownership explicit.
 18. The process context REST route is the remaining sibling context owner: finalization/read default to an active-or-stored resolver rooted in the process Team manager. Supported Team send finalizes only after launch/restore has established the admitted V2 package, so one explicit stored-only resolver at route registration preserves behavior while removing mutable execution-family selection.
+19. Latest Personal correctly places stopped Agent changes in `StandaloneAgentRunLifecycleService` and Team changes in `AgentTeamRunManager`; their distinct per-run/root lanes are concrete lifecycle owners and should not be replaced by a generic state machine.
+20. `ApplicationRunOwnershipService` reads startup-gated binding/lookup state and owns no manager mutation. It belongs to application orchestration outside the execution scope; runtime host management is the correct read-only boundary for Studio.
+21. No supported application caller needs stopped-run model mutation through the scope. Keeping exactly seven capabilities avoids an empty facade and prevents callers from depending on both the scope and its internal run services.
+22. One host-created `ModelConfigValidationService` over the selected process model catalog is a proportionate explicit dependency. Passing its narrow `validate` capability to both roots removes new ambient model-catalog/default selection without folding LLM policy into the provider factory builder.
+23. The two modify/delete conflicts stay deleted. The old application-run-services test's allocator/non-global/shutdown assertions already exist under `ApplicationExecutionScope`; latest stopped-run assertions belong to lifecycle/manager/ownership tests, not a resurrected factory test.
+24. Explicit validator injection is incomplete if `AgentRunService` can reconstruct the lane owner without it. Requiring the root-created lifecycle and making `getAgentRunService()` lookup-only removes that alternate composition path without changing any public caller: maintained hosts bind the exact general service before GraphQL/streaming/external-channel consumers run, and the application graph receives its service directly.
 
 ## Persisted Data Transition Evidence
 
-- Current stored subject: no composition or MCP authority types are serialized.
+- Current stored subject: no composition/MCP authority types are serialized; latest Personal continues to store nullable `llmConfig` in current Agent metadata and Team V2 trees.
 - Code-model change: object graph and TypeScript contracts only.
 - Normal readers/writers: unchanged.
 - Required semantics preserved by direct use: `Yes` — no stored shape changes.
-- Decision: `Not Affected`; migration has no benefit and would create risk.
+- Decision: `Directly Usable — No Migration / Not Affected by SR-007`; the semantic merge changes object-graph construction only and uses latest Personal readers/writers unchanged.
 
 ## Constraints / Dependencies / Compatibility Facts
 
@@ -185,9 +207,9 @@ None. This is repository-internal architecture and no current external contract 
 
 ## Open Unknowns / Risks
 
-- No design unknown remains for AR-001–AR-004, CR-001, or CR-002–CR-004. Downstream must prove the exact process input/mapping, revised K0–K8 ownership cuts, all prior constructor obligations, required Root Team task identity, one explicitly rooted AgentRun provider-input normalizer per execution family (including app-data, memory and configured-origin inputs), complete AgentRunManager infrastructure, and exact general/application identity rather than reinterpret them.
+- No design unknown remains for AR-001–AR-004, CR-001–CR-004, or the DR-001 latest-base junction. Downstream must prove the exact process input/mapping, revised K0–K8 ownership cuts, all prior constructor obligations, required Root Team task identity, one explicitly rooted AgentRun provider-input normalizer per execution family (including app-data, memory and configured-origin inputs), complete AgentRunManager infrastructure, and exact general/application identity rather than reinterpret them.
 - Any newly discovered production/test occurrence, construction closeable, or proposed issuer broadening is Design Impact and requires re-review; it is not permission to add a generic escape hatch.
 
 ## Notes For Architecture Reviewer
 
-Review SR-006 as the CRR-003 correction over the passed ARCH-REV-005/IR-002 baseline. Preserve the Host/Authority/provider/kernel and Mixed Team callback architecture. Confirm four exact closures: (1) one explicit Team memory root and catalog-filtered stored-tree-backed Agent/task-Team identity pair flow from each execution root through Team manager and every RootTeamRun; (2) host composition projects one frozen app-data/base-URL value plus memory root into both execution owners, one stored-tree-backed provider-input normalizer runs at AgentRun before all three providers, and provider-local context/config ownership is removed; (3) process context REST constructs one explicit stored-only owner resolver and shares it across finalization/read; (4) AgentRunManager accepts complete explicit activation/resource/normalizer/factory identities and the exact eight failed files plus all newly affected constructors are inventoried. No manager unification, router, late binding, public behavior, migration, or logical-addressing change is introduced.
+Review SR-007 as the DR-001 latest-base reconciliation over the passed ARCH-REV-006/IR-003/CRR-004/API-REV-002/CRR-005 baseline. Preserve the Host/Authority/provider/kernel and Mixed Team callback architecture. Preserve the prior four exact closures and confirm the SR-007 additions: one explicit host-selected validator reaches each family's Agent lifecycle and Team manager; AgentRunService requires that root-created lifecycle and its process accessor is lookup-only; outer orchestration owns the read-only application lease; Studio guards general updates; the scope remains seven-capability; deleted broad factory/test remain absent. Prior closures: (1) one explicit Team memory root and catalog-filtered stored-tree-backed Agent/task-Team identity pair flow from each execution root through Team manager and every RootTeamRun; (2) host composition projects one frozen app-data/base-URL value plus memory root into both execution owners, one stored-tree-backed provider-input normalizer runs at AgentRun before all three providers, and provider-local context/config ownership is removed; (3) process context REST constructs one explicit stored-only owner resolver and shares it across finalization/read; (4) AgentRunManager accepts complete explicit activation/resource/normalizer/factory identities and the exact eight failed files plus all newly affected constructors are inventoried. No manager unification, router, late binding, public behavior, migration, or logical-addressing change is introduced.

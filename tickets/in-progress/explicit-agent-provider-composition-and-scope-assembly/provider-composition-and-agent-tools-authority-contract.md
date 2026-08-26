@@ -1,6 +1,6 @@
 # Provider Composition And Agent Tools Authority Contract
 
-Status: Normative design supplement. Approved requirements; revised by SR-006 for CRR-003 findings CR-002–CR-004 while preserving the accepted SR-005 provider/Authority/Mixed Team architecture.
+Status: Normative cumulative design supplement. SR-007 preserves the accepted SR-006 provider/Authority/Mixed Team and execution-family closure while integrating latest Personal stopped-run configuration and application-ownership behavior through explicit validator and lifecycle boundaries.
 
 ## 1. Ownership
 
@@ -252,6 +252,11 @@ export type ContextFileOwnerResolverInput = Readonly<{
   locations: Pick<TeamRunExecutionTreeLocationService, "findAgent" | "findAgentSync">;
 }>;
 
+export type RunModelConfigValidator = Pick<
+  ModelConfigValidationService,
+  "validate"
+>;
+
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
   contextFilePathEnvironment: ContextFilePathEnvironment;
@@ -260,6 +265,7 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   workspaceManager: WorkspaceManager;
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
+  modelConfigValidator: RunModelConfigValidator;
 }>;
 
 export type TaskExecutionIdentityCapabilities = Readonly<{
@@ -295,7 +301,9 @@ All fields are required/non-null and runtime-validated. `createContextFilePathEn
 
 The value and creator live in `context-files/domain/context-file-path-environment.ts`; execution contracts import that owned type rather than redeclaring parallel `{appDataDir, baseUrl}` records.
 
-The general supervisor input has exactly seven required top-level fields and eight leaves. Host composition snapshots AppConfig, calls `createContextFilePathEnvironment` once, and supplies `memoryDir` plus that frozen identity; the supervisor neither imports nor receives AppConfig. The same identity enters the application build input below beside its existing `memoryDir`. Process REST registration does **not** construct this value: that transport boundary needs only `appDataDir` and `memoryDir`, so requiring an unused `baseUrl` there would add empty coupling.
+The general supervisor input has exactly eight required top-level fields and nine leaves. Host composition snapshots AppConfig, calls `createContextFilePathEnvironment` once, creates one `ModelConfigValidationService` from the selected process model catalog, and supplies `memoryDir`, the frozen context identity, and the narrow validator. The supervisor neither imports nor receives AppConfig or the model catalog. The same context and validator identities enter the application build input below. Process REST registration does **not** construct the context value: that transport boundary needs only `appDataDir` and `memoryDir`, so requiring an unused `baseUrl` there would add empty coupling.
+
+`ModelConfigValidationService` requires its catalog constructor input and contains no `getModelCatalogService()` default. Its direct unit tests already supply an explicit catalog. `StandaloneAgentRunLifecycleService` and `AgentTeamRunManager` require `RunModelConfigValidator` and contain no optional/default validator branch. `AgentRunService` requires the root-created lifecycle service; `getAgentRunService()` is lookup-only and throws before `GeneralProcessRunSupervisor` binds the process service. This closes validator and transition-lane selection at the execution roots without adding a mutable owner.
 
 `createStoredTeamRunExecutionTreeLocationService(memoryDir: string)` requires a non-empty memory root. `ContextFileOwnerResolver` requires the named `locations` input above; `ContextFileReadService` and `ContextFileFinalizationService` require an owner resolver and contain no default construction. At process REST registration, one AppConfig snapshot supplies only the needed `{appDataDir, memoryDir}`, one stored-only locations identity creates one owner resolver, and that same resolver is passed to both services. The REST edge never selects general or application live Team ownership.
 
@@ -318,7 +326,9 @@ The existing production option contracts change only as follows; every unlisted 
 | Contract | Add / Make Required | Remove |
 | --- | --- | --- |
 | `AgentRunOptions` | `providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">` | none; `commandObservers` remains optional because empty observation is valid |
-| `AgentTeamRunManagerOptions` | `memoryDir: string`; `taskExecutionIdentity: TaskExecutionIdentityCapabilities`; existing `mixedTeamRunBackendFactory` stays required | AppConfig memoryDir fallback; stores remain optional manager-owned defaults |
+| `AgentTeamRunManagerOptions` | `memoryDir: string`; `taskExecutionIdentity: TaskExecutionIdentityCapabilities`; `modelConfigValidator: RunModelConfigValidator`; existing `mixedTeamRunBackendFactory` stays required | AppConfig memoryDir fallback and validator fallback; stores remain optional manager-owned defaults |
+| `StandaloneAgentRunLifecycleService` dependencies | `modelConfigValidator: RunModelConfigValidator` | optional validator and default `new ModelConfigValidationService()` |
+| `AgentRunService` dependencies | exact root-created `lifecycleService: StandaloneAgentRunLifecycleService` | optional/default lifecycle construction; process accessor lazy construction |
 | `RootTeamRun` constructor options | `taskExecutionIdentity: TaskExecutionIdentityCapabilities` | no lifecycle/persistence field change |
 | `TaskDelegationServiceOptions` | `taskExecutionIdentity: TaskExecutionIdentityCapabilities` | `agentRunIdentityAllocator?`; `taskTeamRunIdentityFactory?`; existing token-usage readiness test seam remains unchanged |
 | `TaskTeamRunIdentityFactory` constructor | argument 0 Agent allocator required; argument 1 token generator remains optional/testable | default/global Agent allocator |
@@ -337,6 +347,7 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   workspaceManager: WorkspaceManager;
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
+  modelConfigValidator: RunModelConfigValidator;
 }>;
 
 export type ApplicationExecutionScopeKernel = Readonly<{
@@ -352,7 +363,7 @@ export type ApplicationExecutionScopeKernel = Readonly<{
 }>;
 ```
 
-There are ten required top-level inputs and eleven required leaves because `contextFilePathEnvironment` has two. The output remains exactly eight owned dependencies plus the fixed construction-abort method. It is private to `application-platform/execution`; no raw manager, identity allocator, normalizer, task capability, provider factory, input record, or construction assembly escapes.
+There are eleven required top-level inputs and twelve required leaves because `contextFilePathEnvironment` has two. The output remains exactly eight owned dependencies plus the fixed construction-abort method. It is private to `application-platform/execution`; no raw manager, identity allocator, normalizer, task capability, provider factory, input record, validator, or construction assembly escapes.
 
 `ApplicationExecutionScope` stores the one kernel and exposes only its accepted seven capability projections. It does not mirror the input, accept partials, or bind later.
 
@@ -360,13 +371,13 @@ There are ten required top-level inputs and eleven required leaves because `cont
 
 | Phase | Acquire / Build | Starts Work? | Disposer After Success | Owner Before Transfer |
 | --- | --- | --- | --- | --- |
-| K0 | validate ten top-level fields and both path-environment leaves | no | none | builder attempt |
+| K0 | validate eleven top-level fields, both path-environment leaves, and the validator operation | no | none | builder attempt |
 | K1 | authority `begin(scopeIdentity)` | no | `assembly.abort` | ledger |
 | K2 | one stored-only Team location reader; exact context layout/owner/local resolver + input normalizer; memory/run-file/relay/resource/activation/publication graph | no | none | builder locals |
 | K3 | `assembly.complete(publication capability, current readiness callback)` | no | replace abort with `authority.close` atomically | ledger |
 | K4 | provider builder `createForExecution(definitions, authority.issuer)` | no | none | builder locals |
-| K5 | complete Agent manager from seven required inputs; metadata/history; exact allocator over K2 stored reader; derived task-identity pair; Agent services | no | none | builder locals |
-| K6 | Team manager from required Mixed Team factory/callback plus K5 task identity; Team services/activity/context | no | none | builder locals |
+| K5 | complete Agent manager from seven required inputs; metadata/history; exact allocator over K2 stored reader; derived task-identity pair; exact lifecycle using the input validator; Agent services using that lifecycle | no | none | builder locals |
+| K6 | Team manager from required Mixed Team factory/callback plus K5 task identity and the same input validator; Team services/activity/context | no | none | builder locals |
 | K7 | shutdown/stream/projection owners and frozen kernel | no | none | ledger + kernel candidate |
 | K8 | return kernel | no | clear builder ledger; kernel owns fixed abort | scope after return |
 
@@ -428,19 +439,19 @@ The new complete manager input does not change this behavior; it makes the relea
 
 ### General process
 
-1. Host composition selects AppConfig roots once; explicit `memoryDir`, frozen `{appDataDir, baseUrl}`, workspace, definitions, builder, and completed general Authority enter `GeneralProcessRunSupervisor`.
-2. Supervisor validates the seven-top-level/eight-leaf input; creates one stored Team reader, context resolver/normalizer, run-file service, general no-op artifact relay, memory recorder, resource manager, and activation registry.
+1. Host composition selects AppConfig roots and the process model catalog once; explicit `memoryDir`, frozen `{appDataDir, baseUrl}`, workspace, definitions, builder, completed general Authority, and one narrow validator enter `GeneralProcessRunSupervisor`.
+2. Supervisor validates the eight-top-level/nine-leaf input; creates one stored Team reader, context resolver/normalizer, run-file service, general no-op artifact relay, memory recorder, resource manager, and activation registry.
 3. Builder creates provider factory set with general issuer.
 4. Supervisor initializes the process Agent manager with all seven required inputs.
-5. Supervisor constructs metadata + allocator over the same stored reader and derives one general task-identity pair.
-6. Supervisor constructs the required Mixed Team callback/factory and initializes Team manager with its explicit `memoryDir` and the pair.
-7. Existing services/bindings start.
+5. Supervisor constructs metadata + allocator over the same stored reader, derives one general task-identity pair, constructs `StandaloneAgentRunLifecycleService` with the input validator, and passes that lifecycle explicitly to `AgentRunService`.
+6. Supervisor constructs the required Mixed Team callback/factory and initializes Team manager with its explicit `memoryDir`, pair, and the same validator.
+7. Existing services/bindings start; `getAgentRunService()` can only return the bound service and never constructs one.
 8. Close blocks new sessions, stops Teams before Agents, closes Authority, releases process bindings/managers, then outer Host closes after both execution families.
 
 ### Application
 
-1. Platform passes the exact scope identity, memoryDir, `{appDataDir, baseUrl}`, canonical definitions, authority factory, provider builder, workspace, binding reader, and delivery sink.
-2. K0–K8 builds the corresponding graph-local normalizer, complete Agent manager, allocator/task pair, Team manager, and scope kernel.
+1. Platform passes the exact scope identity, memoryDir, `{appDataDir, baseUrl}`, canonical definitions, authority factory, provider builder, workspace, binding reader, delivery sink, and the same host-selected validator.
+2. K0–K8 builds the corresponding graph-local normalizer, complete Agent manager, allocator/task pair, exact lifecycle, Team manager, and scope kernel; the validator does not escape through a scope capability.
 3. Existing scope quiesce blocks admission/session creation; close preserves Team-before-Agent, resource/session revocation, and authority close.
 4. General manager/authority identities are not used or initialized to satisfy application construction.
 
@@ -449,9 +460,11 @@ The new complete manager input does not change this behavior; it makes the relea
 Allowed:
 
 - composition -> Host, process provider helper/builder, explicit memory/context path values, general supervisor, application platform;
+- composition -> process model catalog -> one explicit validator -> general supervisor + application platform;
 - execution owner -> builder + scoped Authority ports + stored Team read model + context resolvers + complete resources;
 - process context REST edge -> explicit roots + stored Team read model -> one owner resolver -> read/finalization;
 - Agent manager -> AgentRun + normalizer;
+- execution root -> exact Agent lifecycle and Team manager using the same supplied validator;
 - Team manager -> RootTeamRun + task identity;
 - RootTeamRun -> task service -> immutable task identity;
 - provider -> already-normalized input and issuer/descriptor/materializer;
@@ -461,6 +474,8 @@ Allowed:
 Forbidden:
 
 - execution owner/provider -> AppConfig; provider -> context resolver/owner, Team manager/tree lookup, full Authority/Host/scope;
+- Agent lifecycle/Team manager/validation service -> model-catalog getter, optional validator, or default validator construction;
+- `AgentRunService` -> default lifecycle construction; `getAgentRunService()` -> lazy process construction;
 - context layout/local/owner/read/finalization leaves -> AppConfig or mutable Team-manager selection;
 - task service/factory -> global allocator/manager/service;
 - Agent manager -> default provider/resource/activation/sidecar/recorder or optional dependency;
@@ -473,3 +488,30 @@ Forbidden:
 ## 15. Persisted Data
 
 No store/schema/protocol changes. Existing run metadata, V2 Team execution trees, task records, context-file locators, platform state, bindings, and provider session identities remain directly usable. The target changes in-memory construction and provider-bound copies only. Decision: **Directly Usable — No Migration** (equivalently `Not Affected` for schema ownership); no read fallback, rewrite, or migration is permitted.
+
+## 16. Latest Personal Run-Configuration And Ownership Contract
+
+The normative authority and transition detail is
+`latest-personal-run-configuration-integration-analysis.md`. Its exact boundary
+is cumulative with sections 1–15:
+
+- stopped Agent updates remain serialized by
+  `StandaloneAgentRunLifecycleService` per run;
+- stopped Team updates remain serialized by `AgentTeamRunManager` per root and
+  validate every target before the single V2 write;
+- both execution roots receive the same host-selected stateless validator, but
+  their managers, task identities, session Authorities, transition lanes, and
+  cleanup remain non-identical;
+- application binding ownership remains an outer, read-only
+  `ApplicationRunOwnershipService` projection exposed through
+  `ApplicationPlatformRuntime.hostManagement`;
+- `StudioRunModelConfigService` checks that projection before delegating only
+  released runs to the general Agent/Team facades;
+- `ApplicationExecutionScope` still exposes exactly seven capabilities and no
+  stopped-run configuration command;
+- the deleted broad `create-application-run-services.ts` and its test remain
+  absent.
+
+No uncertainty path may perform a speculative write, retry, fallback to another
+execution family, or infer ownership from manager visibility. Canonical reread
+and current Personal result semantics are preserved exactly.
