@@ -15,6 +15,7 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 
 - `src/application-engine/services/application-engine-controller.ts`
 - `src/application-engine/services/application-engine-launcher.ts`
+- `src/application-engine/services/application-engine-control-request.ts`
 - `src/application-engine/services/application-engine-state-registry.ts`
 - `src/application-engine/services/application-engine-context-capability-handler.ts`
 - `src/application-engine/runtime/application-worker-supervisor.ts`
@@ -49,7 +50,7 @@ For a given `applicationId`, `ApplicationEngineLauncher`:
 6. writes `engine-status.json`, and
 7. exposes the ready status plus exposure summary to callers.
 
-Startup is de-duplicated per application so concurrent callers share one in-flight startup promise.
+Startup is de-duplicated per application so concurrent callers share one in-flight startup promise. Definition loading is a lifecycle-control request rather than application work: `ApplicationEngineControlRequest` owns its bounded response/close state, and a timeout is observable only after the worker has been terminated and its close has been awaited.
 
 ## Worker Contract
 
@@ -60,6 +61,8 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.
 - Worker notifications flow back to the host over the engine protocol and are re-published by the backend API gateway.
 - Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
+- Accepted application work is completion-coupled in both JSON-line RPC directions. Host-to-worker queries, commands, routes, GraphQL, WebSocket callbacks, lifecycle/event/artifact handlers, and worker-to-host context-capability calls remain pending until the remote handler returns its actual result or domain error, or until transport/worker close makes completion impossible. There is no independent live-work deadline that may report failure while the remote operation continues.
+- Bounded deadlines remain lifecycle controls only. Startup definition loading and stop/close may time out, but those paths abort the worker and await closure before exposing the timeout.
 
 ## Invocation Boundary
 
@@ -75,6 +78,8 @@ Once ready, `ApplicationEngineController` is the only owner used to invoke:
 - worker-originated context-capability requests.
 
 The gateway and orchestration owners both depend on this boundary instead of reaching into worker details directly.
+
+Because the public backend surface is synchronous, `ApplicationEngineClient` and `ApplicationWorkerHostBridgeClient` retain each correlation entry until the corresponding result/error or connection close. Callers must not add a local work timeout unless the same path first cancels or terminates the remote owner and proves the operation can no longer commit.
 
 ## Operational Artifacts
 

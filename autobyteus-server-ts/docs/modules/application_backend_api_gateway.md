@@ -86,6 +86,7 @@ This escape hatch is not used to implement `applicationClient.agentCommunication
 ## Engine Handoff
 
 - `ApplicationEngineLauncher` owns ensure/start/restart/stop; `ApplicationEngineController` owns attached worker handles, status/listeners, and query/command/route/GraphQL/WebSocket/event/artifact invocation.
+- Accepted backend queries, commands, routes, GraphQL work, and handler callbacks are synchronous completion-coupled operations. The engine retains their correlation until the worker returns the actual result/domain error or the worker/transport closes; it does not manufacture a local work-timeout response while the handler or a nested context capability continues. Bounded startup/stop controls terminate and await the worker before exposing timeout failure.
 - Status reads do not implicitly start the worker.
 - Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationHub`.
 - For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, agent execution and resources), see [`application_communication_model.md`](./application_communication_model.md).
