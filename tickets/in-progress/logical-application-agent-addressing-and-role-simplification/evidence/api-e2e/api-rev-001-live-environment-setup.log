@@ -1,0 +1,58 @@
+=== API-REV-001 live environment setup ===
+root=/private/tmp/api-rev-001-logical-addressing
+ports=43951,43960,31960
+definition_roots=shared,private (paths recorded in investigation)
+application_packages=brief-studio,socratic-math-teacher
+secret_values_logged=false
+$ secret importer dry-run standalone
+(node:6017) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TARGET /private/tmp/api-rev-001-logical-addressing/standalone/application.db
+TARGET_STATUS INITIALIZATION_REQUIRED
+provider.anthropic.api-key MISSING CREATE
+provider.autobyteus.api-key MISSING CREATE
+provider.deepseek.api-key MISSING CREATE
+provider.glm.api-key MISSING CREATE
+provider.google.vertex-express.api-key MISSING CREATE
+provider.grok.api-key MISSING CREATE
+provider.kimi.api-key MISSING CREATE
+provider.openai.api-key MISSING CREATE
+search.serpapi.api-key MISSING CREATE
+CREATE 9
+SKIP_CONFIGURED 0
+REPLACE 0
+BLOCKED 0
+INSTRUCTION SECRET_VAULT_INITIALIZATION_REQUIRED
+$ secret importer dry-run studio
+(node:6018) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TARGET /private/tmp/api-rev-001-logical-addressing/studio/application.db
+TARGET_STATUS INITIALIZATION_REQUIRED
+provider.anthropic.api-key MISSING CREATE
+provider.autobyteus.api-key MISSING CREATE
+provider.deepseek.api-key MISSING CREATE
+provider.glm.api-key MISSING CREATE
+provider.google.vertex-express.api-key MISSING CREATE
+provider.grok.api-key MISSING CREATE
+provider.kimi.api-key MISSING CREATE
+provider.openai.api-key MISSING CREATE
+search.serpapi.api-key MISSING CREATE
+CREATE 9
+SKIP_CONFIGURED 0
+REPLACE 0
+BLOCKED 0
+INSTRUCTION SECRET_VAULT_INITIALIZATION_REQUIRED
+actual_import_standalone=PASS configured=9 values_logged=false
+actual_import_studio=PASS configured=9 values_logged=false
+
+$ canonical standalone runtime credential target correction
+reason=standalone CLI owns data-dir/db/production.db and intentionally overrides package .env DATABASE_URL
+source=/Users/normy/.autobyteus/server-data/.env
+target=/private/tmp/api-rev-001-logical-addressing/standalone/db/production.db
+actual_import=PASS configured=9 skipped=0 values_logged=false
+
+$ secret importer dry-run brief standalone
+source=/Users/normy/.autobyteus/server-data/.env
+target=/private/tmp/api-rev-001-logical-addressing/brief-standalone/db/production.db
+dry_run=PASS values_logged=false
+actual_import_brief_standalone=PASS configured=9 skipped=0 values_logged=false

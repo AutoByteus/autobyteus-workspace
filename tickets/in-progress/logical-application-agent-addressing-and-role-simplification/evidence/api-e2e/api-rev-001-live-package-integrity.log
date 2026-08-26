@@ -1,0 +1,6 @@
+tracked_application_files=PASS count=99 byte_identical=true
+built_package app=brief-studio files=22 tree_digest=1ae4056e600df4fd0bfffa4e1814ecece04e39920f7a64cbd3d705239c8271b4
+retired_public_contract app=brief-studio PASS
+built_package app=socratic-math-teacher files=19 tree_digest=12d429abc45fae375883f10ec44a16f3913178333a77d78b15e2ba31082227f2
+retired_public_contract app=socratic-math-teacher PASS
+built_package_current_logical_contract=PASS apps=2

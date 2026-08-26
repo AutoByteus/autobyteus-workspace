@@ -1,0 +1,59 @@
+CRR-004 source audit 2026-08-26T17:13:51Z
+HEAD 31c674d0c31181c96d2198ed2b2f7a9996f2f4cb
+base 159dd376906374d2caa50251f98d4456f2584328
+--- status
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-coverage-investigation.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/api-e2e/
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/
+--- diff name-status
+M	autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts
+A	autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts
+M	autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts
+M	autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts
+M	autobyteus-server-ts/src/application-engine/worker/application-worker-entry.ts
+M	autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts
+M	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+A	autobyteus-server-ts/tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts
+A	autobyteus-server-ts/tests/unit/application-engine/application-engine-client.test.ts
+A	autobyteus-server-ts/tests/unit/application-engine/application-engine-control-request.test.ts
+M	autobyteus-server-ts/tests/unit/application-engine/application-engine-controller.test.ts
+A	autobyteus-server-ts/tests/unit/application-engine/application-worker-host-bridge-client.test.ts
+A	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/application-worker-operation-completion-contract.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-spec.md
+A	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/solution/sr-003-application-worker-completion-source-audit.log
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/implementation-handoff.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/implementation-revision-record.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/investigation-notes.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/logical-application-agent-addressing-transition-inventory.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/requirements.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/solution-revision-record.md
+--- diff check
+--- changed production effective lines and delta
+autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts effective=238 delta=21
+autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts effective=66 delta=73
+autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts effective=209 delta=7
+autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts effective=215 delta=4
+autobyteus-server-ts/src/application-engine/worker/application-worker-entry.ts effective=140 delta=5
+autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts effective=93 delta=33
+--- live correlation timeout scan
+--- control helper importers
+autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts
+autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts
+--- control helper invocations
+autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts:29:export const runApplicationEngineControlRequest = <T>(
+autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts:25:import { runApplicationEngineControlRequest } from "./application-engine-control-request.js";
+autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts:172:      const definition = await runApplicationEngineControlRequest<ApplicationWorkerLoadDefinitionResult>(
+autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts:36:import { runApplicationEngineControlRequest } from "./application-engine-control-request.js";
+autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts:203:      await runApplicationEngineControlRequest(
+--- timeout occurrences application-engine
+autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts:7:const APPLICATION_ENGINE_CONTROL_REQUEST_DEADLINE_MS = 30_000;
+autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts:19:      `Application engine control request timed out: ${method}`,
+autobyteus-server-ts/src/application-engine/services/application-engine-control-request.ts:37:  const deadline = setTimeout(() => {
+autobyteus-server-ts/src/application-engine/runtime/application-worker-supervisor.ts:105:      setTimeout(() => {
+autobyteus-server-ts/src/application-engine/worker/application-agent-stream-observer-registry.ts:50:    setTimeout(() => this.scheduleDrain(subscriptionId, registration), 0);
