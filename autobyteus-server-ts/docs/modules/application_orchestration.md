@@ -35,8 +35,11 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/stores/application-run-binding-store.ts`
 - `src/application-orchestration/stores/application-run-lookup-store.ts`
 - `src/application-orchestration/stores/application-execution-event-journal-store.ts`
+- `src/application-platform/execution/application-execution-scope.ts`
+- `src/application-platform/execution/application-execution-scope-contracts.ts`
+- `src/application-platform/execution/application-execution-scope-kernel-builder.ts`
+- `src/application-platform/execution/application-execution-shutdown-coordinator.ts`
 - `src/application-platform/runtime/create-application-orchestration-services.ts`
-- `src/application-platform/runtime/create-application-run-services.ts`
 
 ## Authority Boundary
 
@@ -139,14 +142,23 @@ the resolved effective configuration through the shared helpers in
 `@autobyteus/application-backend-sdk` to build the concrete runtime launch
 input each app needs.
 
-`createApplicationOrchestrationServices` and
-`createApplicationRunServices` construct named runtime services around the
-exact runtime-local definition services and injected `MemberTeamContextBuilder`.
-They prepare managers and factories only. `ApplicationRunBindingLaunchService`
-is the business-demand boundary that creates a new agent or team run; startup
-recovery only restores runs represented by recorded nonterminal bindings. No
-service locator or process-global team-definition fallback participates in
-either path.
+Each `ApplicationPlatformRuntime` owns one private `ApplicationExecutionScope`.
+`buildApplicationExecutionScopeKernel(...)` constructs the scope's Agent/Team
+managers, provider factories, task-execution identity capabilities, context-file
+normalizer, run resources, publication/projection services, and scoped Agent
+Tools authority from explicit inputs. The runtime exposes only the scope's
+frozen `agentExecution`, `teamExecution`, `streaming`, `artifacts`, `memory`,
+`toolReadiness`, and `lifecycle` capabilities to orchestration; it does not
+publish its managers through a service locator or process-global fallback.
+
+`ApplicationRunBindingLaunchService` remains the business-demand boundary that
+creates a new agent or team run through those capabilities; startup recovery
+only restores runs represented by recorded nonterminal bindings. Construction
+failure unwinds the partially built scope. Shutdown quiesces new work, stops
+Team runs before remaining Agent runs, revokes scope-owned Agent Tools sessions,
+and then closes the scope. General-process runs use a separate supervisor and
+session authority, so they cannot inherit application publication capability or
+application-local definition state.
 
 `ApplicationAvailabilityService` owns app-scoped liveness for applications discovered by the bundle layer:
 

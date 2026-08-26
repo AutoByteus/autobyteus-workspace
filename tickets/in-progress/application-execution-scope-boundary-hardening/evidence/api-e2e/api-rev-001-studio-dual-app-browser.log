@@ -1,0 +1,254 @@
+SOCRATIC_GATE_ENABLED false
+SOCRATIC_MOUNTED true
+SOCRATIC_STATE 0 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 2x + 3 = 11.
+Active
+Lesson lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+Updated 26.8.2026, 00:55:03
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 2x + 3 = 11.
+
+lessonId lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+
+Active
+Created 26.8.2026, 00:55:03
+Updated 26.8.2026, 00:55:03
+LESSON RECORD
+lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+Status active
+CONVERSATION
+1 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor is responding…
+
+Live text appears here while the tutor responds. Completed turns remain in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:55:03
+
+Solve 2x + 3 = 11.
+
+Send follow-up
+
+Wait for the current tutor response to be saved before sending another.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.started
+26.8.2026, 00:55:03
+{
+  "lessonId": "lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78",
+  "bindingId": "88fabe48-25cb-469a-9f5a-6a3b63b378d4",
+  "runId": "socratic_math_team_050dfe5c416f4769ac37ed2f30b45b5b",
+  "createdAt": "2026-08-25T22:55:03.520Z"
+}
+SOCRATIC_STATE 4 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 2x + 3 = 11.
+Active
+Lesson lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+Updated 26.8.2026, 00:55:14
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 2x + 3 = 11.
+
+lessonId lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+
+Active
+Created 26.8.2026, 00:55:03
+Updated 26.8.2026, 00:55:14
+LESSON RECORD
+lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+Status active
+CONVERSATION
+2 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor is responding…
+
+Live text appears here while the tutor responds. Completed turns remain in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:55:03
+
+Solve 2x + 3 = 11.
+
+Send follow-up
+
+Wait for the current tutor response to be saved before sending another.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 00:55:14
+{
+  "lessonId": "lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78",
+  "bindingId": "88fabe48-25cb-469a-9f5a-6a3b63b378d4",
+  "revisionId": "8db35259-b960-4458-ad53-0da639416300",
+  "runId": "socratic_math_tutor_9a1b1aa513d64c44afa046a5569bc9e2"
+}
+lesson.started
+26.8.2026, 00:55:03
+{
+  "lessonId": "lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78",
+  "bindingId": "88fabe48-25cb-469a-9f5a-6a3b63b378d4",
+  "runId": "socratic_math_team_050dfe5c416f4769ac37ed2f30b45b5b",
+  "createdAt": "2026-08-25T22:55:03.520Z"
+}
+SOCRATIC_STATE 5 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 2x + 3 = 11.
+Active
+Lesson lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+Updated 26.8.2026, 00:55:14
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 2x + 3 = 11.
+
+lessonId lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+
+Active
+Created 26.8.2026, 00:55:03
+Updated 26.8.2026, 00:55:14
+LESSON RECORD
+lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78
+Status active
+CONVERSATION
+2 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor response saved
+
+The authoritative tutor response is shown in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:55:03
+
+Solve 2x + 3 = 11.
+
+tutor
+Lesson_response
+26.8.2026, 00:55:14
+
+To begin, what operation could you use to remove the +3 from the left side while keeping the equation balanced?
+
+Send follow-up
+
+Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 00:55:14
+{
+  "lessonId": "lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78",
+  "bindingId": "88fabe48-25cb-469a-9f5a-6a3b63b378d4",
+  "revisionId": "8db35259-b960-4458-ad53-0da639416300",
+  "runId": "socratic_math_tutor_9a1b1aa513d64c44afa046a5569bc9e2"
+}
+lesson.started
+26.8.2026, 00:55:03
+{
+  "lessonId": "lesson-2ca5298f-62a2-4b16-9dbe-53f2715d2e78",
+  "bindingId": "88fabe48-25cb-469a-9f5a-6a3b63b378d4",
+  "runId": "socratic_math_team_050dfe5c416f4769ac37ed2f30b45b5b",
+  "createdAt": "2026-08-25T22:55:03.520Z"
+}
+SOCRATIC_RETAINED_PROVIDER_TURN true true
+BRIEF_REMOUNT_RETAINED true true

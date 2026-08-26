@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 
 const createSubject = () => {
   const runId = "support_agent_00000000000000000000000000000001";
@@ -22,15 +23,18 @@ const createSubject = () => {
       preparedExpiresAt: "2026-08-26T00:00:00.000Z",
     }),
   };
-  const lifecycleService = {
+  const lifecycleService = Object.assign(
+    Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
+    {
     activatePreparedRun: vi.fn().mockResolvedValue(activeRun),
-  };
+    },
+  );
   const service = new AgentRunService("/tmp/agent-run-service-test", {
     agentRunManager: agentRunManager as never,
     metadataService: metadataService as never,
     historyCatalogService: historyCatalogService as never,
     provisioningService: provisioningService as never,
-    lifecycleService: lifecycleService as never,
+    lifecycleService,
   });
 
   return {

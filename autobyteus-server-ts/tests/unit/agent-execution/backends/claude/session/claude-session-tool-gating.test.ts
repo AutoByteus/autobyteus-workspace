@@ -6,6 +6,7 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSession } from "../../../../../../src/agent-execution/backends/claude/session/claude-session.js";
+import { ClaudeProviderSessionLifecycle } from "../../../../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
@@ -26,10 +27,12 @@ vi.mock(
   }),
 );
 
+const PROVIDER_SESSION_ID = "12345678-1234-4234-8234-123456789abc";
+
 const createResultQuery = async function* () {
   yield {
     type: "result",
-    session_id: "claude-session-1",
+    session_id: PROVIDER_SESSION_ID,
     result: "done",
   };
 };
@@ -69,8 +72,9 @@ const createSession = (requestedToolNames: string[] = [], input: {
   const enabledTools = runtimeToolExposure.requestedToolNames.filter((toolName) =>
     supportedAgentToolsMcpNames.has(toolName),
   );
-  const createAgentToolMcpSession = vi.fn(() => ({
-    session: {},
+  const issueForRun = vi.fn((issueInput) => ({
+    sessionId: "session-gating",
+    owner: issueInput.owner,
     descriptor: {
       name: "autobyteus_agent_tools",
       transport: "streamable_http",
@@ -78,6 +82,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
       headers: { Authorization: "Bearer fake-token" },
       enabledTools,
     },
+    redactedDescriptor: {} as never,
   }));
 
   const runContext = new AgentRunContext({
@@ -113,6 +118,9 @@ const createSession = (requestedToolNames: string[] = [], input: {
 
   const session = new ClaudeSession({
     runContext,
+    providerSessionLifecycle: ClaudeProviderSessionLifecycle.reserveNew(
+      () => PROVIDER_SESSION_ID,
+    ),
     dependencies: {
       sessionMessageCache: {
         appendMessage: vi.fn(),
@@ -129,9 +137,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
         requestToolApprovalDecision: vi.fn(),
         clearPendingToolApprovals: vi.fn(),
       } as any,
-      agentToolMcpSessionService: {
-        createAgentToolMcpSession,
-      } as any,
+      agentToolMcpSessionIssuer: { issueForRun } as any,
       isRunSessionActive: () => true,
       terminateRunSession: vi.fn(async () => undefined),
     },
@@ -140,7 +146,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
   return {
     session,
     startQueryTurn,
-    createAgentToolMcpSession,
+    issueForRun,
   };
 };
 
@@ -151,7 +157,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("preserves configured-only standalone exposure without team defaults", async () => {
-    const { session, startQueryTurn, createAgentToolMcpSession } = createSession(["read_page"], {
+    const { session, startQueryTurn, issueForRun } = createSession(["read_page"], {
       memberTeamContext: null,
     });
 
@@ -175,7 +181,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );
-    expect(createAgentToolMcpSession).toHaveBeenCalledTimes(1);
+    expect(issueForRun).toHaveBeenCalledTimes(1);
   });
 
   it("enables team collaboration defaults and only configured browser tools", async () => {
@@ -264,7 +270,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
   it("creates an Agent Tools MCP session with member sender context when send_message_to is configured", async () => {
     const memberTeamContext = createMemberTeamContext();
-    const { session, createAgentToolMcpSession } = createSession(["send_message_to"], {
+    const { session, issueForRun } = createSession(["send_message_to"], {
       memberTeamContext,
     });
 
@@ -274,7 +280,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       abortController: new AbortController(),
     });
 
-    expect(createAgentToolMcpSession).toHaveBeenCalledWith(
+    expect(issueForRun).toHaveBeenCalledWith(
       expect.objectContaining({
         owner: expect.objectContaining({
           runId: "run-1",
@@ -301,7 +307,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("creates an Agent Tools MCP session with standalone sender context when no team context exists", async () => {
-    const { session, createAgentToolMcpSession } = createSession(["send_message_to"], {
+    const { session, issueForRun } = createSession(["send_message_to"], {
       memberTeamContext: null,
     });
 
@@ -311,7 +317,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       abortController: new AbortController(),
     });
 
-    expect(createAgentToolMcpSession).toHaveBeenCalledWith(
+    expect(issueForRun).toHaveBeenCalledWith(
       expect.objectContaining({
         owner: { runId: "run-1" },
         sender: expect.objectContaining({
@@ -325,10 +331,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh", async () => {
-    const { session, createAgentToolMcpSession } = createSession(["send_message_to"]);
-    createAgentToolMcpSession
-      .mockImplementationOnce(() => ({
-        session: {},
+    const { session, issueForRun } = createSession(["send_message_to"]);
+    issueForRun
+      .mockImplementationOnce((issueInput) => ({
+        sessionId: "live",
+        owner: issueInput.owner,
         descriptor: {
           name: "autobyteus_agent_tools",
           transport: "streamable_http",
@@ -336,9 +343,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           headers: { Authorization: "Bearer live" },
           enabledTools: ["send_message_to"],
         },
+        redactedDescriptor: {} as never,
       }))
-      .mockImplementationOnce(() => ({
-        session: {},
+      .mockImplementationOnce((issueInput) => ({
+        sessionId: "fresh",
+        owner: issueInput.owner,
         descriptor: {
           name: "autobyteus_agent_tools",
           transport: "streamable_http",
@@ -346,6 +355,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
           headers: { Authorization: "Bearer fresh" },
           enabledTools: ["send_message_to"],
         },
+        redactedDescriptor: {} as never,
       }));
 
     await (session as any).executeTurn({
@@ -359,7 +369,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       abortController: new AbortController(),
     });
 
-    expect(createAgentToolMcpSession).toHaveBeenCalledTimes(1);
+    expect(issueForRun).toHaveBeenCalledTimes(1);
     expect(buildClaudeSessionMcpServersMock).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({

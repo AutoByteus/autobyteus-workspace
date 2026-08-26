@@ -1,12 +1,11 @@
 import { isDeepStrictEqual } from "node:util";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
-import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
 import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
 import { TeamRun } from "../domain/team-run.js";
@@ -20,7 +19,7 @@ import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-de
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
-import { ModelConfigValidationService } from "../../llm-management/services/model-config-validation-service.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
 import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
@@ -33,6 +32,7 @@ import {
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
 import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
+import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -40,13 +40,14 @@ const required = (value: string, field: string): string => {
   return normalized;
 };
 
-type AgentTeamRunManagerOptions = Readonly<{
-  memoryDir?: string;
-  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
+export type AgentTeamRunManagerOptions = Readonly<{
+  memoryDir: string;
+  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore?: TeamRunExecutionTreeStore;
   taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
-  modelConfigValidator?: Pick<ModelConfigValidationService, "validate">;
+  modelConfigValidator: RunModelConfigValidator;
 }>;
 
 /** Process-wide catalog and lifecycle owner for root executions only. */
@@ -58,13 +59,17 @@ export class AgentTeamRunManager {
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
-  private readonly modelConfigValidator: Pick<ModelConfigValidationService, "validate">;
+  private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+  private readonly modelConfigValidator: RunModelConfigValidator;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
 
-  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
-    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
+  static getInstance(): AgentTeamRunManager {
+    if (!AgentTeamRunManager.instance) {
+      throw new Error("The process AgentTeamRunManager is not initialized.");
+    }
+    return AgentTeamRunManager.instance;
   }
 
   static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
@@ -79,15 +84,28 @@ export class AgentTeamRunManager {
     if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
   }
 
-  constructor(options: AgentTeamRunManagerOptions = {}) {
-    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+  constructor(options: AgentTeamRunManagerOptions) {
+    if (!options?.mixedTeamRunBackendFactory) {
+      throw new Error("mixedTeamRunBackendFactory is required.");
+    }
+    if (!options.taskExecutionIdentity ||
+        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
+        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
+      throw new Error("taskExecutionIdentity is required.");
+    }
+    if (!options.modelConfigValidator ||
+        typeof options.modelConfigValidator.validate !== "function") {
+      throw new Error("modelConfigValidator is required.");
+    }
+    const memoryDir = required(options.memoryDir, "memoryDir");
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
-    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
+    this.factory = options.mixedTeamRunBackendFactory;
+    this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
-    this.modelConfigValidator = options.modelConfigValidator ?? new ModelConfigValidationService();
+    this.modelConfigValidator = options.modelConfigValidator;
   }
 
   async createTeamRun(input: {
@@ -402,6 +420,7 @@ export class AgentTeamRunManager {
       messages: input.messages,
       persistence,
       publisher,
+      taskExecutionIdentity: this.taskExecutionIdentity,
       onTerminated: () => {
         if (root) this.unregister(input.tree.rootTeam.teamRunId, root);
       },

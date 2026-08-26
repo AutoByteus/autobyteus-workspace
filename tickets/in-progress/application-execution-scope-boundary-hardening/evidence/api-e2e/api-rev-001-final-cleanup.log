@@ -1,0 +1,44 @@
+utc_before=2026-08-25T23:13:18Z
+--- owned listeners before removal ---
+PORT 43351
+PORT 43360
+PORT 31360
+--- owned processes before removal ---
+utc_after=2026-08-25T23:13:20Z
+--- owned root exists ---
+NO
+--- owned listeners after removal ---
+PORT 43351
+PORT 43360
+PORT 31360
+--- owned processes after removal ---
+--- generated output restoration ---
+ABSENT autobyteus-application-sdk-contracts/dist
+ABSENT autobyteus-application-backend-sdk/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-server-ts/dist
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+ABSENT autobyteus-web/.nuxt
+PRESERVED autobyteus-ts/dist
+--- git diff check ---
+git_diff_check_exit=0
+--- git status ---
+ M tickets/in-progress/application-execution-scope-boundary-hardening/architecture-review-revision-record.md
+ M tickets/in-progress/application-execution-scope-boundary-hardening/design-review-report.md
+?? autobyteus-application-devkit/.tmp-tests/
+?? tickets/in-progress/application-execution-scope-boundary-hardening/api-e2e-coverage-investigation.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/code-review-report.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/code-review-revision-record.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/evidence/
+--- removed devkit temp output ---
+ABSENT
+--- secret scan final rerun follows in dedicated artifact ---
+--- final git status after ignored temp cleanup ---
+ M tickets/in-progress/application-execution-scope-boundary-hardening/architecture-review-revision-record.md
+ M tickets/in-progress/application-execution-scope-boundary-hardening/design-review-report.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/api-e2e-coverage-investigation.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/code-review-report.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/code-review-revision-record.md
+?? tickets/in-progress/application-execution-scope-boundary-hardening/evidence/

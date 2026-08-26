@@ -1,0 +1,18 @@
+{
+  "applications/brief-studio": {
+    "tracked_file_count": 54,
+    "tracked_vs_head_mismatches": [],
+    "tracked_aggregate_sha256": "9d34d8b683f923a8d3ff1600b0e7e59e17ddb7b67138372b93db54ddea60758b",
+    "package_file_count": 22,
+    "package_aggregate_sha256": "94b28fe82c87df7c94b73330764bb979ea4372ed4b1c8bc37b53f45298069d84",
+    "readme_contains_staging_or_previous": false
+  },
+  "applications/socratic-math-teacher": {
+    "tracked_file_count": 45,
+    "tracked_vs_head_mismatches": [],
+    "tracked_aggregate_sha256": "8e2948ad7b96062de954e4fc7150f72b54749e44493753c09e2276f188c1ce27",
+    "package_file_count": 19,
+    "package_aggregate_sha256": "17373e0c586912b8ce697e328b44a5514aba06b0bf579d2b0bf4aff1f15c4d3d",
+    "readme_contains_staging_or_previous": false
+  }
+}

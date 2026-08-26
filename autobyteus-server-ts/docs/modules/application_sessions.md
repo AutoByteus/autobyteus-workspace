@@ -17,13 +17,15 @@ The current implementation replaced the old session-owned model with application
 The current Agent Tools MCP sessions are ephemeral bearer capabilities, not a
 return of the former durable application-session identity:
 
-- `AgentToolsMcpRuntime` owns one process registry, tool catalog, executor,
-  dispatcher, and internal route family.
-- Each `ApplicationPlatformRuntime` creates an early
-  `ApplicationAgentToolMcpSessionScope`. Its exact run-resource manager and
-  active-run registry are constructed before the concrete publisher and later
-  `ScopedAgentToolMcpSessionManager`. General-process sessions use a separate
-  scope/manager and cannot inherit an application's publication capability.
+- `AgentToolsMcpHost` owns one process registry, tool catalog, executor,
+  dispatcher, session-authority factory, and internal route family.
+- Each `ApplicationPlatformRuntime` owns one private
+  `ApplicationExecutionScope`. Scope construction begins a
+  `ScopedAgentToolMcpSessionAuthorityAssembly`, constructs the exact run
+  resources and publication service, then completes the authority with the
+  concrete publication capability and readiness assertion. General-process
+  sessions use a separate authority and `GeneralProcessRunSupervisor`, so they
+  cannot inherit an application's publication capability or definition graph.
 - Both Studio and standalone register the internal
   `/mcp/agent-tools/:sessionId` route. The external `/mcp/gateway` client surface
   is separate and remains Studio-only.

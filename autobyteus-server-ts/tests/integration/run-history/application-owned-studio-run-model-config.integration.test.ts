@@ -174,7 +174,10 @@ describe("Application-owned Studio run-model configuration integration", () => {
         }));
         return {
           teamRunId,
-          getExecutionTreeSnapshot: () => executionTree,
+          members: [{
+            memberAddress: "/coordinator",
+            agentRunId: "application-team-member-run-1",
+          }],
         };
       }),
       terminateTeamRun,
@@ -186,8 +189,8 @@ describe("Application-owned Studio run-model configuration integration", () => {
       executionResourceResolver: executionResourceResolver as never,
       bindingStore,
       lookupStore,
-      agentRunService: agentRunService as never,
-      teamRunService: teamRunService as never,
+      agentExecution: agentRunService as never,
+      teamExecution: teamRunService as never,
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () => ({ id: AGENT_RESOURCE.definitionId, name: AGENT_RESOURCE.name })),
       } as never,
@@ -218,11 +221,11 @@ describe("Application-owned Studio run-model configuration integration", () => {
         attachBinding: vi.fn(async () => true),
         detachBinding: vi.fn(async () => undefined),
       },
-      agentRunService,
-      teamRunService,
+      agentExecution: agentRunService,
+      teamExecution: teamRunService,
       ingressService: {},
-      publishedArtifactProjectionService: {},
-      memoryLocationService: {},
+      artifacts: {},
+      memory: {},
       agentTargetAuthorizationService: {
         authorizeTarget: vi.fn(async (_applicationId: string, address: unknown) => ({ address })),
       },

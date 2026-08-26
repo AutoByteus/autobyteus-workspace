@@ -13,6 +13,7 @@ import { ClaudeSession } from "../../../src/agent-execution/backends/claude/sess
 import { buildClaudeSessionConfig } from "../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSessionMessageCache } from "../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
+import { ClaudeProviderSessionLifecycle } from "../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { InterAgentMessageRouter } from "../../../src/agent-team-execution/services/inter-agent-message-router.js";
@@ -62,9 +63,11 @@ const createControlledQuery = (): { query: ClaudeSdkQueryLike; release: () => vo
   };
 };
 
+const PROVIDER_SESSION_ID = "12345678-1234-4234-8234-123456789abc";
+
 const createCompletedQuery = (): ClaudeSdkQueryLike => ({
   async *[Symbol.asyncIterator]() {
-    yield { type: "result", session_id: "claude-session-1", result: "done" };
+    yield { type: "result", session_id: PROVIDER_SESSION_ID, result: "done" };
   },
   interrupt: vi.fn(async () => undefined),
   close: vi.fn(() => undefined),
@@ -103,6 +106,9 @@ describe("InterAgentMessageRouter Claude input admission", () => {
     });
     const session = new ClaudeSession({
       runContext: runContext as never,
+      providerSessionLifecycle: ClaudeProviderSessionLifecycle.reserveNew(
+        () => PROVIDER_SESSION_ID,
+      ),
       dependencies: {
         sessionMessageCache: messageCache,
         sdkClient: {
@@ -115,9 +121,10 @@ describe("InterAgentMessageRouter Claude input admission", () => {
           new Map(),
           () => undefined,
         ),
-        agentToolMcpSessionService: {
-          createAgentToolMcpSession: vi.fn(() => ({
-            session: {},
+        agentToolMcpSessionIssuer: {
+          issueForRun: vi.fn((input) => ({
+            sessionId: "claude-input-test",
+            owner: input.owner,
             descriptor: {
               name: "autobyteus_agent_tools",
               transport: "streamable_http",
@@ -125,6 +132,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
               headers: { Authorization: "Bearer test-only" },
               enabledTools: [],
             },
+            redactedDescriptor: {} as never,
           })),
         } as never,
         isRunSessionActive: () => true,
@@ -136,7 +144,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
     await vi.waitFor(() => expect(startQueryTurn).toHaveBeenCalledTimes(1));
 
     const backend = new ClaudeAgentRunBackend(runContext as never, session);
-    const run = new AgentRun({ context: runContext, backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: runContext, backend });
     const request = buildRequest();
     const result = await new InterAgentMessageRouter().deliver({ recipientRun: run, request });
 
@@ -147,7 +155,7 @@ describe("InterAgentMessageRouter Claude input admission", () => {
 
     await vi.waitFor(() => expect(startQueryTurn).toHaveBeenCalledTimes(2));
     const cachedUserMessages = messageCache
-      .getCachedMessages("claude-session-1")
+      .getCachedMessages(PROVIDER_SESSION_ID)
       .filter((message) => message.role === "user");
     expect(cachedUserMessages).toHaveLength(2);
     expect(cachedUserMessages[1]?.content).toContain("The delegated analysis is complete.");

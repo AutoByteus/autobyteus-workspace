@@ -1,6 +1,6 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import { getModelCatalogService, type ModelCatalogService } from "./model-catalog-service.js";
+import type { ModelCatalogService } from "./model-catalog-service.js";
 import type { RunModelConfigFieldError } from "../../run-history/domain/run-model-config.js";
 
 export type ModelConfigValidationResult =
@@ -8,6 +8,8 @@ export type ModelConfigValidationResult =
   | Readonly<{ kind: "model_unavailable" }>
   | Readonly<{ kind: "schema_unavailable" }>
   | Readonly<{ kind: "invalid"; errors: readonly RunModelConfigFieldError[] }>;
+
+export type RunModelConfigValidator = Pick<ModelConfigValidationService, "validate">;
 
 type JsonSchema = Readonly<Record<string, unknown>>;
 
@@ -113,7 +115,11 @@ const validateValue = (
 };
 
 export class ModelConfigValidationService {
-  constructor(private readonly catalog: Pick<ModelCatalogService, "listLlmModels"> = getModelCatalogService()) {}
+  constructor(private readonly catalog: Pick<ModelCatalogService, "listLlmModels">) {
+    if (!catalog || typeof catalog.listLlmModels !== "function") {
+      throw new Error("Model catalog is required.");
+    }
+  }
 
   async validate(input: {
     runtimeKind: RuntimeKind;

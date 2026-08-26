@@ -120,6 +120,7 @@ const exactCommandCoordinator = (
     metadataService: current.metadataService as never,
     historyCatalogService: current.historyCatalogService as never,
     workspaceManager: current.workspaceManager as never,
+    provisioningService: {} as never,
     lifecycleService: current.service,
   });
   return new AgentRunCommandCoordinator({
@@ -136,6 +137,26 @@ const exactCommandCoordinator = (
 };
 
 describe("StandaloneAgentRunLifecycleService", () => {
+  it.each(["omitted", null, undefined] as const)(
+    "rejects a %s root-selected model validator",
+    (value) => {
+      const deps: Record<string, unknown> = {
+        agentRunManager: {},
+        metadataService: {},
+        historyCatalogService: {},
+        workspaceManager: {},
+        tokenUsageReadiness: {},
+        modelConfigValidator: { validate: vi.fn() },
+      };
+      if (value === "omitted") delete deps.modelConfigValidator;
+      else deps.modelConfigValidator = value;
+      expect(() => Reflect.construct(
+        StandaloneAgentRunLifecycleService,
+        ["/unused", deps],
+      )).toThrow("modelConfigValidator is required.");
+    },
+  );
+
   it("rejects a pre-existing run before any provider candidate is constructed while history is degraded", async () => {
     configureTokenUsageMigrationReadiness({
       kind: "CURRENT_SCHEMA_DEGRADED",

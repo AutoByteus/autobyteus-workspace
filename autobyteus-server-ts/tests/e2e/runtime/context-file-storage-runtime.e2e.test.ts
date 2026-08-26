@@ -17,6 +17,8 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ContextFileLocalPathResolver } from "../../../src/context-files/services/context-file-local-path-resolver.js";
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
+import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
@@ -569,8 +571,18 @@ runLiveContextFileRuntimeE2e(
         });
 
         const apiApp = await createApiApp();
-        const layout = new ContextFileLayout();
-        const resolver = new ContextFileLocalPathResolver();
+        const memoryDir = appConfigProvider.config.getMemoryDir();
+        const layout = new ContextFileLayout({
+          appDataDir: appConfigProvider.config.getAppDataDir(),
+          memoryDir,
+        });
+        const resolver = new ContextFileLocalPathResolver({
+          layout,
+          ownerResolver: new ContextFileOwnerResolver({
+            locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+          }),
+          baseUrl: apiApp.httpOrigin,
+        });
         const attachmentBytes = Buffer.from(RED_PNG_BASE64, "base64");
         const draftOwner = {
           kind: "agent_draft",
@@ -671,8 +683,18 @@ runLiveContextFileRuntimeE2e(
         });
 
         const apiApp = await createApiApp();
-        const layout = new ContextFileLayout();
-        const resolver = new ContextFileLocalPathResolver();
+        const memoryDir = appConfigProvider.config.getMemoryDir();
+        const layout = new ContextFileLayout({
+          appDataDir: appConfigProvider.config.getAppDataDir(),
+          memoryDir,
+        });
+        const resolver = new ContextFileLocalPathResolver({
+          layout,
+          ownerResolver: new ContextFileOwnerResolver({
+            locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+          }),
+          baseUrl: apiApp.httpOrigin,
+        });
         const attachmentBytes = Buffer.from(BLUE_PNG_BASE64, "base64");
         const draftOwner = {
           kind: "team_member_draft",

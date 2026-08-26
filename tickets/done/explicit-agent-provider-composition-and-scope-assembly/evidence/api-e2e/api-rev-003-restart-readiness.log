@@ -1,0 +1,15 @@
+{
+  "standalone": {
+    "status": 200,
+    "contentType": "text/html"
+  },
+  "studio": {
+    "status": 200,
+    "contentType": "application/json; charset=utf-8"
+  },
+  "nuxt": {
+    "status": 200,
+    "contentType": "text/html;charset=utf-8"
+  },
+  "pass": true
+}

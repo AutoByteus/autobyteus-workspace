@@ -64,9 +64,9 @@ resets that override so the bundle-owned package baseline becomes effective.
 
 Both `buildStudioServer` and `buildStandaloneApplicationServer` register
 `/mcp/agent-tools/:sessionId` from the same process-owned
-`AgentToolsMcpRuntime`. Each application runtime issues sessions through its
-`ScopedAgentToolMcpSessionManager`; authenticated publication uses only that
-session's `PublishedArtifactPublisher`. Studio's `/mcp/gateway` remains a
+`AgentToolsMcpHost`. Each application runtime issues sessions through its
+`ScopedAgentToolMcpSessionAuthority`; authenticated publication uses only that
+scope's `PublishedArtifactPublisher`. Studio's `/mcp/gateway` remains a
 separate external-client boundary and is not registered by standalone.
 
 ### WebSocket notifications

@@ -14,7 +14,7 @@ import {
   isAgentRunActivationQuarantineError,
 } from "../errors.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
-import { ModelConfigValidationService } from "../../llm-management/services/model-config-validation-service.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
 import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
@@ -40,7 +40,7 @@ export class StandaloneAgentRunLifecycleService {
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
-  private readonly modelConfigValidator: Pick<ModelConfigValidationService, "validate">;
+  private readonly modelConfigValidator: RunModelConfigValidator;
 
   constructor(
     memoryDir: string,
@@ -51,15 +51,19 @@ export class StandaloneAgentRunLifecycleService {
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
         "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
-      modelConfigValidator?: Pick<ModelConfigValidationService, "validate">;
-    } = {},
+      modelConfigValidator: RunModelConfigValidator;
+    },
   ) {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService = deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService = deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
     this.tokenUsageReadiness = deps.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
-    this.modelConfigValidator = deps.modelConfigValidator ?? new ModelConfigValidationService();
+    if (!deps.modelConfigValidator ||
+        typeof deps.modelConfigValidator.validate !== "function") {
+      throw new Error("modelConfigValidator is required.");
+    }
+    this.modelConfigValidator = deps.modelConfigValidator;
   }
 
   async resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {

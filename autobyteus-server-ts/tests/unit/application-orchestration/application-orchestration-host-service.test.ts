@@ -165,7 +165,10 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     };
 
     const agentRunService = {
-      resolveAgentRun: vi.fn(async () => fakeRun),
+      postAgentInput: vi.fn(async (_runId, message) => {
+        await fakeRun.postUserMessage(message);
+        return { kind: "ACCEPTED" };
+      }),
     };
 
     const binding = buildBinding();
@@ -188,7 +191,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
       runObserverService,
-      agentRunService: agentRunService as never,
+      agentExecution: agentRunService as never,
     });
 
     const startAgentPromise = hostService.startAgent(applicationId, {
@@ -290,8 +293,8 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         requireApplicationActive: vi.fn(async () => undefined),
       } as never,
       bindingStore: bindingStore as never,
-      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
-      memoryLocationService: memoryLocationService as never,
+      artifacts: publishedArtifactProjectionService as never,
+      memory: memoryLocationService as never,
     });
 
     await expect(
@@ -352,8 +355,8 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: {
         listBindings: vi.fn(async () => [cloneBinding(binding)]),
       } as never,
-      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
-      memoryLocationService: {
+      artifacts: publishedArtifactProjectionService as never,
+      memory: {
         resolveTeamMemberLocation: vi.fn(async () => ({
           memoryDir: "/tmp/memory/agent_teams/team-run-1/child-review-team-run/reviewer-member-run-1",
         })),
@@ -380,8 +383,11 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: {
         getBinding: vi.fn(async () => cloneBinding(binding)),
       } as never,
-      teamRunService: {
-        resolveActiveTeamRun: vi.fn(async () => ({ postMessage })),
+      teamExecution: {
+        postTeamInput: vi.fn(async (_teamRunId, message, targetAgentRunId) => {
+          await postMessage(message, targetAgentRunId);
+          return { kind: "ACCEPTED" };
+        }),
       } as never,
       agentTargetAuthorizationService: {
         authorizeTarget: vi.fn(async (_applicationId, address) => ({
@@ -421,8 +427,11 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: {
         getBinding: vi.fn(async () => cloneBinding(binding)),
       } as never,
-      teamRunService: {
-        resolveActiveTeamRun: vi.fn(async () => ({ postMessage })),
+      teamExecution: {
+        postTeamInput: vi.fn(async (_teamRunId, message, targetAgentRunId) => {
+          await postMessage(message, targetAgentRunId);
+          return { kind: "ACCEPTED" };
+        }),
       } as never,
       agentTargetAuthorizationService: {
         authorizeTarget: vi.fn(async (_applicationId, address) => ({

@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
@@ -20,11 +22,19 @@ describe("AgentRunService termination", () => {
       recordPreparedRun: vi.fn(),
       recordRunStarted: vi.fn(),
     };
+    const lifecycleService = Object.create(
+      StandaloneAgentRunLifecycleService.prototype,
+    ) as StandaloneAgentRunLifecycleService;
+    const provisioningService = Object.create(
+      AgentRunProvisioningService.prototype,
+    ) as AgentRunProvisioningService;
 
     const service = new AgentRunService("/tmp/agent-run-service-test", {
       agentRunManager: agentRunManager as never,
       metadataService: metadataService as never,
       historyCatalogService: historyCatalogService as never,
+      provisioningService,
+      lifecycleService,
     });
 
     return { service, mocks: { agentRunManager, metadataService, historyCatalogService } };
@@ -114,7 +124,7 @@ describe("AgentRunService termination", () => {
     expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
-  it("updates platform handle metadata and records catalog termination when metadata exists", async () => {
+  it("does not rewrite durable metadata and records catalog termination when metadata exists", async () => {
     const { service, mocks } = createSubject({
       metadata: {
         runId: "run-4",
@@ -138,21 +148,7 @@ describe("AgentRunService termination", () => {
 
     await service.terminateAgentRun("run-4");
 
-    expect(mocks.metadataService.writeMetadata).toHaveBeenCalledWith("run-4", {
-      runId: "run-4",
-      agentDefinitionId: "agent-1",
-      workspaceRootPath: "/tmp/workspace",
-      memoryDir: "/tmp/agent-run-service-test/agents/run-4",
-      llmModelIdentifier: "gpt-test",
-      llmConfig: null,
-      autoExecuteTools: false,
-      skillAccessMode: null,
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      platformAgentRunId: "thread-new",
-      startedAt: "2026-05-17T00:05:00.000Z",
-    });
-    const written = mocks.metadataService.writeMetadata.mock.calls[0][1];
-    expect(written).not.toHaveProperty("lastKnownStatus");
+    expect(mocks.metadataService.writeMetadata).not.toHaveBeenCalled();
     expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "run-4" });
   });
 
@@ -187,7 +183,21 @@ describe("AgentRunService termination", () => {
     const actualError = errorEvents.find((event) => event.eventType === AgentRunEventType.ERROR)!;
 
     emitRunEvent(reasoningEnd);
-    emitRunEvent(actualError);
+    emitRunEvent({
+      ...actualError,
+      payload: {
+        ...actualError.payload,
+        error_scope: "turn",
+        error_effect: "terminal",
+        turn_id: "turn-1",
+      },
+    });
+    emitRunEvent({
+      runId: "run-codex-error",
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status: "error" },
+      statusHint: "ERROR",
+    });
 
     expect(reasoningEnd.statusHint).toBeNull();
     expect(observed).toHaveBeenNthCalledWith(1, expect.objectContaining({ phase: "ATTACHED" }));

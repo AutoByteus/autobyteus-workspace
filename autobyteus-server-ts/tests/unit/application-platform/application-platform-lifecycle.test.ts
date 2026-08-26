@@ -18,12 +18,8 @@ const createDependencies = () => ({
       isApplicationReady: vi.fn(() => true),
       getDiagnosticsByApplicationId: vi.fn(() => new Map()),
     },
-    agentToolsSessionManager: {
-      assertReady: vi.fn(),
-      blockNewSessions: vi.fn(),
-      close: vi.fn(),
-    },
   },
+  executionReadiness: { assertReady: vi.fn() },
   bundleService: {
     getCatalogSnapshot: vi.fn(async () => ({
       applications: [
@@ -69,7 +65,10 @@ const createDependencies = () => ({
     awaitDrained: vi.fn(async () => undefined),
   },
   engineLauncher: { stopAll: vi.fn(async () => undefined) },
-  runShutdownCoordinator: { stopAllRuns: vi.fn(async () => undefined) },
+  executionLifecycle: {
+    quiesce: vi.fn(),
+    close: vi.fn(async () => undefined),
+  },
   streamingService: { stopAll: vi.fn(async () => undefined) },
 });
 
@@ -87,7 +86,7 @@ describe("ApplicationPlatformLifecycle", () => {
       dependencies.preparation.toolReadiness.registerRequiredGroups,
     );
     expect(
-      dependencies.preparation.agentToolsSessionManager.assertReady,
+      dependencies.executionReadiness.assertReady,
     ).toHaveBeenCalledAfter(
       dependencies.preparation.toolReadiness.registerRequiredGroups,
     );
@@ -187,13 +186,10 @@ describe("ApplicationPlatformLifecycle", () => {
     await expect(lifecycle.stop()).resolves.toBeUndefined();
     expect(lifecycle.getState()).toBe("stopped");
     expect(
-      dependencies.preparation.agentToolsSessionManager.blockNewSessions,
+      dependencies.executionLifecycle.quiesce,
     ).toHaveBeenCalledTimes(1);
     expect(dependencies.engineLauncher.stopAll).toHaveBeenCalledTimes(1);
-    expect(dependencies.runShutdownCoordinator.stopAllRuns).toHaveBeenCalledTimes(1);
-    expect(
-      dependencies.preparation.agentToolsSessionManager.close,
-    ).toHaveBeenCalledTimes(1);
+    expect(dependencies.executionLifecycle.close).toHaveBeenCalledTimes(1);
   });
 
   it("stops all owned boundaries in order, remains idempotent, and reports cleanup failures after continuing", async () => {
@@ -204,8 +200,8 @@ describe("ApplicationPlatformLifecycle", () => {
       if (error) throw error;
     });
     dependencies.eventDispatchService.stop = record("events");
-    dependencies.preparation.agentToolsSessionManager.blockNewSessions =
-      vi.fn(() => order.push("session-block"));
+    dependencies.executionLifecycle.quiesce =
+      vi.fn(() => order.push("execution-quiesce"));
     dependencies.agentCommunicationService.closeAll = record("communication");
     dependencies.backendGateway.dispose = record("gateway") as never;
     dependencies.backendWebSocketSessionService.dispose = record(
@@ -218,12 +214,10 @@ describe("ApplicationPlatformLifecycle", () => {
       vi.fn(() => order.push("artifact-intake-stop"));
     dependencies.artifactDeliveryService.awaitDrained = record("artifact-drain");
     dependencies.engineLauncher.stopAll = record("workers");
-    dependencies.runShutdownCoordinator.stopAllRuns = record(
-      "runs",
+    dependencies.executionLifecycle.close = record(
+      "execution-close",
       new Error("runtime run shutdown failed"),
     );
-    dependencies.preparation.agentToolsSessionManager.close =
-      record("sessions") as never;
     dependencies.streamingService.stopAll = record("streaming");
     const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
 
@@ -232,7 +226,7 @@ describe("ApplicationPlatformLifecycle", () => {
       message: "Application platform lifecycle cleanup failed.",
     });
     expect(order).toEqual([
-      "session-block",
+      "execution-quiesce",
       "events",
       "communication",
       "gateway",
@@ -242,8 +236,7 @@ describe("ApplicationPlatformLifecycle", () => {
       "artifact-drain",
       "observers",
       "workers",
-      "runs",
-      "sessions",
+      "execution-close",
       "streaming",
     ]);
     expect(lifecycle.getState()).toBe("stopped");
@@ -251,6 +244,6 @@ describe("ApplicationPlatformLifecycle", () => {
     await expect(lifecycle.stop()).rejects.toMatchObject({
       name: "AggregateError",
     });
-    expect(order).toHaveLength(13);
+    expect(order).toHaveLength(12);
   });
 });

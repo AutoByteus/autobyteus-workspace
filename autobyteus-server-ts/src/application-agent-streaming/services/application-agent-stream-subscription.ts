@@ -18,7 +18,7 @@ import {
 } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentEventMapper } from "./application-agent-stream-event-mapper.js";
 import { ApplicationAgentStreamProjectionError } from "./application-agent-stream-event-projector.js";
-import { ApplicationAgentStreamRuntimeSource } from "./application-agent-stream-runtime-source.js";
+import type { ApplicationExecutionStreaming } from "../../application-platform/execution/application-execution-scope-contracts.js";
 
 type State =
   | "ESTABLISHING"
@@ -45,7 +45,7 @@ export class ApplicationAgentStreamSubscription {
     applicationId: string;
     address: ApplicationAgentTargetAddress;
     orchestration: Pick<ApplicationOrchestrationHostService, "openAgentEventStreamLease">;
-    runtimeSource: ApplicationAgentStreamRuntimeSource;
+    runtimeSource: ApplicationExecutionStreaming;
     mapper: ApplicationAgentEventMapper;
     emitter: ApplicationAgentStreamEmitter;
     onPreReadyTerminal: () => void;

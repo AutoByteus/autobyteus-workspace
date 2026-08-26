@@ -12,7 +12,7 @@ import {
   type ApplicationAgentStreamEmitter,
 } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentEventMapper } from "./application-agent-stream-event-mapper.js";
-import { ApplicationAgentStreamRuntimeSource } from "./application-agent-stream-runtime-source.js";
+import type { ApplicationExecutionStreaming } from "../../application-platform/execution/application-execution-scope-contracts.js";
 import { ApplicationAgentStreamSubscription } from "./application-agent-stream-subscription.js";
 
 const keyFor = (applicationId: string, subscriptionId: string): string => `${applicationId}\u0000${subscriptionId}`;
@@ -27,7 +27,7 @@ export class ApplicationAgentStreamingService {
   private readonly subscriptions = new Map<string, ApplicationAgentStreamSubscription>();
   constructor(private readonly dependencies: {
     orchestrationHostService: ApplicationOrchestrationHostService;
-    runtimeSource: ApplicationAgentStreamRuntimeSource;
+    runtimeSource: ApplicationExecutionStreaming;
     mapper: ApplicationAgentEventMapper;
   }) {}
 

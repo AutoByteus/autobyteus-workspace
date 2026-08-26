@@ -22,6 +22,10 @@ projection through one server-owned boundary.
   addresses while runtime traversal remains internal to the manager tree.
 - Per-Agent runtime selection stays below the Team boundary. `AgentRunManager`
   selects the AutoByteus, Codex, or Claude backend from each launch setting.
+  Each execution family injects its own provider factories, definition
+  services, session authority, memory/context environment, and task-execution
+  identity capabilities; Team execution never reaches across to another
+  family's manager or identity allocator.
 
 ## Launch-Time Identity
 
@@ -124,6 +128,12 @@ A failed pre-durability attempt aborts the private candidate and is retryable
 only after cleanup is confirmed. An indeterminate durable write, publication
 failure after durability, or uncertain candidate cleanup fail-stops/quarantines
 the owning root or run instead of admitting duplicate work.
+
+Task delegation receives narrow capabilities from
+`createTaskExecutionIdentityCapabilities(...)` rather than an Agent manager or
+allocator object. The task path may allocate and inspect only the identities it
+needs, preserving the same General Process versus Application execution-family
+boundary for task Agents and task Teams.
 
 ## Stopped Team Model Configuration
 

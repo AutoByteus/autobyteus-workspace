@@ -10,6 +10,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { IssuedAgentToolMcpSession } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
 import {
   toAgentToolMcpOperationResult,
@@ -37,6 +38,19 @@ const buildService = (
   getInternalBaseUrl: () => "http://127.0.0.1:8080",
   executionCapabilities: { publishedArtifactPublisher: publisher },
 });
+
+const resolveIssuedSession = (
+  registry: AgentToolMcpSessionRegistry,
+  issued: IssuedAgentToolMcpSession,
+) => {
+  const bearerToken = issued.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+  const resolved = registry.resolveSession({
+    sessionId: issued.sessionId,
+    bearerToken,
+  });
+  if (!resolved.ok) throw new Error(`Expected issued session: ${resolved.reason}`);
+  return { bearerToken, session: resolved.session };
+};
 
 class FakeConfiguredMcpTool extends BaseTool {
   static getDescription(): string { return "Fake configured MCP tool"; }
@@ -109,17 +123,18 @@ describe("AgentToolMcpSessionService", () => {
       enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
       headers: { Authorization: expect.stringMatching(/^Bearer\s+\S+$/) },
     });
+    const { bearerToken: rawToken, session } = resolveIssuedSession(registry, result);
     expect(result.descriptor.serverUrl).toBe(
-      `http://127.0.0.1:8080/mcp/agent-tools/${result.session.sessionId}`,
+      `http://127.0.0.1:8080/mcp/agent-tools/${result.sessionId}`,
     );
-    const rawToken = result.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(result.session.tokenHash.toString("utf8")).not.toContain(rawToken);
-    expect(registry.resolveSession({ sessionId: result.session.sessionId, bearerToken: rawToken }).ok).toBe(true);
+    expect(session.tokenHash.toString("utf8")).not.toContain(rawToken);
 
     expect(result.redactedDescriptor.headers.Authorization).toBe("Bearer <redacted>");
     expect(result.redactedDescriptor.serverUrl).toBe("http://127.0.0.1:8080/mcp/agent-tools/%3Credacted%3E");
     expect(JSON.stringify(result.redactedDescriptor)).not.toContain(rawToken);
-    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.session.sessionId);
+    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.sessionId);
+    expect(Object.isFrozen(result)).toBe(true);
+    expect(Object.isFrozen(result.owner)).toBe(true);
   });
 
   it("creates descriptor enabled tools and session sources for selected configured MCP registry tools", () => {
@@ -150,11 +165,15 @@ describe("AgentToolMcpSessionService", () => {
       "db_query",
       SEND_MESSAGE_TO_TOOL_NAME,
     ]);
-    expect(result.session.enabledTools).toEqual(result.descriptor.enabledTools);
-    expect(result.session.configuredMcpToolSources).toEqual([
+    const { bearerToken: rawToken, session } = resolveIssuedSession(
+      sessionRegistry,
+      result,
+    );
+    expect(session.enabledTools).toEqual(result.descriptor.enabledTools);
+    expect(session.configuredMcpToolSources).toEqual([
       { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
     ]);
-    expect(result.session.toolRoutes).toEqual({
+    expect(session.toolRoutes).toEqual({
       [SEND_MESSAGE_TO_TOOL_NAME]: {
         kind: "static_adapter",
         toolName: SEND_MESSAGE_TO_TOOL_NAME,
@@ -167,18 +186,14 @@ describe("AgentToolMcpSessionService", () => {
     });
     expect(result.redactedDescriptor.enabledTools).toEqual(result.descriptor.enabledTools);
 
-    const rawToken = result.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(JSON.stringify(result.session.configuredMcpToolSources)).not.toContain(rawToken);
+    expect(JSON.stringify(session.configuredMcpToolSources)).not.toContain(rawToken);
     expect(JSON.stringify(result.redactedDescriptor)).not.toContain(rawToken);
-    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.session.sessionId);
-    expect(sessionRegistry.resolveSession({
-      sessionId: result.session.sessionId,
-      bearerToken: rawToken,
-    }).ok).toBe(true);
+    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.sessionId);
   });
 
   it("does not expose send_message_to when it was not configured", () => {
-    const service = buildService();
+    const registry = new AgentToolMcpSessionRegistry();
+    const service = buildService(registry);
 
     const result = service.createAgentToolMcpSession({
       owner: { runId: "run-2" },
@@ -187,7 +202,7 @@ describe("AgentToolMcpSessionService", () => {
     });
 
     expect(result.descriptor.enabledTools).toEqual([]);
-    expect(result.session.enabledTools).toEqual([]);
+    expect(resolveIssuedSession(registry, result).session.enabledTools).toEqual([]);
   });
 
   it("resolves beyond the old active TTL, revokes explicitly, and revokes sessions by owner identity", () => {
@@ -201,16 +216,16 @@ describe("AgentToolMcpSessionService", () => {
     });
     const token = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
 
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token }).ok).toBe(true);
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: "wrong" })).toMatchObject({
+    expect(registry.resolveSession({ sessionId: created.sessionId, bearerToken: token }).ok).toBe(true);
+    expect(registry.resolveSession({ sessionId: created.sessionId, bearerToken: "wrong" })).toMatchObject({
       ok: false,
       reason: "token_mismatch",
     });
 
     now = new Date("2026-06-14T00:00:00.001Z");
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token }).ok).toBe(true);
-    expect(service.revokeAgentToolMcpSession(created.session.sessionId)).toBe(true);
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token })).toMatchObject({
+    expect(registry.resolveSession({ sessionId: created.sessionId, bearerToken: token }).ok).toBe(true);
+    expect(service.revokeAgentToolMcpSession(created.sessionId)).toBe(true);
+    expect(registry.resolveSession({ sessionId: created.sessionId, bearerToken: token })).toMatchObject({
       ok: false,
       reason: "revoked",
     });
@@ -228,12 +243,12 @@ describe("AgentToolMcpSessionService", () => {
     const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
     expect(service.revokeAgentToolMcpSessionsForRun("member-run-3")).toBe(1);
-    expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
+    expect(registry.resolveSession({ sessionId: second.sessionId, bearerToken: secondToken })).toMatchObject({
       ok: false,
       reason: "revoked",
     });
     expect(registry.resolveSession({
-      sessionId: nonMatching.session.sessionId,
+      sessionId: nonMatching.sessionId,
       bearerToken: nonMatchingToken,
     }).ok).toBe(true);
   });
@@ -250,11 +265,11 @@ describe("AgentToolMcpSessionService", () => {
     const freshRegistry = new AgentToolMcpSessionRegistry();
 
     expect(originalRegistry.resolveSession({
-      sessionId: created.session.sessionId,
+      sessionId: created.sessionId,
       bearerToken: oldToken,
     }).ok).toBe(true);
     expect(freshRegistry.resolveSession({
-      sessionId: created.session.sessionId,
+      sessionId: created.sessionId,
       bearerToken: oldToken,
     })).toMatchObject({ ok: false, reason: "missing_session" });
   });
@@ -279,19 +294,20 @@ describe("AgentToolMcpSessionService", () => {
       runtimeExposure: buildRuntimeAgentToolExposure([]),
     });
 
-    expect(result.session.executionCapabilities).toMatchObject({
+    const { session } = resolveIssuedSession(registry, result);
+    expect(session.executionCapabilities).toMatchObject({
       kind: "team_member",
       publishedArtifactPublisher: publisher,
       taskDelegation: { identity: memberTeamContext.identity },
     });
-    if (result.session.executionCapabilities.kind !== "team_member") {
+    if (session.executionCapabilities.kind !== "team_member") {
       throw new Error("Expected Team-member capabilities.");
     }
-    expect(result.session.executionCapabilities.taskDelegation.identity)
+    expect(session.executionCapabilities.taskDelegation.identity)
       .not.toBe(memberTeamContext.identity);
-    expect(result.session.executionCapabilities.taskDelegation.rootResolver)
+    expect(session.executionCapabilities.taskDelegation.rootResolver)
       .toBe(rootResolver);
-    expect(Object.isFrozen(result.session.executionCapabilities.taskDelegation)).toBe(true);
+    expect(Object.isFrozen(session.executionCapabilities.taskDelegation)).toBe(true);
   });
 
   it.each([

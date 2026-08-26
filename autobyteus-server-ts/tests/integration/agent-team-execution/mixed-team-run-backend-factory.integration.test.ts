@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+import {
+  MixedTeamRunBackendFactory,
+  type MixedTeamManagerConstructionInput,
+} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
@@ -10,12 +13,13 @@ import {
   testMemberTaskRootResolver,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 const createManagerStub = () => ({
   isActive: vi.fn(() => true),
   getLeafAgentStatusSnapshots: vi.fn(() => []),
   hasOpenExecutionWork: vi.fn(() => false),
-});
+}) as never;
 
 const callbacks = () => ({
   taskRootResolver: testMemberTaskRootResolver(),
@@ -59,12 +63,17 @@ afterEach(() => vi.clearAllMocks());
 describe("MixedTeamRunBackendFactory current execution identity integration", () => {
   it("hydrates exact AgentRun and configured child TeamRun contexts from the immutable TeamRunConfig", async () => {
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
+    const managerInputs: MixedTeamManagerConstructionInput[] = [];
     const manager = createManagerStub();
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: ((context: TeamRunContext<MixedTeamRunContext>) => {
-        contexts.push(context);
+      agentToolMcpRunSessionReleaser: releaser,
+      createTeamManager: (input) => {
+        managerInputs.push(input);
+        expect(input.agentToolMcpRunSessionReleaser).toBe(releaser);
+        contexts.push(input.context);
         return manager;
-      }) as never,
+      },
     });
 
     const config = createConfig();
@@ -105,11 +114,36 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     expect(backend.teamRunId).toBe("team-mixed-run-1");
     expect(backend.getTeamRunContext()).toBe(context);
     expect(backend.isActive()).toBe(true);
+
+    const child = config.rootTeam.children.find((node) => node.kind === "agent_team");
+    if (!child || child.kind !== "agent_team") {
+      throw new Error("Configured child Team fixture is required.");
+    }
+    await managerInputs[0]!.subTeamRunFactory.materializeConfiguredChild({
+      parentContext: context,
+      teamNode: child,
+      configuredMemberActivationMode: "fresh",
+    });
+    await managerInputs[0]!.subTeamRunFactory.prepareFreshTaskTeam({
+      parentContext: context,
+      handoffs: [],
+      teamNode: { ...child, teamRunId: "task-build-squad-run" },
+    });
+    expect(managerInputs).toHaveLength(3);
+    for (const input of managerInputs) {
+      expect(input.agentToolMcpRunSessionReleaser).toBe(releaser);
+      expect(input.subTeamRunFactory).toBe(managerInputs[0]!.subTeamRunFactory);
+      expect(input.callbacks).toBe(managerInputs[0]!.callbacks);
+    }
   });
 
   it("rejects a root allocation mismatch before manager construction", async () => {
     const createTeamManager = vi.fn(() => createManagerStub());
-    const factory = new MixedTeamRunBackendFactory({ createTeamManager: createTeamManager as never });
+    const factory = new MixedTeamRunBackendFactory({
+      agentToolMcpRunSessionReleaser:
+        createNoopAgentToolMcpRunSessionReleaser(),
+      createTeamManager,
+    });
     const config = createConfig();
 
     await expect(factory.createBackend(config, "foreign-root-run", callbacks())).rejects.toThrow(
@@ -121,11 +155,14 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
   it("restores configured provenance and exact external identities while ignoring native self-bindings", async () => {
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
     const manager = createManagerStub();
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: ((context: TeamRunContext<MixedTeamRunContext>) => {
-        contexts.push(context);
+      agentToolMcpRunSessionReleaser: releaser,
+      createTeamManager: (input) => {
+        expect(input.agentToolMcpRunSessionReleaser).toBe(releaser);
+        contexts.push(input.context);
         return manager;
-      }) as never,
+      },
     });
     const base = createConfig();
     const config = testTeamRunConfig({

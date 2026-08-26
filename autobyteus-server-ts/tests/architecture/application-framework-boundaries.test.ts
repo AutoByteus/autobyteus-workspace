@@ -89,7 +89,7 @@ type RequiredInput =
   | { kind: "positional"; argumentIndex: number; label: string };
 
 type ConstructionObligation = {
-  family: "publication-resource" | "run" | "session-provider" | "team-context";
+  family: "publication-resource" | "run" | "session-provider" | "team-context" | "defaulting-owner";
   symbol: string;
   moduleSuffix?: string;
   kind: "new" | "method";
@@ -196,7 +196,7 @@ const AFB_001_FORBIDDEN_TARGET_RULES: readonly ForbiddenTargetRule[] = [
   },
   {
     category: "shutdown",
-    matches: (target) => target === `${SERVER_SOURCE_PREFIX}application-platform/runtime/application-run-shutdown-coordinator.ts`,
+    matches: (target) => target === `${SERVER_SOURCE_PREFIX}application-platform/execution/application-execution-shutdown-coordinator.ts`,
   },
   {
     category: "runtime-builder",
@@ -237,6 +237,42 @@ const isStudioPresentationTarget = (relativeTarget: string): boolean =>
 
 const DIRECT_GLOBAL_CALLEES: readonly DirectGlobalCallee[] = [
   {
+    symbol: "getWorkspaceManager",
+    exportName: "getWorkspaceManager",
+    moduleSuffix: "autobyteus-server-ts/src/workspaces/workspace-manager.ts",
+  },
+  {
+    symbol: "getRuntimeAvailabilityService",
+    exportName: "getRuntimeAvailabilityService",
+    moduleSuffix: "autobyteus-server-ts/src/runtime-management/runtime-availability-service.ts",
+  },
+  {
+    symbol: "getModelCatalogService",
+    exportName: "getModelCatalogService",
+    moduleSuffix: "autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts",
+  },
+  {
+    symbol: "getModelAvailabilityService",
+    exportName: "getModelAvailabilityService",
+    moduleSuffix: "autobyteus-server-ts/src/llm-management/services/model-availability-service.ts",
+  },
+  {
+    symbol: "getLlmProviderService",
+    exportName: "getLlmProviderService",
+    moduleSuffix: "autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts",
+  },
+  {
+    symbol: "getCodexAppServerClientManager",
+    exportName: "getCodexAppServerClientManager",
+    moduleSuffix: "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts",
+  },
+  {
+    symbol: "LLMFactory.requireCurrentModelIdentifier",
+    exportName: "LLMFactory",
+    member: "requireCurrentModelIdentifier",
+    moduleSuffix: "autobyteus-ts/src/llm/llm-factory.ts",
+  },
+  {
     symbol: "AgentRunManager.getInstance",
     exportName: "AgentRunManager",
     member: "getInstance",
@@ -247,17 +283,6 @@ const DIRECT_GLOBAL_CALLEES: readonly DirectGlobalCallee[] = [
     exportName: "AgentTeamRunManager",
     member: "getInstance",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
-  },
-  {
-    symbol: "AgentToolMcpSessionService.getInstance",
-    exportName: "AgentToolMcpSessionService",
-    member: "getInstance",
-    moduleSuffix: "autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts",
-  },
-  {
-    symbol: "getAgentToolMcpSessionService",
-    exportName: "getAgentToolMcpSessionService",
-    moduleSuffix: "autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts",
   },
   {
     symbol: "getGeneralProcessPublishedArtifactPublisher",
@@ -282,7 +307,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentRunResourceManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
     kind: "new",
-    requiredInputs: ["sessionScope", "runFileChangeService", "publishedArtifactRelayService", "memoryRecorder"].map(
+    requiredInputs: ["runSessions", "runFileChangeService", "publishedArtifactRelayService", "memoryRecorder"].map(
       (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
     ),
   },
@@ -298,7 +323,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "PublishedArtifactPublicationService",
     moduleSuffix: "autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts",
     kind: "new",
-    requiredInputs: ["activeRunReader", "publishedArtifactRelayService", "projectionStore", "snapshotStore"].map(
+    requiredInputs: ["activeRunReader", "workspaceManager", "publishedArtifactRelayService", "projectionStore", "snapshotStore"].map(
       (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
     ),
   },
@@ -316,7 +341,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
     kind: "new",
-    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activationRegistry", "memoryRecorder"].map(
+    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activationRegistry", "memoryRecorder", "agentToolMcpRunSessionReleaser"].map(
       (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
     ),
   },
@@ -345,7 +370,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "StandaloneAgentRunLifecycleService",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
     kind: "new",
-    requiredInputs: ["agentRunManager", "metadataService", "historyCatalogService", "workspaceManager", "tokenUsageReadiness"].map((path) => ({
+    requiredInputs: ["agentRunManager", "metadataService", "historyCatalogService", "workspaceManager", "tokenUsageReadiness", "modelConfigValidator"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 1,
       path,
@@ -361,64 +386,6 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
       argumentIndex: 1,
       path,
     })),
-  },
-  {
-    family: "session-provider",
-    symbol: "ApplicationAgentToolsSessionFactory.createApplicationSessionManager",
-    kind: "method",
-    requiredInputs: [
-      { kind: "object-property", argumentIndex: 0, path: "scope" },
-      { kind: "object-property", argumentIndex: 0, path: "executionCapabilities.publishedArtifactPublisher" },
-      { kind: "object-property", argumentIndex: 0, path: "assertExecutionCapabilitiesReady" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "AutoByteusAgentRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "object-property", argumentIndex: 0, path: "agentDefinitionService" }],
-  },
-  {
-    family: "session-provider",
-    symbol: "CodexAgentRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "positional", argumentIndex: 1, label: "codexThreadBootstrapper" }],
-  },
-  {
-    family: "session-provider",
-    symbol: "ClaudeAgentRunBackendFactory",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
-    kind: "new",
-    requiredInputs: [
-      { kind: "positional", argumentIndex: 0, label: "claudeSessionManager" },
-      { kind: "positional", argumentIndex: 1, label: "claudeSessionBootstrapper" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "CodexThreadBootstrapper",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
-    kind: "new",
-    requiredInputs: [
-      { kind: "positional", argumentIndex: 2, label: "agentDefinitionService" },
-      { kind: "positional", argumentIndex: 5, label: "agentToolsSessionManager" },
-    ],
-  },
-  {
-    family: "session-provider",
-    symbol: "ClaudeSessionManager",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "positional", argumentIndex: 2, label: "agentToolsSessionManager" }],
-  },
-  {
-    family: "session-provider",
-    symbol: "ClaudeSessionBootstrapper",
-    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
-    kind: "new",
-    requiredInputs: [{ kind: "positional", argumentIndex: 2, label: "agentDefinitionService" }],
   },
   {
     family: "team-context",
@@ -446,7 +413,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     requiredInputs: [
       "subTeamRunFactory",
       "agentRunManager",
-      "agentToolMcpSessionManager",
+      "agentToolMcpRunSessionReleaser",
       "memoryLocationService",
       "activityInspector",
       "memberTeamContextBuilder",
@@ -494,7 +461,97 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
       "tokenUsageReadiness",
     ].map((path) => ({ kind: "object-property" as const, argumentIndex: 0, path })),
   },
+  {
+    family: "defaulting-owner",
+    symbol: "AgentMemoryLocationService",
+    moduleSuffix: "autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "object-property", argumentIndex: 0, path: "memoryDir" }],
+  },
+  {
+    family: "defaulting-owner",
+    symbol: "RunFileChangeService",
+    moduleSuffix: "autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts",
+    kind: "new",
+    requiredInputs: ["memoryDir", "workspaceManager"].map((path) => ({
+      kind: "object-property" as const,
+      argumentIndex: 0,
+      path,
+    })),
+  },
+  {
+    family: "defaulting-owner",
+    symbol: "AgentRunHistoryCatalogService",
+    moduleSuffix: "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+    kind: "new",
+    requiredInputs: ["agentDefinitionService", "agentRunManager"].map((path) => ({
+      kind: "object-property" as const,
+      argumentIndex: 1,
+      path,
+    })),
+  },
 ];
+
+const SCOPE_BUILD_FIELDS = [
+  "scopeIdentity",
+  "memoryDir",
+  "contextFilePathEnvironment",
+  "agentDefinitionService",
+  "agentTeamDefinitionService",
+  "agentToolMcpSessionAuthorities",
+  "agentProviderFactoryBuilder",
+  "workspaceManager",
+  "bindingReader",
+  "artifactDeliverySink",
+  "modelConfigValidator",
+] as const;
+
+const ORCHESTRATION_BUILD_FIELDS = [
+  "appConfig",
+  "bundleService",
+  "storageLifecycleService",
+  "platformStateStore",
+  "availabilityRegistry",
+  "engineController",
+  "eventDispatchQueue",
+  "artifactDeliveryQueue",
+  "agentDefinitionService",
+  "agentTeamDefinitionService",
+  "runLookupStore",
+  "bindingStore",
+  "overrideStore",
+  "journalStore",
+  "agentExecution",
+  "teamExecution",
+  "streaming",
+  "artifacts",
+  "memory",
+  "runtimeAvailabilityService",
+  "modelCatalogService",
+  "modelAvailabilityService",
+  "llmProviderService",
+  "codexClientManager",
+  "requireCurrentModelIdentifier",
+  "skillService",
+] as const;
+
+const PLATFORM_BUILD_FIELDS = [
+  "appConfig",
+  "contextFilePathEnvironment",
+  "bundleService",
+  "agentDefinitionService",
+  "agentTeamDefinitionService",
+  "agentToolMcpSessionAuthorities",
+  "agentProviderFactoryBuilder",
+  "workspaceManager",
+  "runtimeAvailabilityService",
+  "modelCatalogService",
+  "modelAvailabilityService",
+  "llmProviderService",
+  "codexClientManager",
+  "requireCurrentModelIdentifier",
+  "modelConfigValidator",
+] as const;
 
 const normalizePath = (path: string): string => path.split(sep).join("/");
 
@@ -674,7 +731,7 @@ class ApplicationFrameworkBoundaryChecker {
     if (assertOccurrences) {
       const expectedImporter = join(
         this.serverRoot,
-        "src/application-platform/runtime/create-application-run-services.ts",
+        "src/application-platform/execution/application-execution-scope.ts",
       );
       for (const obligation of CONSTRUCTION_OBLIGATIONS) {
         const count = constructionCounts.get(obligation.symbol) ?? 0;
@@ -748,10 +805,19 @@ class ApplicationFrameworkBoundaryChecker {
       const source = readFileSync(importer, "utf8");
       expect(source).toContain("getGeneralProcessPublishedArtifactPublisher");
       expect(source).toContain("createGeneralProcessRunSupervisor");
+      for (const selector of [
+        "getWorkspaceManager()",
+        "getRuntimeAvailabilityService()",
+        "getModelCatalogService()",
+        "getModelAvailabilityService()",
+        "getLlmProviderService()",
+        "getCodexAppServerClientManager()",
+        "LLMFactory.requireCurrentModelIdentifier(modelIdentifier)",
+      ]) expect(source, importer).toContain(selector);
     }
     const applicationConstruction = join(
       this.serverRoot,
-      "src/application-platform/runtime/create-application-run-services.ts",
+      "src/application-platform/execution/application-execution-scope.ts",
     );
     const source = readFileSync(applicationConstruction, "utf8");
     expect(source).not.toContain("getGeneralProcessPublishedArtifactPublisher");
@@ -790,6 +856,12 @@ class ApplicationFrameworkBoundaryChecker {
 
     add("AFB-004", [
       ...walkSourceFiles(join(this.serverRoot, "src/application-platform/runtime")),
+      ...walkSourceFiles(join(this.serverRoot, "src/application-platform/execution")),
+      join(this.serverRoot, "src/application-orchestration/services/application-run-binding-launch-service.ts"),
+      join(this.serverRoot, "src/application-orchestration/services/application-orchestration-host-service.ts"),
+      join(this.serverRoot, "src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts"),
+      join(this.serverRoot, "src/application-agent-streaming/services/application-agent-streaming-service.ts"),
+      join(this.serverRoot, "src/application-agent-streaming/services/application-agent-stream-subscription.ts"),
       join(this.serverRoot, "src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts"),
       join(this.serverRoot, "src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts"),
       join(this.serverRoot, "src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts"),
@@ -1423,7 +1495,7 @@ class ApplicationFrameworkBoundaryChecker {
       && ts.isPropertyAccessExpression(node.expression)
       && node.expression.name.text === "createApplicationSessionManager"
       && normalizePath(parsed.diagnosticImporter).endsWith(
-        "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
+        "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts",
       )) {
       return CONSTRUCTION_OBLIGATIONS.find((obligation) => obligation.kind === "method") ?? null;
     }
@@ -1804,24 +1876,153 @@ const constructionSnippet = (
     }
   }
 
-  const call = obligation.kind === "method"
-    ? `input.agentToolsSessionFactory.createApplicationSessionManager(${args.join(", ")});`
-    : `new Target(${args.join(", ")});`;
-  return `const opaque = {}; const input = { agentToolsSessionFactory: { createApplicationSessionManager: (_value: unknown) => ({}) } };\n${call}\n`;
+  return `const opaque = {};\nnew Target(${args.join(", ")});\n`;
 };
 
 const installConstructionTarget = (
   root: string,
   obligation: ConstructionObligation,
 ): { importer: string; importLine: string } => {
-  const importer = join(root, "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts");
-  if (obligation.kind === "method") return { importer, importLine: "" };
+  const importer = join(root, "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts");
   const target = join(root, obligation.moduleSuffix!);
   writeFixture(root, normalizePath(relative(root, target)), `export class ${obligation.symbol} {}\n`);
   return {
     importer,
     importLine: `import { ${obligation.symbol} as Target } from ${JSON.stringify(relativeModuleSpecifier(importer, target))};\n`,
   };
+};
+
+type RequiredObjectCallInspection = Readonly<{
+  occurrences: readonly ts.ObjectLiteralExpression[];
+  diagnostics: readonly string[];
+}>;
+
+const expressionName = (expression: ts.Expression): string | null => {
+  if (ts.isIdentifier(expression)) return expression.text;
+  if (ts.isPropertyAccessExpression(expression)) {
+    const owner = expressionName(expression.expression);
+    return owner ? `${owner}.${expression.name.text}` : expression.name.text;
+  }
+  return null;
+};
+
+const inspectRequiredObjectCalls = (
+  sourceText: string,
+  filePath: string,
+  callName: string,
+  requiredFields: readonly string[],
+): RequiredObjectCallInspection => {
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  const occurrences: ts.ObjectLiteralExpression[] = [];
+  const diagnostics: string[] = [];
+  const visit = (node: ts.Node): void => {
+    if (ts.isCallExpression(node) && expressionName(node.expression) === callName) {
+      const argument = node.arguments[0];
+      if (!argument || !ts.isObjectLiteralExpression(argument)) {
+        diagnostics.push(`${callName}.argument[0] OBJECT_LITERAL_REQUIRED`);
+      } else {
+        occurrences.push(argument);
+        if (objectContainsSpread(argument)) {
+          diagnostics.push(`${callName}.argument[0] OPAQUE_SPREAD`);
+        }
+        for (const field of requiredFields) {
+          const value = objectPropertyValue(argument, [field]);
+          if (!value) {
+            diagnostics.push(`${callName}.argument[0].${field} REQUIRED_INPUT_MISSING`);
+          } else if (isNullOrUndefined(value)) {
+            diagnostics.push(`${callName}.argument[0].${field} REQUIRED_INPUT_NULLISH`);
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return { occurrences, diagnostics };
+};
+
+const requiredObjectCallSnippet = (
+  callName: string,
+  requiredFields: readonly string[],
+  mutation?: Readonly<{
+    field: string;
+    kind: "omitted" | "null" | "undefined" | "spread";
+  }>,
+): string => {
+  const fields = requiredFields
+    .filter((field) => mutation?.field !== field || !["omitted", "spread"].includes(mutation.kind))
+    .map((field) => `${field}: ${mutation?.field === field ? mutation.kind : field}`);
+  if (mutation?.kind === "spread") fields.push("...opaque");
+  return `const opaque = {}; ${callName}({ ${fields.join(", ")} });\n`;
+};
+
+const LIVE_AGGREGATE_NAMES = new Set(["AgentRun", "RootTeamRun"]);
+const LIVE_AGGREGATE_METHODS = new Set([
+  "resolveAgentRun",
+  "resolveActiveTeamRun",
+  "postUserMessage",
+  "postMessage",
+  "getExecutionTreeSnapshot",
+]);
+
+const inspectScopeBoundaryFixture = (
+  sourceText: string,
+  filePath: string,
+  role: "contract" | "consumer",
+): string[] => {
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  const diagnostics: string[] = [];
+  const visit = (node: ts.Node): void => {
+    if (ts.isImportDeclaration(node)) {
+      const clause = node.importClause;
+      if (clause?.name && LIVE_AGGREGATE_NAMES.has(clause.name.text)) {
+        diagnostics.push(`LIVE_AGGREGATE_IMPORT ${clause.name.text}`);
+      }
+      const bindings = clause?.namedBindings;
+      if (bindings && ts.isNamedImports(bindings)) {
+        for (const element of bindings.elements) {
+          const importedName = element.propertyName?.text ?? element.name.text;
+          if (LIVE_AGGREGATE_NAMES.has(importedName)) {
+            diagnostics.push(`LIVE_AGGREGATE_IMPORT ${importedName}`);
+          }
+        }
+      }
+    }
+    if (role === "contract"
+      && (ts.isMethodSignature(node) || ts.isPropertySignature(node))
+      && node.type) {
+      const identifiers: string[] = [];
+      const collectIdentifiers = (candidate: ts.Node): void => {
+        if (ts.isIdentifier(candidate) && LIVE_AGGREGATE_NAMES.has(candidate.text)) {
+          identifiers.push(candidate.text);
+        }
+        ts.forEachChild(candidate, collectIdentifiers);
+      };
+      collectIdentifiers(node.type);
+      diagnostics.push(...identifiers.map((name) => `LIVE_AGGREGATE_OUTWARD_TYPE ${name}`));
+    }
+    if (role === "consumer"
+      && ts.isCallExpression(node)
+      && ts.isPropertyAccessExpression(node.expression)
+      && LIVE_AGGREGATE_METHODS.has(node.expression.name.text)) {
+      diagnostics.push(`LIVE_AGGREGATE_METHOD_CALL ${node.expression.name.text}`);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return diagnostics;
 };
 
 afterEach(() => {
@@ -2006,7 +2207,7 @@ describe("application framework architecture boundaries", () => {
       ["publication", "application-orchestration/services/application-published-artifact-delivery-service.ts"],
       ["engine", "application-engine/services/application-engine-controller.ts"],
       ["queue", "application-orchestration/services/application-execution-event-dispatch-queue.ts"],
-      ["shutdown", "application-platform/runtime/application-run-shutdown-coordinator.ts"],
+      ["shutdown", "application-platform/execution/application-execution-shutdown-coordinator.ts"],
     ] as const;
     for (const [category, target] of forbiddenTargets) {
       const targetPath = writeFixture(
@@ -2395,7 +2596,7 @@ describe("application framework architecture boundaries", () => {
             : `${obligation.symbol}.argument[${required.argumentIndex}].${required.path}`;
           expect(diagnostics.join("\n"), `${obligation.symbol} ${subject} ${kind}`).toContain(`subject=${subject}`);
           expect(diagnostics.join("\n")).toContain(
-            "[AFB-004] profile=server importer=autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
+            "[AFB-004] profile=server importer=autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts",
           );
           expect(diagnostics.join("\n")).toContain("resolved=");
           expect(diagnostics.join("\n")).toContain("reason=");
@@ -2405,19 +2606,266 @@ describe("application framework architecture boundaries", () => {
     }
   }, 30_000);
 
-  it("preserves deliberately process-scoped Codex positions zero and two", () => {
-    const root = createFixtureRepository();
-    const obligation = CONSTRUCTION_OBLIGATIONS.find((candidate) => candidate.symbol === "CodexAgentRunBackendFactory")!;
-    const { importer, importLine } = installConstructionTarget(root, obligation);
-    const checker = new ApplicationFrameworkBoundaryChecker(root);
-    for (const expression of [
-      "new Target(undefined, codexThreadBootstrapper);",
-      "new Target(undefined, codexThreadBootstrapper, undefined);",
-    ]) {
-      writeFixture(root, normalizePath(relative(root, importer)), `${importLine}const codexThreadBootstrapper = {};\n${expression}\n`);
-      expect(checker.checkOneFile(importer, "AFB-004").map(formatViolation)).toEqual([]);
+  it("enforces the exact scope, orchestration, and platform assembly call shapes", () => {
+    const cases = [
+      {
+        callName: "ApplicationExecutionScope.create",
+        fields: SCOPE_BUILD_FIELDS,
+        files: ["application-platform/runtime/build-application-platform-runtime.ts"],
+      },
+      {
+        callName: "createApplicationOrchestrationServices",
+        fields: ORCHESTRATION_BUILD_FIELDS,
+        files: ["application-platform/runtime/build-application-platform-runtime.ts"],
+      },
+      {
+        callName: "buildApplicationPlatformRuntime",
+        fields: PLATFORM_BUILD_FIELDS,
+        files: [
+          "compositions/build-studio-server.ts",
+          "standalone-application-host/start-standalone-application-host.ts",
+        ],
+      },
+    ] as const;
+
+    for (const { callName, fields, files } of cases) {
+      let count = 0;
+      for (const relativePath of files) {
+        const filePath = join(REPOSITORY_ROOT, "autobyteus-server-ts/src", relativePath);
+        const inspection = inspectRequiredObjectCalls(
+          readFileSync(filePath, "utf8"),
+          filePath,
+          callName,
+          fields,
+        );
+        expect(inspection.diagnostics, `${callName} ${relativePath}`).toEqual([]);
+        count += inspection.occurrences.length;
+        if (callName === "buildApplicationPlatformRuntime") {
+          expect(inspection.occurrences).toHaveLength(1);
+          const selectedApplicationIds = objectPropertyValue(
+            inspection.occurrences[0]!,
+            ["selectedApplicationIds"],
+          );
+          if (relativePath.startsWith("standalone-application-host/")) {
+            expect(selectedApplicationIds, relativePath).toBeDefined();
+            expect(isNullOrUndefined(selectedApplicationIds!), relativePath).toBe(false);
+          } else {
+            expect(selectedApplicationIds, relativePath).toBeUndefined();
+          }
+        }
+      }
+      expect(count, callName).toBe(callName === "buildApplicationPlatformRuntime" ? 2 : 1);
+
+      const complete = inspectRequiredObjectCalls(
+        requiredObjectCallSnippet(callName, fields),
+        "complete.ts",
+        callName,
+        fields,
+      );
+      expect(complete.occurrences).toHaveLength(1);
+      expect(complete.diagnostics).toEqual([]);
+      for (const field of fields) {
+        for (const kind of ["omitted", "null", "undefined", "spread"] as const) {
+          const inspection = inspectRequiredObjectCalls(
+            requiredObjectCallSnippet(callName, fields, { field, kind }),
+            `${kind}.ts`,
+            callName,
+            fields,
+          );
+          expect(
+            inspection.diagnostics.join("\n"),
+            `${callName}.${field} ${kind}`,
+          ).toContain(`${callName}.argument[0].${field}`);
+          if (kind === "spread") {
+            expect(inspection.diagnostics).toContain(`${callName}.argument[0] OPAQUE_SPREAD`);
+          }
+        }
+      }
     }
   });
+
+  it("guards the exact ApplicationExecutionScope containment and consumer shapes", () => {
+    const sourceRoot = join(REPOSITORY_ROOT, "autobyteus-server-ts/src");
+    const readSource = (relativePath: string): string =>
+      readFileSync(join(sourceRoot, relativePath), "utf8");
+    const scopePath = "application-platform/execution/application-execution-scope.ts";
+    const contractsPath = "application-platform/execution/application-execution-scope-contracts.ts";
+    const shutdownPath = "application-platform/execution/application-execution-shutdown-coordinator.ts";
+    expect(existsSync(join(sourceRoot, scopePath))).toBe(true);
+    expect(existsSync(join(sourceRoot, contractsPath))).toBe(true);
+    expect(existsSync(join(sourceRoot, shutdownPath))).toBe(true);
+    expect(existsSync(join(sourceRoot, "application-platform/runtime/create-application-run-services.ts"))).toBe(false);
+    expect(existsSync(join(sourceRoot, "application-platform/runtime/application-run-shutdown-coordinator.ts"))).toBe(false);
+
+    const contractSource = readSource(contractsPath);
+    expect(inspectScopeBoundaryFixture(contractSource, contractsPath, "contract")).toEqual([]);
+    for (const token of [
+      "postAgentInput",
+      "postTeamInput",
+      "ApplicationAgentLaunchResult",
+      "ApplicationTeamLaunchResult",
+      "ApplicationExecutionInputDisposition",
+      'kind: "ACCEPTED"',
+      'kind: "REJECTED"',
+      'kind: "NOT_AVAILABLE"',
+    ]) expect(contractSource).toContain(token);
+
+    const consumerPaths = [
+      "application-orchestration/services/application-run-binding-launch-service.ts",
+      "application-orchestration/services/application-orchestration-host-service.ts",
+      "application-orchestration/services/application-bound-run-lifecycle-gateway.ts",
+    ];
+    const forbiddenConsumerModules = [
+      "agent-run-service",
+      "team-run-service",
+      "agent-run-manager",
+      "agent-team-run-manager",
+      "published-artifact-projection-service",
+      "agent-memory-location-service",
+      "/domain/agent-run",
+      "/domain/root-team-run",
+    ];
+    for (const relativePath of consumerPaths) {
+      const source = readSource(relativePath);
+      expect(source, relativePath).toContain("application-execution-scope-contracts.js");
+      expect(inspectScopeBoundaryFixture(source, relativePath, "consumer")).toEqual([]);
+      for (const forbidden of forbiddenConsumerModules) {
+        expect(source, relativePath).not.toContain(forbidden);
+      }
+    }
+
+    const launchSource = readSource(consumerPaths[0]!);
+    expect(launchSource).not.toContain("ConfiguredExecutionNode");
+    expect(launchSource).not.toContain("configuredAgents");
+    expect(launchSource).toContain("ApplicationTeamLaunchResult");
+
+    const scopeSource = readSource(scopePath);
+    for (const method of LIVE_AGGREGATE_METHODS) {
+      expect(
+        [...scopeSource.matchAll(new RegExp(`\\.${method}\\s*\\(`, "g"))],
+        method,
+      ).toHaveLength(1);
+    }
+    expect([...scopeSource.matchAll(/this\.projectTeamLaunch\s*\(/g)]).toHaveLength(2);
+
+    for (const relativePath of [
+      "application-orchestration",
+      "application-agent-streaming",
+      "application-platform/runtime",
+    ]) {
+      for (const filePath of walkSourceFiles(join(sourceRoot, relativePath))) {
+        const source = readFileSync(filePath, "utf8");
+        expect(
+          inspectScopeBoundaryFixture(
+            source,
+            normalizePath(relative(sourceRoot, filePath)),
+            "consumer",
+          ).filter((diagnostic) => diagnostic.startsWith("LIVE_AGGREGATE_METHOD_CALL")),
+          normalizePath(relative(sourceRoot, filePath)),
+        ).toEqual([]);
+      }
+    }
+
+    for (const relativePath of [
+      "application-agent-streaming/services/application-agent-streaming-service.ts",
+      "application-agent-streaming/services/application-agent-stream-subscription.ts",
+    ]) {
+      const source = readSource(relativePath);
+      expect(source).toContain("ApplicationExecutionStreaming");
+      expect(source).not.toContain("ApplicationAgentStreamRuntimeSource");
+    }
+
+    const lifecycleContracts = readSource(
+      "application-platform/runtime/application-platform-lifecycle-contracts.ts",
+    );
+    expect(lifecycleContracts).toContain("executionReadiness");
+    expect(lifecycleContracts).toContain("executionLifecycle");
+    expect(lifecycleContracts).not.toContain("runShutdownCoordinator");
+
+    const assemblySource = readSource(
+      "application-platform/runtime/create-application-orchestration-services.ts",
+    );
+    const assemblyFile = ts.createSourceFile(
+      "create-application-orchestration-services.ts",
+      assemblySource,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS,
+    );
+    const resultShapes: string[][] = [];
+    const visitAssembly = (node: ts.Node): void => {
+      if (ts.isReturnStatement(node)
+        && node.expression
+        && ts.isCallExpression(node.expression)
+        && expressionName(node.expression.expression) === "Object.freeze"
+        && node.expression.arguments[0]
+        && ts.isObjectLiteralExpression(node.expression.arguments[0])) {
+        resultShapes.push(node.expression.arguments[0].properties.flatMap((property) =>
+          property.name ? [propertyNameText(property.name)!] : []));
+      }
+      ts.forEachChild(node, visitAssembly);
+    };
+    visitAssembly(assemblyFile);
+    expect(resultShapes).toEqual([[
+      "startupGate",
+      "runOwnershipService",
+      "eventDispatchService",
+      "artifactDeliveryService",
+      "runObserverService",
+      "recoveryService",
+      "availabilityService",
+      "definitionRuntimeReadiness",
+      "orchestrationHostService",
+      "agentStreamingService",
+      "agentCommunicationService",
+      "engineLauncher",
+      "reentryService",
+    ]]);
+    for (const removedLeaf of [
+      "agentRunManager",
+      "teamRunManager",
+      "publicationService",
+      "memoryLocationService",
+      "runShutdownCoordinator",
+    ]) expect(resultShapes.flat()).not.toContain(removedLeaf);
+  });
+
+  it("rejects synthetic live-aggregate escape and direct consumer access", () => {
+    const positiveContract = `
+      interface AgentExecution {
+        create(): Promise<Readonly<{ runId: string }>>;
+        post(): Promise<Readonly<{ kind: "ACCEPTED" }>>;
+      }
+    `;
+    const positiveConsumer = `
+      import type { ApplicationAgentExecution } from "./application-execution-scope-contracts.js";
+      declare const execution: ApplicationAgentExecution;
+      execution.postAgentInput("run", {} as never);
+    `;
+    expect(inspectScopeBoundaryFixture(positiveContract, "positive-contract.ts", "contract")).toEqual([]);
+    expect(inspectScopeBoundaryFixture(positiveConsumer, "positive-consumer.ts", "consumer")).toEqual([]);
+
+    for (const aggregate of ["AgentRun", "RootTeamRun"] as const) {
+      const contract = `import type { ${aggregate} } from "./live.js"; interface Capability { create(): Promise<${aggregate}>; }`;
+      const diagnostics = inspectScopeBoundaryFixture(contract, "bad-contract.ts", "contract");
+      expect(diagnostics).toContain(`LIVE_AGGREGATE_IMPORT ${aggregate}`);
+      expect(diagnostics).toContain(`LIVE_AGGREGATE_OUTWARD_TYPE ${aggregate}`);
+      const consumer = `import type { ${aggregate} } from "./live.js"; declare const run: ${aggregate}; run.postMessage({});`;
+      expect(inspectScopeBoundaryFixture(consumer, "bad-consumer.ts", "consumer")).toEqual([
+        `LIVE_AGGREGATE_IMPORT ${aggregate}`,
+        "LIVE_AGGREGATE_METHOD_CALL postMessage",
+      ]);
+    }
+    for (const method of LIVE_AGGREGATE_METHODS) {
+      const diagnostics = inspectScopeBoundaryFixture(
+        `declare const owner: any; owner.${method}();`,
+        "bad-consumer.ts",
+        "consumer",
+      );
+      expect(diagnostics).toEqual([`LIVE_AGGREGATE_METHOD_CALL ${method}`]);
+    }
+  });
+
 
   it("guards the exact SR-011 host definition and public/general run authority", () => {
     const serverSourceRoot = join(REPOSITORY_ROOT, "autobyteus-server-ts/src");
@@ -2449,7 +2897,7 @@ describe("application framework architecture boundaries", () => {
     ]) {
       const source = readServerSource(relativePath);
       const hostDefinitions = source.indexOf("createHostDefinitionServices({");
-      const agentTools = source.indexOf("createAgentToolsMcpRuntime({", hostDefinitions);
+      const agentTools = source.indexOf("createAgentToolsMcpHost()", hostDefinitions);
       const generalRuns = source.indexOf("createGeneralProcessRunSupervisor({", agentTools);
       const applicationAssembly = relativePath.startsWith("compositions/")
         ? source.indexOf("createStudioApplicationServices({", generalRuns)
@@ -2459,10 +2907,12 @@ describe("application framework architecture boundaries", () => {
       expect(generalRuns, relativePath).toBeGreaterThan(agentTools);
       expect(applicationAssembly, relativePath).toBeGreaterThan(generalRuns);
       const supervisorInput = source.slice(generalRuns, applicationAssembly);
-      expect(supervisorInput).toContain("appConfig:");
+      expect(supervisorInput).toContain("memoryDir:");
+      expect(supervisorInput).toContain("contextFilePathEnvironment,");
+      expect(supervisorInput).not.toContain("appConfig:");
       expect(supervisorInput).toContain("agentDefinitionService:");
       expect(supervisorInput).toContain("agentTeamDefinitionService:");
-      expect(supervisorInput).toContain("agentToolsSessionManager:");
+      expect(supervisorInput).toContain("agentToolMcpSessionAuthority:");
     }
     const studioComposition = readServerSource("compositions/build-studio-server.ts");
     const studioApplicationAssembly = studioComposition.slice(
@@ -2484,22 +2934,13 @@ describe("application framework architecture boundaries", () => {
       "new MemberTeamContextBuilder(\n        input.agentTeamDefinitionService",
       "teamDefinitionService: input.agentTeamDefinitionService",
       "agentRunIdentityAllocator,",
-      "agentToolMcpSessionManager: input.agentToolsSessionManager",
-      "taskRootResolver: callbacks.taskRootResolver",
+      "agentToolMcpRunSessionReleaser:",
+      "taskRootResolver: managerInput.callbacks.taskRootResolver",
       "bindProcessAgentRunService(agentRunService)",
       "bindProcessTeamRunService(teamRunService)",
     ]) {
       expect(generalSupervisor).toContain(requiredConstruction);
     }
-    expect(generalSupervisor).toMatch(
-      /new CodexThreadBootstrapper\([\s\S]*?input\.agentDefinitionService,[\s\S]*?input\.agentToolsSessionManager,[\s\S]*?\)/,
-    );
-    expect(generalSupervisor).toMatch(
-      /new ClaudeSessionManager\([\s\S]*?input\.agentToolsSessionManager,[\s\S]*?\)/,
-    );
-    expect(generalSupervisor).toMatch(
-      /new ClaudeSessionBootstrapper\([\s\S]*?input\.agentDefinitionService,[\s\S]*?\)/,
-    );
 
     const publicAgentRun = readServerSource("api/graphql/types/agent-run.ts");
     const publicTeamRun = readServerSource("api/graphql/types/agent-team-run.ts");
@@ -2630,24 +3071,19 @@ describe("application framework architecture boundaries", () => {
     const managerOccurrences = sr013NewOccurrences("MixedTeamManager");
     expect(sr013OccurrencePaths(managerOccurrences)).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-      "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-      "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
     ].sort());
     const productionManagerResolverValues = new Map([
       [
-        "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-        "input.callbacks.taskRootResolver",
-      ],
-      [
         "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-        "callbacks.taskRootResolver",
+        "managerInput.callbacks.taskRootResolver",
       ],
       [
-        "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
-        "callbacks.taskRootResolver",
+        "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+        "managerInput.callbacks.taskRootResolver",
       ],
     ]);
     for (const occurrence of managerOccurrences) {
@@ -2663,16 +3099,15 @@ describe("application framework architecture boundaries", () => {
     const factoryOccurrences = sr013NewOccurrences("MixedTeamRunBackendFactory");
     expect(sr013OccurrencePaths(factoryOccurrences)).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-      "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-      "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
+      "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
     ].sort());
 
     const builderOccurrences = sr013BuilderCalls();
@@ -2708,7 +3143,7 @@ describe("application framework architecture boundaries", () => {
       `${["new", "MixedTeamRunBackendFactory"].join(" ")}\\s*\\(`,
       "g",
     );
-    expect(contextOnlyFactoryTest.match(contextOnlyFactoryPattern)).toHaveLength(2);
+    expect(contextOnlyFactoryTest.match(contextOnlyFactoryPattern)).toHaveLength(1);
     expect(contextOnlyFactoryTest).not.toMatch(/\.(?:createBackend|restoreBackend|createBackendForNode)\s*\(/);
 
     const factoryFile = join(
@@ -2747,7 +3182,7 @@ describe("application framework architecture boundaries", () => {
       join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-tools/task-delegation"),
       join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts"),
       join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts"),
-      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts"),
+      join(REPOSITORY_ROOT, "autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts"),
       join(REPOSITORY_ROOT, "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts"),
     ];
     for (const file of taskExecutionRoots.flatMap((entry) =>

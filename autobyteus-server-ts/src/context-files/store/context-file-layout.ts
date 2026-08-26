@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type {
   ContextFileDraftOwnerDescriptor,
@@ -21,10 +20,12 @@ export class ContextFileLayout {
   private readonly draftRootDir: string;
   private readonly agentMemoryLayout: AgentMemoryLayout;
 
-  constructor() {
-    const appConfig = appConfigProvider.config;
-    this.draftRootDir = path.join(appConfig.getAppDataDir(), "draft_context_files");
-    const memoryDir = appConfig.getMemoryDir();
+  constructor(input: { appDataDir: string; memoryDir: string }) {
+    const appDataDir = input?.appDataDir?.trim();
+    const memoryDir = input?.memoryDir?.trim();
+    if (!appDataDir) throw new Error("appDataDir is required.");
+    if (!memoryDir) throw new Error("memoryDir is required.");
+    this.draftRootDir = path.join(appDataDir, "draft_context_files");
     this.agentMemoryLayout = new AgentMemoryLayout(memoryDir);
   }
 

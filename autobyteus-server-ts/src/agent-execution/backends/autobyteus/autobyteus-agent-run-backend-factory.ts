@@ -55,7 +55,17 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentFactoryLike = typeof defaultAgentFactory;
+export type AutoByteusAgentFactoryLike = typeof defaultAgentFactory;
+
+export type AutoByteusLlmFactory = (
+  modelIdentifier: string,
+  configInput?: LLMFactoryConfigInput,
+) => Promise<BaseLLM>;
+
+export type AutoByteusAgentIdleWaiter = (
+  agent: Agent,
+  timeout?: number,
+) => Promise<void>;
 
 type ProcessorOption = { name: string; isMandatory: boolean };
 
@@ -95,7 +105,7 @@ export type CompactionAgentRunnerFactory = (
   input: CompactionAgentRunnerFactoryInput,
 ) => Promise<CompactionAgentRunner | null> | CompactionAgentRunner | null;
 
-const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async ({
+export const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async ({
   agentDefinitionId,
   workspaceRootPath,
   runtimeKind,
@@ -113,18 +123,18 @@ const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async (
 };
 
 export type AutoByteusAgentRunBackendFactoryOptions = {
-  agentFactory?: AgentFactoryLike;
+  agentFactory?: AutoByteusAgentFactoryLike;
   agentDefinitionService?: AgentDefinitionService;
-  createLLM?: (modelIdentifier: string, configInput?: LLMFactoryConfigInput) => Promise<BaseLLM>;
+  createLLM?: AutoByteusLlmFactory;
   workspaceManager?: WorkspaceManager;
   skillService?: SkillService;
   registries?: Partial<ProcessorRegistries>;
-  waitForIdle?: (agent: Agent, timeout?: number) => Promise<void>;
+  waitForIdle?: AutoByteusAgentIdleWaiter;
   compactionAgentRunnerFactory?: CompactionAgentRunnerFactory;
 };
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
-  private readonly agentFactory: AgentFactoryLike;
+  private readonly agentFactory: AutoByteusAgentFactoryLike;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly createLLM: (
     modelIdentifier: string,
@@ -191,7 +201,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
     });
     const createAgentWithId = (
-      this.agentFactory as AgentFactoryLike & {
+    this.agentFactory as AutoByteusAgentFactoryLike & {
         createAgentWithId?: (agentId: string, config: AgentConfig) => AgentLike;
       }
     ).createAgentWithId;

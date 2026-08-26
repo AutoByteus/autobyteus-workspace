@@ -41,7 +41,7 @@ export class ApplicationPlatformLifecycle {
       await this.dependencies.preparation.prepareWorkspaceRuntime();
       await this.dependencies.preparation.prepareAgentCustomizations();
       await this.dependencies.preparation.toolReadiness.registerRequiredGroups();
-      this.dependencies.preparation.agentToolsSessionManager.assertReady();
+      this.dependencies.executionReadiness.assertReady();
       const snapshot = await this.dependencies.bundleService.getCatalogSnapshot();
       this.assertSelectedCatalogIsValid(snapshot);
       this.catalogSnapshot = snapshot;
@@ -161,8 +161,7 @@ export class ApplicationPlatformLifecycle {
       }
     };
 
-    await runStep(() =>
-      this.dependencies.preparation.agentToolsSessionManager.blockNewSessions());
+    await runStep(() => this.dependencies.executionLifecycle.quiesce());
     await runStep(() => this.dependencies.eventDispatchService.stop());
     await runStep(() => this.dependencies.agentCommunicationService.closeAll());
     await runStep(() => this.dependencies.backendGateway.dispose());
@@ -172,9 +171,7 @@ export class ApplicationPlatformLifecycle {
     await runStep(() => this.dependencies.artifactDeliveryService.awaitDrained());
     await runStep(() => this.dependencies.runObserverService.dispose());
     await runStep(() => this.dependencies.engineLauncher.stopAll());
-    await runStep(() => this.dependencies.runShutdownCoordinator.stopAllRuns());
-    await runStep(() =>
-      this.dependencies.preparation.agentToolsSessionManager.close());
+    await runStep(() => this.dependencies.executionLifecycle.close());
     await runStep(() => this.dependencies.streamingService.stopAll());
     this.state = "stopped";
     if (errors.length > 0) {

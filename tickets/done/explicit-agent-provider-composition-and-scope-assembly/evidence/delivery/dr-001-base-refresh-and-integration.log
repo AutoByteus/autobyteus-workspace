@@ -1,0 +1,25 @@
+# DR-001 latest-base refresh and integration preview
+timestamp_utc=2026-08-26T12:02:01Z
+recorded_bootstrap_base=codex/application-execution-scope-boundary-hardening
+expected_base=0811503a6c547698e7b77e1064d98890101acc1b
+latest_local_recorded_base=0811503a6c547698e7b77e1064d98890101acc1b
+tracked_remote_base=origin/personal
+latest_tracked_remote_base=b52fe5aebdb962ce361529f9e797affeb30d719a
+bootstrap_origin_personal=306de420ca8830478529b40bd6dfda6694b742a9
+reviewed_source_head=8704f2653b664c6ae7b5ecb24f2dd3885a79aad9
+delivery_checkpoint=ce9f2b6da2463ac789386acd5ec417188528c8c7
+divergence_origin_personal_vs_checkpoint=22/16
+merge_base=306de420ca8830478529b40bd6dfda6694b742a9
+origin_personal_is_ancestor=no
+base_advanced_since_bootstrap=yes
+new_base_commits_to_integrate=22
+ticket_commits_since_merge_base=16
+overlap_paths=14
+merge_preview=conflicts
+conflict_paths=7
+integration_attempt=not_started
+working_tree_merge_state=clean
+classification=Design Impact
+recommended_recipient=/solution_designer
+result=Blocked
+reason=Latest origin/personal has materially advanced and the preview reports production, architecture-test, integration-test, and modify/delete conflicts; delivery must not choose semantics speculatively.

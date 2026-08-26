@@ -1,10 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-
-const revokeAgentToolMcpSessionsForRun = vi.hoisted(() => vi.fn());
-vi.mock("../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js", () => ({
-  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForRun }),
-}));
-
+import { createRecordingAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -23,6 +18,7 @@ const buildMemberConfig = (): TeamRunAgentNode => testAgentNode("/worker", {
 });
 
 const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunManager?: unknown } = {}) => {
+  const recording = createRecordingAgentToolMcpRunSessionReleaser();
   const config = buildMemberConfig();
   const teamConfig = testTeamRunConfig({
     rootTeamRunId: "team-run-1",
@@ -47,7 +43,8 @@ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunMa
     }),
   });
 
-  return new MixedAgentMemberHandle({
+  const handle = new MixedAgentMemberHandle({
+    agentToolMcpRunSessionReleaser: recording.releaser,
     teamContext,
     context: memberContext,
     config,
@@ -57,6 +54,7 @@ const buildHandle = (overrides: { platformAgentRunId?: string | null; agentRunMa
     notifyStatusChange: vi.fn(),
     deliverInterAgentMessage: vi.fn(),
   });
+  return { handle, recording };
 };
 
 describe("MixedAgentMemberHandle termination", () => {
@@ -65,7 +63,7 @@ describe("MixedAgentMemberHandle termination", () => {
       restoreAgentRunFromPlatformState: vi.fn(),
       createAgentRun: vi.fn(),
     };
-    const handle = buildHandle({
+    const { handle } = buildHandle({
       platformAgentRunId: "platform-worker-run-1",
       agentRunManager,
     });
@@ -88,7 +86,7 @@ describe("MixedAgentMemberHandle termination", () => {
         .mockResolvedValueOnce({ accepted: false, code: "NO_ACTIVE_TURN" })
         .mockResolvedValueOnce({ accepted: false, code: "INTERRUPT_REJECTED", message: "provider rejected" }),
     };
-    const handle = buildHandle({
+    const { handle } = buildHandle({
       agentRunManager: { createAgentRun: vi.fn(async () => run) },
     });
     (handle as unknown as { agentRun: typeof run }).agentRun = run;
@@ -107,7 +105,7 @@ describe("MixedAgentMemberHandle termination", () => {
       restoreAgentRunFromPlatformState: vi.fn(),
       createAgentRun: vi.fn(),
     };
-    const handle = buildHandle({
+    const { handle, recording } = buildHandle({
       platformAgentRunId: "platform-worker-run-1",
       agentRunManager,
     });
@@ -116,7 +114,7 @@ describe("MixedAgentMemberHandle termination", () => {
 
     expect(agentRunManager.restoreAgentRunFromPlatformState).not.toHaveBeenCalled();
     expect(agentRunManager.createAgentRun).not.toHaveBeenCalled();
-    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenCalledWith("worker-run-1");
+    expect(recording.getRevokedRunIds()).toEqual(["worker-run-1"]);
     expect(handle.isActive()).toBe(false);
   });
 
@@ -138,7 +136,7 @@ describe("MixedAgentMemberHandle termination", () => {
         commit: vi.fn(() => ({ finish: vi.fn(async () => rejected) })),
       })),
     };
-    const handle = buildHandle({
+    const { handle } = buildHandle({
       agentRunManager: { createAgentRun: vi.fn(async () => run) },
     });
     (handle as unknown as { agentRun: typeof run }).agentRun = run;

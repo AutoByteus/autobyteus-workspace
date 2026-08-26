@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
+import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
+import type { AgentToolMcpRunSessionReleaser } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
-  getAgentToolMcpSessionRegistry,
-  resetAgentToolMcpSessionRegistryForTests,
-} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
-import { resetAgentToolMcpSessionServiceForTests } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
-import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+  createRecordingAgentToolMcpRunSessionReleaser,
+} from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 const createConfig = (runtimeKind: RuntimeKind = RuntimeKind.CODEX_APP_SERVER) =>
   new AgentRunConfig({
@@ -55,36 +55,58 @@ const createBackend = (input: {
   return backend;
 };
 
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
+
 const createManager = (input: {
-  autoByteusBackendFactory?: unknown;
-  codexBackendFactory?: unknown;
-  claudeBackendFactory?: unknown;
+  autoByteusBackendFactory?: AgentRunBackendFactory;
+  codexBackendFactory?: AgentRunBackendFactory;
+  claudeBackendFactory?: AgentRunBackendFactory;
   runFileChangeService?: unknown;
   publishedArtifactRelayService?: unknown;
   memoryRecorder?: unknown;
-}) => new AgentRunManager({
-  ...input,
-  runFileChangeService: (input.runFileChangeService ?? {
+  agentToolMcpRunSessionReleaser?: AgentToolMcpRunSessionReleaser;
+}) => {
+  const runSessions = input.agentToolMcpRunSessionReleaser
+    ?? createRecordingAgentToolMcpRunSessionReleaser().releaser;
+  const runFileChangeService = (input.runFileChangeService ?? {
     attachToRun: vi.fn(() => vi.fn()),
-  }) as never,
-  publishedArtifactRelayService: (input.publishedArtifactRelayService ?? {
+  }) as never;
+  const publishedArtifactRelayService = (input.publishedArtifactRelayService ?? {
     attachToRun: vi.fn(() => vi.fn()),
-  }) as never,
-  memoryRecorder: (input.memoryRecorder ?? {
+  }) as never;
+  const memoryRecorder = (input.memoryRecorder ?? {
     attachToRun: vi.fn(() => vi.fn()),
     onUserMessageForwarded: vi.fn(),
-  }) as never,
-});
+  }) as never;
+  const activationRegistry = new AgentRunActivationRegistry(
+    new AgentRunResourceManager({
+      runSessions,
+      runFileChangeService,
+      publishedArtifactRelayService,
+      memoryRecorder,
+    }),
+  );
+  const autoByteusBackendFactory = input.autoByteusBackendFactory ?? unavailableBackendFactory;
+  const codexBackendFactory = input.codexBackendFactory ?? unavailableBackendFactory;
+  const claudeBackendFactory = input.claudeBackendFactory ?? unavailableBackendFactory;
+  return new AgentRunManager({
+    autoByteusBackendFactory,
+    codexBackendFactory,
+    claudeBackendFactory,
+    activationRegistry,
+    memoryRecorder,
+    providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+    agentToolMcpRunSessionReleaser: runSessions,
+  });
+};
 
 describe("AgentRunManager candidate lifecycle", () => {
-  beforeEach(() => {
-    resetAgentToolMcpSessionServiceForTests();
-    resetAgentToolMcpSessionRegistryForTests();
-  });
+  beforeEach(() => undefined);
 
   afterEach(() => {
-    resetAgentToolMcpSessionServiceForTests();
-    resetAgentToolMcpSessionRegistryForTests();
     vi.restoreAllMocks();
   });
 
@@ -278,6 +300,113 @@ describe("AgentRunManager candidate lifecycle", () => {
     expect(manager.getActiveRun("run-attach-failure")).toBeNull();
   });
 
+  it("revokes exactly once when a post-issue backend identity mismatch fails before attachment", async () => {
+    const recording = createRecordingAgentToolMcpRunSessionReleaser();
+    const backend = createBackend({ runId: "different-run" });
+    const manager = createManager({
+      codexBackendFactory: {
+        createBackend: vi.fn(async () => backend),
+        restoreBackend: vi.fn(),
+      },
+      agentToolMcpRunSessionReleaser: recording.releaser,
+    });
+
+    await expect(manager.prepareNewAgentRun({
+      runId: "run-before-attachment",
+      config: createConfig(),
+    })).rejects.toThrow("different local run identity");
+
+    expect(recording.getRevokedRunIds()).toEqual(["run-before-attachment"]);
+    expect(backend.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("quarantines attachment rollback when exact-run session revocation fails", async () => {
+    const primary = new Error("artifact attachment failed");
+    const cleanup = new Error("attached session revocation failed");
+    const releaser = {
+      revokeForRun: vi.fn(() => { throw cleanup; }),
+      revokeForOwner: vi.fn(() => 0),
+    };
+    const manager = createManager({
+      codexBackendFactory: {
+        createBackend: vi.fn(async () => createBackend({ runId: "run-attach-cleanup" })),
+        restoreBackend: vi.fn(),
+      },
+      publishedArtifactRelayService: {
+        attachToRun: vi.fn(() => { throw primary; }),
+      },
+      agentToolMcpRunSessionReleaser: releaser,
+    });
+
+    const error = await manager.prepareNewAgentRun({
+      runId: "run-attach-cleanup",
+      config: createConfig(),
+    }).catch((caught: unknown) => caught as Error & { cause?: AggregateError });
+
+    expect(error).toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
+    expect(error.cause?.errors).toEqual([
+      expect.objectContaining({
+        name: "AgentRunResourceAttachmentError",
+        errors: [primary, cleanup],
+      }),
+      cleanup,
+    ]);
+    expect(releaser.revokeForRun).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(["create", "restore"] as const)(
+    "revokes pre-attachment sessions after a post-issue %s failure",
+    async (operation) => {
+      const providerFailure = new Error(`${operation} failed after issue`);
+      const recording = createRecordingAgentToolMcpRunSessionReleaser();
+      const codexBackendFactory = {
+        createBackend: vi.fn(async () => { throw providerFailure; }),
+        restoreBackend: vi.fn(async () => { throw providerFailure; }),
+      };
+      const manager = createManager({
+        codexBackendFactory,
+        agentToolMcpRunSessionReleaser: recording.releaser,
+      });
+      const promise = operation === "create"
+        ? manager.prepareNewAgentRun({ runId: "run-post-issue", config: createConfig() })
+        : manager.prepareRestoreAgentRun(new AgentRunContext({
+            runId: "run-post-issue",
+            config: createConfig(),
+            runtimeContext: null,
+          }));
+
+      await expect(promise).rejects.toMatchObject({ cause: providerFailure });
+      expect(recording.getRevokedRunIds()).toEqual(["run-post-issue"]);
+    },
+  );
+
+  it("quarantines with primary then revocation cleanup evidence", async () => {
+    const primary = new Error("provider failed after issue");
+    const cleanup = new Error("session revocation failed");
+    const releaser = {
+      revokeForRun: vi.fn(() => { throw cleanup; }),
+      revokeForOwner: vi.fn(() => 0),
+    };
+    const manager = createManager({
+      codexBackendFactory: {
+        createBackend: vi.fn(async () => { throw primary; }),
+        restoreBackend: vi.fn(),
+      },
+      agentToolMcpRunSessionReleaser: releaser,
+    });
+
+    const error = await manager.prepareNewAgentRun({
+      runId: "run-cleanup-failure",
+      config: createConfig(),
+    }).catch((caught: unknown) => caught as Error & { cause?: AggregateError });
+    expect(error).toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
+    expect(error.cause).toMatchObject({
+      name: "AggregateError",
+      errors: [primary, cleanup],
+    });
+    expect(releaser.revokeForRun).toHaveBeenCalledWith("run-cleanup-failure");
+  });
+
   it("rejects another candidate after publication without replacing the active run", async () => {
     const codexBackendFactory = {
       createBackend: vi.fn(async () => createBackend({ runId: "run-active" })),
@@ -294,7 +423,7 @@ describe("AgentRunManager candidate lifecycle", () => {
     expect(manager.getActiveRun("run-active")).toBe(published);
   });
 
-  it("detaches sidecars and revokes only matching MCP sessions after accepted termination", async () => {
+  it("detaches sidecars and invokes exact-run MCP cleanup after accepted termination", async () => {
     const detachRunFiles = vi.fn();
     const detachArtifacts = vi.fn();
     const detachMemory = vi.fn();
@@ -302,6 +431,7 @@ describe("AgentRunManager candidate lifecycle", () => {
       createBackend: vi.fn(async () => createBackend({ runId: "run-with-mcp" })),
       restoreBackend: vi.fn(),
     };
+    const recording = createRecordingAgentToolMcpRunSessionReleaser();
     const manager = createManager({
       codexBackendFactory,
       runFileChangeService: { attachToRun: vi.fn(() => detachRunFiles) },
@@ -310,37 +440,7 @@ describe("AgentRunManager candidate lifecycle", () => {
         attachToRun: vi.fn(() => detachMemory),
         onUserMessageForwarded: vi.fn(),
       },
-    });
-    const registry = getAgentToolMcpSessionRegistry();
-    const matching = registry.createSession({
-      owner: { runId: "run-with-mcp" },
-      sender: buildAgentRunMessageSenderContext({
-        senderRunId: "run-with-mcp",
-        senderName: "agent",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      }),
-      runtimeExposure: buildRuntimeAgentToolExposure([]),
-      executionCapabilities: {
-        kind: "agent",
-        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
-      },
-      enabledTools: [],
-      toolRoutes: {},
-    });
-    const nonMatching = registry.createSession({
-      owner: { runId: "other-run" },
-      sender: buildAgentRunMessageSenderContext({
-        senderRunId: "other-run",
-        senderName: "other",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      }),
-      runtimeExposure: buildRuntimeAgentToolExposure([]),
-      executionCapabilities: {
-        kind: "agent",
-        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
-      },
-      enabledTools: [],
-      toolRoutes: {},
+      agentToolMcpRunSessionReleaser: recording.releaser,
     });
     const candidate = await manager.prepareNewAgentRun({
       runId: "run-with-mcp",
@@ -353,13 +453,6 @@ describe("AgentRunManager candidate lifecycle", () => {
     expect(detachRunFiles).toHaveBeenCalledOnce();
     expect(detachArtifacts).toHaveBeenCalledOnce();
     expect(detachMemory).toHaveBeenCalledOnce();
-    expect(registry.resolveSession({
-      sessionId: matching.session.sessionId,
-      bearerToken: matching.capabilityToken,
-    })).toMatchObject({ ok: false, reason: "revoked" });
-    expect(registry.resolveSession({
-      sessionId: nonMatching.session.sessionId,
-      bearerToken: nonMatching.capabilityToken,
-    }).ok).toBe(true);
+    expect(recording.getRevokedRunIds()).toEqual(["run-with-mcp"]);
   });
 });

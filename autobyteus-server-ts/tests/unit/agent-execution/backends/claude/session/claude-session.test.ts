@@ -158,7 +158,6 @@ const createSession = (input: {
   startQueryTurnImplementation?: (
     options: ClaudeSdkStartQueryTurnOptions,
   ) => Promise<ClaudeSdkQueryLike>;
-  contextFileLocalPathResolver?: { resolve: (uri: string) => string | null };
   memoryDir?: string | null;
   systemInstructionCaptureService?: SystemInstructionCaptureService;
 } = {}) => {
@@ -182,6 +181,11 @@ const createSession = (input: {
   );
   toolingCoordinator.clearPendingToolApprovals = clearPendingToolApprovals;
   const activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
+  const agentToolMcpSessionIssuer = {
+    issueForRun: vi.fn(() => {
+      throw new Error("Non-MCP ClaudeSession coverage must not issue Agent Tools.");
+    }),
+  };
 
   const runContext = new AgentRunContext({
     runId: "run-1",
@@ -223,7 +227,7 @@ const createSession = (input: {
       } as never,
       activeQueriesByRunId,
       toolingCoordinator,
-      contextFileLocalPathResolver: input.contextFileLocalPathResolver,
+      agentToolMcpSessionIssuer,
       systemInstructionCaptureService: input.systemInstructionCaptureService,
       isRunSessionActive: () => true,
       terminateRunSession,
@@ -381,19 +385,15 @@ describe("ClaudeSession", () => {
     });
   });
 
-  it("resolves finalized context-file locators before caching and sending user content", async () => {
-    const resolve = vi.fn((uri: string) =>
-      uri === "/rest/runs/run-1/context-files/proof.png" ? "/resolved/proof.png" : null,
-    );
+  it("caches and sends an already-normalized finalized context-file path", async () => {
     const { session, sessionMessageCache, startQueryTurn } = createSession({
       query: createResultQuery(),
-      contextFileLocalPathResolver: { resolve },
     });
 
     await session.startTurn(
       new AgentInputUserMessage("inspect this", undefined, [
         new ContextFile(
-          "/rest/runs/run-1/context-files/proof.png",
+          "/resolved/proof.png",
           ContextFileType.IMAGE,
         ),
       ]),
@@ -410,7 +410,6 @@ describe("ClaudeSession", () => {
     expect(startQueryTurn.mock.calls[0]?.[0]).toMatchObject({
       prompt: expectedContent,
     });
-    expect(resolve).toHaveBeenCalledWith("/rest/runs/run-1/context-files/proof.png");
   });
 
   it("applies idle status before emitting normal turn completion", async () => {

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 
 const metadata = (): AgentRunMetadata => ({
@@ -24,15 +25,18 @@ const createSubject = () => {
     run: { runId: "run-1", runtimeKind: RuntimeKind.CODEX_APP_SERVER },
     metadata: metadata(),
   };
-  const lifecycleService = {
+  const lifecycleService = Object.assign(
+    Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
+    {
     restorePersistedRun: vi.fn().mockResolvedValue(restored),
-  };
+    },
+  );
   const service = new AgentRunService("/tmp/agent-run-service-test", {
     agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
     metadataService: {} as never,
     historyCatalogService: {} as never,
     provisioningService: {} as never,
-    lifecycleService: lifecycleService as never,
+    lifecycleService,
   });
   return { lifecycleService, restored, service };
 };

@@ -31,9 +31,10 @@ import {
 import { materializeStandaloneHostConfig } from "./config/standalone-host-config-materializer.js";
 import { validateStandaloneApplicationPackage } from "../application-platform/launch-configuration/application-standalone-package-validator.js";
 import {
-  createAgentToolsMcpRuntime,
-  type AgentToolsMcpRuntime,
-} from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
+  createAgentToolsMcpHost,
+  type AgentToolsMcpHost,
+} from "../agent-tools/mcp/agent-tools-mcp-host.js";
+import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   getGeneralProcessPublishedArtifactPublisher,
 } from "../services/published-artifacts/published-artifact-publication-service.js";
@@ -42,6 +43,7 @@ import {
   type GeneralProcessRunSupervisor,
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
 import { assertTokenUsageCurrentSchema } from "../startup/token-usage-current-schema-readiness.js";
+import { createContextFilePathEnvironment } from "../context-files/domain/context-file-path-environment.js";
 import {
   TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
   configureTokenUsageMigrationReadiness,
@@ -51,6 +53,15 @@ import {
   createHostDefinitionServices,
   type HostDefinitionServices,
 } from "../compositions/host-definition-services.js";
+import { getWorkspaceManager } from "../workspaces/workspace-manager.js";
+import { getRuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
+import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+import { ModelConfigValidationService } from "../llm-management/services/model-config-validation-service.js";
+import { getModelAvailabilityService } from "../llm-management/services/model-availability-service.js";
+import { getLlmProviderService } from "../llm-management/llm-providers/services/llm-provider-service.js";
+import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
+import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -212,8 +223,8 @@ export const startStandaloneApplicationHost = async (
   });
   let app: FastifyInstance | null = null;
   let processResources: StandaloneProcessResources | null = null;
-  let agentToolsMcpRuntime:
-    AgentToolsMcpRuntime | null = null;
+  let agentToolsMcpHost: AgentToolsMcpHost | null = null;
+  let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
@@ -225,25 +236,55 @@ export const startStandaloneApplicationHost = async (
       appConfig: processResources.appConfig,
       bundleService,
     });
-    agentToolsMcpRuntime =
-      createAgentToolsMcpRuntime({
-        generalProcessPublisher:
-          getGeneralProcessPublishedArtifactPublisher(),
-      });
+    const workspaceManager = getWorkspaceManager();
+    const contextFilePathEnvironment = createContextFilePathEnvironment({
+      appDataDir: processResources.appConfig.getAppDataDir(),
+      baseUrl: processResources.appConfig.getBaseUrl(),
+    });
+    agentToolsMcpHost = createAgentToolsMcpHost();
+    const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
+      workspaceManager,
+    });
+    const modelCatalogService = getModelCatalogService();
+    const modelConfigValidator = new ModelConfigValidationService(modelCatalogService);
+    const generalAssembly = agentToolsMcpHost.sessionAuthorities.begin({
+      scopeIdentity: "general-process",
+    });
+    generalProcessAuthority = generalAssembly.complete({
+      executionCapabilities: {
+        publishedArtifactPublisher: getGeneralProcessPublishedArtifactPublisher(),
+      },
+      assertExecutionCapabilitiesReady: () => undefined,
+    });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
-        appConfig: processResources.appConfig,
+        memoryDir: processResources.appConfig.getMemoryDir(),
+        contextFilePathEnvironment,
         agentDefinitionService: hostDefinitionServices.agentDefinitionService,
         agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
-        agentToolsSessionManager: agentToolsMcpRuntime.generalProcessSessionManager,
+        workspaceManager,
+        agentProviderFactoryBuilder,
+        agentToolMcpSessionAuthority: generalProcessAuthority,
+        modelConfigValidator,
       });
+    generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
+      contextFilePathEnvironment,
       bundleService,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: hostDefinitionServices.agentTeamDefinitionService,
-      agentToolsSessionFactory:
-        agentToolsMcpRuntime,
+      agentToolMcpSessionAuthorities: agentToolsMcpHost.sessionAuthorities,
+      agentProviderFactoryBuilder,
+      workspaceManager,
+      runtimeAvailabilityService: getRuntimeAvailabilityService(),
+      modelCatalogService,
+      modelConfigValidator,
+      modelAvailabilityService: getModelAvailabilityService(),
+      llmProviderService: getLlmProviderService(),
+      codexClientManager: getCodexAppServerClientManager(),
+      requireCurrentModelIdentifier: (modelIdentifier) =>
+        LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
       selectedApplicationIds: new Set([selection.applicationId]),
     });
     app = await buildStandaloneApplicationServer({
@@ -251,7 +292,7 @@ export const startStandaloneApplicationHost = async (
       applicationRuntime,
       loggingConfig: processResources.loggingConfig,
       agentToolsRouteDependencies:
-        agentToolsMcpRuntime.routeDependencies,
+        agentToolsMcpHost.routeDependencies,
     });
     await applicationRuntime.lifecycle.prepareBeforeListen();
     const url = await app.listen({ host: config.host, port: config.port });
@@ -271,7 +312,7 @@ export const startStandaloneApplicationHost = async (
             await generalProcessRunSupervisor!.close();
           } finally {
             try {
-              agentToolsMcpRuntime!.close();
+              agentToolsMcpHost!.close();
             } finally {
               try {
                 await stopDefaultAgentRunEventPipeline();
@@ -305,15 +346,19 @@ export const startStandaloneApplicationHost = async (
           await generalProcessRunSupervisor?.close();
         } finally {
           try {
-            agentToolsMcpRuntime?.close();
+            generalProcessAuthority?.close();
           } finally {
             try {
-              await stopDefaultAgentRunEventPipeline();
+              agentToolsMcpHost?.close();
             } finally {
               try {
-                hostDefinitionServices?.close();
+                await stopDefaultAgentRunEventPipeline();
               } finally {
-                await processResources.close();
+                try {
+                  hostDefinitionServices?.close();
+                } finally {
+                  await processResources.close();
+                }
               }
             }
           }

@@ -1,0 +1,1439 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:41552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-GBStUc/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-zaeEH4/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-UjQEB5/app-data
+
+ ✓ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests) 721ms
+     ✓ discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS  361ms
+stdout | tests/integration/agent-execution/claude-session-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/claude-session-manager.integration.test.ts > ClaudeSessionManager explicit Agent Tools issuer > materializes an issued provider-neutral descriptor into the Claude query config
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/integration/agent-execution/claude-session-manager.integration.test.ts (9 tests | 1 failed | 8 skipped) 9ms
+     × materializes an issued provider-neutral descriptor into the Claude query config 8ms
+     ↓ creates a run session, adopts the SDK session id, and serves conversation from the session boundary
+     ↓ restores a run session against the same Claude session id and continues the conversation
+     ↓ requests tool approval and completes the tool-backed turn after approval
+     ↓ requests tool approval and denies the tool-backed turn without creating the target file
+     ↓ auto-executes a tool-backed turn without emitting approval requests
+     ↓ interrupts a tool-backed turn while approval is pending and leaves the target file untouched
+     ↓ terminates a run while approval is pending and removes the run session without creating the target file
+     ↓ restores the Claude session after an auto-executed tool turn and continues the same conversation
+(node:41566) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests) 187ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests) 181ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > captures and publishes the exact SDK systemPrompt after a usable query is returned
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (24 tests | 23 failed) 28ms
+     × captures and publishes the exact SDK systemPrompt after a usable query is returned 9ms
+     × closes the usable query without iteration when post-handoff persistence fails 1ms
+     × defensively rejects an impossible explicit start while another turn is active 1ms
+     × does not clear an identified active turn for missing or mismatched completion identity 1ms
+     × caches and sends local context file reference paths in user content 0ms
+     ✓ resolves finalized context-file locators before caching and sending user content 4ms
+     × applies idle status before emitting normal turn completion 0ms
+     × auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode 4ms
+     × keeps manual mode gated for a safe outside-scratch permission request until approval resolves 1ms
+     × enriches generic Claude process exits with bounded redacted stderr diagnostics 0ms
+     × classifies Claude terminal auth result chunks as runtime errors instead of completed turns 0ms
+     × settles an interrupted active turn before emitting TURN_INTERRUPTED 1ms
+     × keeps manager-owned closure cleanup idempotent without an active turn execution 0ms
+     × rejects a foreign interrupt turn without mutating the active query 0ms
+     × delegates terminate to the session manager dependency 0ms
+     × exposes the caller-reserved provider UUID before the first query 0ms
+     × resumes an interrupted incomplete turn using its immutable reserved provider UUID 0ms
+     × switches an opened but unconfirmed first query to exact resume after interrupt 0ms
+     × uses SDK sessionId for the first turn and resume for every completed follow-up 0ms
+     × continues to resume restored Claude runs with the restored provider session id 0ms
+     × fails a turn when Claude reports a conflicting provider UUID 0ms
+     × fails a successful-looking turn that never confirms the provider UUID 0ms
+     × emits provider-derived text segment ids and preserves text-tool-text order 0ms
+     × coalesces partial stream_event text deltas by message and content block 0ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > preserves configured-only standalone exposure without team defaults
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts (12 tests | 12 failed) 19ms
+     × preserves configured-only standalone exposure without team defaults 9ms
+     × enables team collaboration defaults and only configured browser tools 3ms
+     × automatically enables team collaboration tools for exact-run-only contexts 1ms
+     × creates an Agent Tools MCP session with member sender context when send_message_to is configured 1ms
+     × creates an Agent Tools MCP session with standalone sender context when no team context exists 1ms
+     × reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh 0ms
+     × enables publish_artifacts only when toolNames explicitly allow it 0ms
+     × enables media tools and their autobyteus_agent_tools MCP names only when configured 0ms
+     × combines intrinsic Team tools with configured task-result tools 1ms
+     × creates Agent Tools MCP tooling for configured MCP-only Claude tools 1ms
+     × does not enable artifact publication for old singular-only Claude configs 1ms
+     × enables only plural artifact tooling for mixed old/new Claude configs 1ms
+ ✓ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test) 67ms
+ ✓ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (6 tests) 62ms
+ ✓ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts (11 tests) 12ms
+(node:41574) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts (4 tests) 15ms
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts (1 test | 1 failed) 9ms
+     × persists single-agent traces only under memory/agents/<runId> for create + restore 8ms
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Agent Definition created successfully with ID: fresh-agent-fresh-1787732640661-456b1b
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Agent definition cache populated with 48 items.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Agent Definition created successfully with ID: blank-instructions-agent-blank-1787732640754-396853
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Agent definition cache populated with 48 items.
+
+ ❯ tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts (2 tests | 2 failed) 131ms
+     × uses fresh definition instructions for the next run even when the cache is stale 94ms
+     × falls back to description when fresh definition instructions are blank 36ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests) 92ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:24:03.995Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-26T08:24:03.996Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-26T08:24:03.997Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T08:24:04.004Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-26T08:24:04.004Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-26T08:24:04.004Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ✓ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test) 38ms
+stdout | tests/unit/application-platform/application-execution-scope.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > owns one complete graph-local kernel and freezes every outward capability
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects configured Team members depth-first, excludes task nodes, and deep-freezes
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects Agent launch identity without leaking the service result
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > maps restore-aware Agent and Team input without changing target or errors
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > quiesces issue admission and closes run graph before authority exactly once
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > continues authority close after shutdown failure and aggregates both failures
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > delegates construction abort exactly once after kernel transfer
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-execution-scope.test.ts (7 tests) 22ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (26 tests) 22ms
+(node:41633) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts (2 tests) 18ms
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts (12 tests | 12 failed) 15ms
+     × creates and registers an active autobyteus run through the matching backend factory 8ms
+     × creates and registers an active codex_app_server run through the matching backend factory 1ms
+     × creates and registers an active claude_agent_sdk run through the matching backend factory 1ms
+     × restores a autobyteus run through the matching backend factory 1ms
+     × restores a codex_app_server run through the matching backend factory 0ms
+     × restores a claude_agent_sdk run through the matching backend factory 0ms
+     × restores Claude platform state with auto approval separate from provider permission mode 1ms
+     × evicts inactive runs when queried or listed 0ms
+     × terminates and unregisters active runs on accepted termination 1ms
+     × returns false for missing runs and for unaccepted termination without unregistering 0ms
+     × wraps termination failures in AgentTerminationError 0ms
+     × rejects unsupported runtime kinds for create and restore 0ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (13 tests) 15ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > propagates the exact execution issuer into every created and restored session
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (8 tests | 5 failed) 11ms
+     × propagates the exact execution issuer into every created and restored session 6ms
+     × creates a run session with a reserved provider UUID and no local-id placeholder 1ms
+     × restores a run session with the exact persisted provider UUID ready for resume 1ms
+     ✓ uses the provided session id directly when fetching session messages 1ms
+     ✓ falls back to cached messages when the SDK returns no history 0ms
+     ✓ merges normalized SDK history with cached messages when both are available 0ms
+     × terminates a run session, emits SESSION_TERMINATED, and removes the run session 0ms
+     × settles an active turn through the session-owned interrupt sequence before termination cleanup 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (11 tests) 12ms
+ ✓ tests/unit/agent-execution/agent-run-resource-manager.test.ts (3 tests) 4ms
+stdout | tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts (8 tests | 8 skipped)
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts (10 tests | 10 skipped)
+stdout | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts (3 tests | 3 skipped)
+stdout | tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts (4 tests | 4 failed) 12ms
+     × forwards an authorized exact-member address as the bound agentRunId 9ms
+     × resolves initial targetMemberAddress through the binding before exact root dispatch 1ms
+     × rejects an unknown initial targetMemberAddress before root lookup 1ms
+     × rejects an addressed agentRunId outside the bound team before root lookup 1ms
+ ✓ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests) 55ms
+ ✓ tests/unit/application-platform/application-execution-shutdown-coordinator.test.ts (2 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 60 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:89:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:139:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:168:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:190:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:214:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:243:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:267:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:284:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts:102:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+TypeError: Cannot read properties of undefined (reading 'listActiveRuns')
+ ❯ tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts:131:31
+    129| 
+    130|   afterEach(async () => {
+    131|     const activeIds = manager.listActiveRuns();
+       |                               ^
+    132|     await Promise.all(activeIds.map((id) => manager.terminateAgentRun(…
+    133|     await fs.rm(memoryDir, { recursive: true, force: true });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ buildRunService tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts:130:21
+ ❯ tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts:186:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/61]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ buildRunService tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts:130:21
+ ❯ tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts:240:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/61]⎯
+
+ FAIL  tests/integration/agent-execution/claude-session-manager.integration.test.ts > ClaudeSessionManager explicit Agent Tools issuer > materializes an issued provider-neutral descriptor into the Claude query config
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/integration/agent-execution/claude-session-manager.integration.test.ts:218:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/61]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:150:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/61]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > resolves initial targetMemberAddress through the binding before exact root dispatch
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:166:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/61]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown initial targetMemberAddress before root lookup
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:189:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/61]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an addressed agentRunId outside the bound team before root lookup
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:214:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > propagates the exact execution issuer into every created and restored session
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:83:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > creates a run session with a reserved provider UUID and no local-id placeholder
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:105:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > restores a run session with the exact persisted provider UUID ready for resume
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.restoreRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:90:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:124:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > terminates a run session, emits SESSION_TERMINATED, and removes the run session
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > settles an active turn through the session-owned interrupt sequence before termination cleanup
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:235:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > preserves configured-only standalone exposure without team defaults
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:160:54
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables team collaboration defaults and only configured browser tools
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:188:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > automatically enables team collaboration tools for exact-run-only contexts
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:236:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > creates an Agent Tools MCP session with member sender context when send_message_to is configured
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:273:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > creates an Agent Tools MCP session with standalone sender context when no team context exists
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:310:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:334:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables publish_artifacts only when toolNames explicitly allow it
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:385:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables media tools and their autobyteus_agent_tools MCP names only when configured
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:411:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > combines intrinsic Team tools with configured task-result tools
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:439:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > creates Agent Tools MCP tooling for configured MCP-only Claude tools
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:494:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > does not enable artifact publication for old singular-only Claude configs
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:520:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables only plural artifact tooling for mixed old/new Claude configs
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:119:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts:541:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > captures and publishes the exact SDK systemPrompt after a usable query is returned
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:259:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > closes the usable query without iteration when post-handoff persistence fails
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:303:53
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > defensively rejects an impossible explicit start while another turn is active
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:328:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > does not clear an identified active turn for missing or mismatched completion identity
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:336:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > caches and sends local context file reference paths in user content
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:346:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > applies idle status before emitting normal turn completion
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:403:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:494:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > keeps manual mode gated for a safe outside-scratch permission request until approval resolves
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:552:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:591:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:627:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:667:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > keeps manager-owned closure cleanup idempotent without an active turn execution
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:747:52
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:772:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > delegates terminate to the session manager dependency
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:790:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > exposes the caller-reserved provider UUID before the first query
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:798:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its immutable reserved provider UUID
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:806:53
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:838:53
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > uses SDK sessionId for the first turn and resume for every completed follow-up
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:866:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume restored Claude runs with the restored provider session id
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:884:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a turn when Claude reports a conflicting provider UUID
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:898:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a successful-looking turn that never confirms the provider UUID
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:913:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > emits provider-derived text segment ids and preserves text-tool-text order
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:987:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/61]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > coalesces partial stream_event text deltas by message and content block
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ createSession tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:215:19
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:1138:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/61]⎯
+
+
+ Test Files  8 failed | 17 passed | 3 skipped (28)
+      Tests  60 failed | 111 passed | 29 skipped (200)
+   Start at  10:23:40
+   Duration  38.29s (transform 5.03s, setup 161ms, import 32.49s, tests 1.76s, environment 2ms)
+

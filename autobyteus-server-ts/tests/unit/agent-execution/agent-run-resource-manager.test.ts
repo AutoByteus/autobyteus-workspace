@@ -13,7 +13,7 @@ describe("AgentRunResourceManager", () => {
     const memoryDispose = vi.fn();
     const revokeForRun = vi.fn(() => 2);
     const manager = new AgentRunResourceManager({
-      sessionScope: { revokeForRun },
+      runSessions: { revokeForRun, revokeForOwner: vi.fn(() => 0) },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
@@ -40,7 +40,7 @@ describe("AgentRunResourceManager", () => {
     const fileDispose = vi.fn();
     const revokeForRun = vi.fn(() => 0);
     const manager = new AgentRunResourceManager({
-      sessionScope: { revokeForRun },
+      runSessions: { revokeForRun, revokeForOwner: vi.fn(() => 0) },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: {
         attachToRun: vi.fn(() => { throw new Error("relay attach failed"); }),
@@ -64,7 +64,7 @@ describe("AgentRunResourceManager", () => {
     const relayDispose = vi.fn(() => { throw new Error("relay failed"); });
     const memoryDispose = vi.fn(() => { throw new Error("memory failed"); });
     const manager = new AgentRunResourceManager({
-      sessionScope: { revokeForRun },
+      runSessions: { revokeForRun, revokeForOwner: vi.fn(() => 0) },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },

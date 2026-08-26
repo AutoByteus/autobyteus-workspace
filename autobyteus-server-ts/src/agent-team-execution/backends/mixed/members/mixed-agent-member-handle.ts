@@ -15,7 +15,9 @@ import {
   getAgentConversationActivityInspector,
   type AgentConversationActivityInspector,
 } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { getAgentToolMcpSessionService, type AgentToolMcpSessionManager } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type {
+  AgentToolMcpRunSessionReleaser,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import type { ApplicationExecutionContext } from "../../../../application-orchestration/domain/models.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
@@ -69,7 +71,7 @@ export class MixedAgentMemberHandle {
     config: TeamRunAgentNode;
     activationMode: MixedConfiguredMemberActivationMode;
     agentRunManager?: AgentRunManager;
-    agentToolMcpSessionManager?: AgentToolMcpSessionManager;
+    agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
     memoryLocationService?: AgentMemoryLocationService;
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
@@ -214,8 +216,8 @@ export class MixedAgentMemberHandle {
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    (this.options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService())
-      .revokeAgentToolMcpSessionsForRun(this.context.agentRunId);
+    this.options.agentToolMcpRunSessionReleaser
+      .revokeForRun(this.context.agentRunId);
     this.agentRun = null;
     this.overlay.clear();
   }

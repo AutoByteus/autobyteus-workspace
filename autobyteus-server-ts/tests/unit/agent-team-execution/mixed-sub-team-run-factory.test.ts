@@ -3,6 +3,15 @@ import { MixedSubTeamRunFactory } from "../../../src/agent-team-execution/backen
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+
+const createContextOnlyBackendFactory = () => new MixedTeamRunBackendFactory({
+  agentToolMcpRunSessionReleaser:
+    createNoopAgentToolMcpRunSessionReleaser(),
+  createTeamManager: () => {
+    throw new Error("Context-only backend factory must not construct a manager.");
+  },
+});
 
 describe("MixedSubTeamRunFactory physical scope", () => {
   it("appends each configured child boundary while inheriting handoffs and application binding", async () => {
@@ -26,7 +35,7 @@ describe("MixedSubTeamRunFactory physical scope", () => {
       handoffs: [{ from: "/lead", to: "/child", rules: ["Delegate review."] }],
       children: [testAgentNode("/lead"), childTeam],
     });
-    const backendFactory = new MixedTeamRunBackendFactory();
+    const backendFactory = createContextOnlyBackendFactory();
     const applicationBinding = { applicationId: "app-1", bindingId: "binding-1" };
     const rootContext = backendFactory.buildTeamRunContext({
       config,
@@ -71,7 +80,7 @@ describe("MixedSubTeamRunFactory physical scope", () => {
       handoffs: [{ from: "/lead", to: "/review", rules: ["Configured handoff."] }],
       children: [testAgentNode("/lead"), template],
     });
-    const backendFactory = new MixedTeamRunBackendFactory();
+    const backendFactory = createContextOnlyBackendFactory();
     const rootContext = backendFactory.buildTeamRunContext({
       config,
       physicalScope: createRootTeamRunPhysicalScope("root-run"),

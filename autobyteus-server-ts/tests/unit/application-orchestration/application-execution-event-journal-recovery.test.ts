@@ -177,12 +177,8 @@ describe("application execution-event journal recovery", () => {
           isApplicationReady: vi.fn(() => true),
           getDiagnosticsByApplicationId: vi.fn(() => new Map()),
         },
-        agentToolsSessionManager: {
-          assertReady: vi.fn(),
-          blockNewSessions: vi.fn(),
-          close: vi.fn(),
-        },
       },
+      executionReadiness: { assertReady: vi.fn() },
       bundleService: {
         getCatalogSnapshot: vi.fn(async () => ({
           applications: [{ id: APPLICATION_ID }],
@@ -213,7 +209,10 @@ describe("application execution-event journal recovery", () => {
         awaitDrained: vi.fn(async () => undefined),
       },
       engineLauncher: { stopAll: vi.fn(async () => undefined) },
-      runShutdownCoordinator: { stopAllRuns: vi.fn(async () => undefined) },
+      executionLifecycle: {
+        quiesce: vi.fn(),
+        close: vi.fn(async () => undefined),
+      },
       streamingService: { stopAll: vi.fn(async () => undefined) },
     } as never);
 

@@ -1,6 +1,7 @@
 import type { ApplicationAgentBindingRecord } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { describe, expect, it, vi } from "vitest";
@@ -54,6 +55,9 @@ const buildRootTeamRuntime = () => {
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
   const root = new RootTeamRun({
+    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+      allocateForAgentDefinition: async () => "application-task-agent-run",
+    }),
     rootRun: {
       teamRunId,
       isActive: vi.fn(() => true),
@@ -108,8 +112,15 @@ const buildHost = (
     runObserverService: {
       attachBinding: vi.fn(async () => true),
     } as never,
-    teamRunService: {
-      resolveActiveTeamRun,
+    teamExecution: {
+      postTeamInput: vi.fn(async (_teamRunId, message, targetAgentRunId) => {
+        const active = await resolveActiveTeamRun();
+        if (!active) return { kind: "NOT_AVAILABLE" };
+        const result = await active.postMessage(message, targetAgentRunId);
+        return result.accepted
+          ? { kind: "ACCEPTED" }
+          : { kind: "REJECTED", message: result.message ?? null };
+      }),
     } as never,
     agentTargetAuthorizationService: {
       authorizeTarget: vi.fn(async (_nextApplicationId, address) => ({

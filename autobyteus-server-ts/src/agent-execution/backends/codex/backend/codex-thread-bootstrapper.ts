@@ -52,9 +52,11 @@ import {
 } from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import {
-  getAgentToolMcpSessionService,
-  type AgentToolMcpSessionManager,
+  getAgentToolMcpSessionIssuer,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type {
+  AgentToolMcpSessionIssuer,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   materializeCodexAgentToolsMcpThreadConfig,
 } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
@@ -179,7 +181,7 @@ export class CodexThreadBootstrapper {
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly skillService: SkillService;
   private readonly clientManager: CodexAppServerClientManager;
-  private readonly agentToolMcpSessionService: AgentToolMcpSessionManager;
+  private readonly agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
 
   constructor(
     workspaceSkillMaterializer: WorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
@@ -187,14 +189,14 @@ export class CodexThreadBootstrapper {
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
-    agentToolMcpSessionService: AgentToolMcpSessionManager = getAgentToolMcpSessionService(),
+    agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer = getAgentToolMcpSessionIssuer(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.workspaceResolver = workspaceResolver;
     this.agentDefinitionService = agentDefinitionService;
     this.skillService = skillService;
     this.clientManager = clientManager;
-    this.agentToolMcpSessionService = agentToolMcpSessionService;
+    this.agentToolMcpSessionIssuer = agentToolMcpSessionIssuer;
   }
 
   async bootstrapForCreate(
@@ -303,7 +305,7 @@ export class CodexThreadBootstrapper {
     workingDirectory: string;
   }): ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null {
     const memberTeamContext = input.runContext.config.memberTeamContext;
-    const result = this.agentToolMcpSessionService.createAgentToolMcpSession({
+    const result = this.agentToolMcpSessionIssuer.issueForRun({
       owner: memberTeamContext
         ? {
             runId: input.runContext.runId,

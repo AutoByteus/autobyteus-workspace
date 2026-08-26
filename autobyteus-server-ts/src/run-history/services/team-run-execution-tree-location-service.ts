@@ -229,9 +229,12 @@ export class TeamRunExecutionTreeLocationService {
 }
 
 export const createStoredTeamRunExecutionTreeLocationService = (
-  memoryDir?: string,
-): TeamRunExecutionTreeLocationService =>
-  new TeamRunExecutionTreeLocationService({
-    memoryDir,
+  memoryDir: string,
+): TeamRunExecutionTreeLocationService => {
+  const normalizedMemoryDir = memoryDir?.trim();
+  if (!normalizedMemoryDir) throw new Error("memoryDir is required.");
+  return new TeamRunExecutionTreeLocationService({
+    memoryDir: normalizedMemoryDir,
     manager: STORED_TEAM_RUNS_ONLY,
   });
+};

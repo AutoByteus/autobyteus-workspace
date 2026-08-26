@@ -1,16 +1,19 @@
-import type { AppConfig } from "../../config/app-config.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
-import type { AgentToolMcpSessionManager } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
-import { AutoByteusAgentRunBackendFactory } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
-import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
-import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
-import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
-import { CodexAgentRunBackendFactory } from "../backends/codex/backend/codex-agent-run-backend-factory.js";
-import { CodexThreadBootstrapper } from "../backends/codex/backend/codex-thread-bootstrapper.js";
+import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+import type { AgentProviderFactoryBuilder } from "../providers/agent-provider-factory-builder.js";
+import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
+import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { AgentRunResourceManager } from "../services/agent-run-resource-manager.js";
+import { AgentRunActivationRegistry } from "../runtime/agent-run-activation-registry.js";
+import { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
+import { ContextFileLayout } from "../../context-files/store/context-file-layout.js";
+import { ContextFileOwnerResolver } from "../../context-files/services/context-file-owner-resolver.js";
+import { ContextFileLocalPathResolver } from "../../context-files/services/context-file-local-path-resolver.js";
+import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 import { AgentRunStatusProjectionService } from "../services/agent-run-status-projection-service.js";
 import { AgentRunProvisioningService } from "../services/agent-run-provisioning-service.js";
 import {
@@ -22,6 +25,7 @@ import { StandaloneAgentRunLifecycleService } from "../services/standalone-agent
 import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import {
   TeamRunService,
@@ -31,22 +35,25 @@ import {
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentRunResumeConfigService } from "../../run-history/services/agent-run-resume-config-service.js";
-import {
-  TeamRunExecutionTreeLocationService,
-  createStoredTeamRunExecutionTreeLocationService,
-} from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
 import { TeamRunHistoryService } from "../../run-history/services/team-run-history-service.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
+import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
-import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
-  appConfig: AppConfig;
+  memoryDir: string;
+  contextFilePathEnvironment: ContextFilePathEnvironment;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionManager: AgentToolMcpSessionManager;
+  workspaceManager: WorkspaceManager;
+  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
+  agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
+  modelConfigValidator: RunModelConfigValidator;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -54,11 +61,20 @@ const requireGeneralProcessRunSupervisorInput = (
 ): GeneralProcessRunSupervisorInput => {
   if (
     !input
-    || !input.appConfig
-    || typeof input.appConfig.getMemoryDir !== "function"
+    || typeof input.memoryDir !== "string"
+    || !input.memoryDir.trim()
+    || !input.contextFilePathEnvironment
+    || typeof input.contextFilePathEnvironment.appDataDir !== "string"
+    || !input.contextFilePathEnvironment.appDataDir.trim()
+    || typeof input.contextFilePathEnvironment.baseUrl !== "string"
+    || !input.contextFilePathEnvironment.baseUrl.trim()
     || !input.agentDefinitionService
     || !input.agentTeamDefinitionService
-    || !input.agentToolsSessionManager
+    || !input.workspaceManager
+    || !input.agentProviderFactoryBuilder
+    || !input.agentToolMcpSessionAuthority
+    || !input.modelConfigValidator
+    || typeof input.modelConfigValidator.validate !== "function"
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
@@ -72,12 +88,13 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
+  private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private closePromise: Promise<void> | null = null;
 
   constructor(input: GeneralProcessRunSupervisorInput) {
     input = requireGeneralProcessRunSupervisorInput(input);
-    const memoryDir = input.appConfig.getMemoryDir();
-    const workspaceManager = getWorkspaceManager();
+    const memoryDir = input.memoryDir.trim();
+    const workspaceManager = input.workspaceManager;
     const storedTeamLocations = createStoredTeamRunExecutionTreeLocationService(memoryDir);
     let agentRunManager: AgentRunManager | null = null;
     let agentTeamRunManager: AgentTeamRunManager | null = null;
@@ -87,69 +104,47 @@ export class GeneralProcessRunSupervisor {
     let teamRunServiceBound = false;
 
     try {
-      const codexThreadBootstrapper = new CodexThreadBootstrapper(
-        undefined,
-        undefined,
-        input.agentDefinitionService,
-        undefined,
-        undefined,
-        input.agentToolsSessionManager,
-      );
-      const claudeSessionManager = new ClaudeSessionManager(
-        undefined,
-        undefined,
-        input.agentToolsSessionManager,
-      );
-      const claudeSessionBootstrapper = new ClaudeSessionBootstrapper(
-        undefined,
-        undefined,
-        input.agentDefinitionService,
-      );
-      agentRunManager = AgentRunManager.initializeProcessInstance({
-        autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
-          agentDefinitionService: input.agentDefinitionService,
+      const contextFileLayout = new ContextFileLayout({
+        appDataDir: input.contextFilePathEnvironment.appDataDir,
+        memoryDir,
+      });
+      const contextFileOwnerResolver = new ContextFileOwnerResolver({
+        locations: storedTeamLocations,
+      });
+      const providerInputNormalizer = new AgentRunProviderInputNormalizer(
+        new ContextFileLocalPathResolver({
+          layout: contextFileLayout,
+          ownerResolver: contextFileOwnerResolver,
+          baseUrl: input.contextFilePathEnvironment.baseUrl,
         }),
-        codexBackendFactory: new CodexAgentRunBackendFactory(
-          undefined,
-          codexThreadBootstrapper,
-        ),
-        claudeBackendFactory: new ClaudeAgentRunBackendFactory(
-          claudeSessionManager,
-          claudeSessionBootstrapper,
-        ),
+      );
+      const memoryRecorder = new AgentRunMemoryRecorder();
+      const resourceManager = new AgentRunResourceManager({
+        runSessions: input.agentToolMcpSessionAuthority.runSessions,
         runFileChangeService: new RunFileChangeService({
           memoryDir,
           workspaceManager,
           teamLocations: storedTeamLocations,
         }),
-        agentToolMcpSessionManager: input.agentToolsSessionManager,
+        publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
+        memoryRecorder,
+      });
+      const activationRegistry = new AgentRunActivationRegistry(resourceManager);
+      const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
+        agentDefinitionService: input.agentDefinitionService,
+        agentToolMcpSessionIssuer: input.agentToolMcpSessionAuthority.issuer,
+      });
+      agentRunManager = AgentRunManager.initializeProcessInstance({
+        autoByteusBackendFactory: providerFactories.autoByteus,
+        codexBackendFactory: providerFactories.codex,
+        claudeBackendFactory: providerFactories.claude,
+        activationRegistry,
+        memoryRecorder,
+        providerInputNormalizer,
+        agentToolMcpRunSessionReleaser:
+          input.agentToolMcpSessionAuthority.runSessions,
       });
 
-      const memberTeamContextBuilder = new MemberTeamContextBuilder(
-        input.agentTeamDefinitionService,
-      );
-      const generalAgentRunManager = agentRunManager;
-      agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
-        memoryDir,
-        mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-          createTeamManager: (context, subTeamRunFactory, callbacks) =>
-            new MixedTeamManager(context, {
-              subTeamRunFactory,
-              taskRootResolver: callbacks.taskRootResolver,
-              agentRunManager: generalAgentRunManager,
-              agentToolMcpSessionManager: input.agentToolsSessionManager,
-              memberTeamContextBuilder,
-              workspaceManager,
-              publish: callbacks.publish,
-              deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
-              acceptPlatformBinding: callbacks.acceptPlatformBinding,
-            }),
-        }),
-      });
-      const teamLocations = new TeamRunExecutionTreeLocationService({
-        memoryDir,
-        manager: agentTeamRunManager,
-      });
       const metadataService = new AgentRunMetadataService(memoryDir);
       const historyCatalogService = new AgentRunHistoryCatalogService(memoryDir, {
         agentDefinitionService: input.agentDefinitionService,
@@ -159,8 +154,47 @@ export class GeneralProcessRunSupervisor {
         agentDefinitionService: input.agentDefinitionService,
         agentRunManager,
         agentRunMetadataService: metadataService,
-        teamRunExecutionTreeLocationService: teamLocations,
+        teamRunExecutionTreeLocationService: storedTeamLocations,
         memoryDir,
+      });
+      const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
+        agentRunIdentityAllocator,
+      );
+
+      const memberTeamContextBuilder = new MemberTeamContextBuilder(
+        input.agentTeamDefinitionService,
+      );
+      const memoryLocationService = new AgentMemoryLocationService({
+        memoryDir,
+        locationService: storedTeamLocations,
+      });
+      const activityInspector = new AgentConversationActivityInspector();
+      const generalAgentRunManager = agentRunManager;
+      agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+        memoryDir,
+        taskExecutionIdentity,
+        modelConfigValidator: input.modelConfigValidator,
+        mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+          agentToolMcpRunSessionReleaser:
+            input.agentToolMcpSessionAuthority.runSessions,
+          createTeamManager: (managerInput) =>
+            new MixedTeamManager(managerInput.context, {
+              subTeamRunFactory: managerInput.subTeamRunFactory,
+              taskRootResolver: managerInput.callbacks.taskRootResolver,
+              agentRunManager: generalAgentRunManager,
+              agentToolMcpRunSessionReleaser:
+                managerInput.agentToolMcpRunSessionReleaser,
+              memoryLocationService,
+              activityInspector,
+              memberTeamContextBuilder,
+              workspaceManager,
+              publish: managerInput.callbacks.publish,
+              deliverInterAgentMessage:
+                managerInput.callbacks.deliverInterAgentMessage,
+              acceptPlatformBinding:
+                managerInput.callbacks.acceptPlatformBinding,
+            }),
+        }),
       });
       const tokenUsageReadiness = new TokenUsageMigrationReadiness();
       const provisioningService = new AgentRunProvisioningService(memoryDir, {
@@ -176,6 +210,7 @@ export class GeneralProcessRunSupervisor {
         historyCatalogService,
         workspaceManager,
         tokenUsageReadiness,
+        modelConfigValidator: input.modelConfigValidator,
       });
       agentRunService = new AgentRunService(memoryDir, {
         agentRunManager,
@@ -185,10 +220,6 @@ export class GeneralProcessRunSupervisor {
         agentRunIdentityAllocator,
         provisioningService,
         lifecycleService,
-      });
-      const memoryLocationService = new AgentMemoryLocationService({
-        memoryDir,
-        locationService: teamLocations,
       });
       const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
         teamRunManager: agentTeamRunManager,
@@ -214,6 +245,7 @@ export class GeneralProcessRunSupervisor {
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
+      this.agentToolMcpSessionAuthority = input.agentToolMcpSessionAuthority;
       this.agentRunResumeConfigService = new AgentRunResumeConfigService(memoryDir, {
         statusProjectionService: new AgentRunStatusProjectionService({
           agentRunManager,
@@ -248,19 +280,35 @@ export class GeneralProcessRunSupervisor {
   }
 
   private async closeInternal(): Promise<void> {
+    const errors: unknown[] = [];
     try {
       await this.agentTeamRunManager.stopAllTeamRuns();
-    } finally {
-      try {
-        await this.agentRunManager.stopAllAgentRuns();
-      } finally {
-        releaseProcessTeamRunService(this.teamRunService);
-        releaseProcessAgentRunService(this.agentRunService);
-        AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
-        AgentRunManager.releaseProcessInstance(this.agentRunManager);
-      }
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
+      await this.agentRunManager.stopAllAgentRuns();
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
+      releaseProcessTeamRunService(this.teamRunService);
+      releaseProcessAgentRunService(this.agentRunService);
+      AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
+      AgentRunManager.releaseProcessInstance(this.agentRunManager);
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
+      this.agentToolMcpSessionAuthority.close();
+    } catch (error) {
+      errors.push(error);
+    }
+    if (errors.length) {
+      throw new AggregateError(errors, "General process run supervisor close failed.");
     }
   }
+
 }
 
 export const createGeneralProcessRunSupervisor = (

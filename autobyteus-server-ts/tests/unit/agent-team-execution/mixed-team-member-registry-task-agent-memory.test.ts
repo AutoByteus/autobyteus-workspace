@@ -13,12 +13,14 @@ import {
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import {
   testAgentNode,
   testAgentTeamNode,
   testMemberTeamContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
+import { createRecordingAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
   it("keeps a fresh task Agent as a leaf in its containing nested TeamRun scope and releases work only after commit", async () => {
@@ -92,17 +94,20 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
     });
     const memoryLocationService = new AgentMemoryLocationService({
       memoryDir: appConfigProvider.config.getMemoryDir(),
+      locationService: createStoredTeamRunExecutionTreeLocationService(
+        appConfigProvider.config.getMemoryDir(),
+      ),
     });
     const getTeamAgentRunLocation = vi.spyOn(
       memoryLocationService,
       "getTeamAgentRunLocation",
     );
-    const revokeAgentToolMcpSessionsForRun = vi.fn();
+    const recording = createRecordingAgentToolMcpRunSessionReleaser();
     const taskAgentRunId = "worker_00000000000000000000000000000001";
     const registry = new MixedTaskAgentExecutionRegistry({
       teamContext,
       agentRunManager: { prepareNewAgentRun } as never,
-      agentToolMcpSessionManager: { revokeAgentToolMcpSessionsForRun } as never,
+      agentToolMcpRunSessionReleaser: recording.releaser,
       memoryLocationService,
       activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
       memberTeamContextBuilder: {
@@ -162,6 +167,6 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
     });
     expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).not.toBe("/tmp/template-member-memory-dir");
     registry.dispose();
-    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenCalledWith(taskAgentRunId);
+    expect(recording.getRevokedRunIds()).toEqual([taskAgentRunId]);
   });
 });

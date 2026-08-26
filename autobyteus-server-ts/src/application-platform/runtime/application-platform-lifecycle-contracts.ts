@@ -16,11 +16,9 @@ import type { ApplicationAgentStreamingService } from "../../application-agent-s
 import type { AgentToolRegistryReadiness } from "../../startup/agent-tool-loader.js";
 import type { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
 import type {
-  ScopedAgentToolMcpSessionManager,
-} from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
-import type {
-  ApplicationRunShutdownCoordinator,
-} from "./application-run-shutdown-coordinator.js";
+  ApplicationExecutionLifecycle,
+  ApplicationExecutionToolReadiness,
+} from "../execution/application-execution-scope-contracts.js";
 
 export type ApplicationPlatformLifecycleState =
   | "constructed"
@@ -40,8 +38,8 @@ export type ApplicationPlatformLifecycleDependencies = {
     toolReadiness: AgentToolRegistryReadiness;
     bootstrapBuiltInAgents: () => Promise<void>;
     definitionRuntimeReadiness: ApplicationDefinitionRuntimeReadiness;
-    agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
   };
+  executionReadiness: Pick<ApplicationExecutionToolReadiness, "assertReady">;
   bundleService: ApplicationBundleService;
   storageLifecycleService: Pick<
     ApplicationStorageLifecycleService,
@@ -60,6 +58,6 @@ export type ApplicationPlatformLifecycleDependencies = {
   runObserverService: ApplicationRunObserverService;
   artifactDeliveryService: ApplicationPublishedArtifactDeliveryService;
   engineLauncher: ApplicationEngineLauncher;
-  runShutdownCoordinator: ApplicationRunShutdownCoordinator;
+  executionLifecycle: ApplicationExecutionLifecycle;
   streamingService: ApplicationAgentStreamingService;
 };

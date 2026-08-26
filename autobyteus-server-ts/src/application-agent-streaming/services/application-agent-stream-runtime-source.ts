@@ -1,17 +1,18 @@
 import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
 import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
 import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type { ApplicationAgentStreamSourceEvent } from "../domain/application-agent-streaming-models.js";
+import type { ApplicationExecutionStreaming } from "../../application-platform/execution/application-execution-scope-contracts.js";
 import { ApplicationAgentStreamingEstablishmentError } from "../domain/application-agent-streaming-models.js";
 
 const runtimeNotActive = (): ApplicationAgentStreamingEstablishmentError =>
   new ApplicationAgentStreamingEstablishmentError("RUNTIME_NOT_ACTIVE");
 
-export class ApplicationAgentStreamRuntimeSource {
+export class ApplicationAgentStreamRuntimeSource implements ApplicationExecutionStreaming {
   constructor(private readonly dependencies: {
     agentRunManager: Pick<AgentRunManager, "getActiveRun">;
     teamRunManager: Pick<AgentTeamRunManager, "getActiveTeamRun">;
@@ -22,8 +23,7 @@ export class ApplicationAgentStreamRuntimeSource {
     listener: (event: ApplicationAgentStreamSourceEvent) => void,
   ): () => void {
     if (descriptor.runtimeSubject === "AGENT_RUN") {
-      const run = (this.dependencies.agentRunManager ?? AgentRunManager.getInstance())
-        .getActiveRun(descriptor.runtimeRunId);
+      const run = this.dependencies.agentRunManager.getActiveRun(descriptor.runtimeRunId);
       const producer = descriptor.producers[0];
       if (!run || !producer) throw runtimeNotActive();
       return run.subscribeToEvents((event) => {

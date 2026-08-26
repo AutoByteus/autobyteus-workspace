@@ -1,10 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-const revokeAgentToolMcpSessionsForRun = vi.hoisted(() => vi.fn());
-vi.mock("../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js", () => ({
-  getAgentToolMcpSessionService: () => ({ revokeAgentToolMcpSessionsForRun }),
-}));
-
+import { describe, expect, it, vi } from "vitest";
+import { createRecordingAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { MixedAgentMemberHandle } from "../../../src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -20,6 +15,7 @@ const buildMemberConfig = (): TeamRunAgentNode => testAgentNode("/worker", {
 });
 
 const buildHandle = () => {
+  const recording = createRecordingAgentToolMcpRunSessionReleaser();
   const memberConfig = buildMemberConfig();
   const memberContext = new MixedAgentMemberContext({
     address: memberConfig.address,
@@ -40,7 +36,8 @@ const buildHandle = () => {
     handoffs: config.handoffs,
     runtimeContext: new MixedTeamRunContext({ memberContexts: [memberContext] }),
   });
-  return new MixedAgentMemberHandle({
+  const handle = new MixedAgentMemberHandle({
+    agentToolMcpRunSessionReleaser: recording.releaser,
     teamContext,
     context: memberContext,
     config: memberConfig,
@@ -48,19 +45,17 @@ const buildHandle = () => {
     publish: vi.fn(),
     deliverInterAgentMessage: vi.fn(),
   });
+  return { handle, recording };
 };
 
 describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
-  beforeEach(() => revokeAgentToolMcpSessionsForRun.mockReset());
-
   it("revokes only the exact intrinsic AgentRun identity on every idempotent local dispose", () => {
-    const handle = buildHandle();
+    const { handle, recording } = buildHandle();
 
     handle.dispose();
     handle.dispose();
 
-    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenNthCalledWith(1, "worker-run-1");
-    expect(revokeAgentToolMcpSessionsForRun).toHaveBeenNthCalledWith(2, "worker-run-1");
-    expect(revokeAgentToolMcpSessionsForRun).not.toHaveBeenCalledWith("team-run-1");
+    expect(recording.getRevokedRunIds()).toEqual(["worker-run-1", "worker-run-1"]);
+    expect(recording.getRevokedRunIds()).not.toContain("team-run-1");
   });
 });

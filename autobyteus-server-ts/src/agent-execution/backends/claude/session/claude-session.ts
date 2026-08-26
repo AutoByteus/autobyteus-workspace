@@ -24,8 +24,6 @@ import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import { emitClaudeTokenUsageEvent } from "./claude-session-token-usage.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
-import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
-import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSessionDependencies, ClaudeSessionStateInput } from "./claude-session-state-input.js";
 
@@ -34,7 +32,6 @@ import { captureClaudeSystemInstructions } from "./claude-system-instruction-cap
 
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
-type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
 
 export class ClaudeSession {
   readonly runContext: ClaudeRunContext;
@@ -45,7 +42,6 @@ export class ClaudeSession {
   private currentStatus: ClaudeSessionStatus;
   private isInterruptingActiveTurn = false;
   private rawClaudeChunkSequence = 0;
-  private readonly contextFileLocalPathResolver: ContextFilePathResolverLike;
   private readonly agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
   private readonly providerSessionLifecycle: ClaudeProviderSessionLifecycle;
 
@@ -58,10 +54,8 @@ export class ClaudeSession {
     this.runContext.runtimeContext.activeTurnId =
       input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
     this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
-    this.contextFileLocalPathResolver =
-      input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
     this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
-      input.dependencies.agentToolMcpSessionService ?? getAgentToolMcpSessionService(),
+      input.dependencies.agentToolMcpSessionIssuer,
     );
   }
 
@@ -132,9 +126,7 @@ export class ClaudeSession {
 
   async startTurn(message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
     const content = asString(
-      appendContextFileReferenceSection(message.content, message.contextFiles, {
-        resolveUri: (uri) => this.contextFileLocalPathResolver.resolve(uri),
-      }),
+      appendContextFileReferenceSection(message.content, message.contextFiles),
     );
     if (!content) {
       throw new Error("Claude runtime message content is required.");

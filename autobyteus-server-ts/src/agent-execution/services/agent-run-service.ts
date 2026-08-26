@@ -1,7 +1,6 @@
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
@@ -89,9 +88,12 @@ export class AgentRunService {
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
       provisioningService?: AgentRunProvisioningService;
-      lifecycleService?: StandaloneAgentRunLifecycleService;
-    } = {},
+      lifecycleService: StandaloneAgentRunLifecycleService;
+    },
   ) {
+    if (!deps?.lifecycleService) {
+      throw new Error("lifecycleService is required.");
+    }
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService =
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
@@ -105,12 +107,7 @@ export class AgentRunService {
       workspaceManager,
       agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
     });
-    this.lifecycleService = deps.lifecycleService ?? new StandaloneAgentRunLifecycleService(memoryDir, {
-      agentRunManager: this.agentRunManager,
-      metadataService: this.metadataService,
-      historyCatalogService: this.historyCatalogService,
-      workspaceManager,
-    });
+    this.lifecycleService = deps.lifecycleService;
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
@@ -310,9 +307,7 @@ export const releaseProcessAgentRunService = (service: AgentRunService): void =>
 
 export const getAgentRunService = (): AgentRunService => {
   if (!cachedAgentRunService) {
-    cachedAgentRunService = new AgentRunService(
-      appConfigProvider.config.getMemoryDir(),
-    );
+    throw new Error("The process AgentRunService is not initialized.");
   }
   return cachedAgentRunService;
 };

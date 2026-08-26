@@ -1,3 +1,4 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
@@ -6,7 +7,13 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { address, testAgentNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import {
+  address,
+  testAgentNode,
+  testMemberTaskRootResolver,
+  testMemberTeamContext,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
 const teamRunId = "team-focused-command-1";
 const solutionDesignerAddress = address("/solution_designer");
@@ -77,8 +84,23 @@ const createMixedManager = () => {
     };
   });
   const manager = new MixedTeamManager(context, {
+    agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
     subTeamRunFactory: { createOrRestore: vi.fn() } as never,
     agentRunManager: { prepareNewAgentRun } as never,
+    memoryLocationService: {
+      getTeamAgentRunLocation: ({ agentRunId }: { agentRunId: string }) => ({
+        memoryDir: `/tmp/team-manager-member-interrupt/${agentRunId}`,
+      }),
+    } as never,
+    activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
+    memberTeamContextBuilder: {
+      build: vi.fn(async ({ agentNode }) => testMemberTeamContext({
+        rootTeamRunId: teamRunId,
+        memberAddress: agentNode.address,
+        agentRunId: agentNode.agentRunId,
+      })),
+    } as never,
+    workspaceManager: { ensureWorkspaceByRootPath: vi.fn() },
     taskRootResolver: testMemberTaskRootResolver(),
     publish: vi.fn(),
     deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),

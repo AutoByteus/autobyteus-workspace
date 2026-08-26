@@ -1,0 +1,81 @@
+POLL 0 {"conversation":2,"answer":true,"saved":true}
+PASSED true
+FINAL BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 9x + 4 = 58. Explain briefly and finish with exactly x = 6.
+Active
+Lesson lesson-aca77c45-9154-40e1-a647-b50c24cb5dc7
+Updated 26.8.2026, 13:45:32
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 9x + 4 = 58. Explain briefly and finish with exactly x = 6.
+
+lessonId lesson-aca77c45-9154-40e1-a647-b50c24cb5dc7
+
+Active
+Created 26.8.2026, 13:45:11
+Updated 26.8.2026, 13:45:32
+LESSON RECORD
+lesson-aca77c45-9154-40e1-a647-b50c24cb5dc7
+Status active
+CONVERSATION
+2 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor connected
+
+Live text appears here while the tutor responds. Completed turns remain in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 13:45:11
+
+Solve 9x + 4 = 58. Explain briefly and finish with exactly x = 6.
+
+tutor
+Lesson_response
+26.8.2026, 13:45:32
+
+Subtract 4 from both sides: 9x = 54.
+
+Divide both sides by 9:
+
+x = 6
+
+Send follow-up
+
+Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+No notifications yet.

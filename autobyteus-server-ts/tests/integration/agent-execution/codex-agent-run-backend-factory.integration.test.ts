@@ -1,3 +1,5 @@
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -7,13 +9,12 @@ import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
@@ -25,6 +26,8 @@ import {
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
+import { getAgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import {
   BrowserBridgeLiveTestServer,
   buildOpenBrowserToolPrompt,
@@ -41,6 +44,10 @@ const describeCodexBackendIntegration =
 const FLOW_TEST_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_FLOW_TIMEOUT_MS || 120_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_EVENT_TIMEOUT_MS || 90_000);
 const BACKEND_EVENT_LOG_DIR = process.env.CODEX_BACKEND_EVENT_LOG_DIR?.trim() || null;
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 const createWorkspace = async (label: string): Promise<string> =>
   fsPromises.mkdtemp(path.join(os.tmpdir(), `${label}-`));
@@ -184,30 +191,54 @@ const createFactory = (input: {
   instructions?: string;
   toolNames?: string[];
 }) => {
-  const threadBootstrapper = new CodexThreadBootstrapper(
-    undefined,
-    {
-      resolveWorkingDirectory: async () => input.workspaceRoot,
-    } as any,
-    {
+  const inert = Object.freeze({}) as never;
+  const builder = createAgentProviderFactoryBuilder({
+    workspaceManager: getWorkspaceManager(),
+    skillService: {
+      resolveConfiguredSkillBindingsForAgent: () => [],
+    } as never,
+    autoByteus: {
+      agentFactory: inert,
+      createLlm: inert,
+      processorRegistries: {
+        input: inert,
+        llmResponse: inert,
+        toolExecutionResult: inert,
+        toolInvocationPreprocessor: inert,
+        lifecycle: inert,
+      },
+      waitForIdle: inert,
+      compactionAgentRunnerFactory: inert,
+    },
+    codex: {
+      workspaceSkillMaterializer: {
+        materializeConfiguredWorkspaceSkills: async () => [],
+        cleanupMaterializedWorkspaceSkills: async () => undefined,
+      } as never,
+      workspaceResolver: {
+        resolveWorkingDirectory: async () => input.workspaceRoot,
+      } as never,
+      clientManager: input.clientManager,
+      threadManager: input.threadManager,
+      threadCleanup: new CodexThreadCleanup(undefined, input.clientManager),
+    },
+    claude: {
+      workspaceResolver: inert,
+      workspaceSkillMaterializer: inert,
+      sdkClient: inert,
+    },
+  });
+  return builder.createForExecution({
+    agentDefinitionService: {
       getAgentDefinitionById: async () => ({
         instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
         toolNames: input.toolNames ?? [],
       }),
-    } as any,
-    {
-      resolveConfiguredSkillBindingsForAgent: () => [],
-    } as any,
-  );
-
-  return new CodexAgentRunBackendFactory(
-    input.threadManager,
-    threadBootstrapper,
-    new CodexThreadCleanup(undefined, input.clientManager),
-    () => input.runId,
-  );
+    } as never,
+    agentToolMcpSessionIssuer: getAgentToolMcpSessionIssuer(),
+  }).codex;
 };
 
 describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live transport)", () => {
@@ -1105,16 +1136,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call publish_artifacts with a JSON argument object, call publish_artifacts exactly once with those exact arguments and do not call any other tool.",
     });
 
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionReleaser: releaser,
+    });
     const runManager = new AgentRunManager({
-      autoByteusBackendFactory: {} as any,
+      autoByteusBackendFactory: unavailableBackendFactory,
       codexBackendFactory: factory,
-      claudeBackendFactory: {} as any,
-      runFileChangeService: {
-        attachToRun: () => () => undefined,
-      } as any,
-      publishedArtifactRelayService: {
-        attachToRun: () => () => undefined,
-      } as any,
+      claudeBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionReleaser: releaser,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;

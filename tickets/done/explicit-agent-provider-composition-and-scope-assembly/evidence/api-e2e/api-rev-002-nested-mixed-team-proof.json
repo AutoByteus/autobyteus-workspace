@@ -1,0 +1,214 @@
+{
+  "scenario": "APIE2E-NESTED-001",
+  "rootTeamRunId": "nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de",
+  "members": [
+    {
+      "address": "/Teacher",
+      "kind": "agent",
+      "runtime": "codex_app_server",
+      "model": "gpt-5.6-luna"
+    },
+    {
+      "address": "/StudentStudyGroup",
+      "kind": "team",
+      "runtime": null,
+      "model": null
+    },
+    {
+      "address": "/StudentStudyGroup/student_one",
+      "kind": "agent",
+      "runtime": "autobyteus",
+      "model": "deepseek-v4-flash"
+    },
+    {
+      "address": "/StudentStudyGroup/student_two",
+      "kind": "agent",
+      "runtime": "autobyteus",
+      "model": "deepseek-v4-flash"
+    }
+  ],
+  "messages": [
+    {
+      "sender": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "receiver": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "markers": [
+        "TEAM_ACK_MIXED_API_REV_002"
+      ],
+      "messageType": "agent_message"
+    },
+    {
+      "sender": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "receiver": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "markers": [
+        "TEAM_ACK_MIXED_API_REV_002"
+      ],
+      "messageType": "agent_message"
+    },
+    {
+      "sender": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "receiver": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "markers": [
+        "DIRECT_ACK_MIXED_API_REV_002"
+      ],
+      "messageType": "agent_message"
+    },
+    {
+      "sender": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "receiver": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "markers": [
+        "DIRECT_ACK_MIXED_API_REV_002"
+      ],
+      "messageType": "agent_message"
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "task_d93c172264c54db087acae114bf75301",
+      "status": "accepted",
+      "recipientAddress": "/StudentStudyGroup",
+      "submissionMarker": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "agentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "traceType": "tool_call",
+      "event": "PendingToolInvocationEvent",
+      "tool": "send_message_to",
+      "recipient": "/Teacher",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "traceType": "tool_result",
+      "event": "native_api_ordered_batch",
+      "tool": "send_message_to",
+      "recipient": "/Teacher",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "traceType": "tool_call",
+      "event": "PendingToolInvocationEvent",
+      "tool": "send_message_to",
+      "recipient": "/Teacher",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "traceType": "tool_result",
+      "event": "native_api_ordered_batch",
+      "tool": "send_message_to",
+      "recipient": "/Teacher",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "student_one_3ee46687ff914b598c4ed09677cbafa8",
+      "traceType": "tool_call",
+      "event": "PendingToolInvocationEvent",
+      "tool": "submit_task_result",
+      "recipient": null,
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "student_one_3ee46687ff914b598c4ed09677cbafa8",
+      "traceType": "tool_result",
+      "event": "native_api_ordered_batch",
+      "tool": "submit_task_result",
+      "recipient": null,
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_call",
+      "event": "TOOL_EXECUTION_STARTED",
+      "tool": "send_message_to",
+      "recipient": "/StudentStudyGroup",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_result",
+      "event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "send_message_to",
+      "recipient": null,
+      "decision": null,
+      "resultCode": "DELIVERED",
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_call",
+      "event": "TOOL_EXECUTION_STARTED",
+      "tool": "send_message_to",
+      "recipient": "/StudentStudyGroup/student_one",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_result",
+      "event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "send_message_to",
+      "recipient": null,
+      "decision": null,
+      "resultCode": "DELIVERED",
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_call",
+      "event": "TOOL_EXECUTION_STARTED",
+      "tool": "delegate_task",
+      "recipient": "/StudentStudyGroup",
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_result",
+      "event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "delegate_task",
+      "recipient": null,
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": "active"
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_call",
+      "event": "TOOL_EXECUTION_STARTED",
+      "tool": "review_task_result",
+      "recipient": null,
+      "decision": "accept",
+      "resultCode": null,
+      "resultStatus": null
+    },
+    {
+      "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "traceType": "tool_result",
+      "event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "review_task_result",
+      "recipient": null,
+      "decision": null,
+      "resultCode": null,
+      "resultStatus": "accepted"
+    }
+  ]
+}

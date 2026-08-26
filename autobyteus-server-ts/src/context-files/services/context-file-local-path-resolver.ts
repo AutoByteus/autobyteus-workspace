@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   parseDraftContextFileOwnerDescriptor,
 } from "../domain/context-file-owner-types.js";
@@ -30,10 +29,32 @@ const decodePathSegment = (value: string): string => {
 };
 
 export class ContextFileLocalPathResolver {
-  constructor(
-    private readonly layout: ContextFileLayout = new ContextFileLayout(),
-    private readonly ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync"> = new ContextFileOwnerResolver(),
-  ) {}
+  private readonly layout: ContextFileLayout;
+  private readonly ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync">;
+  private readonly configuredOrigin: string;
+
+  constructor(input: {
+    layout: ContextFileLayout;
+    ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync">;
+    baseUrl: string;
+  }) {
+    if (!input?.layout || !input.ownerResolver || typeof input.ownerResolver.resolveFinalOwnerSync !== "function") {
+      throw new Error("ContextFileLocalPathResolver layout and ownerResolver are required.");
+    }
+    const baseUrl = typeof input.baseUrl === "string" ? input.baseUrl.trim() : "";
+    let parsed: URL;
+    try {
+      parsed = new URL(baseUrl);
+    } catch {
+      throw new Error("ContextFileLocalPathResolver baseUrl must be an absolute HTTP(S) URL.");
+    }
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      throw new Error("ContextFileLocalPathResolver baseUrl must be an absolute HTTP(S) URL.");
+    }
+    this.layout = input.layout;
+    this.ownerResolver = input.ownerResolver;
+    this.configuredOrigin = parsed.origin;
+  }
 
   resolve(locator: string): string | null {
     const normalizedLocator = locator.trim();
@@ -99,9 +120,7 @@ export class ContextFileLocalPathResolver {
     if (locator.startsWith("http://") || locator.startsWith("https://")) {
       try {
         const parsed = new URL(locator);
-        const configuredBaseUrl = appConfigProvider.config.getBaseUrl();
-        const configuredOrigin = new URL(configuredBaseUrl).origin;
-        if (parsed.origin !== configuredOrigin && !isLoopbackHostname(parsed.hostname)) {
+        if (parsed.origin !== this.configuredOrigin && !isLoopbackHostname(parsed.hostname)) {
           return null;
         }
         return parsed.pathname;

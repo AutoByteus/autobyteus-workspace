@@ -634,6 +634,33 @@ describe("Brief Studio imported package integration", () => {
         ?? null
       )),
     };
+    const teamExecution = {
+      createTeamRun: vi.fn(async (input: Parameters<typeof fakeTeamRunService.createTeamRun>[0]) => {
+        const run = await fakeTeamRunService.createTeamRun(input);
+        return {
+          teamRunId: run.teamRunId,
+          members: run.getExecutionTreeSnapshot().rootTeam.members.map((member) => ({
+            memberAddress: member.address,
+            agentRunId: member.agentRunId,
+          })),
+        };
+      }),
+      createTeamRunFromRootConfig: vi.fn(),
+      postTeamInput: vi.fn(async (runId: string, message: unknown, targetAgentRunId: string | null) => {
+        const run = await fakeTeamRunService.resolveActiveTeamRun(runId);
+        if (!run) return { kind: "NOT_AVAILABLE" as const };
+        const result = await run.postMessage(message, targetAgentRunId);
+        return result.accepted
+          ? { kind: "ACCEPTED" as const }
+          : { kind: "REJECTED" as const, message: result.message ?? null };
+      }),
+      terminateTeamRun: fakeTeamRunService.terminateTeamRun,
+    };
+    const agentExecution = {
+      createAgentRun: vi.fn(),
+      postAgentInput: vi.fn(async () => ({ kind: "NOT_AVAILABLE" as const })),
+      terminateAgentRun: vi.fn(async () => undefined),
+    };
 
     const executionResourceResolver = new ApplicationExecutionResourceResolver({
       applicationBundleService: bundleService,
@@ -661,8 +688,8 @@ describe("Brief Studio imported package integration", () => {
       executionResourceResolver,
       bindingStore,
       lookupStore,
-      agentRunService: { createAgentRun: vi.fn() } as never,
-      teamRunService: fakeTeamRunService as never,
+      agentExecution: agentExecution as never,
+      teamExecution: teamExecution as never,
       agentDefinitionService: fakeAgentDefinitionService as never,
       currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
         ensureAutoByteusModelAvailable: async () => undefined,
@@ -768,10 +795,6 @@ describe("Brief Studio imported package integration", () => {
       bindingStore,
       lifecycleHub,
     });
-    const agentRunService = {
-      terminateAgentRun: vi.fn(async () => undefined),
-      resolveAgentRun: vi.fn(async () => null),
-    };
     const publishedArtifactProjectionService = new PublishedArtifactProjectionService({
       activeRunReader: { getActiveRun: () => null },
       metadataService: new AgentRunMetadataService(appConfigProvider.config.getMemoryDir()),
@@ -788,12 +811,11 @@ describe("Brief Studio imported package integration", () => {
       bindingStore,
       lookupStore,
       runObserverService,
-      agentRunService: agentRunService as never,
-      teamRunService: fakeTeamRunService as never,
-      teamRunMetadataService: { readMetadata: vi.fn(async () => null) } as never,
+      agentExecution: agentExecution as never,
+      teamExecution: teamExecution as never,
       ingressService,
-      publishedArtifactProjectionService,
-      memoryLocationService: {
+      artifacts: publishedArtifactProjectionService,
+      memory: {
         resolveTeamMemberLocation: vi.fn(async () => null),
       } as never,
       agentTargetAuthorizationService,

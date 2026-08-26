@@ -116,7 +116,7 @@ const sourceEvent = (
 
 const createRunHarness = () => {
   const backend = new SegmentSourceBackend();
-  const run = new AgentRun({ context: backend.context, backend });
+  const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
   const observed: AgentRunEvent[] = [];
   run.subscribeToEvents((event) => observed.push(event));
   return { backend, run, observed };

@@ -3,10 +3,12 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildApplicationPlatformRuntime } from "../../../src/application-platform/runtime/build-application-platform-runtime.js";
+import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
 import {
-  createAgentToolsMcpRuntime,
-  type AgentToolsMcpRuntime,
-} from "../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js";
+  createAgentToolsMcpHost,
+  type AgentToolsMcpHost,
+} from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
+import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 
@@ -22,13 +24,13 @@ const createCatalogSnapshot = (applicationId: string) => ({
 
 describe("application platform runtime isolation", () => {
   const tempRoots: string[] = [];
-  const mcpRuntimes: AgentToolsMcpRuntime[] = [];
+  const mcpHosts: AgentToolsMcpHost[] = [];
 
   afterEach(async () => {
     await Promise.all(tempRoots.splice(0).map((root) =>
       fs.rm(root, { recursive: true, force: true })));
-    for (const mcpRuntime of mcpRuntimes.splice(0)) {
-      mcpRuntime.close();
+    for (const mcpHost of mcpHosts.splice(0)) {
+      mcpHost.close();
     }
     vi.restoreAllMocks();
   });
@@ -42,12 +44,15 @@ describe("application platform runtime isolation", () => {
       AgentTeamRunManager.prototype,
       "createTeamRun",
     );
-    const agentToolsMcpRuntime = createAgentToolsMcpRuntime({
-      generalProcessPublisher: {
-        publishManyForRun: vi.fn(async () => []),
-      },
-    });
-    mcpRuntimes.push(agentToolsMcpRuntime);
+    const agentToolsMcpHost = createAgentToolsMcpHost();
+    mcpHosts.push(agentToolsMcpHost);
+    const agentProviderFactoryBuilder: AgentProviderFactoryBuilder = {
+      createForExecution: vi.fn(() => ({
+        autoByteus: {} as never,
+        codex: {} as never,
+        claude: {} as never,
+      })),
+    };
     const buildRuntime = async (applicationId: string) => {
       const root = await fs.mkdtemp(
         path.join(os.tmpdir(), `autobyteus-runtime-${applicationId}-`),
@@ -61,6 +66,10 @@ describe("application platform runtime isolation", () => {
         getDiagnosticByApplicationId: vi.fn(async () => null),
       };
       return buildApplicationPlatformRuntime({
+        contextFilePathEnvironment: {
+          appDataDir: root,
+          baseUrl: "http://localhost:8000",
+        },
         appConfig: {
           getAppDataDir: () => root,
           getMemoryDir: () => path.join(root, "memory"),
@@ -69,8 +78,19 @@ describe("application platform runtime isolation", () => {
         bundleService: bundleService as never,
         agentDefinitionService: {} as never,
         agentTeamDefinitionService: {} as never,
-        agentToolsSessionFactory:
-          agentToolsMcpRuntime,
+        agentToolMcpSessionAuthorities:
+          agentToolsMcpHost.sessionAuthorities,
+        agentProviderFactoryBuilder,
+        workspaceManager: {
+          getOrCreateTempWorkspace: vi.fn(async () => ({ id: `workspace-${applicationId}` })),
+        } as never,
+        runtimeAvailabilityService: {} as never,
+        modelCatalogService: {} as never,
+        modelAvailabilityService: {} as never,
+        llmProviderService: {} as never,
+        codexClientManager: {} as never,
+        requireCurrentModelIdentifier: vi.fn(async () => undefined),
+        modelConfigValidator: { validate: vi.fn() },
         selectedApplicationIds: new Set([applicationId]),
       });
     };
@@ -108,5 +128,94 @@ describe("application platform runtime isolation", () => {
     expect(runtimeB.lifecycle.getState()).toBe("constructed");
     await runtimeB.lifecycle.stop();
     expect(runtimeB.lifecycle.getState()).toBe("stopped");
+  });
+
+  it("aborts a completed scope when later platform assembly fails without closing process owners", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-runtime-unwind-"));
+    tempRoots.push(root);
+    const assemblyFailure = new Error("platform assembly failed");
+    const closeAuthority = vi.fn();
+    const abortAssembly = vi.fn();
+    const runSessions = Object.freeze({
+      revokeForRun: vi.fn(() => 0),
+      revokeForOwner: vi.fn(() => 0),
+    });
+    const authority = {
+      scopeIdentity: "application:app-a",
+      issuer: Object.freeze({ issueForRun: vi.fn() }),
+      runSessions,
+      assertReady: vi.fn(),
+      blockNewSessions: vi.fn(),
+      close: closeAuthority,
+    };
+    const complete = vi.fn(() => authority);
+    const agentToolMcpSessionAuthorities = {
+      begin: vi.fn(() => ({
+        scopeIdentity: "application:app-a",
+        runSessions,
+        complete,
+        abort: abortAssembly,
+      })),
+    };
+    const agentProviderFactoryBuilder: AgentProviderFactoryBuilder = {
+      createForExecution: vi.fn(() => ({
+        autoByteus: {} as never,
+        codex: {} as never,
+        claude: {} as never,
+      })),
+    };
+    const processOwners = {
+      agentDefinitions: { close: vi.fn() },
+      teamDefinitions: { close: vi.fn() },
+      workspace: { close: vi.fn() },
+      runtimeAvailability: { close: vi.fn() },
+      modelCatalog: { close: vi.fn() },
+      modelAvailability: { close: vi.fn() },
+      llmProvider: { close: vi.fn() },
+      codexClient: { close: vi.fn() },
+    };
+    const abortConstruction = vi.spyOn(
+      ApplicationExecutionScope.prototype,
+      "abortConstruction",
+    );
+    let publishedRuntime: unknown;
+
+    expect(() => {
+      publishedRuntime = buildApplicationPlatformRuntime({
+        contextFilePathEnvironment: {
+          appDataDir: root,
+          baseUrl: "http://localhost:8000",
+        },
+        appConfig: {
+          getAppDataDir: () => root,
+          getMemoryDir: () => path.join(root, "memory"),
+          getSkillsDir: () => { throw assemblyFailure; },
+        } as never,
+        bundleService: {} as never,
+        agentDefinitionService: processOwners.agentDefinitions as never,
+        agentTeamDefinitionService: processOwners.teamDefinitions as never,
+        agentToolMcpSessionAuthorities: agentToolMcpSessionAuthorities as never,
+        agentProviderFactoryBuilder,
+        workspaceManager: processOwners.workspace as never,
+        runtimeAvailabilityService: processOwners.runtimeAvailability as never,
+        modelCatalogService: processOwners.modelCatalog as never,
+        modelAvailabilityService: processOwners.modelAvailability as never,
+        llmProviderService: processOwners.llmProvider as never,
+        codexClientManager: processOwners.codexClient as never,
+        requireCurrentModelIdentifier: vi.fn(async () => undefined),
+        modelConfigValidator: { validate: vi.fn() },
+        selectedApplicationIds: new Set(["app-a"]),
+      });
+    }).toThrow(assemblyFailure);
+
+    expect(publishedRuntime).toBeUndefined();
+    expect(abortConstruction).toHaveBeenCalledTimes(1);
+    expect(agentToolMcpSessionAuthorities.begin).toHaveBeenCalledTimes(1);
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(closeAuthority).toHaveBeenCalledTimes(1);
+    expect(abortAssembly).not.toHaveBeenCalled();
+    for (const owner of Object.values(processOwners)) {
+      expect(owner.close).not.toHaveBeenCalled();
+    }
   });
 });

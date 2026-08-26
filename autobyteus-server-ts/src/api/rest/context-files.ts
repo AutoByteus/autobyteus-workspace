@@ -10,18 +10,33 @@ import { ContextFileUploadService } from "../../context-files/services/context-f
 import { ContextFileFinalizationService } from "../../context-files/services/context-file-finalization-service.js";
 import { ContextFileReadService } from "../../context-files/services/context-file-read-service.js";
 import { ContextFileLayout } from "../../context-files/store/context-file-layout.js";
+import { ContextFileOwnerResolver } from "../../context-files/services/context-file-owner-resolver.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
 const buildServices = () => {
-  const layout = new ContextFileLayout();
+  const config = appConfigProvider.config;
+  const memoryDir = config.getMemoryDir();
+  const layout = new ContextFileLayout({
+    appDataDir: config.getAppDataDir(),
+    memoryDir,
+  });
+  const ownerResolver = new ContextFileOwnerResolver({
+    locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+  });
   const cleanupService = new ContextFileDraftCleanupService(layout);
   return {
     uploadService: new ContextFileUploadService(layout, cleanupService),
-    finalizationService: new ContextFileFinalizationService(layout, cleanupService),
-    readService: new ContextFileReadService(layout, cleanupService),
+    finalizationService: new ContextFileFinalizationService(
+      layout,
+      cleanupService,
+      ownerResolver,
+    ),
+    readService: new ContextFileReadService(layout, cleanupService, ownerResolver),
   };
 };
 

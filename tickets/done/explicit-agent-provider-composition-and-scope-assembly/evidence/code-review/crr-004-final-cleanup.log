@@ -1,0 +1,42 @@
+HEAD
+8704f2653b664c6ae7b5ecb24f2dd3885a79aad9
+BASE
+64327760e1bb5e0138f60318b56ce77bd4fc88c3
+DIFF CHECK 64327760e..HEAD
+SDK DIST ABSENT
+PASS
+CONFLICT MARKERS IN REVIEW ARTIFACTS
+PASS
+REQUIRED REPORT SECTIONS
+PASS Review Round Meta
+PASS Review Scope
+PASS Upstream Behavior And Production-Path Basis Confirmation
+PASS Structural / Design Checks
+PASS Source File Size And Structure Audit
+PASS Legacy / Backward-Compatibility Verdict
+PASS Docs-Impact Verdict
+PASS Material Premise Validation
+PASS Review Scorecard
+PASS Findings
+PASS Classification
+PASS Recommended Recipient
+PASS Residual Risks
+PASS Latest Authoritative Result
+REVISION RECORD
+7:| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` | Implementation Review / initial IR-001 source review | `N/A` | `Fail — Design Impact` | `CR-001` |
+8:| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` | Implementation Review / complete IR-002 correction re-review | `Fail — Design Impact` | `Pass` | `CR-001` |
+9:| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001`, `APIE2E-F001` | `Pass` | `Fail — Design Impact` | `CR-002`, `CR-003`, `CR-004` |
+10:| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` | Implementation Review / complete IR-003 SR-006 correction re-review | `Fail — Design Impact` | `Pass` | `CR-001`, `CR-002`, `CR-003`, `CR-004` |
+14:### CRR-001 — Mixed Team releaser construction remains outside the declared clean cut
+37:### CRR-002 — Complete root-owned Mixed Team construction closes CR-001
+62:### CRR-003 — Fail-closed defaults expose incomplete execution-family closure
+89:### CRR-004 — Explicit execution-family closure resolves CR-002 through CR-004
+STATUS
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/

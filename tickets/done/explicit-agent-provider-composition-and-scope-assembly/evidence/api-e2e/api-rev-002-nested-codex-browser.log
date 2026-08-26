@@ -1,0 +1,63 @@
+CONFIG Team Definition
+Nested Classroom Test Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+OpenAI / GPT-5.6-Luna (default reasoning: medium)
+
+This model will be used by all members unless overridden.
+
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+Reasoning Effort ⓘ
+low
+medium
+high
+xhigh
+max
+Fast mode ⓘ
+Default
+fast
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (3)
+RUN_DIR nested_classroom_test_team_afe35f3c351b4b36b481533d57f137e2
+PROMPT_SENT
+POLL 0 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 1 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 2 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 3 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 4 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 5 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 6 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 7 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 8 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 9 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 10 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 11 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 12 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 13 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 14 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 15 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 16 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}
+POLL 17 {"messages":0,"tasks":0,"ackTeam":false,"ackDirect":false,"accepted":false}

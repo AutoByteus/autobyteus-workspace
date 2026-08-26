@@ -1,5 +1,7 @@
 import type { AgentRun } from "../domain/agent-run.js";
-import type { ApplicationAgentToolMcpSessionScope } from "../../agent-tools/mcp/application-agent-tool-mcp-session-scope.js";
+import type {
+  AgentToolMcpRunSessionReleaser,
+} from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import type { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import type { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
@@ -40,7 +42,7 @@ export class AgentRunResourceManager {
   private readonly resourcesByRunId = new Map<string, ResourceRecord>();
 
   constructor(private readonly dependencies: {
-    sessionScope: Pick<ApplicationAgentToolMcpSessionScope, "revokeForRun">;
+    runSessions: AgentToolMcpRunSessionReleaser;
     runFileChangeService: Pick<RunFileChangeService, "attachToRun">;
     publishedArtifactRelayService: Pick<ApplicationPublishedArtifactRelayService, "attachToRun">;
     memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun">;
@@ -86,7 +88,7 @@ export class AgentRunResourceManager {
     };
 
     try {
-      revokedSessionCount = this.dependencies.sessionScope.revokeForRun(runId);
+      revokedSessionCount = this.dependencies.runSessions.revokeForRun(runId);
     } catch (error) {
       errors.push(toError(error));
     }

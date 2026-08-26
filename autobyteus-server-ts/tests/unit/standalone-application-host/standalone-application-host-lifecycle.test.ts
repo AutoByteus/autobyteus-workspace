@@ -20,6 +20,8 @@ const mocks = vi.hoisted(() => {
     initialize: vi.fn(),
     getLogsDir: () => "/tmp/standalone-lifecycle/logs",
     getMemoryDir: () => "/tmp/standalone-lifecycle/memory",
+    getAppDataDir: () => "/tmp/standalone-lifecycle",
+    getBaseUrl: () => "http://localhost:8000",
     getAppRootDir: () => "/tmp/standalone-lifecycle",
     getOperationalDatabaseUrl: () => "file:/tmp/standalone-lifecycle/operational.db",
     getOperationalDatabaseLocation: () => ({
@@ -28,24 +30,55 @@ const mocks = vi.hoisted(() => {
       databaseUrl: "file:/tmp/standalone-lifecycle/operational.db",
     }),
   };
-  const mcpRuntime = {
-    generalProcessSessionManager: {},
+  const generalAuthority = {
+    scopeIdentity: "general-process",
+    issuer: {},
+    runSessions: {},
+    assertReady: vi.fn(),
+    blockNewSessions: vi.fn(),
+    close: vi.fn(),
+  };
+  const generalAssembly = {
+    scopeIdentity: "general-process",
+    runSessions: generalAuthority.runSessions,
+    complete: vi.fn(() => generalAuthority),
+    abort: vi.fn(),
+  };
+  const mcpHost = {
+    sessionAuthorities: { begin: vi.fn(() => generalAssembly) },
     routeDependencies: {},
     close: vi.fn(),
   };
+  const providerFactoryBuilder = {};
   const generalProcessRunSupervisor = { close: vi.fn(async () => undefined) };
   const hostDefinitionServices = {
     agentDefinitionService: {},
     agentTeamDefinitionService: {},
     close: vi.fn(),
   };
+  const workspaceManager = {};
+  const runtimeAvailabilityService = {};
+  const modelCatalogService = { listLlmModels: vi.fn(async () => []) };
+  const modelAvailabilityService = {};
+  const llmProviderService = {};
+  const codexClientManager = {};
   return {
     app,
     appConfig,
     applicationLifecycle,
-    mcpRuntime,
+    mcpHost,
+    generalAuthority,
+    generalAssembly,
+    providerFactoryBuilder,
     generalProcessRunSupervisor,
     hostDefinitionServices,
+    workspaceManager,
+    runtimeAvailabilityService,
+    modelCatalogService,
+    modelAvailabilityService,
+    llmProviderService,
+    codexClientManager,
+    requireCurrentModelIdentifier: vi.fn(async () => undefined),
     materializeConfig: vi.fn(async () => undefined),
     validatePackage: vi.fn(async () => ({
       selection: { applicationId: "local-package::brief-studio" },
@@ -63,7 +96,8 @@ const mocks = vi.hoisted(() => {
     resetEventPipeline: vi.fn(async () => undefined),
     stopEventPipeline: vi.fn(async () => undefined),
     createHostDefinitionServices: vi.fn(() => hostDefinitionServices),
-    createMcpRuntime: vi.fn(() => mcpRuntime),
+    createMcpHost: vi.fn(() => mcpHost),
+    createProviderFactoryBuilder: vi.fn(() => providerFactoryBuilder),
     createGeneralProcessRunSupervisor: vi.fn(() => generalProcessRunSupervisor),
     buildApplicationPlatformRuntime: vi.fn(() => ({ lifecycle: applicationLifecycle })),
     buildStandaloneApplicationServer: vi.fn(async () => app),
@@ -145,14 +179,40 @@ vi.mock("../../../src/application-platform/launch-configuration/application-stan
 vi.mock("../../../src/compositions/host-definition-services.js", () => ({
   createHostDefinitionServices: mocks.createHostDefinitionServices,
 }));
-vi.mock("../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js", () => ({
-  createAgentToolsMcpRuntime: mocks.createMcpRuntime,
+vi.mock("../../../src/agent-tools/mcp/agent-tools-mcp-host.js", () => ({
+  createAgentToolsMcpHost: mocks.createMcpHost,
+}));
+vi.mock("../../../src/compositions/create-process-agent-provider-factory-builder.js", () => ({
+  createProcessAgentProviderFactoryBuilder: mocks.createProviderFactoryBuilder,
 }));
 vi.mock("../../../src/services/published-artifacts/published-artifact-publication-service.js", () => ({
   getGeneralProcessPublishedArtifactPublisher: vi.fn(() => ({})),
 }));
 vi.mock("../../../src/agent-execution/runtime/general-process-run-supervisor.js", () => ({
   createGeneralProcessRunSupervisor: mocks.createGeneralProcessRunSupervisor,
+}));
+vi.mock("../../../src/workspaces/workspace-manager.js", () => ({
+  getWorkspaceManager: () => mocks.workspaceManager,
+}));
+vi.mock("../../../src/runtime-management/runtime-availability-service.js", () => ({
+  getRuntimeAvailabilityService: () => mocks.runtimeAvailabilityService,
+}));
+vi.mock("../../../src/llm-management/services/model-catalog-service.js", () => ({
+  getModelCatalogService: () => mocks.modelCatalogService,
+}));
+vi.mock("../../../src/llm-management/services/model-availability-service.js", () => ({
+  getModelAvailabilityService: () => mocks.modelAvailabilityService,
+}));
+vi.mock("../../../src/llm-management/llm-providers/services/llm-provider-service.js", () => ({
+  getLlmProviderService: () => mocks.llmProviderService,
+}));
+vi.mock("../../../src/runtime-management/codex/client/codex-app-server-client-manager.js", () => ({
+  getCodexAppServerClientManager: () => mocks.codexClientManager,
+}));
+vi.mock("autobyteus-ts/llm/llm-factory.js", () => ({
+  LLMFactory: {
+    requireCurrentModelIdentifier: mocks.requireCurrentModelIdentifier,
+  },
 }));
 vi.mock("../../../src/application-platform/runtime/build-application-platform-runtime.js", () => ({
   buildApplicationPlatformRuntime: mocks.buildApplicationPlatformRuntime,
@@ -220,8 +280,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.resetEventPipeline.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.createHostDefinitionServices.mock.invocationCallOrder[0]!);
     expect(mocks.createHostDefinitionServices.mock.invocationCallOrder[0])
-      .toBeLessThan(mocks.createMcpRuntime.mock.invocationCallOrder[0]!);
-    expect(mocks.createMcpRuntime.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.createMcpHost.mock.invocationCallOrder[0]!);
+    expect(mocks.createMcpHost.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0]!);
     expect(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.buildApplicationPlatformRuntime.mock.invocationCallOrder[0]!);
@@ -230,22 +290,45 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       bundleService: {},
     });
     expect(mocks.createGeneralProcessRunSupervisor).toHaveBeenCalledWith({
-      appConfig: mocks.appConfig,
+      memoryDir: "/tmp/standalone-lifecycle/memory",
+      contextFilePathEnvironment: {
+        appDataDir: "/tmp/standalone-lifecycle",
+        baseUrl: "http://localhost:8000",
+      },
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
-      agentToolsSessionManager: mocks.mcpRuntime.generalProcessSessionManager,
+      workspaceManager: mocks.workspaceManager,
+      agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
+      agentToolMcpSessionAuthority: mocks.generalAuthority,
+      modelConfigValidator: expect.anything(),
     });
     expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
+      agentToolMcpSessionAuthorities: mocks.mcpHost.sessionAuthorities,
+      agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
+      workspaceManager: mocks.workspaceManager,
+      runtimeAvailabilityService: mocks.runtimeAvailabilityService,
+      modelCatalogService: mocks.modelCatalogService,
+      modelAvailabilityService: mocks.modelAvailabilityService,
+      llmProviderService: mocks.llmProviderService,
+      codexClientManager: mocks.codexClientManager,
+      requireCurrentModelIdentifier: expect.any(Function),
     }));
+    const platformInput = mocks.buildApplicationPlatformRuntime.mock.calls[0]![0];
+    const supervisorInput = mocks.createGeneralProcessRunSupervisor.mock.calls[0]![0];
+    expect(platformInput.contextFilePathEnvironment)
+      .toBe(supervisorInput.contextFilePathEnvironment);
+    expect(platformInput.modelConfigValidator).toBe(supervisorInput.modelConfigValidator);
+    await platformInput.requireCurrentModelIdentifier("model-1");
+    expect(mocks.requireCurrentModelIdentifier).toHaveBeenCalledWith("model-1");
     expect(mocks.applicationLifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
     expect(mocks.applicationLifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
 
     await handle.close();
     expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
-    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.closeSecretVault.mock.invocationCallOrder[0]!);
@@ -355,7 +438,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       .rejects.toThrow("general run assembly failed");
 
     expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
-    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
@@ -371,7 +454,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       .rejects.toThrow("application assembly failed");
 
     expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
-    expect(mocks.mcpRuntime.close).toHaveBeenCalledTimes(1);
+    expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
