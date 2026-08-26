@@ -32,8 +32,10 @@ The Agent Teams list can also present a server-configured **Featured teams** sec
 - `types/agent/TeamRunConfig.ts`
 - `types/agent/TeamRunFormModel.ts`
 - `types/agent/EditableTeamRunFormModel.ts`
-- `types/agent/StoredTeamRunFormModel.ts`
-- `services/teamExecution/storedTeamRunFormModel.ts`
+- `types/agent/ExistingTeamRunFormModel.ts`
+- `services/runConfigEditing/existingTeamRunFormModel.ts`
+- `services/runConfigEditing/existingTeamModelConfigDraft.ts`
+- `stores/existingRunModelConfigStore.ts`
 - `utils/editableTeamRunFormModel.ts`
 - `utils/historicalModelConfigFields.ts`
 - `utils/teamRunConfigUtils.ts`
@@ -191,29 +193,31 @@ only incompatible configuration owned by that scope. For Codex members,
 `service_tier: "fast"` remains valid only while the selected or inherited model
 schema exposes **Fast mode**.
 
-Selected existing Team runs do not reconstruct editable override intent, but
-they do reuse the same form/tree/control presentation as editable drafts.
-`RunConfigPanel.vue` projects the exact `STORED_SNAPSHOT` returned from the V2
-execution tree through `projectStoredTeamRunFormModel(...)`, while editable
-drafts use `projectEditableTeamRunFormModel(...)`. The resulting
-`TeamRunFormModel` union keeps `mode: 'editable' | 'stored'` discrimination
-through every Team and Agent node.
+Selected existing Team runs do not reconstruct definition-time override intent,
+but they reuse the same form/tree/control presentation as editable drafts.
+`RunConfigPanel.vue` gives the exact V2 execution tree and its local model-config
+planner to `projectExistingTeamRunFormModel(...)`, while editable launch drafts
+remain `EditableTeamRunFormModel`. The `TeamRunFormModel` union keeps
+`mode: 'editable' | 'existing'` discrimination through every Team and Agent
+node.
 
-Only neutral display facts—identity, exact effective configuration, and
-comparison-derived state—are shared. Stored nodes carry stored workspace
-display data and never fabricate editable overrides, inherited baselines,
-workspace selections/operations, or runtime-catalog operation state. The shared
-form renders stored root, nested Team, and Agent values in the same disabled
-controls users configured before launch; disclosures remain operable, while
-mutation events, **Reset**, and **Run Team** are unavailable.
+Existing nodes share neutral display facts—identity, fixed effective launch
+configuration, stored workspace display, and comparison-derived state. They do
+not fabricate definition overrides, workspace authoring state, or launch
+commands. Runtime/model/workspace/auto-approve and identity stay locked, while
+current-schema `llmConfig` controls become editable only for a canonically
+stopped, unarchived, ownership-free Team. Disclosures remain operable; **Reset**
+and **Run Team** are unavailable. Save emits exact configured-Team/configured-
+Agent model-setting patches through `existingRunModelConfigStore`.
 
 Historical model configuration is field/value exact. Explicit values that a
-current control can represent stay in that disabled control. A producer-backed
-saved value that is no longer selectable, or a key removed from the current
-schema, appears once in the compact field-local historical fallback instead of
-being replaced by a current default. Current-schema fields are considered in
-schema order and removed persisted keys follow in stable key order. The
-projection never mutates the V2 snapshot or renders one persisted key twice.
+current control can represent stay in that normal control, editable only when
+the overall stopped-run contract permits. A producer-backed saved value that is
+no longer selectable, or a key removed from the current schema, appears once in
+the compact field-local historical fallback instead of being replaced by a
+current default. Current-schema fields are considered in schema order and
+removed persisted keys follow in stable key order. The projection never mutates
+the V2 snapshot or renders one persisted key twice.
 
 ## Hierarchical Launch Readiness
 
@@ -362,20 +366,24 @@ catalog row plus live status and are not persisted backend team-history fields.
 ## Reopen / Hydration Behavior
 
 Current Team reopen and history hydration consume the V2 execution tree rather
-than reconstructing editable override intent. `hydrateLiveTeamRunContext(...)`
-and the Team execution view preserve the exact configured hierarchy: the root
-and every nested Team carry their complete `defaultLaunchConfiguration`, and
-every configured Agent carries its complete `launchConfiguration`.
+than reconstructing definition-time override intent.
+`hydrateLiveTeamRunContext(...)` and the Team execution view preserve the exact
+configured hierarchy: the root and every nested Team carry their complete
+`defaultLaunchConfiguration`, and every configured Agent carries its complete
+`launchConfiguration`.
 
-The workspace config panel derives one `STORED_SNAPSHOT` view directly from that
-tree and adapts it to `StoredTeamRunFormModel`. `TeamRunConfigForm.vue`,
+The workspace config panel derives one existing-run view from that tree and the
+local `ExistingTeamModelConfigDraft`, then adapts it to
+`ExistingTeamRunFormModel`. `TeamRunConfigForm.vue`,
 `TeamMemberConfigTree.vue`, `TeamScopeConfigEditor.vue`, and
-`MemberOverrideItem.vue` then render the same visual hierarchy used for a draft
-in structurally read-only mode. Historical values remain inspect-only; the
-frontend does not consult current definitions for topology/order, infer a
-representative Team default, turn complete snapshots back into partial
-overrides, or import authoring state into the stored projector. Explicit
-`llmConfig: null` and `workspaceRootPath: null` remain recorded values.
+`MemberOverrideItem.vue` render the same visual hierarchy used for a draft with
+fixed identity/launch fields and conditionally editable model-setting controls.
+The frontend does not consult current definitions for topology/order, infer a
+representative Team default, turn complete snapshots back into definition
+overrides, or import authoring state into the existing-run projector. Explicit
+`llmConfig: null` and `workspaceRootPath: null` remain recorded values. A parent
+model-setting edit propagates only to descendants that shared its starting
+value; divergent or directly edited scopes remain stable.
 
 Logical topology uses canonical AgentTeam addresses. Physical memory resolution
 remains a separate concern based on `rootTeamRunId`, physical ancestor TeamRun

@@ -18,11 +18,34 @@
 - Delivery Rework Artifacts: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/latest-base-integration-conflict-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/docs-sync-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/release-deployment-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-001-integration-refresh.log`
 - Prior API/E2E Test Review: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-test-review-report.md` (`CRR-005`, historical SR-004 Pass)
 - API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/in-progress/live-agent-definition-refresh-analysis/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`.
-- Current Investigation Round: 2
-- Trigger: `CRR-007` Pass of `IR-005` at implementation commit `370f1f5fa` and artifact HEAD `66c696473c572175f565df6d89e00feeb631a150` against `SR-005` / `ARCH-REV-004`.
-- Prior Investigation Reviewed: Yes. API-REV-001 was Pass at 96.4% under SR-004. Its General API, external-channel, sequential browser, persistence, and provider evidence remains useful; its Application-same-General-owner statement is historical and non-authoritative.
-- Latest Authoritative Investigation: This SR-005 round-2 investigation, initially replaced before any current-round execution or durable coverage change and updated with the completed evidence below.
+- Current API/E2E Revision ID: `API-REV-003` — completed user-directed real-stack result: `Fail / 78.3%`.
+- Current Investigation Round: 3
+- Trigger: Direct user correction on 2026-08-26: start the real frontend and backend, import `/home/autobyteus/workspace/autobyteus-agents` through the UI, and use the real Classroom Simulation Team instead of relying only on split/intercepted browser evidence.
+- Prior Investigation Reviewed: Yes. API-REV-002 was Pass at 97.1% under SR-005. Its lifecycle, built API, General lane, provider, and real-renderer evidence remains valid. The prior renderer probe used real Nuxt/Chromium but intercepted GraphQL, so it is insufficient for the newly requested composed import journey.
+- Latest Authoritative Investigation: This round-3 real-stack addendum plus the retained SR-005 coverage decisions below. The initial addendum was written before execution and is now updated with the discovered live-browser defect and repository-suite coverage gaps.
+
+## Round-3 User-Directed Real-Stack Addendum
+
+The user correctly distinguished API-REV-002's complementary evidence from a fully composed manual-style browser journey. API-REV-002 started a real Nuxt server and system Chromium, but its browser GraphQL operations were deterministically intercepted; the built backend and Application lifecycle ran separately. Therefore API-REV-002 did **not** prove that the current frontend could import the actual local package repository through the current backend and render/use the imported Classroom Simulation Team in the same running stack.
+
+### New Changed Boundary And Scenario
+
+| Scenario ID | Required Journey | Real Boundaries | Planned Evidence | Durable Decision |
+| --- | --- | --- | --- | --- |
+| API-E2E-009 | Run the documented full-stack build/start path; open real `/settings?section=agent-packages`; import `/home/autobyteus/workspace/autobyteus-agents` through the UI; render and launch `Classroom Simulation Team`; Stop; perform the network-fresh Settings edit/Save journey; later restore through a browser message and obtain a real provider response | Freshly built backend on isolated `127.0.0.1:38123`, Nuxt on isolated `127.0.0.1:33123`, real GraphQL/WebSockets/SQLite/package readers, actual repository files, system Chromium, real Codex App Server / GPT-5.4 | Browser screenshots/JSON, frontend/backend logs, GraphQL/SQLite/raw-trace observations, cleanup record | Temporary composed-system validation retained as ticket evidence. Result: partial journey pass, critical Save failure `API-E2E-F-001`. Exact Codex schema regression coverage now `Needs Update`. |
+
+### Executed Setup, Coverage Decision, And Finding
+
+- The authoritative root `pnpm dev` path completed the full backend/package/Prisma/TypeScript build, then correctly refused to reuse fixed port `8000`: it belonged to unrelated PID 63 and `/home/autobyteus/data`. That process and data were left untouched.
+- The freshly built backend was therefore started with validation-owned data on `http://127.0.0.1:38123`, and the real Nuxt frontend on `http://127.0.0.1:33123` with all HTTP/WebSocket endpoints pointing to that backend. This was the smallest safe deviation from the documented launcher.
+- System Chromium was driven through Playwright Core as a real tab. No GraphQL interception, fixture route, mocked model catalog, or synthetic package payload was used.
+- The exact external repository remained read-only. The UI import persisted its local-path registry record and rendered `Shared Agents: 7 | Team-local Agents: 50 | Teams: 12 | Applications: 0`.
+- `Classroom Simulation Team` rendered with coordinator `professor` and members `professor`/`student`; it launched through real `CreateAgentTeamRun` on `codex_app_server` / `gpt-5.4`, stopped, and produced a network-fresh stopped Settings read.
+- **`API-E2E-F-001`**: changing actual Codex `reasoning_effort` from `medium` to `low` rendered `Enter a value of type enum.`, left Save disabled, and sent no `UpdateStoppedTeamRunModelConfigs` request. The critical Stop -> Settings -> edit -> Save acceptance path therefore fails.
+- A follow-up real browser turn independently restored the same run, sent `Reply only with: CLASSROOM_E2E_OK` over the real Team WebSocket, received `CLASSROOM_E2E_OK` from GPT-5.4, then stopped the Team again. This proves launch/restore/provider application but does not cure the failed Save.
+- Focused existing web tests passed 3 files / 25 tests but use JSON-schema-style `type: "string"` enum fixtures rather than the real Codex legacy parameter `type: "enum"`; that coverage is now `Needs Update`.
+- The root-supported `pnpm test:e2e` also completed with `15 failed | 41 passed | 14 skipped` files and `41 failed | 154 passed | 57 skipped` tests. Twenty-nine failure occurrences report unconfigured Studio Application API services after `runModelConfigService` became an eagerly resolved schema dependency; other broad-suite failures are not all within this ticket and remain preliminary. This is `API-E2E-F-002`, a durable E2E composition/fixture regression requiring focused failure-origin review.
+- No repository-resident durable test or production source was changed in round 3. Validation-owned processes, ports, generated shared-package outputs, and `.autobyteus/development` data were removed; the unrelated port-8000 process remained untouched.
 
 ## Current Requirement And Design Basis
 
@@ -53,8 +76,8 @@ Transport remains unchanged: no ownership field, revision, stale outcome, rebase
 | --- | --- | --- | --- | --- | --- |
 | Domain / backend logic | Yes | Startup-ready Application lease classification and Studio guard | New owner/Studio unit suites | Normal host launch + real binding/lookup stores + terminal transition are separated by mocks | Lifecycle integration |
 | API / transport / contract | Yes, routing only | Same GraphQL shapes route through Studio service | Four resolver-routing tests | Built HTTP GraphQL after integrated composition; Application-owned composed result | Built API + lifecycle |
-| Frontend component / state | No new IR-005 code; integrated state relevant | Existing locked/`RUN_ACTIVE`/error presentation | API-REV-001 web/browser coverage | Prior browser evidence predates latest-base conflict resolution | Browser regression |
-| Browser integration / user journey | Preserved | Sequential Settings only | Durable Chromium probe | Current integrated renderer recheck | Browser |
+| Frontend component / state | Yes, defect exposed | Real Codex legacy parameter schema reaches existing-run validation as `type: "enum"`; renderer displays the select but validator rejects every string choice | Existing schema/form tests and API-REV-001 mocked browser coverage | Existing fixtures use `type: "string"`, so they miss the production catalog shape | Focused reproduction + real composed browser |
+| Browser integration / user journey | Yes, critical failure | Sequential Stop -> network-fresh Settings -> edit -> Save | Durable Chromium probe used intercepted JSON-schema-style payloads | Actual Codex model config Save remains disabled | Real composed browser, no interception |
 | Authentication / session / permissions | No | Studio owner access/Application host scope unchanged | Existing tests | None introduced | None |
 | Desktop renderer / web-equivalent UI | Preserved | Nuxt renderer | Durable browser probe | Current integrated render | Browser, not shell |
 | Desktop shell / Electron-specific integration | No | No shell code changed | Boundary tests | None | None |
@@ -113,7 +136,9 @@ Transport remains unchanged: no ownership field, revision, stale outcome, rebase
 | Standalone lifecycle exact coordinator cases | General external Agent Save-first/restore-first | Still Valid | Exact General path | Retain/rerun as General only. |
 | Team manager exact launcher cases | General external Team Save-first/restore-first | Still Valid | Exact General path | Retain/rerun as General only. |
 | Catalog/validator/mutator/physical-writer suites | Narrow/no-op/validation/failure | Still Valid | Direct owners | Retain/run proportionately. |
-| Web store/form/planner suites and browser probe | Sequential load/lock/Save/Team/no Reset/viewport/relock | Still Valid | UI vocabulary unchanged; evidence predates integrated state | Rerun; add no ownership UI. |
+| Web store/form/planner suites and prior intercepted browser probe | Sequential load/lock/Save/Team/no Reset/viewport/relock | Needs Update | State/lifecycle assertions remain useful, but schema fixtures use `type: "string"` enum fields and do not represent real Codex `parameters[].type: "enum"` | Add exact raw Codex schema normalization/validation and form Save-enablement regression after source fix. |
+| `autobyteus-web/utils/__tests__/llmConfigSchema.spec.ts` | Normalization and client validation | Needs Update | 9 tests pass, but enum-bearing cases use JSON-schema `type: "string"`; focused executable reproduction shows actual Codex `type: "enum"` normalizes to an unsupported validator type | Add exact legacy parameter-list enum fixture and assert a selected allowed string is valid. |
+| Root `pnpm test:e2e` / in-process GraphQL schema fixtures | Supported broad E2E suite | Needs Update | 15 files / 41 tests fail; 29 error occurrences are missing configured Studio Application API services after eager resolver dependency expansion | Centralize production-equivalent Studio service composition in the shared schema/E2E harness; separately triage non-Studio failures. |
 | Claude/Codex/runtime catalog suites | Saved config reaches runtime; three runtimes cataloged | Still Valid | Direct boundary | Retain/run; conditional preflight. |
 
 ## Stale Or Obsolete Coverage Decisions
@@ -135,7 +160,10 @@ No API-REV-001 repository test actually asserts Application same-owner ordering:
 
 ## Durable Coverage To Update
 
-None planned. API-E2E-003 tests already name the exact General external-channel resolvers; only report interpretation changes.
+| Scenario ID | Existing Path / Scenario | Required Update | Requirement / Design Evidence | Notes |
+| --- | --- | --- | --- | --- |
+| API-E2E-009 / API-E2E-F-001 | `autobyteus-web/utils/__tests__/llmConfigSchema.spec.ts`; Agent/Team existing-run form coverage | Use the exact Codex `configSchema.parameters` payload with `type: "enum"`; after the source correction, assert normalization, allowed-value validation, dirty-state, Save enablement, and exact update mutation for at least Team and shared validation behavior | REQ-004/010/011; AC-001/006/009/011/016; real backend catalog in `browser-evidence.json` | Do not change tests until the source contract/fix is reviewed. |
+| API-E2E-F-002 | Root in-process GraphQL E2E schema construction used by the 15 failing files | Configure the complete Studio Application API service set through a deterministic shared harness before schema/resolver construction; retain production fail-closed behavior | SR-005 Studio boundary; root `package.json` authoritative `test:e2e` command | Preliminary test/fixture classification; `code_reviewer` must confirm origin. Non-Studio failures require separate triage rather than blanket expectation changes. |
 
 ## Durable Coverage To Remove
 
@@ -160,33 +188,37 @@ The first focused import attempt ran before the local workspace contract package
 | 11 | `pnpm -C autobyteus-server-ts build` | Server | Shared packages, Prisma, production TypeScript, assets, bootstrap smoke | Pass |
 | 12 | Web boundary/localization guards, localization audit, and `pnpm build` | Web | Current renderer/build contract | Pass |
 | 13 | Obsolete-seam audit and `git diff --check` | Workspace | No revision/rebase/concurrency policy; patch hygiene | Pass — only unrelated docs “multi-tab” and intentional negative `configurationRevision` schema assertion matched |
+| 14 | `pnpm exec vitest run utils/__tests__/llmConfigSchema.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts` | Web | Existing client schema/form regression after live failure | Pass — 3 files / 25 tests; inadequate real-Codex fixture confirmed by focused reproduction |
+| 15 | `pnpm test:e2e` | Workspace root | Project-supported complete server E2E build | Fail — 15/70 files and 41/252 tests failed; 29 failure occurrences involve missing Studio service composition; full log retained |
 
 ## Post-Repository Confidence Scorecard
 
+This scorecard reflects the round-3 focused reproduction and root E2E result. It supersedes the historical API-REV-002 post-repository score for current routing.
+
 | Category | Score | Support | Remaining Uncertainty | Improvement |
 | --- | ---: | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 97% | API-E2E-001–003/005–008 passed; Agent and Team normal Application lease/release are direct | Current browser rerun not yet included at this checkpoint | Execute retained probe. |
-| Changed-boundary execution directness | 98% | Normal host launch -> real binding/lookup SQLite -> real startup-ready ownership -> Studio -> terminal -> General delegation | Runtime and canonical history edges are deterministic facades in the new integration | Existing worker and built API runs complement it. |
-| Cross-boundary integration realism and mock gap | 96% | Real stores/gate/host/launch/terminal are composed; built HTTP and worker/host suites pass separately | No single browser + live backend + Application worker process spans all boundaries | Complementary executions are proportionate. |
-| Environment/configuration/identity/fixture fidelity | 96% | Isolated app data/SQLite/exact provenance/run/team/member IDs/current packages | External Claude credential not configured | Sanitized preflight. |
-| Failure/edge/lifecycle/recovery evidence | 98% | Startup wait/failure, lookup-clear provenance, nonterminal status classes, terminal release/input rejection, indeterminate write all pass | Distributed ownership is out of scope | None in scope. |
-| User-surface/browser/desktop confidence | 90% | 4 focused + 12 broader web files pass; IR-005 has no UI shape change | Current integrated Chromium evidence not yet counted | Execute browser probe. |
-| Durable regression quality/relevance | 97% | One focused integration adds exact SR-005 composition without prohibited concurrency; existing durable paths remain valid | Proportional test-code review remains the next workflow gate | Route through code review. |
+| Requirement and acceptance-criteria proof | 75% | Earlier API-E2E-001–008 remain valid and focused web tests pass | Exact production Codex schema was absent from durable coverage and Save had not yet been proven | Fix and rerun exact schema/browser journey. |
+| Changed-boundary execution directness | 93% | The focused normalization probe directly exercises production utility code with the captured backend payload shape | It is not a durable test and does not submit the mutation | Add exact durable regression after fix. |
+| Cross-boundary integration realism and mock gap | 90% | Previous API, worker, lifecycle, and intercepted renderer evidence remains | Root E2E composition is red; no prior single composed browser/backend run | Execute the user-requested real stack. |
+| Environment/configuration/identity/fixture fidelity | 90% | Actual package and configured Codex runtime were available | Before the composed run, their integrated identity was not yet proven | Real import/team/provider journey. |
+| Failure/edge/lifecycle/recovery evidence | 93% | SR-005 ownership/lifecycle suites remain strong | Broad E2E schema composition failures are unresolved | Focused failure-origin review and harness repair. |
+| User-surface/browser/desktop confidence | 75% | Existing forms and intercepted browser probe pass | Real catalog schema is not represented; critical Save unproven | Real Chromium against real backend/catalog. |
+| Durable regression quality/relevance | 60% | Focused test suites are deterministic | Root suite has 41 failures and exact Codex enum gap | Repair shared composition and add exact enum regression. |
 
-- Overall post-repository confidence: `96.0%` (`672 / 7`).
+- Overall post-repository confidence: `82.3%` (`576 / 7`).
 - Calculation: simple average of seven applicable categories; critical-AC/weak-category gates checked independently.
-- Every critical AC directly proven: `Yes`, with user-surface evidence pending only the planned regression rerun at this checkpoint.
-- Any applicable category below 90%: `No`.
-- Default 95% target met: `Yes`, but planned broader validation remained required because the retained current browser and provider-environment checks had not yet run.
-- Residuals: UI/backend/Application evidence is complementary rather than one process; runtime edges in the new ownership integration are deterministic; paid Claude availability is environment-dependent.
+- Every critical AC directly proven: `No` — exact real Codex stopped-config Save was unproven.
+- Any applicable category below 90%: `Yes` — requirement proof, user-surface confidence, durable regression quality.
+- Default 95% target met: `No`.
+- Residuals: exact production enum schema handling, root E2E service composition, and several non-Studio broad-suite failures.
 
 ## Broader Validation Decision
 
-- Decision: `Required — Completed`.
-- Selected mode: `Lifecycle` + `Live API` + `Browser`; lifecycle and built API ran as repository-resident durable tests, then the current integrated Chromium probe and provider capability preflight completed the broader phase.
-- Evidence gain: The browser re-established all four sequential Agent/full-Team/narrow/`RUN_ACTIVE` journeys on the integrated base. Preflight confirmed the provider harness is healthy and truthfully reported the Anthropic credential missing.
-- Final confidence: `97.1%`; every category is at least 96%.
-- Browser rationale: Regression recheck only. No Application ownership UI, multi-tab, revision, or timing scenario was added.
+- Decision: `Required — Completed, result Fail`.
+- Selected mode: real composed `Browser` + `Live API` + real Codex provider, with actual external local package import.
+- Evidence gain: Proved the exact frontend/backend/package/Team/GraphQL/WebSocket/provider path and exposed `API-E2E-F-001`, which the prior intercepted browser payload and focused unit fixtures missed.
+- Final confidence: `78.3%`; acceptance confidence decreased because direct evidence contradicted the previously passing mocked/fixture path.
+- Browser rationale: This was the exact user-requested manual-style journey. No multi-tab, revision, timing, rebase, or simultaneous-call scenario was introduced.
 
 ## Desktop Application Validation Decision
 
@@ -198,16 +230,17 @@ The first focused import attempt ran before the local workspace contract package
 
 ## Live Environment And Fixture Plan
 
-- Executed with test-owned app data, real SQLite binding/lookup stores, a real startup gate, normal Application host Agent/Team launch, Studio reads/updates, normal host termination, and later General eligibility.
-- Built API and Application worker/host suites used their isolated current fixtures; Chromium used one owned Nuxt process/context and deterministic current GraphQL payloads.
-- Exact application/binding/launch/run/team/member IDs and launch-derived canonical provenance were asserted. Browser semantic JSON, screenshots, and the owned Nuxt log are retained under `probes/api-e2e/browser-sr005`.
-- Temp roots, AppConfig, API processes/data, browser/context/Nuxt process group, and temporary page were cleaned. Only concise ticket evidence remains.
+- Canonical `pnpm dev` built all server packages successfully but could not own fixed port 8000. The isolated real backend/frontend were started on ports 38123/33123 with validation-owned `.autobyteus/development` data.
+- The exact `/home/autobyteus/workspace/autobyteus-agents` source, actual package registry, real Team definition, real run ID/member IDs, current Codex catalog, current SQLite/files, GraphQL, WebSockets, and GPT-5.4 response were exercised.
+- Semantic JSON, full operation captures, screenshots, service/build logs, focused reproduction, root E2E log, final-state hashes, and cleanup proof are retained under `probes/api-e2e/full-stack-classroom-sr005`.
+- Chromium, Nuxt, built backend, validation ports/data, and generated shared-package outputs were cleaned. External package source and unrelated PID 63/data on port 8000 were not modified.
 
 ## Temporary Executable Validation Plan
 
 | Scenario | Method | Behavior | Why Temporary |
 | --- | --- | --- | --- |
 | API-E2E-006 | Sanitized provider preflight; paid Claude turn only if configured | External availability | Pass — harness 1 file / 18 tests; Anthropic credential absent, so no paid turn. |
+| API-E2E-009 | Real Nuxt + freshly built backend + system Chromium + actual local package + real Codex App Server | Composed import/render/launch/Stop/Settings/Save/later message/provider path | External local repository and credentialed provider make this ticket evidence; exact schema regression must instead be added to durable web coverage after the fix. |
 
 No temporary ownership probe was used; ownership composition is retained in durable integration coverage.
 
@@ -221,16 +254,24 @@ No temporary ownership probe was used; ownership composition is retained in dura
 | Multi-node ownership | No distributed contract | Out of scope. |
 | Electron shell | No shell change | Browser sufficient. |
 | Paid Claude turn if credential absent | Cannot invent credentials | Record preflight/direct adapter; run in credentialed release environment if required. |
+| Actual stopped-run Codex model-config persistence and later use | Blocked by `API-E2E-F-001`: UI validation disables Save before transport | Source fix plus exact durable schema/form regression, then rerun API-E2E-009. |
+| Root E2E clean baseline | `API-E2E-F-002`: authoritative command has 41 failures | Focused failure-origin review; repair production-equivalent service composition and triage remaining failures. |
 
 ## Ambiguities Or Reroute Triggers
 
-None. Any failing test that assumes Application and General share a manager/lane will be classified against SR-005 before an implementation-defect conclusion. Any simultaneous-call/revision fix is outside the contract.
+| Issue | Classification | Evidence | Recommended Recipient |
+| --- | --- | --- | --- |
+| API-E2E-F-001 real Codex enum choice is rendered but always rejected by client validation, disabling Save | `Local Fix` — preliminary frontend implementation defect | `failure.png`, `browser-evidence.json`, `enum-schema-reproduction.log`, `autobyteus-web/utils/llmConfigSchema.ts` | `/code_reviewer` for focused origin confirmation, then likely `/implementation_engineer` |
+| API-E2E-F-002 root E2E suite lacks required Studio API service composition in many in-process schemas; several other failures also exist | `Local Fix` — preliminary durable test/harness regression, with non-Studio failures still `Unclear` | `root-pnpm-test-e2e.log`: 15 files / 41 tests failed; 29 missing-service occurrences | `/code_reviewer` for origin split; likely `/api_e2e_engineer` after source rework for test fixture changes |
+
+Any simultaneous-call/revision fix remains outside the contract.
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Completed — Pass`.
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes` — added one focused Application ownership lifecycle integration file; no existing durable path was updated or removed.
-- Post-repository confidence: `96.0%`; final confidence after broader validation: `97.1%`.
-- Broader validation decision: `Required — Completed` — Lifecycle + Live API + Browser, plus provider preflight.
-- Reroute Required Before Validation Execution: `No`.
-- Notes: Refreshed against SR-005 before current-round execution or durable coverage change. API-E2E-007/008 and every retained scenario passed. Because one durable file was added, the cumulative package must return through `/code_reviewer` for proportional test-code review.
+- Proceed To API/E2E Execution: `Completed — result Fail`.
+- Repository-Resident Durable Coverage Added / Updated / Removed In Round 3: `No`. Temporary ticket probes/evidence only.
+- Prior completed confidence: `97.1%` (`API-REV-002`); current final confidence: `78.3%` (`API-REV-003`).
+- Broader validation decision: `Required — completed` through fully composed real frontend + backend + actual local package import + Classroom Simulation Team + real Codex turn.
+- Reroute Required: `Yes` — `API-E2E-F-001` and `API-E2E-F-002` require focused failure-origin review.
+- Recommended Recipient: `/code_reviewer`.
+- Notes: Critical Save acceptance failed. No GraphQL interception or fixture route was used.

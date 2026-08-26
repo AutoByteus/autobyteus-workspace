@@ -1,5 +1,12 @@
 # Latest-Base Integration Conflict Report
 
+> **Resolution status (DR-002): Resolved / historical.** IR-004 completed the
+> merge in `7e3f4e97c3e58951daa21070e46cb8c71246197a`. The integrated ownership
+> finding was then resolved by SR-005/IR-005 and passed CRR-007,
+> API-REV-002, and CRR-008. The current delivery result is DR-002 Pass; the
+> inventory below records the original DR-001 blocker and is not an active
+> instruction to re-resolve those conflicts.
+
 ## Result
 
 - Delivery revision: `DR-001`
