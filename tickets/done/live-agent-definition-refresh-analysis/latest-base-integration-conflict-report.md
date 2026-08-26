@@ -1,11 +1,11 @@
 # Latest-Base Integration Conflict Report
 
-> **Resolution status (DR-004): Resolved / historical.** IR-004 completed the
+> **Resolution status (DR-006): Resolved, finalized, and historical.** IR-004 completed the
 > merge in `7e3f4e97c3e58951daa21070e46cb8c71246197a`. The integrated ownership
 > finding was then resolved by SR-005/IR-005 and passed CRR-007,
 > API-REV-002, and CRR-008. IR-006/CRR-010/API-REV-004/CRR-011 subsequently
 > closed the real Codex enum and E2E-harness findings. The current delivery
-> result is DR-004 Pass; the inventory below records the original DR-001
+> result is DR-006 Completed; the inventory below records the original DR-001
 > blocker and is not an active instruction to re-resolve those conflicts.
 
 ## Result
@@ -48,7 +48,7 @@ These are not documentation-only conflicts. They cross server lifecycle ownershi
 
 ## Evidence
 
-- `/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/tickets/done/live-agent-definition-refresh-analysis/evidence/delivery/dr-001-integration-refresh.log`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/live-agent-definition-refresh-analysis/evidence/delivery/dr-001-integration-refresh.log`
 - Git merge base: `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Aborted merge target: `306de420ca8830478529b40bd6dfda6694b742a9`
 - Restored reviewed checkpoint: `2eabf59af168e0375a1616bb3055c81200b8308c`
@@ -60,3 +60,7 @@ These are not documentation-only conflicts. They cross server lifecycle ownershi
 - User verification request: not issued.
 - Ticket archival/finalization: not started.
 - Push/target merge/release/publication/deployment/cleanup: not started.
+
+## Final Resolution (DR-006)
+
+IR-004 resolved the original conflicts, and the complete SR-005/IR-006 review and API/E2E chain passed. After user acceptance, `origin/personal` remained unchanged, target merge `44c83bdbc53367cdb4f71dc54d172e660f32b541` was pushed successfully, and the ticket branch/worktree were cleaned up. This report is retained only as historical conflict evidence; none of its original hold instructions remain active.
