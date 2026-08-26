@@ -2928,7 +2928,7 @@ describe("application framework architecture boundaries", () => {
       "teamDefinitionService: input.agentTeamDefinitionService",
       "agentRunIdentityAllocator,",
       "agentToolMcpRunSessionReleaser:",
-      "taskRootResolver: callbacks.taskRootResolver",
+      "taskRootResolver: managerInput.callbacks.taskRootResolver",
       "bindProcessAgentRunService(agentRunService)",
       "bindProcessTeamRunService(teamRunService)",
     ]) {
@@ -3036,7 +3036,6 @@ describe("application framework architecture boundaries", () => {
     const managerOccurrences = sr013NewOccurrences("MixedTeamManager");
     expect(sr013OccurrencePaths(managerOccurrences)).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-      "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts",
@@ -3044,16 +3043,12 @@ describe("application framework architecture boundaries", () => {
     ].sort());
     const productionManagerResolverValues = new Map([
       [
-        "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
-        "input.callbacks.taskRootResolver",
-      ],
-      [
         "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-        "callbacks.taskRootResolver",
+        "managerInput.callbacks.taskRootResolver",
       ],
       [
         "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
-        "callbacks.taskRootResolver",
+        "managerInput.callbacks.taskRootResolver",
       ],
     ]);
     for (const occurrence of managerOccurrences) {
@@ -3069,16 +3064,15 @@ describe("application framework architecture boundaries", () => {
     const factoryOccurrences = sr013NewOccurrences("MixedTeamRunBackendFactory");
     expect(sr013OccurrencePaths(factoryOccurrences)).toEqual([
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
-      "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts",
-      "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
       "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
+      "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
     ].sort());
 
     const builderOccurrences = sr013BuilderCalls();
@@ -3114,7 +3108,7 @@ describe("application framework architecture boundaries", () => {
       `${["new", "MixedTeamRunBackendFactory"].join(" ")}\\s*\\(`,
       "g",
     );
-    expect(contextOnlyFactoryTest.match(contextOnlyFactoryPattern)).toHaveLength(2);
+    expect(contextOnlyFactoryTest.match(contextOnlyFactoryPattern)).toHaveLength(1);
     expect(contextOnlyFactoryTest).not.toMatch(/\.(?:createBackend|restoreBackend|createBackendForNode)\s*\(/);
 
     const factoryFile = join(
@@ -3186,5 +3180,5 @@ describe("application framework architecture boundaries", () => {
     }
     expect(forbiddenImports).toEqual([]);
     expect(forbiddenIdentifiers).toEqual([]);
-  });
+  }, 10_000);
 });

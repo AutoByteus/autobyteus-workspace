@@ -2,6 +2,7 @@ import type { AppConfig } from "../../config/app-config.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { AgentProviderFactoryBuilder } from "../providers/agent-provider-factory-builder.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
@@ -102,22 +103,33 @@ export class GeneralProcessRunSupervisor {
       const memberTeamContextBuilder = new MemberTeamContextBuilder(
         input.agentTeamDefinitionService,
       );
+      const memoryLocationService = new AgentMemoryLocationService({
+        memoryDir,
+        locationService: storedTeamLocations,
+      });
+      const activityInspector = new AgentConversationActivityInspector();
       const generalAgentRunManager = agentRunManager;
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
         mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-          createTeamManager: (context, subTeamRunFactory, callbacks) =>
-            new MixedTeamManager(context, {
-              subTeamRunFactory,
-              taskRootResolver: callbacks.taskRootResolver,
+          agentToolMcpRunSessionReleaser:
+            input.agentToolMcpSessionAuthority.runSessions,
+          createTeamManager: (managerInput) =>
+            new MixedTeamManager(managerInput.context, {
+              subTeamRunFactory: managerInput.subTeamRunFactory,
+              taskRootResolver: managerInput.callbacks.taskRootResolver,
               agentRunManager: generalAgentRunManager,
               agentToolMcpRunSessionReleaser:
-                input.agentToolMcpSessionAuthority.runSessions,
+                managerInput.agentToolMcpRunSessionReleaser,
+              memoryLocationService,
+              activityInspector,
               memberTeamContextBuilder,
               workspaceManager,
-              publish: callbacks.publish,
-              deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
-              acceptPlatformBinding: callbacks.acceptPlatformBinding,
+              publish: managerInput.callbacks.publish,
+              deliverInterAgentMessage:
+                managerInput.callbacks.deliverInterAgentMessage,
+              acceptPlatformBinding:
+                managerInput.callbacks.acceptPlatformBinding,
             }),
         }),
       });
@@ -160,10 +172,6 @@ export class GeneralProcessRunSupervisor {
         agentRunIdentityAllocator,
         provisioningService,
         activationService,
-      });
-      const memoryLocationService = new AgentMemoryLocationService({
-        memoryDir,
-        locationService: teamLocations,
       });
       teamRunService = new TeamRunService({
         agentTeamRunManager,

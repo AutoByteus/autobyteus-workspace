@@ -13,6 +13,7 @@ import {
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import {
   testAgentNode,
   testAgentTeamNode,
@@ -93,6 +94,9 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
     });
     const memoryLocationService = new AgentMemoryLocationService({
       memoryDir: appConfigProvider.config.getMemoryDir(),
+      locationService: createStoredTeamRunExecutionTreeLocationService(
+        appConfigProvider.config.getMemoryDir(),
+      ),
     });
     const getTeamAgentRunLocation = vi.spyOn(
       memoryLocationService,

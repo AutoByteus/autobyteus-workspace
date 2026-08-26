@@ -241,6 +241,57 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       agentToolMcpSessionIssuer: harness.authority.issuer,
     });
     expect(kernel.sessionAuthority).toBe(harness.authority);
+
+    const agentRunManager = (kernel.agentRunService as unknown as {
+      agentRunManager: object;
+    }).agentRunManager;
+    const teamRunManager = (kernel.teamRunService as unknown as {
+      manager: { factory: { options: {
+        agentToolMcpRunSessionReleaser: object;
+        createTeamManager(input: unknown): object;
+      } } };
+    }).manager;
+    const factoryOptions = teamRunManager.factory.options;
+    expect(factoryOptions.agentToolMcpRunSessionReleaser)
+      .toBe(harness.authority.runSessions);
+    const callbacks = {
+      taskRootResolver: { resolveActiveRoot: vi.fn() },
+      publish: vi.fn(),
+      deliverInterAgentMessage: vi.fn(),
+      acceptPlatformBinding: vi.fn(),
+    };
+    const constructionInput = {
+      context: {} as never,
+      subTeamRunFactory: {} as never,
+      callbacks,
+      agentToolMcpRunSessionReleaser: harness.authority.runSessions,
+    };
+    const mixedManager = factoryOptions.createTeamManager(constructionInput) as {
+      configured: { options: Record<string, unknown> };
+      taskAgents: { options: Record<string, unknown> };
+    };
+    const configured = mixedManager.configured.options;
+    const taskAgents = mixedManager.taskAgents.options;
+    for (const options of [configured, taskAgents]) {
+      expect(options.agentRunManager).toBe(agentRunManager);
+      expect(options.agentToolMcpRunSessionReleaser)
+        .toBe(harness.authority.runSessions);
+      expect(options.memoryLocationService).toBe(kernel.memoryLocationService);
+      expect(options.workspaceManager).toBe(harness.buildInput.workspaceManager);
+      expect(options.taskRootResolver).toBe(callbacks.taskRootResolver);
+      expect(options.publish).toBe(callbacks.publish);
+      expect(options.deliverInterAgentMessage)
+        .toBe(callbacks.deliverInterAgentMessage);
+      expect(options.acceptPlatformBinding).toBe(callbacks.acceptPlatformBinding);
+      expect(options.activityInspector).toBeTruthy();
+      expect(options.memberTeamContextBuilder).toBeTruthy();
+    }
+    expect(configured.subTeamRunFactory)
+      .toBe(constructionInput.subTeamRunFactory);
+    expect(taskAgents.activityInspector).toBe(configured.activityInspector);
+    expect(taskAgents.memberTeamContextBuilder)
+      .toBe(configured.memberTeamContextBuilder);
+
     kernel.abortConstruction();
     kernel.abortConstruction();
     expect(harness.close).toHaveBeenCalledTimes(1);

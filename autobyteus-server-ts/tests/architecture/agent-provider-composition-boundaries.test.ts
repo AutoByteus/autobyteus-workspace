@@ -29,18 +29,26 @@ const parse = (path: string) => ts.createSourceFile(
   path.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
 );
 
+type GovernedConstructorSymbol =
+  | "AgentRunManager"
+  | "MixedTeamRunBackendFactory"
+  | "MixedTeamManager"
+  | "MixedAgentMemberHandle";
+
 const governedConstructorOccurrences = (
   path: string,
-): Array<{ symbol: "AgentRunManager" | "MixedTeamManager" | "MixedAgentMemberHandle"; node: ts.CallExpression | ts.NewExpression }> => {
+): Array<{ symbol: GovernedConstructorSymbol; node: ts.CallExpression | ts.NewExpression }> => {
   const found: Array<{
-    symbol: "AgentRunManager" | "MixedTeamManager" | "MixedAgentMemberHandle";
+    symbol: GovernedConstructorSymbol;
     node: ts.CallExpression | ts.NewExpression;
   }> = [];
   const visit = (node: ts.Node): void => {
     if (ts.isNewExpression(node) && ts.isIdentifier(node.expression)) {
       const symbol = node.expression.text;
-      if (symbol === "AgentRunManager" || symbol === "MixedTeamManager" ||
-        symbol === "MixedAgentMemberHandle") found.push({ symbol, node });
+      if (symbol === "AgentRunManager" || symbol === "MixedTeamRunBackendFactory" ||
+        symbol === "MixedTeamManager" || symbol === "MixedAgentMemberHandle") {
+        found.push({ symbol, node });
+      }
     }
     if (
       ts.isCallExpression(node)
@@ -69,6 +77,12 @@ const MIXED_MANAGER_TESTS = [
   "autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
 ];
+const MIXED_BACKEND_FACTORY_TESTS = [
+  "autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts",
+];
 const MIXED_HANDLE_TESTS = [
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts",
@@ -76,6 +90,32 @@ const MIXED_HANDLE_TESTS = [
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts",
 ];
+const AGENT_TEAM_MANAGER_CONSTRUCTION_TESTS = [
+  "autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
+  "autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts",
+];
+const AGENT_TEAM_MANAGER_INITIALIZATION_TESTS = [
+  "autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts",
+];
+
+const objectPropertyInitializer = (
+  argument: ts.Expression | undefined,
+  propertyName: string,
+  sourceFile: ts.SourceFile,
+): string | null => {
+  if (!argument || !ts.isObjectLiteralExpression(argument)) return null;
+  const property = argument.properties.find((candidate) =>
+    (ts.isPropertyAssignment(candidate) || ts.isShorthandPropertyAssignment(candidate))
+    && ((ts.isIdentifier(candidate.name) && candidate.name.text === propertyName)
+      || (ts.isStringLiteral(candidate.name) && candidate.name.text === propertyName)),
+  );
+  if (property && ts.isPropertyAssignment(property)) {
+    return property.initializer.getText(sourceFile);
+  }
+  return property && ts.isShorthandPropertyAssignment(property)
+    ? property.name.getText(sourceFile)
+    : null;
+};
 
 const requiredReleaserInitializer = (
   node: ts.CallExpression | ts.NewExpression,
@@ -85,14 +125,67 @@ const requiredReleaserInitializer = (
     ? node.expression.text
     : "AgentRunManager";
   const argument = node.arguments[symbol === "MixedTeamManager" ? 1 : 0];
-  if (!argument || !ts.isObjectLiteralExpression(argument)) return null;
-  const property = argument.properties.find((candidate): candidate is ts.PropertyAssignment =>
-    ts.isPropertyAssignment(candidate)
-    && ((ts.isIdentifier(candidate.name) && candidate.name.text === "agentToolMcpRunSessionReleaser")
-      || (ts.isStringLiteral(candidate.name)
-        && candidate.name.text === "agentToolMcpRunSessionReleaser")),
+  return objectPropertyInitializer(
+    argument,
+    "agentToolMcpRunSessionReleaser",
+    sourceFile,
   );
-  return property?.initializer.getText(sourceFile) ?? null;
+};
+
+const requiredFactoryCallbackInitializer = (
+  node: ts.NewExpression,
+  sourceFile: ts.SourceFile,
+): string | null => objectPropertyInitializer(
+  node.arguments?.[0],
+  "createTeamManager",
+  sourceFile,
+);
+
+const requiredTeamBackendFactoryInitializer = (
+  node: ts.CallExpression | ts.NewExpression,
+  sourceFile: ts.SourceFile,
+): string | null => objectPropertyInitializer(
+  node.arguments[0],
+  "mixedTeamRunBackendFactory",
+  sourceFile,
+);
+
+const isExplicitNarrowInitializer = (initializer: string | null): boolean =>
+  initializer !== null
+  && !/^(?:null|undefined)$/.test(initializer)
+  && !/\bas\s+(?:any|never)\b/.test(initializer)
+  && !/(?:getAgentTool|getMixedTeam|getInstance|sessionManager)/.test(initializer);
+
+const isExplicitFactoryCallback = (initializer: string | null): boolean =>
+  initializer !== null
+  && !/^(?:null|undefined)$/.test(initializer)
+  && !/^\s*[\w$.]+\s+as\s+(?:any|never)\s*$/.test(initializer)
+  && !/(?:getMixedTeam|getInstance|sessionManager)/.test(initializer);
+
+const agentTeamManagerOccurrences = (
+  path: string,
+): Array<{ kind: "construct" | "initialize"; node: ts.CallExpression | ts.NewExpression }> => {
+  const found: Array<{
+    kind: "construct" | "initialize";
+    node: ts.CallExpression | ts.NewExpression;
+  }> = [];
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isNewExpression(node)
+      && ts.isIdentifier(node.expression)
+      && node.expression.text === "AgentTeamRunManager"
+    ) found.push({ kind: "construct", node });
+    if (
+      ts.isCallExpression(node)
+      && ts.isPropertyAccessExpression(node.expression)
+      && ts.isIdentifier(node.expression.expression)
+      && node.expression.expression.text === "AgentTeamRunManager"
+      && node.expression.name.text === "initializeProcessInstance"
+    ) found.push({ kind: "initialize", node });
+    ts.forEachChild(node, visit);
+  };
+  visit(parse(path));
+  return found;
 };
 
 const validateSyntheticReleaser = (snippet: string): boolean => {
@@ -107,14 +200,79 @@ const validateSyntheticReleaser = (snippet: string): boolean => {
   const visit = (node: ts.Node): void => {
     if (ts.isNewExpression(node) || ts.isCallExpression(node)) {
       const initializer = requiredReleaserInitializer(node, sourceFile);
-      if (initializer && !/^(?:null|undefined)$/.test(initializer)
-        && !/\bas\s+(?:any|never)\b/.test(initializer)
-        && !/(?:getAgentTool|getInstance|sessionManager)/.test(initializer)) valid = true;
+      if (isExplicitNarrowInitializer(initializer)) valid = true;
     }
     ts.forEachChild(node, visit);
   };
   visit(sourceFile);
   return valid;
+};
+
+const validateSyntheticFactoryOptions = (snippet: string): boolean => {
+  const sourceFile = ts.createSourceFile(
+    "fixture.ts",
+    snippet,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  let valid = false;
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isNewExpression(node)
+      && ts.isIdentifier(node.expression)
+      && node.expression.text === "MixedTeamRunBackendFactory"
+    ) {
+      valid = isExplicitNarrowInitializer(
+        requiredReleaserInitializer(node, sourceFile),
+      ) && isExplicitFactoryCallback(
+        requiredFactoryCallbackInitializer(node, sourceFile),
+      );
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return valid;
+};
+
+const validateSyntheticTeamManagerOptions = (snippet: string): boolean => {
+  const sourceFile = ts.createSourceFile(
+    "fixture.ts",
+    snippet,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  let valid = false;
+  for (const occurrence of agentTeamManagerOccurrencesFromSource(sourceFile)) {
+    valid = isExplicitNarrowInitializer(
+      requiredTeamBackendFactoryInitializer(occurrence.node, sourceFile),
+    );
+  }
+  return valid;
+};
+
+const agentTeamManagerOccurrencesFromSource = (
+  sourceFile: ts.SourceFile,
+): Array<{ node: ts.CallExpression | ts.NewExpression }> => {
+  const found: Array<{ node: ts.CallExpression | ts.NewExpression }> = [];
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isNewExpression(node)
+      && ts.isIdentifier(node.expression)
+      && node.expression.text === "AgentTeamRunManager"
+    ) found.push({ node });
+    if (
+      ts.isCallExpression(node)
+      && ts.isPropertyAccessExpression(node.expression)
+      && ts.isIdentifier(node.expression.expression)
+      && node.expression.expression.text === "AgentTeamRunManager"
+      && node.expression.name.text === "initializeProcessInstance"
+    ) found.push({ node });
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return found;
 };
 
 describe("agent provider composition boundaries", () => {
@@ -214,6 +372,7 @@ describe("agent provider composition boundaries", () => {
   it("fails closed on the exact direct-constructor test sets and narrow fixture property", () => {
     const actual = new Map<string, Set<string>>([
       ["AgentRunManager", new Set()],
+      ["MixedTeamRunBackendFactory", new Set()],
       ["MixedTeamManager", new Set()],
       ["MixedAgentMemberHandle", new Set()],
     ]);
@@ -222,20 +381,148 @@ describe("agent provider composition boundaries", () => {
       const sourceFile = parse(path);
       for (const occurrence of governedConstructorOccurrences(path)) {
         const relativePath = relativeRoot(path);
-        actual.get(occurrence.symbol)!.add(relativePath);
+        const generalOwnershipFactory = occurrence.symbol === "MixedTeamRunBackendFactory"
+          && relativePath === AGENT_TEAM_MANAGER_INITIALIZATION_TESTS[0];
+        if (!generalOwnershipFactory) actual.get(occurrence.symbol)!.add(relativePath);
         const initializer = requiredReleaserInitializer(occurrence.node, sourceFile);
         expect(initializer, `${relativePath}:${occurrence.symbol}`).not.toBeNull();
         expect(initializer, `${relativePath}:${occurrence.symbol}`).not.toMatch(
           /^(?:null|undefined)$|\bas\s+(?:any|never)\b|getAgentTool|getInstance|sessionManager/,
         );
+        if (
+          occurrence.symbol === "MixedTeamRunBackendFactory"
+          && ts.isNewExpression(occurrence.node)
+        ) {
+          const callback = requiredFactoryCallbackInitializer(
+            occurrence.node,
+            sourceFile,
+          );
+          expect(
+            isExplicitFactoryCallback(callback),
+            `${relativePath}:createTeamManager`,
+          ).toBe(true);
+        }
         expect(read(path), relativePath).toContain(
           "agent-tool-mcp-run-session-releaser-fixtures.js",
         );
       }
     }
     expect([...actual.get("AgentRunManager")!].sort()).toEqual([...AGENT_MANAGER_TESTS].sort());
+    expect([...actual.get("MixedTeamRunBackendFactory")!].sort())
+      .toEqual([...MIXED_BACKEND_FACTORY_TESTS].sort());
     expect([...actual.get("MixedTeamManager")!].sort()).toEqual([...MIXED_MANAGER_TESTS].sort());
     expect([...actual.get("MixedAgentMemberHandle")!].sort()).toEqual([...MIXED_HANDLE_TESTS].sort());
+  });
+
+  it("keeps AgentTeamRunManager creation explicit and process access lookup-only", () => {
+    const actualConstruction = new Set<string>();
+    const actualInitialization = new Set<string>();
+    for (const path of typescriptFiles(TESTS)) {
+      if (path === THIS_FILE) continue;
+      const sourceFile = parse(path);
+      for (const occurrence of agentTeamManagerOccurrences(path)) {
+        const relativePath = relativeRoot(path);
+        const target = occurrence.kind === "construct"
+          ? actualConstruction
+          : actualInitialization;
+        target.add(relativePath);
+        expect(
+          isExplicitNarrowInitializer(
+            requiredTeamBackendFactoryInitializer(occurrence.node, sourceFile),
+          ),
+          `${relativePath}:${occurrence.kind}`,
+        ).toBe(true);
+      }
+    }
+    expect([...actualConstruction].sort())
+      .toEqual([...AGENT_TEAM_MANAGER_CONSTRUCTION_TESTS].sort());
+    expect([...actualInitialization].sort())
+      .toEqual([...AGENT_TEAM_MANAGER_INITIALIZATION_TESTS].sort());
+
+    const managerSource = read(join(
+      SRC,
+      "agent-team-execution/services/agent-team-run-manager.ts",
+    ));
+    expect(managerSource).toContain("static getInstance(): AgentTeamRunManager");
+    expect(managerSource).toContain(
+      "The process AgentTeamRunManager is not initialized.",
+    );
+    expect(managerSource).not.toMatch(
+      /static getInstance\([^)]*options|instance \?\?= new AgentTeamRunManager|constructor\([^)]*= \{\}\)|getMixedTeamRunBackendFactory/,
+    );
+  });
+
+  it("binds exactly two production Mixed Team factories to complete root families", () => {
+    const expectedRoots = [
+      "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+    ];
+    const actualRoots = typescriptFiles(SRC)
+      .filter((path) => read(path).includes("new MixedTeamRunBackendFactory("))
+      .map(relativeRoot)
+      .sort();
+    expect(actualRoots).toEqual([...expectedRoots].sort());
+
+    for (const relativePath of expectedRoots) {
+      const source = read(join(ROOT, relativePath));
+      expect(occurrences(source, "new MixedTeamRunBackendFactory("), relativePath)
+        .toBe(1);
+      expect(source, relativePath).toContain(
+        "agentToolMcpRunSessionReleaser:",
+      );
+      expect(source, relativePath).toContain(
+        "createTeamManager: (managerInput) =>",
+      );
+      for (const requiredIdentity of [
+        "new MixedTeamManager(managerInput.context",
+        "subTeamRunFactory: managerInput.subTeamRunFactory",
+        "managerInput.agentToolMcpRunSessionReleaser",
+        "managerInput.callbacks.taskRootResolver",
+        "managerInput.callbacks.publish",
+        "managerInput.callbacks.deliverInterAgentMessage",
+        "managerInput.callbacks.acceptPlatformBinding",
+        "memoryLocationService",
+        "activityInspector",
+        "memberTeamContextBuilder",
+        "workspaceManager",
+      ]) expect(source, `${relativePath}:${requiredIdentity}`).toContain(requiredIdentity);
+    }
+
+    const general = read(join(ROOT, expectedRoots[0]!));
+    expect(general).toMatch(
+      /const memoryLocationService = new AgentMemoryLocationService\(\{[\s\S]*?memoryDir,[\s\S]*?locationService: storedTeamLocations,[\s\S]*?\}\);/,
+    );
+    expect(general).toContain(
+      "const activityInspector = new AgentConversationActivityInspector();",
+    );
+    expect(general).toContain(
+      "agentRunManager: generalAgentRunManager",
+    );
+    expect(general).toContain(
+      "AgentTeamRunManager.initializeProcessInstance({",
+    );
+
+    const application = read(join(ROOT, expectedRoots[1]!));
+    expect(application).toContain("const agentRunManager = new AgentRunManager({");
+    expect(application).toContain("const teamRunManager = new AgentTeamRunManager({");
+    expect(application).toContain("agentRunManager,");
+    expect(application).not.toMatch(
+      /AgentRunManager\.getInstance|AgentTeamRunManager\.getInstance|getAgentMemoryLocationService|getAgentConversationActivityInspector|getMemberTeamContextBuilder|getWorkspaceManager|getAgentToolMcpRunSessionReleaser/,
+    );
+
+    const factory = read(join(
+      SRC,
+      "agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
+    ));
+    expect(factory).toContain("MixedTeamManagerConstructionInput");
+    expect(factory).toContain("private readonly options: MixedTeamRunBackendFactoryOptions;");
+    expect(factory).not.toMatch(
+      /agent-tool-mcp-session-service|new MixedTeamManager|getMixedTeamRunBackendFactory|let cached|createTeamManager\?|agentToolMcpRunSessionReleaser\?|constructor\([^)]*= \{\}\)/,
+    );
+    expect(read(join(
+      SRC,
+      "agent-tools/mcp/agent-tool-mcp-session-service.ts",
+    ))).not.toContain("getAgentToolMcpRunSessionReleaser");
   });
 
   it("rejects synthetic omission, null, undefined, casts, ambient getters, and broad substitutes", () => {
@@ -249,6 +536,30 @@ describe("agent provider composition boundaries", () => {
     ]) expect(validateSyntheticReleaser(invalid), invalid).toBe(false);
     expect(validateSyntheticReleaser(
       "new AgentRunManager({ agentToolMcpRunSessionReleaser: recording.releaser })",
+    )).toBe(true);
+
+    for (const invalid of [
+      "new MixedTeamRunBackendFactory()",
+      "new MixedTeamRunBackendFactory({ createTeamManager: build })",
+      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: releaser, createTeamManager: null })",
+      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: undefined, createTeamManager: build })",
+      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: getAgentToolMcpRunSessionReleaser(), createTeamManager: build })",
+      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: releaser, createTeamManager: missing as never })",
+    ]) expect(validateSyntheticFactoryOptions(invalid), invalid).toBe(false);
+    expect(validateSyntheticFactoryOptions(
+      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: releaser, createTeamManager: build })",
+    )).toBe(true);
+
+    for (const invalid of [
+      "new AgentTeamRunManager()",
+      "new AgentTeamRunManager({})",
+      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: null })",
+      "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: undefined })",
+      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: getMixedTeamRunBackendFactory() })",
+      "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: missing as any })",
+    ]) expect(validateSyntheticTeamManagerOptions(invalid), invalid).toBe(false);
+    expect(validateSyntheticTeamManagerOptions(
+      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: factory })",
     )).toBe(true);
   });
 });

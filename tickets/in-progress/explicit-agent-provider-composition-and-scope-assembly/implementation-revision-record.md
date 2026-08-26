@@ -6,7 +6,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `architecture_reviewer` / `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` / `ARCH-REV-003` | `N/A` | `Initial Baseline` | `SR-001`–`SR-003`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | Ready for implementation-source review |
+| IR-001 | `architecture_reviewer` / `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` / `ARCH-REV-003` | `N/A` | `Initial Baseline` | `SR-001`–`SR-003`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | Superseded by design-impact rework |
+| IR-002 | `code_reviewer` / `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` / `CRR-001`, followed by `architecture_reviewer` / `ARCH-REV-005` | `CR-001`, `AR-004` | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-001`; `API-REV/DR: N/A` | Ready for implementation-source re-review |
 
 ## Revision Entries
 
@@ -16,16 +17,31 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
-- Current authoritative result: Implementation complete and locally validated; ready for code review.
+- Current authoritative result: Superseded only for the Mixed Team construction gap identified by CRR-001; the Host/Authority/provider/kernel baseline remains retained.
 - Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-003`
 - Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Why this baseline or implementation revision is recorded: Records the first complete implementation of the reviewed Host/Authority/Issuer, explicit provider builder, failed-preparation releaser, and private K0–K8 kernel design.
-- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-008`; `AC-001`–`AC-012`; `UC-001`–`UC-006`.
-- Implementation delta: Added the process Host and scoped authority transaction; added exact nineteen-leaf provider construction; narrowed Codex/Claude to issuer/resource/provider config; propagated exact releasers through Agent/Team/member cleanup; added failed-preparation revoke/aggregate behavior; replaced partial scope assembly with one complete private kernel; switched Studio/standalone/general/application roots; removed old broad runtime/scope/manager paths.
-- Changed files or areas: `autobyteus-server-ts/src/agent-tools/mcp`, provider backend/composition files, Agent/Team execution cleanup, application execution scope/runtime, Studio/standalone roots, and focused architecture/unit/integration tests.
-- Local validation and result: Server full build passed; build-config TypeScript passed; 33-file/242-test affected selection passed; provider selection passed 59 tests with 29 maintained credential-gated skips; Brief/standalone selection passed 3 tests; structural scans, source sizes, and `git diff --check` passed.
+- Why recorded: First complete implementation of the reviewed Host/Authority/Issuer, explicit provider builder, failed-preparation releaser, and private K0–K8 kernel design.
+- Implementation delta: Added the process Host and scoped authority transaction; exact nineteen-leaf provider construction; narrow provider capability inputs; failed-preparation cleanup; private application kernel; clean removal of replaced broad runtime/scope/manager paths.
+- Local validation and result: Server full build, focused source checks, 33-file/242-test affected selection, provider checks, Brief/standalone checks, and structural scans passed.
+- Next recipient at that time: `/code_reviewer`
+- Remaining limitation discovered later: `MixedTeamRunBackendFactory` retained an omitted ambient/default construction path, producing `CR-001` Design Impact.
+
+### IR-002 — Complete Mixed Team execution-family construction
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md`; `CRR-001`, followed by solution revisions `SR-004`/`SR-005` and `architecture_reviewer` `ARCH-REV-005`.
+- Triggering finding IDs: `CR-001`, `AR-004`
+- Classification: `Design Impact Rework`
+- Prior authoritative result: `CRR-001 Fail — Design Impact`; `ARCH-REV-005 Pass` approved the corrected implementation target.
+- Current authoritative result: Implementation complete and locally validated; ready for complete implementation-source re-review.
+- Related solution revision IDs: `SR-004`, `SR-005`
+- Related architecture-review revision IDs: `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E and delivery revision IDs: `N/A`
+- Why recorded: Closes the omitted Mixed Team factory/manager construction family without improvising an ambient fallback.
+- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`; especially general/application execution-family identity, recursive Team reuse, exact cleanup authority, and application process-fallback prohibition.
+- Implementation delta: Required the backend factory releaser and typed manager-construction callback; froze and forwarded the exact per-Team construction input; removed built-in/cached/global factory paths and ambient releaser getter; made process Team manager access lookup-only and construction factory-required; bound complete non-identical general/application dependency families; used stored-only pre-manager location readers and graph-local post-manager resolution; updated governed tests and architecture occurrence/negative guards.
+- Changed files or areas: Mixed Team backend factory, process Team manager, MCP session service, general supervisor, application kernel builder, architecture enforcement, factory/manager/recursive Team tests, root ownership tests, and kernel identity tests.
+- Local validation and result: `build:full` and build-config TypeScript passed; focused 9-file/54-test and former reviewer 8-file/82-test selections passed; 9-file/31-test Mixed Team selection passed; architecture 2-file/27-test selection passed; Brief/standalone 2-file/3-test selection passed; structural scans and source-size checks passed.
 - Next recipient or routing: `/code_reviewer`
-- Remaining limitations or risks: Live credential-gated provider paths and broader API/E2E/package/recovery/Electron proof remain downstream-owned. The repository-wide broad typecheck command retains an existing tests-vs-`rootDir` configuration failure; production TypeScript passes.
+- Remaining limitations or risks: Real credentialed provider execution, complete dual-host/API/E2E, package parity, recovery/reentry, and Electron verification remain downstream-owned after source Pass.

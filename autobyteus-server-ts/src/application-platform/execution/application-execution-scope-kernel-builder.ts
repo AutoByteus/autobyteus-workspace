@@ -21,7 +21,10 @@ import { ApplicationPublishedArtifactRelayService } from "../../application-orch
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import { PublishedArtifactProjectionService } from "../../run-history/services/published-artifact-projection-service.js";
-import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import {
+  TeamRunExecutionTreeLocationService,
+  createStoredTeamRunExecutionTreeLocationService,
+} from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import { PublishedArtifactProjectionStore } from "../../services/published-artifacts/published-artifact-projection-store.js";
@@ -62,12 +65,16 @@ export const buildApplicationExecutionScopeKernel = (
   };
 
   try {
+    const storedTeamLocations =
+      createStoredTeamRunExecutionTreeLocationService(input.memoryDir);
     const memoryLocationService = new AgentMemoryLocationService({
       memoryDir: input.memoryDir,
+      locationService: storedTeamLocations,
     });
     const runFileChangeService = new RunFileChangeService({
       memoryDir: input.memoryDir,
       workspaceManager: input.workspaceManager,
+      teamLocations: storedTeamLocations,
     });
     const relay = new ApplicationPublishedArtifactRelayService({
       bindingReader: input.bindingReader,
@@ -113,24 +120,26 @@ export const buildApplicationExecutionScopeKernel = (
       input.agentTeamDefinitionService,
     );
     const activityInspector = new AgentConversationActivityInspector();
-    const sessionAuthority = authority;
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
       mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
         agentToolMcpRunSessionReleaser: authority.runSessions,
-        createTeamManager: (context, subTeamRunFactory, callbacks) =>
-          new MixedTeamManager(context, {
-            subTeamRunFactory,
-            taskRootResolver: callbacks.taskRootResolver,
+        createTeamManager: (managerInput) =>
+          new MixedTeamManager(managerInput.context, {
+            subTeamRunFactory: managerInput.subTeamRunFactory,
+            taskRootResolver: managerInput.callbacks.taskRootResolver,
             agentRunManager,
-            agentToolMcpRunSessionReleaser: sessionAuthority.runSessions,
+            agentToolMcpRunSessionReleaser:
+              managerInput.agentToolMcpRunSessionReleaser,
             memoryLocationService,
             activityInspector,
             memberTeamContextBuilder,
             workspaceManager: input.workspaceManager,
-            publish: callbacks.publish,
-            deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
-            acceptPlatformBinding: callbacks.acceptPlatformBinding,
+            publish: managerInput.callbacks.publish,
+            deliverInterAgentMessage:
+              managerInput.callbacks.deliverInterAgentMessage,
+            acceptPlatformBinding:
+              managerInput.callbacks.acceptPlatformBinding,
           }),
       }),
       executionTreeStore: new TeamRunExecutionTreeStore(),
@@ -207,7 +216,10 @@ const buildRunServices = (
     agentRunManager: kernel.agentRunManager,
     agentRunMetadataService: metadataService,
     teamRunExecutionTreeLocationService:
-      new TeamRunExecutionTreeLocationService({ memoryDir: input.memoryDir }),
+      new TeamRunExecutionTreeLocationService({
+        memoryDir: input.memoryDir,
+        manager: kernel.teamRunManager,
+      }),
     memoryDir: input.memoryDir,
   });
   const tokenUsageReadiness = new TokenUsageMigrationReadiness();

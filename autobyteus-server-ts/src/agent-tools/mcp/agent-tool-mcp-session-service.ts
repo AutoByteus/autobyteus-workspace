@@ -13,7 +13,6 @@ import {
   type RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
 import type {
-  AgentToolMcpRunSessionReleaser,
   AgentToolMcpSessionIssueInput,
   AgentToolMcpSessionIssuer,
   IssuedAgentToolMcpSession,
@@ -193,14 +192,6 @@ export const getAgentToolMcpSessionIssuer = (): AgentToolMcpSessionIssuer =>
     issueForRun: (input: AgentToolMcpSessionIssueInput) =>
       getAgentToolMcpSessionService().createAgentToolMcpSession(input),
   });
-
-export const getAgentToolMcpRunSessionReleaser =
-(): AgentToolMcpRunSessionReleaser => Object.freeze({
-  revokeForRun: (runId: string) =>
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId),
-  revokeForOwner: (owner: Partial<AgentToolMcpSessionOwnerIdentity>) =>
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForOwner(owner),
-});
 
 export const resetAgentToolMcpSessionServiceForTests = (): void => {
   AgentToolMcpSessionService.resetInstance();

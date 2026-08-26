@@ -3,6 +3,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import type { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { testAgentNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 const callbacks = () => ({
   taskRootResolver: testMemberTaskRootResolver(),
@@ -10,6 +11,12 @@ const callbacks = () => ({
   deliverInterAgentMessage: async () => ({ accepted: true as const }),
   acceptPlatformBinding: async () => undefined,
 });
+
+const createManagerStub = () => ({
+  isActive: () => true,
+  getLeafAgentStatusSnapshots: () => [],
+  hasOpenExecutionWork: () => false,
+}) as never;
 
 describe("MixedTeamRunBackendFactory", () => {
   it("materializes exact configured AgentRun bindings without route or path identities", async () => {
@@ -28,14 +35,14 @@ describe("MixedTeamRunBackendFactory", () => {
         }),
       ],
     });
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const managerInputs: unknown[] = [];
     const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: (context) => {
-        captured.push(context);
-        return {
-          isActive: () => true,
-          getLeafAgentStatusSnapshots: () => [],
-          hasOpenExecutionWork: () => false,
-        } as never;
+      agentToolMcpRunSessionReleaser: releaser,
+      createTeamManager: (input) => {
+        managerInputs.push(input);
+        captured.push(input.context);
+        return createManagerStub();
       },
     });
 
@@ -43,6 +50,10 @@ describe("MixedTeamRunBackendFactory", () => {
 
     expect(backend.teamRunId).toBe(config.rootTeam.teamRunId);
     expect(captured).toHaveLength(1);
+    expect(managerInputs[0]).toEqual(expect.objectContaining({
+      agentToolMcpRunSessionReleaser: releaser,
+      context: captured[0],
+    }));
     expect(captured[0]?.runtimeContext?.configuredMemberActivationMode).toBe("fresh");
     expect(captured[0]?.runtimeContext?.memberContexts).toEqual([
       expect.objectContaining({
@@ -75,14 +86,14 @@ describe("MixedTeamRunBackendFactory", () => {
         }),
       ],
     });
+    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const managerInputs: unknown[] = [];
     const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: (context) => {
-        captured.push(context);
-        return {
-          isActive: () => true,
-          getLeafAgentStatusSnapshots: () => [],
-          hasOpenExecutionWork: () => false,
-        } as never;
+      agentToolMcpRunSessionReleaser: releaser,
+      createTeamManager: (input) => {
+        managerInputs.push(input);
+        captured.push(input.context);
+        return createManagerStub();
       },
     });
 
@@ -92,12 +103,38 @@ describe("MixedTeamRunBackendFactory", () => {
     const native = captured[0]?.runtimeContext?.memberContexts[0];
     expect(native?.kind).toBe("agent");
     expect(native?.getPlatformAgentRunId()).toBeNull();
+    expect(managerInputs[0]).toEqual(expect.objectContaining({
+      agentToolMcpRunSessionReleaser: releaser,
+      context: captured[0],
+    }));
     for (const value of [undefined, null]) {
       await expect(factory.createBackend(
         config,
         config.rootTeam.teamRunId,
         value as never,
       )).rejects.toThrow("Complete MixedTeamRunCallbacks are required");
+    }
+  });
+
+  it("requires both the exact run-session releaser and manager construction capability", () => {
+    const valid = {
+      agentToolMcpRunSessionReleaser:
+        createNoopAgentToolMcpRunSessionReleaser(),
+      createTeamManager: () => createManagerStub(),
+    };
+    for (const property of [
+      "agentToolMcpRunSessionReleaser",
+      "createTeamManager",
+    ] as const) {
+      for (const value of ["omitted", null, undefined] as const) {
+        const options = { ...valid } as Record<string, unknown>;
+        if (value === "omitted") delete options[property];
+        else options[property] = value;
+        expect(
+          () => Reflect.construct(MixedTeamRunBackendFactory, [options]),
+          `${property}:${String(value)}`,
+        ).toThrow("Complete MixedTeamRunBackendFactory options are required.");
+      }
     }
   });
 });

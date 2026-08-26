@@ -16,6 +16,9 @@ import {
 } from "../../../src/agent-execution/services/agent-run-service.js";
 import { getTeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import type { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
 
 const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
   scopeIdentity: "general-process",
@@ -35,6 +38,17 @@ const createProviderBuilder = (): AgentProviderFactoryBuilder => ({
     codex: {} as never,
     claude: {} as never,
   })),
+});
+
+const teamManagerStub = Object.freeze({
+  isActive: () => true,
+  getLeafAgentStatusSnapshots: () => [],
+  hasOpenExecutionWork: () => false,
+}) as unknown as MixedTeamManager;
+const createBackendFactory = () => new MixedTeamRunBackendFactory({
+  agentToolMcpRunSessionReleaser:
+    createNoopAgentToolMcpRunSessionReleaser(),
+  createTeamManager: () => teamManagerStub,
 });
 
 const createSupervisorInput = () => {
@@ -60,6 +74,9 @@ describe("GeneralProcessRunSupervisor ownership", () => {
   });
 
   it("keeps migration/history construction passive and owns exactly one process manager family", async () => {
+    expect(() => AgentTeamRunManager.getInstance()).toThrow(
+      "The process AgentTeamRunManager is not initialized.",
+    );
     const getDefaultTeamManager = vi.spyOn(AgentTeamRunManager, "getInstance");
     const initializeAgentManager = vi.spyOn(AgentRunManager, "initializeProcessInstance");
     const initializeTeamManager = vi.spyOn(AgentTeamRunManager, "initializeProcessInstance");
@@ -95,6 +112,57 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     expect(owned.teamRunService.manager).toBe(owned.agentTeamRunManager);
     expect(owned.teamRunService.agentIdentityAllocator.agentDefinitionService)
       .toBe(input.agentDefinitionService);
+    expect(AgentTeamRunManager.getInstance()).toBe(owned.agentTeamRunManager);
+    expect(getDefaultTeamManager).toHaveBeenCalledTimes(1);
+
+    const factoryOptions = (owned.agentTeamRunManager as unknown as {
+      factory: { options: {
+        agentToolMcpRunSessionReleaser: object;
+        createTeamManager(input: unknown): object;
+      } };
+    }).factory.options;
+    expect(factoryOptions.agentToolMcpRunSessionReleaser)
+      .toBe(input.agentToolMcpSessionAuthority.runSessions);
+    const callbacks = {
+      taskRootResolver: { resolveActiveRoot: vi.fn() },
+      publish: vi.fn(),
+      deliverInterAgentMessage: vi.fn(),
+      acceptPlatformBinding: vi.fn(),
+    };
+    const constructionInput = {
+      context: {} as never,
+      subTeamRunFactory: {} as never,
+      callbacks,
+      agentToolMcpRunSessionReleaser:
+        input.agentToolMcpSessionAuthority.runSessions,
+    };
+    const mixedManager = factoryOptions.createTeamManager(constructionInput) as {
+      configured: { options: Record<string, unknown> };
+      taskAgents: { options: Record<string, unknown> };
+    };
+    const configured = mixedManager.configured.options;
+    const taskAgents = mixedManager.taskAgents.options;
+    for (const options of [configured, taskAgents]) {
+      expect(options.agentRunManager).toBe(owned.agentRunManager);
+      expect(options.agentToolMcpRunSessionReleaser)
+        .toBe(input.agentToolMcpSessionAuthority.runSessions);
+      expect(options.workspaceManager).toBe(input.workspaceManager);
+      expect(options.taskRootResolver).toBe(callbacks.taskRootResolver);
+      expect(options.publish).toBe(callbacks.publish);
+      expect(options.deliverInterAgentMessage)
+        .toBe(callbacks.deliverInterAgentMessage);
+      expect(options.acceptPlatformBinding).toBe(callbacks.acceptPlatformBinding);
+      expect(options.memoryLocationService).toBeTruthy();
+      expect(options.activityInspector).toBeTruthy();
+      expect(options.memberTeamContextBuilder).toBeTruthy();
+    }
+    expect(configured.subTeamRunFactory)
+      .toBe(constructionInput.subTeamRunFactory);
+    expect(taskAgents.memoryLocationService)
+      .toBe(configured.memoryLocationService);
+    expect(taskAgents.activityInspector).toBe(configured.activityInspector);
+    expect(taskAgents.memberTeamContextBuilder)
+      .toBe(configured.memberTeamContextBuilder);
 
     const order: string[] = [];
     vi.spyOn(owned.agentTeamRunManager, "stopAllTeamRuns").mockImplementation(async () => {
@@ -117,7 +185,9 @@ describe("GeneralProcessRunSupervisor ownership", () => {
   });
 
   it("releases the agent manager when exclusive team-manager initialization fails", async () => {
-    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({});
+    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({
+      mixedTeamRunBackendFactory: createBackendFactory(),
+    });
     try {
       expect(() => new GeneralProcessRunSupervisor(createSupervisorInput())).toThrow(
         "The process AgentTeamRunManager is already initialized.",

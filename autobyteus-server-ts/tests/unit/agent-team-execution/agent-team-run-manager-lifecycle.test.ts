@@ -1,10 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import type { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+
+const backendFactory = Object.freeze({
+  createBackend: async () => {
+    throw new Error("Lifecycle fixture must not create backends.");
+  },
+  restoreBackend: async () => {
+    throw new Error("Lifecycle fixture must not restore backends.");
+  },
+}) as unknown as MixedTeamRunBackendFactory;
 
 const createManager = () => new AgentTeamRunManager({
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
-  mixedTeamRunBackendFactory: {} as never,
+  mixedTeamRunBackendFactory: backendFactory,
 });
 
 const createRoot = (input: {
@@ -24,6 +34,24 @@ const unregister = (manager: AgentTeamRunManager, id: string, root: RootTeamRun)
   (manager as unknown as { unregister(id: string, root: RootTeamRun): boolean }).unregister(id, root);
 
 describe("AgentTeamRunManager root lifecycle", () => {
+  it("requires an explicit backend factory and keeps process lookup non-constructing", () => {
+    expect(() => AgentTeamRunManager.getInstance()).toThrow(
+      "The process AgentTeamRunManager is not initialized.",
+    );
+    for (const value of ["omitted", null, undefined] as const) {
+      const options: Record<string, unknown> = {
+        memoryDir: "/tmp/api-e2e-agent-team-run-manager",
+        mixedTeamRunBackendFactory: backendFactory,
+      };
+      if (value === "omitted") delete options.mixedTeamRunBackendFactory;
+      else options.mixedTeamRunBackendFactory = value;
+      expect(
+        () => Reflect.construct(AgentTeamRunManager, [options]),
+        String(value),
+      ).toThrow("mixedTeamRunBackendFactory is required.");
+    }
+  });
+
   it("publishes active after root registration and inactive only after accepted termination", async () => {
     const manager = createManager();
     const lifecycle: Array<{ teamRunId: string; isActive: boolean }> = [];

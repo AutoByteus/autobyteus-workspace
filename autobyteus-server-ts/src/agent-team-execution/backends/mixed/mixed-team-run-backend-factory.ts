@@ -5,7 +5,7 @@ import type { TeamRunAgentTeamNode, TeamRunConfig, TeamRunNode } from "../../dom
 import { TeamRunContext } from "../../domain/team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import { isExternalProviderRuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import { MixedTeamManager } from "./mixed-team-manager.js";
+import type { MixedTeamManager } from "./mixed-team-manager.js";
 import {
   MixedAgentMemberContext,
   type MixedConfiguredMemberActivationMode,
@@ -24,27 +24,29 @@ import {
   requireMemberTaskRootResolver,
   type MemberTaskRootResolver,
 } from "../../task-delegation/member-task-root-resolver.js";
-import {
-  getAgentToolMcpRunSessionReleaser,
-} from "../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type {
   AgentToolMcpRunSessionReleaser,
 } from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
-
-export type MixedTeamRunBackendFactoryOptions = {
-  agentToolMcpRunSessionReleaser?: AgentToolMcpRunSessionReleaser;
-  createTeamManager?: (
-    context: TeamRunContext<MixedTeamRunContext>,
-    subTeamRunFactory: MixedSubTeamRunFactory,
-    callbacks: MixedTeamRunCallbacks,
-  ) => MixedTeamManager;
-};
 
 export type MixedTeamRunCallbacks = Readonly<{
   taskRootResolver: MemberTaskRootResolver;
   publish: (event: TeamRunEvent) => void;
   deliverInterAgentMessage: (intent: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
   acceptPlatformBinding: (binding: TeamAgentPlatformBinding) => Promise<void>;
+}>;
+
+export type MixedTeamManagerConstructionInput = Readonly<{
+  context: TeamRunContext<MixedTeamRunContext>;
+  subTeamRunFactory: MixedSubTeamRunFactory;
+  callbacks: MixedTeamRunCallbacks;
+  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+}>;
+
+export type MixedTeamRunBackendFactoryOptions = Readonly<{
+  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+  createTeamManager: (
+    input: MixedTeamManagerConstructionInput,
+  ) => MixedTeamManager;
 }>;
 
 const requireCallbacks = (
@@ -62,8 +64,27 @@ const requireCallbacks = (
   return callbacks;
 };
 
+const requireOptions = (
+  options: MixedTeamRunBackendFactoryOptions | null | undefined,
+): MixedTeamRunBackendFactoryOptions => {
+  if (
+    !options
+    || !options.agentToolMcpRunSessionReleaser
+    || typeof options.agentToolMcpRunSessionReleaser.revokeForRun !== "function"
+    || typeof options.agentToolMcpRunSessionReleaser.revokeForOwner !== "function"
+    || typeof options.createTeamManager !== "function"
+  ) {
+    throw new Error("Complete MixedTeamRunBackendFactory options are required.");
+  }
+  return options;
+};
+
 export class MixedTeamRunBackendFactory {
-  constructor(private readonly options: MixedTeamRunBackendFactoryOptions = {}) {}
+  private readonly options: MixedTeamRunBackendFactoryOptions;
+
+  constructor(options: MixedTeamRunBackendFactoryOptions) {
+    this.options = requireOptions(options);
+  }
 
   async createBackend(
     config: TeamRunConfig,
@@ -107,17 +128,13 @@ export class MixedTeamRunBackendFactory {
     requireCallbacks(input.callbacks);
     let subTeamRunFactory!: MixedSubTeamRunFactory;
     const createManager = (context: TeamRunContext<MixedTeamRunContext>): MixedTeamManager =>
-      (this.options.createTeamManager?.(context, subTeamRunFactory, input.callbacks)
-        ?? new MixedTeamManager(context, {
-          subTeamRunFactory,
-          agentToolMcpRunSessionReleaser:
-            this.options.agentToolMcpRunSessionReleaser ??
-            getAgentToolMcpRunSessionReleaser(),
-          taskRootResolver: input.callbacks.taskRootResolver,
-          publish: input.callbacks.publish,
-          deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,
-          acceptPlatformBinding: input.callbacks.acceptPlatformBinding,
-        }));
+      this.options.createTeamManager(Object.freeze({
+        context,
+        subTeamRunFactory,
+        callbacks: input.callbacks,
+        agentToolMcpRunSessionReleaser:
+          this.options.agentToolMcpRunSessionReleaser,
+      }));
     subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (child) => this.buildTeamRunContext(child),
       createTeamManager: createManager,
@@ -166,6 +183,3 @@ export class MixedTeamRunBackendFactory {
         });
   }
 }
-
-let cached: MixedTeamRunBackendFactory | null = null;
-export const getMixedTeamRunBackendFactory = (): MixedTeamRunBackendFactory => cached ??= new MixedTeamRunBackendFactory();

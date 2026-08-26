@@ -5,7 +5,7 @@ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-exec
 import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
-import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
 import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
 import { TeamRun } from "../domain/team-run.js";
@@ -28,9 +28,9 @@ const required = (value: string, field: string): string => {
   return normalized;
 };
 
-type AgentTeamRunManagerOptions = Readonly<{
+export type AgentTeamRunManagerOptions = Readonly<{
   memoryDir?: string;
-  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
+  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
   executionTreeStore?: TeamRunExecutionTreeStore;
   taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
@@ -49,8 +49,11 @@ export class AgentTeamRunManager {
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
 
-  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
-    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
+  static getInstance(): AgentTeamRunManager {
+    if (!AgentTeamRunManager.instance) {
+      throw new Error("The process AgentTeamRunManager is not initialized.");
+    }
+    return AgentTeamRunManager.instance;
   }
 
   static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
@@ -65,11 +68,14 @@ export class AgentTeamRunManager {
     if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
   }
 
-  constructor(options: AgentTeamRunManagerOptions = {}) {
+  constructor(options: AgentTeamRunManagerOptions) {
+    if (!options?.mixedTeamRunBackendFactory) {
+      throw new Error("mixedTeamRunBackendFactory is required.");
+    }
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
-    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
+    this.factory = options.mixedTeamRunBackendFactory;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
