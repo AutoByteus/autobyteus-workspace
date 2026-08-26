@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | `architecture_reviewer` / `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` / `ARCH-REV-003` | `N/A` | `Initial Baseline` | `SR-001`–`SR-003`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | Superseded by design-impact rework |
 | IR-002 | `code_reviewer` / `code-review-report.md` / `CRR-001`, followed by `architecture_reviewer` / `ARCH-REV-005` | `CR-001`, `AR-004` | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-001` | Superseded by SR-006 design-impact rework |
 | IR-003 | `code_reviewer` / `code-review-report.md` / `CRR-003`, followed by `architecture_reviewer` / `ARCH-REV-006` | `CR-002`, `CR-003`, `CR-004` | `Design Impact Rework` | `SR-006`, `ARCH-REV-006`, `CRR-003`, `API-REV-001` | Ready for complete implementation-source re-review |
+| IR-004 | `delivery_engineer` / `DR-001`, followed by `solution_designer` / `SR-007`–`SR-008` and `architecture_reviewer` / `ARCH-REV-008` | `AR-005` | `Design Impact Rework` | `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`, `CRR-004`, `CRR-005`, `API-REV-002`, `DR-001` | Ready for complete implementation-source re-review |
 
 ## Revision Entries
 
@@ -66,3 +67,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: Server full build and build-config TypeScript passed; exact CRR-003 selection passed 64 tests with 8 gated skips; complete changed selection passed 225 tests with 19 gated skips; retained selection passed 106 tests with 11 gated skips; final architecture/AgentRun selection passed 55 tests; structural, retired-symbol, diff, and source-size audits passed.
 - Next recipient: `/code_reviewer`
 - Remaining limitations / risks: Real credentialed provider execution and the complete dual-host/context/task/package/recovery/cleanup matrix remain API/E2E-owned after source Pass.
+
+### IR-004 — Semantically integrate latest Personal stopped-run configuration and current frontend ownership
+
+- Triggering role, report path, and round: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-base-integration-conflict-report.md`; `DR-001`, followed by `solution_designer` `SR-007`/`SR-008` and `architecture_reviewer` `ARCH-REV-007`/`ARCH-REV-008`.
+- Triggering finding IDs: `AR-005`; resolved by SR-008/ARCH-REV-008 before implementation resumed.
+- Classification: `Design Impact Rework`.
+- Prior authoritative result: `CRR-004 Pass`, `CRR-005 test-review N/A`, and `API-REV-002 Pass` on IR-003; delivery's reviewed latest-Personal preview then required a semantic integration design.
+- Current authoritative result: exact reviewed latest-Personal semantic merge implemented and locally validated; ready for complete implementation-source re-review.
+- Related solution revision IDs: `SR-007`, `SR-008` (cumulative `SR-001`–`SR-008`).
+- Related architecture-review revision IDs: `ARCH-REV-007`, `ARCH-REV-008`.
+- Related code-review revision IDs: `CRR-004`, `CRR-005`.
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: `DR-001`.
+- Why recorded: integrates Personal's stopped Agent/Team model-setting and application-ownership work without restoring ticket-retired construction boundaries or the obsolete frontend representation.
+- Approved behavior or requirement IDs affected: `BEH-001`–`BEH-007`; especially `REQ-008`, `REQ-009`, `AC-012`–`AC-016`.
+- Implementation delta: fetched and verified exact Personal `b52fe5aebdb962ce361529f9e797affeb30d719a`; created two-parent semantic merge `f6d3e52d0330732cd7d1783b84a7253952210842`; reconciled seven conflicts and fourteen overlaps by owner; composed one host-selected validator into both execution roots and their Agent lifecycle/Team manager; required root-created Agent lifecycle and lookup-only process access; retained Personal run ownership/history/editor behavior; kept broad application run-services and all four `StoredTeamRunFormModel` paths deleted; mapped proof to current replacement owners.
+- Changed files or areas: Studio/standalone host composition, general supervisor, application kernel/runtime assembly, model validator, Agent lifecycle/service, Team manager, architecture guards and focused fixtures, Personal run-history/ownership/GraphQL additions, and current web stopped-run editor/model/draft/store/tests.
+- Local validation and result: server full build passed; build-config TypeScript passed; focused server selection passed 28 files/171 tests; focused web selection passed 11 files/140 tests; Nuxt production build and 15-route prerender passed; exact ref/merge ancestry, fourteen-overlap, six-retired-path, legacy-symbol, conflict-marker, source-size, and scoped diff checks passed; rendered Agent/Team saved, active, warning, nested, and narrow states passed and were visually inspected. Standalone `nuxi typecheck` was blocked by an incompatible downloaded `vue-tsc`/TypeScript pair while the maintained production build passed.
+- Next recipient or routing: `/code_reviewer` for complete current-tree implementation-source and structural review before API/E2E resumes.
+- Remaining limitations or risks: downstream must rerun realistic dual-host/provider/task/context, stopped-run ordering/ownership, package parity, recovery/reentry, cleanup/shutdown, and Electron coverage on the merged commit. Imported Personal historical log whitespace is preserved byte-for-byte and excluded only from the scoped diff whitespace check.

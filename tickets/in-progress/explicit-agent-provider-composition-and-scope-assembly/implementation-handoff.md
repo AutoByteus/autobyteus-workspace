@@ -8,117 +8,155 @@
 - Normative supplemental artifacts:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/provider-composition-and-agent-tools-authority-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/provider-composition-transition-inventory.md`
-- Referenced prior boundary analysis:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/future-architecture-simplification-review.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/code-review-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/tickets/in-progress/application-execution-scope-boundary-hardening/evidence/code-review/future-architecture-simplification-source-audit.log`
-- Solution revisions: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-personal-run-configuration-integration-analysis.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/solution-revision-record.md` (`SR-001`–`SR-008`)
+- Solution evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/solution/sr-008-frontend-clean-cut-audit.log`
 - Architecture review:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` (`ARCH-REV-006`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md` (`ARCH-REV-008`)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md`
-- Triggering rework package:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` (`CRR-003`; `CR-002`, `CR-003`, `CR-004`)
+- Prior downstream baseline and delivery-triggered rework package:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md` (`CRR-004` source Pass; `CRR-005` test-review N/A)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md` (`API-REV-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md` (`API-REV-002` Pass)
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-003-failure-origin-focused.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-001-affected-server.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-001-failures-isolated.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-001-source-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-base-integration-conflict-report.md` (`DR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-001-base-refresh-and-integration.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-001-conflict-commit-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-001-latest-base-merge-preview.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-001-latest-base-overlap-inventory.txt`
 
 ## Current Implementation Summary
 
-IR-003 implements the reviewed SR-006 execution-family closure over the IR-002 source baseline. Each maintained host now creates one frozen `ContextFilePathEnvironment`, passes the same exact object to its general and application execution roots, and leaves broad `AppConfig` selection at the host edge. Each root builds its own explicit stored-Team owner/path graph and one provider-neutral `AgentRunProviderInputNormalizer`. `AgentRun` copies and normalizes provider dispatch immediately before backend dispatch, so admitted/observed messages retain their original identity and providers only format already-normalized context inputs.
+IR-004 performs the reviewed, history-preserving semantic merge of `origin/personal@b52fe5aebdb962ce361529f9e797affeb30d719a` into the cumulative provider-composition implementation. The merge commit is `f6d3e52d0330732cd7d1783b84a7253952210842`, with parents `887b094170cedf2876a6238ed8d5a610d132698f` and the exact reviewed Personal ref.
 
-The general supervisor and application kernel now each build a complete seven-field `AgentRunManager` input: activation registry, memory recorder, provider-input normalizer, AutoByteus/Codex/Claude backend factories, and run-session releaser. No manager sidecar/default path remains. Each root also creates one exact Agent identity allocator, derives one immutable task Agent/task Team capability pair from it, and forwards that same pair through `AgentTeamRunManager -> RootTeamRun -> TaskDelegationService`. General and application task identities remain non-identical; no task/provider path reads process execution getters.
+The merged implementation preserves IR-003's one process Agent Tools host, distinct general/application Authorities and execution families, provider-neutral context normalization, root-bound task identity, complete Mixed-Team construction, and private K0–K8 application kernel. It also preserves Personal's stopped Agent/Team model-configuration, run-history, resume, lifecycle, application-run ownership, Studio editing, and GraphQL behavior. Each maintained host now selects one `ModelConfigValidationService` from its exact process model catalog and injects the same narrow validator identity into its general supervisor and application runtime. Each execution root forwards that validator to its Agent lifecycle and Team manager. `AgentRunService` requires the root-created lifecycle, and `getAgentRunService()` is lookup-only.
 
-Process context-file REST composition now explicitly builds its layout, stored-Team owner, local-path resolver, read service, and finalization service. AutoByteus, Codex, and Claude no longer construct local context owner/path resolvers. Public routes, runtime semantics, wire/package/database schemas, persisted data, and migration behavior are unchanged.
+The exact seven merge conflicts and fourteen changed-both paths were reconciled by owner rather than by selecting either branch wholesale. The obsolete broad application run-services source/test remain deleted. Personal's four retired `StoredTeamRunFormModel` family paths remain absent, with no alias, wrapper, re-export, or duplicate representation; current stopped-Team editing remains owned by `ExistingTeamRunFormModel`, `existingTeamRunFormModel`, `existingTeamModelConfigDraft`, and `ExistingRunConfigEditor`.
 
 - Implementation cycle: `Design Impact Rework`
-- Current implementation revision: `IR-003`
-- Related solution revisions: `SR-001`–`SR-006`
-- Current architecture authority: `ARCH-REV-006`
-- Triggering review/API revisions: `CRR-003`, `API-REV-001`
-- Triggering findings: `CR-002`, `CR-003`, `CR-004`
-- Prior `CR-001`: remains resolved
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/implementation-revision-record.md`
+- Current implementation revision: `IR-004`
+- Related solution revisions: `SR-001`–`SR-008`
+- Current architecture authority: `ARCH-REV-008`
+- Prior source/API authority: `CRR-004`, `CRR-005`, `API-REV-002`
+- Delivery trigger: `DR-001`
+- Triggering finding: `AR-005` resolved in SR-008/ARCH-REV-008
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior | Approved Outcome | Implemented Production Path | Result |
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | One process Agent Tools host with distinct general/application authorities and lifecycles. | Existing Host/Authority composition; explicit environment passed into both execution roots. | Preserved. |
-| BEH-002 | Complete, non-identical general/application execution families, including task identity. | `createTaskExecutionIdentityCapabilities`; `GeneralProcessRunSupervisor`; `ApplicationExecutionScopeKernelBuilder`; exact Team manager/root/task propagation. | Implemented without process getters or manager unification. |
-| BEH-003 | Normalize provider context input once at the AgentRun boundary; preserve provider formatting and message observation. | `AgentRunProviderInputNormalizer`; `AgentRun.executeInputDispatch`; simplified AutoByteus/Codex/Claude adapters. | Implemented with copied dispatch/message/context files and unchanged admitted message identity. |
-| BEH-004 | Preserve exact failed-preparation/session cleanup and quarantine behavior. | Complete explicit activation/resource graph and existing IR-001 cleanup owner. | Preserved. |
-| BEH-005 | Both roots construct complete manager infrastructure; manager infers nothing. | Required seven-field `AgentRunManagerInput`; general and application root composition. | Implemented; omission/null/undefined/unsafe-cast cases fail closed. |
-| BEH-006 | Behavior-neutral structural replacement with no public or persisted-state change. | Internal composition, context translation, task identity, tests, and architecture guards only. | Implemented; API/E2E remains downstream-owned. |
+| `BEH-001` | One process Agent Tools host; separate general/application Authorities and lifecycles. | Studio and standalone host compositions; retained Host/Authority paths. | Preserved. |
+| `BEH-002` | Complete non-identical execution families, root-bound task identities, and no ambient process fallback. | `GeneralProcessRunSupervisor`; `ApplicationExecutionScopeKernelBuilder`; Team manager/root/task construction. | Preserved through semantic merge. |
+| `BEH-003` | Provider-neutral context normalization and narrow provider inputs. | `AgentRun` and retained AutoByteus/Codex/Claude provider composition. | Preserved; Personal provider/runtime changes integrated without restoring lower-level discovery. |
+| `BEH-004` | Failed preparation and scoped session/resource cleanup remain exact and visible. | Retained manager/lifecycle/resource/Authority ownership. | Preserved. |
+| `BEH-005` | Both roots construct complete execution infrastructure; scope remains exactly seven-capability. | General supervisor; private kernel; `ApplicationExecutionScope` contracts and architecture guard. | Preserved; no stopped-run mutation added to scope. |
+| `BEH-006` | Clean internal integration with unchanged public/persisted/package behavior. | Owner-based merge; deleted broad run-services paths; no compatibility layer. | Implemented. Downstream parity remains to be rerun. |
+| `BEH-007` | Preserve stopped general Agent/Team model settings and fail-closed application ownership while using an explicit host-selected validator. | Studio/standalone hosts; general supervisor; application kernel; Agent lifecycle; Team manager; Personal run-history/ownership/editor paths. | Implemented with exact validator identity and current frontend representation. |
 
-## Key Files And Areas
+## Key Files Or Areas
 
-- `autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts`
-- `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
-- `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts`
+- `autobyteus-server-ts/src/compositions/build-studio-server.ts`
+- `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts`
+- `autobyteus-server-ts/src/llm-management/services/model-config-validation-service.ts`
 - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`
-- `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts`
+- `autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
+- `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts`
 - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
-- `autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts`
-- `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts`
 - `autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts`
-- `autobyteus-server-ts/src/context-files/domain/context-file-path-environment.ts`
-- explicit context-file layout/owner/path/read/finalization and host/REST composition files
-- `autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts`
-- focused task-identity, provider-normalization, context-path-environment, manager, provider, root, and dual-host tests
+- `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts`
+- Personal stopped-run ownership/history/GraphQL paths under `application-orchestration`, `run-history`, and `api/graphql`
+- `autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue`
+- `autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts`
+- `autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts`
+- `autobyteus-web/types/agent/ExistingTeamRunFormModel.ts`
+- Provider-composition and application-framework architecture guards plus focused lifecycle/manager/integration tests
 
-## Implementation Constraints And Assumptions
+## Important Assumptions
 
-- The stored-only current Team V2 projection is the approved non-owning reader at Agent-before-Team composition boundaries.
-- `RootTeamRun` remains the sole task lifecycle/state/persistence/event owner; only identity allocation capability is propagated.
-- Provider-neutral normalization occurs after AgentRun admission and immediately before provider dispatch. Provider errors and provider-specific formatting remain unchanged.
-- General and application execution roots receive the same provider-builder identity but create distinct factories, managers, identity allocators, task capabilities, resources, and session authorities.
+- The fetched Personal ref remained exactly the reviewed `b52fe5aebdb962ce361529f9e797affeb30d719a` immediately before merge.
+- Personal owns the stopped-run model-setting lanes and current frontend editing representation; this ticket owns explicit execution-family composition and supplies the validator rather than duplicating Personal's policy.
+- `ApplicationRunOwnershipService` remains an outer read-only lease exposed through runtime `hostManagement`; no store/manager leaks into the application scope.
+- General and application roots intentionally share immutable provider-builder, model-catalog, and host-selected validator identities while retaining non-identical mutable execution families.
 
-## Local Implementation Checks
+## Known Risks
 
-- `pnpm -C autobyteus-application-sdk-contracts build` — passed.
-- Backend SDK, frontend SDK, server, devkit, and Brief package prerequisite builds — passed.
-- `pnpm -C autobyteus-server-ts build` — passed, including build-config TypeScript, built-in bootstrap smoke, and sanitized built-module smoke.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed after final source/test reconciliation.
-- Exact CRR-003 affected selection — 8 files; 64 passed, 8 environment-gated skips.
-- Complete changed-test selection — 36 files; 32 passed, 4 environment-gated files skipped; 225 passed, 19 skipped.
-- Retained no-planned-production-change selection — 20 files; 18 passed, 2 environment-gated files skipped; 106 passed, 11 skipped.
-- Final architecture plus `AgentRun` regression — 3 files, 55 passed.
-- Provider normalizer real stored-tree/path matrix — 3 passed.
-- Current task-delegation invariants — 9 passed.
-- `git diff --check`, retired/ambient getter scan, exact construction occurrence guards, and source-size audit — passed.
-- Changed production sources are at or below 500 effective non-empty lines; `agent-run.ts` is exactly 500.
+- Complete realistic dual-host, provider, recovery/reentry, package-parity, and Electron execution must be rerun downstream against the merged commit.
+- Imported latest-Personal historical `.log` evidence contains recorded trailing whitespace. Scoped diff checks pass for all non-historical-log paths; those historical evidence bytes were not rewritten during the semantic merge.
+- Nuxt's standalone `nuxi typecheck` command selected an incompatible downloaded `vue-tsc`/TypeScript pair and failed with `ERR_PACKAGE_PATH_NOT_EXPORTED`. The maintained Nuxt production build and focused web tests pass; no manifest workaround was introduced.
 
-The repository-wide `pnpm exec tsc -p tsconfig.json --noEmit` form is not an authoritative check in this package: that config declares `rootDir: src` while including tests and reports existing `TS6059` paths for the test tree. The build config and full server build both pass.
+## Task Design Health Assessment Implementation Check
 
-## Environment / Dependency Notes
+- Reviewed change posture: semantic latest-base integration plus bounded clean-cut reconciliation.
+- Reviewed root-cause classification: delivery-discovered `Design Impact`; SR-007/SR-008 provide the exact owner-based merge.
+- Reviewed refactor decision: `Refactor Needed Now` only at the explicit composition junction; no broader redesign.
+- Implementation matched the reviewed assessment: `Yes`.
+- If challenged, routed as `Design Impact`: `N/A` during implementation; no new ambiguity was found.
+- Evidence / notes: exact reviewed ref guard, two-parent merge, seven-conflict/fourteen-overlap audit, identity tests, retired-path scans, and focused rendered editor proof.
 
-- No manifest or lockfile changed.
-- Generated SDK/devkit/server/Brief package output was used only as prerequisite validation and removed before handoff.
-- Live Codex/Claude/LM Studio tests remain credential/environment gated and were skipped by their existing gates.
-- No frontend/rendered-result change is present.
+## Legacy / Compatibility Removal Check
 
-## Compatibility / Persisted Data Check
+- Backward-compatibility mechanisms introduced: `None`.
+- Legacy old-behavior retained in scope: `No`.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`.
+- Shared structures remain tight: `Yes`; current stopped-Team editing has one representation family.
+- Canonical shared design guidance reapplied: `Yes`.
+- Changed production source files stayed at or below 500 effective non-empty lines: `Yes`.
+- Notes: the four `StoredTeamRunFormModel` paths and symbols, the broad application run-services factory, and its obsolete test are absent. No aliases, wrappers, re-exports, or fallback construction paths were added.
 
-- Compatibility mechanisms added: `None`.
-- Old provider-local context owner or task allocator fallbacks retained: `No`.
-- Public API, routes, GraphQL/REST/WS, SDK contracts, package format, database/schema, migration, and stored-data changes: `None`.
-- Approved persisted-data decision: `Directly Usable — No Migration`; preserved.
+## Persisted Data Transition Check
 
-## Known Risks And Downstream Coverage Hints
+- Approved decision: `Directly Usable — No Migration / Not Affected`.
+- Design reference: `REQ-008`, `REQ-009`, `AC-012`–`AC-016`; SR-007/SR-008.
+- Implementation follows the approved decision without an unapproved migration or runtime fallback: `Yes`.
+- Direct-use evidence: merged source retains Personal's current stores, metadata/Team-tree writes, run-history ownership, and application binding authority without adding a new schema or representation.
+- Deviation: `None`.
 
-- API/E2E must first rerun the exact API-REV-001 failures without initializing unrelated process managers.
-- Then prove real Studio/standalone task Agent/task Team delegation use non-identical family allocators and exact scoped MCP authorities.
-- Exercise AutoByteus, Codex, and Claude context-file inputs, including configured-origin, loopback, relative, absolute, finalized, remote, data, missing, and provider error behavior.
-- Retain package parity, recovery/reentry, nested Team, publication, streaming, cleanup, and shutdown-order coverage.
+## Environment Or Dependency Notes
+
+- No implementation-owned manifest or lockfile change was required beyond the exact Personal merge.
+- Shared SDK packages were built as server prerequisites. Their untracked `dist/` outputs remain generated local artifacts and are not part of the implementation handoff commit.
+- Other roles' dirty architecture/delivery reports and delivery evidence were preserved and not included in implementation commits.
+
+## Local Implementation Checks Run
+
+- `git fetch origin personal` plus exact-ref assertion — passed; fetched ref matched `b52fe5aebdb962ce361529f9e797affeb30d719a`.
+- History-preserving semantic merge — passed; commit `f6d3e52d0` has the reviewed ticket and Personal parents, and Personal is an ancestor.
+- `pnpm -C autobyteus-server-ts build` — passed, including shared prerequisites, Prisma generation, build-config TypeScript, built-in bootstrap smoke, and sanitized built-module smoke.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
+- Focused merged server selection — 28 files / 171 tests passed.
+- `pnpm -C autobyteus-web exec nuxi prepare` — passed.
+- Focused current web selection — 11 files / 140 tests passed.
+- `pnpm -C autobyteus-web build` — passed; Nuxt client/server build and 15-route prerender completed.
+- Retired path/symbol, zero legacy import, conflict marker, unmerged index, exact fourteen-overlap disposition, and source-size guards — passed.
+- Scoped staged/unstaged `git diff --check` excluding imported Personal historical `.log` evidence — passed.
+- `pnpm -C autobyteus-web exec nuxi typecheck` — blocked by the local downloaded `vue-tsc`/TypeScript toolchain mismatch described above; the maintained production build passes.
+
+These are implementation-scoped checks and rendered self-validation only. They do not replace downstream API/E2E investigation or execution.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable — internal backend composition and execution-boundary work only.
+- Affected surface: stopped Agent and nested Team model-settings editor using the current `ExistingTeamRunFormModel` family.
+- Reviewed references: SR-008 current-owner/test map, existing launch-config design system, adjacent Agent/Team editor tests, and current Personal fixture.
+- Rendered surface: the repository's deterministic existing-run model-config fixture under a Nuxt development session, used as an implementation feedback loop rather than API/E2E sign-off.
+- Inspected states/interactions: Agent saved state; Team saved state with root, configured Agent, nested Team, inherited and overridden fields; unavailable saved workspace/model warnings; stopped-run status; active-run disabled editing; narrow viewport.
+- Viewports: 1280x900 desktop and the maintained narrow viewport.
+- Result: all four fixture scenarios passed; no browser page errors; save controls, field hierarchy, badges, warnings, status banners, and narrow layout were visually coherent. The narrow view had no page overflow and retained readable controls.
+- Cleanup: browser, context, development server, log, and temporary fixture page were closed/removed.
+- Evidence inspected locally: `/tmp/ir004-visual-20260826/existing-run-model-config-evidence.json` and its four rendered screenshots. Temporary evidence is not a durable downstream coverage artifact.
 
-## API / E2E Status
+## Downstream Coverage Hints / Suggested Scenarios
 
-Implementation-scoped source and executable checks are complete. IR-003 is ready for complete implementation-source re-review. API/E2E must not resume until source review passes.
+- Rerun the API-REV-002 realistic Studio/standalone provider/context/task matrix against `f6d3e52d0`.
+- Exercise stopped Agent and Team Save-before-restore / restore-before-Save ordering, current schema/model validation, atomic persistence outcomes, and application-owned active/unreadable zero-write guards.
+- Confirm the same validator identity reaches both roots and their Agent lifecycle/Team manager in both hosts.
+- Recheck application runtime seven-capability shape and read-only `hostManagement.runOwnership` behavior.
+- Recheck package parity, recovery/reentry, nested Team execution, publication/streaming, cleanup/shutdown, and fresh Electron behavior.
+- Retain the exact four retired frontend path/symbol guards and the two broad run-services deletion guards.
+
+## API / E2E / Executable Coverage Investigation And Execution Still Required
+
+IR-004 is ready for complete implementation-source and structural re-review. API/E2E must not resume until source review passes; the browser fixture run above is implementation rendered self-validation, not downstream coverage sign-off.
