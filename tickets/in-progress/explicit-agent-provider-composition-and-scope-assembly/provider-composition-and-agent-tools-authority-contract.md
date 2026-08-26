@@ -186,19 +186,41 @@ Low-level/test constructors may retain unrelated provider defaults under the app
 
 AutoByteus obtains no MCP issuer. The builder supplies every existing process collaborator explicitly and preserves native behavior.
 
-### Mixed Team Releaser Propagation
+### Mixed Team Releaser And Execution-Family Construction
 
-Mixed Team execution receives no issuer. The execution owner selects its completed Authority's `runSessions` projection exactly once and constructs:
+Mixed Team execution receives no issuer. The execution owner selects its completed Authority's `runSessions` projection exactly once. The existing backend factory remains the recursive Team/backend owner, while the execution root remains the owner of the manager dependency family. Their exact production contract is:
 
 ```ts
-new MixedTeamRunBackendFactory({
-  agentToolMcpRunSessionReleaser: authority.runSessions,
-});
+export type MixedTeamManagerConstructionInput = Readonly<{
+  context: TeamRunContext<MixedTeamRunContext>;
+  subTeamRunFactory: MixedSubTeamRunFactory;
+  callbacks: MixedTeamRunCallbacks;
+  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+}>;
+
+export type MixedTeamRunBackendFactoryOptions = Readonly<{
+  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+  createTeamManager(input: MixedTeamManagerConstructionInput): MixedTeamManager;
+}>;
 ```
 
-`MixedTeamRunBackendFactoryOptions.agentToolMcpRunSessionReleaser` is required and constructor-validated. The factory has no process session-service import, no releaser getter, no default options object, and no cached/default factory export. It passes the same releaser to each real `MixedTeamManager`, which propagates it through configured/task registries to member handles.
+Both fields are required, non-null, and constructor-validated. `createTeamManager` is a governed production construction capability, not a test-only escape hatch. For every root or recursively materialized child Team, `MixedTeamRunBackendFactory` supplies its own fixed releaser together with the exact context, sub-Team factory, and root callbacks. It has no built-in/default `new MixedTeamManager(...)` path.
 
-`AgentTeamRunManagerOptions.mixedTeamRunBackendFactory` is required and constructor-validated. General execution creates the process manager only through `initializeProcessInstance({ mixedTeamRunBackendFactory, ... })`; application execution constructs its non-singleton manager with its application factory. `AgentTeamRunManager.getInstance()` is lookup-only, accepts no options, and throws before process initialization. Therefore neither the factory nor the manager can infer or select an execution authority.
+Each maintained execution root supplies one callback that constructs every `MixedTeamManager` with the complete execution-family dependencies:
+
+| Dependency | General Process Source | Application Source |
+| --- | --- | --- |
+| `agentRunManager` | supervisor's process `AgentRunManager` | kernel's graph-local `AgentRunManager` |
+| `agentToolMcpRunSessionReleaser` | callback input fixed from general Authority `.runSessions` | callback input fixed from application Authority `.runSessions` |
+| `memoryLocationService` | `new AgentMemoryLocationService({memoryDir})` owned by supervisor assembly | K2 graph-local `AgentMemoryLocationService` |
+| `activityInspector` | `new AgentConversationActivityInspector()` owned by supervisor assembly | K6 graph-local inspector |
+| `memberTeamContextBuilder` | builder over canonical host Team definitions | builder over the same canonical host Team definitions in the application graph |
+| `workspaceManager` | exact host-selected workspace identity | exact platform build-input workspace identity |
+| per-Team context/sub-Team/callbacks | required construction input from backend factory | same |
+
+The callback must use `input.agentToolMcpRunSessionReleaser`; it may not close over the Authority, call a process getter, select a second releaser, or omit any execution-family dependency on either maintained root. The general and application roots therefore share construction shape while retaining non-identical mutable owners and session authorities.
+
+`MixedTeamRunBackendFactory` has no process session-service import, releaser getter, default options object, cached/default factory export, or default manager construction. `AgentTeamRunManagerOptions.mixedTeamRunBackendFactory` is required and constructor-validated. General execution creates the process manager only through `initializeProcessInstance({ mixedTeamRunBackendFactory, ... })`; application execution constructs its non-singleton manager with its application factory. `AgentTeamRunManager.getInstance()` is lookup-only, accepts no options, and throws before process initialization. No node below either execution root can infer or select an execution family.
 
 ## 7. Exact Application Kernel Contract
 
@@ -247,7 +269,7 @@ The kernel is private to `application-platform/execution`. `abortConstruction` i
 | K3 | `assembly.complete({ executionCapabilities: { publishedArtifactPublisher: publicationService }, assertExecutionCapabilitiesReady: () => undefined })` | replace K1 ledger entry atomically with `authority.close` | if completion throws, K1 `abort`; after completion, `authority.close()` | builder ledger owns full authority |
 | K4 | `providerBuilder.createForExecution({agentDefinitionService, authority.issuer})` | none | none | builder locals |
 | K5 | `AgentRunManager` with factory set, activation registry, memory recorder, and `authority.runSessions`; identity/history/provisioning/activation/Agent service graph | none; no run admitted/started | none | builder locals |
-| K6 | construct `MixedTeamRunBackendFactory` with `authority.runSessions`; construct `AgentTeamRunManager` with that required factory; member context/activity services and Team service graph | none; no Team admitted/started | none | builder locals |
+| K6 | construct the graph-local activity inspector and member-context builder; construct `MixedTeamRunBackendFactory` with `authority.runSessions` plus the required application manager-construction callback binding the exact Agent manager, memory, activity, context, and workspace identities; construct `AgentTeamRunManager` with that required factory and the Team service graph | none; no Team admitted/started | none | builder locals |
 | K7 | shutdown coordinator, stream source, projection service, and the frozen kernel of eight owned dependencies plus `abortConstruction` | kernel receives fixed `abortConstruction`; no new closeable | if freeze/assembly throws, ledger authority close | builder locals plus ledger |
 | K8 | transfer | clear builder ledger only after complete kernel exists | none after transfer | returned kernel exclusively owns authority |
 
@@ -301,7 +323,7 @@ type GeneralProcessRunSupervisorInput = Readonly<{
 // add agentProviderFactoryBuilder: AgentProviderFactoryBuilder.
 ```
 
-The supervisor consumes only `authority.issuer` for its builder call and `authority.runSessions` for its Agent cleanup and required Mixed Team factory; it passes that factory to the process `AgentTeamRunManager`. It retains the full authority only because it owns that execution family's normal close. Application platform passes only the authority factory and builder into the private scope construction boundary, whose K6 performs the identical application-local factory/manager binding.
+The supervisor consumes only `authority.issuer` for its builder call and `authority.runSessions` for Agent cleanup and the required Mixed Team factory. It constructs the general memory/activity/context dependencies, supplies the required manager-construction callback, and passes that factory to the process `AgentTeamRunManager`. It retains the full authority only because it owns that execution family's normal close. Application platform passes only the authority factory and builder into the private scope construction boundary, whose K6 supplies the same construction shape with application-local identities.
 
 ```text
 host composition
@@ -326,7 +348,7 @@ Allowed:
 - Studio/standalone -> process provider composition + Host + general supervisor + platform runtime;
 - process provider composition -> exact process sources in section 4 -> builder;
 - execution owner -> builder + its own Authority ports;
-- execution owner -> exact `authority.runSessions` -> required Mixed Team factory -> required Team manager;
+- execution owner -> exact `authority.runSessions` + required manager-construction capability -> required Mixed Team factory -> required Team manager;
 - builder -> provider factories/adapters and exact named process collaborators;
 - provider -> issuer -> issued descriptor -> provider materializer;
 - run/resource/mixed-member cleanup -> run-session releaser;
@@ -336,7 +358,8 @@ Forbidden:
 
 - supported roots/scope/supervisor -> provider-specific constructors/getters or positional defaults;
 - provider/mixed-Team/run cleanup -> whole Host, full Authority, broad MCP manager/service, registry, catalog, or releaser getter;
-- Mixed Team backend factory -> optional/default releaser, cached factory, or process session service;
+- Mixed Team backend factory -> optional/default releaser or callback, built-in default manager, cached factory, or process session service;
+- application manager-construction callback -> process Agent/memory/activity/context/workspace getters, general execution identities, full Authority, or a second releaser;
 - Team manager -> optional/default backend factory or lazy construction from `getInstance()`;
 - kernel builder -> generic disposer/container, incomplete result, later runtime binding, non-null assertion, optional dependency dictionary;
 - caller -> scope plus raw manager;

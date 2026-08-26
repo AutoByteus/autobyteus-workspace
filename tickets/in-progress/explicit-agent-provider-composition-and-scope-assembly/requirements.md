@@ -39,7 +39,7 @@ Make provider construction and Agent Tools MCP capability issuance explicit at t
 - Change posture: `Refactor`
 - Initial design issue signal: `Yes`
 - Root cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `File Placement Or Responsibility Drift`
-- Refactor posture: `Likely Needed`
+- Refactor posture: `Required`
 - Evidence basis: both supported execution roots depend on provider internals and repeat default selection; `AgentToolsMcpRuntime` crosses process-host and scoped-capability lifecycles; scope construction exposes partial/positional assembly.
 - Requirement or scope impact: behavior-neutral structural hardening only; no new product capability or data contract.
 
@@ -128,7 +128,7 @@ BEH-001–BEH-006 are fixed. In particular, general and application execution re
 
 ## Risks / Open Questions
 
-- The SR-004 normative supplements close the exact file, constructor-provenance, construction-phase, Mixed Team factory/manager, and occurrence inventories. Any newly discovered affected path or closeable remains Design Impact; implementation may not improvise an alias, default, cached factory, or generic escape hatch.
+- The SR-005 normative supplements close the exact file, constructor-provenance, construction-phase, Mixed Team manager-construction, root-to-member identity, and occurrence inventories. Any newly discovered affected path or closeable remains Design Impact; implementation may not improvise an alias, default, cached factory, optional callback, or generic escape hatch.
 - Implementation must prove the precise Codex/Claude issuance timing; it may not broaden the issuer back into a manager to avoid that proof.
 
 ## Requirement-To-Use-Case Coverage

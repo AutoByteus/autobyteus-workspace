@@ -8,6 +8,7 @@
 | SR-002 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-001 | AR-001, AR-002, AR-003 | Design Impact Rework | Exact construction and transition contracts completed; ready for re-review |
 | SR-003 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-002 | AR-003 | Design Impact Rework | Governed durable-test constructor transition closed; ready for re-review |
 | SR-004 | `/code_reviewer` / `code-review-report.md` / CRR-001 | CR-001 | Design Impact Rework | Mixed Team authority selection clean cut completed; ready for architecture re-review |
+| SR-005 | `/architecture_reviewer` / `design-review-report.md` / ARCH-REV-004 | AR-004 | Design Impact Rework | Complete root-owned Mixed Team construction preserved; ready for architecture re-review |
 
 ## Revision Entries
 
@@ -70,3 +71,19 @@
 - Downstream and architecture-review impact: architecture re-review is required before bounded implementation rework. API/E2E remains blocked until implementation and source review pass.
 - Next recipient: `/architecture_reviewer` with the cumulative SR-004 package, ARCH-REV-003 Pass artifacts, IR-001 handoff/revision, and CRR-001 trigger/evidence.
 - Remaining gaps or risks: implementation must prove required constructor validation, removal of both ambient getters/default paths, exact general/application releaser identity, lookup-before-initialization failure, and unchanged maintained-host startup/Team behavior. No compatibility getter, optional fallback, provider redesign, migration, or logical-addressing work is permitted.
+
+
+### SR-005 — Complete Mixed Team execution-family construction boundary
+
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md`; ARCH-REV-004.
+- Triggering finding IDs: AR-004. AR-001–AR-003 remain resolved; SR-004's required releaser, cache/getter removal, required Team backend factory, and lookup-only process manager remain accepted.
+- Prior authoritative result: `Fail — Design Impact`; SR-004 would have removed the production callback that currently binds application/general Mixed Team managers to their exact execution-family collaborators.
+- Current authoritative result: solution-owned package revised and ready for architecture re-review; no product behavior, persistence, provider, outer-scope, or execution multiplicity changes.
+- Why recorded: fixing only releaser selection while falling back to the backend factory's default manager would allow a supported application Team root to materialize configured/task member Agents through process defaults.
+- Resolution: made `createTeamManager(MixedTeamManagerConstructionInput)` a required typed production capability beside the required releaser; required the backend factory to supply its owned releaser plus per-Team context/sub-Team/callback input; removed built-in/default manager construction; specified complete general and application dependency closures; made general memory/activity dependencies explicit; preserved required Team factory/lookup-only manager construction; and added exact root-to-member occurrence and runtime identity proof for configured, task, and recursive Team paths.
+- Reachability disposition: the current IR-001 maintained roots are correctly wired, so AR-004 is not a current runtime defect. The SR-004 target regression is `Reachable` through supported application Team create/restore and delegation; SR-005 removes it before implementation.
+- Approved behavior or requirement IDs affected: BEH-002, BEH-005, BEH-006; REQ-004, REQ-007, REQ-008; AC-005, AC-011, AC-012. Their approved meaning is unchanged.
+- Canonical artifacts updated: `requirements.md` (risk/closure wording and health status only), `investigation-notes.md`, `design-spec.md`, `provider-composition-and-agent-tools-authority-contract.md`, `provider-composition-transition-inventory.md`, `solution-revision-record.md`.
+- Downstream and architecture-review impact: implementation and API/E2E remain paused pending architecture Pass. After Pass, implementation is bounded to the corrected Mixed Team construction transition over IR-001.
+- Next recipient: `/architecture_reviewer` with the cumulative SR-005 package, ARCH-REV-004 artifacts, IR-001 handoff/revision, and CRR-001 trigger/evidence.
+- Remaining gaps or risks: downstream must prove both production callbacks use the factory-owned releaser and exact family dependencies, recursive child/task Teams preserve identity, the application path never touches process getters/managers, constructor omissions fail closed, and the already-passed provider/kernel/dual-host behavior remains unchanged.
