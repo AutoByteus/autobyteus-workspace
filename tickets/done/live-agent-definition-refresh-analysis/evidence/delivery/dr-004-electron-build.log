@@ -1,0 +1,29 @@
+# DR-004 Electron verification build evidence
+timestamp_utc=2026-08-26T05:39:38Z
+command=(cd autobyteus-web && pnpm build:electron:linux)
+result=PASS
+host_os=Linux
+host_arch=aarch64
+electron_version=42.4.1
+tracked_base=306de420ca8830478529b40bd6dfda6694b742a9
+head=3ea5af9bfb53aa7150a75d5ca4beb60e5b22b484
+divergence=0	18
+base_ancestor=yes
+appimage=/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.58.AppImage
+appimage_size_bytes=523446430
+appimage_mode=-rwxr-xr-x
+appimage_sha256=cc04b49828158d6c13d05be855112066f6f0d22fa8de066d851317c5148f47e6
+appimage_file=ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=4b12022a0a60af0d4b7920deac219fcbd1d92080, stripped
+unpacked_executable=/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+unpacked_size_bytes=203754784
+unpacked_mode=-rwxr-xr-x
+unpacked_file=ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=1aa66cfcf2514c2c2d9ade8f950b56dd0545901a, stripped
+guards=web-boundary PASS; localization-boundary PASS; localization audit zero unresolved
+backend=production build and sanitized built-in bootstrap smoke PASS
+mobile_web=generated
+server_bundle=prepared for linux arm64; Prisma arm64 engines verified; node-pty rebuild PASS
+electron_renderer=Nuxt production generate PASS
+electron_main_preload=transpile/build PASS
+electron_builder=AppImage linux arm64 PASS
+warnings=non-blocking package/deprecation/peer and chunk-size warnings; no build failure
+generated_source_cleanup=targeted untracked SDK dist directories removed after packaging; AppImage/unpacked artifacts retained
