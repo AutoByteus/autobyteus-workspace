@@ -144,7 +144,7 @@ export class ApplicationAgentStreamSubscription {
       }
       const common = {
         applicationId: this.input.applicationId,
-        address: structuredClone(this.input.address),
+        address: structuredClone(this.descriptor.address),
         runtimeSubject: this.descriptor.runtime.subject,
         producer: mapped.producer,
         event: mapped.event,

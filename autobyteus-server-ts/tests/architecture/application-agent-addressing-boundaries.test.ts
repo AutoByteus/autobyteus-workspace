@@ -79,6 +79,8 @@ describe("logical application-agent addressing boundaries", () => {
     expect(streamSource).not.toContain("ApplicationAgentTargetAddress");
     expect(streamSource).not.toContain("ApplicationAgentBinding");
     expect(subscription).toContain("descriptor.runtime,");
+    expect(subscription).toContain("address: structuredClone(this.descriptor.address)");
+    expect(subscription).not.toContain("address: structuredClone(this.input.address)");
     expect(studioRoute).toContain("decodeApplicationAgentTargetUrl(`/${readEncodedTargetPath(req)}`)");
     expect(standaloneRoute).toContain("decodeApplicationAgentTargetUrl(`/${readEncodedAgentTargetPath(request)}`)");
   });

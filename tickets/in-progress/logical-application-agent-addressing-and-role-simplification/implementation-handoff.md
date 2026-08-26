@@ -12,21 +12,24 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `N/A` (initial implementation)
+- Triggering rework report, revision record, or evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md` (`CRR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/crr-001-descriptor-address-probe.log`
 
 ## Current Implementation Summary
 
-The implementation makes the clean logical-addressing cut across the shared contracts, SDKs, server authorization/input/stream paths, maintained applications, persistence projectors, generated package maps, documentation, and focused coverage. The only public target is now `{ bindingId, memberAddress }`; authorization is the sole logical-to-physical translator; downstream execution receives a narrow resolved runtime; redundant application-role `runtimeKind` fields and retired helpers are absent; existing JSON supersets remain directly readable without migration or rewrite.
+The implementation makes the clean logical-addressing cut across the shared contracts, SDKs, server authorization/input/stream paths, maintained applications, persistence projectors, generated package maps, documentation, and focused coverage. The only public target is now `{ bindingId, memberAddress }`; authorization is the sole logical-to-physical translator; downstream execution and emitted stream address evidence come from the authorized descriptor; redundant application-role `runtimeKind` fields and retired helpers are absent; existing JSON supersets remain directly readable without migration or rewrite. `IR-002` closes `CR-001` by removing the remaining raw caller-address use after authorization and adding durable unit/architecture guards.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -34,7 +37,7 @@ The implementation makes the clean logical-addressing cut across the shared cont
 | --- | --- | --- | --- |
 | BEH-001 | Expose only binding plus root/logical-member selection. | `autobyteus-application-sdk-contracts/src/application-agent-{bindings,member-address,target-url}.ts`; `autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts` | Exact root/member contract, canonical rooted member validation, exact-key fail-closed authorization, Agent/Team root derivation, and exact member resolution implemented. |
 | BEH-002 | Maintained application code selects logical members, not physical IDs. | `autobyteus-application-backend-sdk/src/application-agent-target-address.ts`; `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`; maintained application services | Root builder supports Agent and Team bindings; member builder exact-matches logical address; Socratic selects `/tutor` without extracting a run ID. |
-| BEH-003 | Translate once and keep scope/runtime boundaries narrow. | `application-execution-scope-contracts.ts`; authorization service; `application-orchestration-host-service.ts`; application stream runtime source/subscription | Frozen descriptor owns binding/address/runtime; input dispatch and stream selection consume only exact resolved runtime IDs and do not reload or reinterpret the public target. |
+| BEH-003 | Translate once and keep scope/runtime boundaries narrow. | `application-execution-scope-contracts.ts`; authorization service; `application-orchestration-host-service.ts`; application stream runtime source/subscription | Frozen descriptor owns binding/address/runtime; input dispatch and stream selection consume only exact resolved runtime IDs; emitted event address is cloned from `descriptor.address`, never the caller input. |
 | BEH-004 | Use one canonical root/member URL and READY/event equality. | shared URL codec; frontend SDK validators/parser; Studio and standalone websocket registration; communication tests | Root/member round-trip and exact frame equality implemented. Raw request URL preserves one encoded rooted member segment in both hosts; transport/reconnect/close semantics remain unchanged. |
 | BEH-005 | Remove redundant application-role classification while retaining physical/provider identity. | application binding models, launch/provisioning, publish-artifact producer paths, application services | Team binding members are exactly address/display/run ID and producers are exactly run ID/display. Provider/launch `runtimeKind` remains untouched. |
 | BEH-006 | Read existing persisted JSON supersets directly and keep the physical column. | `application-run-binding-record-codec.ts`; `application-execution-producer-projector.ts`; binding store, event journal, metadata store | Current-schema projectors ignore unknown extras, reject missing current fields, perform no rewrite during reads, and continue writing the physical `AGENT_TEAM_MEMBER` storage constant. No schema/migration change. |
@@ -107,6 +110,8 @@ All results below are implementation-scoped local checks, not downstream API/E2E
 - Narrow server integrations for communication websocket, application context capabilities, Brief imported package, and Studio-owned run configuration — Pass, 4 files / 9 tests.
 - Standalone application server integration with regenerated Brief package — Pass, 2/2.
 - Final architecture/binding store/websocket/Studio regression selection — Pass for each governed selection; binding store 3/3, architecture 6/6, websocket 1/1, Studio ownership 3/3.
+- `IR-002` focused stream-subscription, runtime-source, communication-session, websocket, and architecture selection — Pass, 5 files / 22 tests; the core regression proves descriptor address wins after caller normalization/difference and later mutation while `descriptor.runtime` remains the streaming input.
+- `IR-002` server build-config TypeScript no-emit with the normal contracts build prerequisite — Pass.
 - `pnpm --filter autobyteus-server-ts build` — Pass, including sanitized built-module/bootstrap smoke.
 - `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
 - Brief and Socratic `typecheck:backend` — Pass.
