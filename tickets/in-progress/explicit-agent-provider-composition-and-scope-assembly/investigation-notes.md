@@ -48,7 +48,10 @@ The user authorized continued design improvements, specifically required the Age
 | 2026-08-26 | Code | Codex bootstrap/materializer files | trace issue/adaptation | issue happens before later skill/thread work; descriptor adapter exists | Narrow to issuer/config |
 | 2026-08-26 | Code | Claude session/state/materializer files | trace lazy issue | first-query issuance is provider-session state; descriptor is cached | Preserve lazy retry |
 | 2026-08-26 | Code | `agent-run-manager.ts`, activation registry, resource manager | trace failure cleanup | claim is allocated before backend; pre-attachment failure can miss immediate session revocation | Add narrow releaser |
-| 2026-08-26 | Command | `rg` over roots, provider constructors, MCP symbols, tests | close occurrences | production and durable test transition set recorded in supplement | Guard occurrences |
+| 2026-08-26 | Review | `design-review-report.md` and `architecture-review-revision-record.md`, ARCH-REV-001 | receive Design Impact | accepted ownership direction; AR-001 exact provider provenance, AR-002 kernel transaction, AR-003 transition closure required | Resolved in SR-002 |
+| 2026-08-26 | Code | AutoByteus factory, Codex factory/bootstrap/thread owners, Claude factory/bootstrap/session owners, workspace/skill/process getter sources | close builder input | exact nineteen process leaves, six constructor mappings, and shared/fresh identity policy established | Normative contract sections 3–6 |
+| 2026-08-26 | Code | scope build input plus publication/resource/session construction in `application-execution-scope.ts` | prove actual construction cycle | publication requires activation/resource graph; scoped capabilities require publication; typed construction-only authority assembly resolves it without generic deferred binding | Normative K0–K8 contract |
+| 2026-08-26 | Command | exact `rg -l` audit for old Runtime/scope/manager symbols and direct Codex/Claude/Mixed/session constructions across `autobyteus-server-ts/src` and `tests` | close occurrences | twenty governed production old-symbol paths and eleven durable-test old-symbol paths; three SR-001 paths were corrected; Claude session and state-input consumers added | Exact transition inventory and allowlist guards |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -67,6 +70,7 @@ The user authorized continued design improvements, specifically required the Age
 | --- | --- | --- | --- | --- |
 | Codex can issue then fail before activation attachment | `Reachable` | supported create/restore with workspace skill materialization and provider thread creation | run claim -> bootstrap -> issue -> later skill/thread operation -> throw -> failed preparation | live capability can remain until broader scope close |
 | Claude first query can fail after issuance | `Reachable` | supported provider query | active run -> first query -> lazy issue -> SDK/query failure | session must remain for supported retry, then normal termination cleanup |
+| application kernel construction can fail after authority begin/completion and before platform return | `Reachable` by startup contract | supported Studio/standalone startup constructs all required application owners and may fail before publishing the runtime | platform build -> K1 authority begin -> later required K2–K7 constructor throws -> builder/scope/outer abort | incomplete/full authority must be disposed once without double-close or leaked capability state |
 | one mounted Studio app needs its own manager family | `Unclear` and out of scope | no independent lifecycle trigger found | current platform runtime owns one family across mounted apps | per-app registry would add prohibited routing machinery |
 
 ## Design Health Assessment Evidence
@@ -95,6 +99,8 @@ The user authorized continued design improvements, specifically required the Age
 | Codex bootstrap/materializer | provider preparation/adaptation | broad manager leak | issuer + provider config |
 | Claude manager/state/materializer | provider session/lazy adaptation | broad manager leak | issuer + provider config |
 | `agent-run-manager.ts` | run claim/preparation lifecycle | correct cleanup owner lacks exact releaser | inject releaser |
+| `backends/mixed/members/mixed-agent-member-handle.ts` plus configured/task registries | defensive nested-member run cleanup | broad/optional manager and ambient fallback cross the boundary | propagate required run-session releaser only |
+| `claude/session/claude-session-state-input.ts` and `claude-session.ts` | per-session provider state dependency | broad optional service continues below manager | carry exact issuer to lazy session state |
 
 ## Runtime / Probe Findings
 
@@ -115,8 +121,11 @@ None. This is repository-internal architecture and no current external contract 
 1. `AgentToolsMcpRuntime` is a process host in one half and an execution-scope authority factory in the other; its name obscures that distinction.
 2. The trusted issued-session ledger, readiness, blocking, run/owner revocation, and close form a real authority, not an empty facade.
 3. Provider code needs issuance plus a descriptor, not the authority's administrative controls.
-4. A single named builder removes repeated policy without unifying mutable execution owners.
-5. The kernel builder is justified by ordered acquisition/unwind and complete internal invariants; a pass-through wrapper would not be.
+4. Provider construction has exactly nineteen process-selected leaves. Each host already needs one workspace manager, so it selects that identity once and passes it to the helper, general supervisor, and application platform; the helper owns selection of the other eighteen provider leaves. AutoByteus receives every option explicitly; Codex receives shared thread/cleanup owners plus a fresh bootstrapper; Claude receives a fresh session manager/bootstrapper/cleanup over shared process collaborators.
+5. General and application executions share the same builder and canonical definition identities but create non-identical factory sets, issuers, Claude session managers, run managers, runs, and sessions.
+6. The current publication/resource/session cycle justifies one typed authority assembly with one completion shape. A generic deferred container is unnecessary and forbidden.
+7. K0–K8 has exactly one construction closeable: incomplete assembly abort, atomically replaced by full authority close. Plain graph objects do not start resources during construction; successful transfer moves the sole disposer to the scope.
+8. The corrected transition inventory maps every current broad-symbol path, including the three corrected mixed-member files and omitted Claude session/state-input consumers, and makes any newly matching file fail closed.
 
 ## Persisted Data Transition Evidence
 
@@ -136,9 +145,9 @@ None. This is repository-internal architecture and no current external contract 
 
 ## Open Unknowns / Risks
 
-- Implementation must confirm every provider constructor/test occurrence against the closed inventory.
-- Any proposed issuer broadening requires new source-backed lifecycle evidence and design re-review.
+- No design unknown remains for AR-001–AR-003. Downstream must prove the exact process input/mapping, K0–K8 ownership cuts, and current-tree occurrence allowlists rather than reinterpret them.
+- Any newly discovered production/test occurrence, construction closeable, or proposed issuer broadening is Design Impact and requires re-review; it is not permission to add a generic escape hatch.
 
 ## Notes For Architecture Reviewer
 
-Review the contract supplement as normative. Critical judgments: the Host/Authority split owns real distinct lifecycle/state; the provider builder is fixed-purpose rather than a service locator; immediate failed-preparation revocation is reachable and owned by `AgentRunManager`; and the kernel builder remains private behind the passed scope capabilities.
+Review the SR-002 contract and transition supplements as normative. AR-001 is closed by the exact nineteen-leaf provenance and six-object constructor/identity map; AR-002 by the construction-only authority assembly plus K0–K8 ownership/error contract; AR-003 by the corrected exact production/test inventory and fail-closed occurrence rules. The Host/Authority split, `AgentRunManager` failure ownership, passed outer scope capabilities, no-migration result, and separate logical-addressing ticket remain unchanged.
