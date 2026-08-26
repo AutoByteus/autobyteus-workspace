@@ -4,8 +4,8 @@ import { ApplicationAgentStreamSubscription } from "../../../src/application-age
 import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 import { APPLICATION_AGENT_EVENT_QUEUE_LIMIT } from "../../../src/application-communication-limits.js";
 
-const address = { bindingId: "binding-1", target: { kind: "AGENT_RUN" as const } };
-const producer = { runId: "run-1", memberRouteKey: "root", memberName: "Root", displayName: "Root", runtimeKind: "AGENT" as const, teamPath: [] };
+const address = { bindingId: "binding-1", memberAddress: null };
+const producer = { agentRunId: "run-1", displayName: "Root" };
 const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): AgentRunEvent => ({ eventType, payload, runId: "run-1", statusHint: null });
 const flush = async () => { await new Promise((resolve) => setTimeout(resolve, 0)); };
 
@@ -23,7 +23,7 @@ const setup = () => {
       openAgentEventStreamLease: vi.fn(async (_app, _address, onTerminal) => {
         terminal = onTerminal;
         return {
-          descriptor: { applicationId: "app-1", address, runtimeSubject: "AGENT_RUN", runtimeRunId: "run-1", producers: [producer] },
+          descriptor: { applicationId: "app-1", address, binding: {}, runtime: { subject: "AGENT_RUN", agentRunId: "run-1", producer } },
           release: released,
         };
       }),

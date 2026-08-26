@@ -24,7 +24,6 @@ const agentResume = Object.freeze({
       producer: {
         agentRunId: "agent-run-1",
         displayName: "Agent",
-        runtimeKind: "AGENT" as const,
       },
     },
     runtimeReference: {

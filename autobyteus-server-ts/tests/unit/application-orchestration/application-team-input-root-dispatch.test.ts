@@ -30,7 +30,6 @@ const buildTeamBinding = (): ApplicationAgentBindingRecord => ({
       memberAddress: "/Researcher",
       displayName: "Researcher",
       agentRunId: researcherAgentRunId,
-      runtimeKind: "AGENT_TEAM_MEMBER",
     }],
   },
   createdAt: "2026-04-19T09:10:00.000Z",
@@ -123,13 +122,29 @@ const buildHost = (
       }),
     } as never,
     agentTargetAuthorizationService: {
-      authorizeTarget: vi.fn(async (_nextApplicationId, address) => ({
-        applicationId,
-        address,
-        runtimeSubject: "TEAM_RUN",
-        runtimeRunId: teamRunId,
-        producers: [],
-      })),
+      authorizeTarget: vi.fn(async (_nextApplicationId, address) => {
+        const selectedMember = address.memberAddress === null
+          ? null
+          : binding.runtime.subject === "TEAM_RUN"
+            ? binding.runtime.members.find((member) => member.memberAddress === address.memberAddress) ?? null
+            : null;
+        if (address.memberAddress !== null && !selectedMember) {
+          throw new Error("Application agent input target does not belong to the bound team runtime");
+        }
+        return {
+          applicationId,
+          address,
+          binding,
+          runtime: {
+            subject: "TEAM_RUN",
+            teamRunId,
+            targetAgentRunId: selectedMember?.agentRunId ?? null,
+            producers: selectedMember
+              ? [{ agentRunId: selectedMember.agentRunId, displayName: selectedMember.displayName }]
+              : [],
+          },
+        };
+      }),
     } as never,
   }),
   resolveActiveTeamRun,
@@ -157,7 +172,7 @@ describe("application team input RootTeamRun dispatch", () => {
     await host.sendRunInput(applicationId, {
       address: {
         bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: researcherAgentRunId },
+        memberAddress: "/Researcher",
       },
       input: { text: "please research" },
     });
@@ -213,7 +228,7 @@ describe("application team input RootTeamRun dispatch", () => {
     expect(executeDirectAgentCommand).not.toHaveBeenCalled();
   });
 
-  it("rejects an addressed agentRunId outside the bound team before root lookup", async () => {
+  it("rejects an unknown logical member address before root lookup", async () => {
     const binding = buildTeamBinding();
     const { root, executeDirectAgentCommand } = buildRootTeamRuntime();
     const resolveActiveTeamRun = vi.fn(async () => root);
@@ -222,7 +237,7 @@ describe("application team input RootTeamRun dispatch", () => {
     await expect(host.sendRunInput(applicationId, {
       address: {
         bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "unknown-member-run" },
+        memberAddress: "/Missing",
       },
       input: { text: "please research" },
     })).rejects.toThrow("Application agent input target does not belong to the bound team runtime");

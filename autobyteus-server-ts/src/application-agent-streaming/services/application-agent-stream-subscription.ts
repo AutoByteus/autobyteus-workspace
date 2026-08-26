@@ -66,7 +66,7 @@ export class ApplicationAgentStreamSubscription {
       }
       this.lease = lease;
       this.descriptor = lease.descriptor;
-      const releaseSource = this.input.runtimeSource.attach(lease.descriptor, (event) => this.onSourceEvent(event));
+      const releaseSource = this.input.runtimeSource.attach(lease.descriptor.runtime, (event) => this.onSourceEvent(event));
       if (this.state !== "ESTABLISHING") {
         try { releaseSource(); } catch { /* idempotent cleanup */ }
         this.releaseAcquisitions();
@@ -145,7 +145,7 @@ export class ApplicationAgentStreamSubscription {
       const common = {
         applicationId: this.input.applicationId,
         address: structuredClone(this.input.address),
-        runtimeSubject: this.descriptor.runtimeSubject,
+        runtimeSubject: this.descriptor.runtime.subject,
         producer: mapped.producer,
         event: mapped.event,
       };

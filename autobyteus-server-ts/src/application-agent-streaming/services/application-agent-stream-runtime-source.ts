@@ -4,9 +4,11 @@ import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamRunEventSourceType } from "../../agent-team-execution/domain/team-run-event.js";
 import type { TeamAgentExecutionBinding } from "../../agent-team-execution/domain/team-agent-execution-binding.js";
-import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type { ApplicationAgentStreamSourceEvent } from "../domain/application-agent-streaming-models.js";
-import type { ApplicationExecutionStreaming } from "../../application-platform/execution/application-execution-scope-contracts.js";
+import type {
+  ApplicationExecutionStreaming,
+  ResolvedApplicationAgentExecutionTarget,
+} from "../../application-platform/execution/application-execution-scope-contracts.js";
 import { ApplicationAgentStreamingEstablishmentError } from "../domain/application-agent-streaming-models.js";
 
 const runtimeNotActive = (): ApplicationAgentStreamingEstablishmentError =>
@@ -19,33 +21,29 @@ export class ApplicationAgentStreamRuntimeSource implements ApplicationExecution
   }) {}
 
   attach(
-    descriptor: AuthorizedApplicationAgentTargetDescriptor,
+    target: ResolvedApplicationAgentExecutionTarget,
     listener: (event: ApplicationAgentStreamSourceEvent) => void,
   ): () => void {
-    if (descriptor.runtimeSubject === "AGENT_RUN") {
-      const run = this.dependencies.agentRunManager.getActiveRun(descriptor.runtimeRunId);
-      const producer = descriptor.producers[0];
-      if (!run || !producer) throw runtimeNotActive();
+    if (target.subject === "AGENT_RUN") {
+      const run = this.dependencies.agentRunManager.getActiveRun(target.agentRunId);
+      if (!run) throw runtimeNotActive();
       return run.subscribeToEvents((event) => {
         if (!isAgentRunEvent(event)) return;
-        try { listener({ source: "AGENT", event, producer }); } catch { /* source isolation */ }
+        try { listener({ source: "AGENT", event, producer: target.producer }); } catch { /* source isolation */ }
       });
     }
 
     const run = this.dependencies.teamRunManager
-      .getActiveTeamRun(descriptor.runtimeRunId);
+      .getActiveTeamRun(target.teamRunId);
     if (!run) throw runtimeNotActive();
-    const selectedAgentRunId = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
-      ? descriptor.address.target.agentRunId
-      : null;
     return run.subscribeToEvents(({ event }) => {
       try {
-        if (selectedAgentRunId) {
+        if (target.targetAgentRunId) {
           if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
-          if (event.execution.agentRunId !== selectedAgentRunId) return;
+          if (event.execution.agentRunId !== target.targetAgentRunId) return;
         }
         const producer = event.eventSourceType === TeamRunEventSourceType.AGENT
-          ? resolveTeamAgentProducer(descriptor, event.execution)
+          ? resolveTeamAgentProducer(target, event.execution)
           : null;
         if (event.eventSourceType === TeamRunEventSourceType.AGENT && !producer) return;
         listener({ source: "AGENT_TEAM", event, producer });
@@ -55,10 +53,10 @@ export class ApplicationAgentStreamRuntimeSource implements ApplicationExecution
 }
 
 const resolveTeamAgentProducer = (
-  descriptor: AuthorizedApplicationAgentTargetDescriptor,
+  target: Extract<ResolvedApplicationAgentExecutionTarget, { subject: "TEAM_RUN" }>,
   execution: TeamAgentExecutionBinding,
 ): ApplicationExecutionProducer | null => {
-  return descriptor.producers.find((producer) =>
+  return target.producers.find((producer) =>
     producer.agentRunId === execution.agentRunId,
   ) ?? null;
 };

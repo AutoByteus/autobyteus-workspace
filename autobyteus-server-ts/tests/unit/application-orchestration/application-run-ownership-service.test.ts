@@ -26,7 +26,6 @@ const binding = (input: {
           memberAddress: "/worker",
           displayName: "Worker",
           agentRunId: "member-run-1",
-          runtimeKind: "AGENT_TEAM_MEMBER",
         }],
       }
     : {

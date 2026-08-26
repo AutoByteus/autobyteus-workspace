@@ -57,13 +57,11 @@ const buildBinding = (): ApplicationAgentTeamBinding => ({
         memberAddress: "/researcher",
         displayName: "Researcher",
         agentRunId: "team-run-brief-catchup-1::researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
         memberAddress: "/writer",
         displayName: "Writer",
         agentRunId: "team-run-brief-catchup-1::writer",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },

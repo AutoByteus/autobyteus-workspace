@@ -15,10 +15,7 @@ const deferred = <T>() => {
 
 const addressFor = (lessonId: string) => ({
   bindingId: `binding-${lessonId}`,
-  target: {
-    kind: "AGENT_TEAM_MEMBER",
-    memberRouteKey: "tutor",
-  },
+  memberAddress: "/tutor",
 });
 
 const buildLesson = (lessonId: string, { target = true } = {}) => ({

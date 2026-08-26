@@ -13,7 +13,7 @@ export type {
   ApplicationAgentEventStreamOptions,
   ApplicationAgentEventStreamSubscription,
   ApplicationAgentEventStreamSubscribeErrorCode,
-  ApplicationAgentTarget,
+  ApplicationAgentMemberAddress,
   ApplicationAgentTargetAddress,
   ApplicationAgentEvent,
   ApplicationAgentEventStreamError,

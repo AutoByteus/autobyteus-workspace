@@ -26,6 +26,7 @@ import type {
   ApplicationAgentExecution,
   ApplicationExecutionMemoryLookup,
   ApplicationPublishedArtifactAccess,
+  ResolvedApplicationAgentExecutionTarget,
   ApplicationTeamExecution,
 } from "../../application-platform/execution/application-execution-scope-contracts.js";
 import {
@@ -315,9 +316,8 @@ export class ApplicationOrchestrationHostService {
     rejectUnsupportedApplicationAgentInput(input.input);
     requireApplicationAgentInputWithinLimits(input.input);
     const descriptor = await this.agentTargetAuthorizationService.authorizeTarget(applicationId, input.address);
-    const binding = await this.requireBinding(applicationId, descriptor.address.bindingId);
-    await this.postAddressedRunInputInternal(binding, input.address, input.input);
-    return toPublicApplicationAgentBinding(binding);
+    await this.postAuthorizedRunInputInternal(descriptor.runtime, input.input);
+    return structuredClone(descriptor.binding);
   }
 
   async terminateRunBinding(
@@ -447,31 +447,24 @@ export class ApplicationOrchestrationHostService {
     }
   }
 
-  private async postAddressedRunInputInternal(
-    binding: ApplicationAgentBindingRecord,
-    address: ApplicationAgentTargetAddress,
+  private async postAuthorizedRunInputInternal(
+    target: ResolvedApplicationAgentExecutionTarget,
     input: ApplicationAgentInput,
   ): Promise<void> {
     rejectUnsupportedApplicationAgentInput(input);
     const message = buildRuntimeInputMessage(input);
-    if (binding.runtime.subject === "AGENT_RUN") {
-      if (address.target.kind !== "AGENT_RUN") {
-        throw new Error("Application agent input target does not match the bound runtime.");
-      }
-      const result = await this.agentExecution.postAgentInput(binding.runtime.agentRunId, message);
-      if (result.kind === "NOT_AVAILABLE") throw new Error(`Application runtime '${binding.runtime.agentRunId}' is not available.`);
+    if (target.subject === "AGENT_RUN") {
+      const result = await this.agentExecution.postAgentInput(target.agentRunId, message);
+      if (result.kind === "NOT_AVAILABLE") throw new Error(`Application runtime '${target.agentRunId}' is not available.`);
       if (result.kind === "REJECTED") throw new Error(result.message ?? "Application runtime rejected the input.");
       return;
     }
-    if (address.target.kind === "AGENT_RUN") {
-      throw new Error("Application agent input target does not match the bound runtime.");
-    }
-    const targetAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
-    if (targetAgentRunId && !binding.runtime.members.some((member) => member.agentRunId === targetAgentRunId)) {
-      throw new Error("Application agent input target does not belong to the bound team runtime.");
-    }
-    const result = await this.teamExecution.postTeamInput(binding.runtime.teamRunId, message, targetAgentRunId);
-    if (result.kind === "NOT_AVAILABLE") throw new Error(`Application runtime '${binding.runtime.teamRunId}' is not available.`);
+    const result = await this.teamExecution.postTeamInput(
+      target.teamRunId,
+      message,
+      target.targetAgentRunId,
+    );
+    if (result.kind === "NOT_AVAILABLE") throw new Error(`Application runtime '${target.teamRunId}' is not available.`);
     if (result.kind === "REJECTED") throw new Error(result.message ?? "Application runtime rejected the input.");
   }
 }

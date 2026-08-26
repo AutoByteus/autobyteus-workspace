@@ -38,6 +38,13 @@ const authorize = async (
   await lifecycle.awaitReady();
 };
 
+const readEncodedAgentTargetPath = (request: FastifyRequest): string => {
+  const rawPath = new URL(request.raw.url ?? "/", "http://localhost").pathname;
+  const marker = "/_autobyteus/agent/";
+  const markerIndex = rawPath.lastIndexOf(marker);
+  return markerIndex < 0 ? "" : rawPath.slice(markerIndex + marker.length);
+};
+
 export const registerStandaloneApplicationWebSockets = async (
   app: FastifyInstance,
   dependencies: {
@@ -88,7 +95,7 @@ export const registerStandaloneApplicationWebSockets = async (
     (connection: unknown, request: FastifyRequest<{ Params: { "*": string } }>) => {
       const socket = resolveSocket(connection) as ApplicationAgentCommunicationNetworkSocket;
       void authorize(dependencies.lifecycle, request).then(() => {
-        const address = decodeApplicationAgentTargetUrl(`/${request.params["*"] ?? ""}`);
+        const address = decodeApplicationAgentTargetUrl(`/${readEncodedAgentTargetPath(request)}`);
         if (!address) {
           socket.send(JSON.stringify({
             protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,

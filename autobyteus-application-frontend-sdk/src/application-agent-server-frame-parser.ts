@@ -35,7 +35,8 @@ const isClose = (value: unknown): value is ApplicationAgentConnectionClose =>
 export const sameApplicationAgentTargetAddress = (
   left: ApplicationAgentTargetAddress,
   right: ApplicationAgentTargetAddress,
-): boolean => JSON.stringify(left) === JSON.stringify(right);
+): boolean => left.bindingId === right.bindingId &&
+  left.memberAddress === right.memberAddress;
 
 export const parseApplicationAgentServerFrame = (raw: unknown): ApplicationAgentServerFrame | null => {
   if (typeof raw !== "string" || new TextEncoder().encode(raw).byteLength > APPLICATION_AGENT_SERVER_FRAME_BYTES_LIMIT) {

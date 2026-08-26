@@ -190,7 +190,7 @@ export default {
 
       const teamAddress = {
         bindingId: team.bindingId,
-        target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: team.runtime.members[0].agentRunId },
+        memberAddress: team.runtime.members[0].memberAddress,
       }
       const sent = await context.agentExecution.sendInput({
         address: teamAddress,
@@ -605,7 +605,7 @@ describe("Application context capability integration", () => {
         subscribe: vi.fn(async (input: {
           applicationId: string;
           subscriptionId: string;
-          address: { bindingId: string; target: { kind: string; agentRunId?: string } };
+          address: { bindingId: string; memberAddress: `/${string}` | null };
           emitter: { emitEvent: (event: unknown) => Promise<void> };
         }) => {
           await input.emitter.emitEvent({
@@ -616,7 +616,6 @@ describe("Application context capability integration", () => {
             runtimeSubject: "TEAM_RUN",
             producer: {
               agentRunId: "team-run-1::researcher",
-              runtimeKind: "AGENT_TEAM_MEMBER",
               displayName: "researcher",
             },
             event: { type: "TURN_STARTED" },
@@ -643,7 +642,7 @@ describe("Application context capability integration", () => {
       observedEvents: Array<{
         sequence: number;
         applicationId: string;
-        address: { bindingId: string; target: { kind: string; agentRunId?: string } };
+        address: { bindingId: string; memberAddress: string | null };
         runtimeSubject: string;
         producer: unknown;
         event: { type: string };
@@ -697,12 +696,11 @@ describe("Application context capability integration", () => {
       applicationId: APPLICATION_ID,
       address: {
         bindingId: result.team.bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-1::researcher" },
+        memberAddress: "/researcher",
       },
       runtimeSubject: "TEAM_RUN",
       producer: {
         agentRunId: "team-run-1::researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
         displayName: "researcher",
       },
       event: { type: "TURN_STARTED" },

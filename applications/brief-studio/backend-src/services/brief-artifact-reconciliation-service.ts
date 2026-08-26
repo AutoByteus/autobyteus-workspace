@@ -52,7 +52,6 @@ const resolveProducerForRun = (
     producer: {
       agentRunId: member.agentRunId,
       displayName: member.displayName,
-      runtimeKind: member.runtimeKind,
     },
     memberAddress: member.memberAddress,
   };

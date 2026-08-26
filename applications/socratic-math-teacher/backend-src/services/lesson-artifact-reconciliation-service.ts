@@ -38,7 +38,6 @@ const resolveProducerForRun = (
   return {
     agentRunId: member.agentRunId,
     displayName: member.displayName,
-    runtimeKind: member.runtimeKind,
   };
 };
 

@@ -1,15 +1,17 @@
 import { randomUUID } from "node:crypto";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import type {
-  ApplicationAgentRunLaunch,
-  ApplicationAgentTeamBindingMember,
-  ApplicationExecutionResourceRef,
-  ApplicationStartAgentInput,
-  ApplicationStartAgentTeamInput,
-  ApplicationTeamMemberLaunchConfig,
-  ApplicationTeamRunLaunch,
-  ApplicationTeamRunPreset,
-  ApplicationTeamScopeLaunchConfig,
+import {
+  parseApplicationAgentMemberAddress,
+  type ApplicationAgentMemberAddress,
+  type ApplicationAgentRunLaunch,
+  type ApplicationAgentTeamBindingMember,
+  type ApplicationExecutionResourceRef,
+  type ApplicationStartAgentInput,
+  type ApplicationStartAgentTeamInput,
+  type ApplicationTeamMemberLaunchConfig,
+  type ApplicationTeamRunLaunch,
+  type ApplicationTeamRunPreset,
+  type ApplicationTeamScopeLaunchConfig,
 } from "@autobyteus/application-sdk-contracts";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
@@ -129,7 +131,6 @@ export class ApplicationRunBindingLaunchService {
         applicationId: seed.applicationId,
         bindingId: seed.bindingId,
         displayName,
-        runtimeKind: "AGENT",
       },
     });
     const now = new Date().toISOString();
@@ -169,10 +170,9 @@ export class ApplicationRunBindingLaunchService {
           applicationBinding,
         );
     const members: ApplicationAgentTeamBindingMember[] = teamRun.members.map((member) => ({
-      memberAddress: member.memberAddress,
+      memberAddress: this.requireMemberAddress(member.memberAddress),
       displayName: getAgentTeamAddressBasename(member.memberAddress) ?? member.memberAddress,
       agentRunId: member.agentRunId,
-      runtimeKind: "AGENT_TEAM_MEMBER",
     }));
     const now = new Date().toISOString();
     return this.persist({
@@ -190,6 +190,12 @@ export class ApplicationRunBindingLaunchService {
       terminatedAt: null,
       lastErrorMessage: null,
     });
+  }
+
+  private requireMemberAddress(value: string): ApplicationAgentMemberAddress {
+    const memberAddress = parseApplicationAgentMemberAddress(value);
+    if (!memberAddress) throw new Error(`Application Team memberAddress '${value}' is invalid.`);
+    return memberAddress;
   }
 
   private async startPresetTeam(

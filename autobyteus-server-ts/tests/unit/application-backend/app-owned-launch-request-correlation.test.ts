@@ -277,13 +277,11 @@ const buildBriefBinding = (launchRequestId: string): ApplicationAgentBinding | A
         memberAddress: "/researcher",
         displayName: "Researcher",
         agentRunId: "team-run-brief-1::researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
         memberAddress: "/writer",
         displayName: "Writer",
         agentRunId: "team-run-brief-1::writer",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },
@@ -315,7 +313,6 @@ const buildLessonBinding = (
         memberAddress: "/tutor",
         displayName: "Tutor",
         agentRunId: "team-run-lesson-1::tutor",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },
@@ -344,7 +341,6 @@ const buildBriefArtifactEvent = (
   producer: {
     agentRunId: "team-run-brief-1::researcher",
     displayName: "Researcher",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -362,7 +358,6 @@ const buildBriefFinalArtifactEvent = (
   producer: {
     agentRunId: "team-run-brief-1::writer",
     displayName: "Writer",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -380,7 +375,6 @@ const buildLessonArtifactEvent = (
   producer: {
     agentRunId: "team-run-lesson-1::tutor",
     displayName: "Tutor",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -398,7 +392,6 @@ const buildLessonHintArtifactEvent = (
   producer: {
     agentRunId: "team-run-lesson-1::tutor",
     displayName: "Tutor",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -905,7 +898,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(sendInput).toHaveBeenCalledWith({
       address: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_RUN" },
+        memberAddress: null,
       },
       input: {
         text: "Why should I subtract five first?",
@@ -918,7 +911,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(lesson).toMatchObject({
       tutorTargetAddress: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-lesson-1::tutor" },
+        memberAddress: "/tutor",
       },
       messages: [expect.objectContaining({
         role: "student",
@@ -945,7 +938,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(sendInput).toHaveBeenCalledWith({
       address: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_RUN" },
+        memberAddress: null,
       },
       input: {
         text: "The student requests a hint. Help with the first step.",
@@ -958,7 +951,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(lesson).toMatchObject({
       tutorTargetAddress: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-lesson-1::tutor" },
+        memberAddress: "/tutor",
       },
       messages: [expect.objectContaining({
         role: "student",
@@ -1024,10 +1017,7 @@ describe("App-owned launchRequestId correlation", () => {
       lessonId: expect.any(String),
       tutorTargetAddress: {
         bindingId: "binding-lesson-1",
-        target: {
-          kind: "AGENT_TEAM_MEMBER",
-          agentRunId: "team-run-lesson-1::tutor",
-        },
+        memberAddress: "/tutor",
       },
     });
     expect(capabilities.agentExecution.get).toHaveBeenCalledOnce();

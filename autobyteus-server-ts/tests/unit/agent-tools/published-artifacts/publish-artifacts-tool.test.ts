@@ -140,12 +140,8 @@ describe("publishArtifactsTool", () => {
       applicationId: "app-1",
       bindingId: "binding-1",
       producer: {
-        runId: "team-run-1",
-        memberRouteKey: "researcher",
-        memberName: "Researcher",
+        agentRunId: "researcher_member_run",
         displayName: "Researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
-        teamPath: [],
       },
     };
 

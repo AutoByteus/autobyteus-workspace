@@ -35,7 +35,6 @@ const buildTeamBinding = (
       memberAddress: "/tutor",
       displayName: "Tutor",
       agentRunId: "team-run-lesson-1::tutor",
-      runtimeKind: "AGENT_TEAM_MEMBER",
     }],
   },
 });
@@ -50,10 +49,7 @@ describe("Socratic lesson tutor target projection", () => {
   it("derives the shared tutor-member address from the authoritative active team binding", () => {
     expect(deriveTutorTargetAddress(activeLesson, buildTeamBinding())).toEqual({
       bindingId: "binding-lesson-1",
-      target: {
-        kind: "AGENT_TEAM_MEMBER",
-        agentRunId: "team-run-lesson-1::tutor",
-      },
+      memberAddress: "/tutor",
     });
 
     for (const latestBindingStatus of ["TERMINATING", "FAILED", "TERMINATED", "ORPHANED"]) {
@@ -103,14 +99,14 @@ describe("Socratic lesson tutor target projection", () => {
       "Socratic tutor binding must be an agent-team binding.",
     );
     expect(() => deriveTutorTargetAddress(activeLesson, teamWithoutTutor)).toThrow(
-      "Socratic tutor binding must contain configured memberAddress '/tutor'.",
+      "Application agent-team binding 'binding-lesson-1' does not contain memberAddress '/tutor'.",
     );
   });
 
   it("requests and carries the shared target address through the generated GraphQL client", async () => {
     const tutorTargetAddress = {
       bindingId: "binding-lesson-1",
-      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-lesson-1::tutor" },
+      memberAddress: "/tutor",
     };
     const graphql = vi.fn(async () => ({
       data: {

@@ -387,7 +387,6 @@ const buildDirectArtifactEvent = (input: {
   producer: {
     agentRunId: input.runId,
     displayName: input.displayName,
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -606,7 +605,6 @@ describe("Brief Studio imported package integration", () => {
               producer: {
                 agentRunId: memberRunId,
                 displayName: memberRouteKey,
-                runtimeKind: "AGENT_TEAM_MEMBER",
               },
             },
           );
@@ -1744,7 +1742,6 @@ describe("Brief Studio imported package integration", () => {
             memberAddress: "/unexpected-member",
             displayName: "Unexpected Member",
             agentRunId: "team-run-unexpected-1::unexpected-member",
-            runtimeKind: "AGENT_TEAM_MEMBER",
           },
         ],
       },

@@ -85,13 +85,11 @@ const teamBinding: ApplicationAgentBindingRecord = {
         memberAddress: "/researcher",
         displayName: "Researcher",
         agentRunId: "researcher-run",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
         memberAddress: "/writer",
         displayName: "Writer",
         agentRunId: "writer-run",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },
@@ -227,15 +225,15 @@ describe("Application agent communication WebSocket integration", () => {
     const client = createApplicationClient({ applicationId: APPLICATION_ID, transport });
     const agentAddress = {
       bindingId: agentBinding.bindingId,
-      target: { kind: "AGENT_RUN" },
+      memberAddress: null,
     } as const satisfies ApplicationAgentTargetAddress;
     const teamAddress = {
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_TEAM_RUN" },
+      memberAddress: null,
     } as const satisfies ApplicationAgentTargetAddress;
     const memberAddress = {
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-run" },
+      memberAddress: "/researcher",
     } as const satisfies ApplicationAgentTargetAddress;
 
     const agentConnection = client.agentCommunication.connect(agentAddress);
@@ -318,7 +316,6 @@ describe("Application agent communication WebSocket integration", () => {
       applicationId: APPLICATION_ID,
       address: agentAddress,
       runtimeSubject: "AGENT_RUN",
-      producer: { agentRunId: "agent-run", displayName: null, runtimeKind: "AGENT" },
       event: { type: "TEXT_DELTA", delta: "hello" },
     });
     expect(JSON.stringify(agentEvents[0])).not.toContain("providerSecret");
@@ -330,7 +327,6 @@ describe("Application agent communication WebSocket integration", () => {
     expect(memberEvents[0]).toMatchObject({
       sequence: 1,
       address: memberAddress,
-      producer: { agentRunId: "researcher-run", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER" },
       event: { type: "TURN_STARTED" },
     });
 
@@ -403,7 +399,7 @@ describe("Application agent communication WebSocket integration", () => {
 
     const invalidConnection = client.agentCommunication.connect({
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_RUN" },
+      memberAddress: "/missing",
     });
     connections.push(invalidConnection);
     const invalidClose = waitForClose(invalidConnection);

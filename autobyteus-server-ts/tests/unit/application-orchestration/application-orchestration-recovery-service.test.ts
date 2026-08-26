@@ -33,13 +33,11 @@ const buildBinding = (): ApplicationAgentBindingRecord => ({
         memberAddress: "/researcher",
         displayName: "Researcher",
         agentRunId: "team-run-1::researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
         memberAddress: "/writer",
         displayName: "Writer",
         agentRunId: "team-run-1::writer",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },

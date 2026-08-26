@@ -17,6 +17,7 @@ import {
   getGeneralProcessPublishedArtifactPublisher,
   type PublishedArtifactPublicationService,
 } from "../../services/published-artifacts/published-artifact-publication-service.js";
+import { ApplicationExecutionProducerProjector } from "../../application-orchestration/domain/application-execution-producer-projector.js";
 
 export type ToolContext = {
   agentId?: string;
@@ -39,22 +40,9 @@ const resolveApplicationExecutionContext = (
   customData: Record<string, unknown> | undefined,
 ): ApplicationExecutionContext | null => {
   const value = customData?.[APPLICATION_EXECUTION_CONTEXT_KEY];
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  const record = value as Record<string, unknown>;
-  const applicationId = normalizeOptionalNonEmptyString(record.applicationId);
-  const bindingId = normalizeOptionalNonEmptyString(record.bindingId);
-  const producer = record.producer;
-  if (!applicationId || !bindingId || !producer || typeof producer !== "object" || Array.isArray(producer)) {
-    return null;
-  }
-
-  return {
-    applicationId,
-    bindingId,
-    producer: structuredClone(producer) as ApplicationExecutionContext["producer"],
-  };
+  return value === null || value === undefined
+    ? null
+    : ApplicationExecutionProducerProjector.projectContext(value);
 };
 
 const resolveFallbackRuntimeContext = (context: ToolContext) => {
