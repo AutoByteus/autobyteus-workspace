@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / ARCH-REV-001 / initial | N/A | Initial Baseline | SR-001, ARCH-REV-001; CRR/API-REV/DR N/A | Implemented reviewed effective-dated DeepSeek pricing history and provider selector; ready for code review. |
+| IR-002 | code_reviewer / CRR-001 / round 1 | CR-001–CR-004 | Local Fix | SR-001, ARCH-REV-001, CRR-001; API-REV/DR N/A | Implemented review fixes; returned for source re-review. |
 
 ## Revision Entries
 

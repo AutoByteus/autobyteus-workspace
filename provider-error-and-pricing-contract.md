@@ -2,7 +2,7 @@
 
 ## Status
 
-**Design supplement — aligned to the user-approved requirements basis.** This file is intended behavior and implementation evidence for REQ-001–REQ-012 and AC-001–AC-018. It must remain aligned with `requirements.md`; it does not authorize broader provider coverage, remote catalog refresh, or retroactive repricing.
+**Design supplement — aligned to the user-approved requirements basis.** This file is intended behavior and implementation evidence for REQ-001–REQ-012 and AC-001–AC-012. It must remain aligned with `requirements.md`; it does not authorize broader provider coverage, remote catalog refresh, or retroactive repricing.
 
 ## 1. Latest-only catalog contract
 

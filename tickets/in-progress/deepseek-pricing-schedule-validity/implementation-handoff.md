@@ -16,7 +16,7 @@
 - Current implementation revision ID: IR-002
 - Related solution / architecture revisions: SR-001 / ARCH-REV-001
 - Related code/API/delivery revisions: N/A
-- Triggering findings: N/A
+- Triggering findings: CR-001–CR-004 (CRR-001)
 
 Implemented three-version DeepSeek history: prior flat rates, daily windows from 2026-08-16T16:00Z, and weekday-only windows from 2026-08-22T16:00Z. The provider selects by `observed_at`, records selected provenance, fails closed for invalid times, and keeps non-DeepSeek paths unchanged. No persistence migration or read-time repricing was added.
 
@@ -45,4 +45,4 @@ Implemented three-version DeepSeek history: prior flat rates, daily windows from
 - Persisted data decision: Directly Usable — No Migration; stored outcomes remain immutable.
 - Frontend rendered-result check: Not Applicable; backend pricing-only change.
 - Local checks: `pnpm --filter autobyteus-ts build` passed; focused provider test passed 9/9; selector test passed 9/9. Full server typecheck has unrelated existing Prisma/rootDir failures.
-- Downstream: API/E2E coverage investigation and execution required; add selector/history scenario coverage if deemed necessary.
+- Downstream: API/E2E coverage investigation and execution required; implementation-scoped selector/history coverage is complete; API/E2E coverage investigation and execution remain downstream.
