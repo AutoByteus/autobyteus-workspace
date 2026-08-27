@@ -15,7 +15,7 @@
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-deepseek-pricing-schedule-validity/tickets/in-progress/deepseek-pricing-schedule-validity/implementation-revision-record.md`
 - Current implementation revision ID: IR-005
 - Related solution / architecture revisions: SR-001 / ARCH-REV-001
-- Related code review revision: CRR-003; related API/delivery revisions: N/A
+- Related code review revision: CRR-004; related API/delivery revisions: N/A
 - Triggering findings: CR-002, CR-005 (CRR-004)
 
 Implemented three-version DeepSeek history: prior flat rates, daily windows from 2026-08-16T16:00Z, and weekday-only windows from 2026-08-22T16:00Z. The provider selects by `observed_at`, records selected provenance, fails closed for invalid times, and keeps non-DeepSeek paths unchanged. No persistence migration or read-time repricing was added.
@@ -44,5 +44,5 @@ Implemented three-version DeepSeek history: prior flat rates, daily windows from
 - Legacy compatibility paths: None; singular schedule transport and embedded selector removed.
 - Persisted data decision: Not Affected; stored outcomes remain immutable.
 - Frontend rendered-result check: Not Applicable; backend pricing-only change.
-- Local checks: `pnpm --filter autobyteus-ts build` passed; focused provider test passed 9/9; selector test passed 14/14. Full server typecheck has unrelated existing Prisma/rootDir failures.
+- Local checks: `pnpm --filter autobyteus-ts build` passed; catalog test passed 5/5; provider test passed 10/10; selector test passed 14/14. Full server typecheck has unrelated existing Prisma/rootDir failures.
 - Downstream: API/E2E coverage investigation and execution required; implementation-scoped selector/history coverage is complete; API/E2E coverage investigation and execution remain downstream.

@@ -58,7 +58,7 @@
 - Classification: Local Fix
 - Prior authoritative result: IR-002 remained partially unresolved under CRR-002.
 - Current authoritative result: Round-2 corrections complete; implementation returned for source re-review.
-- Related solution revision IDs: SR-001; architecture: ARCH-REV-001; code review: CRR-001, CRR-002, CRR-003; API/E2E and delivery: N/A.
+- Related solution revision IDs: SR-001; architecture: ARCH-REV-001; code review: CRR-001, CRR-002; API/E2E and delivery: N/A.
 - Approved behavior or requirement IDs affected: BEH-001–BEH-004, REQ-001–REQ-012, AC-001–AC-012.
 - Implementation delta: Strict-TypeScript-safe selector tests now cover exact boundaries, Shanghai Monday, day-set mutation, order independence, exact rate triples, and invalid input. Contract status and exact rates are aligned; core history code is readable; handoff/revision traceability is corrected.
 - Local validation and result: `autobyteus-ts` build passed; selector 14/14 and provider 9/9 passed; targeted strict selector test typecheck passed.
