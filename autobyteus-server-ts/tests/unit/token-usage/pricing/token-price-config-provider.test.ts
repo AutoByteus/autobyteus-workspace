@@ -82,9 +82,9 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
   );
 
   it.each([
-    ['2026-01-01T02:00:00.000Z', 'peak', 0.44, 1.32, 0.014],
-    ['2025-01-01T05:00:00.000Z', 'off_peak', 0.22, 0.66, 0.007],
-  ] as const)('selects the current DeepSeek V4 period from UTC time-of-day (%s)', async (observedAt, period, input, output, cacheRead) => {
+    ['2026-01-01T02:00:00.000Z', 'flat', 0.14, 0.28, 0.0028],
+    ['2025-01-01T05:00:00.000Z', 'flat', 0.14, 0.28, 0.0028],
+  ] as const)('selects the effective DeepSeek V4 pricing period (%s)', async (observedAt, period, input, output, cacheRead) => {
     const policy = await new TokenPriceConfigProvider().resolvePolicy({
       runtime_kind: 'autobyteus',
       model_provider: 'DEEPSEEK',
@@ -98,12 +98,12 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
       input_price_per_million: input,
       output_price_per_million: output,
       cached_input_read_price_per_million: cacheRead,
-      pricing_schedule_id: 'deepseek-v4-2026-08-17',
+      pricing_schedule_id: period === 'flat' ? 'deepseek-v4-before-2026-08-17' : 'deepseek-v4-2026-08-17',
       pricing_schedule_period_id: period,
-      pricing_schedule_effective_from: '2026-08-16T16:00:00Z',
-      pricing_schedule_timezone: 'UTC',
+      pricing_schedule_effective_from: period === 'flat' ? null : '2026-08-16T16:00:00Z',
+      pricing_schedule_window_timezone: period === 'flat' ? null : 'UTC',
     });
-    expect(policy.pricing_policy_key).toContain(`:deepseek-v4-2026-08-17:${period}`);
+    expect(policy.pricing_policy_key).toContain(`:${period === 'flat' ? 'deepseek-v4-before-2026-08-17' : 'deepseek-v4-2026-08-17'}:${period}`);
   });
 
   it('does not guess a DeepSeek price when the scheduled timestamp is invalid', async () => {
@@ -121,7 +121,7 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
       input_price_per_million: null,
       output_price_per_million: null,
       cached_input_read_price_per_million: null,
-      pricing_schedule_id: 'deepseek-v4-2026-08-17',
+      pricing_schedule_id: null,
       pricing_schedule_period_id: null,
     });
   });

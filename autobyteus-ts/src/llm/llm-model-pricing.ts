@@ -57,7 +57,7 @@ const missingInfo = (
   cached_input_write_5m_price_per_million: null,
   cached_input_write_1h_price_per_million: null,
   input_price_tiers: [],
-  pricing_schedule: null,
+  pricing_schedule_history: null,
   trusted_dimensions: untrustedDimensions(),
   missing_reason: reason,
 });
@@ -118,7 +118,7 @@ export const buildModelPricingInfo = (
     cached_input_write_5m_price_per_million: pricing.cachedInputWrite5mTokenPricingTrusted ? pricing.cachedInputWrite5mTokenPricing : null,
     cached_input_write_1h_price_per_million: pricing.cachedInputWrite1hTokenPricingTrusted ? pricing.cachedInputWrite1hTokenPricing : null,
     input_price_tiers: status === 'trusted' ? tiers : [],
-    pricing_schedule: pricing.pricingSchedule,
+    pricing_schedule_history: pricing.pricingScheduleHistory,
     trusted_dimensions: {
       input: inputTrusted,
       output: outputTrusted,

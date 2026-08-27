@@ -41,10 +41,11 @@ describe('current supported model definitions', () => {
         pricing_status: 'trusted',
         input_price_per_million: 0.22,
         output_price_per_million: 0.66,
-        pricing_schedule: {
-          scheduleId: 'deepseek-v4-2026-08-17',
-          effectiveFrom: '2026-08-16T16:00:00Z',
-        },
+        pricing_schedule_history: expect.arrayContaining([
+          expect.objectContaining({ kind: 'fixed', scheduleId: 'deepseek-v4-before-2026-08-17', effectiveFrom: null }),
+          expect.objectContaining({ kind: 'time_window', scheduleId: 'deepseek-v4-2026-08-17', effectiveFrom: '2026-08-16T16:00:00Z' }),
+          expect.objectContaining({ kind: 'time_window', scheduleId: 'deepseek-v4-2026-08-23', effectiveFrom: '2026-08-22T16:00:00Z' }),
+        ]),
       });
     await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'glm-5.3', modelProvider: LLMProvider.GLM }))
       .resolves.toMatchObject({ pricing_status: 'missing', missing_reason: 'pricing_config_absent' });
