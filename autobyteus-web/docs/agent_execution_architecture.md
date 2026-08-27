@@ -84,11 +84,17 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `sendMessageToFocusedMember()`: uses the focused exact
     `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
     `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
-    necessary, requires an exact Agent execution, begins one local submission,
+    necessary and resolves the focused AgentRun through the canonical execution
+    view to an exact attachment location (`containingTeamRunId` plus rooted
+    `memberAddress`) before local admission. Draft attachment ownership remains
+    launch/root scoped, while the `team_member_final` owner uses that containing
+    TeamRun; a configured or task-Team Agent nested below the root must not
+    substitute the root TeamRun id. It then begins one local submission,
     finalizes attachments, and emits `SEND_MESSAGE` with `execution_address`,
-    required `message_id`, and required `dedupe_key`. Invalid, stale, non-Agent,
-    or cross-root identity fails closed; there is no structural-template,
-    route-key, display-name, or generated-id fallback.
+    required `message_id`, and required `dedupe_key`. Missing execution location
+    and invalid, stale, non-Agent, or cross-root identity fail closed; there is
+    no root-id, structural-template, route-key, display-name, or generated-id
+    fallback.
   - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
     fresh command id and the exact execution address. `TeamStreamingService`
     completes the pending command only when `AGENT_COMMAND_ACK` matches both.
@@ -694,7 +700,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. A missing exact Team location fails before local admission or finalization. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 

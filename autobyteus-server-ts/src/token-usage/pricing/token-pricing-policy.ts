@@ -46,7 +46,9 @@ export type ResolvedTokenPricingPolicy = {
   pricing_schedule_id: string | null;
   pricing_schedule_period_id: string | null;
   pricing_schedule_effective_from: string | null;
-  pricing_schedule_timezone: string | null;
+  pricing_schedule_window_timezone: string | null;
+  pricing_schedule_peak_days: readonly number[] | null;
+  pricing_schedule_peak_days_timezone: string | null;
 };
 
 export type SelectedTokenPricingPolicy = ResolvedTokenPricingPolicy & {

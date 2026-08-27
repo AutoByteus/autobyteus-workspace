@@ -1,0 +1,15 @@
+# Final API/E2E artifact and worktree verification
+UTC 2026-08-27T06:19:13Z
+## required artifacts
+present tickets/in-progress/docker-node-image-upload-400/api-e2e-coverage-investigation.md
+present tickets/in-progress/docker-node-image-upload-400/api-e2e-execution-coverage-report.md
+present tickets/in-progress/docker-node-image-upload-400/api-e2e-revision-record.md
+present tickets/in-progress/docker-node-image-upload-400/test-results/api-e2e/browser/browser-results.json
+present tickets/in-progress/docker-node-image-upload-400/test-results/api-e2e/browser/browser-results-summary.json
+## raw result assertion
+passed=true failure=null consoleErrors=0 pageErrors=0 cleanup=all-true preexisting-run-preserved=true
+## no API/E2E temporary source
+absent
+## no API/E2E-owned durable test/source diff
+## diff check
+PASS
