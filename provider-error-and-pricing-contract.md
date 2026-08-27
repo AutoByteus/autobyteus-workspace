@@ -2,7 +2,7 @@
 
 ## Status
 
-**Design supplement — aligned to the user-approved requirements basis.** This file is intended behavior and implementation evidence for REQ-001–REQ-012 and AC-001–AC-018. It must remain aligned with `requirements.md`; it does not authorize broader provider coverage or historical pricing.
+**Design supplement — aligned to the user-approved requirements basis.** This file is intended behavior and implementation evidence for REQ-001–REQ-012 and AC-001–AC-018. It must remain aligned with `requirements.md`; it does not authorize broader provider coverage, remote catalog refresh, or retroactive repricing.
 
 ## 1. Latest-only catalog contract
 
@@ -57,6 +57,8 @@ No runtime receives an old AutoByteus alias or fallback. This is ownership scopi
 ## 3. DeepSeek effective-dated pricing contract
 
 DeepSeek V4 pricing is represented as an effective-dated `pricing_schedule_history`: an unbounded prior flat version, the daily UTC-window version effective `2026-08-16T16:00:00Z`, and the weekday-only version effective `2026-08-22T16:00:00Z`. The resolver selects the latest eligible version using the observation instant, never process time. Peak windows are half-open `[01:00,04:00)` and `[06:00,10:00)` in the configured window timezone; peak weekdays are explicit ISO days evaluated independently in the configured calendar timezone. Invalid timestamps fail closed with `pricing_schedule_time_invalid`.
+
+Prior to the first cutover, Flash uses cache/input/output `$0.0028/$0.14/$0.28` and Pro uses `$0.003625/$0.435/$0.87`. From the first cutover, Flash off-peak/peak input-output-cache triples are `$0.22/$0.66/$0.007` and `$0.44/$1.32/$0.014`; Pro triples are `$0.66/$1.98/$0.022` and `$1.32/$3.96/$0.044`.
 
 The selected period supplies prices and trusted dimensions. New snapshots record the selected schedule/period, effective instant, window timezone, peak days, and peak-days timezone; policy keys distinguish schedule and period. Existing stored snapshots and totals are immutable and are not repriced. Remote catalog freshness remains outside this contract and requires a separate refresh capability.
 

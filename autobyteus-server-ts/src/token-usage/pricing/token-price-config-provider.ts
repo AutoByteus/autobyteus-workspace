@@ -40,7 +40,7 @@ const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTo
         cached_input_write_5m: selectedPeriod.trustedDimensions.cachedInputWrite5m,
         cached_input_write_1h: selectedPeriod.trustedDimensions.cachedInputWrite1h,
       }
-    : schedule ? emptyTrustedDimensions() : trustedDimensions;
+    : scheduleHistory ? emptyTrustedDimensions() : trustedDimensions;
   const selectedPricingStatus = scheduleHistory && !selectedPeriod ? "missing" : info?.pricing_status ?? "missing";
   const selectedMissingReason = scheduleHistory && !selectedPeriod
     ? "pricing_schedule_time_invalid"

@@ -106,6 +106,14 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
     expect(policy.pricing_policy_key).toContain(`:${period === 'flat' ? 'deepseek-v4-before-2026-08-17' : 'deepseek-v4-2026-08-17'}:${period}`);
   });
 
+  it.each([
+    ['2026-08-29T02:00:00Z', 'deepseek-v4-2026-08-23', 'off_peak', 0.66, 1.98, 0.022],
+    ['2026-08-26T02:00:00Z', 'deepseek-v4-2026-08-23', 'peak', 1.32, 3.96, 0.044],
+  ] as const)('returns current selected provenance for %s', async (observedAt, scheduleId, period, input, output, cacheRead) => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({ runtime_kind: 'autobyteus', model_provider: 'DEEPSEEK', model_identifier: 'deepseek-v4-pro', model_value: null, observed_at: observedAt });
+    expect(policy).toMatchObject({ pricing_status: 'trusted', input_price_per_million: input, output_price_per_million: output, cached_input_read_price_per_million: cacheRead, pricing_schedule_id: scheduleId, pricing_schedule_period_id: period, pricing_schedule_window_timezone: 'UTC', pricing_schedule_peak_days: [1, 2, 3, 4, 5], pricing_schedule_peak_days_timezone: 'Asia/Shanghai' });
+  });
+
   it('does not guess a DeepSeek price when the scheduled timestamp is invalid', async () => {
     const policy = await new TokenPriceConfigProvider().resolvePolicy({
       runtime_kind: 'autobyteus',
@@ -123,6 +131,7 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
       cached_input_read_price_per_million: null,
       pricing_schedule_id: null,
       pricing_schedule_period_id: null,
+      trusted_dimensions: { input: false, output: false, cached_input_read: false, cached_input_write: false, cached_input_write_5m: false, cached_input_write_1h: false },
     });
   });
 });

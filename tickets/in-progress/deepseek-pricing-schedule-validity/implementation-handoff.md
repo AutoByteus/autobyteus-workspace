@@ -11,9 +11,9 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: Initial
+- Implementation cycle: Rework
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-deepseek-pricing-schedule-validity/tickets/in-progress/deepseek-pricing-schedule-validity/implementation-revision-record.md`
-- Current implementation revision ID: IR-001
+- Current implementation revision ID: IR-002
 - Related solution / architecture revisions: SR-001 / ARCH-REV-001
 - Related code/API/delivery revisions: N/A
 - Triggering findings: N/A
@@ -44,5 +44,5 @@ Implemented three-version DeepSeek history: prior flat rates, daily windows from
 - Legacy compatibility paths: None; singular schedule transport and embedded selector removed.
 - Persisted data decision: Directly Usable — No Migration; stored outcomes remain immutable.
 - Frontend rendered-result check: Not Applicable; backend pricing-only change.
-- Local checks: `pnpm --filter autobyteus-ts build` passed; focused provider test passed 7/7. Full server typecheck has unrelated existing Prisma/rootDir failures.
+- Local checks: `pnpm --filter autobyteus-ts build` passed; focused provider test passed 9/9; selector test passed 9/9. Full server typecheck has unrelated existing Prisma/rootDir failures.
 - Downstream: API/E2E coverage investigation and execution required; add selector/history scenario coverage if deemed necessary.

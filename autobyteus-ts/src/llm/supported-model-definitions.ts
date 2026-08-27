@@ -359,7 +359,15 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'deepseek-v4-flash', staticMetadata: createStaticModelMetadata(1000000, null, 384000, 'https://api-docs.deepseek.com/quick_start/pricing', '2026-04-25', DEEPSEEK_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       rateLimit: 60,
-      pricingConfig: pricing(0.22, 0.66, { cachedInputReadTokenPricing: 0.007, pricingEffectiveDate: '2026-08-17', pricingScheduleHistory: createDeepSeekV4PricingScheduleHistory({ priorInput: 0.14, priorOutput: 0.28, priorCacheRead: 0.0028, offPeakInput: 0.22, offPeakOutput: 0.66, offPeakCacheRead: 0.007, peakInput: 0.44, peakOutput: 1.32, peakCacheRead: 0.014 }) })
+      pricingConfig: pricing(0.22, 0.66, {
+        cachedInputReadTokenPricing: 0.007,
+        pricingEffectiveDate: '2026-08-17',
+        pricingScheduleHistory: createDeepSeekV4PricingScheduleHistory({
+          priorInput: 0.14, priorOutput: 0.28, priorCacheRead: 0.0028,
+          offPeakInput: 0.22, offPeakOutput: 0.66, offPeakCacheRead: 0.007,
+          peakInput: 0.44, peakOutput: 1.32, peakCacheRead: 0.014,
+        }),
+      })
     }),
     configSchema: deepseekV4Schema
   },
@@ -371,7 +379,15 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'deepseek-v4-pro', staticMetadata: createStaticModelMetadata(1000000, null, 384000, 'https://api-docs.deepseek.com/quick_start/pricing', '2026-04-25', DEEPSEEK_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       rateLimit: 60,
-      pricingConfig: pricing(0.66, 1.98, { cachedInputReadTokenPricing: 0.022, pricingEffectiveDate: '2026-08-17', pricingScheduleHistory: createDeepSeekV4PricingScheduleHistory({ priorInput: 0.435, priorOutput: 0.87, priorCacheRead: 0.003625, offPeakInput: 0.66, offPeakOutput: 1.98, offPeakCacheRead: 0.022, peakInput: 1.32, peakOutput: 3.96, peakCacheRead: 0.044 }) })
+      pricingConfig: pricing(0.66, 1.98, {
+        cachedInputReadTokenPricing: 0.022,
+        pricingEffectiveDate: '2026-08-17',
+        pricingScheduleHistory: createDeepSeekV4PricingScheduleHistory({
+          priorInput: 0.435, priorOutput: 0.87, priorCacheRead: 0.003625,
+          offPeakInput: 0.66, offPeakOutput: 1.98, offPeakCacheRead: 0.022,
+          peakInput: 1.32, peakOutput: 3.96, peakCacheRead: 0.044,
+        }),
+      })
     }),
     configSchema: deepseekV4Schema
   },
