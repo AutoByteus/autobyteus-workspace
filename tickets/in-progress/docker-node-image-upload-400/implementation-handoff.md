@@ -9,7 +9,8 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A` — initial implementation followed `ARCH-REV-001` Pass.
+- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/code-review-report.md`
+- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/code-review-revision-record.md`
 
 ## Current Implementation Summary
 
@@ -17,15 +18,17 @@ The Team execution capability now projects and retains one canonical immutable l
 
 `sendMessageToFocusedMember` now requires that canonical location before local admission or context-file finalization. Only the final `team_member_final` owner uses `location.containingTeamRunId`; draft ownership, navigation, dedupe, run-history activity, and Team WebSocket dispatch continue to use their existing root/draft identities. No root fallback, backend/server change, Docker conditional, storage change, or persisted-data transition was added.
 
-- Implementation cycle: `Initial`
+`IR-002` corrects the nested task-Team member regression fixture to the contract-valid `kind: 'task_team_member'` discriminator requested by `CR-F-001`. The containing-Team assertions remain unchanged, and no production source or fallback behavior was added.
+
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-F-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -45,7 +48,7 @@ The Team execution capability now projects and retains one canonical immutable l
 - `autobyteus-web/stores/agentTeamRunStore.ts`: consumes one location and changes only final context-file ownership.
 - `autobyteus-web/utils/contextFiles/contextFileOwner.ts`: clarifies containing-Team parameter semantics without changing the wire descriptor.
 - `autobyteus-web/test-support/currentTeamTestFixtures.ts`: follows the clean-cut collector contract.
-- `autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts`: configured/task/nested/unknown/placement-atomicity coverage.
+- `autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts`: configured/task/nested/unknown/placement-atomicity coverage; its nested task-Team member fixture now uses the contract-valid `task_team_member` discriminator.
 - `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`: nested uploaded-file owner, preserved root scope, and missing-location fail-closed coverage.
 
 ## Important Assumptions
@@ -95,6 +98,7 @@ The Team execution capability now projects and retains one canonical immutable l
 
 ## Local Implementation Checks Run
 
+- `pnpm --filter ./autobyteus-web test:nuxt services/teamExecution/__tests__/teamExecutionViewState.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --run` — `IR-002` focused rework check passed, `2` files / `30` tests.
 - `pnpm --filter ./autobyteus-web test:nuxt services/teamExecution/__tests__/teamExecutionViewState.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/runHydration/__tests__/teamRunContextHydrationService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts --run` — passed, `5` files / `59` tests.
 - `pnpm --filter @autobyteus/application-sdk-contracts build && pnpm --filter ./autobyteus-web build` — passed; Nuxt production client/server generation completed.
 - `pnpm --filter ./autobyteus-web test:nuxt --run` — supplemental repository-local attempt, not API/E2E sign-off: `426` files / `2345` tests passed, `2` skipped; `5` suite files failed only because the generated application SDK contract package was absent.

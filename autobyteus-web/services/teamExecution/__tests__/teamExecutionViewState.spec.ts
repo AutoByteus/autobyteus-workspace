@@ -175,7 +175,7 @@ const settledHistoricalExecutions = () => {
           agent_run_id: 'settled-team-coordinator-run', platform_agent_run_id: null,
         },
         {
-          kind: 'task_team', address: '/StudentStudyGroup/StudyPod', team_run_id: 'settled-pod-run',
+          kind: 'task_team_member', address: '/StudentStudyGroup/StudyPod', team_run_id: 'settled-pod-run',
           members: [{
             kind: 'task_team_agent', address: '/StudentStudyGroup/Student',
             agent_run_id: 'settled-pod-student-run', platform_agent_run_id: null,
