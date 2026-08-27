@@ -13,7 +13,7 @@
 
 - Command: `CI=true NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= CSC_IDENTITY_AUTO_DISCOVERY=false AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac --arm64`.
 - Result: `Pass` (`exit 0`).
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-build.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-build.log`.
 - Included gates: web/localization guards, localization-literal audit, shared/server builds, sanitized server bootstrap smoke, mobile and Electron generation, Electron transpilation, native-module rebuild, terminal permission normalization, and app/DMG/ZIP packaging.
 - Non-blocking diagnostics: current Browserslist-age, dependency deprecation/peer warnings, and the expected explicitly disabled signing identity. No build step failed.
 
@@ -21,9 +21,9 @@
 
 | Artifact | Size | SHA-256 | Result |
 | --- | ---: | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | unpacked app | executable fingerprint `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0` | `Pass` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` | `467155008` bytes | `2f96dde1b75d62afca9466bda6634f2902decfc19f1821ce730198807d337587` | `Pass` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip` | `461817657` bytes | `d4bea21d8206143111f572d0a42b8aa7ea10b31f7c32ad927c27c379a3fa167d` | `Pass` |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` | unpacked app | executable fingerprint `c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0` | `Pass` |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` | `467155008` bytes | `2f96dde1b75d62afca9466bda6634f2902decfc19f1821ce730198807d337587` | `Pass` |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip` | `461817657` bytes | `d4bea21d8206143111f572d0a42b8aa7ea10b31f7c32ad927c27c379a3fa167d` | `Pass` |
 
 ## Package Verification
 
@@ -34,7 +34,7 @@
 - ZIP integrity: `Pass` (`unzip -tq`).
 - DMG integrity: `Pass` (`hdiutil verify`).
 - Signing: strict `codesign --verify` exited `1`, as expected for this intentionally unsigned local test build; no release-signing or notarization claim is made.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-verification.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-macos-arm64-verification.log`.
 
 ## Packaged Electron Isolation
 
@@ -44,8 +44,8 @@
 - Direct/Playwright and parallel sessions used isolated endpoints, ports, data roots, Electron state paths, and owned process trees.
 - Renderer GraphQL/WebSocket/provider-settings checks passed; selected-endpoint traffic did not fall back to production and updater activity remained suppressed.
 - Invalid/partial/production-profile cases failed closed; allocation-race foreign ownership survived; all owned processes/listeners/temporary roots were cleaned.
-- Evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation.log`.
-- Structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation/electron-launch-profile-evidence.json`.
+- Evidence log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation.log`.
+- Structured evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation/electron-launch-profile-evidence.json`.
 
 ## Persisted Data And Test Guidance
 

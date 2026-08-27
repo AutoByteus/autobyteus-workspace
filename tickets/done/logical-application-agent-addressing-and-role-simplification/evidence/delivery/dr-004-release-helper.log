@@ -1,0 +1,43 @@
+DR-004 documented stable release helper execution
+UTC: 2026-08-26T18:32:05Z
+Preflight:
+## personal...origin/personal
+personal_head_before=b7d04cb94ad1de7fa7bbf9cc2f2990d86a227754
+origin_personal_before=b7d04cb94ad1de7fa7bbf9cc2f2990d86a227754
+Command: bash scripts/desktop-release.sh release 1.4.59 --release-notes tickets/done/logical-application-agent-addressing-and-role-simplification/release-notes.md
+Updating autobyteus-web/package.json: 1.4.58 -> 1.4.59
+Updating autobyteus-message-gateway/package.json: 1.4.58 -> 1.4.59
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.59
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.59[0m
+[32mServer version: 0.1.1[0m
+[personal 65bc75473] chore(release): bump workspace release version to 1.4.59
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 20 insertions(+), 22 deletions(-)
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   b7d04cb94..65bc75473  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.59 -> v1.4.59
+Release complete and pushed: branch 'personal', tag 'v1.4.59'.
+personal_head_after=65bc75473beca7f5cbab8a10ff52b4274bec1807
+tag_commit=65bc75473beca7f5cbab8a10ff52b4274bec1807
+origin_personal_after=65bc75473beca7f5cbab8a10ff52b4274bec1807
+origin_tag_after=65bc75473beca7f5cbab8a10ff52b4274bec1807
+RESULT: PASS — release commit and annotated tag pushed.

@@ -7,6 +7,7 @@
 | `DR-001` | `CRR-004` Pass / 97, `API-REV-002` Pass / 98, `CRR-005` N/A | N/A | `Pass — Ready for explicit user verification` | `docs-sync-report.md`; `electron-test-build-report.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-001 evidence |
 | `DR-002` | User requested a fresh README-guided Electron build | `DR-001` Pass | `Pass — Fresh package ready for explicit user verification` | `electron-test-build-report.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-002 evidence |
 | `DR-003` | User accepted the Electron candidate and requested finalization plus release | `DR-002` Pass | `Pass — Finalization and release authorized` | `release-notes.md`; `handoff-summary.md`; `release-deployment-report.md`; DR-003 evidence |
+| `DR-004` | Finalized Personal merge and stable `v1.4.59` tag-triggered publication | `DR-003` Pass | `Complete — repository finalized and release verified` | `handoff-summary.md`; `release-deployment-report.md`; DR-004 evidence |
 
 ## Revision Entries
 
@@ -24,7 +25,7 @@
 - Persisted-data decision: `Directly Usable — No Migration`; no database migration, destructive reset, rewrite, or package-format transition is required.
 - User verification/finalization state: pending explicit user verification. No ticket move to `done`, push, target merge, release, deployment, tag, or ticket-worktree/branch cleanup has occurred.
 - Why this revision was recorded: mandatory initial delivery baseline and authoritative record of integrated-state/docs/Electron readiness.
-- Next action: user tests `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` and explicitly accepts or reports a finding.
+- Next action: user tests `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` and explicitly accepts or reports a finding.
 - Remaining risks or untested scope: the package is intentionally unsigned/not notarized; provider latency remains externally variable; historical broad repository fixture debt remains separate and unattributed.
 
 ### DR-002 — Fresh README-guided Electron rebuild and package verification
@@ -41,7 +42,7 @@
 - Persisted-data decision: unchanged at `Directly Usable — No Migration`; isolation used temporary roots and preserved the ordinary application/data path.
 - User verification/finalization state: pending explicit testing of the fresh DMG. No push, target merge, ticket archive, release, deployment, tag, or ticket-worktree/branch cleanup has occurred.
 - Why this revision was recorded: every completed delivery-stage result requires an authoritative revision entry; this entry distinguishes the fresh artifact and hashes from DR-001.
-- Next action: user tests `/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` and explicitly accepts or reports a finding.
+- Next action: user tests `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg` and explicitly accepts or reports a finding.
 - Remaining risks or untested scope: the package is intentionally unsigned/not notarized; provider latency remains externally variable; historical broad repository fixture debt remains separate and unattributed.
 
 ### DR-003 — Explicit verification acceptance and release authorization
@@ -57,3 +58,20 @@
 - Persisted-data decision: unchanged at `Directly Usable — No Migration`.
 - Why this revision was recorded: explicit verification completed the user-hold stage and authorized finalization/release.
 - Evidence: `evidence/delivery/dr-003-pre-finalization-refresh.log`.
+
+### DR-004 — Repository finalization and stable v1.4.59 release verified
+
+- Delivery round and trigger: execution of the user-authorized repository finalization and stable release.
+- Prior authoritative result: `DR-003` Pass — finalization and release authorized.
+- Current authoritative result: `Complete — ticket archived, Personal finalized, stable `v1.4.59` published, and rollout evidence verified.`
+- Ticket branch: final archived-ticket commit `f7cfada33630b9a334c7570f80f03c720cbb3448` pushed to `origin/codex/logical-application-agent-addressing-and-role-simplification`.
+- Target merge: ticket branch merged into `personal` as `b7d04cb94ad1de7fa7bbf9cc2f2990d86a227754` and pushed to `origin/personal`.
+- Release commit/tag: documented helper synchronized desktop/messaging versions, curated notes, and the managed messaging manifest; release commit and annotated tag both resolve to `65bc75473beca7f5cbab8a10ff52b4274bec1807` (`v1.4.59`).
+- GitHub Actions: Android APK, Desktop, Messaging Gateway, Server Docker, and iOS App Store Connect workflows all completed `success`.
+- GitHub Release: stable, non-draft, non-prerelease `v1.4.59` published with `21` assets at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.59`. Required macOS arm64/x64, Linux x64/arm64, Windows, Android, messaging gateway, manifest, and updater metadata assets were present.
+- Docker rollout: `autobyteus/autobyteus-server:1.4.59` and `:latest` both expose `linux/amd64` and `linux/arm64`.
+- iOS rollout: the tag-triggered App Store Connect archive/upload workflow completed successfully; final public App Store review remains externally controlled by Apple.
+- User rollout signal: the user confirmed the release is finished and they are already running the latest version.
+- Persisted data: `Directly Usable — No Migration`; no delivery data action occurred.
+- Evidence: `evidence/delivery/dr-004-release-helper.log`, `dr-004-release-workflows.json`, `dr-004-github-release.json`, and `dr-004-release-verification.log`.
+- Remaining action: repository worktree/branch cleanup, recorded separately after completion.
