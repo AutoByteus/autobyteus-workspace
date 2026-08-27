@@ -33,7 +33,7 @@ import {
 import {
   collectConfiguredAgents,
   collectConfiguredTeams,
-  collectExecutionAgents,
+  collectAgentExecutionLocations,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
 
@@ -193,7 +193,7 @@ const selectInitialAgentRunId = (input: {
   requestedAgentRunId?: string | null;
   requestedMemberAddress?: AgentTeamAddress | null;
 }): string => {
-  const agents = collectExecutionAgents(input.tree);
+  const agents = collectAgentExecutionLocations(input.tree);
   const requestedId = input.requestedAgentRunId?.trim() ?? '';
   if (requestedId && agents.some((agent) => agent.agentRunId === requestedId)) return requestedId;
   if (input.requestedMemberAddress) {
@@ -237,22 +237,22 @@ const hydrateCurrentTeamRunContext = async (
     }),
   ]);
   const projectionByAgentRunId = new Map<string, TeamMemberRunProjectionPayload | null>();
-  await Promise.all(collectExecutionAgents(tree).map(async (agent) => {
+  await Promise.all(collectAgentExecutionLocations(tree).map(async (agent) => {
     const projection = projectionPolicy === 'exact'
       ? await fetchExactProjection(input.teamRunId, agent.agentRunId)
       : await fetchBestEffortProjection(input.teamRunId, agent.agentRunId);
     projectionByAgentRunId.set(agent.agentRunId, projection);
   }));
-  const contexts = collectExecutionAgents(tree).map((agent) => {
+  const contexts = collectAgentExecutionLocations(tree).map((agent) => {
     const context = createTeamAgentContext({
       tree,
       agentRunId: agent.agentRunId,
-      address: agent.address,
-      workspaceMetadata: workspaces.get(agent.address) ?? null,
+      address: agent.memberAddress,
+      workspaceMetadata: workspaces.get(agent.memberAddress) ?? null,
     });
     if (!context) throw new Error(`No exact Agent context could be built for '${agent.agentRunId}'.`);
-    applyProjection({ tree, agentRunId: agent.agentRunId, address: agent.address, context, projection: projectionByAgentRunId.get(agent.agentRunId) ?? null });
-    return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address, agentContext: context });
+    applyProjection({ tree, agentRunId: agent.agentRunId, address: agent.memberAddress, context, projection: projectionByAgentRunId.get(agent.agentRunId) ?? null });
+    return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.memberAddress, agentContext: context });
   });
   const initialFocusedAgentRunId = selectInitialAgentRunId({
     tree,

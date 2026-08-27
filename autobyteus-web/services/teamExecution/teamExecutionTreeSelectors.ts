@@ -11,6 +11,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import type {
+  TeamAgentExecutionLocation,
   TeamExecutionNavigationRow,
   TeamTaskHistoryRow,
 } from './teamExecutionViewModels';
@@ -58,77 +59,109 @@ export const findConfiguredTeamByAddress = (
 ): ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'] | null =>
   collectConfiguredTeams(tree).find((team) => (team === tree.root_team ? '/' : team.address) === address) ?? null;
 
-export const collectExecutionAgents = (tree: TeamRunExecutionTreeDto): readonly Readonly<{
-  agentRunId: string;
-  address: AgentTeamAddress;
-  configured: boolean;
-}>[] => {
-  const output: Array<{ agentRunId: string; address: AgentTeamAddress; configured: boolean }> = [];
-  const visitTasks = (tasks: readonly TaskExecutionDto[]): void => {
+export const collectAgentExecutionLocations = (
+  tree: TeamRunExecutionTreeDto,
+): readonly TeamAgentExecutionLocation[] => {
+  const output: TeamAgentExecutionLocation[] = [];
+  const addLocation = (
+    agentRunId: string,
+    memberAddress: AgentTeamAddress,
+    containingTeamRunId: string,
+  ): void => {
+    output.push(Object.freeze({ agentRunId, memberAddress, containingTeamRunId }));
+  };
+  const visitTasks = (tasks: readonly TaskExecutionDto[], containingTeamRunId: string): void => {
     for (const task of tasks) {
-      if (task.kind === 'task_agent') output.push({ agentRunId: task.agent_run_id, address: task.address, configured: false });
+      if (task.kind === 'task_agent') addLocation(task.agent_run_id, task.address, containingTeamRunId);
       else {
-        visitTaskMembers(task.members);
-        visitTasks(task.task_executions);
+        visitTaskMembers(task.members, task.team_run_id);
+        visitTasks(task.task_executions, task.team_run_id);
       }
     }
   };
-  const visitTaskMembers = (members: readonly TaskTeamMemberExecutionDto[]): void => {
+  const visitTaskMembers = (
+    members: readonly TaskTeamMemberExecutionDto[],
+    containingTeamRunId: string,
+  ): void => {
     for (const member of members) {
-      if (member.kind === 'task_team_agent') output.push({ agentRunId: member.agent_run_id, address: member.address, configured: false });
+      if (member.kind === 'task_team_agent') {
+        addLocation(member.agent_run_id, member.address, containingTeamRunId);
+      }
       else {
-        visitTaskMembers(member.members);
-        visitTasks(member.task_executions);
+        visitTaskMembers(member.members, member.team_run_id);
+        visitTasks(member.task_executions, member.team_run_id);
       }
     }
   };
-  const visitConfigured = (members: readonly ConfiguredMemberExecutionDto[]): void => {
+  const visitConfigured = (
+    members: readonly ConfiguredMemberExecutionDto[],
+    containingTeamRunId: string,
+  ): void => {
     for (const member of members) {
       if (member.kind === 'configured_agent') {
-        output.push({ agentRunId: member.agent_run_id, address: member.address, configured: true });
+        addLocation(member.agent_run_id, member.address, containingTeamRunId);
       } else {
-        visitConfigured(member.members);
-        visitTasks(member.task_executions);
+        visitConfigured(member.members, member.team_run_id);
+        visitTasks(member.task_executions, member.team_run_id);
       }
     }
   };
-  visitConfigured(tree.root_team.members);
-  visitTasks(tree.root_team.task_executions);
+  visitConfigured(tree.root_team.members, tree.root_team.team_run_id);
+  visitTasks(tree.root_team.task_executions, tree.root_team.team_run_id);
   return Object.freeze(output);
 };
 
-export const collectLiveExecutionAgents = (tree: TeamRunExecutionTreeDto): ReturnType<typeof collectExecutionAgents> => {
-  const output: Array<{ agentRunId: string; address: AgentTeamAddress; configured: boolean }> = [];
-  const visitTasks = (tasks: readonly TaskExecutionDto[]): void => {
+export const collectLiveAgentExecutionLocations = (
+  tree: TeamRunExecutionTreeDto,
+): readonly TeamAgentExecutionLocation[] => {
+  const output: TeamAgentExecutionLocation[] = [];
+  const addLocation = (
+    agentRunId: string,
+    memberAddress: AgentTeamAddress,
+    containingTeamRunId: string,
+  ): void => {
+    output.push(Object.freeze({ agentRunId, memberAddress, containingTeamRunId }));
+  };
+  const visitTasks = (tasks: readonly TaskExecutionDto[], containingTeamRunId: string): void => {
     for (const task of tasks) {
       if (task.settled_at) continue;
-      if (task.kind === 'task_agent') output.push({ agentRunId: task.agent_run_id, address: task.address, configured: false });
+      if (task.kind === 'task_agent') addLocation(task.agent_run_id, task.address, containingTeamRunId);
       else {
-        visitMembers(task.members);
-        visitTasks(task.task_executions);
+        visitMembers(task.members, task.team_run_id);
+        visitTasks(task.task_executions, task.team_run_id);
       }
     }
   };
-  const visitMembers = (members: readonly TaskTeamMemberExecutionDto[]): void => {
+  const visitMembers = (
+    members: readonly TaskTeamMemberExecutionDto[],
+    containingTeamRunId: string,
+  ): void => {
     for (const member of members) {
-      if (member.kind === 'task_team_agent') output.push({ agentRunId: member.agent_run_id, address: member.address, configured: false });
+      if (member.kind === 'task_team_agent') {
+        addLocation(member.agent_run_id, member.address, containingTeamRunId);
+      }
       else {
-        visitMembers(member.members);
-        visitTasks(member.task_executions);
+        visitMembers(member.members, member.team_run_id);
+        visitTasks(member.task_executions, member.team_run_id);
       }
     }
   };
-  const visitConfigured = (members: readonly ConfiguredMemberExecutionDto[]): void => {
+  const visitConfigured = (
+    members: readonly ConfiguredMemberExecutionDto[],
+    containingTeamRunId: string,
+  ): void => {
     for (const member of members) {
-      if (member.kind === 'configured_agent') output.push({ agentRunId: member.agent_run_id, address: member.address, configured: true });
+      if (member.kind === 'configured_agent') {
+        addLocation(member.agent_run_id, member.address, containingTeamRunId);
+      }
       else {
-        visitConfigured(member.members);
-        visitTasks(member.task_executions);
+        visitConfigured(member.members, member.team_run_id);
+        visitTasks(member.task_executions, member.team_run_id);
       }
     }
   };
-  visitConfigured(tree.root_team.members);
-  visitTasks(tree.root_team.task_executions);
+  visitConfigured(tree.root_team.members, tree.root_team.team_run_id);
+  visitTasks(tree.root_team.task_executions, tree.root_team.team_run_id);
   return Object.freeze(output);
 };
 

@@ -9,17 +9,18 @@ import {
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
-import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
+import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { insertTaskExecution, settleTaskExecution } from './teamExecutionTreeMutations';
 import {
   buildTaskHistoryRows,
-  collectExecutionAgents,
-  collectLiveExecutionAgents,
+  collectAgentExecutionLocations,
+  collectLiveAgentExecutionLocations,
   projectNavigationRows,
   type TeamExecutionNavigationPurpose,
 } from './teamExecutionTreeSelectors';
 import type {
   TeamAgentContextEntry,
+  TeamAgentExecutionLocation,
   TeamAgentStreamMessage,
   TeamExecutionApplyResult,
   TeamExecutionEffect,
@@ -43,6 +44,7 @@ export interface TeamExecutionViewState {
   getFocusedMemberAddress(): AgentTeamAddress;
   getFocusedAgentContext(): AgentContext | null;
   getAgentContext(agentRunId: string): AgentContext | null;
+  getAgentExecutionLocation(agentRunId: string): TeamAgentExecutionLocation | null;
   getMemberAddress(agentRunId: string): AgentTeamAddress | null;
   hasAgentRun(agentRunId: string): boolean;
   focusAgent(agentRunId: string): MutationResult;
@@ -104,12 +106,12 @@ export const createTeamExecutionViewState = (
   const rootActive = ref(input.rootActive);
   const focusedAgentRunId = ref(requiredId(input.initialFocusedAgentRunId, 'initialFocusedAgentRunId'));
   const contexts = shallowReactive(new Map<string, AgentContext>());
-  const addresses = shallowReactive(new Map<string, AgentTeamAddress>());
+  const locations = shallowRef<ReadonlyMap<string, TeamAgentExecutionLocation>>(new Map());
 
   const validateAssociation = (entry: TeamAgentContextEntry): void => {
     const id = requiredId(entry.agentRunId, 'agentRunId');
-    if (entry.agentContext.state.runId !== id) throw new Error(`Agent context '${id}' has a mismatched run ID.`);
     if (!entry.agentContext.state || typeof entry.agentContext.state !== 'object') throw new Error(`Agent context '${id}' has no state.`);
+    if (entry.agentContext.state.runId !== id) throw new Error(`Agent context '${id}' has a mismatched run ID.`);
   };
   const associate = (entry: TeamAgentContextEntry): void => {
     validateAssociation(entry);
@@ -118,29 +120,49 @@ export const createTeamExecutionViewState = (
     entry.agentContext.state = reactive(entry.agentContext.state);
     const associatedContext = reactive(entry.agentContext);
     contexts.set(id, associatedContext);
-    addresses.set(id, entry.memberAddress);
   };
-  input.agentContexts.forEach(associate);
 
-  const planContextAssociations = (nextTree: TeamRunExecutionTreeDto): readonly TeamAgentContextEntry[] => {
-    const agents = collectExecutionAgents(nextTree);
-    const seen = new Set<string>();
-    const planned: TeamAgentContextEntry[] = [];
-    for (const agent of agents) {
-      if (seen.has(agent.agentRunId)) throw new Error(`Duplicate AgentRun '${agent.agentRunId}' in execution tree.`);
-      seen.add(agent.agentRunId);
-      const existingAddress = addresses.get(agent.agentRunId);
-      if (existingAddress && existingAddress !== agent.address) {
-        throw new Error(`AgentRun '${agent.agentRunId}' changed logical placement.`);
+  const collectValidatedLocations = (
+    nextTree: TeamRunExecutionTreeDto,
+  ): ReadonlyMap<string, TeamAgentExecutionLocation> => {
+    const nextLocations = new Map<string, TeamAgentExecutionLocation>();
+    for (const rawLocation of collectAgentExecutionLocations(nextTree)) {
+      const location = Object.freeze({
+        agentRunId: requiredId(rawLocation.agentRunId, 'agentRunId'),
+        memberAddress: parseAgentTeamAddress(rawLocation.memberAddress),
+        containingTeamRunId: requiredId(rawLocation.containingTeamRunId, 'containingTeamRunId'),
+      });
+      if (nextLocations.has(location.agentRunId)) {
+        throw new Error(`Duplicate AgentRun '${location.agentRunId}' in execution tree.`);
       }
-      if (!contexts.has(agent.agentRunId)) {
-        const context = input.createAgentContext(agent.agentRunId, agent.address, nextTree);
-        if (!context || context.state.runId !== agent.agentRunId) {
-          throw new Error(`No exact Agent context could be created for '${agent.agentRunId}'.`);
+      const existing = locations.value.get(location.agentRunId);
+      if (existing && (existing.memberAddress !== location.memberAddress
+        || existing.containingTeamRunId !== location.containingTeamRunId)) {
+        throw new Error(`AgentRun '${location.agentRunId}' changed logical placement.`);
+      }
+      nextLocations.set(location.agentRunId, location);
+    }
+    return nextLocations;
+  };
+
+  const planContextAssociations = (
+    nextTree: TeamRunExecutionTreeDto,
+    nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation>,
+  ): readonly TeamAgentContextEntry[] => {
+    const unplacedContext = [...contexts.keys()].find((agentRunId) => !nextLocations.has(agentRunId));
+    if (unplacedContext) {
+      throw new Error(`Agent context '${unplacedContext}' has no execution-tree location.`);
+    }
+    const planned: TeamAgentContextEntry[] = [];
+    for (const location of nextLocations.values()) {
+      if (!contexts.has(location.agentRunId)) {
+        const context = input.createAgentContext(location.agentRunId, location.memberAddress, nextTree);
+        if (!context || context.state.runId !== location.agentRunId) {
+          throw new Error(`No exact Agent context could be created for '${location.agentRunId}'.`);
         }
         const entry = Object.freeze({
-          agentRunId: agent.agentRunId,
-          memberAddress: agent.address,
+          agentRunId: location.agentRunId,
+          memberAddress: location.memberAddress,
           agentContext: context,
         });
         validateAssociation(entry);
@@ -152,7 +174,22 @@ export const createTeamExecutionViewState = (
   const commitContextAssociations = (planned: readonly TeamAgentContextEntry[]): void => {
     for (const entry of planned) associate(entry);
   };
-  commitContextAssociations(planContextAssociations(tree.value));
+
+  const initialLocations = collectValidatedLocations(tree.value);
+  const initialContextIds = new Set<string>();
+  for (const entry of input.agentContexts) {
+    validateAssociation(entry);
+    const id = requiredId(entry.agentRunId, 'agentRunId');
+    if (initialContextIds.has(id)) throw new Error(`Duplicate AgentRun context '${id}'.`);
+    const location = initialLocations.get(id);
+    if (!location || location.memberAddress !== parseAgentTeamAddress(entry.memberAddress)) {
+      throw new Error(`Agent context '${id}' has no exact execution-tree location.`);
+    }
+    initialContextIds.add(id);
+  }
+  input.agentContexts.forEach(associate);
+  commitContextAssociations(planContextAssociations(tree.value, initialLocations));
+  locations.value = initialLocations;
   if (!contexts.has(focusedAgentRunId.value)) throw new Error('Initial focused AgentRun is missing.');
 
   const navigationPurpose = (): TeamExecutionNavigationPurpose => rootActive.value
@@ -198,14 +235,14 @@ export const createTeamExecutionViewState = (
         || payload.execution_tree.root_team.team_run_id !== rootTeamRunId) {
         return Object.freeze({ disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH', message: 'Snapshot belongs to another root TeamRun.', effects: Object.freeze([]) });
       }
-      const planned = planContextAssociations(payload.execution_tree);
+      const nextLocations = collectValidatedLocations(payload.execution_tree);
+      const planned = planContextAssociations(payload.execution_tree, nextLocations);
       const plannedContexts = new Map(planned.map((entry) => [entry.agentRunId, entry.agentContext]));
-      const plannedAddresses = new Map(planned.map((entry) => [entry.agentRunId, entry.memberAddress]));
       const statusIds = new Set<string>();
       const validatedStatuses: Array<{ context: AgentContext; status: AgentStatus }> = [];
       for (const status of payload.agent_statuses) {
-        const memberAddress = addresses.get(status.agent_run_id) ?? plannedAddresses.get(status.agent_run_id);
-        if (statusIds.has(status.agent_run_id) || memberAddress !== status.member_address) {
+        const location = nextLocations.get(status.agent_run_id);
+        if (statusIds.has(status.agent_run_id) || location?.memberAddress !== status.member_address) {
           throw new Error(`Invalid Agent status identity '${status.agent_run_id}'.`);
         }
         const context = contexts.get(status.agent_run_id) ?? plannedContexts.get(status.agent_run_id);
@@ -213,7 +250,8 @@ export const createTeamExecutionViewState = (
         statusIds.add(status.agent_run_id);
         validatedStatuses.push({ context, status: status.status as AgentStatus });
       }
-      const expected = collectLiveExecutionAgents(payload.execution_tree).map((agent) => agent.agentRunId);
+      const expected = collectLiveAgentExecutionLocations(payload.execution_tree)
+        .map((location) => location.agentRunId);
       if (expected.some((agentRunId) => !statusIds.has(agentRunId))) {
         throw new Error('Snapshot omitted a canonical Agent status.');
       }
@@ -223,6 +261,7 @@ export const createTeamExecutionViewState = (
       commitContextAssociations(planned);
       validatedStatuses.forEach(({ context, status }) => { context.state.currentStatus = status; });
       tree.value = structuredClone(payload.execution_tree);
+      locations.value = nextLocations;
       tasks.value = structuredClone(payload.tasks);
       messages.value = structuredClone(payload.messages);
       changeSequence.value = payload.base_change_sequence;
@@ -254,6 +293,7 @@ export const createTeamExecutionViewState = (
         else nextTasks.splice(index, 1, structuredClone(message.payload.task));
         let nextTree = tree.value;
         let planned: readonly TeamAgentContextEntry[] = Object.freeze([]);
+        let nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation> | null = null;
         if (message.payload.event_type === 'TASK_AGENT_ACTIVATED'
           || message.payload.event_type === 'TASK_TEAM_ACTIVATED') {
           nextTree = insertTaskExecution({
@@ -261,16 +301,20 @@ export const createTeamExecutionViewState = (
             parentTeamRunId: message.payload.parent_team_run_id,
             execution: message.payload.execution,
           });
-          planned = planContextAssociations(nextTree);
+          nextLocations = collectValidatedLocations(nextTree);
+          planned = planContextAssociations(nextTree, nextLocations);
         } else if (message.payload.event_type === 'TASK_EXECUTION_SETTLED') {
           nextTree = settleTaskExecution({
             tree: tree.value,
             execution: message.payload.execution,
             settledAt: message.payload.settled_at,
           });
+          nextLocations = collectValidatedLocations(nextTree);
+          planned = planContextAssociations(nextTree, nextLocations);
         }
         commitContextAssociations(planned);
         tree.value = nextTree;
+        if (nextLocations) locations.value = nextLocations;
         tasks.value = nextTasks;
         repairFocus();
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
@@ -313,10 +357,11 @@ export const createTeamExecutionViewState = (
       return { disposition: 'applied' };
     },
     getFocusedAgentRunId: () => focusedAgentRunId.value,
-    getFocusedMemberAddress: () => addresses.get(focusedAgentRunId.value)!,
+    getFocusedMemberAddress: () => locations.value.get(focusedAgentRunId.value)!.memberAddress,
     getFocusedAgentContext: () => contexts.get(focusedAgentRunId.value) ?? null,
     getAgentContext: (agentRunId) => contexts.get(agentRunId.trim()) ?? null,
-    getMemberAddress: (agentRunId) => addresses.get(agentRunId.trim()) ?? null,
+    getAgentExecutionLocation: (agentRunId) => locations.value.get(agentRunId.trim()) ?? null,
+    getMemberAddress: (agentRunId) => locations.value.get(agentRunId.trim())?.memberAddress ?? null,
     hasAgentRun: (agentRunId) => contexts.has(agentRunId.trim()),
     focusAgent: (agentRunId) => {
       const id = agentRunId.trim();
@@ -329,7 +374,7 @@ export const createTeamExecutionViewState = (
       return { disposition: 'applied' };
     },
     listAgentContextEntries: () => Object.freeze([...contexts].map(([agentRunId, agentContext]) => Object.freeze({
-      agentRunId, memberAddress: addresses.get(agentRunId)!, agentContext,
+      agentRunId, memberAddress: locations.value.get(agentRunId)!.memberAddress, agentContext,
     }))),
     listNavigationRows: navigationRows,
     listTaskHistoryRows: () => buildTaskHistoryRows(tasks.value),
