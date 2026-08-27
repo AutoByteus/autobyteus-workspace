@@ -6,6 +6,7 @@ import { ApplicationPlatformLifecycle } from "../../../src/application-platform/
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationProviderCredentialReadinessAdapter } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { ApplicationAgentToolCallLifecycle } from "../../../src/application-agent-tools/services/application-agent-tool-call-lifecycle.js";
 
 const createDependencies = () => ({
   preparation: {
@@ -70,6 +71,15 @@ const createDependencies = () => ({
     close: vi.fn(async () => undefined),
   },
   streamingService: { stopAll: vi.fn(async () => undefined) },
+  applicationAgentToolCatalog: {
+    initializeFromBundleSnapshot: vi.fn(),
+  },
+  applicationAgentToolCallLifecycle: {
+    open: vi.fn(),
+    quiesceAndDrainAll: vi.fn(async () => undefined),
+    closeAll: vi.fn(async () => undefined),
+  },
+  applicationAgentToolCapability: { close: vi.fn() },
 });
 
 describe("ApplicationPlatformLifecycle", () => {
@@ -114,6 +124,8 @@ describe("ApplicationPlatformLifecycle", () => {
     expect(
       dependencies.eventDispatchService.resumePendingEventsForApplication,
     ).toHaveBeenCalledWith("selected-app");
+    expect(dependencies.applicationAgentToolCallLifecycle.open)
+      .toHaveBeenCalledExactlyOnceWith("selected-app");
     await expect(lifecycle.awaitReady()).resolves.toBeUndefined();
   });
 
@@ -202,6 +214,8 @@ describe("ApplicationPlatformLifecycle", () => {
     dependencies.eventDispatchService.stop = record("events");
     dependencies.executionLifecycle.quiesce =
       vi.fn(() => order.push("execution-quiesce"));
+    dependencies.applicationAgentToolCallLifecycle.quiesceAndDrainAll =
+      record("application-tools-drain");
     dependencies.agentCommunicationService.closeAll = record("communication");
     dependencies.backendGateway.dispose = record("gateway") as never;
     dependencies.backendWebSocketSessionService.dispose = record(
@@ -218,6 +232,10 @@ describe("ApplicationPlatformLifecycle", () => {
       "execution-close",
       new Error("runtime run shutdown failed"),
     );
+    dependencies.applicationAgentToolCallLifecycle.closeAll =
+      record("application-tools-close");
+    dependencies.applicationAgentToolCapability.close =
+      vi.fn(() => order.push("application-tool-capability-close"));
     dependencies.streamingService.stopAll = record("streaming");
     const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
 
@@ -227,6 +245,7 @@ describe("ApplicationPlatformLifecycle", () => {
     });
     expect(order).toEqual([
       "execution-quiesce",
+      "application-tools-drain",
       "events",
       "communication",
       "gateway",
@@ -237,6 +256,8 @@ describe("ApplicationPlatformLifecycle", () => {
       "observers",
       "workers",
       "execution-close",
+      "application-tools-close",
+      "application-tool-capability-close",
       "streaming",
     ]);
     expect(lifecycle.getState()).toBe("stopped");
@@ -244,6 +265,35 @@ describe("ApplicationPlatformLifecycle", () => {
     await expect(lifecycle.stop()).rejects.toMatchObject({
       name: "AggregateError",
     });
-    expect(order).toHaveLength(12);
+    expect(order).toHaveLength(15);
+  });
+
+  it("drains a real admitted application-tool call before stopping workers during shutdown", async () => {
+    let release!: () => void;
+    const callGate = new Promise<void>((resolve) => { release = resolve; });
+    const order: string[] = [];
+    const dependencies = createDependencies();
+    const callLifecycle = new ApplicationAgentToolCallLifecycle();
+    callLifecycle.open("selected-app");
+    const drainSpy = vi.spyOn(callLifecycle, "quiesceAndDrainAll");
+    dependencies.applicationAgentToolCallLifecycle = callLifecycle as never;
+    dependencies.engineLauncher.stopAll = vi.fn(async () => { order.push("workers"); });
+    const admitted = callLifecycle.runAdmitted("selected-app", async () => {
+      order.push("call.start");
+      await callGate;
+      order.push("call.finish");
+    });
+    const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
+
+    const stopping = lifecycle.stop();
+    await vi.waitFor(() => expect(drainSpy).toHaveBeenCalledTimes(1));
+    await expect(callLifecycle.runAdmitted("selected-app", async () => undefined))
+      .rejects.toMatchObject({ code: "APPLICATION_TOOL_UNAVAILABLE" });
+    expect(order).toEqual(["call.start"]);
+    release();
+    await admitted;
+    await stopping;
+
+    expect(order).toEqual(["call.start", "call.finish", "workers"]);
   });
 });

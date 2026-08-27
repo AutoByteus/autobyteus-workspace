@@ -12,6 +12,8 @@ import {
   type ApplicationSupportedLaunchConfigDeclaration,
   type ApplicationSupportedTeamLaunchConfigDeclaration,
   type ApplicationSupportedTeamMemberOverrideDeclaration,
+  type ApplicationAgentToolDeclaration,
+  parseApplicationAgentToolDeclarations,
 } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
@@ -85,6 +87,7 @@ type ParsedManifest = {
   entryHtmlRelativePath: string;
   backendBundleManifestRelativePath: string;
   executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
+  agentTools: readonly ApplicationAgentToolDeclaration[];
 };
 
 export class ApplicationManifestParseError extends Error {
@@ -423,7 +426,7 @@ export const parseApplicationManifest = (
 
   const manifest = payload as ApplicationManifest & Record<string, unknown>;
   rejectLegacyField(manifest, "application manifest", "resourceSlots", "executionResourceSlots");
-  rejectUnknownFields(manifest, ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots"], "Application manifest");
+  rejectUnknownFields(manifest, ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots", "agentTools"], "Application manifest");
   if (!manifest.ui || typeof manifest.ui !== "object" || Array.isArray(manifest.ui)) {
     throw new ApplicationManifestParseError("ui must be an object.");
   }
@@ -474,6 +477,7 @@ export const parseApplicationManifest = (
       { requiredPrefix: "backend/" },
     ),
     executionResourceSlots: normalizeExecutionResourceSlots(manifest.executionResourceSlots),
+    agentTools: parseApplicationAgentToolDeclarations(manifest.agentTools),
   };
 };
 

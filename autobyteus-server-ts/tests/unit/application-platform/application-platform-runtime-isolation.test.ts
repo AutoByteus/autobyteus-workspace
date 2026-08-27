@@ -91,6 +91,7 @@ describe("application platform runtime isolation", () => {
         codexClientManager: {} as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelConfigValidator: { validate: vi.fn() },
+        staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
         selectedApplicationIds: new Set([applicationId]),
       });
     };
@@ -116,8 +117,8 @@ describe("application platform runtime isolation", () => {
     expect(runtimeA.lifecycle).not.toBe(runtimeB.lifecycle);
     expect(runtimeA.rest).not.toBe(runtimeB.rest);
     expect(runtimeA.realtime).not.toBe(runtimeB.realtime);
-    expect(runtimeA.hostManagement.catalogReconciliation).not.toBe(
-      runtimeB.hostManagement.catalogReconciliation,
+    expect(runtimeA.hostManagement.catalogTransition).not.toBe(
+      runtimeB.hostManagement.catalogTransition,
     );
     expect(runtimeA.hostManagement.runOwnership).not.toBe(
       runtimeB.hostManagement.runOwnership,
@@ -204,6 +205,7 @@ describe("application platform runtime isolation", () => {
         codexClientManager: processOwners.codexClient as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelConfigValidator: { validate: vi.fn() },
+        staticAdapterToolNames: new Set(),
         selectedApplicationIds: new Set(["app-a"]),
       });
     }).toThrow(assemblyFailure);

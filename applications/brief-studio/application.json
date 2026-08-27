@@ -1,5 +1,5 @@
 {
-  "manifestVersion": "4",
+  "manifestVersion": "5",
   "id": "brief-studio",
   "name": "Brief Studio",
   "description": "External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.",
@@ -11,6 +11,17 @@
   "backend": {
     "bundleManifest": "backend/bundle.json"
   },
+  "agentTools": [
+    {
+      "name": "get_brief_context",
+      "description": "Read the current Brief Studio brief for this application binding.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ],
   "executionResourceSlots": [
     {
       "slotKey": "draftingTeam",

@@ -52,6 +52,8 @@ import { ApplicationCurrentModelSelectionPolicy } from "../launch-configuration/
 import { ApplicationLaunchConfigurationService } from "../launch-configuration/application-launch-configuration-service.js";
 import { ApplicationLaunchHostCapabilityValidator } from "../launch-configuration/application-launch-host-capability-validator.js";
 import { ApplicationLaunchResourceBaselineBuilder } from "../launch-configuration/application-launch-resource-baseline-builder.js";
+import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
+import type { ApplicationAgentToolCallLifecycle } from "../../application-agent-tools/services/application-agent-tool-call-lifecycle.js";
 
 export type ApplicationOrchestrationAssemblyInput = Readonly<{
   appConfig: AppConfig;
@@ -81,6 +83,9 @@ export type ApplicationOrchestrationAssemblyInput = Readonly<{
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
   skillService: SkillService;
   selectedApplicationIds?: ReadonlySet<string> | null;
+  applicationAgentToolCatalog: ApplicationAgentToolCatalog;
+  applicationAgentToolCallLifecycle: ApplicationAgentToolCallLifecycle;
+  staticAdapterToolNames: ReadonlySet<string>;
 }>;
 
 export const createApplicationOrchestrationServices = (
@@ -91,6 +96,7 @@ export const createApplicationOrchestrationServices = (
     startupGate,
     lookupStore: input.runLookupStore,
     bindingStore: input.bindingStore,
+    teamExecution: input.teamExecution,
   });
   const availabilityService = new ApplicationAvailabilityService({
     applicationBundleService: input.bundleService,
@@ -229,13 +235,15 @@ export const createApplicationOrchestrationServices = (
     executionResourceResolver,
     skillService: input.skillService,
     activeApplicationIds: input.selectedApplicationIds,
+    applicationAgentToolCatalog: input.applicationAgentToolCatalog,
+    staticAdapterToolNames: input.staticAdapterToolNames,
   });
   const reentryService = new ApplicationReentryService({
-    bundleService: input.bundleService,
     availabilityService,
     recoveryService,
     eventDispatchService,
     engineLauncher,
+    applicationAgentToolCallLifecycle: input.applicationAgentToolCallLifecycle,
   });
   return Object.freeze({
     startupGate,

@@ -19,6 +19,9 @@ import type {
   ApplicationExecutionLifecycle,
   ApplicationExecutionToolReadiness,
 } from "../execution/application-execution-scope-contracts.js";
+import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
+import type { ApplicationAgentToolCallLifecycle } from "../../application-agent-tools/services/application-agent-tool-call-lifecycle.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export type ApplicationPlatformLifecycleState =
   | "constructed"
@@ -60,4 +63,7 @@ export type ApplicationPlatformLifecycleDependencies = {
   engineLauncher: ApplicationEngineLauncher;
   executionLifecycle: ApplicationExecutionLifecycle;
   streamingService: ApplicationAgentStreamingService;
+  applicationAgentToolCatalog: ApplicationAgentToolCatalog;
+  applicationAgentToolCallLifecycle: ApplicationAgentToolCallLifecycle;
+  applicationAgentToolCapability: ApplicationAgentToolCapability;
 };

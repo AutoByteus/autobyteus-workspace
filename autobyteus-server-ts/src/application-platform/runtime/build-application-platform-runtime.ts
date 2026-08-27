@@ -37,6 +37,13 @@ import type { LlmProviderService } from "../../llm-management/llm-providers/serv
 import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
+import { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
+import { ApplicationAgentToolCallLifecycle } from "../../application-agent-tools/services/application-agent-tool-call-lifecycle.js";
+import { ApplicationAgentToolPayloadValidator } from "../../application-agent-tools/services/application-agent-tool-payload-validator.js";
+import { ApplicationAgentToolWorkerInvoker } from "../../application-agent-tools/services/application-agent-tool-worker-invoker.js";
+import { ApplicationAgentToolGateway } from "../../application-agent-tools/services/application-agent-tool-gateway.js";
+import { beginApplicationAgentToolCapabilityAssembly } from "../../application-agent-tools/services/application-agent-tool-capability.js";
+import { ApplicationCatalogTransitionService } from "../../application-orchestration/services/application-catalog-transition-service.js";
 
 export type ApplicationPlatformBuildInput = Readonly<{
   appConfig: AppConfig;
@@ -55,6 +62,7 @@ export type ApplicationPlatformBuildInput = Readonly<{
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
   modelConfigValidator: RunModelConfigValidator;
   selectedApplicationIds?: ReadonlySet<string> | null;
+  staticAdapterToolNames: ReadonlySet<string>;
 }>;
 
 export const buildApplicationPlatformRuntime = (
@@ -79,10 +87,17 @@ export const buildApplicationPlatformRuntime = (
   const bindingStore = new ApplicationRunBindingStore({ platformStateStore });
   const overrideStore = new ApplicationLaunchOverrideStore({ platformStateStore });
   const journalStore = new ApplicationExecutionEventJournalStore({ platformStateStore });
+  const applicationAgentToolCatalog = new ApplicationAgentToolCatalog();
+  const applicationAgentToolCallLifecycle = new ApplicationAgentToolCallLifecycle();
+  const applicationAgentToolAssembly = beginApplicationAgentToolCapabilityAssembly(
+    applicationAgentToolCatalog,
+  );
   const scopeIdentity: ApplicationExecutionScopeIdentity = input.selectedApplicationIds
     ? `application:${Array.from(input.selectedApplicationIds).sort().join(",")}`
     : "application:studio";
-  const executionScope = ApplicationExecutionScope.create({
+  let executionScope: ApplicationExecutionScope;
+  try {
+    executionScope = ApplicationExecutionScope.create({
     scopeIdentity,
     memoryDir: input.appConfig.getMemoryDir(),
     contextFilePathEnvironment: input.contextFilePathEnvironment,
@@ -94,7 +109,12 @@ export const buildApplicationPlatformRuntime = (
     bindingReader: bindingStore,
     artifactDeliverySink: artifactDeliveryQueue,
     modelConfigValidator: input.modelConfigValidator,
-  });
+    applicationAgentTools: applicationAgentToolAssembly.capability,
+    });
+  } catch (error) {
+    applicationAgentToolAssembly.abort();
+    throw error;
+  }
   try {
     const services = createApplicationOrchestrationServices({
     appConfig: input.appConfig,
@@ -124,7 +144,23 @@ export const buildApplicationPlatformRuntime = (
     requireCurrentModelIdentifier: input.requireCurrentModelIdentifier,
     skillService: new SkillService({ config: input.appConfig }),
     selectedApplicationIds: input.selectedApplicationIds,
+    applicationAgentToolCatalog,
+    applicationAgentToolCallLifecycle,
+    staticAdapterToolNames: input.staticAdapterToolNames,
     });
+    const applicationAgentToolCapability = applicationAgentToolAssembly.complete(
+      new ApplicationAgentToolGateway({
+        availability: services.availabilityService,
+        catalog: applicationAgentToolCatalog,
+        ownership: services.runOwnershipService,
+        payloadValidator: new ApplicationAgentToolPayloadValidator(),
+        lifecycle: applicationAgentToolCallLifecycle,
+        workerInvoker: new ApplicationAgentToolWorkerInvoker({
+          controller: engineController,
+          launcher: services.engineLauncher,
+        }),
+      }),
+    );
     const notificationHub = new ApplicationBackendNotificationHub();
     const backendWebSocketSessionService = new ApplicationBackendWebSocketSessionService({
       engineController,
@@ -140,6 +176,14 @@ export const buildApplicationPlatformRuntime = (
     });
     const catalogReconciliation = new ApplicationCatalogReconciliationService({
       platformStateStore,
+      availabilityService: services.availabilityService,
+    });
+    const catalogTransition = new ApplicationCatalogTransitionService({
+      bundleService: input.bundleService,
+      applicationAgentToolCatalog,
+      reentryService: services.reentryService,
+      catalogReconciliation,
+      definitionReadiness: services.definitionRuntimeReadiness,
       availabilityService: services.availabilityService,
     });
     const lifecycle = new ApplicationPlatformLifecycle({
@@ -179,6 +223,9 @@ export const buildApplicationPlatformRuntime = (
       engineLauncher: services.engineLauncher,
       executionLifecycle: executionScope.lifecycle,
       streamingService: services.agentStreamingService,
+      applicationAgentToolCatalog,
+      applicationAgentToolCallLifecycle,
+      applicationAgentToolCapability,
     });
 
     return Object.freeze({
@@ -199,8 +246,8 @@ export const buildApplicationPlatformRuntime = (
           executeApplicationGraphql: backendGateway.executeApplicationGraphql.bind(backendGateway),
         }),
         availability: Object.freeze({
-          reloadAndReenter: services.reentryService.reloadAndReenter
-            .bind(services.reentryService),
+          reloadAndReenter: catalogTransition.reloadAndReenter
+            .bind(catalogTransition),
         }),
         executionResources: Object.freeze({
           getApplicationLaunchConfigurationView: services.orchestrationHostService
@@ -230,16 +277,26 @@ export const buildApplicationPlatformRuntime = (
         }),
       }),
       hostManagement: Object.freeze({
-        catalogReconciliation,
+        catalogTransition,
         runOwnership: services.runOwnershipService,
       }),
     });
   } catch (error) {
+    const cleanupErrors: unknown[] = [];
     try {
       executionScope.abortConstruction();
     } catch (cleanupError) {
+      cleanupErrors.push(cleanupError);
+    }
+    try {
+      applicationAgentToolAssembly.abort();
+      applicationAgentToolAssembly.capability.close();
+    } catch (cleanupError) {
+      cleanupErrors.push(cleanupError);
+    }
+    if (cleanupErrors.length > 0) {
       throw new AggregateError(
-        [error, cleanupError],
+        [error, ...cleanupErrors],
         "Application platform runtime construction failed.",
       );
     }

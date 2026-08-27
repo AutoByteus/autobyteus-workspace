@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
@@ -22,6 +23,7 @@ import type { PublishedArtifactSummary } from "../../services/published-artifact
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export type ApplicationExecutionScopeIdentity = `application:${string}`;
 
@@ -37,6 +39,7 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
   modelConfigValidator: RunModelConfigValidator;
+  applicationAgentTools: ApplicationAgentToolCapability;
 }>;
 
 export type ApplicationAgentLaunchResult = Readonly<{
@@ -101,6 +104,7 @@ export interface ApplicationTeamExecution {
     teamRunId: string,
     listener: (event: ObservedRunLifecycleEvent) => void,
   ): Promise<(() => void) | null>;
+  requireLiveTeamMember(identity: TeamMemberExecutionIdentity): Promise<void>;
 }
 
 export interface ApplicationExecutionStreaming {

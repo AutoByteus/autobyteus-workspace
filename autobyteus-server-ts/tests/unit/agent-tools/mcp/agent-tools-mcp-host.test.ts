@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { createAgentToolsMcpHost } from "../../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
+import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
 import { AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR } from "../../../../src/config/server-runtime-endpoints.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -38,7 +39,10 @@ describe("AgentToolsMcpHost", () => {
     const host = createAgentToolsMcpHost();
     const authority = host.sessionAuthorities.begin({ scopeIdentity: "application:test" })
       .complete({
-        executionCapabilities: { publishedArtifactPublisher: createPublisher() },
+        executionCapabilities: {
+          publishedArtifactPublisher: createPublisher(),
+          applicationAgentTools: null,
+        },
         assertExecutionCapabilitiesReady: () => undefined,
       });
     const issued = authority.issuer.issueForRun(createSessionInput("run-1"));
@@ -56,5 +60,19 @@ describe("AgentToolsMcpHost", () => {
     })).toMatchObject({ ok: false, reason: "missing_session" });
     expect(() => host.sessionAuthorities.begin({ scopeIdentity: "application:late" }))
       .toThrow("Agent Tools MCP host is closed.");
+  });
+
+  it("exposes one immutable snapshot containing every default provider adapter name", () => {
+    const expectedNames = buildDefaultAgentToolMcpAdapterProviders()
+      .flatMap((provider) => provider.getAdapters())
+      .map((adapter) => adapter.definition.name)
+      .sort((left, right) => left.localeCompare(right));
+    const host = createAgentToolsMcpHost();
+
+    expect([...host.staticAdapterToolNames]).toEqual(expectedNames);
+    expect(Object.isFrozen(host.staticAdapterToolNames)).toBe(true);
+    expect("add" in host.staticAdapterToolNames).toBe(false);
+
+    host.close();
   });
 });

@@ -6,9 +6,13 @@ import { onRunStarted } from "./event-handlers/on-run-started.js";
 import { onRunTerminated } from "./event-handlers/on-run-terminated.js";
 import { executeBriefStudioGraphql } from "./graphql/index.js";
 import { createBriefArtifactReconciliationService } from "./services/brief-artifact-reconciliation-service.js";
+import { getBriefContext } from "./agent-tools/get-brief-context.js";
 
 export default defineApplication({
-  definitionContractVersion: "6",
+  definitionContractVersion: "7",
+  agentToolHandlers: {
+    get_brief_context: getBriefContext,
+  },
   lifecycle: {
     onStart: async (context) => {
       await createBriefArtifactReconciliationService(context).reconcilePublishedArtifacts();

@@ -63,6 +63,7 @@ const createBundle = (
   packageRootPath: path.dirname(path.dirname(applicationRootPath)),
   localAgentIds: ["sample-agent"],
   localTeamIds: [],
+  agentTools: [],
   entryHtmlRelativePath: "ui/index.html",
   iconRelativePath: null,
   backend: {
@@ -74,7 +75,7 @@ const createBundle = (
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "6",
+      backendDefinitionContractVersion: "7",
       frontendSdkContractVersion: "6",
     },
     supportedExposures: {
@@ -123,7 +124,7 @@ describe("Application backend custom WebSocket integration", () => {
       `import { appendFileSync } from 'node:fs'
 
 export default {
-  definitionContractVersion: '6',
+  definitionContractVersion: '7',
   webSocketRoutes: [{
     path: '/rooms/:roomId',
     async open(request, session, context) {

@@ -10,8 +10,8 @@ afterEach(async () => {
     fs.rm(root, { recursive: true, force: true })));
 });
 
-describe("ApplicationPackageCommandService", () => {
-  it("rolls back a local import and performs one best-effort refresh after refresh failure", async () => {
+describe("ApplicationPackageCommandService catalog-transition boundary", () => {
+  it("gives local-import source mutation and rollback to the catalog transition owner", async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "package-command-"));
     tempRoots.push(root);
     await fs.mkdir(path.join(root, "applications"));
@@ -28,36 +28,45 @@ describe("ApplicationPackageCommandService", () => {
     const provider = {
       validatePackageRoot: vi.fn(async () => { order.push("provider.validate"); }),
     };
-    const refreshCoordinator = {
-      refresh: vi.fn()
-        .mockImplementationOnce(async () => {
-          order.push("refresh.fail");
-          throw new Error("refresh failed");
-        })
-        .mockImplementationOnce(async () => { order.push("refresh.rollback"); }),
+    const catalogTransition = {
+      runPackageTransition: vi.fn(async (mutation: {
+        kind: string;
+        applyBeforeStage: () => Promise<unknown>;
+        rollbackSource: (value: unknown, cause: unknown) => Promise<void>;
+      }) => {
+        expect(mutation.kind).toBe("import");
+        order.push("transition.begin");
+        const value = await mutation.applyBeforeStage();
+        order.push("transition.stage.fail");
+        const failure = new Error("stage failed");
+        await mutation.rollbackSource(value, failure);
+        order.push("transition.rollback.staged");
+        throw failure;
+      }),
     };
     const service = new ApplicationPackageCommandService({
       registry,
       provider,
-      refreshCoordinator,
+      catalogTransition,
     } as never);
 
     await expect(service.importApplicationPackage({
       sourceKind: "LOCAL_PATH",
       source: root,
-    })).rejects.toThrow("refresh failed");
+    })).rejects.toThrow("stage failed");
     expect(order).toEqual([
       "provider.validate",
+      "transition.begin",
       "root.add",
       "record.upsert",
-      "refresh.fail",
+      "transition.stage.fail",
       "root.remove",
       "record.remove",
-      "refresh.rollback",
+      "transition.rollback.staged",
     ]);
   });
 
-  it("deletes a managed install only after the committed registry refresh", async () => {
+  it("deletes a managed install only from the transition finalizer after commit", async () => {
     const managedInstallPath = await fs.mkdtemp(path.join(os.tmpdir(), "managed-package-"));
     tempRoots.push(managedInstallPath);
     const order: string[] = [];
@@ -80,23 +89,39 @@ describe("ApplicationPackageCommandService", () => {
         return [];
       }),
     };
+    const catalogTransition = {
+      runPackageTransition: vi.fn(async (mutation: {
+        kind: string;
+        applyBeforeStage: () => Promise<unknown>;
+        finalizeAfterCommit?: (value: unknown) => Promise<void>;
+      }) => {
+        expect(mutation.kind).toBe("remove");
+        const value = await mutation.applyBeforeStage();
+        await expect(fs.stat(managedInstallPath)).resolves.toBeDefined();
+        order.push("transition.commit");
+        await mutation.finalizeAfterCommit?.(value);
+        order.push("transition.finalized");
+        return value;
+      }),
+    };
     const service = new ApplicationPackageCommandService({
       registry,
       provider: {} as never,
-      refreshCoordinator: {
-        refresh: vi.fn(async () => {
-          order.push("refresh");
-          await expect(fs.stat(managedInstallPath)).resolves.toBeDefined();
-        }),
-      },
+      catalogTransition,
     } as never);
 
     await expect(service.removeApplicationPackage(target.packageId)).resolves.toEqual([]);
-    expect(order).toEqual(["root.remove", "record.remove", "refresh", "list"]);
+    expect(order).toEqual([
+      "root.remove",
+      "record.remove",
+      "transition.commit",
+      "transition.finalized",
+      "list",
+    ]);
     await expect(fs.stat(managedInstallPath)).rejects.toThrow();
   });
 
-  it("restores removed package state and refreshes once after refresh failure", async () => {
+  it("restores removed registry state through the transition rollback callback", async () => {
     const packageRootPath = "/tmp/linked-package";
     const order: string[] = [];
     const target = {
@@ -117,28 +142,34 @@ describe("ApplicationPackageCommandService", () => {
       addAdditionalRootPath: vi.fn(() => order.push("root.restore")),
       restorePackageRecord: vi.fn(async () => { order.push("record.restore"); }),
     };
+    const catalogTransition = {
+      runPackageTransition: vi.fn(async (mutation: {
+        applyBeforeStage: () => Promise<unknown>;
+        rollbackSource: (value: unknown, cause: unknown) => Promise<void>;
+      }) => {
+        const value = await mutation.applyBeforeStage();
+        order.push("transition.stage.fail");
+        const failure = new Error("stage failed");
+        await mutation.rollbackSource(value, failure);
+        order.push("transition.rollback.staged");
+        throw failure;
+      }),
+    };
     const service = new ApplicationPackageCommandService({
       registry,
       provider: {} as never,
-      refreshCoordinator: {
-        refresh: vi.fn()
-          .mockImplementationOnce(async () => {
-            order.push("refresh.fail");
-            throw new Error("refresh failed");
-          })
-          .mockImplementationOnce(async () => { order.push("refresh.rollback"); }),
-      },
+      catalogTransition,
     } as never);
 
     await expect(service.removeApplicationPackage(target.packageId))
-      .rejects.toThrow("refresh failed");
+      .rejects.toThrow("stage failed");
     expect(order).toEqual([
       "root.remove",
       "record.remove",
-      "refresh.fail",
+      "transition.stage.fail",
       "root.restore",
       "record.restore",
-      "refresh.rollback",
+      "transition.rollback.staged",
     ]);
   });
 });

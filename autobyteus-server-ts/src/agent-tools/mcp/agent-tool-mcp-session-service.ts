@@ -59,6 +59,7 @@ export class AgentToolMcpSessionService {
       ? Object.freeze({
           publishedArtifactPublisher:
             deps.executionCapabilities.publishedArtifactPublisher,
+          applicationAgentTools: deps.executionCapabilities.applicationAgentTools,
         })
       : null;
   }
@@ -71,6 +72,7 @@ export class AgentToolMcpSessionService {
       runtimeExposure: input.runtimeExposure,
       sender: input.sender,
       executionContext: input.executionContext ?? {},
+      applicationAgentTools: executionCapabilities.applicationAgentTools,
     });
     const { session, capabilityToken } = this.registry.createSession({
       ...input,
@@ -121,6 +123,7 @@ export class AgentToolMcpSessionService {
       return Object.freeze({
         kind: "agent",
         publishedArtifactPublisher: base.publishedArtifactPublisher,
+        applicationAgentTools: base.applicationAgentTools,
       });
     }
 
@@ -139,6 +142,7 @@ export class AgentToolMcpSessionService {
     return Object.freeze({
       kind: "team_member",
       publishedArtifactPublisher: base.publishedArtifactPublisher,
+      applicationAgentTools: base.applicationAgentTools,
       taskDelegation: Object.freeze({
         identity: { ...memberIdentity },
         rootResolver: member.taskRootResolver,

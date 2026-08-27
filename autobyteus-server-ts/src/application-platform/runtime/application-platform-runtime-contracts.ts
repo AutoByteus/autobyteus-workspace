@@ -3,9 +3,8 @@ import type { ApplicationBackendApiGatewayService } from "../../application-back
 import type { ApplicationBackendNotificationHub } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import type { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
 import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
-import type { ApplicationReentryService } from "../../application-orchestration/services/application-reentry-service.js";
+import type { ApplicationCatalogTransitionService } from "../../application-orchestration/services/application-catalog-transition-service.js";
 import type { ApplicationRunOwnershipReader } from "../../application-orchestration/services/application-run-ownership-service.js";
-import type { ApplicationCatalogReconciliationService } from "./application-catalog-reconciliation-service.js";
 import type { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
 
 export type ApplicationPlatformLifecycleReadiness = Pick<
@@ -24,7 +23,7 @@ export type ApplicationBackendRestContract = Pick<
 >;
 
 export type ApplicationAvailabilityRestContract = Pick<
-  ApplicationReentryService,
+  ApplicationCatalogTransitionService,
   "reloadAndReenter"
 >;
 
@@ -66,6 +65,6 @@ export type ApplicationPlatformRealtimeContracts = Readonly<{
 }>;
 
 export type ApplicationPlatformHostManagementContracts = Readonly<{
-  catalogReconciliation: ApplicationCatalogReconciliationService;
+  catalogTransition: ApplicationCatalogTransitionService;
   runOwnership: ApplicationRunOwnershipReader;
 }>;

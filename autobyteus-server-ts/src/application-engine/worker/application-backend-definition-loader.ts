@@ -35,6 +35,7 @@ const validateDefinitionShape = (definition: ApplicationBackendDefinition): void
     "graphql",
     "eventHandlers",
     "artifactHandlers",
+    "agentToolHandlers",
   ]);
   const unknown = Object.keys(record).find((key) => !allowed.has(key));
   if (unknown) throw new Error(`Application backend definition contains unsupported key '${unknown}'.`);
@@ -130,6 +131,32 @@ export class ApplicationBackendDefinitionLoader {
     }
     validateExposures(definition, input.supportedExposures);
     validateWebSocketRoutes(definition);
+    if (definition.agentToolHandlers !== undefined) {
+      const prototype = isRecord(definition.agentToolHandlers)
+        ? Object.getPrototypeOf(definition.agentToolHandlers)
+        : null;
+      if (
+        !isRecord(definition.agentToolHandlers)
+        || (prototype !== Object.prototype && prototype !== null)
+      ) {
+        throw new Error("Application backend agentToolHandlers must be an object when provided.");
+      }
+    }
+    const declaredAgentToolNames = [...new Set(input.declaredAgentToolNames)].sort();
+    const handlerNames = Object.keys(definition.agentToolHandlers ?? {}).sort();
+    const missingHandler = declaredAgentToolNames.find((name) => !handlerNames.includes(name));
+    const extraHandler = handlerNames.find((name) => !declaredAgentToolNames.includes(name));
+    if (missingHandler) {
+      throw new Error(`Application agent tool handler '${missingHandler}' was not found.`);
+    }
+    if (extraHandler) {
+      throw new Error(`Application backend exposes undeclared agent tool handler '${extraHandler}'.`);
+    }
+    for (const name of handlerNames) {
+      if (typeof definition.agentToolHandlers?.[name] !== "function") {
+        throw new Error(`Application agent tool handler '${name}' must be a function.`);
+      }
+    }
     return {
       applicationId: input.applicationId,
       definition,
@@ -146,6 +173,7 @@ export class ApplicationBackendDefinitionLoader {
           const family = EVENT_FAMILY_BY_HANDLER_KEY[key as keyof typeof EVENT_FAMILY_BY_HANDLER_KEY];
           return family ? [family] : [];
         }),
+        agentTools: handlerNames,
       },
     };
   }

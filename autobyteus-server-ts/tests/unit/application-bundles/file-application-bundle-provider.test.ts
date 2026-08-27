@@ -126,7 +126,7 @@ describe("FileApplicationBundleProvider", () => {
       path.join(bundleRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "4",
+          manifestVersion: "5",
           id: localApplicationId,
           name: "Sample App",
           description: "Sample description",
@@ -176,7 +176,7 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "6",
+            backendDefinitionContractVersion: "7",
             frontendSdkContractVersion: "6",
           },
           supportedExposures: {
@@ -197,7 +197,7 @@ describe("FileApplicationBundleProvider", () => {
     );
     await writeFile(
       path.join(bundleRoot, "backend", "dist", "entry.mjs"),
-      "export default { definitionContractVersion: '6' }\n",
+      "export default { definitionContractVersion: '7' }\n",
     );
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
@@ -424,7 +424,7 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "6",
+            backendDefinitionContractVersion: "7",
             frontendSdkContractVersion: retiredFrontendSdkVersion,
           },
           supportedExposures: {
@@ -479,7 +479,7 @@ describe("FileApplicationBundleProvider", () => {
       path.join(builtInRoot, "applications", "broken-app", "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "4",
+          manifestVersion: "5",
           id: "broken-app",
           name: "Broken App",
           ui: {
@@ -730,7 +730,7 @@ describe("FileApplicationBundleProvider", () => {
       path.join(nestedMirrorRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "4",
+          manifestVersion: "5",
           id: "sample-app",
           name: "Nested Mirror",
           ui: {

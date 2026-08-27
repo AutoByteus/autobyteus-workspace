@@ -7,11 +7,13 @@ import type {
 } from "./agent-tool-mcp-session.js";
 import type { AgentToolMcpSupportedToolDefinition } from "./agent-tool-mcp-definition-provider.js";
 import type { McpToolResult } from "./agent-tools-mcp-result-mapper.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export type AgentToolMcpAvailabilityContext = {
   runtimeExposure: RuntimeAgentToolExposure;
   sender: AgentRunMessageSenderContext | null;
   executionContext: AgentToolMcpExecutionContext;
+  applicationAgentTools?: ApplicationAgentToolCapability | null;
 };
 
 export type AgentToolMcpOperationExecutionResult = {

@@ -6,6 +6,7 @@ category: Writing
 The Brief Studio sample workflow is research-first.
 
 Required team order:
+- each member begins its work by calling `get_brief_context`; this binding-derived application tool is the authority for the current brief identity and status
 - researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifacts` using `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`, and then hands off to the writer before drafting begins
 - researcher should publish a short structured research checkpoint, not a long report
 - if research is blocked, researcher must complete the same sequence for `brief-studio/research-blocker.md`

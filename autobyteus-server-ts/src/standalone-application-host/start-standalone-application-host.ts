@@ -253,6 +253,7 @@ export const startStandaloneApplicationHost = async (
     generalProcessAuthority = generalAssembly.complete({
       executionCapabilities: {
         publishedArtifactPublisher: getGeneralProcessPublishedArtifactPublisher(),
+        applicationAgentTools: null,
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
@@ -285,6 +286,7 @@ export const startStandaloneApplicationHost = async (
       codexClientManager: getCodexAppServerClientManager(),
       requireCurrentModelIdentifier: (modelIdentifier) =>
         LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
+      staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
       selectedApplicationIds: new Set([selection.applicationId]),
     });
     app = await buildStandaloneApplicationServer({

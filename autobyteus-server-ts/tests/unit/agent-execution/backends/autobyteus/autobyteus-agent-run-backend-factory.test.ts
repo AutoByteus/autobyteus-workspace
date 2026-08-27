@@ -174,6 +174,101 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ]);
   });
 
+  it("composes the selected application-owned tool through the real AutoByteus provider factory", async () => {
+    const applicationToolName = "read_application_state";
+    const route = Object.freeze({
+      kind: "application_agent_tool" as const,
+      identity: Object.freeze({
+        applicationId: "app-a",
+        bindingId: "binding-a",
+        producer: Object.freeze({ kind: "agent" as const, agentRunId: "run-professor" }),
+      }),
+      declarationSnapshot: Object.freeze({
+        declaration: Object.freeze({
+          name: applicationToolName,
+          description: "Read application state.",
+          inputSchema: Object.freeze({
+            type: "object" as const,
+            properties: Object.freeze({}),
+            required: Object.freeze([]),
+          }),
+        }),
+        fingerprint: "application-tool-fingerprint",
+      }),
+    });
+    const invoke = vi.fn(async () => ({
+      content: [{ type: "text" as const, text: "application-state" }],
+    }));
+    const resolveSelectedRoutes = vi.fn(() => new Map([[applicationToolName, route]]));
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: "agent-1",
+          name: "Professor",
+          description: "Reads application state.",
+          toolNames: [applicationToolName],
+        })),
+      } as any,
+      applicationAgentTools: {
+        resolveSelectedRoutes,
+        invoke,
+        close: vi.fn(),
+      },
+      createLLM: vi.fn(async () => new DummyLLM(
+        new LLMModel({
+          name: "dummy-model",
+          value: "dummy-model",
+          canonicalName: "dummy-model",
+          provider: LLMProvider.OPENAI,
+        }),
+        new LLMConfig(),
+      )),
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: { getSkill: () => null } as any,
+    });
+    const applicationExecutionContext = {
+      applicationId: "app-a",
+      bindingId: "binding-a",
+      producer: { agentRunId: "run-professor", displayName: "Professor" },
+    };
+
+    const built = await (factory as any).buildAgentConfig(
+      new AgentRunConfig({
+        agentDefinitionId: "agent-1",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        applicationExecutionContext,
+      }),
+      "run-professor",
+    );
+
+    expect(resolveSelectedRoutes).toHaveBeenCalledWith(expect.objectContaining({
+      executionContext: applicationExecutionContext,
+      requestedToolNames: expect.arrayContaining([applicationToolName]),
+    }));
+    expect(built.agentConfig.tools.map((tool: BaseTool) => (tool as any).getName())).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
+      applicationToolName,
+    ]);
+    const applicationTool = built.agentConfig.tools.at(-1) as BaseTool;
+    await expect(applicationTool.execute({}, {})).resolves.toMatchObject({
+      content: [{ type: "text", text: "application-state" }],
+    });
+    expect(invoke).toHaveBeenCalledWith({ route, arguments: {} });
+  });
+
   it("wires one subject-scoped API-key resolver into the core factory", async () => {
     const llm = new DummyLLM(
       new LLMModel({

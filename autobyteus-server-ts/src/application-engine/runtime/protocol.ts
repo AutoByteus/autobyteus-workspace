@@ -17,6 +17,8 @@ import type {
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
   ApplicationStorageContext,
+  ApplicationAgentToolCaller,
+  ApplicationAgentToolResult,
 } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_ENGINE_NOTIFICATION_METHOD = "application.notification" as const;
@@ -28,6 +30,7 @@ export const APPLICATION_ENGINE_METHOD_ROUTE_REQUEST = "routeApplicationRequest"
 export const APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL = "executeApplicationGraphql" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER = "invokeApplicationEventHandler" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER = "invokeApplicationArtifactHandler" as const;
+export const APPLICATION_ENGINE_METHOD_INVOKE_AGENT_TOOL = "invokeApplicationAgentTool" as const;
 export const APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY = "invokeContextCapability" as const;
 export const APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET = "openApplicationWebSocket" as const;
 export const APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE = "deliverApplicationWebSocketMessage" as const;
@@ -43,6 +46,7 @@ export type ApplicationWorkerLoadDefinitionInput = {
   entryModulePath: string;
   supportedExposures: ApplicationBackendExposureSummary["supportedExposures"];
   storage: ApplicationStorageContext;
+  declaredAgentToolNames: string[];
 };
 
 export type ApplicationWorkerLoadDefinitionResult = {
@@ -78,6 +82,14 @@ export type ApplicationWorkerInvokeEventHandlerInput = {
 export type ApplicationWorkerInvokeArtifactHandlerInput = {
   event: ApplicationPublishedArtifactEvent;
 };
+
+export type ApplicationWorkerInvokeAgentToolInput = {
+  toolName: string;
+  arguments: Record<string, unknown>;
+  caller: ApplicationAgentToolCaller;
+};
+
+export type ApplicationWorkerInvokeAgentToolResult = ApplicationAgentToolResult;
 
 export type ApplicationWorkerContextCapabilityInput =
   | { capability: "agentExecution"; operation: "startAgent"; input: ApplicationStartAgentInput }

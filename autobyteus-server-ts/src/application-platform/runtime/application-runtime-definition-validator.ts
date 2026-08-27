@@ -8,6 +8,7 @@ import type { AgentTeamDefinitionService } from "../../agent-team-definition/ser
 import { TeamDefinitionTraversalService } from "../../agent-team-execution/services/team-definition-traversal-service.js";
 import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
+import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
 
 const validateRuntimeKind = (
   runtimeKind: string | null | undefined,
@@ -27,6 +28,7 @@ export class ApplicationRuntimeDefinitionValidator {
     agentTeamDefinitionService: AgentTeamDefinitionService;
     skillService: Pick<SkillService, "resolveConfiguredSkillsForAgent">;
     toolRegistry?: Pick<typeof defaultToolRegistry, "getToolDefinition">;
+    applicationAgentToolCatalog: ApplicationAgentToolCatalog;
   }) {
     this.teamTraversal = new TeamDefinitionTraversalService(
       dependencies.agentTeamDefinitionService,
@@ -34,6 +36,7 @@ export class ApplicationRuntimeDefinitionValidator {
   }
 
   async validateResource(
+    applicationId: string,
     kind: "AGENT" | "AGENT_TEAM",
     definitionId: string,
     label: string,
@@ -46,7 +49,7 @@ export class ApplicationRuntimeDefinitionValidator {
         diagnostics.push(`${label}: missing AGENT definition '${definitionId}'`);
         return;
       }
-      this.validateAgent(definition, label, diagnostics);
+      this.validateAgent(applicationId, definition, label, diagnostics);
       return;
     }
 
@@ -69,7 +72,7 @@ export class ApplicationRuntimeDefinitionValidator {
           );
           continue;
         }
-        this.validateAgent(definition, `${label}${member.memberAddress}`, diagnostics);
+        this.validateAgent(applicationId, definition, `${label}${member.memberAddress}`, diagnostics);
       }
     } catch (error) {
       diagnostics.push(`${label}: ${error instanceof Error ? error.message : String(error)}`);
@@ -96,13 +99,18 @@ export class ApplicationRuntimeDefinitionValidator {
   }
 
   private validateAgent(
+    applicationId: string,
     definition: AgentDefinition,
     label: string,
     diagnostics: string[],
   ): void {
     const toolRegistry = this.dependencies.toolRegistry ?? defaultToolRegistry;
     for (const toolName of definition.toolNames) {
-      if (!toolRegistry.getToolDefinition(toolName)) {
+      if (
+        !toolRegistry.getToolDefinition(toolName)
+        && !this.dependencies.applicationAgentToolCatalog
+          .getDeclarationSnapshot(applicationId, toolName)
+      ) {
         diagnostics.push(`${label}: tool '${toolName}' is not registered`);
       }
     }

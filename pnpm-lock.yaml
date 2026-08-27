@@ -169,6 +169,9 @@ importers:
       '@prisma/client':
         specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
+      ajv:
+        specifier: ^8.17.1
+        version: 8.18.0
       autobyteus-ts:
         specifier: workspace:*
         version: link:../autobyteus-ts

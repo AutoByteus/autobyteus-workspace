@@ -67,6 +67,13 @@ export class ApplicationExecutionScope {
         this.kernel.teamRunService.terminateTeamRun(teamRunId),
       observeTeamRunLifecycle: (teamRunId, listener) =>
         this.kernel.teamRunService.observeTeamRunLifecycle(teamRunId, listener),
+      requireLiveTeamMember: async (identity) => {
+        const root = this.kernel.teamRunService.getActiveTeamRun(identity.rootTeamRunId);
+        if (!root) {
+          throw new Error(`Root TeamRun '${identity.rootTeamRunId}' is not active.`);
+        }
+        root.authorizeIdentity(identity);
+      },
     });
     this.streaming = Object.freeze<ApplicationExecutionStreaming>({
       attach: (descriptor, listener) => this.kernel.streamSource.attach(descriptor, listener),

@@ -181,6 +181,35 @@ describe("ApplicationExecutionScope", () => {
     scope.abortConstruction();
   });
 
+  it("authorizes configured and dynamic application Team producers through the live root topology", async () => {
+    const { scope, kernel } = await createScope();
+    const authorizeIdentity = vi.fn();
+    vi.spyOn(kernel.teamRunService, "getActiveTeamRun")
+      .mockReturnValueOnce({ authorizeIdentity } as never)
+      .mockReturnValueOnce({ authorizeIdentity } as never)
+      .mockReturnValueOnce(null);
+    const configured = {
+      rootTeamRunId: "team-root",
+      memberAddress: "/writer",
+      agentRunId: "writer-run",
+    } as const;
+    const dynamic = {
+      rootTeamRunId: "team-root",
+      memberAddress: "/writer/task",
+      agentRunId: "task-run",
+    } as const;
+
+    await expect(scope.teamExecution.requireLiveTeamMember(configured)).resolves.toBeUndefined();
+    await expect(scope.teamExecution.requireLiveTeamMember(dynamic)).resolves.toBeUndefined();
+    expect(authorizeIdentity).toHaveBeenNthCalledWith(1, configured);
+    expect(authorizeIdentity).toHaveBeenNthCalledWith(2, dynamic);
+    await expect(scope.teamExecution.requireLiveTeamMember({
+      ...configured,
+      rootTeamRunId: "stale-root",
+    })).rejects.toThrow("Root TeamRun 'stale-root' is not active.");
+    scope.abortConstruction();
+  });
+
   it("maps restore-aware Agent and Team input without changing target or errors", async () => {
     const { scope, kernel } = await createScope();
     const agentFailure = new Error("agent post failed");

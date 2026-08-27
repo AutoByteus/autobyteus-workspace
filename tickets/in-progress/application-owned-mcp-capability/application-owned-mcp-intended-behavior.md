@@ -2,7 +2,7 @@
 
 ## Status
 
-`Draft — intended-behavior supplement pending user approval`
+`Approved by the user on 2026-08-27`
 
 ## Purpose And Authority
 
@@ -12,11 +12,11 @@ This supplement clarifies what “application MCP” means for the current ticke
 
 ### Included now
 
-An application declares business-specific **agent tools** and implements them in its existing backend worker. AutoByteus exposes the selected tools to that application's Agents through the existing shared authenticated Agent Tools MCP endpoint.
+An application declares business-specific **agent tools** and implements them in its existing backend worker. AutoByteus exposes the selected application-tool capability to that application's Agents, independent of whether the Agent configuration selects AutoByteus, Claude, or Codex as its supported runtime. Runtime-specific provisioning is an implementation concern; it must preserve the one application-owned contract and the current native automatic-tool behavior.
 
 Conceptually:
 
-`Application package declaration + application worker handler -> platform-authorized application tool -> existing Agent Tools MCP session -> owning application Agent`
+`Application package declaration + application worker handler -> platform-authorized application tool -> runtime projection (native bound tool or Agent Tools MCP session) -> owning application Agent`
 
 ### Not included now
 
@@ -32,8 +32,23 @@ The application does not bundle or start its own arbitrary MCP network/`stdio` s
 | Application tool metadata | Exact application package | Static, import-safe, versioned with the package. |
 | Application tool handler/business state | Exact application backend worker | Runs with application storage and normal application capabilities. |
 | Binding/producer authorization and worker routing | `ApplicationPlatformRuntime` application-tool boundary | Uses authoritative session/binding context; never an argument-supplied application ID. |
-| Tool selection | Agent/Team definition `toolNames` | Explicit opt-in only. |
-| Provider adaptation | Existing provider-neutral MCP descriptor path | No application-specific Codex/Claude/AutoByteus branch. |
+| Tool selection | Agent/Team definition `toolNames` for application business tools | Application-owned tools require explicit selection. Existing automatic native-foundation and Team-collaboration provisioning remains unchanged and additive. |
+| Provider adaptation | Existing provider-neutral runtime boundary | Every supported runtime receives the same selected application-tool meaning and isolation. The later design may use the existing scoped MCP descriptor or a native bound-tool projection as appropriate, but must not duplicate application business policy. |
+
+## Clarified Runtime Boundary
+
+The feature distinguishes two tool families:
+
+- **AutoByteus-native foundation tools** are already automatically provisioned for every eligible non-compactor native Agent: `run_bash`, `read_file`, `edit_file`, and `write_file`.
+- **Automatic Team collaboration tools** are already added whenever member Team context exists: `get_handoff_rules`, `send_message_to`, and `delegate_task`.
+- **Configured platform/global tools** remain additive to those automatic sets and are normalized/deduplicated under the existing rules.
+- **Application-owned business tools** exist because the application's business needs exceed those fundamentals. The application declares and implements them, and the platform exposes selected tools through an exact application-scoped MCP capability.
+
+Therefore, an eligible AutoByteus-native Agent running for an application receives its unchanged automatic foundation, any automatic Team tools for which it is eligible, configured platform/global tools, and its explicitly selected application-owned MCP tools. The built-in Memory Compactor remains the current exception and receives no tools. Application business tools never become automatic merely because the Agent belongs to an application or uses the native runtime.
+
+Changing a bound application Agent's supported runtime does not change which selected application-owned business tool it means. Runtime adapters may provision the capability differently, but every call remains bound to the same exact application declaration and worker handler.
+
+The physical MCP endpoint remains platform-hosted and shared; application ownership is represented by its declarations, worker handlers, and exact scoped session routes rather than by a separate listener process.
 
 ## Visibility And Collision Rules
 
@@ -48,7 +63,7 @@ The application does not bundle or start its own arbitrary MCP network/`stdio` s
 
 The application handler receives:
 
-- validated JSON-object arguments;
+- JSON-object arguments validated against the package-declared input schema;
 - immutable caller identity: `applicationId`, `bindingId`, producer `agentRunId`, and Team `memberAddress` when applicable;
 - the existing application handler context for its own storage, notifications, application Agent operations, application resources, and published artifacts.
 
@@ -98,8 +113,8 @@ The sample is proof of the platform capability, not a new application UI workflo
 - Durable application databases, platform binding/journal state, Agent/Team definitions, and global MCP configuration are not migrated or rewritten.
 - No compatibility alias, dual handler location, global-registration fallback, or old/new runtime branch is retained.
 
-## Explicit Approval Question
+## Approval Record
 
-Approve this ticket on the following interpretation:
+Approved by the user on 2026-08-27 on the following interpretation. After the runtime/provisioning discussion, the user confirmed that the design was clear and asked the solution designer to proceed with design:
 
-> Applications own in-worker business tools, and AutoByteus exposes those tools through its one shared authenticated Agent Tools MCP host with exact application/binding/session isolation. Arbitrary application-bundled MCP server processes and the broader external developer SDK journey remain deferred.
+> Existing automatic native-foundation and Team-collaboration provisioning remains unchanged. Applications explicitly select their additional configured and business tools. Application-owned in-worker business tools use one runtime-neutral, application-scoped capability with exact application/binding/run isolation across supported runtimes. Runtime-specific provisioning must not change that behavior. Arbitrary application-bundled MCP server processes and the broader external developer SDK journey remain deferred.

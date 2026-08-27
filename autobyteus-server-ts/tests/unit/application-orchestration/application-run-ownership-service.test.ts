@@ -44,18 +44,26 @@ const harness = (input: {
   lookup?: { runId: string; applicationId: string; bindingId: string } | null;
   storedBinding?: ApplicationAgentBindingRecord | null;
   awaitReady?: () => Promise<void>;
+  requireLiveTeamMember?: (identity: {
+    rootTeamRunId: string;
+    memberAddress: string;
+    agentRunId: string;
+  }) => Promise<void>;
 } = {}) => {
   const getLookupByRunId = vi.fn(() => input.lookup ?? null);
   const getBinding = vi.fn(async () => input.storedBinding ?? null);
   const awaitReady = vi.fn(input.awaitReady ?? (async () => undefined));
+  const requireLiveTeamMember = vi.fn(input.requireLiveTeamMember ?? (async () => undefined));
   return {
     awaitReady,
     getLookupByRunId,
     getBinding,
+    requireLiveTeamMember,
     service: new ApplicationRunOwnershipService({
       startupGate: { awaitReady },
       lookupStore: { getLookupByRunId },
       bindingStore: { getBinding },
+      teamExecution: { requireLiveTeamMember } as never,
     }),
   };
 };
@@ -154,5 +162,124 @@ describe("ApplicationRunOwnershipService", () => {
     });
     await expect(mismatch.service.hasLiveRunOwnership({ runId: "unexpected-run" }))
       .rejects.toThrow("does not own run");
+  });
+
+  it("authorizes an exact attached standalone producer and returns immutable caller provenance", async () => {
+    const { service } = harness({ storedBinding: binding() });
+
+    const caller = await service.requireLiveApplicationToolProducer({
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: { kind: "agent", agentRunId: "agent-run-1" },
+    });
+
+    expect(caller).toEqual({
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      agentRunId: "agent-run-1",
+    });
+    expect(Object.isFrozen(caller)).toBe(true);
+  });
+
+  it.each([
+    ["wrong application", { applicationId: "other-app", bindingId: "binding-1", producer: { kind: "agent", agentRunId: "agent-run-1" } }],
+    ["wrong binding", { applicationId: "app-1", bindingId: "other-binding", producer: { kind: "agent", agentRunId: "agent-run-1" } }],
+    ["wrong run", { applicationId: "app-1", bindingId: "binding-1", producer: { kind: "agent", agentRunId: "other-run" } }],
+  ] as const)("rejects a standalone producer with %s identity evidence", async (_label, identity) => {
+    const { service } = harness({ storedBinding: binding() });
+    await expect(service.requireLiveApplicationToolProducer(identity))
+      .rejects.toThrow();
+  });
+
+  it("rejects a non-attached producer even though historical ownership remains readable", async () => {
+    const { service } = harness({ storedBinding: binding({ status: "TERMINATING" }) });
+
+    await expect(service.requireLiveApplicationToolProducer({
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: { kind: "agent", agentRunId: "agent-run-1" },
+    })).rejects.toThrow("not currently attached");
+  });
+
+  it("authorizes configured and dynamically spawned Team members through live Team topology", async () => {
+    const { service, requireLiveTeamMember } = harness({ storedBinding: binding({ team: true }) });
+    for (const producer of [
+      {
+        kind: "team_member" as const,
+        rootTeamRunId: "team-run-1",
+        memberAddress: "/worker" as const,
+        agentRunId: "member-run-1",
+      },
+      {
+        kind: "team_member" as const,
+        rootTeamRunId: "team-run-1",
+        memberAddress: "/worker/dynamic" as const,
+        agentRunId: "dynamic-run-1",
+      },
+    ]) {
+      await expect(service.requireLiveApplicationToolProducer({
+        applicationId: "app-1",
+        bindingId: "binding-1",
+        producer,
+      })).resolves.toEqual({
+        applicationId: "app-1",
+        bindingId: "binding-1",
+        agentRunId: producer.agentRunId,
+        memberAddress: producer.memberAddress,
+      });
+    }
+    expect(requireLiveTeamMember).toHaveBeenNthCalledWith(1, {
+      rootTeamRunId: "team-run-1",
+      memberAddress: "/worker",
+      agentRunId: "member-run-1",
+    });
+    expect(requireLiveTeamMember).toHaveBeenNthCalledWith(2, {
+      rootTeamRunId: "team-run-1",
+      memberAddress: "/worker/dynamic",
+      agentRunId: "dynamic-run-1",
+    });
+  });
+
+  it("rejects mismatched or stale Team producer identity without dispatch", async () => {
+    const { service, requireLiveTeamMember } = harness({
+      storedBinding: binding({ team: true }),
+      requireLiveTeamMember: async () => { throw new Error("Team member is not live."); },
+    });
+
+    await expect(service.requireLiveApplicationToolProducer({
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: {
+        kind: "team_member",
+        rootTeamRunId: "wrong-root",
+        memberAddress: "/worker",
+        agentRunId: "member-run-1",
+      },
+    })).rejects.toThrow("does not own root Team");
+    expect(requireLiveTeamMember).not.toHaveBeenCalled();
+
+    await expect(service.requireLiveApplicationToolProducer({
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: {
+        kind: "team_member",
+        rootTeamRunId: "team-run-1",
+        memberAddress: "/worker",
+        agentRunId: "wrong-member-run",
+      },
+    })).rejects.toThrow("does not own configured producer");
+    expect(requireLiveTeamMember).not.toHaveBeenCalled();
+
+    await expect(service.requireLiveApplicationToolProducer({
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: {
+        kind: "team_member",
+        rootTeamRunId: "team-run-1",
+        memberAddress: "/worker/dynamic",
+        agentRunId: "stale-dynamic-run",
+      },
+    })).rejects.toThrow("Team member is not live");
+    expect(requireLiveTeamMember).toHaveBeenCalledTimes(1);
   });
 });

@@ -12,6 +12,7 @@ import {
   APPLICATION_ENGINE_METHOD_INVOKE_COMMAND,
   APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
+  APPLICATION_ENGINE_METHOD_INVOKE_AGENT_TOOL,
   APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET,
   APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
   APPLICATION_ENGINE_METHOD_STOP,
@@ -23,6 +24,8 @@ import {
   type ApplicationWorkerInvokeCommandInput,
   type ApplicationWorkerInvokeEventHandlerInput,
   type ApplicationWorkerInvokeQueryInput,
+  type ApplicationWorkerInvokeAgentToolInput,
+  type ApplicationWorkerInvokeAgentToolResult,
   type ApplicationWorkerOpenWebSocketInput,
   type ApplicationWorkerRouteRequestInput,
   type ApplicationWorkerWebSocketActionInput,
@@ -123,6 +126,13 @@ export class ApplicationEngineController {
     input: ApplicationWorkerInvokeCommandInput,
   ): Promise<unknown> {
     return this.request(applicationId, APPLICATION_ENGINE_METHOD_INVOKE_COMMAND, input);
+  }
+
+  invokeApplicationAgentTool(
+    applicationId: string,
+    input: ApplicationWorkerInvokeAgentToolInput,
+  ): Promise<ApplicationWorkerInvokeAgentToolResult> {
+    return this.request(applicationId, APPLICATION_ENGINE_METHOD_INVOKE_AGENT_TOOL, input);
   }
 
   routeApplicationRequest(

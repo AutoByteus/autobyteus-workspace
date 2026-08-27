@@ -115,6 +115,7 @@ export const buildApplicationExecutionScopeKernel = (
     authority = assembly.complete({
       executionCapabilities: {
         publishedArtifactPublisher: publicationService,
+        applicationAgentTools: input.applicationAgentTools,
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
@@ -122,6 +123,7 @@ export const buildApplicationExecutionScopeKernel = (
       .createForExecution({
         agentDefinitionService: input.agentDefinitionService,
         agentToolMcpSessionIssuer: authority.issuer,
+        applicationAgentTools: input.applicationAgentTools,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,

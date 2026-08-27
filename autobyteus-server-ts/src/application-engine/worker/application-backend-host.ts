@@ -14,6 +14,8 @@ import type {
   ApplicationWorkerInvokeCommandInput,
   ApplicationWorkerInvokeEventHandlerInput,
   ApplicationWorkerInvokeQueryInput,
+  ApplicationWorkerInvokeAgentToolInput,
+  ApplicationWorkerInvokeAgentToolResult,
   ApplicationWorkerLoadDefinitionInput,
   ApplicationWorkerLoadDefinitionResult,
   ApplicationWorkerNotificationParams,
@@ -35,6 +37,7 @@ import {
 } from "./application-handler-context-factory.js";
 import { ApplicationAgentStreamObserverRegistry } from "./application-agent-stream-observer-registry.js";
 import { ApplicationWebSocketSessionRegistry } from "./application-websocket-session-registry.js";
+import { validateApplicationAgentToolResult } from "../../application-agent-tools/services/application-agent-tool-payload-validator.js";
 
 const EVENT_HANDLER_KEY_BY_FAMILY: Record<
   ApplicationExecutionEventFamily,
@@ -171,6 +174,18 @@ export class ApplicationBackendHost {
     const event = input.event as ApplicationPublishedArtifactEvent;
     await handler(event, this.createContext({ applicationId: event.binding.applicationId }));
     return { status: "acknowledged" };
+  }
+
+  async invokeAgentTool(
+    input: ApplicationWorkerInvokeAgentToolInput,
+  ): Promise<ApplicationWorkerInvokeAgentToolResult> {
+    const handler = this.requireLoaded().definition.agentToolHandlers?.[input.toolName];
+    if (!handler) throw new Error(`Application agent tool handler '${input.toolName}' was not found.`);
+    const result = await handler(
+      input.arguments,
+      this.requireContextFactory().createAgentTool(input.caller),
+    );
+    return validateApplicationAgentToolResult(result);
   }
 
   async stop(): Promise<void> {

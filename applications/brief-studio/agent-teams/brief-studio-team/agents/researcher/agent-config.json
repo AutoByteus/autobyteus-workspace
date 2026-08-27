@@ -1,5 +1,5 @@
 {
-  "toolNames": ["write_file", "publish_artifacts", "send_message_to"],
+  "toolNames": ["get_brief_context", "write_file", "publish_artifacts", "send_message_to"],
   "skillNames": [],
   "defaultLaunchConfig": {
     "runtimeKind": "codex_app_server",

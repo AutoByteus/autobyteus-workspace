@@ -22,6 +22,7 @@ import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-ses
 import type { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
 import type { ClaudeSdkClient } from "../../runtime-management/claude/client/claude-sdk-client.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export type AgentProviderFactoryBuilderProcessInput = Readonly<{
   workspaceManager: WorkspaceManager;
@@ -57,6 +58,7 @@ export interface AgentProviderFactoryBuilder {
   createForExecution(input: Readonly<{
     agentDefinitionService: AgentDefinitionService;
     agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+    applicationAgentTools?: ApplicationAgentToolCapability | null;
   }>): AgentProviderFactorySet;
 }
 
@@ -145,6 +147,7 @@ export const createAgentProviderFactoryBuilder = (
     createForExecution: (input: Readonly<{
       agentDefinitionService: AgentDefinitionService;
       agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+      applicationAgentTools?: ApplicationAgentToolCapability | null;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
@@ -175,6 +178,7 @@ export const createAgentProviderFactoryBuilder = (
           waitForIdle: process.autoByteus.waitForIdle,
           compactionAgentRunnerFactory:
             process.autoByteus.compactionAgentRunnerFactory,
+          applicationAgentTools: input.applicationAgentTools ?? null,
         }),
         codex: new CodexAgentRunBackendFactory(
           process.codex.threadManager,

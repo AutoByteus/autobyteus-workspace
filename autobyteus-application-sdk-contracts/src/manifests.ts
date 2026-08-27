@@ -3,8 +3,9 @@ import type {
   ApplicationExecutionResourceSource,
   ApplicationExecutionResourceRef,
 } from "./execution-resources.js";
+import type { ApplicationAgentToolDeclaration } from "./application-agent-tools.js";
 
-export const APPLICATION_MANIFEST_VERSION = "4" as const;
+export const APPLICATION_MANIFEST_VERSION = "5" as const;
 
 export type ApplicationSupportedAgentLaunchConfigDeclaration = {
   llmModelIdentifier?: boolean | null;
@@ -57,4 +58,5 @@ export type ApplicationManifest = {
     bundleManifest: string;
   };
   executionResourceSlots?: ApplicationExecutionResourceSlotDeclaration[] | null;
+  agentTools?: readonly ApplicationAgentToolDeclaration[] | null;
 };

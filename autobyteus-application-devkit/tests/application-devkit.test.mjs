@@ -59,11 +59,11 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   assert.equal(validation.valid, true);
   const applicationManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'application.json'), 'utf8'));
   const backendManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'backend/bundle.json'), 'utf8'));
-  assert.equal(applicationManifest.manifestVersion, '4');
+  assert.equal(applicationManifest.manifestVersion, '5');
   assert.equal(applicationManifest.ui.frontendSdkContractVersion, '6');
   assert.deepEqual(Object.keys(applicationManifest.backend), ['bundleManifest']);
   assert.deepEqual(backendManifest.sdkCompatibility, {
-    backendDefinitionContractVersion: '6',
+    backendDefinitionContractVersion: '7',
     frontendSdkContractVersion: '6',
   });
   assert.deepEqual(Object.keys(backendManifest.supportedExposures).sort(), [
@@ -187,8 +187,8 @@ test('atomic development pack keeps generated package metadata canonical after s
 test('validator rejects stale manifests, nested exposure authority, and six-flag backend bundles', async (t) => {
   const cases = [
     {
-      name: 'stale-application-v3',
-      mutate: (applicationManifest) => { applicationManifest.manifestVersion = '3'; },
+      name: 'stale-application-v4',
+      mutate: (applicationManifest) => { applicationManifest.manifestVersion = '4'; },
       expectedPath: 'manifestVersion',
     },
     {
@@ -240,8 +240,8 @@ test('validator reports actionable diagnostics for missing generated files', asy
   )), true);
 });
 
-test('validator rejects an explicit v3 backend-definition compatibility fixture', async () => {
-  const target = path.join(await createTempDirectory('backend-v3-rejection'), 'sample-app');
+test('validator rejects an explicit v6 backend-definition compatibility fixture', async () => {
+  const target = path.join(await createTempDirectory('backend-v6-rejection'), 'sample-app');
   await materializeApplicationTemplate({
     targetDirectory: target,
     applicationId: 'sample-app',
@@ -253,7 +253,7 @@ test('validator rejects an explicit v3 backend-definition compatibility fixture'
     'applications/sample-app/backend/bundle.json',
   );
   const backendManifest = JSON.parse(await fs.readFile(backendManifestPath, 'utf8'));
-  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '3';
+  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '6';
   await fs.writeFile(
     backendManifestPath,
     `${JSON.stringify(backendManifest, null, 2)}\n`,
@@ -265,7 +265,7 @@ test('validator rejects an explicit v3 backend-definition compatibility fixture'
   assert.equal(validation.diagnostics.some((diagnostic) => (
     diagnostic.code === 'UNSUPPORTED_CONTRACT_VERSION'
     && diagnostic.path === 'sdkCompatibility.backendDefinitionContractVersion'
-    && diagnostic.message.includes('must be "6"')
+    && diagnostic.message.includes('must be "7"')
   )), true);
 });
 

@@ -141,6 +141,46 @@ const buildStaticAdapter = (input: {
   }),
 });
 
+const buildApplicationAvailabilityContext = (toolName: string) => {
+  const route = Object.freeze({
+    kind: "application_agent_tool" as const,
+    identity: Object.freeze({
+      applicationId: "app-a",
+      bindingId: "binding-a",
+      producer: Object.freeze({ kind: "agent" as const, agentRunId: "run-1" }),
+    }),
+    declarationSnapshot: Object.freeze({
+      declaration: Object.freeze({
+        name: toolName,
+        description: `Application ${toolName}`,
+        inputSchema: Object.freeze({
+          type: "object" as const,
+          properties: Object.freeze({}),
+          required: Object.freeze([]),
+        }),
+      }),
+      fingerprint: `fingerprint-${toolName}`,
+    }),
+  });
+  return {
+    runtimeExposure: buildRuntimeAgentToolExposure([toolName]),
+    sender,
+    executionContext: {
+      applicationExecutionContext: {
+        applicationId: "app-a",
+        bindingId: "binding-a",
+        producer: { agentRunId: "run-1", displayName: "agent" },
+      },
+    },
+    applicationAgentTools: {
+      resolveSelectedRoutes: ({ requestedToolNames }: { requestedToolNames: readonly string[] }) =>
+        new Map(requestedToolNames.includes(toolName) ? [[toolName, route]] : []),
+      invoke: async () => ({ content: [] }),
+      close: () => undefined,
+    },
+  };
+};
+
 const buildSession = (input: {
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
@@ -163,6 +203,87 @@ const buildSession = (input: {
 });
 
 describe("AgentToolMcpCatalog configured MCP bridge", () => {
+  it("lists every registered static adapter name independent of availability and configured policy", () => {
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [
+        buildStaticAdapter({
+          name: "z_inactive_preferred",
+          available: false,
+          collisionPolicy: "prefer_configured_mcp",
+        }),
+        buildStaticAdapter({
+          name: "a_active_protected",
+          available: true,
+          collisionPolicy: "protect_static_adapter",
+        }),
+      ],
+    });
+
+    expect(catalog.listStaticAdapterToolNames()).toEqual([
+      "a_active_protected",
+      "z_inactive_preferred",
+    ]);
+  });
+
+  it("rejects an application open_tab route owned by a configured-preferred static adapter", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("open_tab", "browser-server"));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildStaticAdapter({
+        name: "open_tab",
+        available: true,
+        collisionPolicy: "prefer_configured_mcp",
+      })],
+      registry: registry as any,
+    });
+
+    expect(() => catalog.resolveRuntimeSessionToolExposure(
+      buildApplicationAvailabilityContext("open_tab") as any,
+    )).toThrow("collides with a registered Agent Tools MCP static adapter");
+  });
+
+  it("rejects an application route owned by a configured-protected static adapter", () => {
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildStaticAdapter({
+        name: "send_message_to",
+        available: true,
+        collisionPolicy: "protect_static_adapter",
+      })],
+    });
+
+    expect(() => catalog.resolveRuntimeSessionToolExposure(
+      buildApplicationAvailabilityContext("send_message_to") as any,
+    )).toThrow("collides with a registered Agent Tools MCP static adapter");
+  });
+
+  it("rejects an application route even when the registered static adapter is inactive", () => {
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildStaticAdapter({
+        name: "inactive_static",
+        available: false,
+        collisionPolicy: "prefer_configured_mcp",
+      })],
+    });
+
+    expect(() => catalog.resolveRuntimeSessionToolExposure(
+      buildApplicationAvailabilityContext("inactive_static") as any,
+    )).toThrow("collides with a registered Agent Tools MCP static adapter");
+  });
+
+  it("keeps a non-static application route authoritative over configured MCP", () => {
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite"));
+    const catalog = new AgentToolMcpCatalog({ adapters: [], registry: registry as any });
+
+    const exposure = catalog.resolveRuntimeSessionToolExposure(
+      buildApplicationAvailabilityContext("db_query") as any,
+    );
+
+    expect(exposure.enabledTools).toEqual(["db_query"]);
+    expect(exposure.toolRoutes.db_query?.kind).toBe("application_agent_tool");
+    expect(exposure.configuredMcpToolSources).toEqual([]);
+  });
+
   it("adds selected MCP-origin registry tools to session exposure and tools/list", () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("db_query", "sqlite"));
@@ -265,7 +386,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
     });
   });
 
-  it("prefers a selected configured MCP browser tool over an active embedded browser adapter without duplicates", async () => {
+  it("preserves configured browser precedence when no application route exists", async () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("open_tab", "browser-server", {
       content: [{ type: "text", text: "mcp-open-tab" }],

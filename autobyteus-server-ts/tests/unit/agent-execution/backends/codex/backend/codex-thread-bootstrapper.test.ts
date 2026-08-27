@@ -26,6 +26,7 @@ import type { CodexAppServerClientManager } from "../../../../../../src/runtime-
 import type { AgentToolMcpSessionIssuer } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
+import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
@@ -34,6 +35,7 @@ const createRunContext = (input: {
   autoExecuteTools?: boolean;
   memberTeamContext?: MemberTeamContext | null;
   llmModelIdentifier?: string;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
 } = {}) =>
   new AgentRunContext({
     runId: "run-1",
@@ -46,6 +48,7 @@ const createRunContext = (input: {
       llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       memberTeamContext: input.memberTeamContext ?? null,
+      applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
     runtimeContext: null,
   });
@@ -110,6 +113,7 @@ const SUPPORTED_AGENT_TOOLS_MCP_TEST_NAMES = new Set([
   "generate_image",
   "generate_speech",
   "publish_artifacts",
+  "read_application_state",
 ]);
 
 const createAgentToolMcpDescriptor = (enabledTools: string[] = ["send_message_to"]): AgentToolMcpDescriptor => ({
@@ -594,6 +598,37 @@ describe("CodexThreadBootstrapper", () => {
         }),
       }),
     );
+  });
+
+  it("forwards the immutable application execution context into the Codex MCP session", async () => {
+    const applicationExecutionContext = Object.freeze({
+      applicationId: "app-a",
+      bindingId: "binding-a",
+      producer: Object.freeze({ agentRunId: "run-1", displayName: "Codex app agent" }),
+    });
+    const { bootstrapper, agentToolMcpSessionIssuer } = createBootstrapper({
+      skills: [],
+      toolNames: ["read_application_state"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
+      applicationExecutionContext,
+    }));
+
+    expect(agentToolMcpSessionIssuer.issueForRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        executionContext: expect.objectContaining({ applicationExecutionContext }),
+      }),
+    );
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          enabled_tools: ["read_application_state"],
+        },
+      },
+    });
   });
 
   it("recreates Agent Tools MCP thread config on restore instead of reusing persisted descriptors", async () => {
