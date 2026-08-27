@@ -1,0 +1,7 @@
+2026-08-27T06:14:30.935Z created test TeamRun nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2026-08-27T06:14:47.087Z branch frontend ready http://127.0.0.1:49929
+2026-08-27T06:14:52.240Z nested image journey passed
+2026-08-27T06:14:55.798Z nested text journey passed
+2026-08-27T06:14:57.716Z direct-root image journey passed
+2026-08-27T06:14:58.836Z mismatch rejection journey passed
+2026-08-27T06:15:01.654Z results written /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/test-results/api-e2e/browser/browser-results.json passed= true

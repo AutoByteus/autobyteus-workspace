@@ -12,7 +12,7 @@ The latest `design-review-report.md` remains authoritative. This record retains 
 
 ### ARCH-REV-001 — Initial exact Team-member ownership design baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review requested by `/solution_designer` after user approval on 2026-08-27.
 - Triggering role, report path, and finding IDs: `/solution_designer`; initial solution package, no triggering downstream report; finding IDs `N/A`.
 - Relevant solution revision IDs: `SR-001`

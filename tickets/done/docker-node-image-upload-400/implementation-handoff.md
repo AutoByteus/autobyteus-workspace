@@ -2,15 +2,15 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/docker-node-runtime-evidence.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/architecture-review-revision-record.md`
-- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/code-review-report.md`
-- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/code-review-revision-record.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/design-spec.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/docker-node-runtime-evidence.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/architecture-review-revision-record.md`
+- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/code-review-report.md`
+- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/code-review-revision-record.md`
 
 ## Current Implementation Summary
 
@@ -21,7 +21,7 @@ The Team execution capability now projects and retains one canonical immutable l
 `IR-002` corrects the nested task-Team member regression fixture to the contract-valid `kind: 'task_team_member'` discriminator requested by `CR-F-001`. The containing-Team assertions remain unchanged, and no production source or fallback behavior was added.
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`

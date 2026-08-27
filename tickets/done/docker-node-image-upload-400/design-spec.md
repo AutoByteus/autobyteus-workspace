@@ -35,7 +35,7 @@ The send store will pass `location.containingTeamRunId` and `location.memberAddr
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/docker-node-runtime-evidence.md` | Retain exact Docker-node logs, staged-file evidence, topology comparison, source trace, and focused server test result | REQ-001, REQ-002, REQ-003; AC-001, AC-002, AC-003, AC-004 | Proves the failure boundary and supports the no-server/no-Docker design decision | Complete; approval N/A because evidence-only |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/docker-node-runtime-evidence.md` | Retain exact Docker-node logs, staged-file evidence, topology comparison, source trace, and focused server test result | REQ-001, REQ-002, REQ-003; AC-001, AC-002, AC-003, AC-004 | Proves the failure boundary and supports the no-server/no-Docker design decision | Complete; approval N/A because evidence-only |
 
 ## Task Design Health Assessment (Mandatory)
 

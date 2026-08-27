@@ -25,7 +25,7 @@ User evidence image:
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400`
 - Current Branch: `codex/docker-node-image-upload-400`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400`
 - Bootstrap Base Branch: `origin/personal` at `fd9b33e20ace3e7c221f931dbbcd5f4acf1df65f`
@@ -40,7 +40,7 @@ User evidence image:
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/docker-node-runtime-evidence.md` | Durable focused runtime/root-cause evidence for the 8001 node and working comparator | Container/image identity, exact 400 events, staged files, topology mismatch, working direct-root evidence, implicated code, and focused test result | Requirements, investigation notes, future design spec | REQ-001, REQ-002, REQ-003; AC-001, AC-002, AC-003, AC-004 | Complete | N/A — evidence only | Keep aligned if later evidence changes the root-cause conclusion |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/docker-node-runtime-evidence.md` | Durable focused runtime/root-cause evidence for the 8001 node and working comparator | Container/image identity, exact 400 events, staged files, topology mismatch, working direct-root evidence, implicated code, and focused test result | Requirements, investigation notes, future design spec | REQ-001, REQ-002, REQ-003; AC-001, AC-002, AC-003, AC-004 | Complete | N/A — evidence only | Keep aligned if later evidence changes the root-cause conclusion |
 
 ## Source Log
 

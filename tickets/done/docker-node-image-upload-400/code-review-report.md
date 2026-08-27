@@ -3,30 +3,30 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/docker-node-runtime-evidence.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/solution-revision-record.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/design-spec.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/docker-node-runtime-evidence.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: Initial implementation-source review of development commit `0bfbc4218` handed off by `/implementation_engineer`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `CRR-001`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/implementation-revision-record.md`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/code-review-revision-record.md`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: Focused re-review of `IR-002` / commit `0e12a099c`, which corrects `CR-F-001` without changing production source.
+- Prior Review Round Reviewed: `CRR-001`
+- Latest Authoritative Round: `CRR-002`
 - Coverage Investigation / API/E2E / Delivery Inputs: `N/A — API/E2E has not begun.`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the canonical Team Agent execution-location projection, all/live execution-tree traversal, view-state validation and lifecycle updates, hydration/test-fixture consumers, Team send final-owner selection, and focused implementation tests.
-- Files / areas reviewed: all nine changed web source/test-support paths and both changed focused specifications; the upstream Team execution DTO/projector, server execution index, context-file upload/finalization/resolver path, user send surface, and relevant server integration contract were traced as dependent behavior.
+- Changed implementation and behavior reviewed: focused `IR-002` correction of the nested task-Team-member fixture discriminator, plus revalidation of `CR-F-001` against the governing DTO/projector contract and retained containing-Team assertions. The complete `IR-001` production-source review remains applicable because `IR-002` changes no production source.
+- Files / areas reviewed: `teamExecutionViewState.spec.ts`, the V2 Team execution DTO and server projector, `implementation-handoff.md`, `implementation-revision-record.md`, and the prior canonical review artifacts; all previously reviewed production paths remain unchanged.
 - Explicit exclusions: independent browser/API/E2E execution against the Docker node, deployment/package parity, unrelated obsolete locator reads, server/Docker/storage changes, and durable API/E2E coverage decisions.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
@@ -69,10 +69,10 @@
 | No unjustified duplication of code / repeated structures in changed scope | Pass | Parallel address/Team maps were avoided; all/live collectors intentionally share the same location shape and rules. | None |
 | Patch-on-patch complexity control | Pass | The old address-only collector/map and root final-owner substitution are replaced cleanly without topology branches or fallback. | None |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | Old collector names/shapes, the unused `configured` field, address-only map, and root-ID final-owner call are absent. | None |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Configured nested, direct task Agent, task-Team Agent, nested task Agent, missing location, and send-owner assertions are clear. However, the new nested task-Team assertions at `teamExecutionViewState.spec.ts:411-412` rely on a nested member fixture declared with the invalid discriminator `kind: 'task_team'` at line 178; the governing V2 DTO requires `task_team_member`. | Correct `CR-F-001` so the changed regression exercises the supported DTO path. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Fail | Shared fixtures are otherwise coherent, but the only nested task-Team-member location proof uses a contract-invalid nested fixture that production schema parsing would reject. | Replace the discriminator with `task_team_member` and rerun the focused view/store selection. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | `IR-002` changes the nested fixture to the contract-valid `task_team_member` discriminator while retaining assertions that its Agent and nested task Agent both resolve to `settled-pod-run`. Configured nested, direct task Agent, task-Team Agent, missing location, and send-owner assertions remain intact. | None |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The corrected nested fixture now matches `TaskTeamMemberExecutionDto` and the server projector; no production-only or compatibility shape remains in the changed coverage. | None |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No old collector/fallback test was retained and no duplicate compatibility scenario was added. | None |
-| API/E2E readiness for the next workflow stage | Fail | Reviewer rerun passed `2` files / `30` tests, and implementation evidence reports the larger dependent matrix/build passing. The contract-invalid nested task-Team fixture still makes one explicit UC-002 coverage claim unreliable. | Resolve `CR-F-001` before advancing to API/E2E. |
+| API/E2E readiness for the next workflow stage | Pass | `CR-F-001` is resolved. The reviewer independently reran the corrected Team execution-view and Team send store selection at `2` files / `30` tests Pass; `git diff --check` also passed. Prior dependent matrix and production-build evidence remains applicable. | Advance to API/E2E coverage investigation and execution. |
 
 ## Source File Size And Structure Audit
 
@@ -114,13 +114,13 @@ None.
 
 None. `ARCH-REV-001` recorded no separate material-premise IDs.
 
-No new or reclassified material premise is needed. The user-facing composer/send trigger, V2 Team execution DTO/projector contract, supported task activation lifecycle, and server exact-owner contract are already established in `BEH-001` through `BEH-004`, UC-001 through UC-004, the runtime supplement, and current production source. `CR-F-001` asks the changed test to use that supported contract; it does not prescribe behavior for a synthetic state.
+No new or reclassified material premise is needed. The user-facing composer/send trigger, V2 Team execution DTO/projector contract, supported task activation lifecycle, and server exact-owner contract are already established in `BEH-001` through `BEH-004`, UC-001 through UC-004, the runtime supplement, and current production source. `IR-002` now exercises that supported nested-member contract directly; it does not prescribe behavior for a synthetic state.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.6`
-- Overall score (`/100`): `96`
-- Score calculation note: simple average rounded for summary only. The high overall score does not override API/E2E readiness `8.8` or the open blocking test-fixture finding.
+- Overall score (`/10`): `9.7`
+- Overall score (`/100`): `97`
+- Score calculation note: simple average rounded for summary only. All categories now meet the clean-pass target after the focused fixture correction.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
@@ -130,29 +130,22 @@ No new or reclassified material premise is needed. The user-facing composer/send
 | `4` | `Separation of Concerns and File Placement` | 9.4 | Changes land in existing coherent owners with no new subsystem. | `agentTeamRunStore.ts` is an existing 406-line orchestration owner. | Keep future changes narrow and avoid adding unrelated responsibilities. |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | One three-field location replaces parallel partial representations. | All/live traversal remains duplicated by the reviewed deferral. | Keep both collectors governed by the same tight type/rules. |
 | `6` | `Naming Quality and Local Readability` | 9.6 | Root, containing, member, and AgentRun meanings are visibly distinct. | Recursive all/live collectors are necessarily similar. | Preserve semantic names and contract-focused comments/tests. |
-| `7` | `API/E2E Readiness` | 8.8 | Focused tests pass and the nested configured send regression proves the reproduced boundary. | The only changed nested task-Team-member location assertion uses `task_team` where production requires `task_team_member`, so UC-002 coverage is not contract-valid. | Resolve `CR-F-001`, rerun the focused tests, then re-review. |
+| `7` | `API/E2E Readiness` | 9.5 | The nested configured send regression and every designed execution-location shape now use contract-valid fixtures; reviewer rerun passed `2` files / `30` tests. | Real Docker-backed browser/API evidence remains downstream. | API/E2E should now exercise the live hierarchical upload/finalize/read/dispatch flow. |
 | `8` | `Runtime Correctness And Behavioral Fidelity` | 9.7 | Source traversal matches the server execution index for configured, task Agent, task Team, nested member, and nested task shapes; root scope remains confined correctly. | Live browser/API evidence remains downstream. | API/E2E should exercise the real Docker-backed nested send. |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 10.0 | Clean replacement; no fallback, dual identity, migration, or server weakening. | None. | Preserve. |
 | `10` | `Cleanup Completeness` | 9.8 | Obsolete address-only/root-owner shapes and unused flag are absent; diff check passes. | Durable docs sync remains downstream. | Delivery should reconcile the architecture docs after executable validation. |
 
 ## Findings
 
-### `CR-F-001` — Nested task-Team location coverage uses the wrong V2 member discriminator
-
-- Classification: `Local Fix`
-- Affected approved behavior / contract: `BEH-002`, `BEH-004`, `REQ-001`, UC-002, AC-003; the V2 `TaskTeamMemberExecutionDto` contract and server projector emit nested Team members as `kind: 'task_team_member'`.
-- Evidence: `autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts:58-66,122-126` defines and validates the nested member discriminator; `autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts:236-240` emits it. The changed assertions in `autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts:411-412` claim nested task-Team coverage using the fixture at line 178, whose nested member is incorrectly `kind: 'task_team'`. Initial view construction does not schema-parse that fixture, so the passing test does not prove the supported DTO shape.
-- Consequence: implementation source is structurally correct by trace, but the changed regression package does not yet provide contract-valid evidence for one explicitly required Agent execution shape before API/E2E begins.
-- Required action: change the nested member fixture discriminator to `task_team_member` (without adding production fallback), keep the containing-Team assertions, and rerun the focused Team execution-view and Team send store tests. A canonical DTO parse/assertion may be used if helpful, but no broader test redesign is required.
-- Recommended recipient: `/implementation_engineer`
+None. `CR-F-001` is resolved by `IR-002`: the nested fixture now uses `kind: 'task_team_member'`, the containing-Team assertions remain unchanged, and the reviewer rerun passed `2` files / `30` tests.
 
 ## Classification
 
-`Local Fix` — one bounded implementation-owned test-fixture correction; no production-source, design, requirement, server, Docker, storage, or migration defect was found.
+`N/A — clean implementation-review Pass`
 
 ## Recommended Recipient
 
-`/implementation_engineer`
+`/api_e2e_engineer`
 
 ## Residual Risks
 
@@ -162,10 +155,10 @@ No new or reclassified material premise is needed. The user-facing composer/send
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate: `Pass`
-- Score Summary: `9.6/10 (96/100)` overall; API/E2E readiness `8.8`
-- Failure Origin: `CR-F-001`, bounded implementation-owned contract-invalid test fixture
-- Recommended Recipient: `/implementation_engineer`
-- Notes: Production source matches the approved compound-identity design and no behavior defect was found. Correct the nested task-Team fixture and return the cumulative package for focused source/test-readiness re-review before API/E2E.
+- Score Summary: `9.7/10 (97/100)` overall; API/E2E readiness `9.5`
+- Failure Origin: `N/A — CR-F-001 resolved`
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: `IR-002` supplies contract-valid nested task-Team-member coverage with no production-source change. The approved compound-identity implementation is ready for API/E2E coverage investigation and execution.

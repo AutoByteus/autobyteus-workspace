@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Canonical containing-Team context-file ownership baseline
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/design-review-report.md`; initial implementation round after architecture Pass.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/design-review-report.md`; initial implementation round after architecture Pass.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-002 — Contract-valid nested task-Team member test fixture
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/code-review-report.md`; code-review round `1`.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/code-review-report.md`; code-review round `1`.
 - Triggering finding IDs: `CR-F-001`
 - Classification: `Local Fix`
 - Prior authoritative result: `IR-001` implemented the approved production boundary and was ready for code review; `CRR-001` returned one bounded fixture correction.

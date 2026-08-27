@@ -1,0 +1,14 @@
+# Post-live environment and repository checks
+UTC 2026-08-27T06:16:18Z
+## Electron backend process
+52480 51874 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+## Electron backend health
+{"status":"ok","message":"Server is running"}
+## Branch frontend listener (expected absent)
+absent
+## Test TeamRun directory (expected absent)
+absent
+## Temporary browser probe (expected absent)
+absent
+## git diff --check
+PASS

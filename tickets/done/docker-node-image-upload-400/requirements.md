@@ -34,7 +34,7 @@ This is a product bug exposed by the affected hierarchical Team topology, not a 
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/docker-node-runtime-evidence.md` | Runtime evidence and root-cause trace | REQ-001, REQ-002, REQ-003 | AC-001, AC-002, AC-003, AC-004 | Complete / approval N/A (evidence only) | Records the container, log, topology, storage, comparator, code, and test evidence supporting the requirements basis. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-node-image-upload-400/docker-node-runtime-evidence.md` | Runtime evidence and root-cause trace | REQ-001, REQ-002, REQ-003 | AC-001, AC-002, AC-003, AC-004 | Complete / approval N/A (evidence only) | Records the container, log, topology, storage, comparator, code, and test evidence supporting the requirements basis. |
 
 ## Design Health Assessment (Mandatory)
 
