@@ -2,7 +2,7 @@
 
 ## Status
 
-`Awaiting explicit user verification before archival or repository finalization.`
+`User verification received; archival and repository finalization authorized.`
 
 ## Integrated State
 
@@ -32,4 +32,4 @@ DeepSeek effective-dated pricing now selects from `observed_at`, calculates with
 
 ## User Action Required
 
-Please explicitly confirm completion/verification. No archival, push, merge into `personal`, release, deployment, or cleanup will occur before that confirmation.
+User explicitly confirmed completion and requested finalization plus a new release on 2026-08-27. Proceed with the documented finalization and release workflow.

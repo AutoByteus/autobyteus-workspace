@@ -16,3 +16,9 @@
 - Docs result: no additional change required; canonical provider/pricing contract matches final behavior.
 - Handoff result: prepared and held pending user verification.
 - Finalization/release/deployment: not performed.
+
+## DR-003 — User Verification Received
+
+- Date: `2026-08-27`.
+- User signal: explicit instruction to finalize and release a new version.
+- Result: verification gate cleared; archival, repository finalization, and release workflow authorized.

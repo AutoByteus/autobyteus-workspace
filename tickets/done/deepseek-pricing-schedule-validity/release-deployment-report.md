@@ -2,9 +2,9 @@
 
 ## Current Gate
 
-- Delivery state: `Ready for user verification; finalization held.`
-- User verification received: `No`.
-- Archival, ticket push, target-branch merge/push, release, deployment, and cleanup: `Not performed by policy.`
+- Delivery state: `User verified; finalization and release authorized.`
+- User verification received: `Yes — explicit user instruction on 2026-08-27 to finalize and release a new version.`
+- Archival, ticket push, target-branch merge/push, release, deployment, and cleanup: `Pending execution in this delivery stage.`
 
 ## Integration Check
 
@@ -29,4 +29,4 @@
 
 ## Blocker / Next Action
 
-The only gate is explicit user completion or verification. After that signal, refresh `personal` from remote again, protect/re-integrate if it advanced, obtain renewed verification if the handoff materially changes, then archive and finalize in the documented order.
+User verification is complete. Refresh `personal` before final merge, archive before the final ticket commit, then run the release helper with the archived release notes.
