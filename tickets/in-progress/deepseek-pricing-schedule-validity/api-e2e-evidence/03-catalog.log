@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace-deepseek-pricing-schedule-validity/autobyteus-ts
+
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (5 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  05:15:38
+   Duration  1.60s (transform 358ms, setup 18ms, import 1.40s, tests 5ms, environment 0ms)
+
