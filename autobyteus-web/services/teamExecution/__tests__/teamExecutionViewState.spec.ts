@@ -175,7 +175,7 @@ const settledHistoricalExecutions = () => {
           agent_run_id: 'settled-team-coordinator-run', platform_agent_run_id: null,
         },
         {
-          kind: 'task_team', address: '/StudentStudyGroup/StudyPod', team_run_id: 'settled-pod-run',
+          kind: 'task_team_member', address: '/StudentStudyGroup/StudyPod', team_run_id: 'settled-pod-run',
           members: [{
             kind: 'task_team_agent', address: '/StudentStudyGroup/Student',
             agent_run_id: 'settled-pod-student-run', platform_agent_run_id: null,
@@ -203,6 +203,23 @@ const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyM
 };
 
 describe('TeamExecutionViewState', () => {
+  it('projects one immutable configured execution location with the exact containing TeamRun', () => {
+    const state = createState();
+
+    expect(state.getAgentExecutionLocation('teacher-run')).toEqual({
+      agentRunId: 'teacher-run',
+      memberAddress: '/Teacher',
+      containingTeamRunId: 'root-team-1',
+    });
+    expect(state.getAgentExecutionLocation('student-run')).toEqual({
+      agentRunId: 'student-run',
+      memberAddress: '/StudentStudyGroup/Student',
+      containingTeamRunId: 'study-team-persistent',
+    });
+    expect(Object.isFrozen(state.getAgentExecutionLocation('student-run'))).toBe(true);
+    expect(state.getAgentExecutionLocation('unknown-run')).toBeNull();
+  });
+
   it('stores one canonical reactive context proxy for initial and dynamically associated members', () => {
     const { state, initialContexts, dynamicallyCreatedContexts } = createStateFixture();
     const teacher = state.getAgentContext('teacher-run')!;
@@ -280,6 +297,11 @@ describe('TeamExecutionViewState', () => {
     expect(dynamic.state).toBe(dynamicallyCreatedContexts.get('dynamic-student-run')!.state);
     expect(state.listAgentContextEntries()
       .find((entry) => entry.agentRunId === 'dynamic-student-run')?.agentContext).toBe(dynamic);
+    expect(state.getAgentExecutionLocation('dynamic-student-run')).toEqual({
+      agentRunId: 'dynamic-student-run',
+      memberAddress: '/StudentStudyGroup/Student',
+      containingTeamRunId: 'study-team-persistent',
+    });
     expect(state.focusAgent('dynamic-student-run').disposition).toBe('applied');
     expect(state.getFocusedAgentContext()).toBe(dynamic);
   });
@@ -306,6 +328,11 @@ describe('TeamExecutionViewState', () => {
     expect(state.hasAgentRun('coordinator-run')).toBe(true);
     expect(state.hasAgentRun('task-coordinator-run')).toBe(true);
     expect(state.getMemberAddress('task-coordinator-run')).toBe('/StudentStudyGroup/Coordinator');
+    expect(state.getAgentExecutionLocation('task-coordinator-run')).toEqual({
+      agentRunId: 'task-coordinator-run',
+      memberAddress: '/StudentStudyGroup/Coordinator',
+      containingTeamRunId: 'study-team-task-1',
+    });
     expect(state.listNavigationRows().find((row) => row.teamRunId === 'study-team-task-1')).toMatchObject({
       displayName: 'Task: Complete task-team-1', focusable: false,
     });
@@ -324,6 +351,11 @@ describe('TeamExecutionViewState', () => {
     }));
     expect(activationResult).toMatchObject({ disposition: 'applied' });
     expect(state.getAgentContext('nested-student-run')?.state.runId).toBe('nested-student-run');
+    expect(state.getAgentExecutionLocation('nested-student-run')).toEqual({
+      agentRunId: 'nested-student-run',
+      memberAddress: '/StudentStudyGroup/Student',
+      containingTeamRunId: 'study-team-task-1',
+    });
     expect(state.listTaskHistoryRows().map((row) => row.task.task_id)).toEqual(['task-team-1', 'nested-agent-task']);
   });
 
@@ -374,6 +406,10 @@ describe('TeamExecutionViewState', () => {
       'agent:settled-pod-student-run',
       'agent:settled-nested-run',
     ]));
+    expect(state.getAgentExecutionLocation('settled-direct-run')?.containingTeamRunId).toBe('root-team-1');
+    expect(state.getAgentExecutionLocation('settled-team-coordinator-run')?.containingTeamRunId).toBe('settled-team-run');
+    expect(state.getAgentExecutionLocation('settled-pod-student-run')?.containingTeamRunId).toBe('settled-pod-run');
+    expect(state.getAgentExecutionLocation('settled-nested-run')?.containingTeamRunId).toBe('settled-pod-run');
     expect(state.focusAgent('settled-direct-run')).toMatchObject({ disposition: 'applied' });
     expect(state.focusAgent('settled-nested-run')).toMatchObject({ disposition: 'applied' });
     expect(state.getFocusedAgentRunId()).toBe('settled-nested-run');
@@ -437,6 +473,64 @@ describe('TeamExecutionViewState', () => {
       disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH',
     });
     expect(state.getExecutionTree()).toEqual(beforeTree);
+    expect(state.getChangeSequence()).toBe(0);
+  });
+
+  it('rejects a containing-Team placement change before committing snapshot state', () => {
+    const state = createState();
+    const beforeTree = state.getExecutionTree();
+    const beforeLocation = state.getAgentExecutionLocation('student-run');
+    const changedTree = tree();
+    const studyTeam = changedTree.root_team.members.find((member) => member.kind === 'configured_team');
+    if (!studyTeam || studyTeam.kind !== 'configured_team') throw new Error('Expected configured study Team.');
+    const student = studyTeam.members.find((member) => member.kind === 'configured_agent'
+      && member.agent_run_id === 'student-run');
+    if (!student || student.kind !== 'configured_agent') throw new Error('Expected configured student Agent.');
+    const relocatedTree: TeamRunExecutionTreeDto = {
+      ...changedTree,
+      root_team: {
+        ...changedTree.root_team,
+        members: [
+          ...changedTree.root_team.members.map((member) => member === studyTeam
+            ? { ...studyTeam, members: studyTeam.members.filter((nestedMember) => nestedMember !== student) }
+            : member),
+          student,
+        ],
+      },
+    };
+
+    const result = state.applySnapshot({
+      type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
+      payload: {
+        root_team_run_id: 'root-team-1',
+        base_change_sequence: 7,
+        execution_tree: relocatedTree,
+        tasks: [],
+        messages: [],
+        agent_statuses: [
+          {
+            agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Offline,
+            trigger: null, tool_name: null, error_message: null, error_details: null,
+          },
+          {
+            agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Offline,
+            trigger: null, tool_name: null, error_message: null, error_details: null,
+          },
+          {
+            agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Offline,
+            trigger: null, tool_name: null, error_message: null, error_details: null,
+          },
+        ],
+      },
+    });
+
+    expect(result).toMatchObject({
+      disposition: 'rejected',
+      code: 'TEAM_EXECUTION_SNAPSHOT_INVALID',
+      message: expect.stringContaining("AgentRun 'student-run' changed logical placement."),
+    });
+    expect(state.getExecutionTree()).toBe(beforeTree);
+    expect(state.getAgentExecutionLocation('student-run')).toBe(beforeLocation);
     expect(state.getChangeSequence()).toBe(0);
   });
 });

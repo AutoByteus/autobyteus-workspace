@@ -247,18 +247,22 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           team = hydrated; targetAgentRunId = hydrated.view.getFocusedAgentRunId();
         }
         if (!team || !targetAgentRunId || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
-        team.view.setRootTeamActive(true);
         const member = team.view.getAgentContext(targetAgentRunId);
-        const memberAddress = team.view.getMemberAddress(targetAgentRunId);
-        if (!member || !memberAddress) throw new Error(`Focused Team AgentRun '${targetAgentRunId}' is not available.`);
+        if (!member) throw new Error(`Focused Team AgentRun '${targetAgentRunId}' is not available.`);
+        const location = team.view.getAgentExecutionLocation(targetAgentRunId);
+        if (!location) throw new Error(`Focused Team AgentRun '${targetAgentRunId}' has no exact execution location.`);
+        team.view.setRootTeamActive(true);
         localSubmission = beginLocalUserSubmission(member, {
           text, attachments: contextAttachments,
           navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
         });
-        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, memberAddress);
+        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
         const finalized = await useContextFileUploadStore().finalizeDraftAttachments({
           draftOwner,
-          finalOwner: buildTeamMemberFinalContextFileOwner(rootTeamRunId, memberAddress),
+          finalOwner: buildTeamMemberFinalContextFileOwner(
+            location.containingTeamRunId,
+            location.memberAddress,
+          ),
           attachments: contextAttachments,
         });
         const plan = planContextAttachmentSubmission(finalized);
