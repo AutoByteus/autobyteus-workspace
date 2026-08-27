@@ -111,7 +111,8 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
     ['2026-08-26T02:00:00Z', 'deepseek-v4-2026-08-23', 'peak', 1.32, 3.96, 0.044],
   ] as const)('returns current selected provenance for %s', async (observedAt, scheduleId, period, input, output, cacheRead) => {
     const policy = await new TokenPriceConfigProvider().resolvePolicy({ runtime_kind: 'autobyteus', model_provider: 'DEEPSEEK', model_identifier: 'deepseek-v4-pro', model_value: null, observed_at: observedAt });
-    expect(policy).toMatchObject({ pricing_status: 'trusted', input_price_per_million: input, output_price_per_million: output, cached_input_read_price_per_million: cacheRead, pricing_schedule_id: scheduleId, pricing_schedule_period_id: period, pricing_schedule_window_timezone: 'UTC', pricing_schedule_peak_days: [1, 2, 3, 4, 5], pricing_schedule_peak_days_timezone: 'Asia/Shanghai' });
+    expect(policy).toMatchObject({ pricing_status: 'trusted', input_price_per_million: input, output_price_per_million: output, cached_input_read_price_per_million: cacheRead, pricing_schedule_id: scheduleId, pricing_schedule_period_id: period, pricing_schedule_window_timezone: 'UTC', pricing_schedule_peak_days: [1, 2, 3, 4, 5], pricing_schedule_peak_days_timezone: 'Asia/Shanghai', pricing_schedule_effective_from: '2026-08-22T16:00:00Z' });
+    expect(policy.pricing_policy_key).toContain(`:${scheduleId}:${period}`);
   });
 
   it('does not guess a DeepSeek price when the scheduled timestamp is invalid', async () => {

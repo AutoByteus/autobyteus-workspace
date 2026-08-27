@@ -42,7 +42,7 @@ Implemented three-version DeepSeek history: prior flat rates, daily windows from
 ## Checks and Constraints
 
 - Legacy compatibility paths: None; singular schedule transport and embedded selector removed.
-- Persisted data decision: Directly Usable — No Migration; stored outcomes remain immutable.
+- Persisted data decision: Not Affected; stored outcomes remain immutable.
 - Frontend rendered-result check: Not Applicable; backend pricing-only change.
-- Local checks: `pnpm --filter autobyteus-ts build` passed; focused provider test passed 9/9; selector test passed 9/9. Full server typecheck has unrelated existing Prisma/rootDir failures.
+- Local checks: `pnpm --filter autobyteus-ts build` passed; focused provider test passed 9/9; selector test passed 14/14. Full server typecheck has unrelated existing Prisma/rootDir failures.
 - Downstream: API/E2E coverage investigation and execution required; implementation-scoped selector/history coverage is complete; API/E2E coverage investigation and execution remain downstream.

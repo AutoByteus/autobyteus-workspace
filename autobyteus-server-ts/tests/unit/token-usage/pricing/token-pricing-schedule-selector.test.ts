@@ -40,13 +40,14 @@ describe('selectTokenPricingSchedulePeriod', () => {
   });
 
   it('uses configured calendar timezone and day set independently from the window timezone', () => {
-    const schedule = history[2];
-    if (schedule.kind !== 'time_window') throw new Error('expected time-window schedule');
+    const schedule = history.find((candidate): candidate is Extract<typeof history[number], { kind: 'time_window' }> =>
+      candidate.kind === 'time_window' && candidate.scheduleId === 'deepseek-v4-2026-08-23');
+    if (!schedule) throw new Error('expected time-window schedule');
     const saturday = '2026-08-28T16:30:00Z';
     const monday = '2026-08-30T16:30:00Z';
-    const synthetic = { ...schedule, peakWindows: [{ periodId: 'peak', startMinute: 990, endMinute: 1020 }] };
+    const synthetic = { ...schedule, peakWindows: [{ periodId: 'peak', startMinute: 990, endMinute: 1020 }] as const };
     expect(selectTokenPricingSchedulePeriod([synthetic], saturday)?.period.periodId).toBe('off_peak');
-    const expanded = { ...synthetic, peakDays: [1, 2, 3, 4, 5, 6, 7] };
+    const expanded = { ...synthetic, peakDays: [1, 2, 3, 4, 5, 6, 7] as const };
     expect(selectTokenPricingSchedulePeriod([expanded], saturday)?.period.periodId).toBe('peak');
     expect(selectTokenPricingSchedulePeriod([synthetic], monday)?.period.periodId).toBe('peak');
   });

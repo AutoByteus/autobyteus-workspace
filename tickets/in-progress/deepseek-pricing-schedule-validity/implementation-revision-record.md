@@ -6,7 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / ARCH-REV-001 / initial | N/A | Initial Baseline | SR-001, ARCH-REV-001; CRR/API-REV/DR N/A | Implemented reviewed effective-dated DeepSeek pricing history and provider selector; ready for code review. |
 | IR-002 | code_reviewer / CRR-001 / round 1 | CR-001–CR-004 | Local Fix | SR-001, ARCH-REV-001, CRR-001; API-REV/DR N/A | Implemented review fixes; returned for source re-review. |
-| IR-003 | code_reviewer / CRR-002 / round 2 | CR-001–CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002; API-REV/DR N/A | Completed strict coverage, contract, readability, and traceability corrections; returned for source re-review. |
+| IR-003 | code_reviewer / CRR-002 / round 2 | CR-001–CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002, CRR-003; API-REV/DR N/A | Completed strict coverage, contract, readability, and traceability corrections; returned for source re-review. |
 
 ## Revision Entries
 
@@ -56,7 +56,7 @@
 - Classification: Local Fix
 - Prior authoritative result: IR-002 remained partially unresolved under CRR-002.
 - Current authoritative result: Round-2 corrections complete; implementation returned for source re-review.
-- Related solution revision IDs: SR-001; architecture: ARCH-REV-001; code review: CRR-001, CRR-002; API/E2E and delivery: N/A.
+- Related solution revision IDs: SR-001; architecture: ARCH-REV-001; code review: CRR-001, CRR-002, CRR-003; API/E2E and delivery: N/A.
 - Approved behavior or requirement IDs affected: BEH-001–BEH-004, REQ-001–REQ-012, AC-001–AC-012.
 - Implementation delta: Strict-TypeScript-safe selector tests now cover exact boundaries, Shanghai Monday, day-set mutation, order independence, exact rate triples, and invalid input. Contract status and exact rates are aligned; core history code is readable; handoff/revision traceability is corrected.
 - Local validation and result: `autobyteus-ts` build passed; selector 14/14 and provider 9/9 passed; targeted strict selector test typecheck passed.
