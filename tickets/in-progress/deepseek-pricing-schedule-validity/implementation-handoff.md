@@ -13,10 +13,10 @@
 
 - Implementation cycle: Rework
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-deepseek-pricing-schedule-validity/tickets/in-progress/deepseek-pricing-schedule-validity/implementation-revision-record.md`
-- Current implementation revision ID: IR-003
+- Current implementation revision ID: IR-004
 - Related solution / architecture revisions: SR-001 / ARCH-REV-001
 - Related code/API/delivery revisions: N/A
-- Triggering findings: CR-001–CR-005 (CRR-002)
+- Triggering findings: CR-002, CR-005 (CRR-003)
 
 Implemented three-version DeepSeek history: prior flat rates, daily windows from 2026-08-16T16:00Z, and weekday-only windows from 2026-08-22T16:00Z. The provider selects by `observed_at`, records selected provenance, fails closed for invalid times, and keeps non-DeepSeek paths unchanged. No persistence migration or read-time repricing was added.
 
