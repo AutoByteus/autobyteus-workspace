@@ -6,8 +6,9 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / ARCH-REV-001 / initial | N/A | Initial Baseline | SR-001, ARCH-REV-001; CRR/API-REV/DR N/A | Implemented reviewed effective-dated DeepSeek pricing history and provider selector; ready for code review. |
 | IR-002 | code_reviewer / CRR-001 / round 1 | CR-001–CR-004 | Local Fix | SR-001, ARCH-REV-001, CRR-001; API-REV/DR N/A | Implemented review fixes; returned for source re-review. |
-| IR-003 | code_reviewer / CRR-002 / round 2 | CR-001–CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002, CRR-003; API-REV/DR N/A | Completed strict coverage, contract, readability, and traceability corrections; returned for source re-review. |
+| IR-003 | code_reviewer / CRR-002 / round 2 | CR-001–CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002; API-REV/DR N/A | Completed strict coverage, contract, readability, and traceability corrections; returned for source re-review. |
 | IR-004 | code_reviewer / CRR-003 / round 3 | CR-002, CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002, CRR-003; API-REV/DR N/A | Completed strict narrowing, provenance assertions, traceability corrections, and generated-artifact cleanup; returned for source re-review. |
+| IR-005 | code_reviewer / CRR-004 / round 4 | CR-002, CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001–CRR-004; API-REV/DR N/A | Added Pro flat assertions, restored tracked outputs, and corrected chronology/package traceability; returned for source re-review. |
 
 ## Revision Entries
 
@@ -73,4 +74,13 @@
 - Approved IDs: BEH-001–BEH-004 / REQ-001–REQ-012 / AC-001–AC-012.
 - Delta: strict selector test narrowing, exact provenance/rate assertions, corrected Not Affected persisted-data label and CRR traceability, accurate 14/14 validation, and generated dist cleanup.
 - Validation: strict selector TypeScript check passed; selector 14/14 and provider 9/9 passed.
+- Next: `/code_reviewer`.
+
+### IR-005 — Round-4 source-review corrections
+
+- Triggering role/report/round: code_reviewer; `code-review-report.md`; round 4. Findings: CR-002, CR-005 (CRR-004).
+- Classification: Local Fix. Prior result: IR-004 failed with remaining coverage and package issues. Current result: corrections complete; returned for source re-review.
+- Related revisions: SR-001, ARCH-REV-001, CRR-001–CRR-004; API/E2E and delivery N/A.
+- Delta: Added exact DeepSeek Pro prior provider/catalog assertions with flat provenance/key, restored tracked team-stream outputs, corrected handoff chronology and `Not Affected` transition label, and removed generated SDK outputs.
+- Validation: strict selector TypeScript check passed; selector 14/14, provider 10/10, catalog 5/5 passed.
 - Next: `/code_reviewer`.

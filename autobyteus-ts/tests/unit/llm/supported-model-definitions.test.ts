@@ -51,6 +51,13 @@ describe('current supported model definitions', () => {
       .resolves.toMatchObject({ pricing_status: 'missing', missing_reason: 'pricing_config_absent' });
   });
 
+  it('exposes exact DeepSeek Pro prior flat rates in history', async () => {
+    const pricing = await LLMFactory.getModelPricingInfo({ modelIdentifier: 'deepseek-v4-pro', modelProvider: LLMProvider.DEEPSEEK });
+    const prior = pricing.pricing_schedule_history?.find((schedule) => schedule.kind === 'fixed');
+    expect(prior?.kind === 'fixed' && [prior.period.cachedInputReadTokenPricing, prior.period.inputTokenPricing, prior.period.outputTokenPricing])
+      .toEqual([0.003625, 0.435, 0.87]);
+  });
+
   it('requires exact current AutoByteus identifiers without aliasing removed rows', async () => {
     await expect(LLMFactory.requireCurrentModelIdentifier('grok-4.6')).resolves.toBeUndefined();
     await expect(LLMFactory.requireCurrentModelIdentifier('grok-4.5'))
