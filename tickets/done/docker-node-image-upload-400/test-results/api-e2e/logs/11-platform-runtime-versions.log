@@ -1,0 +1,11 @@
+# Platform and runtime versions
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+arm64
+node v22.23.1
+pnpm 10.28.2
+chrome Google Chrome 151.0.7922.175
+branch codex/docker-node-image-upload-400
+head 0e12a099cbdba62c5b53f38a7fd495d758b63749
+electron-backend /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data

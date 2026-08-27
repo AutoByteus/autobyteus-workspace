@@ -1,0 +1,40 @@
+
+> autobyteus@1.4.59 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/teamExecution/__tests__/teamExecutionViewState.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (7 tests) 18ms
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+Error terminating Team 'team-terminate-reject': Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/stores/agentTeamRunStore.ts:198:58)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:436:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts (23 tests) 81ms
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  07:59:15
+   Duration  7.16s (transform 3.66s, setup 11.82s, collect 467ms, tests 99ms, environment 582ms, prepare 364ms)

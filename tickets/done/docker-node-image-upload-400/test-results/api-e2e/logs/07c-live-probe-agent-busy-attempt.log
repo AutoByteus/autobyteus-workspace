@@ -1,0 +1,5 @@
+2026-08-27T06:08:08.794Z created test TeamRun nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc
+2026-08-27T06:08:19.740Z branch frontend ready http://127.0.0.1:49664
+2026-08-27T06:08:31.349Z nested image journey passed
+2026-08-27T06:13:31.488Z probe failure {"message":"Timed out waiting for same nested Agent ready for text-only send","stack":"Error: Timed out waiting for same nested Agent ready for text-only send\n    at waitUntil (file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/tests/e2e/.docker-node-image-upload-400-live-probe.mjs:84:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/tests/e2e/.docker-node-image-upload-400-live-probe.mjs:399:3","details":null,"graphqlPayload":null}
+2026-08-27T06:13:31.797Z results written /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/test-results/api-e2e/browser/browser-results.json passed= false
