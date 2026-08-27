@@ -2,7 +2,7 @@
 
 ## Status
 
-`User verification received; archival and repository finalization authorized.`
+`Complete — archived, finalized into personal, and released as v1.4.60.`
 
 ## Integrated State
 
@@ -33,3 +33,5 @@ DeepSeek effective-dated pricing now selects from `observed_at`, calculates with
 ## User Action Required
 
 User explicitly confirmed completion and requested finalization plus a new release on 2026-08-27. Proceed with the documented finalization and release workflow.
+
+Finalization completed: ticket archived, branch pushed, merged into `personal`, and `personal` pushed. Release `v1.4.60` was created and tag-pushed; release workflows are asynchronously running.

@@ -22,3 +22,12 @@
 - Date: `2026-08-27`.
 - User signal: explicit instruction to finalize and release a new version.
 - Result: verification gate cleared; archival, repository finalization, and release workflow authorized.
+
+## DR-004 — Finalization and Release
+
+- Date: `2026-08-27`.
+- Ticket archived at `tickets/done/deepseek-pricing-schedule-validity` and branch pushed.
+- Finalization target `personal` merged and pushed at `d4a6f4579`.
+- Release helper completed version `1.4.60` with archived ticket release notes.
+- Release commit: `f7849c286`; published tag: `v1.4.60`.
+- Version synchronization and managed messaging manifest update completed; tag-triggered workflows are asynchronous.

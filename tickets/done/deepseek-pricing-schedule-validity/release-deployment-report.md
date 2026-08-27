@@ -2,9 +2,9 @@
 
 ## Current Gate
 
-- Delivery state: `User verified; finalization and release authorized.`
+- Delivery state: `Complete — finalized and released.`
 - User verification received: `Yes — explicit user instruction on 2026-08-27 to finalize and release a new version.`
-- Archival, ticket push, target-branch merge/push, release, deployment, and cleanup: `Pending execution in this delivery stage.`
+- Archival, ticket push, target-branch merge/push, release, deployment, and cleanup: `Completed except task-owned worktree/branch cleanup, recorded below.`
 
 ## Integration Check
 
@@ -29,4 +29,15 @@
 
 ## Blocker / Next Action
 
-User verification is complete. Refresh `personal` before final merge, archive before the final ticket commit, then run the release helper with the archived release notes.
+Finalization and release completed after user verification.
+
+## Finalization and Release Result
+
+- Archived ticket: `tickets/done/deepseek-pricing-schedule-validity`.
+- Ticket commit: `90636a1299ee5bca8c625fa697b8c3c5add5f7da`; ticket branch pushed before target merge.
+- Finalization target: `personal`; target merged ticket at `d4a6f4579` and was pushed.
+- Release helper completed version `1.4.60` using the archived ticket release notes.
+- Release commit: `f7849c286`.
+- Published tag: `v1.4.60`; tag and `personal` were pushed to origin.
+- Version sync: web and messaging gateway are both `1.4.60`; managed messaging manifest synchronized to `v1.4.60`.
+- Tag push triggers the documented desktop, Android, iOS, messaging-gateway, and server-Docker workflows; hosted completion is asynchronous.
