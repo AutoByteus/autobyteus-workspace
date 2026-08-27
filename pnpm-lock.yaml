@@ -203,8 +203,8 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2
       repository_prisma:
-        specifier: ^1.0.9
-        version: 1.0.9(@prisma/client@5.22.0(prisma@5.22.0))
+        specifier: ^1.0.10
+        version: 1.0.10(@prisma/client@5.22.0(prisma@5.22.0))
       type-graphql:
         specifier: ^2.0.0-rc.2
         version: 2.0.0-rc.3(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
@@ -7186,8 +7186,8 @@ packages:
   remove-trailing-spaces@1.0.9:
     resolution: {integrity: sha512-xzG7w5IRijvIkHIjDk65URsJJ7k4J95wmcArY5PRcmjldIOl7oTvG8+X2Ag690R7SfwiOcHrWZKVc1Pp5WIOzA==}
 
-  repository_prisma@1.0.9:
-    resolution: {integrity: sha512-LY1ZkCpUQyj3kSUC7dBYjyBdezvscCOTTMNMNQFsy4g3InKlWii04hHFNMcIriDU4pQVsexx59+rDTPfN+S7YQ==}
+  repository_prisma@1.0.10:
+    resolution: {integrity: sha512-pU9uNyvq4Y0N8VmYOBgG6TXNxxV6WeFTuHd6kMI0Flr8frc51rzKCNVeZMFv04dNfwXOJ7n23x4Msv7gt1Z8Nw==}
     peerDependencies:
       '@prisma/client': ^5.22.0
 
@@ -16344,7 +16344,7 @@ snapshots:
 
   remove-trailing-spaces@1.0.9: {}
 
-  repository_prisma@1.0.9(@prisma/client@5.22.0(prisma@5.22.0)):
+  repository_prisma@1.0.10(@prisma/client@5.22.0(prisma@5.22.0)):
     dependencies:
       '@prisma/client': 5.22.0(prisma@5.22.0)
       uuid: 13.0.0

@@ -9,6 +9,7 @@
 | IR-003 | code_reviewer / CRR-002 / round 2 | CR-001–CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002; API-REV/DR N/A | Completed strict coverage, contract, readability, and traceability corrections; returned for source re-review. |
 | IR-004 | code_reviewer / CRR-003 / round 3 | CR-002, CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001, CRR-002, CRR-003; API-REV/DR N/A | Completed strict narrowing, provenance assertions, traceability corrections, and generated-artifact cleanup; returned for source re-review. |
 | IR-005 | code_reviewer / CRR-004 / round 4 | CR-002, CR-005 | Local Fix | SR-001, ARCH-REV-001, CRR-001–CRR-004; API-REV/DR N/A | Added Pro flat assertions, restored tracked outputs, and corrected chronology/package traceability; returned for source re-review. |
+| IR-006 | solution_designer / API-REV-001 / dependency correction | N/A | Local Fix | SR-001, ARCH-REV-001, CRR-001–CRR-005, API-REV-001; DR N/A | Updated repository_prisma to 1.0.10 with minimal lockfile delta, verified import, and returned package for source review. |
 
 ## Revision Entries
 
@@ -84,3 +85,14 @@
 - Delta: Added exact DeepSeek Pro prior provider/catalog assertions with flat provenance/key, restored tracked team-stream outputs, corrected handoff chronology and `Not Affected` transition label, and removed generated SDK outputs.
 - Validation: strict selector TypeScript check passed; selector 14/14, provider 10/10, catalog 5/5 passed.
 - Next: `/code_reviewer`.
+
+### IR-006 — repository_prisma dependency correction
+
+- Triggering role/report/round: solution_designer; API-REV-001; dependency correction round.
+- Triggering findings: blocked Prisma-backed validation; no durable coverage changes. Classification: Local Fix.
+- Prior result: IR-005 implementation package awaited API/E2E rerun but dependency resolution was blocked. Current result: dependency updated and package returned through source review.
+- Related revisions: SR-001, ARCH-REV-001, CRR-001–CRR-005, API-REV-001; delivery N/A.
+- Approved behavior/requirements: BEH-001–BEH-005 / REQ-001–REQ-012 / AC-001–AC-012; persisted-data decision `Not Affected`.
+- Delta: `autobyteus-server-ts/package.json` and `pnpm-lock.yaml` update `repository_prisma` from 1.0.9 to 1.0.10; lock delta is limited to importer, package resolution/integrity, and snapshot references.
+- Validation: Prisma client generated successfully; `repository_prisma` named import loaded successfully. No broader API/E2E execution owned in this round.
+- Next: `/code_reviewer`; after source review, API/E2E should rerun.
