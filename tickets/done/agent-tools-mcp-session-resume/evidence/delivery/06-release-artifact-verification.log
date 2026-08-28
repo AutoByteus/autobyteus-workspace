@@ -1,0 +1,42 @@
+v1.4.61 final release verification
+Recorded at: 2026-08-28T10:37:04Z
+
+== Repository identity ==
+personal=ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+origin/personal=ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+v1.4.61=ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+origin/v1.4.61=ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+web-version=1.4.61
+gateway-version=1.4.61
+
+== Tag-triggered workflows ==
+Android APK Release	completed	success	33161507537	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33161507537	2026-08-28T09:58:01Z	2026-08-28T10:01:46Z
+Desktop Release	completed	success	33161507573	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33161507573	2026-08-28T09:58:01Z	2026-08-28T10:16:40Z
+Release Messaging Gateway	completed	success	33161507595	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33161507595	2026-08-28T09:58:01Z	2026-08-28T10:01:05Z
+Server Docker Release	completed	success	33161507510	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33161507510	2026-08-28T09:58:01Z	2026-08-28T10:36:02Z
+iOS App Store Connect Release	completed	success	33161507669	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33161507669	2026-08-28T09:58:01Z	2026-08-28T10:08:24Z
+
+== GitHub release ==
+v1.4.61	v1.4.61	https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.61	false	false	2026-08-28T10:01:02Z	21
+Assets:
+AutoByteus_personal_android-1.4.61-release.apk	1846691
+AutoByteus_personal_android-1.4.61-release.apk.sha256	113
+AutoByteus_personal_linux-arm64-1.4.61.AppImage	431571557
+AutoByteus_personal_linux-x64-1.4.61.AppImage	444025793
+AutoByteus_personal_macos-arm64-1.4.61.dmg	501099669
+AutoByteus_personal_macos-arm64-1.4.61.dmg.blockmap	521306
+AutoByteus_personal_macos-arm64-1.4.61.zip	495660675
+AutoByteus_personal_macos-arm64-1.4.61.zip.blockmap	509471
+AutoByteus_personal_macos-x64-1.4.61.dmg	523078741
+AutoByteus_personal_macos-x64-1.4.61.dmg.blockmap	546183
+AutoByteus_personal_macos-x64-1.4.61.zip	517300063
+AutoByteus_personal_macos-x64-1.4.61.zip.blockmap	530289
+AutoByteus_personal_windows-1.4.61.exe	319676009
+autobyteus-message-gateway-1.4.61-node-generic.tar.gz	47383267
+autobyteus-message-gateway-1.4.61-node-generic.tar.gz.json	429
+autobyteus-message-gateway-1.4.61-node-generic.tar.gz.sha256	120
+latest-linux-arm64.yml	417
+latest-linux.yml	413
+latest-mac.yml	897
+latest.yml	354
+release-manifest.json	904

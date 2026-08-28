@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-Initial integrated-state delivery, long-lived documentation synchronization, release-note preparation, and the DR-002 local macOS Electron test build are complete. The user has now explicitly accepted the task and authorized finalization plus a new release. DR-003 records the unchanged post-acceptance base refresh, ticket archival, and selection of the next patch version `1.4.61`; repository and release execution are in progress.
+Initial integrated-state delivery, long-lived documentation synchronization, release-note preparation, the DR-002 local macOS Electron test build, repository finalization, the user-authorized `v1.4.61` release, rollout verification, and post-finalization cleanup are complete. DR-005 records safe removal of the temporary/ticket worktrees and local/remote ticket branches while preserving unrelated canonical-root files.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
-- Notes: User verification is accepted, the ticket is archived, and finalization plus `v1.4.61` release execution are authorized.
+- Current delivery revision ID: `DR-005`
+- Notes: User verification, repository finalization, release publication, rollout verification, and cleanup all passed.
 
 ## Initial Delivery Integration Refresh
 
@@ -52,26 +52,26 @@ Initial integrated-state delivery, long-lived documentation synchronization, rel
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Authorized and pending — 1.4.60 to 1.4.61`
-- Tag: `Authorized and pending — v1.4.61`
-- Release commit: `Pending after repository finalization`
-- Reason: The user explicitly authorized a new release. `1.4.61` is the next patch after the current package and latest normal tag `1.4.60` / `v1.4.60`, and `v1.4.61` was absent locally and remotely at preparation.
+- Version bump: `Completed — autobyteus-web and autobyteus-message-gateway 1.4.60 to 1.4.61`
+- Tag: `Created and pushed — v1.4.61 at ebef77eb32bbeaefd4fccdb6998240264c82a3c1`
+- Release commit: `ebef77eb32bbeaefd4fccdb6998240264c82a3c1 — chore(release): bump workspace release version to 1.4.61`
+- Reason: The user explicitly authorized a new release. `1.4.61` was the next free patch after `1.4.60` / `v1.4.60`.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/requirements.md`
 - Ticket branch: `codex/agent-tools-mcp-session-resume`
-- Ticket branch commit result: `In progress after ticket archival; local verification checkpoint remains 7f6d2d4cb1010001e27e5a1685b922165c10d954`
-- Ticket branch push result: `Pending`
+- Ticket branch commit result: `Completed — 754a945a4ff9b49cb3a7c94710693c5bddb6c0d6`
+- Ticket branch push result: `Completed — origin/codex/agent-tools-mcp-session-resume`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `No`; `origin/personal` remained at bf396dd5ed541cf6ef2179b305132b079aadd7ab`
 - Delivery-owned edits protected before re-integration: `Yes; the reviewed candidate was checkpointed and delivery artifacts were staged before the post-acceptance refresh`
 - Re-integration before final merge result: `Not required; target unchanged`
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed — local personal fast-forwarded to refreshed origin/personal before merge`
+- Merge into target result: `Completed — 2afd4bfc69b2982adea420f572d55f4c428ce0b3`
+- Push target branch result: `Completed; release helper subsequently advanced origin/personal to ebef77eb32bbeaefd4fccdb6998240264c82a3c1`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None.`
 
 ## Release / Publication / Deployment
@@ -79,18 +79,20 @@ Initial integrated-state delivery, long-lived documentation synchronization, rel
 - Applicable: `Yes — new shared workspace release v1.4.61`
 - Method: `Repository-documented release helper; tag push starts desktop, Android, iOS, messaging-gateway, and server-Docker workflows`
 - Method reference / command: `pnpm release 1.4.61 -- --release-notes tickets/done/agent-tools-mcp-session-resume/release-notes.md`
-- Release/publication/deployment result: `Authorized; pending repository finalization and execution`
-- Release notes handoff result: `Archived and ready for the release helper`
+- Release/publication/deployment result: `Pass — release commit/tag pushed, all five workflows succeeded, and the public GitHub release contains 21 assets`
+- Release notes handoff result: `Archived ticket notes were consumed and synchronized by the release helper`
 - Blocker (if applicable): `None.`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume`
-- Worktree cleanup result: `Pending release verification`
-- Worktree prune result: `Pending`
-- Local ticket branch cleanup result: `Pending safe merge/release verification`
-- Remote branch cleanup result: `Pending safe merge/release verification`
-- Blocker (if applicable): `None; cleanup intentionally follows release verification.`
+- Worktree cleanup result: `Completed — temporary release and dedicated ticket worktrees removed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed — codex/agent-tools-mcp-session-resume deleted after merge ancestry verification`
+- Remote branch cleanup result: `Completed — origin/codex/agent-tools-mcp-session-resume deleted`
+- Blocker (if applicable): `None.`
+- Cleanup evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/delivery/07-post-finalization-cleanup.log`
+- Unrelated-state preservation: Pre-existing canonical-root `.article-work` and application `dist` directories were intentionally left untouched.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -101,12 +103,12 @@ Initial integrated-state delivery, long-lived documentation synchronization, rel
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `Yes — /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/release-notes.md`
-- Archived release notes artifact used for release/publication: `Not yet archived or used`
+- Archived release notes artifact used for release/publication: `Yes — consumed by pnpm release and synchronized to .github/release-notes/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-DR-003 authorizes the documented `v1.4.61` tag-push release after repository finalization. The pushed tag is expected to trigger desktop, Android, iOS, messaging-gateway, and server-Docker release workflows. Delivery must verify the tag, release commit, remote branch, workflow runs, and published release state before cleanup; it must not issue an immediate duplicate manual dispatch.
+The documented `v1.4.61` tag-push release completed. Android APK Release (`33161507537`), Desktop Release (`33161507573`), iOS App Store Connect Release (`33161507669`), Release Messaging Gateway (`33161507595`), and Server Docker Release (`33161507510`) all completed successfully. The public GitHub release is `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.61`. No duplicate manual dispatch was issued.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -132,6 +134,13 @@ DR-003 authorizes the documented `v1.4.61` tag-push release after repository fin
 - Final bounded regression: 5 passed / 2 justified provider-gated skips; production build passed.
 - Final external cleanup/source/temp/secret audit: Pass.
 - Full live mixed-task aggregate: explicitly not green on separate notification waits and failed-case cleanup hooks; current activation/task DTOs and dedicated notification projection remain proven.
+- Ticket branch final commit and push: Pass at `754a945a4ff9b49cb3a7c94710693c5bddb6c0d6`.
+- `personal` merge and push: Pass at merge `2afd4bfc69b2982adea420f572d55f4c428ce0b3`.
+- Release helper: Pass; release commit/tag target `ebef77eb32bbeaefd4fccdb6998240264c82a3c1` pushed to `origin/personal` and `v1.4.61`.
+- Tag-triggered workflows: 5/5 completed successfully.
+- GitHub release: public, non-draft, non-prerelease, 21 assets.
+- Release evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/delivery/04-release-execution.log`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/delivery/05-release-workflow-monitor.log`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/delivery/06-release-artifact-verification.log`.
+- Post-finalization cleanup: Pass; dedicated worktrees and ticket branches removed locally/remotely, with canonical unrelated untracked files preserved.
 
 ## Rollback Criteria
 
@@ -141,4 +150,4 @@ DR-003 authorizes the documented `v1.4.61` tag-push release after repository fin
 
 ## Final Status
 
-`Pass — DR-003 user verification accepted, final base refresh unchanged, ticket archived, and v1.4.61 finalization/release authorized. Execution and rollout verification are in progress.`
+`Pass — DR-005 delivery is complete. Repository finalization, v1.4.61 release publication, all five rollout workflows, and post-finalization cleanup succeeded. No active delivery blocker remains.`
