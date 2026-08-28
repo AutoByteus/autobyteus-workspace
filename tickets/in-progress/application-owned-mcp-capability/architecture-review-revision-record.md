@@ -14,6 +14,7 @@ The latest `design-review-report.md` remains authoritative. This record captures
 | ARCH-REV-006 | Round 6; SR-006 approved post-API Agent-to-UI proof amendment | SR-001–SR-006 | Pass; delivery later paused at DR-002 for Requirement Gap | Pass | N/A — approved Requirement Gap resolved |
 | ARCH-REV-007 | Round 7; SR-007 correction after API-REV-002 / CRR-005 | SR-001–SR-007 | Pass architecture / Fail API-E2E and source failure-origin review | Pass | CR-DI-002; CR-MP-001 |
 | ARCH-REV-008 | Round 8; SR-008 correction after API-REV-003 / CRR-007 | SR-001–SR-008 | Pass architecture / Fail API-E2E and source failure-origin review | Pass | Reopened CR-DI-002; CR-MP-002 |
+| ARCH-REV-009 | Round 9; SR-009 user prompt clarification and DR-004 latest-base ownership rebase | SR-001–SR-009 | Pass architecture / delivery blocked by DR-004 | Pass | DR-004; MP-003 |
 
 ## Revision Entries
 
@@ -199,3 +200,28 @@ None.
 - Material classification changes: Reopened `CR-DI-002` is closed at design level. `CR-MP-002` remains `Reachable` and is addressed by a bounded maintained-instruction correction. No generic `apply_patch` API/alias, provider exposure/security policy, application mutation, migration, logging, GraphQL, or UI contract is added.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Focused implementation must replace “provider-native edit_file” prompt/Team/launch wording with built-in `apply_patch`, keep both native/normalized names out of configs, preserve complete handoff/relative publication/fail-closed behavior, and update proportionate contract coverage without modifying provider conversion. Source review must follow. Coverage investigation then decides whether to repair/execute the stale optional live integration; it is not Luna/browser proof. API/E2E must rerun the same supported browser journey and prove prompt contract, Codex `fileChange`, corresponding normalized `edit_file`, zero forbidden operations, exact member workspace/message/publication joins, and the final UI outcome. Durable coverage changes return through proportional code review before delivery resumes from DR-002.
+
+### ARCH-REV-009 — Business prompts and latest-base run sessions have clean, orthogonal owners
+
+- Canonical design review report: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-review-report.md`
+- Review round and trigger: Round 9, `SR-009` after the user's business-prompt boundary clarification and delivery `DR-004` found the feature checkpoint built on a session owner superseded by latest `origin/personal`.
+- Triggering role, report path, and finding IDs: `/solution_designer` with `/delivery_engineer` evidence in `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-latest-base-conflict-report.md`; `DR-004`; review premise `MP-003`.
+- Relevant solution revision IDs: `SR-001`–`SR-009`
+- Prior authoritative decision: Architecture `Pass` at `ARCH-REV-008`; `IR-005`, `CRR-009`, and `API-REV-004` later passed the pre-latest-base business journey, then delivery correctly blocked and aborted integration at `DR-004`.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-009 keeps maintained role/team/launch instructions at the business boundary and treats runtime foundation selection and provider events as lower-level implementation/evidence concerns. Separately, DS-015–DS-017 rebase application route projection onto latest-base `AgentToolsMcpHost`, scoped `activateForRun`/`deactivateForRun`, active-only registry, deterministic tokenless URL, fresh restore materialization, and exact managed-run cleanup. The nullable `applicationAgentTools` port is the only added live capability: Claude/Codex consume it through current session composition; AutoByteus consumes it locally. Package transition drains only affected application lanes; it neither tears down nor reconstructs run sessions. The obsolete bearer/main-listener/issuer/revoker seam is removed cleanly.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| DR-004 | Open — latest-base Design Impact blocked integration | Resolved in design; implementation/integration pending | DR-004; SR-009; ARCH-REV-009 | Direct latest-base source/ticket reads plus DS-015–DS-017, ownership/dependency/interface/file/removal/sequence/coverage sections specify one combined owner model and prohibit mechanical dual-path retention. |
+| CR-DI-002 | Resolved at ARCH-REV-008 and proven by API-REV-004 | Resolved — preserved under the user-approved stable abstraction | SR-008; ARCH-REV-008; API-REV-004; SR-009; ARCH-REV-009 | Required business call, marker, artifacts, relative publication, complete handoff, reconciliation, and browser outcome remain. Operation names move out of application prompts; optional provider events remain downstream evidence. |
+| ARCH-DI-001 | Resolved | Resolved — confirmed | ARCH-REV-004; SR-004; SR-009 | SR-009 preserves checked schema advertisement, raw native preparation, and common Ajv invocation. |
+| ARCH-DI-002 | Resolved | Resolved — confirmed | ARCH-REV-003/004; SR-003; SR-009 | SR-009 preserves the sole staged catalog-transition owner and explicitly prevents it from importing/calling run-session lifecycle. |
+| CR-DI-001 | Resolved | Resolved — confirmed | ARCH-REV-005; SR-005; SR-009 | Complete static-name reservation and separate configured-MCP precedence remain unchanged. |
+
+- New or remaining finding IDs: None. `MP-003` is a reachable operational premise, not a remaining finding.
+- Material classification changes: `DR-004` is closed at design level. Architecture readiness returns to `Pass`; implementation, renewed source/API-E2E review, and delivery integration remain pending.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: conflict-resolution regression, stale restore routes/capabilities, accidental package/session lifecycle coupling, general-scope capability leakage, shutdown/listener order, model nondeterminism, and the previously recorded schema/collision/ownership/transition risks require the specified executable coverage. None is an unresolved design blocker.

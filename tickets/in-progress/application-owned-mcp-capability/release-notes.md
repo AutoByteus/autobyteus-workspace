@@ -1,6 +1,13 @@
 # Release Notes — Application-Owned MCP Capability
 
-`Unpublished pre-verification draft.`
+`Held / not publishable — DR-004 latest-base Design Impact is unresolved.`
+
+The feature summary below describes protected checkpoint `aaf7e076e`. Latest
+`origin/personal` now contains a materially different Agent Tools MCP
+run-session/loopback-listener/restore lifecycle. The attempted merge conflicted
+in the shared owners and was aborted. These notes must be regenerated after the
+combined design passes the downstream cycle; they are not release notes for the
+latest-base repository state.
 
 ## Added
 
@@ -48,4 +55,8 @@ External provider availability/behavior remains nondeterministic. Supplemental s
 
 ## Publication Status
 
-No version bump, package publication, tag, release, or deployment is part of the approved scope. Repository finalization waits for explicit user verification.
+No version bump, package publication, tag, release, or deployment is part of
+the approved scope. Repository finalization is blocked by the latest-base design
+conflict, and renewed user verification will be required after resolution. The
+base already carries workspace release `1.4.61`; this ticket must not reuse or
+overwrite it.

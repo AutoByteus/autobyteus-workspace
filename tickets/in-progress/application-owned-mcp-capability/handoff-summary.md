@@ -2,29 +2,47 @@
 
 ## Current Status
 
-`Ready for explicit user verification; repository finalization is on hold.`
+`Blocked at DR-004 — latest-base Agent Tools MCP session ownership conflicts require upstream design reconciliation.`
 
 - Date: `2026-08-27`
-- Current delivery revision: `DR-003`
+- Current delivery revision: `DR-004`
 - Current lineage: `SR-008; ARCH-REV-008; IR-005; CRR-009; API-REV-004`
 - Earlier platform scope: `API-REV-001 Pass / 97.2%` for `AC-001`–`AC-031`
 - Renewed Agent/UI scope: `API-REV-004 Pass / 97.6%` for `AC-032`–`AC-039`
 - Proportional durable-test review: `CRR-009 Pass; no findings`
-- Documentation sync: `Pass; eleven long-lived docs updated`
-- User verification received: `No`
+- Documentation sync: `DR-003 checkpoint updated; latest-base combined docs blocked`
+- User acknowledgement: `Received for DR-003; superseded for finalization by a material latest-base change`
+- Renewed user verification required: `Yes, after the combined design is implemented and revalidated`
 - Repository finalization/release/deployment: `Not performed`
 
 ## Integrated State
 
 - Ticket branch: `codex/application-owned-mcp-capability`
 - Finalization target: `origin/personal` -> local `personal`
-- Latest tracked base: `bf396dd5ed541cf6ef2179b305132b079aadd7ab`
-- Ticket committed HEAD: `61d9c3b39c7955289cae7c1bef31f51aca275a9b`
-- Divergence after the DR-003 fetch: `0 behind / 3 ahead`
-- Integration method: `Already current`
-- New base commits integrated in DR-003: `None`
-- Post-refresh rerun: `Not required`; the tracked base did not move after the prior merge, and the current reviewed working state is covered by API-REV-004/CRR-009.
+- Latest tracked base: `ebef77eb32bbeaefd4fccdb6998240264c82a3c1`
+- Protected ticket checkpoint: `aaf7e076ed66c5daaf142f896230ad63085330c7`
+- Divergence after the DR-004 fetch and aborted merge: `4 behind / 4 ahead`
+- Integration method: `Attempted merge; aborted after 12 content conflicts`
+- New base commits integrated: `None; merge did not complete`
+- Electron build: `Not run`; no valid latest-base integrated state exists.
 - Detailed evidence: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-integration-evidence.log`
+
+## Latest-Base Design Conflict
+
+The new base finalizes `agent-tools-mcp-session-resume`: deterministic tokenless
+run-session identities on a dedicated loopback listener, fresh activation on
+restore, and exact-run session deactivation during termination. The application
+capability was reviewed against the prior bearer-backed session model and adds
+application/binding/producer route identity and capabilities in the same
+session, provider-factory, host, and execution-kernel owners.
+
+The merge conflicted across five docs, five production owners, and two durable
+tests. Resolving those conflicts mechanically could either remove application
+authorization or regress the newly released stop/restore contract. The merge
+was therefore aborted and classified `Design Impact`.
+
+Canonical blocker:
+`/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-latest-base-conflict-report.md`.
 
 ## Delivered Behavior
 
@@ -88,9 +106,11 @@ Canonical report: `/home/autobyteus/workspace/autobyteus-workspace-application-o
 - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/release-deployment-report.md`
 - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/release-notes.md`
 
-## Explicit Verification Hold
+## Explicit Integration And Verification Hold
 
-Please verify or accept the integrated behavior explicitly before delivery finalization. Until that signal:
+The prior DR-003 acknowledgement is not authorization for an unresolved
+latest-base combination. Until the new session/application design passes the
+full downstream cycle and receives renewed user verification:
 
 - keep the ticket under `tickets/in-progress/application-owned-mcp-capability`;
 - do not create the final delivery commit;

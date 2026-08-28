@@ -111,3 +111,47 @@ Current DR-003 gate
 - Docs sync: PASS
 - Explicit user completion/verification: not yet received
 - Ticket archival, final delivery commit, push, target merge/push, release, deployment, and cleanup: not performed
+
+Post-acknowledgement latest-base refresh (DR-004)
+Date: 2026-08-28 UTC
+- Trigger: user acknowledged the DR-003 handoff, reported that `personal` advanced, and requested latest-base alignment plus an Electron build.
+- Pre-fetch origin/personal: bf396dd5ed541cf6ef2179b305132b079aadd7ab
+$ git fetch origin personal
+Result: PASS
+- Post-fetch origin/personal: ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+- New base commits: 4 (`7f6d2d4cb`, `754a945a4`, merge `2afd4bfc6`, release bump `ebef77eb3`)
+- New-base subject: finalized `agent-tools-mcp-session-resume`, replacing bearer sessions/main-listener callback routing with deterministic tokenless run-session activation on a dedicated loopback listener and new exact-run deactivation/restore ownership.
+
+Candidate protection
+$ git diff --check
+Result: PASS
+$ git add -u && git add <current untracked durable test and ticket artifacts>
+$ git commit -m "chore(delivery): checkpoint verified application-owned MCP handoff"
+Result: PASS
+- Checkpoint: aaf7e076ed66c5daaf142f896230ad63085330c7
+- Excluded as reproducible/runtime output: `.autobyteus/`, Brief Studio `dist/`, application SDK/devkit `dist/` roots.
+
+Latest-base integration attempt
+$ git merge --no-ff origin/personal -m "Merge latest personal base into application-owned MCP ticket"
+Result: BLOCKED — 12 content conflicts
+- Conflicted docs: Agent Tools MCP server, application backend gateway, engine, orchestration, and sessions.
+- Conflicted production: provider factory builder, Agent Tools MCP session service/session/host, and application execution-scope kernel builder.
+- Conflicted durable coverage: exact live Codex backend integration and Agent Tools MCP host unit test.
+- The overlap is security/identity/lifecycle architecture, not formatting-only documentation.
+$ git merge --abort
+Result: PASS
+- Branch restored to checkpoint aaf7e076ed66c5daaf142f896230ad63085330c7.
+- Current divergence from origin/personal: 4 ahead / 4 behind.
+
+Electron build disposition
+- Not run: there is no valid latest-base integrated source tree. Building the pre-integration checkpoint would not satisfy the user's request; building a conflicted index is invalid.
+- Canonical blocker: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-latest-base-conflict-report.md
+
+Current DR-004 gate
+- Classification: Design Impact
+- Recommended recipient: /solution_designer
+- Latest-base integration: BLOCKED
+- Electron build: BLOCKED / not run
+- Prior DR-003 API/E2E and docs evidence: retained for the pre-new-base checkpoint only
+- Renewed downstream validation and user verification: required after design reconciliation
+- Archival, final push/merge, release, deployment, and cleanup: prohibited

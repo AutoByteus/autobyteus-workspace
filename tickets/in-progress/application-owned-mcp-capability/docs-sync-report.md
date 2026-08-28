@@ -1,5 +1,18 @@
 # Docs Sync Report
 
+## Current Status
+
+`Blocked at DR-004 — the DR-003 docs are preserved for checkpoint aaf7e076e but are not authoritative for the unresolved latest-base combined architecture.`
+
+After the user acknowledged DR-003, `origin/personal` advanced to
+`ebef77eb32bbeaefd4fccdb6998240264c82a3c1` with the finalized
+`agent-tools-mcp-session-resume` design. The attempted merge conflicted in five
+of the long-lived docs below and in the underlying session/provider/execution
+owners. Delivery did not resolve or guess those docs. This report's completed
+tables describe the pre-new-base checkpoint; a renewed docs sync is required
+after `/solution_designer` reconciles the architecture and the downstream cycle
+passes.
+
 ## Scope
 
 - Ticket: `application-owned-mcp-capability`
@@ -74,10 +87,20 @@ Not applicable. Durable documentation changes were required and completed.
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next delivery action: Present the DR-003 handoff for explicit user verification; wait before archival or repository finalization.
-- Notes: No new tracked-base commit was integrated during the resume refresh, so no additional delivery-stage executable rerun was required. API-REV-004 and CRR-009 remain the executable/review evidence for the current working state.
+- Result: `Blocked`
+- Next delivery action: Route the cumulative package plus
+  `delivery-latest-base-conflict-report.md` to `/solution_designer`.
+- Notes: DR-003 remains factual for checkpoint `aaf7e076e`, but the branch is
+  not integrated with latest `origin/personal`. Do not publish these docs as the
+  final combined design, build Electron from the stale checkpoint, archive, or
+  finalize.
 
 ## Blocked Or Escalated Follow-Up
 
-None. The DR-002 Requirement Gap was resolved by SR-008 through CRR-009/API-REV-004. The only hold is the mandatory explicit user-verification gate.
+- Classification: `Design Impact`
+- Recommended recipient: `/solution_designer`
+- Why docs could not be finalized truthfully: The new base changes Agent Tools
+  MCP session identity, endpoint topology, activation/restore, and exact-run
+  deactivation in the same owners that carry application route identity and
+  capabilities. Five doc conflicts mirror seven source/test conflicts; the
+  combined ownership must be designed before documentation can be reconciled.
