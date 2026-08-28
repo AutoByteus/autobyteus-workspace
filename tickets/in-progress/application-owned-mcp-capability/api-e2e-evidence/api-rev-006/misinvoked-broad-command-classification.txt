@@ -1,0 +1,1 @@
+The command used pnpm test -- --run, which passed a literal separator to Vitest and unintentionally began broad discovery. API/E2E interrupted it; its partial failures are not selected-scope evidence. The corrected command uses pnpm exec vitest --run with exact paths.

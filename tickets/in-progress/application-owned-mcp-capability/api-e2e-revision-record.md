@@ -9,6 +9,7 @@
 | API-REV-003 | /code_reviewer CRR-006; API/E2E round 3 | SR-007; ARCH-REV-007; IR-004; CRR-006; DR-002 | Fail / 87.1% for superseded SR-006 workflow | Fail / 88.6% |
 | API-REV-004 | /code_reviewer CRR-008; API/E2E round 4 | SR-008; ARCH-REV-008; IR-005; CRR-008; DR-002 | Fail / 88.6% for superseded SR-007 workflow | Pass / 97.6% |
 | API-REV-005 | /code_reviewer CRR-011; API/E2E round 5 | SR-009; ARCH-REV-009; IR-006; IR-007; CRR-011; DR-004 | Pass / 97.6% for prior state | Fail / 96.4% |
+| API-REV-006 | /code_reviewer CRR-013; API/E2E round 6 | SR-010; ARCH-REV-010; IR-008; CRR-013; DR-004 | Fail / 96.4% under superseded oracle | Pass / 98.4% |
 
 ## Revision Entries
 
@@ -163,3 +164,35 @@ After API-REV-001, the user required an actual Brief Studio Agent call, correlat
 - Preliminary classification: implementation / requirement-design interaction. Operation-neutral business text plus the automatically available shell did not produce the required zero-shell behavior with the shipped Luna model. Formal origin belongs to `/code_reviewer`; a compliant repair may require `/solution_designer` reconciliation.
 - Cleanup: the owned browser and three services were stopped, ports `8015`/`3015`/`3016` were verified closed, isolated root/database and owned generated outputs were removed, unrelated state was preserved, and `git diff --check` passed.
 - Recommended recipient: `/code_reviewer` for focused failure-origin review plus proportional review of the three changed durable test files. Delivery remains paused at `DR-004`.
+
+### API-REV-006 — Corrected business oracle accepts the integrity-proven current browser journey
+
+- Triggering role, report path, and round: `/code_reviewer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`; `CRR-013`; API/E2E round 6.
+- Triggering scenario IDs: corrected `AC-032`–`AC-039`, unchanged `AC-040`–`AC-044`, and completion of the three pending API-REV-005 durable test edits.
+- Related revisions: user-approved `SR-010`, `ARCH-REV-010`, documentation-only `IR-008`, `CRR-013`, historical `API-REV-005`, and delivery pause `DR-004`.
+- Why recorded: `API-REV-005` must remain truthful failure history under its then-approved zero-shell oracle. The user explicitly rejected that solution-authored rule. Round 6 establishes a distinct current result without rewriting prior evidence or changing production behavior.
+- Coverage/evidence decisions: API-REV-005 raw browser/artifact/identity evidence was classified `Still Valid — Reclassify Under Current Oracle`; its operation events are `Diagnostic Only`; its historical synthesis is `Stale For Current Pass/Fail` but retained unchanged. The three durable test edits are `Still Valid — Pending Ownership Completion` and received no new Round 6 edit. v4/v6 valid-state and issuer/bearer/session-secret expectations remain stale or rejection-only.
+- Executable/current-input verification: no committed non-ticket executable change from `d26ad181e` through `4994980aa`; no uncommitted production or maintained-input change; all six maintained Brief source inputs are byte-identical to the API-REV-005 snapshot; all API-REV-005 evidence hashes match.
+- Commands/environment delta: documented SDK/devkit/Brief build, backend typecheck, package build, and validation pass; exact three-file durable collection passes `2 files / 5 tests` with the optional Codex file compiling and `10` gated tests skipped; the broader Brief/package/publication collection passes `10 files / 44 tests`; current-oracle synthesis passes all authoritative checks; `git diff --check` passes.
+
+#### Prior Failure Resolution
+
+| Prior Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-REV-005` AC-039 zero-shell failure | `Fail / 96.4%` under the then-approved oracle | Preserved as truthful history; superseded for current acceptance by explicit user-approved SR-010 | API-REV-005 report/join; SR-010; ARCH-REV-010; CRR-013 |
+| Shell-created normal artifacts | Previously disqualified despite complete business success | Valid already-authorized foundation behavior; retained as diagnostic and excluded from current pass/fail | current-oracle join `diagnosticChecks` |
+| Real artifact/workspace/publication/handoff/identity/UI proof | Passed in API-REV-005 | Revalidated without weakening: all 27 authoritative checks true | `current-oracle-identity-artifact-ui-join.json` |
+| Three pending API-owned durable edits | Executed in Round 5 but proportional review deferred by failure | Ownership execution completed; exact current diff returned for proportional review | `pending-durable-tests-after-package-build.log`; `brief-package-publication-matrix.log`; durable diff |
+
+- Canonical artifacts updated:
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-006`
+- Prior result and confidence: `API-REV-005 Fail / 96.4%` under the superseded zero-shell oracle.
+- Current result and confidence: **`Pass / 98.4%`** under the user-corrected `SR-010` oracle.
+- Material result: `AC-032`–`AC-044` pass. The actual application-owned `get_brief_context` call, exact artifacts, publications, complete Team handoff, producer/application/binding joins, read-only causality, same-brief UI, deterministic tokenless activation, restore, quiesce, deactivation, and shutdown remain directly proved.
+- Durable diff: three updated files, no addition/removal, `157 insertions / 111 deletions`, SHA-256 `b6b0f95c538bec361a0fe512c477d4d94fb6a89ee84d8d4c80e950e7b0807438`; byte-identical to API-REV-005.
+- Cleanup: generated Brief/SDK/devkit outputs were removed; no new browser/service/data root was created; unrelated processes/data were untouched; evidence and JSON integrity plus `git diff --check` passed.
+- Remaining risks: inherent external-provider nondeterminism, the pre-existing supplemental TS6059 configuration, and delivery documentation/integration work. None leaves a current critical acceptance criterion unproven.
+- Recommended recipient: `/code_reviewer` for proportional review of the three changed durable test files before delivery resumes.

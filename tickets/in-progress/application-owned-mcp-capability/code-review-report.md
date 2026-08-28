@@ -2,118 +2,181 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/requirements.md`
 - Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/investigation-notes.md`
 - Design Spec Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/application-owned-mcp-intended-behavior.md`; current `API-REV-005` browser, run-trace, provider-session, identity-join, and coverage evidence
+- Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/application-owned-mcp-intended-behavior.md`; retained `API-REV-005` current-state evidence
 - Solution Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-009`; earlier `SR-006`–`SR-008` as maintained-workflow history
+- Relevant Solution Revision IDs: `SR-001`–`SR-010`
 - Design Review Report Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-009`; earlier `ARCH-REV-006`–`ARCH-REV-008` as maintained-workflow history
+- Relevant Architecture Review Revision IDs: `ARCH-REV-004`–`ARCH-REV-010`
 - Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-006`, `IR-007`; earlier `IR-003`–`IR-005` as maintained-workflow history
+- Relevant Implementation Revision IDs: `IR-001`–`IR-008`
 - Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-012`
-- Current Review Round: `10`
-- Trigger: `/api_e2e_engineer` `API-REV-005` `Fail / 96.4%`, after `CRR-011` passed the latest-base merged source
-- Prior Review Round Reviewed: Round 9 / `CRR-011` / implementation-source `Pass`
-- Latest Authoritative Round: `10`
-- Coverage Investigation Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`
+- Current Code Review Revision ID: `CRR-013`
+- Current Review Round: `11`
+- Trigger: `/implementation_engineer` `IR-008`, the implementation-stage confirmation for user-approved `SR-010` / `ARCH-REV-010` after `API-REV-005` / `CRR-012`
+- Prior Review Round Reviewed: Round 10 / `CRR-012` / `Fail — Design Impact`
+- Latest Authoritative Round: `11`
+- Coverage Investigation Reviewed: retained `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md` as current downstream context
+- Execution Coverage Report Reviewed: retained `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md` / `API-REV-005` as current execution evidence under the superseded oracle
 - API/E2E Revision Record Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-005`; `API-REV-004` is prior-state evidence only
+- Relevant API/E2E Revision IDs: `API-REV-001`–`API-REV-005`
 - Delivery Revision Record Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-004`
-- Failing Scenario IDs: `AC-039`
-- Exact Failing Commands / Execution Mode: current Brief Studio package built/imported through the supported browser UI; user created and selected a brief and clicked **Generate draft**; actual shipped `/researcher` and `/writer` ran `codex_app_server` / `gpt-5.6-luna` through the production Team, application capability/gateway/worker, publication/reconciliation, database, and iframe UI. No direct MCP, model mock/switch, shell fallback injected by the harness, or manual state mutation was used.
-- Failure Evidence Paths: `api-e2e-evidence/api-rev-005/clean-identity-trace-artifact-ui-join.json`; `clean-researcher-raw-trace.jsonl`; `clean-writer-raw-trace.jsonl`; `clean-researcher-codex-native-session-events.json`; `clean-writer-codex-native-session-events.json`; `clean-final-browser-observation.json`; `clean-final-browser-in-review-summary.png`
+- Failing Scenario IDs: `N/A` — implementation-review entry point; prior `AC-039` zero-shell oracle is superseded by `SR-010`
+- Exact Failing Commands / Execution Mode: `N/A`. No executable source or implementation-owned test changed in IR-008, so implementation correctly did not rerun runtime validation. Reviewer verified the exact committed non-ticket diff from `d26ad181e` through `4994980aa` is empty, the four maintained prompt/launch files are byte-identical, and `git diff --check` passes.
+- Failure Evidence Paths: prior failure and corrected behavior basis are preserved in `API-REV-005`, `CRR-012`, `SR-010`, `ARCH-REV-010`, and `api-e2e-evidence/api-rev-005/clean-identity-trace-artifact-ui-join.json`.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: failure origin for `BEH-008` / `AC-039` on the current latest-base merged state, specifically the approved operation-neutral business-prompt rule, automatically available Codex foundation capabilities, fixed shipped Luna model, and zero-shell normal-artifact requirement.
-- Files / areas reviewed: current requirements/design/revision basis; maintained researcher/writer role, Team, launch, and configuration files; Codex thread/tool-exposure construction; authoritative normalized traces; independently retained provider sessions; identity/artifact/UI join; API/E2E report and coverage investigation.
-- Explicit exclusions: `AC-032`–`AC-038` and `AC-040`–`AC-044` are not reopened because current execution directly passes them. No API/E2E workflow was rerun. The three changed durable tests are not proportionally reviewed in this failure-origin result: successful test-code review is a separate entry point and remains pending until corrected API/E2E passes.
+- Changed implementation and behavior reviewed: IR-008's proof-oracle handoff/revision correction and confirmation that the `CRR-011`-passed IR-007 production source, maintained Brief prompts/configuration, runtime capability provisioning, and implementation-owned tests remain unchanged under `SR-010`.
+- Files / areas reviewed: current requirements, intended-behavior supplement, design, architecture review, implementation handoff/revision history, exact `d26ad181e..4994980aa` non-ticket diff, maintained researcher/writer/Team/launch hashes, prior current-state lifecycle and real browser evidence, legacy/no-migration posture, and API/E2E ownership of pending durable test edits.
+- Explicit exclusions: no runtime, browser, package, or provider command was rerun because IR-008 has no executable delta. The three uncommitted API-REV-005 durable test edits are not IR-008 implementation changes and remain API/E2E-owned; they require corrected execution and later proportional review.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `REQ-020`/`REQ-021` and `AC-032`–`AC-039` require the fixed Brief Studio Codex/Luna roles to create and publish normal artifacts while keeping prompts business-focused and foundation-operation-neutral; `AC-039` independently disqualifies shell-created normal artifacts.
-- Design-spec behavior map verified against the implementation: implementation matches the `SR-009` / `DS-013` / `DS-014` wording and ownership map, but current production execution contradicts the design assumption that model selection from ordinary runtime capabilities will satisfy the zero-shell outcome.
-- Design review report and round confirmed: `ARCH-REV-009` / `Pass`, now contradicted for the `BEH-008` foundation-selection premise.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: no new product behavior is inferred. Current runtime behavior proves that the shipped fixed model can satisfy the business artifact workflow by selecting its automatically available shell foundation, which the approved acceptance contract rejects.
-- Remaining material ambiguity, if any: the intended zero-shell result and operation-neutral prompt boundary are individually clear. What is unresolved is the approved technical policy that can enforce both without regressing the normal foundation baseline or reintroducing provider mechanics into application prompts; that is a design decision rather than an implementation-local choice.
+- Approved requirements basis understood: `SR-010` is an explicit user-approved acceptance/proof correction. It retains fixed Codex/Luna business-focused prompts and all application MCP/runtime owners while allowing any already-authorized runtime foundation operation, including shell. Stable acceptance remains the exact member-workspace artifact/path/content/marker, relative publication, complete handoff/result use, application/binding/producer identity, read-only causality, and same-brief UI outcome.
+- Design-spec behavior map verified against the implementation: Yes. IR-008 makes no production or maintained-prompt change. Current source continues to implement `DS-001`–`DS-017`; `DS-013`/`DS-014` now correctly treat provider/normalized operation labels as optional diagnostics rather than application acceptance authority.
+- Design review report and round confirmed: `ARCH-REV-010` / `Pass`.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None. The supported API-REV-005 shell-created journey is now accepted evidence under the corrected contract rather than a new product behavior.
+- Remaining material ambiguity, if any: None.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Supported Behavior Evidence |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-008` | Contradicted | Supported Brief Studio **Generate draft** -> exact current Team/binding -> shipped Codex/Luna roles -> first application call -> model-selected foundation operation -> relative publication -> reconciliation -> same-brief UI. Current role/Team/launch text is operation-neutral and configs select only `get_brief_context`, `publish_artifacts`, and `send_message_to`, exactly as SR-009 requires. | In the authoritative clean run both members selected shell: researcher normalized `run_bash` call `exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e`; writer `exec-f4bcd9ea-2a42-4054-b837-f18247e028af`. Independent provider sessions record `tools.exec_command` heredocs and no patch/file-change. A separate rejected observer run repeats the same selection for both members, yielding 4/4 observed role executions using shell. |
-| `BEH-003`, `BEH-005`, `BEH-009` | Confirmed / unaffected | Current deterministic tokenless activation, route isolation/currentness, application-call-lane/session orthogonality, exact deactivation, and shutdown matrix passes 21 files/178 tests and supports the actual browser journey. | None. `AC-040`–`AC-044` pass. |
+| `BEH-008` | Confirmed | Supported Brief Studio **Generate draft** -> exact current Team/binding -> each fixed Codex/Luna member calls `get_brief_context` once first -> already-authorized runtime capability creates the exact member-workspace artifact -> relative publication and complete handoff -> reconciliation -> same-brief UI. Current prompts remain operation-neutral and configs select only the three routed business/publication/Team names. | None. API-REV-005 directly proves the corrected artifact/workspace/publication/handoff/identity/read-only/UI boundary; shell is now expressly allowed and diagnostic only. |
+| `BEH-003`, `BEH-005`, `BEH-009` | Confirmed | Dedicated tokenless host, current activation/restore materialization, application capability disposition, lane/session orthogonality, exact deactivation, and shutdown remain unchanged. API-REV-005 passes `AC-040`–`AC-044`. | None |
+| `BEH-001`, `BEH-002`, `BEH-004`, `BEH-006`, `BEH-007` | Confirmed | Declaration/readiness, static collision defense, strict gateway/worker execution, current v5/v7 rebuild, no durable migration, and existing runtime foundations remain the previously reviewed source. | None |
 
 ## Prior Finding Resolution
 
 | Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
 | --- | --- | --- | --- | --- |
-| `CR-DI-002` | Resolved in current source at `CRR-008`, proven for the pre-SR-009 prompt at `API-REV-004`, preserved under SR-009 at `CRR-011` with renewed runtime proof pending | Reopened — `Fail`, `Design Impact` | `CRR-005`–`CRR-009`; `SR-009`; `ARCH-REV-009`; `IR-006`; `IR-007`; `CRR-011`; `API-REV-005`; `CRR-012` | SR-009 removed the operation instruction that produced the prior zero-shell pass and relied on the model choosing an acceptable automatically supplied foundation operation. Current exact browser/provider evidence proves shell selection for both roles in the clean run and both roles in an independent rejected run. |
-| `CR-LF-001` | Resolved at `CRR-011` | Remains resolved / unaffected | `CRR-010`; `IR-007`; `CRR-011`; `API-REV-005` | Current lifecycle/topology matrix passes and includes the corrected execution-scope construction contract. |
-| `DR-004` | Resolved in implementation source at `IR-006` / `CRR-011`; current runtime proof pending | Resolved and now runtime-proven for its lifecycle scope | `DR-004`; `SR-009`; `ARCH-REV-009`; `IR-006`; `IR-007`; `CRR-011`; `API-REV-005` | `AC-040`–`AC-044` pass on the current merged state; the `AC-039` failure is the separate maintained workflow/provider-selection issue. |
-| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `CRR-002`; `API-REV-005` | The current application call and lifecycle matrix passes; no collision-policy failure is implicated. |
+| `CR-DI-002` | Reopened at `CRR-012` because the then-approved zero-shell oracle conflicted with the otherwise successful real run | Resolved by approved requirements/proof correction; no production finding remains | `API-REV-005`; `CRR-012`; `SR-010`; `ARCH-REV-010`; `IR-008`; `CRR-013` | The user explicitly removed the unrequested zero-shell condition. Current requirements/design accept any already-authorized operation while retaining authoritative artifact/workspace/publication/handoff/identity/UI checks. IR-008 correctly makes no source, prompt, capability, or test change. |
+| `CR-LF-001` | Resolved at `CRR-011` | Remains resolved / unaffected | `CRR-010`; `IR-007`; `CRR-011`; `IR-008`; `CRR-013` | The exact required application capability construction boundary and corrected shared fixture are unchanged; API-REV-005's current lifecycle matrix passes. |
+| `DR-004` | Resolved and runtime-proven for its lifecycle scope | Remains resolved / unaffected | `DR-004`; `SR-009`; `ARCH-REV-009`; `IR-006`; `API-REV-005`; `SR-010`; `CRR-013` | SR-010 changes no host/session/application-lane owner; `AC-040`–`AC-044` remain passed current-state evidence. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `CRR-002`; `SR-010`; `CRR-013` | Complete registered-static reservation and separate configured-MCP precedence remain unchanged. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR-010/ARCH-REV-010 classify the change as a proof-oracle correction with no production refactor; IR-008 preserves that posture exactly. | None |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | No production/prompt delta exists; current source and API-REV-005 behavior match the corrected supplement through AC-044. | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Application call, gateway/worker, publication/UI, session activation, package lane, stop, and shutdown spines remain explicit; only verifier interpretation changed. | None |
+| Ownership boundary preservation and clarity | Pass | Runtime owns authorized operation availability; role prompts own business outcomes; member workspace/publication/identity/UI owners remain authoritative; operation telemetry remains diagnostic. | None |
+| Off-spine concern clarity | Pass | Provider/normalized operation labels are explicitly off the acceptance spine and cannot override authoritative business evidence. | None |
+| Existing capability/subsystem reuse check | Pass | No capability restriction, provider adapter, prompt operation name, application file tool, or new evidence store is added. | None |
+| Reusable owned structures check | Pass | Existing capability, route, session, execution-context, publication, and binding structures remain canonical. | None |
+| Shared-structure/data-model tightness check | Pass | No DTO, policy object, compatibility shape, database field, or parallel evidence aggregate is introduced. | None |
+| Repeated coordination ownership check | Pass | Role, Team, runtime, publication, reconciliation, and session lifecycle policies remain with their established owners. | None |
+| Empty indirection check | Pass | IR-008 adds no implementation boundary or pass-through facade. | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The proof correction is recorded in requirements/design/handoff artifacts rather than encoded as production behavior. | None |
+| Ownership-driven dependency check | Pass | No dependency direction changes; application prompts do not depend on provider observability and package transition does not depend on run-session internals. | None |
+| Authoritative Boundary Rule check | Pass | Application/business verification consumes authoritative workspace, publication, binding, projection, and UI owners without reaching into provider internals as a second authority. | None |
+| File placement check | Pass | IR-008 changes only the implementation handoff/revision artifacts; production files remain with existing owners. | None |
+| Flat-vs-over-split layout judgment | Pass | No new source layout exists; the previously reviewed structure remains coherent. | None |
+| Interface/API/query/command/service-method boundary clarity | Pass | No interface changes; existing application capability, activation, gateway, publication, and reconciliation contracts remain explicit. | None |
+| Naming quality and naming-to-responsibility alignment check | Pass | Current names continue to distinguish application routes/calls, run sessions, publication, and business artifacts; no operation-specific application alias is added. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No implementation code changed. | None |
+| Patch-on-patch complexity control | Pass | The correction removes an invalid proof condition instead of adding runtime machinery to satisfy it. | None |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No production obsolete path is introduced; the stale zero-shell oracle is assigned to downstream proof/test correction. | None |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The corrected contract keeps exact artifact/workspace/path/content/marker, relative publication, handoff/result use, identity, read-only causality, and UI assertions while making operation labels diagnostic. | API/E2E must update/reclassify its oracle and execute current coverage. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | IR-008 changes no implementation-owned test; three API-owned durable edits remain isolated and pending their owning workflow. | None in implementation scope |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No implementation test changed. The known stale zero-shell interpretation is explicitly downstream-owned rather than preserved in implementation source. | API/E2E must complete its current-expectation decision. |
+| API/E2E readiness for the next workflow stage | Pass | Production is unchanged from CRR-011 and API-REV-005 already executes the exact current path; only the approved oracle and pending durable coverage disposition require API/E2E ownership. | Route the cumulative package to `/api_e2e_engineer`. |
+
+## Source File Size And Structure Audit
+
+IR-008 changes no implementation-source file, maintained prompt/config file, or implementation-owned test. Therefore the `>500` source hard limit and `>220` changed-source delta threshold have no new applicable row. The complete IR-006 source audit from `CRR-010`/`CRR-011` remains valid: no changed production file exceeded either threshold, and the near-limit inherited owners received no IR-008 growth.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| IR-008 implementation source | N/A — no changed file | N/A | N/A | Pass | Pass | Pass | None |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No capability fallback, provider alias, prompt operation alias, bearer seam, or dual proof path was added. |
+| No legacy old-behavior retention in changed scope | Pass | The superseded zero-shell condition is removed from current requirements/design; historical API/CRR reports remain truthful history. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No production code changed; downstream proof/test wording is explicitly assigned to API/E2E. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No application/platform database, binding, journal, Agent/Team definition, configuration, Prisma, or migration change exists. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Runtime remains strict manifest v5/backend v7. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Generated/importable prior packages remain rebuildable; durable data remains directly usable with no migration. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None in implementation source. API/E2E owns removal of the superseded zero-shell pass/fail interpretation from its current oracle/reporting without weakening the remaining authoritative assertions.
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`
+- Why: durable documentation must describe the final application-owned tool/session architecture and the corrected business-evidence boundary without presenting provider operation labels or zero-shell as application requirements.
+- Files or areas likely affected: application SDK/backend SDK READMEs, application development guide, Agent Tools MCP/application/Codex module docs, Brief Studio README, release notes, and final API/E2E report wording. Delivery must verify the integrated-state documentation after the full downstream pass.
 
 ## Material Premise Validation
 
-### `CR-MP-002` — The fixed Brief Studio Codex/Luna operation choice is production-reachable
+### Upstream Design-Review Material-Premise Decisions
 
-- Origin: Confirmed prior premise on the current merged state
-- Related approved requirement or established contract: `BEH-008`; `REQ-018`–`REQ-021`; `AC-032`–`AC-039`
-- Relevant behavior ID(s): `BEH-008`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: the supported Applications catalog exposes Brief Studio; the user can create/select a brief and click **Generate draft**.
-- Support evidence: API-REV-005 imported and configured the current package through the supported browser, entered Brief Studio, created and selected one brief, and clicked **Generate draft** without direct backend or test-only substitution.
-- Forward current production path: browser/GraphQL launch -> `BriefRunLaunchService` -> current application Team binding -> exact `/researcher` and `/writer` Codex/Luna runs -> current tokenless Agent Tools sessions and application-owned `get_brief_context` -> automatically available provider foundation capabilities -> normal workspace artifacts -> `publish_artifacts` -> relay/reconciliation -> same-brief iframe UI.
-- Lifecycle preconditions and material consequence: the application and binding are live, both fixed members are configured with `autoExecuteTools`, and normal Codex foundation capabilities are available. Both choose shell to create the normal artifacts. Publication succeeds and the UI reaches `in_review`, but the trace violates critical `AC-039`, so the shipped workflow cannot be accepted.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: reopen `CR-DI-002` and route upstream. This is not hypothetical provider nondeterminism or a test-only route; it is the normal supported user journey on the exact current product configuration.
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `MP-004` | Confirmed | The supported Brief Studio **Generate draft** journey reached exact shipped roles and created authoritative in-workspace artifacts through an already-authorized shell. Under explicit user-approved SR-010, this proves the corrected acceptance boundary and justifies no production change. |
+| `CR-MP-002` | No Longer Relevant to a finding | The model's operation choice remains reachable diagnostic fact, but current requirements expressly prevent it from driving acceptance failure or runtime machinery. |
+| `MP-003` | Confirmed | API-REV-005 passes the latest-base deterministic session/lifecycle scope; SR-010 changes none of those owners. |
+| `MP-001`, `MP-002`, `CR-MP-001` | Confirmed / unaffected | Native parity, package drain, and complete handoff reachability remain preserved. |
+
+No new material premise is needed. The user-approved correction changes the governing contract; IR-008 does not infer a new production scenario.
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95.2`
+- Score calculation note: simple average of the ten categories; every category and mandatory check passes independently.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | Current application-call, worker, publication/UI, session, transition, and shutdown spines are explicit; proof authority now follows stable business owners. | The overall feature remains cross-subsystem. | Preserve the authoritative join and operation-diagnostic separation downstream. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Runtime owns authorized capabilities; application roles own business work; workspace/publication/binding/reconciliation/UI own acceptance evidence. | Several inherited execution/composition owners remain near local size limits. | Keep future behavior in established owners. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | No new interface exists; required nullable capability, deterministic activation/deactivation, gateway, and publication contracts remain explicit. | Construction remains necessarily compound. | Avoid adding a proof-only runtime policy or alias. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | The proof correction stays in requirements/design/review artifacts; production code and prompts remain untouched. | Inherited run/session composition still spans several owners. | Keep operation telemetry out of application acceptance authority. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | No new model, duplicate DTO, evidence aggregate, or persisted shape was introduced. | Existing identity and recursive declaration structures remain inherently nontrivial. | Reuse canonical structures. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | Business artifact, application call, session, route, and publication names remain aligned with their subjects. | Cross-lifecycle reading still requires care. | Preserve explicit lifecycle verbs and identity names. |
+| `7` | `API/E2E Readiness` | 9.4 | The exact current production path already executed; corrected acceptance can be reclassified or rerun without production changes. | Three durable API-owned edits and canonical oracle/report updates remain pending. | Complete current coverage and return the durable diff for proportional review. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.6 | API-REV-005 directly proves the corrected AC-032–AC-044 business and lifecycle outcomes on current source. | External model availability remains nondeterministic, though operation choice is no longer an oracle. | Keep blocked provider availability explicit and judge stable authoritative effects. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | Current v5/v7 strict cut, tokenless latest-base session ownership, and no-migration posture remain clean. | Prior package artifacts still require intentional rebuild. | Keep incompatibility explicit and package-owned. |
+| `10` | `Cleanup Completeness` | 9.5 | IR-008 adds no machinery and explicitly assigns the stale proof interpretation to its owner. | Final API/E2E and documentation wording still require synchronization. | Remove stale oracle wording without weakening business evidence. |
 
 ## Findings
 
-### `CR-DI-002` — The approved operation-neutral prompt design does not enforce the required zero-shell outcome
-
-- Classification: `Design Impact`
-- Affected approved behavior: `BEH-008`; `REQ-020`, `REQ-021`; `AC-032`–`AC-039`
-- Established current behavior that must remain unchanged: fixed `codex_app_server` / `gpt-5.6-luna`; business-focused prompts with no foundation/provider operation vocabulary; exact application call/result, marker, handoff, relative publication, and reconciliation path; no ordinary registry-file dependency; existing automatic foundation baseline unless a revised requirement/design explicitly changes its scope.
-- Production trigger/path: `CR-MP-002` traces the supported Brief Studio **Generate draft** action through the exact shipped roles and automatically supplied Codex foundation capabilities.
-- Evidence and consequence: 4/4 observed real member executions chose shell. The authoritative clean researcher/writer traces contain successful normalized `run_bash` calls joined to provider `tools.exec_command` heredocs; neither provider session contains patch/file-change. The artifacts are otherwise normal and publish successfully, proving the failure is the operation-selection contract itself rather than MCP routing, authorization, worker dispatch, publication, UI, or harness setup.
-- Failure origin: the implementation conforms to SR-009. The weak point is the reviewed design's assumption that a fixed external model will select an acceptable foundation operation from an eligible set while application prompts may neither prescribe nor enumerate that choice and `AC-039` still requires zero shell. Current Codex construction exposes its ordinary built-ins; application `toolNames` constrain routed MCP tools, not provider-native shell availability. No approved owner currently enforces the zero-shell policy.
-- Required action: `/solution_designer` must reconcile the behavior and ownership contract before implementation. A revised solution may define an enforceable provider/runtime capability policy for this maintained workflow, revise the prompt boundary with explicit user approval, or revise the zero-shell acceptance outcome. Re-adding an `apply_patch` instruction under the current SR-009 contract, merely retrying until the model chooses differently, treating shell files as native edits, or using a focused provider diagnostic instead of the shipped journey is not an approved fix.
-- Review-gap note: `CRR-011` correctly recorded current runtime proof as pending; source review could verify conformity but could not establish the model's future operation choice. The failure was not reasonably detectable as an implementation divergence in IR-006/IR-007. It exposes an earlier design assumption that required the exact current runtime proof now supplied by API-REV-005.
+None. `CR-DI-002` is resolved by the approved SR-010 proof correction; no production implementation change is required.
 
 ## Classification
 
-- `Design Impact`
+Not applicable — current result is `Pass`.
 
 ## Recommended Recipient
 
-- `/solution_designer`
-
-## Durable Test-Code Review Disposition
-
-- API-REV-005 updated three repository-resident durable tests. Because the overall API/E2E result failed, this round is exclusively a focused failure-origin review; it is not a successful proportional test-code review.
-- The edits and their investigation classifications remain part of the cumulative package. After upstream correction, implementation review, and successful API/E2E execution, the then-current durable diff must return through the separate proportional test-code review before delivery.
+- `/api_e2e_engineer`
 
 ## Residual Risks
 
-- Any upstream correction must preserve the proven application-owned MCP path: `AC-032`–`AC-038` and `AC-040`–`AC-044` currently pass on the latest-base merge.
-- Provider/model choice remains nondeterministic unless the revised contract creates an enforceable owner; repeated prompting alone cannot prove the policy.
-- The three API-REV-005 durable test edits have not yet received the separate successful test-code review.
-- The known supplemental full-test `TS6059` configuration issue remains outside this failure.
+- API/E2E must update the current proof oracle/report under AC-039 and either reclassify or rerun the same supported browser journey; implementation review does not convert `API-REV-005` into a downstream pass.
+- Removing zero-shell must not weaken exact workspace, artifact path/content/marker, relative publication, complete handoff/result use, application/binding/producer joins, read-only causality, or same-brief UI assertions.
+- Three API-REV-005 durable test edits remain uncommitted and API/E2E-owned; any final repository-resident additions, updates, or removals must return for proportional review after successful execution.
+- The supplemental server `tsconfig.json` test-inclusion `TS6059` issue remains outside this change; source-only compilation and production build evidence remain valid.
+- Delivery documentation and integrated-state checks remain paused until downstream validation and test-code review complete.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass` — `CR-MP-002` is `Reachable`
-- Score Summary: not repeated for this focused failure-origin round; `CRR-011` remains the latest full implementation scorecard for the source state it reviewed.
-- Failure Origin: `Design Impact` — reopened `CR-DI-002`
-- Recommended Recipient: `/solution_designer`
-- Notes: The application-owned MCP is production-reachable and working. The blocking failure is narrower: the approved fixed-model, operation-neutral prompt contract has no enforceable owner for the simultaneous zero-shell requirement. Delivery remains paused.
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.5/10 (95.2/100)`; every category is at least `9.0`.
+- Failure Origin: `N/A`; `CR-DI-002` is resolved by the user-approved requirements/proof correction and IR-008 correctly makes no production change.
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes: Production source and maintained prompts remain byte-identical to the CRR-011-passed state. API/E2E may correct/re-execute the oracle and complete ownership of the three pending durable test edits; delivery remains paused.

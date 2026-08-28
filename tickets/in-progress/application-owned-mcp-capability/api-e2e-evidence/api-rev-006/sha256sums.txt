@@ -1,0 +1,16 @@
+19117a5e0511397be6967ed13a812edbfe73f68e09bc9d8fb67fdb2da75ce1f8  ./api-rev-005-evidence-integrity.log
+d0d351626c0d834080f275d499250d681c366247b420183d630107267936dc2b  ./brief-package-environment-build.log
+09bd4f795c2624df3552c1294807f30dcbd2550344b21cb450766a7da24a1a8f  ./brief-package-publication-matrix.log
+ebbe1221abc5d06bd9ac28d7c87de5f49856bbfd178f8622649026ed4aa2293f  ./current-oracle-identity-artifact-ui-join.json
+7fc9522cb91c891813cd503eab1c7027996cfdcaa72161f9219414a18d688271  ./current-oracle-synthesis.log
+6d8b1e46526dcda98f9ab6871e2af18dc67acb7de00108e79128307350e57718  ./current-state-no-executable-delta.log
+9438b2e798f1314981951a1fcf770b7271bb025d3755f30b19959ee9072bec26  ./durable-diff-verification.log
+b6b0f95c538bec361a0fe512c477d4d94fb6a89ee84d8d4c80e950e7b0807438  ./durable-test-change.diff
+1e6becf583bfc63e854b0c85f54b360ac974ceb8910ed8f4c383bbe99994df19  ./git-diff-check.log
+9e16b70b3e9f1519e2fe6b81b3cc23242336023b1eaa759bdf01c4fb040406de  ./maintained-input-hash-verification.json
+ae1f351ba71a8a9d736849216806f9e1b2b13e5131abb5a9a3fc69a5402c15e0  ./misinvoked-broad-command-classification.txt
+d63a2218ccf49bd031c4947af571222ab97dd498fcda1e9ea679d8e19a3b0f68  ./misinvoked-broad-command.log
+5ac758da3889670decf17aa516628c76c16b8bd7a012c13d2cebceb8f29fe001  ./pending-durable-tests-after-package-build.log
+006e4c6a766b5536ccd6140a84e56c7f8b28bff24e8abb4961f15523b980b4ad  ./pending-durable-tests.log
+45572a20aa7e9c75b8073ce39d87f692dbc8d1f756c5cb2f415eb09a5465186f  ./reclassify-current-oracle.py
+68791d7d1cb9afc8d2e74427255fb18d589e36e2c4b40e342cccb3cba5860701  ./sensitive-pattern-audit.log

@@ -16,13 +16,90 @@
 - Delivery Revision Record (delivery re-entry only): `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-002`, `DR-004`
 - API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-005`
-- Current Investigation Round: `5`
-- Trigger: `/code_reviewer` `CRR-011` renewed implementation-source pass after `SR-009` / `ARCH-REV-009` / `IR-006` rebased application-owned capability onto the latest-base deterministic tokenless run-session owner and `IR-007` repaired the required-capability execution-scope unit fixture. Delivery remains paused after `DR-004` pending renewed `AC-040`–`AC-044` lifecycle/topology/current-route proof and a fresh real shipped Codex/Luna supported-browser journey for `AC-032`–`AC-039`.
-- Prior Investigation Reviewed: Round 1 / `API-REV-001` (`Pass`, `97.2%`, prior platform scope), Round 2 / `API-REV-002` (`Fail`, `87.1%`, superseded ordinary-file workflow), Round 3 / `API-REV-003` (`Fail`, `88.6%`, superseded provider-vocabulary workflow), and Round 4 / `API-REV-004` (`Pass`, `97.6%`, retained as pre-latest-base production evidence but not proof of IR-006/IR-007).
-- Latest Authoritative Investigation: `Round 5 completed — lifecycle/topology matrix passed; real supported Brief Studio journey proved application MCP and same-brief UI convergence but failed critical AC-039 because both shipped Luna members created their normal artifacts through run_bash`
+- Current API/E2E Revision ID: `API-REV-006`
+- Current Investigation Round: `6`
+- Trigger: `/code_reviewer` `CRR-013` after explicit user-approved `SR-010` / `ARCH-REV-010` and documentation-only `IR-008`. The approved proof oracle now accepts any already-authorized runtime foundation operation, including shell, while retaining exact artifact/workspace/path/content/marker, relative publication, complete handoff/result use, application/binding/producer joins, read-only causality, and same-brief UI requirements. Delivery remains paused after `DR-004` until API/E2E reclassifies or reruns the supported journey and completes ownership of the three pending durable test edits.
+- Prior Investigation Reviewed: Rounds 1–4 retain their recorded historical results. Round 5 / `API-REV-005` remains truthful `Fail / 96.4%` history under the now-superseded zero-shell oracle; its raw current-state browser, artifact, identity, lifecycle, and UI observations remain eligible evidence under `SR-010` because executable production and maintained prompt/config/Team/launch source did not change.
+- Latest Authoritative Investigation: `Round 6 completed — Pass / 98.4%; corrected SR-010 oracle passes every preserved business, identity, causality, browser, and lifecycle assertion; three pending durable test edits executed successfully`
 
-## Round 5 SR-009 / Latest-Base Renewal (Current Authority)
+## Round 6 SR-010 Proof-Oracle Renewal (Current Authority)
+
+This renewal was written after reading the complete `SR-010` / `ARCH-REV-010` / `IR-008` / `CRR-013` package and **before** Round 6 repository execution or current-oracle evidence synthesis. It does not edit or retroactively convert `API-REV-005`: that revision remains the truthful result under its then-approved zero-shell rule. Round 6 will produce a new result under the user-corrected contract.
+
+### Approved Behavior And Changed Boundary
+
+- `AC-032`–`AC-038` retain every real business assertion proved in API-REV-005: one first paired application call per member, exact returned brief identity, exact marker and canonical member-workspace artifact, relative publication, complete research handoff and verbatim writer use, application/binding/member/run/call/revision joins, no read-caused mutation, publication/reconciliation causality, and the supported same-brief `in_review` UI with two outputs and exactly one final.
+- Corrected `AC-039` accepts any already-authorized runtime foundation operation, including shell. Provider/normalized operation labels are optional diagnostics and cannot veto an otherwise authoritative business result. Missing, fabricated, outside-workspace, unauthorized, unpublished, or causally unjoined output still fails.
+- `AC-040`–`AC-044` are unchanged. Their API-REV-005 current latest-base activation/restore/quiesce/deactivation/shutdown evidence remains applicable if Round 6 verifies no executable boundary changed.
+- `IR-008` changes only implementation handoff/revision documentation. It intentionally changes no production source, maintained Brief role/config/Team/launch source, runtime capability, implementation-owned test, or API/E2E durable test.
+
+### Coverage And Evidence Validity Classification Before Round 6 Execution
+
+| Path / Evidence | Decision | Round 6 Action |
+| --- | --- | --- |
+| API-REV-005 clean browser run raw traces, Team binding/message, member workspace files, publication revisions, application DB, browser semantic record, and screenshot | `Still Valid — Reclassify Under Current Oracle` | First verify no executable/prompt/config delta from the API-REV-005 current-state baseline, then run a new non-mutating synthesis that preserves every AC-032–AC-038 assertion and evaluates corrected AC-039 from the authoritative business join rather than operation labels. Do not overwrite the historical join. |
+| API-REV-005 normalized `run_bash` and provider `tools.exec_command` observations | `Still Valid — Diagnostic Only` | Preserve as truthful execution diagnostics. They neither pass nor fail corrected AC-039 and must not be fed back to roles. |
+| API-REV-005 21-file/178-test lifecycle matrix for AC-040–AC-044 | `Still Valid subject to no-executable-delta verification` | Verify `d26ad181e..4994980aa` contains no non-ticket executable change and rerun the currently uncommitted durable-test collection. A full external browser/model retry is not required if the exact executable and model-facing inputs are unchanged. |
+| `agent-package-private-skills.e2e.test.ts` pending current activator fixture | `Still Valid — Pending Ownership Completion` | Retain the Round 5 replacement of the deleted issuer/bearer seam and rerun its real E2E scenario. No further edit is authorized. |
+| `codex-agent-run-backend-factory.integration.test.ts` pending current backend/live diagnostic fixture | `Still Valid — Diagnostic Coverage` | Retain the current run identity/memory/batch/scoped-authority fixture. Run the default gate; the optional provider file-change case remains diagnostic rather than an AC-039 oracle. No prompt or production conclusion may depend on its operation label. |
+| `brief-studio-agent-tool-mcp.integration.test.ts` tokenless-title correction and current behavior | `Still Valid — Pending Ownership Completion` | Retain and rerun in the Brief/package collection. No behavioral assertion changes. |
+| API-REV-005 `synthesize-clean-evidence.py` and join field that recorded old AC-039 as false | `Still Valid Historical Oracle; Stale For Current Pass/Fail` | Preserve unchanged in `api-rev-005`. Add a separate Round 6 reclassification artifact; do not silently rewrite history. |
+| v4/v6 valid-state fixtures or issuer/bearer/session-secret compatibility expectations | `Stale / Remove or rejection-only` | Do not restore. Current v5/v7 package and deterministic tokenless run-session contracts remain authoritative. |
+| New production, prompt, package, browser, or durable-test change | `Not Required / Not Authorized` | SR-010 corrects proof only. Any executable change discovered would invalidate reclassification and require a fresh browser run or upstream reroute. |
+
+### Reclassification Versus Browser Rerun Decision
+
+The selected broader-validation mode is **Reclassify retained current-state browser evidence**, conditional on direct no-executable-delta and maintained-input hash verification. This is stronger and more proportionate than asking an external model to repeat an identical journey: API-REV-005 already exercised the exact latest-base production stack and shipped Codex/Luna roles through the supported browser, and SR-010 changes only which evidence decides acceptance. A fresh model retry could add provider nondeterminism but cannot improve proof of an unchanged business path. If production, maintained prompt/config/Team/launch, artifact, or evidence integrity differs, this decision automatically changes to `Required fresh browser rerun`.
+
+### Round 6 Initial Confidence And Execution Plan
+
+| Confidence Category | Initial Score | Basis / Gap |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 90% | API-REV-005 directly proves every retained business assertion, but the corrected current-oracle synthesis is not yet executed |
+| Changed-boundary execution directness | 95% | The only approved change is the proof boundary; executable no-delta verification remains |
+| Cross-boundary integration realism and mock gap | 99% | Retained evidence is the actual package/provider/worker/Team/publication/database/browser journey |
+| Environment, configuration, identity, and fixture fidelity | 95% | Exact identities and shipped model/config are retained; hashes/current commit still need verification |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Current lifecycle matrix is direct and the corrected oracle removes only an invalid operation veto |
+| User-surface, browser, and desktop-shell confidence | 99% | Supported host/iframe semantic and visual evidence is complete; no Electron-only behavior is implicated |
+| Durable regression coverage quality and relevance | 90% | Three current-contract test edits remain uncommitted and must be rerun/returned for proportional review |
+
+- Initial Round 6 confidence: `95.1%` (simple average, rounded), provisional until execution.
+- Execution order: verify committed and uncommitted executable boundaries; hash current maintained Brief inputs against the retained snapshot; run all three pending durable tests in directly relevant collections; synthesize a new current-oracle join from immutable API-REV-005 evidence; validate JSON/evidence integrity and diff hygiene; update the canonical report and append `API-REV-006`; return the cumulative package and then-current durable diff to `/code_reviewer`.
+- Durable edit decision: retain exactly the three already-investigated Round 5 test edits; add/update/remove no repository-resident coverage in Round 6 unless new execution evidence first amends this investigation.
+
+### Round 6 Execution-Environment Amendment
+
+The first correctly filtered three-file command produced `4 passed / 10 skipped / 1 failed`. The sole failure occurred before application setup because `brief-studio-agent-tool-mcp.integration.test.ts` explicitly requires the generated `applications/brief-studio/dist/importable-package`, which Round 5 cleanup correctly removed. This is `Environment Setup Required`, not a coverage-validity or production finding. The approved current action is to run the documented Brief package build/validation from source, rerun the exact three-file collection, and remove generated outputs after evidence capture.
+
+An earlier command used `pnpm test -- --run`, which passed a literal option separator to Vitest and unintentionally began broad test discovery; API/E2E interrupted it. Its partial unrelated run-history failures are classified `Harness Command Error / Not Evidence`. The corrected exact-path command is `pnpm exec vitest --run ...` and is the only selected-scope result considered below. Neither event authorizes a durable or production edit.
+
+### Round 6 Completed Investigation Outcome
+
+- Committed boundary verification found no non-ticket file change from current executable baseline `d26ad181e` through `4994980aa`; uncommitted executable changes remain exactly the three API/E2E-owned durable test files. No production source or maintained Brief role/config/Team/launch input is modified.
+- All six maintained Brief inputs are byte-identical to the API-REV-005 snapshot, and the four model-facing text inputs remain operation-agnostic. The complete API-REV-005 evidence manifest revalidated without a hash mismatch.
+- The documented Brief frontend SDK/devkit build, backend typecheck, package build, and package validation pass. After that required generated-package setup, the exact three pending durable files pass `2 files / 5 tests`, while the optional Codex real-provider file compiles and skips its 10 gated cases by default. The broader Brief handler/source/package/publication collection passes `10 files / 44 tests`.
+- The then-current durable diff is byte-identical to the API-REV-005 diff: three files, `157 insertions / 111 deletions`, SHA-256 `b6b0f95c538bec361a0fe512c477d4d94fb6a89ee84d8d4c80e950e7b0807438`. No additional Round 6 durable edit was required.
+- The new `current-oracle-identity-artifact-ui-join.json` re-evaluates immutable raw evidence without rewriting the historical result. Every authoritative check is true: paired first calls, exact markers/files, canonical relative paths, exact member-workspace resolution, producer/binding/application identity, complete handoff, verbatim result use, no writer cross-read, read-only/publication causality, and all ten browser assertions. Corrected `AC-039` passes from that business join. The two observed successful shell calls remain present only in `diagnosticChecks` and are explicitly excluded from acceptance.
+- API-REV-005's 21-file/178-test current lifecycle matrix remains valid for `AC-040`–`AC-044` because executable/session owners are unchanged and its manifest is intact. A new external-model/browser retry would exercise identical code and inputs while adding only nondeterminism, so the conditional reclassification decision is satisfied and no fresh retry is required.
+
+Final Round 6 confidence:
+
+| Confidence Category | Final Score | Basis |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 99% | All corrected `AC-032`–`AC-044` assertions are true under the current oracle |
+| Changed-boundary execution directness | 99% | Proof boundary is directly recomputed; executable no-delta and maintained-input hashes are verified |
+| Cross-boundary integration realism and mock gap | 99% | Immutable evidence is the actual configured package/provider/worker/Team/publication/database/browser journey |
+| Environment, configuration, identity, and fixture fidelity | 98% | Exact shipped inputs and identities match; current package rebuild/validation and durable scenarios pass |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Current lifecycle matrix and truthful harness/environment classifications remain intact |
+| User-surface, browser, and desktop-shell confidence | 99% | Ten semantic assertions plus visual evidence cover the supported host/iframe surface; no shell-only desktop scope |
+| Durable regression coverage quality and relevance | 97% | All three pending current-contract edits execute successfully; proportional review remains required |
+
+- Overall final confidence: `98.4%` (simple average, rounded).
+- Final result: `Pass`.
+- Broader validation: `Required and completed by current-oracle reclassification of integrity-verified, executable-identical real-browser evidence`; no mock/direct MCP/model switch and no weakened business assertion.
+- Routing: cumulative package and the exact three-file durable diff to `/code_reviewer` for proportional test-code review before delivery resumes.
+
+## Round 5 SR-009 / Latest-Base Renewal (Historical Superseded Oracle)
 
 This renewal was written after reading the complete `SR-009` / `ARCH-REV-009` / `IR-006` / `IR-007` / `CRR-011` and `DR-004` package and **before** any Round 5 durable coverage edit or final repository/live-provider/browser execution. `API-REV-004` remains strong historical proof of the pre-latest-base Brief business journey. It cannot prove the new deterministic tokenless session topology, stop/restore rematerialization, exact deactivation, package/session orthogonality, shutdown composition, or the current merged production journey.
 

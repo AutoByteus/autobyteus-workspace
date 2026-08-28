@@ -166,7 +166,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
     await fs.rm(tempRoot, { recursive: true, force: true });
   });
 
-  it("lists and executes the shipped Brief Studio handler over authenticated MCP with exact Team binding isolation", async () => {
+  it("lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation", async () => {
     await expect(fs.stat(IMPORTABLE_PACKAGE_ROOT)).resolves.toBeDefined();
     const builtInRoot = path.join(tempRoot, "built-in");
     const appDataRoot = path.join(tempRoot, "app-data");
