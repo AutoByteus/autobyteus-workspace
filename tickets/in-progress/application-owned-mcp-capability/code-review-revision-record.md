@@ -15,6 +15,7 @@ The latest canonical `code-review-report.md` or `api-e2e-test-review-report.md` 
 | `CRR-007` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | API/E2E Failure-Origin Review; `/api_e2e_engineer` `API-REV-003` | `Implementation Review Pass` at `CRR-006` | `Fail — Design Impact` | `CR-DI-002` reopened; `CR-MP-002` Reachable |
 | `CRR-008` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 7; `/implementation_engineer` `IR-005` after `SR-008` / `ARCH-REV-008` | `Fail — Design Impact` at `CRR-007` | `Pass` | `CR-DI-002` resolved in source |
 | `CRR-009` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review Round 2; `/api_e2e_engineer` `API-REV-004` | `Implementation Review Pass` at `CRR-008`; runtime proof pending | `Test-Code Review Pass` after `API-REV-004 Pass / 97.6%` | `None` |
+| `CRR-010` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 8; `/implementation_engineer` `IR-006` after `SR-009` / `ARCH-REV-009` and delivery `DR-004` | `CRR-008` source Pass; `CRR-009` proportional test Pass for the pre-latest-base state | `Fail — Local Fix` | `CR-LF-001` |
 
 ## Revision Entries
 
@@ -249,3 +250,31 @@ After `CRR-003`, the user clarified an additional Agent-to-UI proof expectation 
 - Material score or classification changes: no full implementation scorecard was reopened. The proportional durable test-code result is `Pass`; `API-REV-004` reports `Pass / 97.6%`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: inherent external-model availability/nondeterminism; the pre-existing supplemental server `rootDir/include` `TS6059` defect; one transient observer-only SQLite lock; bundled-bubblewrap fallback. None creates an actionable durable-test finding or contradicts the completed production path. Delivery must resume from `DR-002` with its required tracked-remote/base refresh and integrated-state checks.
+
+### CRR-010 — Latest-base source aligns, but one merge-touched execution-scope fixture is stale
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `Implementation Review`, Round 8
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`; `IR-006`; `DR-004`; new `CR-LF-001`; confirmed `MP-003`
+- Relevant solution revision IDs: `SR-001`–`SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-001`–`IR-006`
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-004` as earlier-state evidence only
+- Relevant delivery revision IDs: `DR-002`, `DR-004`
+- Prior authoritative result: `CRR-008` implementation-source `Pass`; `API-REV-004` / `CRR-009` later passed the prior pre-latest-base runtime and durable-test scopes; delivery then blocked at `DR-004`
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: IR-006 correctly adopts latest-base dedicated tokenless loopback hosting, deterministic active-only activation/deactivation, fresh application route materialization, exact run cleanup, and process-owned listener shutdown while preserving the application capability/gateway/call-lane owners and operation-agnostic Brief prompts. Production source, source-only TypeScript, focused application route integration, and architecture assertions support that result. However, the merge-touched shared `createScope()` fixture in `application-execution-scope.test.ts` does not provide the newly required non-null `applicationAgentTools` capability, so all eight current scope tests deterministically fail before their assertions.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-004` | Delivery-blocking latest-base Design Impact; design-resolved at `SR-009` / `ARCH-REV-009` | Resolved in current implementation source | `DR-004`; `SR-009`; `ARCH-REV-009`; `IR-006`; `CRR-010` | Latest base is an ancestor; current source has one dedicated tokenless host/session owner and no feature-era issuer/revoker/main-listener compatibility seam. |
+| `CR-DI-002` | Resolved at `CRR-008` and proven for the earlier runtime at `API-REV-004` / `CRR-009` | Remains resolved in current source; IR-006 runtime proof pending | `CRR-008`; `API-REV-004`; `CRR-009`; `SR-009`; `IR-006` | Role/Team/launch text contains only business instructions and no provider/foundation operation vocabulary; exact three-name Codex/Luna configs remain. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved | `CRR-001`; `CRR-002`; `IR-006` | Complete registered-static name reservation and immutable names-only readiness exposure remain. |
+
+- New or remaining finding IDs: `CR-LF-001`.
+- Material premise result: `MP-003` remains `Reachable` and is resolved in production source. No new premise is required for the deterministic current-contract test-fixture failure.
+- Material score or classification changes: current score is `9.3/10 (93.4/100)`, but API/E2E readiness is `8.4`; result changes from earlier source `Pass` to `Fail — Local Fix` for IR-006.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: repair the shared fixture without making production application capability optional, rerun the exact eight-test file and focused IR-006 collection, and return for source review. Only after a pass should API/E2E reinvestigate stale issuer/bearer coverage, exercise stop/restore/reload interleavings, and rerun the supported Brief Studio Codex/Luna browser journey. The source-only TypeScript check passes; the known full-test `TS6059` configuration issue remains external to this finding.

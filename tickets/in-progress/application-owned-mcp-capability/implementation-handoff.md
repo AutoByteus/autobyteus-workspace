@@ -19,19 +19,21 @@
 
 ## Current Implementation Summary
 
-IR-006 rebases the complete application-owned capability onto the finalized latest-base run-session owner rather than retaining the checkpoint's bearer/main-listener seam. The branch now contains `origin/personal` `ebef77eb32bbeaefd4fccdb6998240264c82a3c1` as an ancestor through merge commit `4f37b0524c39c89b2b71ccec510368f46064674f`. The implementation preserves the dedicated tokenless loopback host, deterministic active-only run identity, fresh restore materialization, and exact managed-run deactivation while adding only a required nullable `applicationAgentTools` capability. General execution supplies `null`; an application execution scope supplies its sealed capability to current Claude/Codex activation and to AutoByteus local composition. Package/application call-lane transitions remain independent of run-session lifetime.
+IR-007 is a test-only Local Fix for `CR-LF-001`: the shared `ApplicationExecutionScope` unit fixture now supplies one explicit non-null `ApplicationAgentToolCapability` double and asserts that exact value reaches both scoped session completion and provider construction. The production boundary remains required and non-null for application execution; no default, optional field, or compatibility path was added.
+
+IR-006 rebases the complete application-owned capability onto the finalized latest-base run-session owner rather than retaining the checkpoint's bearer/main-listener seam. The branch contains `origin/personal` `ebef77eb32bbeaefd4fccdb6998240264c82a3c1` as an ancestor through merge commit `4f37b0524c39c89b2b71ccec510368f46064674f`. The implementation preserves the dedicated tokenless loopback host, deterministic active-only run identity, fresh restore materialization, and exact managed-run deactivation while adding only a required nullable `applicationAgentTools` capability. General execution supplies `null`; an application execution scope supplies its sealed capability to current Claude/Codex activation and to AutoByteus local composition. Package/application call-lane transitions remain independent of run-session lifetime.
 
 The maintained Brief Studio role, Team, and launch instructions now describe only business calls, required content, canonical relative artifacts, publication, complete handoffs, and truthful failure. They no longer prescribe `apply_patch`, `edit_file`, `read_file`, `write_file`, `run_bash`, provider protocol, or normalized event behavior. Role configs remain `codex_app_server` / `gpt-5.6-luna` with only the three routed application/publication/Team names.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-revision-record.md`
-- Current implementation revision ID: `IR-006`
+- Current implementation revision ID: `IR-007`
 - Related solution revision IDs: `SR-001`–`SR-009`
 - Related architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-009`
-- Related code-review revision IDs: `CRR-001`–`CRR-009`; `CRR-008` and `CRR-009` remain valid only for the pre-latest-base source/runtime scopes
+- Related code-review revision IDs: `CRR-001`–`CRR-010`; `CRR-010` is the triggering `Fail — Local Fix`, while `CRR-008` and `CRR-009` remain valid only for the pre-latest-base source/runtime scopes
 - Related API/E2E revision IDs: `API-REV-001`–`API-REV-004`; API-REV-004 remains valid prior production evidence, not proof of IR-006
 - Related delivery revision IDs: `DR-001`–`DR-004`; `DR-004` is the triggering blocked result
-- Triggering finding IDs: `DR-004` latest-base `Design Impact`; material premise `MP-003` (`Reachable`). SR-009 / ARCH-REV-009 close the design-level conflict.
+- Triggering finding IDs: `CR-LF-001`. The underlying IR-006 trigger remains `DR-004` latest-base `Design Impact` / material premise `MP-003` (`Reachable`), closed at design level by SR-009 / ARCH-REV-009.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -66,7 +68,7 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 
 ## Known Risks
 
-- IR-006 has not received source review. API/E2E must not resume before renewed `/code_reviewer` pass.
+- IR-007 has not received renewed source review. CRR-010 confirmed IR-006 production alignment but failed on the stale shared fixture; API/E2E must not resume before renewed `/code_reviewer` pass.
 - The prior real browser journey and exact-Luna proof predate the latest-base session merge. They cannot establish fresh activation/currentness/interleaving behavior on IR-006.
 - One existing E2E fixture still targets the removed issuer/bearer constructor seam. Per team ownership, implementation did not rewrite repository E2E coverage; API/E2E must classify and repair/remove it during renewed coverage investigation.
 - The repository's supplemental `pnpm typecheck` remains blocked by the pre-existing `tsconfig.json` `rootDir: src` plus included tests, producing TS6059 before meaningful test checking. The source-only build config typecheck passes.
@@ -113,6 +115,8 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 - `pnpm --filter @autobyteus/application-frontend-sdk --filter @autobyteus/application-devkit build` followed by `pnpm --dir applications/brief-studio build` — passed; current importable package generated, then cleaned.
 - Focused session/catalog/provider/kernel/application/prompt Vitest collection — 13 unaffected files / 97 tests passed; two stale expectation assertions exposed by the business-marker/prompt correction were updated and their focused rerun passed 2/2.
 - Final Brief prompt/package contract run — 3 files / 9 tests passed.
+- CR-LF-001 exact unit file — 1 file / 8 tests passed with the explicit non-null capability fixture and preserved existing assertions.
+- Renewed focused IR-006/IR-007 collection after rebuilding declared package prerequisites — 16 files / 107 tests passed, including the exact execution-scope file, architecture boundary suite, application MCP route integration, and packaged Brief checks.
 - Current topology/lifecycle/provider materialization run — 6 files / 50 tests passed; two opt-in live provider files were collected and skipped because their live gates were unset (18 skipped). This included dedicated-listener routing, exact Team session cleanup/restore, Studio listener topology, Codex bootstrap, and Claude gating.
 - Focused application MCP route integration — passed, including App A/B isolation, tokenless access, application-lane quiesce with live ping, application unavailability, and exact deactivation/404.
 - Architecture boundary coverage — 14 tests passed, including required nullable capability injection, general `null`, application non-null, legacy seam absence, and no package-transition session dependency.
@@ -138,4 +142,4 @@ Not Applicable. IR-006 changes backend/session composition, tests, and maintaine
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required after renewed source review. API-REV-001 and API-REV-004 remain valid evidence for their earlier source/runtime states, but IR-006 materially changes the integrated run-session topology and prompt boundary. API/E2E owns coverage validity, any durable E2E edit/removal/addition, realistic provider/browser execution, and evidence. If it changes repository-resident durable coverage, the updated package must return through proportional code review before delivery.
+Required after renewed source review. API-REV-001 and API-REV-004 remain valid evidence for their earlier source/runtime states, but IR-006 materially changed the integrated run-session topology and IR-007 only repairs implementation-owned unit coverage. API/E2E owns coverage validity, any durable E2E edit/removal/addition, realistic provider/browser execution, and evidence. If it changes repository-resident durable coverage, the updated package must return through proportional code review before delivery.

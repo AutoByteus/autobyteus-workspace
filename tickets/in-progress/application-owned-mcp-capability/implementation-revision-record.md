@@ -12,6 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-004 | `/architecture_reviewer` / `design-review-report.md` / Round 7, after `/code_reviewer` / `CRR-005` reviewed `API-REV-002` | `CR-DI-002`; `CR-MP-001` (`Reachable`) | `Approved Design-Impact Correction` | `SR-007`; `ARCH-REV-007`; `CRR-004`, `CRR-005`; `API-REV-001`, `API-REV-002`; `DR-002` | Implemented; ready for renewed code review |
 | IR-005 | `/architecture_reviewer` / `design-review-report.md` / Round 8, after `/code_reviewer` / `CRR-007` reviewed `API-REV-003` | Reopened `CR-DI-002`; `CR-MP-002` (`Reachable`) | `Approved Design-Impact Correction` | `SR-008`; `ARCH-REV-008`; `CRR-006`, `CRR-007`; `API-REV-001`–`API-REV-003`; `DR-002` | Implemented; ready for renewed code review |
 | IR-006 | `/architecture_reviewer` / `design-review-report.md` / Round 9, after `/delivery_engineer` / `DR-004` | `DR-004` latest-base Design Impact; `MP-003` (`Reachable`) | `Approved Design-Impact Correction` | `SR-009`; `ARCH-REV-009`; `CRR-008`, `CRR-009`; `API-REV-004`; `DR-004` | Latest-base correction implemented; ready for renewed code review |
+| IR-007 | `/code_reviewer` / `code-review-report.md` / `CRR-010` | `CR-LF-001` | `Local Fix` | `SR-009`; `ARCH-REV-009`; `CRR-010`; `API-REV-004`; `DR-004` | Shared fixture corrected; 16 files / 107 focused tests pass; ready for renewed code review |
 
 ## Revision Entries
 
@@ -134,3 +135,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: server source-only TypeScript build config passed; Brief backend typecheck passed; frontend SDK/devkit dependency builds and Brief package build passed; focused session/catalog/provider/kernel/gateway/prompt collection passed after two stale expectations were corrected; final prompt/package coverage passed 3 files/9 tests; topology/lifecycle/provider collection passed 6 files/50 tests with 18 opt-in live tests skipped; focused application MCP route integration and 14-test architecture boundary suite passed; implementation and restored SR-009 artifact `git diff --check`, legacy-symbol/prohibited-vocabulary, and source-size audits passed. Supplemental full server `pnpm typecheck` remains blocked by the pre-existing TS6059 `rootDir/include` configuration; the source-only typecheck passed.
 - Next recipient or routing: `/code_reviewer`
 - Remaining limitations or risks: Renewed source review is mandatory before API/E2E. Prior API-REV-004 is not latest-base proof. API/E2E owns renewed coverage investigation, stale issuer/bearer E2E fixture disposition, any durable E2E edits/removals, the realistic provider/browser journey, and evidence. Long-lived docs remain delivery-owned against the eventual reviewed integrated state. No frontend source changed, no browser/API/E2E environment ran, and external-model nondeterminism remains downstream risk.
+
+### IR-007 — Explicit application capability in the execution-scope fixture
+
+- Triggering role, report path, and round: `/code_reviewer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`; implementation review Round 8 / `CRR-010`.
+- Triggering finding IDs: `CR-LF-001`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-006` production source aligned with SR-009 / ARCH-REV-009, but `CRR-010` was `Fail — Local Fix` because all eight `ApplicationExecutionScope` unit scenarios stopped at construction when their shared fixture omitted the now-required non-null application capability.
+- Current authoritative result: The shared fixture supplies one explicit non-null capability double, verifies the same object reaches scoped session completion and provider construction, and retains every prior behavior assertion. The exact file and full focused collection pass; ready for renewed `/code_reviewer` source review.
+- Related solution revision IDs: `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-009`
+- Related code-review revision IDs: `CRR-010`
+- Related API/E2E revision IDs: `API-REV-004` (prior-state evidence only)
+- Related delivery revision IDs: `DR-004`
+- Why this implementation revision is recorded: Closes the implementation-owned current-contract test-fixture defect without weakening, defaulting, or making optional the production `applicationAgentTools` application-scope boundary.
+- Approved behavior or requirement IDs affected: `BEH-003`, `BEH-005`, `BEH-009`; `REQ-012`, `REQ-022`; `AC-042`, `AC-044`.
+- Implementation delta: Imported the capability interface in `tests/unit/application-platform/application-execution-scope.test.ts`; created one frozen shared test double; supplied it to `ApplicationExecutionScope.create`; returned it with the shared harness; and extended the existing construction assertion to require object-identical capability injection in `createForExecution(...)` and authority `complete(...)`. No production source changed.
+- Changed files or areas: `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts`; canonical implementation handoff/revision artifacts.
+- Local validation and result: After rebuilding the declared shared/package prerequisites, the exact unit file passed 1 file/8 tests. The renewed focused collection passed 16 files/107 tests with a 30-second per-test timeout, including all 14 architecture assertions and the application tokenless/lane/deactivation integration. Server source-only TypeScript passed and `git diff --check` passed. An intermediate collection attempt found only the intentionally cleaned Brief package output absent (101 tests passed; 6 packaged checks could not open `dist`); rebuilding the package and rerunning superseded that environment-only result with 107/107 passing.
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: Renewed source review is required and API/E2E remains paused. IR-007 changes no runtime behavior, so IR-006's downstream current-session/provider/browser coverage obligations, stale issuer/bearer E2E fixture disposition, TS6059 supplemental-typecheck limitation, documentation impact, and external-model risk remain unchanged.
