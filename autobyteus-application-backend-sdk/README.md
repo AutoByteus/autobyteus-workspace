@@ -19,7 +19,7 @@ For new external applications, use `@autobyteus/application-devkit` and the guid
 import { defineApplication } from '@autobyteus/application-backend-sdk'
 
 export default defineApplication({
-  definitionContractVersion: '6',
+  definitionContractVersion: '7',
   graphql: {
     execute: async (request, context) => {
       if (request.operationName === 'StatusQuery') {
@@ -47,8 +47,39 @@ export default defineApplication({
       })
     },
   },
+  agentToolHandlers: {
+    get_application_status: async (_args, context) => {
+      const applicationId = context.caller.applicationId
+      return {
+        content: [{ type: 'text', text: `Application ${applicationId} is ready.` }],
+        structuredContent: { applicationId, ready: true },
+      }
+    },
+  },
 })
 ```
+
+## Application-owned agent tools
+
+Declare each application-owned tool statically in the v5 `application.json`
+`agentTools[]` array, then implement the exact same name in the v7 backend
+definition's `agentToolHandlers` map. Missing, extra, or non-function handlers
+make the application definition unready; declarations do not automatically
+grant a tool to every run. The Agent or Team member definition must select the
+tool name in its normal `toolNames` list.
+
+Each handler receives the validated JSON-object arguments and the normal
+`ApplicationHandlerContext` extended with immutable `context.caller` identity:
+`applicationId`, `bindingId`, `agentRunId`, and an optional canonical
+`memberAddress`. Those values come from the host-authorized application binding;
+do not add routing identity to a tool's input schema or trust model-provided
+identity fields.
+
+Handlers return `ApplicationAgentToolResult`: MCP-safe `content`, optional
+object `structuredContent`, and optional `isError`. The platform enforces the
+declared portable schema and bounded JSON/result contract around the worker
+call. A handler throw or worker transport failure becomes a sanitized tool
+failure; the host does not automatically retry a possibly mutating call.
 
 ## Application agent target addresses
 
@@ -90,7 +121,10 @@ await context.agentExecution.sendInput({
 ## Bundle expectations
 
 - The worker loads a self-contained ESM backend module.
-- The exported definition contract version must be `"6"`; unsupported definitions are rejected before handler invocation.
+- The exported definition contract version must be `"7"`; unsupported definitions are rejected before handler invocation.
+- `agentToolHandlers` must exactly match the v5 manifest's declared
+  `agentTools[]` names. Agent tools are not an eighth backend exposure flag;
+  they are invoked only through the application-scoped execution capability.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Optional `webSocketRoutes` require the bundle manifest's `webSockets` exposure flag and remain separate from standard agent communication.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.

@@ -19,7 +19,6 @@ import { ApplicationPackageRegistryStore } from "../application-packages/stores/
 import { BuiltInApplicationPackageMaterializer } from "../application-packages/services/built-in-application-package-materializer.js";
 import { ApplicationPackageRegistryService } from "../application-packages/services/application-package-registry-service.js";
 import { ApplicationPackageCommandService } from "../application-packages/services/application-package-command-service.js";
-import { ApplicationCatalogRefreshCoordinator } from "../application-packages/services/application-catalog-refresh-coordinator.js";
 import { FileApplicationBundleProvider } from "../application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationBundleService } from "../application-bundles/services/application-bundle-service.js";
 import { ApplicationCapabilityService } from "../application-capability/services/application-capability-service.js";
@@ -171,17 +170,12 @@ const createStudioApplicationServices = (input: {
     codexClientManager: getCodexAppServerClientManager(),
     requireCurrentModelIdentifier: (modelIdentifier) =>
       LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
-  });
-  const catalogRefreshCoordinator = new ApplicationCatalogRefreshCoordinator({
-    bundleService: input.packages.bundleService,
-    catalogReconciliation: applicationRuntime.hostManagement.catalogReconciliation,
-    agentDefinitionService: input.definitions.agentDefinitionService,
-    agentTeamDefinitionService: input.definitions.agentTeamDefinitionService,
+    staticAdapterToolNames: input.agentToolsMcpHost.staticAdapterToolNames,
   });
   const packageCommandService = new ApplicationPackageCommandService({
     registry: input.packages.packageRegistryService,
     provider: input.packages.bundleProvider,
-    refreshCoordinator: catalogRefreshCoordinator,
+    catalogTransition: applicationRuntime.hostManagement.catalogTransition,
   });
   return { applicationRuntime, packageCommandService };
 };
@@ -233,6 +227,7 @@ export const buildStudioServer = async (input: {
     generalProcessAuthority = generalAssembly.complete({
       executionCapabilities: {
         publishedArtifactPublisher: getGeneralProcessPublishedArtifactPublisher(),
+        applicationAgentTools: null,
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });

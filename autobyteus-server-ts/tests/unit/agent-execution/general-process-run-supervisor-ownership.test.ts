@@ -95,6 +95,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     expect(input.agentProviderFactoryBuilder.createForExecution).toHaveBeenCalledWith({
       agentDefinitionService: input.agentDefinitionService,
       agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
+      applicationAgentTools: null,
     });
 
     const owned = supervisor as unknown as {

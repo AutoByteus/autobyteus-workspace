@@ -11,6 +11,7 @@ import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/dom
 import { cloneTeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 import type { MemberTaskRootResolver } from "../../agent-team-execution/task-delegation/member-task-root-resolver.js";
 import type { AgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export const AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools";
 export const AGENT_TOOLS_MCP_TRANSPORT = "streamable_http";
@@ -54,16 +55,19 @@ export type AgentToolMcpExecutionContext = {
 
 export type AgentToolMcpSessionBaseExecutionCapabilities = Readonly<{
   publishedArtifactPublisher: PublishedArtifactPublisher;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
 }>;
 
 export type AgentSessionExecutionCapabilities = Readonly<{
   kind: "agent";
   publishedArtifactPublisher: PublishedArtifactPublisher;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
 }>;
 
 export type TeamMemberSessionExecutionCapabilities = Readonly<{
   kind: "team_member";
   publishedArtifactPublisher: PublishedArtifactPublisher;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
   taskDelegation: Readonly<{
     identity: TeamMemberExecutionIdentity;
     rootResolver: MemberTaskRootResolver;
@@ -133,11 +137,13 @@ export const cloneAgentToolMcpSessionExecutionCapabilities = (
     return Object.freeze({
       kind: "agent",
       publishedArtifactPublisher: capabilities.publishedArtifactPublisher,
+      applicationAgentTools: capabilities.applicationAgentTools,
     });
   }
   return Object.freeze({
     kind: "team_member",
     publishedArtifactPublisher: capabilities.publishedArtifactPublisher,
+    applicationAgentTools: capabilities.applicationAgentTools,
     taskDelegation: Object.freeze({
       identity: cloneTeamMemberExecutionIdentity(capabilities.taskDelegation.identity),
       rootResolver: capabilities.taskDelegation.rootResolver,

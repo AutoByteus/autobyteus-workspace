@@ -51,12 +51,18 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
     const assembly = factory.begin({ scopeIdentity: "application:test" });
     expect(assembly.runSessions).not.toHaveProperty("activateForRun");
     const authority = assembly.complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => undefined,
     });
     expect(authority.runSessions.activateForRun).toBeTypeOf("function");
     expect(() => assembly.complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => undefined,
     })).toThrow("completed");
     authority.close();
@@ -64,7 +70,10 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
     const aborted = factory.begin({ scopeIdentity: "application:aborted" });
     aborted.abort();
     expect(() => aborted.complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => undefined,
     })).toThrow("aborted");
   });
@@ -72,7 +81,10 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
   it("reactivates the same deterministic ID after active-only deactivation", () => {
     const { factory, registry } = createFixture();
     const authority = factory.begin({ scopeIdentity: "application:test" }).complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => undefined,
     });
     const first = authority.runSessions.activateForRun(activationInput("run-a"));
@@ -94,7 +106,10 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
   it("does not ledger or register a run with zero exposed tools", () => {
     const { factory, registry } = createFixture();
     const authority = factory.begin({ scopeIdentity: "application:test" }).complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => undefined,
     });
     expect(authority.runSessions.activateForRun(activationInput("hidden", false)))
@@ -106,7 +121,10 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
   it("compensates an activated record when ledger admission fails", () => {
     const { factory, registry } = createFixture();
     const authority = factory.begin({ scopeIdentity: "application:test" }).complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => undefined,
     });
     const originalActivate = registry.activateSession.bind(registry);
@@ -129,7 +147,10 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
     const { factory, registry } = createFixture();
     let ready = true;
     const authority = factory.begin({ scopeIdentity: "application:test" }).complete({
-      executionCapabilities: { publishedArtifactPublisher: publisher },
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
       assertExecutionCapabilitiesReady: () => {
         if (!ready) throw new Error("publication unavailable");
       },

@@ -9,6 +9,7 @@ import {
   APPLICATION_ENGINE_METHOD_INVOKE_COMMAND,
   APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
+  APPLICATION_ENGINE_METHOD_INVOKE_AGENT_TOOL,
   APPLICATION_ENGINE_METHOD_LOAD_DEFINITION,
   APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
   APPLICATION_ENGINE_METHOD_STOP,
@@ -117,6 +118,9 @@ rl.on("line", async (line) => {
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER:
         await respondSuccess(id, await runtime.invokeArtifactHandler(params as never));
+        break;
+      case APPLICATION_ENGINE_METHOD_INVOKE_AGENT_TOOL:
+        await respondSuccess(id, await runtime.invokeAgentTool(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET:
         await runtime.openWebSocket(params as never);

@@ -209,6 +209,7 @@ describe("task delegation runtime descriptions", () => {
         executionCapabilities: {
           kind: "team_member",
           publishedArtifactPublisher: publisher,
+          applicationAgentTools: null,
           taskDelegation,
         },
       } as never,
@@ -233,6 +234,7 @@ describe("task delegation runtime descriptions", () => {
         executionCapabilities: {
           kind: "agent",
           publishedArtifactPublisher: publisher,
+          applicationAgentTools: null,
         },
       } as never,
       rawArguments: {

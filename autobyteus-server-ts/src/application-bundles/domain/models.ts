@@ -3,6 +3,7 @@ import type {
   ApplicationBackendSupportedExposures,
   ApplicationExecutionResourceSlotDeclaration,
   ApplicationExecutionResourceKind,
+  ApplicationAgentToolDeclaration,
 } from "@autobyteus/application-sdk-contracts";
 
 export type ApplicationBundleExecutionResource = {
@@ -37,6 +38,7 @@ export type ApplicationCatalogEntry = {
   entryHtmlAssetPath: string;
   bundleResources: ApplicationBundleExecutionResource[];
   executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
+  agentTools: readonly ApplicationAgentToolDeclaration[];
   writable: boolean;
 };
 
@@ -70,6 +72,7 @@ export type ValidatedApplicationBundle = {
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
   executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
+  agentTools: readonly ApplicationAgentToolDeclaration[];
   localAgentIds: string[];
   localTeamIds: string[];
   writable: boolean;

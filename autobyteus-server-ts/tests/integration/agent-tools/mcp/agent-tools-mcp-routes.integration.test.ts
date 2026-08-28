@@ -67,6 +67,7 @@ const activateSession = (
   executionCapabilities: {
     kind: "agent",
     publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+    applicationAgentTools: null,
   },
   enabledTools,
   toolRoutes: Object.fromEntries(enabledTools.map((toolName) => [
@@ -510,6 +511,7 @@ describe("Agent Tools MCP route-backed execution", () => {
       executionCapabilities: {
         kind: "agent",
         publishedArtifactPublisher: publicationService,
+        applicationAgentTools: null,
       },
       enabledTools: [PUBLISH_ARTIFACTS_TOOL_NAME],
       toolRoutes: {
@@ -591,6 +593,7 @@ describe("Agent Tools MCP route-backed execution", () => {
       getLocalBaseUrl: () => "http://127.0.0.1:" + address.port,
       executionCapabilities: {
         publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+        applicationAgentTools: null,
       },
     });
     const activation = service.activateForRun({

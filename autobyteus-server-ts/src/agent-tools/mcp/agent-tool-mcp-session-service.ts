@@ -38,27 +38,32 @@ export class AgentToolMcpSessionService {
     if (!deps.executionCapabilities?.publishedArtifactPublisher) {
       throw new Error("Agent Tools MCP execution capabilities are required.");
     }
+    if (!("applicationAgentTools" in deps.executionCapabilities)) {
+      throw new Error("Agent Tools MCP application capability disposition is required.");
+    }
     this.registry = deps.registry;
     this.catalog = deps.catalog;
     this.getLocalBaseUrl = deps.getLocalBaseUrl;
     this.executionCapabilities = Object.freeze({
       publishedArtifactPublisher:
         deps.executionCapabilities.publishedArtifactPublisher,
+      applicationAgentTools: deps.executionCapabilities.applicationAgentTools,
     });
   }
 
   activateForRun(
     input: AgentToolMcpRunSessionActivationInput,
   ): AgentToolMcpRunSessionActivationResult {
+    const executionCapabilities = this.buildExecutionCapabilities(input);
     const exposure = this.catalog.resolveRuntimeSessionToolExposure({
       runtimeExposure: input.runtimeExposure,
       sender: input.sender,
       executionContext: input.executionContext ?? {},
+      applicationAgentTools: executionCapabilities.applicationAgentTools,
     });
     if (exposure.enabledTools.length === 0) {
       return Object.freeze({ kind: "not_exposed" as const });
     }
-    const executionCapabilities = this.buildExecutionCapabilities(input);
     const localBaseUrl = this.getLocalBaseUrl();
     const session = this.registry.activateSession({
       ...input,
@@ -85,6 +90,7 @@ export class AgentToolMcpSessionService {
         kind: "agent",
         publishedArtifactPublisher:
           this.executionCapabilities.publishedArtifactPublisher,
+        applicationAgentTools: this.executionCapabilities.applicationAgentTools,
       });
     }
 
@@ -104,6 +110,7 @@ export class AgentToolMcpSessionService {
       kind: "team_member",
       publishedArtifactPublisher:
         this.executionCapabilities.publishedArtifactPublisher,
+      applicationAgentTools: this.executionCapabilities.applicationAgentTools,
       taskDelegation: Object.freeze({
         identity: { ...memberIdentity },
         rootResolver: member.taskRootResolver,

@@ -1,0 +1,15 @@
+DR-007 interactive AppImage launch context
+UTC: 2026-08-28T13:06:34Z
+artifact: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage
+sha256: 597f8f8fac3cfaa8d8ab68d940bf30421b4654a9d20e2dcdc3c83392f22e544f
+launcher_user: vncuser (uid 1000)
+display: :99
+xdg_runtime_dir: /run/user/1000
+launch_mode: APPIMAGE_EXTRACT_AND_RUN=1
+
+--- attempt 2: local libz compatibility path ---
+UTC: 2026-08-28T13:07:15Z
+LD_LIBRARY_PATH=/tmp/autobyteus-dr007-libs
+
+--- attempt 3: foreground unified exec session retained for user testing ---
+UTC: 2026-08-28T13:08:24Z

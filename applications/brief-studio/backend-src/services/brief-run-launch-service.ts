@@ -30,10 +30,10 @@ const buildInitialInputText = (input: {
 }): string => {
   const sections = [
     `Create or revise a reviewable brief titled "${input.title}".`,
-    "Use the bundled researcher and writer flow, and publish artifacts as you progress.",
-    `Fresh-run workflow is research-first: the researcher starts, writes the research file, publishes it with publish_artifacts using artifacts: [{ path: "<exact absolute path returned by write_file>" }] and the exact absolute path returned by the write step, and then hands off to the writer before drafting begins.`,
-    "Researcher: keep the research checkpoint concise and finish the required publication + handoff flow instead of replying with plain prose. Writer: wait for the researcher handoff, review that file, write the brief, and keep the final checkpoint concise.",
-    `publish_artifacts is only for publishing files after they have already been written, and single-file publication should use artifacts: [{ path: "<exact absolute path returned by write_file>" }] with the exact absolute file path returned by that write step.`,
+    "Follow each bundled role's own ordered business instructions; this launch text reinforces but does not replace them.",
+    "Researcher: call get_brief_context exactly once first, create brief-studio/research.md with the exact marker and required 200-500-word research body, publish that canonical relative path, then hand /writer the exact marker, path, and complete body verbatim.",
+    "Writer: after the handoff, call get_brief_context exactly once first, match the brief identity, use the complete message body without cross-workspace access, copy at least one complete non-marker Key findings bullet verbatim under Key evidence, create and publish brief-studio/final-brief.md, then report completion to /researcher.",
+    "On a context, artifact, handoff, or publication failure, stop normal publication and report truthfully without fabricating an artifact. The application binding supplies routing identity; do not pass or guess applicationId, bindingId, or briefId as tool arguments.",
   ];
 
   if (input.latestWriterSummary) {

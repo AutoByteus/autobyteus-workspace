@@ -51,6 +51,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
   packageRootPath: path.dirname(path.dirname(applicationRootPath)),
   localAgentIds: ["sample-agent"],
   localTeamIds: [],
+  agentTools: [],
   entryHtmlRelativePath: "ui/index.html",
   iconRelativePath: null,
   backend: {
@@ -62,7 +63,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "6",
+      backendDefinitionContractVersion: "7",
       frontendSdkContractVersion: "6",
     },
     supportedExposures: {
@@ -110,7 +111,7 @@ describe("Application backend mount route transport integration", () => {
         distribution: "self-contained",
         targetRuntime: { engine: "node", semver: ">=22 <23" },
         sdkCompatibility: {
-          backendDefinitionContractVersion: "6",
+          backendDefinitionContractVersion: "7",
           frontendSdkContractVersion: "6",
         },
         supportedExposures: {
@@ -129,7 +130,7 @@ describe("Application backend mount route transport integration", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-  definitionContractVersion: '6',
+  definitionContractVersion: '7',
   routes: [
     {
       method: 'POST',

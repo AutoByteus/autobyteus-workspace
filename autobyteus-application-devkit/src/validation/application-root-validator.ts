@@ -2,6 +2,7 @@ import path from 'node:path';
 import {
   APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
   APPLICATION_MANIFEST_VERSION,
+  parseApplicationAgentToolDeclarations,
 } from '@autobyteus/application-sdk-contracts';
 import { validateBackendManifestIfPresent } from './backend-manifest-validator.js';
 import { getLocalApplicationIdValidationError } from './local-application-id.js';
@@ -103,7 +104,7 @@ export const validateApplicationRoot = async (input: {
   pushUnknownKeyDiagnostics(
     input.diagnostics,
     rawManifest,
-    ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots"],
+    ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots", "agentTools"],
     "",
     "INVALID_MANIFEST",
   );
@@ -119,6 +120,16 @@ export const validateApplicationRoot = async (input: {
   }
   if (manifestId && manifestId !== input.localApplicationId) {
     input.diagnostics.push(errorDiagnostic('APPLICATION_ID_MISMATCH', `application folder id '${input.localApplicationId}' must match manifest id '${manifestId}'.`, 'id'));
+  }
+
+  try {
+    parseApplicationAgentToolDeclarations(rawManifest.agentTools);
+  } catch (error) {
+    input.diagnostics.push(errorDiagnostic(
+      'INVALID_MANIFEST',
+      error instanceof Error ? error.message : String(error),
+      'agentTools',
+    ));
   }
 
   await validateUiManifestSection({

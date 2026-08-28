@@ -184,6 +184,7 @@ export class ApplicationEngineLauncher {
             appDatabaseUrl: `file:${layout.appDatabasePath}`,
             assetsPath: bundle.backend.assetsDirPath,
           },
+          declaredAgentToolNames: bundle.agentTools.map((tool) => tool.name),
         },
       );
       const status: ApplicationEngineStatus = {

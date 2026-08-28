@@ -74,6 +74,10 @@ broadcast them or call per-thread runtime-error projection.
 Codex exposes in-scope effective backend agent tools through the server-hosted
 Agent Tools MCP surface. Effective exposure is the deduplicated configured set
 plus automatic `send_message_to` and `delegate_task` for a valid team context.
+For an application run, configured names may resolve to an application-owned
+route from that exact package and binding; those routes are absent from
+general-process and other-application sessions and invoke the common
+application authorization/worker gateway.
 When that set includes at least one available supported tool, including selected
 MCP-origin registry tools,
 `CodexThreadBootstrapper` creates a live `AgentToolMcpDescriptor`, materializes
@@ -504,6 +508,11 @@ conversation is being applied.
   `autobyteus_agent_tools` use the MCP lifecycle path, not Codex
   `dynamicToolCall`.
 - `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle. After conversion, `AgentRunEventPipeline` derives the Artifacts-tab `FILE_CHANGE` event; Codex frontend code must not infer artifacts from supplemental diff events.
+- A model-facing Codex built-in such as `apply_patch`, the native
+  `item/fileChange` / `file_change` protocol family, and AutoByteus's normalized
+  `edit_file` lifecycle name are three distinct layers. Neither built-in nor
+  normalized name is an Agent Tools MCP route merely because a prompt uses the
+  built-in and runtime evidence later contains `edit_file`.
 - Codex may expose multiple start-like normalized facts for one file operation. Duplicate identical interim `FILE_CHANGE` `pending` updates for the same path/source invocation are acceptable when idempotent, followed by terminal `available`/`failed`, and the run-file-changes projection remains one row.
 - `turn/diff/updated` is treated as supplemental diff information and is intentionally not promoted into lifecycle or artifact ownership.
 - `rawResponseItem/completed` for custom tool completions is not the authoritative owner of `apply_patch` file mutation state.

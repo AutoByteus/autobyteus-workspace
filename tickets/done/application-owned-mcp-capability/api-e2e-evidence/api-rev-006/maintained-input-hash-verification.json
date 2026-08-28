@@ -1,0 +1,48 @@
+{
+  "baselineEvidence": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-shipped-instruction-and-config-snapshot.json",
+  "head": "4994980aa",
+  "allHashesMatch": true,
+  "allMaintainedTextOperationAgnostic": true,
+  "checks": {
+    "researcherAgent": {
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md",
+      "expectedSha256": "5c7e98e50371e5f3c530ede3a0b519fd8ead4a1c915e0b4e104914bdf10755f7",
+      "actualSha256": "5c7e98e50371e5f3c530ede3a0b519fd8ead4a1c915e0b4e104914bdf10755f7",
+      "matchesApiRev005": true,
+      "forbiddenVocabularyMatches": []
+    },
+    "researcherConfig": {
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json",
+      "expectedSha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+      "actualSha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+      "matchesApiRev005": true
+    },
+    "writerAgent": {
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md",
+      "expectedSha256": "05882e50eb20e1d6f34ebc1848fc835a012ec9efb64d58b1e24f1136cba7a360",
+      "actualSha256": "05882e50eb20e1d6f34ebc1848fc835a012ec9efb64d58b1e24f1136cba7a360",
+      "matchesApiRev005": true,
+      "forbiddenVocabularyMatches": []
+    },
+    "writerConfig": {
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json",
+      "expectedSha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+      "actualSha256": "513031463f589e7b8d966bfabf59b28883c23aa1aa665782b71551d3c667a5cc",
+      "matchesApiRev005": true
+    },
+    "team": {
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/agent-teams/brief-studio-team/team.md",
+      "expectedSha256": "bf0514660e685e2bed77fc3e4d096a8a634b8b8574b4a7046091bf4a35e02964",
+      "actualSha256": "bf0514660e685e2bed77fc3e4d096a8a634b8b8574b4a7046091bf4a35e02964",
+      "matchesApiRev005": true,
+      "forbiddenVocabularyMatches": []
+    },
+    "launch": {
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/backend-src/services/brief-run-launch-service.ts",
+      "expectedSha256": "a3dc1b16506ebf79c5d0c368c38c4b5895abaa5310e8b627dbe5def9ae30ce59",
+      "actualSha256": "a3dc1b16506ebf79c5d0c368c38c4b5895abaa5310e8b627dbe5def9ae30ce59",
+      "matchesApiRev005": true,
+      "forbiddenVocabularyMatches": []
+    }
+  }
+}

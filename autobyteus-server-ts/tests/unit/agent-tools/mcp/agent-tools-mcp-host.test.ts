@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { createAgentToolsMcpHost } from "../../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
+import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
 
 const loggingConfig = {
   pinoLogLevel: "silent" as const,
@@ -26,6 +27,7 @@ describe("AgentToolsMcpHost", () => {
       .complete({
         executionCapabilities: {
           publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+          applicationAgentTools: null,
         },
         assertExecutionCapabilitiesReady: () => undefined,
       });
@@ -78,5 +80,19 @@ describe("AgentToolsMcpHost", () => {
     await host.close();
     expect(() => host.sessionAuthorities.begin({ scopeIdentity: "application:late" }))
       .toThrow("Agent Tools MCP host is closed");
+  });
+
+  it("exposes one immutable snapshot of every registered static adapter name", async () => {
+    const host = createAgentToolsMcpHost({ loggingConfig });
+    const expected = buildDefaultAgentToolMcpAdapterProviders()
+      .flatMap((provider) => provider.getAdapters())
+      .map((adapter) => adapter.definition.name)
+      .sort((left, right) => left.localeCompare(right));
+
+    expect([...host.staticAdapterToolNames]).toEqual(expected);
+    expect(Object.isFrozen(host.staticAdapterToolNames)).toBe(true);
+    expect(() => (host.staticAdapterToolNames as Set<string>).add("late"))
+      .toThrow();
+    await host.close();
   });
 });

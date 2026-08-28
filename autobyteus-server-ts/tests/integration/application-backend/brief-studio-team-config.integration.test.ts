@@ -14,10 +14,23 @@ const packagedApplicationRoot = path.join(
 
 type AgentConfigFile = {
   toolNames?: string[];
+  defaultLaunchConfig?: {
+    runtimeKind?: string;
+    llmModelIdentifier?: string;
+  };
 };
 
 type TeamConfigFile = {
   coordinatorMemberName?: string;
+  defaultLaunchConfig?: {
+    runtimeKind?: string;
+    llmModelIdentifier?: string;
+  };
+};
+
+const expectedLaunchConfig = {
+  runtimeKind: "codex_app_server",
+  llmModelIdentifier: "gpt-5.6-luna",
 };
 
 const readJson = async <T>(filePath: string): Promise<T> =>
@@ -39,6 +52,15 @@ const expectMissingTools = (toolNames: string[] | undefined, forbiddenTools: str
   }
 };
 
+const expectInOrder = (text: string, fragments: string[]) => {
+  let previousIndex = -1;
+  for (const fragment of fragments) {
+    const index = text.indexOf(fragment);
+    expect(index, `Expected fragment '${fragment}'`).toBeGreaterThan(previousIndex);
+    previousIndex = index;
+  }
+};
+
 const staleWorkspaceBoundPublishGuidance = "target file has already been written in the workspace";
 
 describe("Brief Studio team package config", () => {
@@ -52,6 +74,7 @@ describe("Brief Studio team package config", () => {
 
     for (const config of [sourceTeamConfig, packagedTeamConfig]) {
       expect(config.coordinatorMemberName).toBe("researcher");
+      expect(config.defaultLaunchConfig).toEqual(expectedLaunchConfig);
     }
   });
 
@@ -70,17 +93,41 @@ describe("Brief Studio team package config", () => {
     );
 
     for (const config of [sourceResearcherConfig, packagedResearcherConfig]) {
-      expectRequiredTools(config.toolNames, ["write_file", "publish_artifacts", "send_message_to"]);
-      expectMissingTools(config.toolNames, ["read_file", "publish_artifact"]);
+      expect(config.defaultLaunchConfig).toEqual(expectedLaunchConfig);
+      expectRequiredTools(config.toolNames, [
+        "get_brief_context",
+        "publish_artifacts",
+        "send_message_to",
+      ]);
+      expectMissingTools(config.toolNames, [
+        "read_file",
+        "write_file",
+        "apply_patch",
+        "edit_file",
+        "run_bash",
+        "publish_artifact",
+      ]);
     }
 
     for (const config of [sourceWriterConfig, packagedWriterConfig]) {
-      expectRequiredTools(config.toolNames, ["read_file", "write_file", "publish_artifacts", "send_message_to"]);
-      expectMissingTools(config.toolNames, ["publish_artifact"]);
+      expect(config.defaultLaunchConfig).toEqual(expectedLaunchConfig);
+      expectRequiredTools(config.toolNames, [
+        "get_brief_context",
+        "publish_artifacts",
+        "send_message_to",
+      ]);
+      expectMissingTools(config.toolNames, [
+        "read_file",
+        "write_file",
+        "apply_patch",
+        "edit_file",
+        "run_bash",
+        "publish_artifact",
+      ]);
     }
   });
 
-  it("ships source and packaged prompts that require publish-after-write and research-first handoff ordering", async () => {
+  it("ships source and packaged role prompts with context-first validation and publication ordering", async () => {
     const sourceResearcherPrompt = await readText(
       path.join(applicationRoot, "agent-teams", "brief-studio-team", "agents", "researcher", "agent.md"),
     );
@@ -96,35 +143,61 @@ describe("Brief Studio team package config", () => {
 
     for (const prompt of [sourceResearcherPrompt, packagedResearcherPrompt]) {
       expect(prompt).not.toContain(staleWorkspaceBoundPublishGuidance);
-      expect(prompt).toContain("target checkpoint file has already been written");
       expect(prompt).toContain("you are the first active member for a new Brief Studio run");
-      expect(prompt).toContain("`read_file` is intentionally not exposed in this run");
-      expect(prompt).toContain("Required fresh-run sequence:");
-      expect(prompt).toContain("write `brief-studio/research.md`");
-      expect(prompt).toContain("capture the exact absolute path returned by the write step");
-      expect(prompt).toContain('call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`');
-      expect(prompt).toContain("call `send_message_to` to recipient `writer`");
-      expect(prompt).toContain("do not answer with plain prose instead of the required tool calls");
-      expect(prompt).toContain("reuse the exact absolute path returned by the write step");
-      expect(prompt).toContain("target about 200-500 words total");
+      expect(prompt).toContain(
+        "your first tool action must be exactly one call to `get_brief_context` with `{}`",
+      );
+      expect(prompt.match(/Call `get_brief_context` exactly once with `\{\}`/g)).toHaveLength(1);
+      expectInOrder(prompt, [
+        "Brief context requirement:",
+        "Call `get_brief_context` exactly once with `{}` before creating or publishing the research artifact.",
+        "Require a successful result",
+        "Required sequence after successful context validation:",
+        "Compose a complete 200-500-word research body",
+        "Create or replace the canonical workspace-relative artifact `brief-studio/research.md`",
+        "Confirm the required artifact was created successfully.",
+        'Call `publish_artifacts` exactly for the canonical relative path with `artifacts: [{ path: "brief-studio/research.md" }]`.',
+        'Call `send_message_to` with `recipient_address: "/writer"`.',
+      ]);
+      expect(prompt).toContain("complete 200-500-word research body verbatim—not a summary or truncated excerpt");
+      expect(prompt).toContain("never calculate, capture, or hand off an absolute path");
+      expect(prompt).toContain("never claim the artifact exists");
+      expect(prompt).toContain("stop without creating or publishing a file");
+      expect(prompt).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
+      expect(prompt).not.toContain("exact absolute path returned");
     }
 
     for (const prompt of [sourceWriterPrompt, packagedWriterPrompt]) {
       expect(prompt).not.toContain(staleWorkspaceBoundPublishGuidance);
-      expect(prompt).toContain("target checkpoint file has already been written");
-      expect(prompt).toContain("wait for the research handoff from the researcher");
-      expect(prompt).toContain("do not start by probing for `brief-studio/research.md` on your own");
-      expect(prompt).toContain("When the researcher hands off `brief-studio/research.md`:");
-      expect(prompt).toContain("review `brief-studio/research.md`");
-      expect(prompt).toContain("capture the exact absolute path returned by the write step");
-      expect(prompt).toContain('call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`');
-      expect(prompt).toContain("do not answer with plain prose instead of the required tool calls");
-      expect(prompt).toContain("target about 250-600 words total");
-      expect(prompt).toContain("treat `publish_artifacts` as the publication step at the end of a completed checkpoint");
+      expect(prompt).toContain("wait for the researcher handoff");
+      expect(prompt).toContain(
+        "after the handoff, your first tool action must be exactly one call to `get_brief_context` with `{}`",
+      );
+      expect(prompt.match(/Call `get_brief_context` exactly once with `\{\}`/g)).toHaveLength(1);
+      expectInOrder(prompt, [
+        "wait for the researcher handoff",
+        "Brief context and handoff validation:",
+        "Call `get_brief_context` exactly once with `{}` before creating or publishing the final artifact.",
+        "Require your returned `briefId` to equal",
+        "Require the handoff to contain the canonical relative path and the complete research body",
+        "Required sequence after successful validation:",
+        "Use the complete research body carried in the Team message as your only research source.",
+        "Under `Key evidence`, copy at least one complete non-marker bullet",
+        "Create or replace the canonical workspace-relative artifact `brief-studio/final-brief.md`",
+        "Confirm the required artifact was created successfully.",
+        'Call `publish_artifacts` exactly for the canonical relative path with `artifacts: [{ path: "brief-studio/final-brief.md" }]`.',
+        'Call `send_message_to` with `recipient_address: "/researcher"`',
+      ]);
+      expect(prompt).toContain("Do not open `brief-studio/research.md` or access the researcher's separate workspace");
+      expect(prompt).toContain("Preserve the bullet's complete wording as the deterministic research-use witness.");
+      expect(prompt).toContain("the handed-off body, not cross-workspace access, is the only research source");
+      expect(prompt).toContain("stop without creating or publishing a file");
+      expect(prompt).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
+      expect(prompt).not.toContain("exact absolute path returned");
     }
   });
 
-  it("ships source and packaged team/launch guidance that preserves the research-first handoff order", async () => {
+  it("ships source and packaged team/launch reinforcement without replacing role-local ownership", async () => {
     const sourceTeamPrompt = await readText(
       path.join(applicationRoot, "agent-teams", "brief-studio-team", "team.md"),
     );
@@ -139,17 +212,28 @@ describe("Brief Studio team package config", () => {
     );
 
     for (const prompt of [sourceTeamPrompt, packagedTeamPrompt]) {
-      expect(prompt).toContain("researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifacts`");
-      expect(prompt).toContain("writer begins only after that handoff arrives");
-      expect(prompt).toContain("avoid freeform prose when a tool sequence is required");
-      expect(prompt).toContain("researcher should publish a short structured research checkpoint, not a long report");
-      expect(prompt).toContain("use the exact absolute file path returned by the write step");
+      expect(prompt).toContain("each member's own `agent.md` is authoritative for its ordered work");
+      expect(prompt).toContain("configuration only determines which required business calls are available");
+      expect(prompt).toContain("creates `brief-studio/research.md` with the exact marker and required business content");
+      expect(prompt).toContain("complete 200-500-word research body verbatim");
+      expect(prompt).toContain("without cross-workspace access");
+      expect(prompt).toContain("`Key findings` bullet verbatim under final `Key evidence`");
+      expect(prompt).toContain("reports completion to `/researcher`");
+      expect(prompt).toContain("prompts and launch input never supply routing identity");
+      expect(prompt).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
     }
 
     for (const sourceText of [sourceLaunchService, packagedLaunchService]) {
-      expect(sourceText).toContain("Fresh-run workflow is research-first: the researcher starts, writes the research file, publishes it with publish_artifacts");
-      expect(sourceText).toContain("Researcher: keep the research checkpoint concise and finish the required publication + handoff flow instead of replying with plain prose.");
-      expect(sourceText).toContain('publish_artifacts is only for publishing files after they have already been written, and single-file publication should use artifacts: [{ path: "<exact absolute path returned by write_file>" }] with the exact absolute file path returned by that write step.');
+      expect(sourceText).toContain("this launch text reinforces but does not replace them");
+      expect(sourceText).toContain("required 200-500-word research body");
+      expect(sourceText).toContain("complete body verbatim");
+      expect(sourceText).toContain("without cross-workspace access");
+      expect(sourceText).toContain("complete non-marker Key findings bullet verbatim under Key evidence");
+      expect(sourceText).toContain("report completion to /researcher");
+      expect(sourceText).toContain("without fabricating an artifact");
+      expect(sourceText).toContain("do not pass or guess applicationId, bindingId, or briefId as tool arguments");
+      expect(sourceText).not.toContain("exact absolute path returned");
+      expect(sourceText).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
     }
   });
 });

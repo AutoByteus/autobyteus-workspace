@@ -22,6 +22,7 @@ import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-ses
 import type { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
 import type { ClaudeSdkClient } from "../../runtime-management/claude/client/claude-sdk-client.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export type AgentProviderFactoryBuilderProcessInput = Readonly<{
   workspaceManager: WorkspaceManager;
@@ -57,6 +58,7 @@ export interface AgentProviderFactoryBuilder {
   createForExecution(input: Readonly<{
     agentDefinitionService: AgentDefinitionService;
     agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
+    applicationAgentTools: ApplicationAgentToolCapability | null;
   }>): AgentProviderFactorySet;
 }
 
@@ -145,10 +147,16 @@ export const createAgentProviderFactoryBuilder = (
     createForExecution: (input: Readonly<{
       agentDefinitionService: AgentDefinitionService;
       agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
+      applicationAgentTools: ApplicationAgentToolCapability | null;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
       requireLeaf(input.agentToolMcpRunSessions, "agentToolMcpRunSessions");
+      if (!("applicationAgentTools" in input) || input.applicationAgentTools === undefined) {
+        throw new Error(
+          "Agent provider factory builder applicationAgentTools disposition is required.",
+        );
+      }
 
       const codexBootstrapper = new CodexThreadBootstrapper(
         input.agentToolMcpRunSessions,
@@ -175,6 +183,7 @@ export const createAgentProviderFactoryBuilder = (
           waitForIdle: process.autoByteus.waitForIdle,
           compactionAgentRunnerFactory:
             process.autoByteus.compactionAgentRunnerFactory,
+          applicationAgentTools: input.applicationAgentTools,
         }),
         codex: new CodexAgentRunBackendFactory(
           process.codex.threadManager,

@@ -4,14 +4,15 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 ## What it owns
 
-- application manifest v4 types and version constants
+- application manifest v5 types and version constants
 - backend bundle manifest v1 types and version constants
-- backend definition contract v6 types
+- backend definition contract v7 types
 - frontend SDK contract v6 constants
 - iframe/bootstrap contract v4 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - execution-resource, resource-slot, and host-managed launch-default configuration types
 - named agent-execution, agent-resource, published-artifact, precise agent/team binding, standard agent-communication, and execution-event types
+- application-owned agent-tool declaration, caller, handler, content, and result types
 - optional application-backend WebSocket request/session/route types
 - application engine status types
 
@@ -34,10 +35,11 @@ New external custom applications should start with `@autobyteus/application-devk
 
 - `ApplicationManifest`
   - `application.json`
-  - requires `manifestVersion: "4"`
+  - requires `manifestVersion: "5"`
   - requires `ui.frontendSdkContractVersion: "6"`
   - requires `backend.bundleManifest`
   - may declare app-consumable `executionResourceSlots[]` for host-managed saved setup
+  - may declare static application-owned `agentTools[]`; a declaration is available only to an application run whose Agent/Team definition selects its name
   - does **not** declare a singular launch-time `runtimeTarget`
 - `ApplicationBackendBundleManifest`
   - bundle-owned backend manifest under `backend/`
@@ -52,6 +54,13 @@ New external custom applications should start with `@autobyteus/application-devk
   - storage context
   - notification publisher
   - `agentExecution`, `agentResources`, and `publishedArtifacts`
+- `ApplicationAgentToolDeclaration`
+  - stable `name`, description, and a deliberately portable object `inputSchema`
+  - supports nested object/array properties plus string, integer, number, and boolean constraints represented by the shared mapper
+- `ApplicationAgentToolHandler`
+  - receives already-authorized and schema-validated arguments
+  - receives the immutable binding-derived caller identity under `context.caller`
+  - returns MCP-safe content, optional structured content, and optional explicit error status
 - `ApplicationRouteRequest` / `ApplicationRouteResponse`
 - `ApplicationGraphqlRequest`
 
@@ -93,6 +102,14 @@ New external custom applications should start with `@autobyteus/application-devk
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
+Application-owned tool declarations and backend handlers are an exact pair. A
+loaded v7 backend definition must implement in `agentToolHandlers` exactly the
+names declared by its v5 manifest `agentTools[]`; missing or extra handlers fail readiness.
+Caller routing identity is host-derived and must not be accepted from the tool
+arguments. The platform validates the current declaration, application and
+binding ownership, input, and bounded result before returning the call through
+the runtime projection.
+
 `ApplicationAgentTargetAddress` is the public logical address `{ bindingId, memberAddress }`. A `null` `memberAddress` selects the bound Agent or Team root. A canonical rooted member address such as `/reviewer` or `/research/reviewer` selects that configured Team member. Physical Agent/Team run identifiers remain private runtime correlation data and are not accepted as public target selectors. Application Orchestration authorizes the binding and is the sole logical-to-physical translator.
 
 Team binding members and execution producers expose their logical/member identity and correlation fields without an application-role `runtimeKind`; the enclosing Agent/Team subject already supplies that role. Provider and launch `runtimeKind` contracts are unchanged.
@@ -133,8 +150,10 @@ It also emits a packaging-only import mirror under:
 
 It demonstrates:
 
-- manifest v4
+- manifest v5
 - manifest-declared `executionResourceSlots[]`
+- a read-only application-owned `get_brief_context` tool selected by the
+  maintained Brief Studio Team
 - backend bundle manifest v1
 - shared iframe/bootstrap contract v4 with fixed backend notification, custom WebSocket, and standard agent-communication bases
 - request context `{ applicationId }`

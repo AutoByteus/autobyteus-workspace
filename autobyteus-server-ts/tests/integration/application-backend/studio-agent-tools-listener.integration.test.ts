@@ -91,6 +91,7 @@ describe("Studio main and Agent Tools listener integration", () => {
           publishedArtifactPublisher: {
             publishManyForRun: vi.fn(async () => []),
           },
+          applicationAgentTools: null,
         },
         assertExecutionCapabilitiesReady: () => undefined,
       });

@@ -19,6 +19,8 @@ import {
   testMemberTaskRootResolver,
   testMemberTeamContext,
 } from "../../../fixtures/current-team-run-fixtures.js";
+import type { ApplicationAgentToolCapability } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
+import type { ApplicationAgentToolRoute } from "../../../../src/application-agent-tools/domain/application-agent-tool-route.js";
 
 const createPublisher = () => ({ publishManyForRun: vi.fn(async () => []) });
 
@@ -48,11 +50,15 @@ const buildService = (
   registry = new AgentToolMcpSessionRegistry(),
   catalog = new AgentToolMcpCatalog({ adapters: [buildSendMessageAdapter()] }),
   getLocalBaseUrl: () => string = () => "http://127.0.0.1:43124",
+  applicationAgentTools: ApplicationAgentToolCapability | null = null,
 ) => new AgentToolMcpSessionService({
   registry,
   catalog,
   getLocalBaseUrl,
-  executionCapabilities: { publishedArtifactPublisher: createPublisher() },
+  executionCapabilities: {
+    publishedArtifactPublisher: createPublisher(),
+    applicationAgentTools,
+  },
 });
 
 class FakeConfiguredMcpTool extends BaseTool {
@@ -106,6 +112,9 @@ describe("AgentToolMcpSessionService", () => {
     });
     expect(Object.isFrozen(activation)).toBe(true);
     expect(Object.isFrozen(activation.descriptor)).toBe(true);
+    const resolved = registry.resolveSession(activation.sessionId);
+    if (!resolved.ok) throw new Error("Expected active record.");
+    expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
   });
 
   it("returns not_exposed without reading readiness or inserting a record", () => {
@@ -199,6 +208,7 @@ describe("AgentToolMcpSessionService", () => {
       throw new Error("Expected Team-member capabilities.");
     }
     expect(resolved.session.executionCapabilities.taskDelegation.rootResolver).toBe(rootResolver);
+    expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
 
     expect(() => service.activateForRun({
       owner: { runId: "other-run", teamIdentity: memberTeamContext.identity },
@@ -208,6 +218,79 @@ describe("AgentToolMcpSessionService", () => {
       }),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     })).toThrow("does not match");
+  });
+
+  it("rematerializes current application routes at the same deterministic URL after stop", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const resolveSelectedRoutes = vi.fn();
+    const capability = {
+      resolveSelectedRoutes,
+      invoke: vi.fn(),
+      close: vi.fn(),
+    } as unknown as ApplicationAgentToolCapability;
+    const catalog = new AgentToolMcpCatalog({ adapters: [] });
+    const service = buildService(
+      registry,
+      catalog,
+      () => "http://127.0.0.1:43124",
+      capability,
+    );
+    const route = (fingerprint: string): ApplicationAgentToolRoute => Object.freeze({
+      kind: "application_agent_tool",
+      identity: Object.freeze({
+        applicationId: "brief-studio",
+        bindingId: "binding-1",
+        producer: Object.freeze({ kind: "agent", agentRunId: "run-app" }),
+      }),
+      declarationSnapshot: Object.freeze({
+        declaration: Object.freeze({
+          name: "get_brief_context",
+          description: `Context ${fingerprint}`,
+          inputSchema: Object.freeze({ type: "object", properties: Object.freeze({}) }),
+        }),
+        fingerprint,
+      }),
+    }) as ApplicationAgentToolRoute;
+    resolveSelectedRoutes.mockReturnValueOnce(new Map([
+      ["get_brief_context", route("v1")],
+    ]));
+    const activationInput = {
+      owner: { runId: "run-app" },
+      sender: buildSender("run-app"),
+      runtimeExposure: buildRuntimeAgentToolExposure(["get_brief_context"]),
+      executionContext: {
+        applicationExecutionContext: {
+          applicationId: "brief-studio",
+          bindingId: "binding-1",
+          producer: { agentRunId: "run-app", displayName: "Brief agent" },
+        },
+      },
+    };
+
+    const first = service.activateForRun(activationInput);
+    if (first.kind !== "active") throw new Error("Expected active result.");
+    const firstRecord = registry.resolveSession(first.sessionId);
+    if (!firstRecord.ok) throw new Error("Expected active record.");
+    expect(firstRecord.session.executionCapabilities.applicationAgentTools).toBe(capability);
+    expect(firstRecord.session.toolRoutes.get_brief_context).toMatchObject({
+      declarationSnapshot: { fingerprint: "v1" },
+    });
+    expect(Object.isFrozen(firstRecord.session.toolRoutes)).toBe(true);
+    expect(registry.deactivateSession(first.sessionId)).toBe(true);
+
+    resolveSelectedRoutes.mockReturnValueOnce(new Map([
+      ["get_brief_context", route("v2")],
+    ]));
+    const restored = service.activateForRun(activationInput);
+    if (restored.kind !== "active") throw new Error("Expected active result.");
+    const restoredRecord = registry.resolveSession(restored.sessionId);
+    if (!restoredRecord.ok) throw new Error("Expected restored record.");
+    expect(restored.descriptor.serverUrl).toBe(first.descriptor.serverUrl);
+    expect(restoredRecord.session).not.toBe(firstRecord.session);
+    expect(restoredRecord.session.toolRoutes.get_brief_context).toMatchObject({
+      declarationSnapshot: { fingerprint: "v2" },
+    });
+    expect(resolveSelectedRoutes).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -221,7 +304,11 @@ describe("AgentToolMcpToolExecutor", () => {
       owner: { runId: "run-executor" },
       sender: buildSender("run-executor"),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
-      executionCapabilities: { kind: "agent", publishedArtifactPublisher: createPublisher() },
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: createPublisher(),
+        applicationAgentTools: null,
+      },
       enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
       toolRoutes: {
         [SEND_MESSAGE_TO_TOOL_NAME]: {
@@ -267,7 +354,11 @@ describe("AgentToolMcpToolExecutor", () => {
       owner: { runId: "run-error" },
       sender: buildSender("run-error"),
       runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),
-      executionCapabilities: { kind: "agent", publishedArtifactPublisher: createPublisher() },
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: createPublisher(),
+        applicationAgentTools: null,
+      },
       enabledTools: ["db_query"],
       toolRoutes: { db_query: { kind: "static_adapter", toolName: "db_query" } },
       toolExecutionObserver: { onToolComplete: completes },

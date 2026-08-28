@@ -15,12 +15,32 @@ import { createAgentToolMcpSessionAuthorityFactory } from "./scoped-agent-tool-m
 
 export interface AgentToolsMcpHost {
   readonly sessionAuthorities: AgentToolMcpSessionAuthorityFactory;
+  readonly staticAdapterToolNames: ReadonlySet<string>;
   listen(): Promise<void>;
   close(): Promise<void>;
 }
 
+const createReadonlySetSnapshot = <T>(values: Iterable<T>): ReadonlySet<T> => {
+  const source = new Set(values);
+  let snapshot: ReadonlySet<T>;
+  snapshot = Object.freeze({
+    get size(): number { return source.size; },
+    has: (value: T): boolean => source.has(value),
+    entries: (): SetIterator<[T, T]> => source.entries(),
+    keys: (): SetIterator<T> => source.keys(),
+    values: (): SetIterator<T> => source.values(),
+    [Symbol.iterator]: (): SetIterator<T> => source[Symbol.iterator](),
+    forEach: (
+      callback: (value: T, value2: T, set: ReadonlySet<T>) => void,
+      thisArg?: unknown,
+    ): void => source.forEach((value) => callback.call(thisArg, value, value, snapshot)),
+  });
+  return snapshot;
+};
+
 class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
   readonly sessionAuthorities: AgentToolMcpSessionAuthorityFactory;
+  readonly staticAdapterToolNames: ReadonlySet<string>;
   private readonly registry = new AgentToolMcpSessionRegistry();
   private readonly localServer: AgentToolsMcpLocalServer;
   private closing = false;
@@ -41,6 +61,9 @@ class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
       toolExecutor: new AgentToolMcpToolExecutor({ catalog }),
       resultMapper: new AgentToolsMcpResultMapper(),
     });
+    this.staticAdapterToolNames = createReadonlySetSnapshot(
+      catalog.listStaticAdapterToolNames(),
+    );
     this.localServer = new AgentToolsMcpLocalServer({
       loggingConfig,
       routeDependencies: Object.freeze({

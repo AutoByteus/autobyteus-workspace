@@ -398,6 +398,55 @@ describe("agent provider composition boundaries", () => {
     expect(localServer).toContain('this.app.listen({ host: "127.0.0.1", port: 0 })');
   });
 
+  it("keeps application capability injection tight on the tokenless run-session foundation", () => {
+    const sessionFiles = [
+      "agent-tools/mcp/agent-tool-mcp-session.ts",
+      "agent-tools/mcp/agent-tool-mcp-session-authority.ts",
+      "agent-tools/mcp/agent-tool-mcp-session-service.ts",
+      "agent-tools/mcp/agent-tool-mcp-session-registry.ts",
+      "agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts",
+      "agent-tools/mcp/agent-tools-mcp-host.ts",
+    ].map((relativePath) => read(join(SRC, relativePath))).join("\n");
+    expect(sessionFiles).toContain("applicationAgentTools: ApplicationAgentToolCapability | null");
+    expect(sessionFiles).toContain("activateForRun");
+    expect(sessionFiles).toContain("deactivateForRun");
+    expect(sessionFiles).not.toMatch(
+      /issueForRun|SessionIssuer|SessionRevoker|SessionReleaser|authorizationHeader|bearerToken|tokenHash|revokeForOwner|releaseForOwner/,
+    );
+
+    const providerBuilder = read(join(
+      SRC,
+      "agent-execution/providers/agent-provider-factory-builder.ts",
+    ));
+    expect(providerBuilder).toContain(
+      "applicationAgentTools: ApplicationAgentToolCapability | null",
+    );
+    const general = read(join(
+      SRC,
+      "agent-execution/runtime/general-process-run-supervisor.ts",
+    ));
+    expect(general).toMatch(
+      /createForExecution\(\{[\s\S]*?applicationAgentTools: null,[\s\S]*?\}\)/,
+    );
+    const applicationKernel = read(join(
+      SRC,
+      "application-platform/execution/application-execution-scope-kernel-builder.ts",
+    ));
+    expect(applicationKernel).toMatch(
+      /createForExecution\(\{[\s\S]*?applicationAgentTools: input\.applicationAgentTools,[\s\S]*?\}\)/,
+    );
+
+    for (const relativePath of [
+      "application-orchestration/services/application-catalog-transition-service.ts",
+      "application-orchestration/services/application-reentry-service.ts",
+      "application-packages/services/application-package-command-service.ts",
+    ]) {
+      expect(read(join(SRC, relativePath)), relativePath).not.toMatch(
+        /AgentToolMcp|activateForRun|deactivateForRun/,
+      );
+    }
+  });
+
   it("closes retired symbols and provider-specific construction below supported roots", () => {
     const retired = [
       "AgentTools" + "McpRuntime",

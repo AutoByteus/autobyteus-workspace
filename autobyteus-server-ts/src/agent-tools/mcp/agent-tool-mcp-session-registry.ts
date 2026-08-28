@@ -12,7 +12,10 @@ import {
   deriveAgentToolMcpRunSessionId,
   type AgentToolMcpRunSessionId,
 } from "./agent-tool-mcp-run-session-id.js";
-import { cloneConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
+import {
+  cloneConfiguredMcpAgentToolSource,
+  type ConfiguredMcpAgentToolSource,
+} from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import { cloneAgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
 
 type AgentToolMcpSessionRegistryDeps = {
@@ -45,10 +48,12 @@ export class AgentToolMcpSessionRegistry {
       executionCapabilities: cloneAgentToolMcpSessionExecutionCapabilities(
         input.executionCapabilities,
       ),
-      enabledTools: [...input.enabledTools],
+      enabledTools: Object.freeze([...input.enabledTools]) as string[],
       toolRoutes: cloneAgentToolMcpToolRouteTable(input.toolRoutes),
-      configuredMcpToolSources: (input.configuredMcpToolSources ?? [])
-        .map(cloneConfiguredMcpAgentToolSource),
+      configuredMcpToolSources: Object.freeze(
+        (input.configuredMcpToolSources ?? [])
+          .map((source) => Object.freeze(cloneConfiguredMcpAgentToolSource(source))),
+      ) as ConfiguredMcpAgentToolSource[],
       createdAt: this.now(),
       toolExecutionObserver: input.toolExecutionObserver ?? null,
     };

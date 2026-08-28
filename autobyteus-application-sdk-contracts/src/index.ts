@@ -20,6 +20,10 @@ import type {
   ApplicationRuntimeInputContextFile,
 } from "./application-agent-bindings.js";
 import type { ApplicationWebSocketRouteDefinition } from "./application-websockets.js";
+import type {
+  ApplicationAgentToolHandlerContext,
+  ApplicationAgentToolResult,
+} from "./application-agent-tools.js";
 
 export * from "./manifests.js";
 export * from "./execution-resources.js";
@@ -32,9 +36,10 @@ export * from "./application-agent-target-url.js";
 export * from "./application-websockets.js";
 export * from "./application-runtime-bootstrap.js";
 export * from "./standalone-application-bootstrap.js";
+export * from "./application-agent-tools.js";
 
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION = "6" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION = "7" as const;
 export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION = "6" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
@@ -275,6 +280,18 @@ export type ApplicationHandlerContext = {
   publishedArtifacts: ApplicationPublishedArtifacts;
 };
 
+export type ApplicationAgentToolContext = ApplicationHandlerContext
+  & ApplicationAgentToolHandlerContext;
+
+export type ApplicationAgentToolHandler = (
+  input: Readonly<Record<string, unknown>>,
+  context: ApplicationAgentToolContext,
+) => Promise<ApplicationAgentToolResult> | ApplicationAgentToolResult;
+
+export type ApplicationAgentToolHandlerMap = Readonly<
+  Record<string, ApplicationAgentToolHandler>
+>;
+
 export type ApplicationRouteRequest = {
   method: ApplicationRouteMethod;
   path: string;
@@ -359,6 +376,7 @@ export type ApplicationBackendDefinition = {
   artifactHandlers?: {
     persisted?: ApplicationArtifactHandler;
   };
+  agentToolHandlers?: ApplicationAgentToolHandlerMap;
 };
 
 export type ApplicationBackendExposureSummary = {
@@ -370,6 +388,7 @@ export type ApplicationBackendExposureSummary = {
   graphql: boolean;
   notifications: boolean;
   eventHandlers: ApplicationExecutionEventFamily[];
+  agentTools: string[];
 };
 
 export type ApplicationEngineState =

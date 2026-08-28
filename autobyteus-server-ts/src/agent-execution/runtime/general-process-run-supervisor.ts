@@ -133,6 +133,7 @@ export class GeneralProcessRunSupervisor {
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
         agentDefinitionService: input.agentDefinitionService,
         agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
+        applicationAgentTools: null,
       });
       agentRunManager = AgentRunManager.initializeProcessInstance({
         autoByteusBackendFactory: providerFactories.autoByteus,

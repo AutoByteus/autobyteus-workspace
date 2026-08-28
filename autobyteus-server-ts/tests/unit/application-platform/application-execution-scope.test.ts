@@ -9,6 +9,7 @@ import type {
   AgentToolMcpSessionAuthorityFactory,
   ScopedAgentToolMcpSessionAuthority,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { ApplicationAgentToolCapability } from "../../../src/application-agent-tools/services/application-agent-tool-capability.js";
 import { ApplicationExecutionScope } from "../../../src/application-platform/execution/application-execution-scope.js";
 import type { ApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 
@@ -48,6 +49,11 @@ const createScope = async () => {
   };
   const createForExecution = vi.fn(() => Object.freeze(factories));
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };
+  const applicationAgentTools = Object.freeze({
+    resolveSelectedRoutes: vi.fn(() => new Map()),
+    invoke: vi.fn(),
+    close: vi.fn(),
+  }) as unknown as ApplicationAgentToolCapability;
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async (definitionId: string) => ({
       id: definitionId,
@@ -69,6 +75,7 @@ const createScope = async () => {
     bindingReader: { getBinding: vi.fn(async () => null) },
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
     modelConfigValidator: { validate: vi.fn() },
+    applicationAgentTools,
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;
   return {
@@ -77,6 +84,8 @@ const createScope = async () => {
     authority,
     agentDefinitionService,
     createForExecution,
+    applicationAgentTools,
+    complete,
     assertReady,
     blockNewSessions,
     closeAuthority,
@@ -93,7 +102,14 @@ describe("ApplicationExecutionScope", () => {
 
   it("owns one complete graph-local kernel and freezes every outward capability", async () => {
     const globalDefinitionLookup = vi.spyOn(AgentDefinitionService, "getInstance");
-    const { scope, kernel, agentDefinitionService, createForExecution } = await createScope();
+    const {
+      scope,
+      kernel,
+      agentDefinitionService,
+      createForExecution,
+      applicationAgentTools,
+      complete,
+    } = await createScope();
     const agentRunService = kernel.agentRunService as unknown as {
       agentRunManager: unknown;
       provisioningService: { agentRunIdentityAllocator: AgentRunIdentityAllocator };
@@ -111,6 +127,10 @@ describe("ApplicationExecutionScope", () => {
     expect(createForExecution).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService,
       agentToolMcpRunSessions: expect.any(Object),
+      applicationAgentTools,
+    }));
+    expect(complete).toHaveBeenCalledWith(expect.objectContaining({
+      executionCapabilities: expect.objectContaining({ applicationAgentTools }),
     }));
     for (const capability of [
       scope.agentExecution,
@@ -177,6 +197,35 @@ describe("ApplicationExecutionScope", () => {
     expect(result).toEqual({ runId: "agent-1" });
     expect(result).not.toBe(live);
     expect(Object.isFrozen(result)).toBe(true);
+    scope.abortConstruction();
+  });
+
+  it("authorizes configured and dynamic application Team producers through the live root topology", async () => {
+    const { scope, kernel } = await createScope();
+    const authorizeIdentity = vi.fn();
+    vi.spyOn(kernel.teamRunService, "getActiveTeamRun")
+      .mockReturnValueOnce({ authorizeIdentity } as never)
+      .mockReturnValueOnce({ authorizeIdentity } as never)
+      .mockReturnValueOnce(null);
+    const configured = {
+      rootTeamRunId: "team-root",
+      memberAddress: "/writer",
+      agentRunId: "writer-run",
+    } as const;
+    const dynamic = {
+      rootTeamRunId: "team-root",
+      memberAddress: "/writer/task",
+      agentRunId: "task-run",
+    } as const;
+
+    await expect(scope.teamExecution.requireLiveTeamMember(configured)).resolves.toBeUndefined();
+    await expect(scope.teamExecution.requireLiveTeamMember(dynamic)).resolves.toBeUndefined();
+    expect(authorizeIdentity).toHaveBeenNthCalledWith(1, configured);
+    expect(authorizeIdentity).toHaveBeenNthCalledWith(2, dynamic);
+    await expect(scope.teamExecution.requireLiveTeamMember({
+      ...configured,
+      rootTeamRunId: "stale-root",
+    })).rejects.toThrow("Root TeamRun 'stale-root' is not active.");
     scope.abortConstruction();
   });
 

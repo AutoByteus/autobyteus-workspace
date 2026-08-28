@@ -127,7 +127,7 @@ const NODE_BUILTINS = new Set(
 const CORRECTIONS: Record<AfbPolicyId, string> = {
   "AFB-001": "Use application-platform-runtime-contracts.ts or an exact subject input supplied by the assembly root.",
   "AFB-002": "Use the declared GraphQL package/query/command contract or an application SDK/presentation-local helper.",
-  "AFB-003": "Keep package/bundle code on its owned contracts; only the catalog refresh coordinator may call catalog reconciliation.",
+  "AFB-003": "Keep package/bundle code on its owned contracts; only the package command service may invoke the application catalog transition owner.",
   "AFB-004": "Inject the named application-scoped dependency; move genuine process construction to a named assembly owner.",
   "AFB-005": "Use project-local source, an application SDK, a Node built-in, or a library declared by this project's manifest.",
 };
@@ -234,6 +234,14 @@ const isStudioPresentationTarget = (relativeTarget: string): boolean =>
   relativeTarget.startsWith("autobyteus-web/components/applications/")
   || relativeTarget.startsWith("autobyteus-web/utils/application/")
   || relativeTarget === "autobyteus-web/composables/useRuntimeScopedModelSelection.ts";
+
+const isPackageCatalogTransitionImport = (
+  relativeImporter: string,
+  relativeTarget: string,
+): boolean => relativeImporter
+  === `${SERVER_SOURCE_PREFIX}application-packages/services/application-package-command-service.ts`
+  && relativeTarget
+  === `${SERVER_SOURCE_PREFIX}application-orchestration/services/application-catalog-transition-service.ts`;
 
 const DIRECT_GLOBAL_CALLEES: readonly DirectGlobalCallee[] = [
   {
@@ -1335,20 +1343,15 @@ class ApplicationFrameworkBoundaryChecker {
     }
 
     if (policy === "AFB-003" && resolution.kind === "source") {
+      const relativeImporter = normalizePath(relative(this.repositoryRoot, importer));
       const relativeTarget = normalizePath(relative(this.repositoryRoot, resolution.resolvedPath));
-      const importerRelative = normalizePath(relative(this.repositoryRoot, importer));
-      const exactException = importerRelative.endsWith(
-        "autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts",
-      ) && relativeTarget.endsWith(
-        "autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts",
-      );
       const forbiddenPrefixes = [
         "autobyteus-server-ts/src/api/",
         "autobyteus-server-ts/src/compositions/",
         "autobyteus-server-ts/src/standalone-application-host/",
       ];
-      if (!exactException
-        && (forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))
+      if (!isPackageCatalogTransitionImport(relativeImporter, relativeTarget)
+          && (forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))
           || isStudioPresentationTarget(relativeTarget)
           || isApplicationRuntimeImplementation(relativeTarget))) {
         return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "OUTWARD_OWNER_IMPORT");
@@ -2286,13 +2289,26 @@ describe("application framework architecture boundaries", () => {
     }
   });
 
-  it("enforces every AFB-003 outward owner direction and only the reconciliation seam", () => {
+  it("enforces every AFB-003 outward owner direction with only the named catalog-transition seam", () => {
     const root = createFixtureRepository();
     writeFixture(root, "autobyteus-server-ts/src/application-packages/types.ts", "export type Package = {};\n");
     const allowedDomain = writeFixture(root, "autobyteus-server-ts/src/application-packages/allowed.ts", "import type { Package } from './types.js';\n");
     const allowedStore = writeFixture(root, "autobyteus-server-ts/src/application-packages/stores/allowed-store.ts", "import type { Package } from '../types.js';\n");
     const allowedReader = writeFixture(root, "autobyteus-server-ts/src/application-packages/readers/allowed-reader.ts", "import type { Package } from '../types.js';\n");
     const allowedCommand = writeFixture(root, "autobyteus-server-ts/src/application-packages/services/allowed-command.ts", "import type { Package } from '../types.js';\n");
+    const transitionTarget = writeFixture(
+      root,
+      "autobyteus-server-ts/src/application-orchestration/services/application-catalog-transition-service.ts",
+      "export type ApplicationCatalogTransitionService = {};\n",
+    );
+    const allowedTransitionCommand = writeFixture(
+      root,
+      "autobyteus-server-ts/src/application-packages/services/application-package-command-service.ts",
+      `import type { ApplicationCatalogTransitionService } from ${JSON.stringify(relativeModuleSpecifier(
+        join(root, "autobyteus-server-ts/src/application-packages/services/application-package-command-service.ts"),
+        transitionTarget,
+      ))};\n`,
+    );
     writeFixture(root, "autobyteus-server-ts/src/application-bundles/types.ts", "export type Bundle = {};\n");
     const allowedBundleProvider = writeFixture(root, "autobyteus-server-ts/src/application-bundles/providers/allowed-provider.ts", "import type { Bundle } from '../types.js';\n");
     writeFixture(root, "autobyteus-server-ts/src/api/rest/application.ts", "export const api = true;\n");
@@ -2300,8 +2316,6 @@ describe("application framework architecture boundaries", () => {
     writeFixture(root, "autobyteus-server-ts/src/compositions/build-studio-server.ts", "export const build = () => {};\n");
     writeFixture(root, "autobyteus-server-ts/src/standalone-application-host/services/host.ts", "export const host = true;\n");
     writeFixture(root, "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts", "export const runtime = true;\n");
-    writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts", "export type Reconcile = {};\n");
-    const allowedReconciliation = writeFixture(root, "autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts", "import type { Reconcile } from '../../application-platform/runtime/application-catalog-reconciliation-service.js';\n");
 
     const forbiddenTargets = [
       ["api", "autobyteus-server-ts/src/api/rest/application.ts"],
@@ -2325,8 +2339,8 @@ describe("application framework architecture boundaries", () => {
       allowedStore,
       allowedReader,
       allowedCommand,
+      allowedTransitionCommand,
       allowedBundleProvider,
-      allowedReconciliation,
     ]) {
       expect(checker.checkOneFile(allowed, "AFB-003").map(formatViolation)).toEqual([]);
     }

@@ -1,0 +1,222 @@
+{
+  "appDatabase": {
+    "brief_artifact_revisions": [
+      {
+        "revision_id": "39b5b34c-9564-42ba-8759-60f31cc420e4",
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "run_id": "brief_studio_researcher_c69528dffd1c4e3995573d8758067998",
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+        "producer_member_address": "/researcher",
+        "published_at": "2026-08-28T11:52:02.357Z",
+        "projected_at": "2026-08-28T11:52:02.376Z"
+      },
+      {
+        "revision_id": "416c7296-cb82-4212-bd64-86dfbb535ac7",
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "run_id": "brief_studio_writer_fff0b345376341db9dbe3bcd0040c2ab",
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+        "producer_member_address": "/writer",
+        "published_at": "2026-08-28T11:52:37.298Z",
+        "projected_at": "2026-08-28T11:52:37.311Z"
+      }
+    ],
+    "brief_artifacts": [
+      {
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "revision_id": "39b5b34c-9564-42ba-8759-60f31cc420e4",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+        "description": null,
+        "body": "Brief context: {\"briefId\":\"brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433\",\"title\":\"API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\",\"observedStatus\":\"blocked\"}\nAPI REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\n\nKey findings\n\n- Tokenless API access can be credible only when the request carries verifiable context through an authenticated runtime, binding, or narrowly scoped session, rather than relying on a caller-supplied token.\n- A strong proof separates identity from authorization: the application binding establishes which brief is in scope, while the artifact and handoff rules constrain what each role may publish or claim.\n- Exact marker preservation is an effective integrity check because it ties the research file, writer handoff, and final brief to the same brief identity without exposing routing parameters.\n- Durable reviewability depends on publishing an existing workspace-relative file, then carrying the complete research body in the team message so the writer does not need cross-workspace access.\n\nRisks or open questions\n\nThe principal risk is confusing tokenless transport with unauthenticated access. A system may omit explicit tokens from prompts while still depending on hidden application credentials; those credentials need lifecycle, audience, and revocation controls. Another open question is how the backend reconciles a published final brief with its review state, especially when observed status is already blocked. Artifact replacement, duplicate publication, or stale context could also create ambiguity unless the marker is checked byte-for-byte. Finally, logs should avoid leaking binding metadata while retaining enough evidence to audit who created and published each artifact.\n\nRecommendations or next steps\n\nTreat tokenlessness as a presentation and routing property, not as a security guarantee. Validate the application binding server-side, derive brief identity there, and reject caller-provided identity fields. Enforce exact relative paths, atomic file creation, and publication checks before handoff. Require the writer to quote a complete research bullet verbatim, preserving provenance while keeping the message self-contained. Add automated tests for malformed markers, mismatched brief IDs, failed publication, blocked reconciliation, and retry behavior; record immutable event IDs and timestamps for each successful checkpoint.\n",
+        "producer_member_address": "/researcher",
+        "updated_at": "2026-08-28T11:52:02.357Z"
+      },
+      {
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "revision_id": "416c7296-cb82-4212-bd64-86dfbb535ac7",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+        "description": null,
+        "body": "Brief context: {\"briefId\":\"brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433\",\"title\":\"API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\",\"observedStatus\":\"researching\"}\n\n# API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\n\n## Recommendation summary\nAdopt tokenless access only as a controlled presentation and routing model, never as a substitute for authentication or authorization. The runtime should derive brief identity from a validated application binding, constrain publishing to exact workspace-relative paths, and require successful artifact checks before any completion claim. Preserve the exact context marker across research, handoff, and final brief to provide a compact, auditable integrity chain.\n\n## Key evidence\n- Tokenless API access can be credible only when the request carries verifiable context through an authenticated runtime, binding, or narrowly scoped session, rather than relying on a caller-supplied token.\n- A strong proof separates identity from authorization: the application binding establishes which brief is in scope, while the artifact and handoff rules constrain what each role may publish or claim.\n- Exact marker preservation is an effective integrity check because it ties the research file, writer handoff, and final brief to the same brief identity without exposing routing parameters.\n- Durable reviewability depends on publishing an existing workspace-relative file, then carrying the complete research body in the team message so the writer does not need cross-workspace access.\n\n## Risks or cautions\nThe central risk is mistaking tokenless transport for unauthenticated access. Hidden application credentials still require lifecycle, audience, and revocation controls. A blocked observed status may complicate reconciliation after final publication, while replacement, duplicate publication, stale context, or malformed markers can undermine reviewability. Logging must support auditability without exposing sensitive binding metadata.\n\n## Next actions\n1. Validate application bindings server-side and reject caller-supplied identity fields.\n2. Enforce exact relative paths, atomic creation, and publication-success gates.\n3. Add tests for marker and brief-ID mismatches, failed publication, blocked reconciliation, and retries.\n4. Record immutable event IDs and timestamps for each successful checkpoint, and verify marker equality byte-for-byte before handoff.\n",
+        "producer_member_address": "/writer",
+        "updated_at": "2026-08-28T11:52:37.298Z"
+      }
+    ],
+    "brief_bindings": [
+      {
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "launch_request_id": "brief-launch-request-843f5b2e-7066-432f-90e4-b5cca0ed801b",
+        "run_id": "brief_studio_team_9e61de3b52ca47bbb47681b0ec13c4ba",
+        "created_at": "2026-08-28T11:51:36.469Z",
+        "updated_at": "2026-08-28T11:51:36.932Z",
+        "artifact_catchup_completed_at": null
+      }
+    ],
+    "briefs": [
+      {
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "title": "API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC",
+        "status": "in_review",
+        "latest_binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "latest_run_id": "brief_studio_team_9e61de3b52ca47bbb47681b0ec13c4ba",
+        "latest_binding_status": "ATTACHED",
+        "last_error_message": null,
+        "created_at": "2026-08-28T11:51:11.499Z",
+        "updated_at": "2026-08-28T11:52:37.298Z",
+        "approved_at": null,
+        "rejected_at": null
+      }
+    ],
+    "pending_launch_requests": [
+      {
+        "launch_request_id": "brief-launch-request-843f5b2e-7066-432f-90e4-b5cca0ed801b",
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "status": "COMMITTED",
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "created_at": "2026-08-28T11:51:35.082Z",
+        "updated_at": "2026-08-28T11:51:36.932Z",
+        "committed_at": "2026-08-28T11:51:36.517Z"
+      }
+    ],
+    "processed_events": [
+      {
+        "event_id": "d9bb8ee1-2e8e-41c9-913d-23ec8f3b1736",
+        "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+        "journal_sequence": 1,
+        "processed_at": "2026-08-28T11:51:36.489Z"
+      }
+    ],
+    "review_notes": []
+  },
+  "platformDatabase": {
+    "__autobyteus_app_migrations": [
+      {
+        "migration_name": "001_create_brief_tables.sql",
+        "checksum": "b18d150ee9900c36c75a2e05414a4c3be54d58e8ce5019dc04d80a9b53b9d7be",
+        "applied_at": "2026-08-28T11:50:39.968Z"
+      },
+      {
+        "migration_name": "002_artifact_publication_model.sql",
+        "checksum": "d8d7b1ced11e3525acdbb07d83899af86120258695ff9fe37ab88d54c32ca8e7",
+        "applied_at": "2026-08-28T11:50:39.973Z"
+      },
+      {
+        "migration_name": "003_application_owned_orchestration.sql",
+        "checksum": "487febfd2b9c0b0a8f00c091bafe779e9887f41383f969addb3260ea06f0289b",
+        "applied_at": "2026-08-28T11:50:39.982Z"
+      },
+      {
+        "migration_name": "004_pending_launch_requests.sql",
+        "checksum": "1b21739380032a3b0e19a5bd90da37795ceb2cb2ccc78420e163585f849929e4",
+        "applied_at": "2026-08-28T11:50:39.988Z"
+      },
+      {
+        "migration_name": "005_published_artifact_reconciliation.sql",
+        "checksum": "c27da5695301dff98c5c44b30ec8b473c822c0edfc1074e3d7111a880a9c0a7a",
+        "applied_at": "2026-08-28T11:50:39.996Z"
+      }
+    ],
+    "__autobyteus_execution_event_dispatch_cursor": [
+      {
+        "singleton_id": 1,
+        "last_acked_journal_sequence": 1,
+        "updated_at": "2026-08-28T11:51:36.526Z"
+      }
+    ],
+    "__autobyteus_execution_event_journal": [
+      {
+        "journal_sequence": 1,
+        "event_id": "d9bb8ee1-2e8e-41c9-913d-23ec8f3b1736",
+        "application_id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+        "launch_request_id": "brief-launch-request-843f5b2e-7066-432f-90e4-b5cca0ed801b",
+        "family": "RUN_STARTED",
+        "published_at": "2026-08-28T11:51:36.489Z",
+        "binding_json": "{\"bindingId\":\"d6e56844-d501-4667-9544-397c545962be\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-843f5b2e-7066-432f-90e4-b5cca0ed801b\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"createdAt\":\"2026-08-28T11:51:36.469Z\",\"updatedAt\":\"2026-08-28T11:51:36.469Z\",\"terminatedAt\":null,\"lastErrorMessage\":null,\"runtime\":{\"subject\":\"TEAM_RUN\",\"teamRunId\":\"brief_studio_team_9e61de3b52ca47bbb47681b0ec13c4ba\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberAddress\":\"/researcher\",\"displayName\":\"researcher\",\"agentRunId\":\"brief_studio_researcher_c69528dffd1c4e3995573d8758067998\"},{\"memberAddress\":\"/writer\",\"displayName\":\"writer\",\"agentRunId\":\"brief_studio_writer_fff0b345376341db9dbe3bcd0040c2ab\"}]}}",
+        "producer_json": null,
+        "payload_json": "{}",
+        "acked_at": "2026-08-28T11:51:36.526Z",
+        "last_dispatch_attempt_number": 1,
+        "last_dispatched_at": "2026-08-28T11:51:36.505Z",
+        "last_error_kind": null,
+        "last_error_message": null,
+        "next_attempt_after": null
+      }
+    ],
+    "__autobyteus_publication_dispatch_cursor": [
+      {
+        "singleton_id": 1,
+        "last_acked_journal_sequence": 0,
+        "updated_at": "2026-08-28T11:50:32.131Z"
+      }
+    ],
+    "__autobyteus_publication_journal": [],
+    "__autobyteus_resource_configurations": [
+      {
+        "slot_key": "draftingTeam",
+        "resource_ref_json": null,
+        "launch_profile_json": "{\"kind\":\"AGENT_TEAM\",\"defaults\":null,\"memberProfiles\":[{\"memberAddress\":\"/researcher\",\"displayName\":\"researcher\",\"agentDefinitionId\":\"team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher\"},{\"memberAddress\":\"/writer\",\"displayName\":\"writer\",\"agentDefinitionId\":\"team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer\"}]}",
+        "launch_defaults_json": null,
+        "updated_at": "2026-08-28T11:50:32.113Z"
+      }
+    ],
+    "__autobyteus_run_binding_members": [
+      {
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "member_address": "/researcher",
+        "display_name": "researcher",
+        "agent_run_id": "brief_studio_researcher_c69528dffd1c4e3995573d8758067998",
+        "runtime_kind": "AGENT_TEAM_MEMBER"
+      },
+      {
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "member_address": "/writer",
+        "display_name": "writer",
+        "agent_run_id": "brief_studio_writer_fff0b345376341db9dbe3bcd0040c2ab",
+        "runtime_kind": "AGENT_TEAM_MEMBER"
+      }
+    ],
+    "__autobyteus_run_bindings": [
+      {
+        "binding_id": "d6e56844-d501-4667-9544-397c545962be",
+        "launch_request_id": "brief-launch-request-843f5b2e-7066-432f-90e4-b5cca0ed801b",
+        "status": "ATTACHED",
+        "runtime_subject": "TEAM_RUN",
+        "agent_run_id": null,
+        "team_run_id": "brief_studio_team_9e61de3b52ca47bbb47681b0ec13c4ba",
+        "definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+        "resource_owner": "bundle",
+        "resource_kind": "AGENT_TEAM",
+        "resource_local_id": "brief-studio-team",
+        "resource_definition_id": null,
+        "created_at": "2026-08-28T11:51:36.469Z",
+        "updated_at": "2026-08-28T11:51:36.469Z",
+        "terminated_at": null,
+        "last_error_message": null,
+        "summary_json": "{\"bindingId\":\"d6e56844-d501-4667-9544-397c545962be\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-843f5b2e-7066-432f-90e4-b5cca0ed801b\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"createdAt\":\"2026-08-28T11:51:36.469Z\",\"updatedAt\":\"2026-08-28T11:51:36.469Z\",\"terminatedAt\":null,\"lastErrorMessage\":null,\"runtime\":{\"subject\":\"TEAM_RUN\",\"teamRunId\":\"brief_studio_team_9e61de3b52ca47bbb47681b0ec13c4ba\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberAddress\":\"/researcher\",\"displayName\":\"researcher\",\"agentRunId\":\"brief_studio_researcher_c69528dffd1c4e3995573d8758067998\"},{\"memberAddress\":\"/writer\",\"displayName\":\"writer\",\"agentRunId\":\"brief_studio_writer_fff0b345376341db9dbe3bcd0040c2ab\"}]}}"
+      }
+    ],
+    "__autobyteus_session_index": [],
+    "__autobyteus_session_projection": [],
+    "__autobyteus_storage_meta": [
+      {
+        "meta_key": "schema_version",
+        "meta_value": "1",
+        "updated_at": "2026-08-28T11:50:32.132Z"
+      },
+      {
+        "meta_key": "application_id",
+        "meta_value": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+        "updated_at": "2026-08-28T11:51:36.536Z"
+      }
+    ]
+  }
+}

@@ -210,6 +210,7 @@ const createFactory = (input: {
       }),
     } as never,
     agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    applicationAgentTools: null,
   }).claude;
   const sessionManager = (factory as unknown as {
     sessionManager: ClaudeSessionManager;

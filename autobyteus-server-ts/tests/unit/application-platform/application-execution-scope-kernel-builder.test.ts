@@ -122,6 +122,11 @@ const createHarness = (input: {
     };
   });
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };
+  const applicationAgentTools = {
+    resolveSelectedRoutes: vi.fn(() => new Map()),
+    invoke: vi.fn(),
+    close: vi.fn(),
+  };
   const buildInput = {
     scopeIdentity: "application:test" as const,
     memoryDir: "/tmp/application-kernel-builder",
@@ -137,6 +142,7 @@ const createHarness = (input: {
     bindingReader: { getBinding: vi.fn(async () => null) },
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
     modelConfigValidator: { validate: vi.fn() },
+    applicationAgentTools,
   };
   return {
     buildInput,
@@ -168,6 +174,7 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       "bindingReader",
       "artifactDeliverySink",
       "modelConfigValidator",
+      "applicationAgentTools",
     ] as const) {
       for (const [label, value, omit] of [
         ["omitted", undefined, true],
@@ -245,6 +252,14 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     expect(harness.createForExecution).toHaveBeenCalledWith({
       agentDefinitionService: harness.buildInput.agentDefinitionService,
       agentToolMcpRunSessions: harness.authority.runSessions,
+      applicationAgentTools: harness.buildInput.applicationAgentTools,
+    });
+    expect(harness.complete).toHaveBeenCalledWith({
+      executionCapabilities: {
+        publishedArtifactPublisher: kernel.publicationService,
+        applicationAgentTools: harness.buildInput.applicationAgentTools,
+      },
+      assertExecutionCapabilitiesReady: expect.any(Function),
     });
     expect(kernel.sessionAuthority).toBe(harness.authority);
 

@@ -44,6 +44,8 @@ export class ApplicationPlatformLifecycle {
       this.dependencies.executionReadiness.assertReady();
       const snapshot = await this.dependencies.bundleService.getCatalogSnapshot();
       this.assertSelectedCatalogIsValid(snapshot);
+      this.dependencies.applicationAgentToolCatalog
+        .initializeFromBundleSnapshot(snapshot);
       this.catalogSnapshot = snapshot;
       this.state = "catalog_ready";
       for (const application of snapshot.applications) {
@@ -119,6 +121,7 @@ export class ApplicationPlatformLifecycle {
         for (const applicationId of this.readyApplicationIds) {
           await this.dependencies.eventDispatchService
             .resumePendingEventsForApplication(applicationId);
+          this.dependencies.applicationAgentToolCallLifecycle.open(applicationId);
         }
       });
       this.state = "ready";
@@ -162,6 +165,7 @@ export class ApplicationPlatformLifecycle {
     };
 
     await runStep(() => this.dependencies.executionLifecycle.quiesce());
+    await runStep(() => this.dependencies.applicationAgentToolCallLifecycle.quiesceAndDrainAll());
     await runStep(() => this.dependencies.eventDispatchService.stop());
     await runStep(() => this.dependencies.agentCommunicationService.closeAll());
     await runStep(() => this.dependencies.backendGateway.dispose());
@@ -172,6 +176,8 @@ export class ApplicationPlatformLifecycle {
     await runStep(() => this.dependencies.runObserverService.dispose());
     await runStep(() => this.dependencies.engineLauncher.stopAll());
     await runStep(() => this.dependencies.executionLifecycle.close());
+    await runStep(() => this.dependencies.applicationAgentToolCallLifecycle.closeAll());
+    await runStep(() => this.dependencies.applicationAgentToolCapability.close());
     await runStep(() => this.dependencies.streamingService.stopAll());
     this.state = "stopped";
     if (errors.length > 0) {

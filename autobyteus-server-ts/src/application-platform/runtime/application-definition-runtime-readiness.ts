@@ -5,6 +5,7 @@ import type { ApplicationLaunchConfigurationService } from "../launch-configurat
 import type { ApplicationExecutionResourceResolver } from "../../application-orchestration/services/application-execution-resource-resolver.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import { ApplicationRuntimeDefinitionValidator } from "./application-runtime-definition-validator.js";
+import type { ApplicationAgentToolCatalog } from "../../application-agent-tools/services/application-agent-tool-catalog.js";
 
 export class ApplicationSetupRequiredError extends Error {
   readonly code = "APPLICATION_SETUP_REQUIRED";
@@ -26,6 +27,8 @@ export class ApplicationDefinitionRuntimeReadiness {
     executionResourceResolver: ApplicationExecutionResourceResolver;
     skillService: Pick<SkillService, "resolveConfiguredSkillsForAgent">;
     activeApplicationIds?: ReadonlySet<string> | null;
+    applicationAgentToolCatalog: ApplicationAgentToolCatalog;
+    staticAdapterToolNames: ReadonlySet<string>;
   }) {}
 
   async prepare(): Promise<void> {
@@ -44,8 +47,17 @@ export class ApplicationDefinitionRuntimeReadiness {
 
     for (const application of activeApplications) {
       const diagnostics: string[] = [];
+      for (const toolName of this.dependencies.applicationAgentToolCatalog
+        .listToolNames(application.id)) {
+        if (this.dependencies.staticAdapterToolNames.has(toolName)) {
+          diagnostics.push(
+            `${application.localApplicationId}: application tool '${toolName}' collides with a platform/static Agent Tools MCP adapter`,
+          );
+        }
+      }
       for (const resource of application.bundleResources) {
         await validator.validateResource(
+          application.id,
           resource.kind,
           resource.definitionId,
           `${application.localApplicationId}/${resource.localId}`,
@@ -68,6 +80,7 @@ export class ApplicationDefinitionRuntimeReadiness {
               view.effectiveConfiguration.executionResourceRef,
             );
           await validator.validateResource(
+            application.id,
             resolved.kind,
             resolved.definitionId,
             `${application.localApplicationId}/slot:${view.slot.slotKey}`,

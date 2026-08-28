@@ -115,6 +115,7 @@ export const buildApplicationExecutionScopeKernel = (
     authority = assembly.complete({
       executionCapabilities: {
         publishedArtifactPublisher: publicationService,
+        applicationAgentTools: input.applicationAgentTools,
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
@@ -122,6 +123,7 @@ export const buildApplicationExecutionScopeKernel = (
       .createForExecution({
         agentDefinitionService: input.agentDefinitionService,
         agentToolMcpRunSessions: authority.runSessions,
+        applicationAgentTools: input.applicationAgentTools,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,
@@ -319,6 +321,7 @@ const assertBuildInput = (input: ApplicationExecutionScopeBuildInput): void => {
     "bindingReader",
     "artifactDeliverySink",
     "modelConfigValidator",
+    "applicationAgentTools",
   ] as const) {
     if (input[field] == null) {
       throw new Error(`Application execution scope ${field} is required.`);

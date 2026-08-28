@@ -13,9 +13,52 @@ It demonstrates:
 - host-managed saved team `launchProfile` before entry: shared runtime/model/workspace defaults plus per-member runtime/model overrides
 - post-bootstrap business UI ownership only; the bundle does not author pre-bootstrap waiting/failure/direct-open UX
 - application-owned runs that keep automatic tool execution enabled for the publishing workflow
+- one read-only application-owned `get_brief_context` tool whose caller and
+  Brief identity come from the current application Team binding
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
 - durable `publish_artifacts` artifact publication and lifecycle projection back into `app.sqlite`
 - restart catch-up that ignores retained platform publications outside Brief's producer/path rules while preserving strict rejection for unsupported live delivery
+
+## Maintained Agent-to-UI workflow
+
+The bundled `brief-studio-team` is intentionally pinned to
+`codex_app_server` / `gpt-5.6-luna`. Its researcher and writer each select only
+the application/business routes `get_brief_context`, `publish_artifacts`, and
+`send_message_to`. Foundation operations are supplied automatically by the
+runtime rather than configured as application routes or prescribed by the role
+prompts.
+
+For a fresh draft:
+
+1. The researcher calls `get_brief_context` exactly once as its first tool
+   action. The read-only handler derives the selected Brief from the
+   application binding and returns the `briefId`, title, and observed status.
+2. The researcher writes the exact compact `Brief context:` marker and research
+   body to `brief-studio/research.md` with an authorized foundation operation
+   chosen by the runtime/model, then publishes that workspace-relative path.
+3. The researcher sends `/writer` the marker, canonical relative path, and the
+   complete research body. The writer does not read across member workspaces.
+4. After receiving the handoff, the writer calls `get_brief_context` exactly
+   once as its first tool action, rejects a Brief-identity mismatch, and uses
+   the complete handoff body. At least one complete research `Key findings`
+   bullet is copied under the final `Key evidence` section.
+5. The writer creates `brief-studio/final-brief.md` with an authorized
+   foundation operation and publishes that relative path. Existing artifact
+   relay/reconciliation changes the same Brief to `in_review`, emits the
+   ready-for-review notification, and refreshes the existing UI.
+
+Artifact acceptance is operation-neutral. Any foundation capability already
+authorized and supplied by the runtime, including shell, may create the normal
+artifact. Provider-native and normalized operation events remain useful
+diagnostics, but they neither replace the workspace artifact nor make an
+otherwise correct artifact pass or fail. Foundation-operation names therefore
+stay out of the role `toolNames` and `agent.md` business instructions.
+
+`get_brief_context` never mutates Brief business state. If context, artifact
+creation, publication, or the required handoff fails, the role reports a
+truthful blocker and stops without fabricated publication. The browser-visible
+state transition is owned only by the established final-artifact publication
+and reconciliation path.
 
 Artifact recovery is application-owned. On startup, Brief resolves the saved run
 binding and replays only publications whose producer and semantic path are

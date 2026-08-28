@@ -152,7 +152,7 @@ describe("Brief package team prompt authority", () => {
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
     expect(memberTeamContext.authoredTeamInstruction).toBe(packageTeam.instructions.trim());
     expect(packageTeam.instructions).toContain(
-      "researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifacts`",
+      "researcher calls `get_brief_context` exactly once first, creates `brief-studio/research.md` with the exact marker and required business content",
     );
     expect(prompt).toContain("## Agent Identity");
     expect(prompt).toContain(`- Name: ${researcher.name}`);

@@ -1,0 +1,77 @@
+BRIEF WORKFLOW
+Brief Studio
+
+Create, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.
+
+WHAT YOU CAN DO HERE
+
+Stay focused on the brief work itself.
+Create the brief record that anchors the work.
+Generate fresh drafts when the brief is ready.
+Review outputs, notes, and approval state together.
+STEP 1
+Create
+
+Start with the business brief record and keep the work anchored to one brief.
+
+STEP 2
+Generate
+
+Launch new drafting runs over time as the brief evolves and needs another pass.
+
+STEP 3
+Review
+
+Keep draft outputs, review notes, and approval decisions together on the same record.
+
+Create a brief
+
+Start the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.
+
+BRIEF TITLE
+Create brief
+GraphQL stays the primary brief API while the host supplies runtime and workspace defaults.
+Briefs
+
+Track each brief, its latest draft state, and its review outcome.
+
+Refresh
+API E2E "Native Edit" \ 2026-08-27T20:32Z
+Not_started
+Brief brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea
+Updated 8/27/2026, 8:33:47 PM
+Brief detail
+
+Review generated drafts, notes, and approval state for the selected brief.
+
+API E2E "Native Edit" \ 2026-08-27T20:32Z
+
+briefId brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea
+
+Not_started
+Created 8/27/2026, 8:33:09 PM
+Updated 8/27/2026, 8:33:47 PM
+BRIEF RECORD
+brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea
+Status not_started
+DRAFT OUTPUTS
+0
+0 final
+REVIEW
+0 notes
+Approved — · Rejected —
+Generate draft
+Approve
+Reject
+Draft outputs
+
+Generated drafts stay attached to the same brief record for review.
+
+No draft outputs yet.
+Review notes
+
+Keep the approval conversation on the brief record itself.
+
+No review notes yet.
+Add review note
+Workflow diagnostics

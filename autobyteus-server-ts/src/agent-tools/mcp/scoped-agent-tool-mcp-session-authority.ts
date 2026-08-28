@@ -193,6 +193,9 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
     if (!input?.executionCapabilities?.publishedArtifactPublisher) {
       throw new Error("Scoped Agent Tools MCP execution capabilities are required.");
     }
+    if (!("applicationAgentTools" in input.executionCapabilities)) {
+      throw new Error("Scoped Agent Tools MCP application capability disposition is required.");
+    }
     if (typeof input.assertExecutionCapabilitiesReady !== "function") {
       throw new Error("Scoped Agent Tools MCP readiness assertion is required.");
     }

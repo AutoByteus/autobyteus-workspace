@@ -1,0 +1,75 @@
+# Compacted DR-007 AppImage runtime evidence
+# Generated after graceful close; the verbose APPIMAGE_EXTRACT_AND_RUN file listing was discarded.
+# This retains launch compatibility context, embedded-server readiness, health, and shutdown evidence.
+
+/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage: error while loading shared libraries: libz.so: cannot open shared object file: No such file or directory
+[2026-08-28T13:07:28.233Z] [INFO] [electron.server.app-data] Created app data directory: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:07:28.233Z] [INFO] [electron.server.app-data] Created missing data directory: /home/vncuser/.autobyteus/server-data/db
+[2026-08-28T13:07:28.234Z] [INFO] [electron.server.app-data] Created missing data directory: /home/vncuser/.autobyteus/server-data/logs
+[2026-08-28T13:07:28.237Z] [INFO] [electron.server.app-data] Created missing data directory: /home/vncuser/.autobyteus/server-data/download
+[2026-08-28T13:07:28.543Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-08-28T13:07:28.543Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-08-28T13:07:28.544Z] [INFO] [electron.server.base-server-manager] Server installation directory: /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/resources/server
+[2026-08-28T13:07:28.546Z] [INFO] [electron.server.base-server-manager] App data directory: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:07:28.548Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-08-28T13:07:28.549Z] [INFO] [electron.server.app-data] Generated runtime .env at: /home/vncuser/.autobyteus/server-data/.env
+[2026-08-28T13:07:28.550Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-08-28T13:07:28.554Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-08-28T13:07:28.587Z] [INFO] [electron] Starting server with port: 29695
+[2026-08-28T13:07:28.798Z] [INFO] [electron.embedded-server.stdout] App data directory: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:07:28.801Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-08-28T13:07:28.802Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:07:28.804Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /home/vncuser/.autobyteus/server-data/db
+[2026-08-28T13:07:30.005Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-08-28T13:07:30.844Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-08-28T13:07:31.065Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:07:31.088Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:07:31.263Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787922451260,"pid":24285,"hostname":"96cdeed0e952","msg":"Server listening at http://127.0.0.1:34459"}
+[2026-08-28T13:07:31.288Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787922451288,"pid":24285,"hostname":"96cdeed0e952","msg":"Server listening at http://0.0.0.0:29695"}
+[2026-08-28T13:07:31.289Z] [INFO] [electron.embedded-server.stdout] [2026-08-28T13:07:31.288Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+[2026-08-28T13:07:31.299Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-08-28T13:07:31.374Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-08-28T13:07:31.374Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-08-28T13:07:31.374Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:07:31.404Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:07:31.406Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:07:31.624Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:07:31.626Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:08:27.424Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-08-28T13:08:27.424Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-08-28T13:08:27.424Z] [INFO] [electron.server.base-server-manager] Server installation directory: /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/resources/server
+[2026-08-28T13:08:27.424Z] [INFO] [electron.server.base-server-manager] App data directory: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:08:27.427Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-08-28T13:08:27.439Z] [INFO] [electron] Starting server with port: 29695
+[2026-08-28T13:08:27.547Z] [INFO] [electron.embedded-server.stdout] App data directory: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:08:27.554Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-08-28T13:08:27.554Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /home/vncuser/.autobyteus/server-data
+[2026-08-28T13:08:27.554Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /home/vncuser/.autobyteus/server-data/db
+[2026-08-28T13:08:28.537Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-08-28T13:08:28.846Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-08-28T13:08:28.879Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-08-28T13:08:29.126Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787922509125,"pid":24555,"hostname":"96cdeed0e952","msg":"Server listening at http://127.0.0.1:43431"}
+[2026-08-28T13:08:29.153Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787922509152,"pid":24555,"hostname":"96cdeed0e952","msg":"Server listening at http://0.0.0.0:29695"}
+[2026-08-28T13:08:29.153Z] [INFO] [electron.embedded-server.stdout] [2026-08-28T13:08:29.153Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+[2026-08-28T13:08:29.163Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-08-28T13:08:29.215Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-08-28T13:08:29.216Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-08-28T13:08:29.216Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:08:29.251Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:08:29.253Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:08:29.426Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:08:29.428Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:08:29.848Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:08:29.850Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:08:35.426Z] [INFO] [electron] [updater] Checking for update
+[2026-08-28T13:08:35.431Z] [INFO] [electron] [updater] Generated new staging user ID: f48989f0-00ab-58ed-940c-ef7964e91bc3
+[2026-08-28T13:08:36.661Z] [INFO] [electron] [updater] Update for version 1.4.61 is not available (latest version: 1.4.61, downgrade is disallowed).
+[2026-08-28T13:38:50.801Z] [ERROR] [electron.embedded-server.stderr] Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+[2026-08-28T13:38:50.802Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-08-28T13:39:04.972Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:39:04.975Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:39:13.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-28T13:39:13.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-28T13:50:56.859Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-08-28T13:50:56.860Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-08-28T13:50:56.862Z] [INFO] [electron.embedded-server.stdout] [2026-08-28T13:50:56.860Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...

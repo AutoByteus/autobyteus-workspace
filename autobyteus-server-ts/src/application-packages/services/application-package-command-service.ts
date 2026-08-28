@@ -16,14 +16,14 @@ import {
   GITHUB_SOURCE_KIND,
   LOCAL_PATH_SOURCE_KIND,
 } from "./application-package-registry-entry-utils.js";
-import type { ApplicationCatalogRefreshCoordinator } from "./application-catalog-refresh-coordinator.js";
+import type { ApplicationCatalogTransitionService } from "../../application-orchestration/services/application-catalog-transition-service.js";
 import type { ApplicationPackageRegistryService } from "./application-package-registry-service.js";
 
 export class ApplicationPackageCommandService {
   constructor(private readonly dependencies: {
     registry: ApplicationPackageRegistryService;
     provider: Pick<FileApplicationBundleProvider, "validatePackageRoot">;
-    refreshCoordinator: Pick<ApplicationCatalogRefreshCoordinator, "refresh">;
+    catalogTransition: Pick<ApplicationCatalogTransitionService, "runPackageTransition">;
     installer?: GitHubApplicationPackageInstaller;
   }) {}
 
@@ -51,10 +51,21 @@ export class ApplicationPackageCommandService {
     packageId: string,
   ): Promise<ApplicationPackageListItem[]> {
     const target = await this.requirePackage(packageId);
-    if (target.isPlatformOwned) {
-      await this.dependencies.registry.ensureBuiltInMaterialized();
-    }
-    await this.dependencies.refreshCoordinator.refresh();
+    await this.dependencies.catalogTransition.runPackageTransition({
+      kind: "reload",
+      packageId: target.packageId,
+      applyBeforeStage: async () => {
+        if (target.isPlatformOwned) {
+          await this.dependencies.registry.ensureBuiltInMaterialized();
+        }
+        return undefined;
+      },
+      rollbackSource: async (_value, cause) => {
+        throw new Error(
+          `Package '${target.packageId}' source cannot be restored automatically after reload failure: ${cause instanceof Error ? cause.message : String(cause)}`,
+        );
+      },
+    });
     return this.dependencies.registry.listApplicationPackages();
   }
 
@@ -70,32 +81,26 @@ export class ApplicationPackageCommandService {
       .findPackageRecord(normalizedPackageId);
     const rootPresent = this.dependencies.registry.listAdditionalRootPaths()
       .includes(target.packageRootPath);
-    let removedFromSettings = false;
-    let removedFromRegistry = false;
-    if (rootPresent) {
-      this.dependencies.registry.removeAdditionalRootPath(target.packageRootPath);
-      removedFromSettings = true;
-    }
-    try {
-      if (existingRecord) {
-        await this.dependencies.registry.removePackageRecord(normalizedPackageId);
-        removedFromRegistry = true;
-      }
-      await this.dependencies.refreshCoordinator.refresh();
-      if (target.sourceKind === GITHUB_SOURCE_KIND && target.managedInstallPath) {
-        await fsPromises.rm(target.managedInstallPath, { recursive: true, force: true });
-      }
-      return this.dependencies.registry.listApplicationPackages();
-    } catch (error) {
-      if (removedFromSettings) {
-        this.safeAddRoot(target.packageRootPath);
-      }
-      if (removedFromRegistry) {
-        await this.dependencies.registry.restorePackageRecord(existingRecord);
-      }
-      await this.dependencies.refreshCoordinator.refresh().catch(() => undefined);
-      throw error;
-    }
+
+    await this.dependencies.catalogTransition.runPackageTransition({
+      kind: "remove",
+      packageId: normalizedPackageId,
+      applyBeforeStage: async () => {
+        if (rootPresent) this.dependencies.registry.removeAdditionalRootPath(target.packageRootPath);
+        if (existingRecord) await this.dependencies.registry.removePackageRecord(normalizedPackageId);
+        return { rootPresent, existingRecord };
+      },
+      finalizeAfterCommit: async () => {
+        if (target.sourceKind === GITHUB_SOURCE_KIND && target.managedInstallPath) {
+          await fsPromises.rm(target.managedInstallPath, { recursive: true, force: true });
+        }
+      },
+      rollbackSource: async () => {
+        if (rootPresent) this.safeAddRoot(target.packageRootPath);
+        if (existingRecord) await this.dependencies.registry.restorePackageRecord(existingRecord);
+      },
+    });
+    return this.dependencies.registry.listApplicationPackages();
   }
 
   private async importLocalPathPackage(
@@ -110,17 +115,20 @@ export class ApplicationPackageCommandService {
     }
     const packageId = buildLocalApplicationPackageId(resolvedPath);
     await this.dependencies.provider.validatePackageRoot(resolvedPath, packageId);
-    this.dependencies.registry.addAdditionalRootPath(resolvedPath);
-    try {
-      await this.dependencies.registry.upsertLinkedLocalPackage(resolvedPath);
-      await this.dependencies.refreshCoordinator.refresh();
-      return this.dependencies.registry.listApplicationPackages();
-    } catch (error) {
-      this.safeRemoveRoot(resolvedPath);
-      await this.dependencies.registry.removePackageRecord(packageId).catch(() => undefined);
-      await this.dependencies.refreshCoordinator.refresh().catch(() => undefined);
-      throw error;
-    }
+    await this.dependencies.catalogTransition.runPackageTransition({
+      kind: "import",
+      packageId,
+      applyBeforeStage: async () => {
+        this.dependencies.registry.addAdditionalRootPath(resolvedPath);
+        await this.dependencies.registry.upsertLinkedLocalPackage(resolvedPath);
+        return undefined;
+      },
+      rollbackSource: async () => {
+        this.safeRemoveRoot(resolvedPath);
+        await this.dependencies.registry.removePackageRecord(packageId).catch(() => undefined);
+      },
+    });
+    return this.dependencies.registry.listApplicationPackages();
   }
 
   private async importGitHubPackage(
@@ -144,23 +152,34 @@ export class ApplicationPackageCommandService {
     try {
       validateApplicationPackageRoot(installed.rootPath);
       await this.dependencies.provider.validatePackageRoot(installed.rootPath, packageId);
-      this.dependencies.registry.addAdditionalRootPath(installed.rootPath);
-      await this.dependencies.registry.upsertManagedGitHubPackage({
-        normalizedSource: repository.normalizedRepository,
-        source: installed.canonicalSourceUrl,
-        rootPath: installed.rootPath,
-        managedInstallPath: installed.managedInstallPath,
+      await this.dependencies.catalogTransition.runPackageTransition({
+        kind: "import",
+        packageId,
+        applyBeforeStage: async () => {
+          this.dependencies.registry.addAdditionalRootPath(installed.rootPath);
+          await this.dependencies.registry.upsertManagedGitHubPackage({
+            normalizedSource: repository.normalizedRepository,
+            source: installed.canonicalSourceUrl,
+            rootPath: installed.rootPath,
+            managedInstallPath: installed.managedInstallPath,
+          });
+          return undefined;
+        },
+        rollbackSource: async () => {
+          this.safeRemoveRoot(installed.rootPath);
+          await this.dependencies.registry.removePackageRecord(packageId).catch(() => undefined);
+          await fsPromises.rm(installed.managedInstallPath, {
+            recursive: true,
+            force: true,
+          }).catch(() => undefined);
+        },
       });
-      await this.dependencies.refreshCoordinator.refresh();
       return this.dependencies.registry.listApplicationPackages();
     } catch (error) {
-      this.safeRemoveRoot(installed.rootPath);
-      await this.dependencies.registry.removePackageRecord(packageId).catch(() => undefined);
       await fsPromises.rm(installed.managedInstallPath, {
         recursive: true,
         force: true,
       }).catch(() => undefined);
-      await this.dependencies.refreshCoordinator.refresh().catch(() => undefined);
       throw error;
     }
   }

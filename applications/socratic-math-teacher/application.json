@@ -1,5 +1,5 @@
 {
-  "manifestVersion": "4",
+  "manifestVersion": "5",
   "id": "socratic-math-teacher",
   "name": "Socratic Math Teacher",
   "description": "Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.",

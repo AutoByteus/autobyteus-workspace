@@ -8,6 +8,8 @@ import type {
   ApplicationPublishedArtifactSummary,
   ApplicationStorageContext,
   ApplicationExecutionResourceSummary,
+  ApplicationAgentToolCaller,
+  ApplicationAgentToolContext,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationAgentEventStreamSubscribeError } from "@autobyteus/application-sdk-contracts";
 import type {
@@ -58,6 +60,13 @@ export class ApplicationHandlerContextFactory {
 
   createLifecycle(): Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null } {
     return this.create(null) as Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null };
+  }
+
+  createAgentTool(caller: ApplicationAgentToolCaller): ApplicationAgentToolContext {
+    return Object.freeze({
+      ...this.create(null),
+      caller: Object.freeze({ ...caller }),
+    });
   }
 
   private createAgentExecution(): ApplicationAgentExecution {

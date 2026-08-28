@@ -13,6 +13,7 @@ import { MemberTeamContext } from "../../../../../../src/agent-team-execution/do
 import { AgentDefinition } from "../../../../../../src/agent-definition/domain/models.js";
 import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { testMemberTeamContext } from "../../../../../fixtures/current-team-run-fixtures.js";
+import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -51,6 +52,7 @@ const createMemberTeamContext = () =>
 
 const createSession = (requestedToolNames: string[] = [], input: {
   memberTeamContext?: MemberTeamContext | null;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
 } = {}) => {
   const startQueryTurn = vi.fn(async () => createResultQuery());
   const closeQuery = vi.fn();
@@ -67,6 +69,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
     "review_task_result",
     "publish_artifacts",
     "db_query",
+    "read_application_state",
   ]);
   const runtimeToolExposure = buildRuntimeAgentToolExposure(requestedToolNames, memberTeamContext);
   const enabledTools = runtimeToolExposure.requestedToolNames.filter((toolName) =>
@@ -95,6 +98,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
       skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       memberTeamContext,
+      applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
     runtimeContext: new ClaudeAgentRunContext({
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
@@ -328,6 +332,33 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
+  });
+
+  it("forwards the immutable application execution context into the Claude MCP session", async () => {
+    const applicationExecutionContext = Object.freeze({
+      applicationId: "app-a",
+      bindingId: "binding-a",
+      producer: Object.freeze({ agentRunId: "run-1", displayName: "Claude app agent" }),
+    });
+    const { session, activateForRun } = createSession(["read_application_state"], {
+      applicationExecutionContext,
+    });
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(activateForRun).toHaveBeenCalledWith(expect.objectContaining({
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      executionContext: expect.objectContaining({ applicationExecutionContext }),
+    }));
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(expect.objectContaining({
+      agentToolsMcpDescriptor: expect.objectContaining({
+        enabledTools: ["read_application_state"],
+      }),
+    }));
   });
 
   it("reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh", async () => {

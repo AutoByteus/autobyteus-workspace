@@ -98,6 +98,7 @@ describe("MixedAgentMemberHandle managed Agent Tools cleanup", () => {
     }).begin({ scopeIdentity: "application:test" }).complete({
       executionCapabilities: {
         publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+        applicationAgentTools: null,
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });

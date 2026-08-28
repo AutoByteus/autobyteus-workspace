@@ -131,6 +131,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         publishedArtifactPublisher: {
           publishManyForRun: vi.fn(async () => []),
         },
+        applicationAgentTools: null,
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
