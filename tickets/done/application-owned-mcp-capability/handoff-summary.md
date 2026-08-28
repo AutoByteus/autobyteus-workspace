@@ -4,9 +4,9 @@
 
 - Ticket: `application-owned-mcp-capability`
 - Archived path: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/application-owned-mcp-capability`
-- Ticket branch: `codex/application-owned-mcp-capability`
+- Ticket branch: `codex/application-owned-mcp-capability` (historical; deleted locally/remotely after merge and rollout verification)
 - Recorded finalization target: `origin/personal` / local `personal`
-- Current result: `DR-009 Pass — repository finalized, v1.4.62 published, and rollout verified; cleanup pending`
+- Current result: `DR-010 Pass — repository finalized, v1.4.62 published and verified, and post-finalization cleanup complete`
 - User verification: received; the user declared the task done and requested finalization plus a new release.
 
 ## Integrated-State And Finalization Result
@@ -66,6 +66,18 @@ If rollout regresses application-tool isolation, exact binding authorization, re
 
 All current artifacts are under `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/application-owned-mcp-capability/`, including requirements/investigation/design/reviews, implementation handoff and revision history, API/E2E coverage/execution/test review, delivery revision history, docs sync, release notes, this handoff, and release evidence.
 
+## Post-Finalization Cleanup
+
+- DR-009 rollout record commit/push: `df50148581d933eaace2149b8980e871fee049ef`.
+- Dedicated ticket worktree: removed after clean tracked-state and merge-ancestry verification; ignored build/dependency outputs, including the local 1.4.61 AppImage, were removed with that dedicated worktree.
+- Local ticket branch: deleted.
+- Remote ticket branch: deleted.
+- Worktree metadata: pruned.
+- DR-007 temporary zlib shim: removed.
+- Other repository worktrees: preserved unchanged.
+- DR-007 `/home/vncuser` test profile: preserved for user continuity.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/application-owned-mcp-capability/delivery-evidence/dr-010/post-finalization-cleanup.log`.
+
 ## Remaining Delivery Action
 
-After this DR-009 rollout record is committed and pushed, remove the dedicated ticket worktree, delete merged local/remote ticket branches, prune worktree metadata, record DR-010 cleanup, and push the final cleanup record.
+None. Final cleanup record commit/push is the terminal delivery action.

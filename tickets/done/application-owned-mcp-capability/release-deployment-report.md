@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Repository finalization, the user-authorized `v1.4.62` release, and rollout verification are complete under DR-009. All five shared tag-triggered workflows succeeded and the public GitHub release contains 21 uploaded assets. Post-finalization ticket worktree/branch cleanup remains pending until this rollout record is durably committed and pushed.
+Repository finalization, the user-authorized `v1.4.62` release, rollout verification, and post-finalization cleanup are complete under DR-010. All five shared tag-triggered workflows succeeded, the public GitHub release contains 21 uploaded assets, and the merged ticket worktree/branches were safely removed.
 
 ## User Verification
 
@@ -79,11 +79,16 @@ Rollout evidence: `tickets/done/application-owned-mcp-capability/delivery-eviden
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree: `Pending after DR-009 commit/push`
-- Local ticket branch: `Pending`
-- Remote ticket branch: `Pending`
-- Worktree prune: `Pending`
+- Rollout record prerequisite: `Completed and pushed — df50148581d933eaace2149b8980e871fee049ef`
+- Merge ancestry verification: `Pass — 744fcc2c1 is an ancestor of personal`
+- Dedicated ticket worktree: `Removed`; clean tracked state was verified first, and dedicated ignored build/dependency outputs were removed with it.
+- Local ticket branch: `Deleted — codex/application-owned-mcp-capability`
+- Remote ticket branch: `Deleted — origin/codex/application-owned-mcp-capability`
+- Worktree metadata: `Pruned`
+- Temporary DR-007 zlib shim: `Removed`
+- Unrelated worktrees: `Preserved`
 - DR-007 test profile: preserved for user continuity; outside repository cleanup scope.
+- Evidence: `tickets/done/application-owned-mcp-capability/delivery-evidence/dr-010/post-finalization-cleanup.log`
 
 ## Persisted Data
 
@@ -99,4 +104,4 @@ Regressions in application-tool isolation, exact application/binding/producer au
 
 ## Current Result
 
-`DR-009 Pass — repository finalized, v1.4.62 published, all five workflows succeeded, and 21 release assets verified. Cleanup is the only remaining delivery action.`
+`DR-010 Pass — repository finalized, v1.4.62 published, 5/5 workflows and 21 assets verified, and post-finalization cleanup completed. No active delivery blocker or remaining action exists.`

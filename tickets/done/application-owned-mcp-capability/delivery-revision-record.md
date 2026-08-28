@@ -13,6 +13,7 @@
 | DR-007 | User requested that delivery open the rebuilt app for interactive testing | DR-006 — test artifact ready | Pass / live test in progress; AppImage launched in X11 session `:99`, visible AutoByteus window focused, embedded server ready, process session deliberately retained | `delivery-evidence/dr-007/`, `delivery-integration-evidence.log`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 | DR-008 | User declared the task done and requested finalization plus a new release | DR-007 — live interactive test in progress | Pass; user verification accepted, app closed gracefully, target unchanged after refresh, ticket archived, next patch v1.4.62 authorized | `delivery-evidence/dr-007/`, `delivery-evidence/dr-008/`, archived ticket, all final handoff/release artifacts |
 | DR-009 | Completion of the authorized repository finalization and v1.4.62 rollout | DR-008 — finalization/release authorized | Pass; ticket branch and personal finalized, v1.4.62 published, 5/5 workflows succeeded, 21 assets verified; cleanup pending | `delivery-evidence/dr-009/`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-010 | Post-rollout cleanup after durable DR-009 push | DR-009 — release verified, cleanup pending | Pass; dedicated ticket worktree and local/remote ticket branches removed, metadata pruned, temporary shim removed, unrelated state preserved | `delivery-evidence/dr-010/`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 
 ## Revision Entries
 
@@ -154,3 +155,17 @@
 - Docs-sync impact: `No additional durable product-doc impact`; release metadata and final handoff records were updated.
 - Remaining risks: Pre-release residuals remain disclosed. Workflow success demonstrates publication pipeline completion, not independent installation on every consumer device or App Store review beyond the successful upload path.
 - Next action: Commit/push this rollout record, then remove the dedicated ticket worktree and merged local/remote ticket branches, prune worktree metadata, and record DR-010 cleanup.
+
+
+### DR-010 — Post-finalization cleanup complete
+
+- Delivery round and trigger: DR-009 rollout record `df50148581d933eaace2149b8980e871fee049ef` was committed and pushed to `origin/personal`, making cleanup safe.
+- Prior authoritative result: `DR-009 Pass — repository finalized and v1.4.62 rollout verified; cleanup pending.`
+- Safety checks: The ticket worktree had clean tracked state and local/remote ticket refs at `744fcc2c1ec1b1af774c39aa420be17b03832c05`. Merge ancestry verification confirmed that commit is an ancestor of `personal`. Dedicated ignored build/dependency outputs were enumerated before removal.
+- Cleanup result: Removed `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability`; deleted local and remote `codex/application-owned-mcp-capability`; pruned worktree metadata; and removed the temporary DR-007 `/tmp/autobyteus-dr007-libs/libz.so` shim.
+- Preservation result: Other ticket worktrees were not changed. The DR-007 `/home/vncuser` test profile remains for user continuity and is not repository state.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/application-owned-mcp-capability/delivery-evidence/dr-010/post-finalization-cleanup.log`.
+- Current authoritative result: `Pass — delivery complete`. Repository finalization, v1.4.62 publication, rollout verification, and cleanup have all succeeded.
+- Docs-sync impact: `No additional durable product-doc impact`; only terminal delivery records changed.
+- Remaining risks: The explicit pre-release residuals and the distinction between workflow publication success and independent consumer-device/App Store review remain as recorded in DR-009. No active delivery blocker remains.
+- Next action: Commit and push this terminal cleanup record. No further delivery action is required unless a release consumer reports a rollout issue.

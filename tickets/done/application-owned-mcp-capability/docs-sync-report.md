@@ -2,9 +2,9 @@
 
 ## Current Status
 
-`Pass at DR-009 — durable documentation remains synchronized; repository
-finalization and the verified v1.4.62 rollout introduced no additional long-lived
-product-documentation impact.`
+`Pass at DR-010 — durable documentation remains synchronized; repository
+finalization, verified v1.4.62 rollout, and cleanup introduced no additional
+long-lived product-documentation impact.`
 
 ## Scope
 
@@ -72,5 +72,5 @@ Not applicable. Two durable project documents required correction; all other rev
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Commit/push the DR-009 rollout record, then complete ticket worktree/branch cleanup and record DR-010.
-- Notes: The ticket is archived under `tickets/done/application-owned-mcp-capability`; the public v1.4.62 release is verified and no further durable product-doc change is required.
+- Next delivery action: None; commit/push this terminal DR-010 cleanup record.
+- Notes: The ticket is archived, the public v1.4.62 release is verified, cleanup is complete, and no further durable product-doc change is required.

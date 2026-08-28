@@ -306,3 +306,14 @@ Result: PASS
 - URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.62
 - Durable evidence: tickets/done/application-owned-mcp-capability/delivery-evidence/dr-009/
 - Cleanup held until this rollout record is committed and pushed.
+
+Post-finalization cleanup (DR-010)
+Date: 2026-08-28 UTC
+- Prerequisite rollout record df50148581d933eaace2149b8980e871fee049ef was pushed to origin/personal.
+- Ticket branch 744fcc2c1ec1b1af774c39aa420be17b03832c05 was verified as an ancestor of personal.
+- Ticket worktree tracked state was clean; dedicated ignored build/dependency outputs were enumerated.
+- Removed dedicated ticket worktree /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability.
+- Deleted local and remote codex/application-owned-mcp-capability branches.
+- Pruned worktree metadata and removed the DR-007 temporary zlib shim.
+- Preserved all unrelated worktrees and /home/vncuser test-profile state.
+- Result: PASS; durable evidence at tickets/done/application-owned-mcp-capability/delivery-evidence/dr-010/.
