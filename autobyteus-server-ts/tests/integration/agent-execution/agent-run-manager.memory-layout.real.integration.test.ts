@@ -1,4 +1,4 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -107,9 +107,9 @@ describe("AgentRunService real memory layout integration", () => {
         getSkill: () => null,
       } as any,
     });
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
     const infrastructure = createAgentRunManagerInfrastructureFixture({
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     manager = new AgentRunManager({
       autoByteusBackendFactory,
@@ -118,7 +118,7 @@ describe("AgentRunService real memory layout integration", () => {
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     const workspaceManager = {
       ensureWorkspaceByRootPath: async (workspaceRootPath: string) => ({

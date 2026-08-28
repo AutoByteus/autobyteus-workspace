@@ -21,12 +21,11 @@ const createScope = async () => {
   const blockNewSessions = vi.fn();
   const assertReady = vi.fn();
   const runSessions = Object.freeze({
-    revokeForRun: vi.fn(() => 0),
-    revokeForOwner: vi.fn(() => 0),
+    activateForRun: vi.fn(),
+    deactivateForRun: vi.fn(() => 0),
   });
   const authority: ScopedAgentToolMcpSessionAuthority = {
     scopeIdentity: "application:test",
-    issuer: Object.freeze({ issueForRun: vi.fn() }),
     runSessions,
     assertReady,
     blockNewSessions,
@@ -111,7 +110,7 @@ describe("ApplicationExecutionScope", () => {
       .toBe(agentDefinitionService);
     expect(createForExecution).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService,
-      agentToolMcpSessionIssuer: expect.any(Object),
+      agentToolMcpRunSessions: expect.any(Object),
     }));
     for (const capability of [
       scope.agentExecution,

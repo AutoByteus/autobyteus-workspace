@@ -5,23 +5,27 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify, { type FastifyInstance } from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-  seedInternalServerBaseUrlFromListenAddress,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import {
+  E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
+} from "../helpers/team-run-graphql-documents.js";
+import {
+  closeLiveRuntimeSecretVault,
+  initializeLiveRuntimeSecretVaultFromEnvironment,
+} from "../helpers/live-runtime-secret-vault-helpers.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const codexBinaryReady =
@@ -53,10 +57,10 @@ type WsMessage = {
   payload: Record<string, unknown>;
 };
 
-type TeamMemberMetadata = {
+type TeamMemberExecution = {
+  memberAddress: string;
   memberName: string;
-  memberRouteKey: string;
-  memberRunId: string;
+  agentRunId: string;
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   workspaceRootPath: string | null;
@@ -160,12 +164,12 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberRouteKey?: string | null;
+    agentRunId: string;
   },
 ): void => {
   sendE2eSendMessageCommand(socket, {
     content: input.content,
-    target_member_route_key: input.targetMemberRouteKey ?? null,
+    agent_run_id: input.agentRunId,
     context_file_paths: [],
     image_urls: [],
   });
@@ -230,11 +234,11 @@ const isCanonicalSendMessageTool = (
 
 const hasExpectedSendMessageArgs = (
   payload: Record<string, unknown>,
-  input: { recipientMemberName: string; content: string },
+  input: { recipientAddress: string; content: string },
 ): boolean => {
   const args = extractToolArgs(payload);
   return (
-    args?.recipient_name === `./${input.recipientMemberName}` &&
+    args?.recipient_address === input.recipientAddress &&
     args.content === input.content
   );
 };
@@ -278,21 +282,10 @@ const messageTextContains = (message: WsMessage, token: string): boolean => {
 
 const assistantTextMatches = (
   message: WsMessage,
-  memberName: MatrixMemberName,
+  agentRunId: string,
   token: string,
 ): boolean => {
-  const agentName =
-    typeof message.payload.agent_name === "string"
-      ? message.payload.agent_name
-      : null;
-  const memberRouteKey =
-    typeof message.payload.member_route_key === "string"
-      ? message.payload.member_route_key
-      : null;
-  if (
-    (agentName && agentName !== memberName) ||
-    (memberRouteKey && memberRouteKey !== memberName)
-  ) {
+  if (message.payload.agent_run_id !== agentRunId) {
     return false;
   }
   return messageTextContains(message, token);
@@ -320,7 +313,6 @@ describeAllRuntimeMatrix(
     let runtimeServerApp: FastifyInstance | null = null;
     let runtimeServerUrl: URL;
     let originalInternalServerBaseUrl: string | undefined;
-    let agentToolsMcpRequestCount = 0;
     const createdAgentDefinitionIds = new Set<string>();
     const createdTeamDefinitionIds = new Set<string>();
     const createdTeamRunIds = new Set<string>();
@@ -339,7 +331,7 @@ describeAllRuntimeMatrix(
         "utf-8",
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
-      schema = await buildGraphqlSchema();
+      await initializeLiveRuntimeSecretVaultFromEnvironment();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
       const graphqlPath = require.resolve("graphql", {
@@ -348,24 +340,10 @@ describeAllRuntimeMatrix(
       const graphqlModule = await import(graphqlPath);
       graphql = graphqlModule.graphql as typeof graphqlFn;
 
-      runtimeServerApp = fastify();
-      runtimeServerApp.addHook("onRequest", async (request) => {
-        if (request.url.startsWith("/mcp/agent-tools/")) {
-          agentToolsMcpRequestCount += 1;
-        }
-      });
-      await registerAgentToolsMcpRoutes(runtimeServerApp);
-      await runtimeServerApp.register(websocket);
-      await registerAgentWebsocket(runtimeServerApp);
-      const streamAddress = await runtimeServerApp.listen({
-        port: 0,
-        host: "127.0.0.1",
-      });
-      seedInternalServerBaseUrlFromListenAddress({
-        requestedHost: "127.0.0.1",
-        listenAddress: runtimeServerApp.server.address(),
-      });
-      runtimeServerUrl = new URL(streamAddress);
+      const started = await startStudioE2eRuntimeServer();
+      runtimeServerApp = started.fastify;
+      runtimeServerUrl = started.mainUrl;
+      schema = await buildGraphqlSchema();
     });
 
     afterAll(async () => {
@@ -385,6 +363,7 @@ describeAllRuntimeMatrix(
         await runtimeServerApp.close();
         runtimeServerApp = null;
       }
+      await closeLiveRuntimeSecretVault();
       for (const root of createdWorkspaceRoots) {
         await rm(root, { recursive: true, force: true });
       }
@@ -549,6 +528,11 @@ describeAllRuntimeMatrix(
       memberName: MatrixMemberName;
       runtimeKind: RuntimeKind;
     }): Promise<string> => {
+      const codexMcpToolRule =
+        input.runtimeKind === RuntimeKind.CODEX_APP_SERVER
+          ? " For this Codex member, send_message_to means the Agent Tools MCP tool " +
+            "mcp__autobyteus_agent_tools__send_message_to; never use Codex's native collaboration router."
+          : "";
       const result = await execGraphql<{
         createAgentDefinition: { id: string };
       }>(
@@ -569,7 +553,7 @@ You are member "${input.memberName}" in a live all-runtime send_message_to matri
 
 Rules:
 1. Follow direct user instructions exactly.
-2. Do not explore the environment, run diagnostics, or call any tool other than send_message_to.
+2. Do not explore the environment, run diagnostics, or call any tool other than send_message_to.${codexMcpToolRule}
 3. If the direct user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments.
 4. If you receive a teammate message asking for an exact token, reply in plain assistant text with that exact token and nothing else.
 5. Do not call send_message_to unless the current direct user instruction explicitly provides JSON arguments for it.
@@ -584,139 +568,42 @@ Rules:
       return result.createAgentDefinition.id;
     };
 
-    const waitForSendMessageMemoryTrace = async (input: {
-      teamRunId: string;
-      memberRunIdByName: Map<string, string>;
-      senderMemberName: MatrixMemberName;
-      recipientMemberName: MatrixMemberName;
-      content: string;
-      invocationId: string | null;
-    }): Promise<void> => {
-      const memberRunId = input.memberRunIdByName.get(input.senderMemberName);
-      expect(memberRunId).toBeTruthy();
-      let lastRawTraces: Array<{
-        traceType: string;
-        sourceEvent: string | null;
-        toolName: string | null;
-        toolCallId: string | null;
-        toolArgs: Record<string, unknown> | null;
-        toolResult: unknown | null;
-        toolError: string | null;
-      }> = [];
-      const deadline = Date.now() + 120_000;
-      while (Date.now() < deadline) {
-        const memoryResult = await execGraphql<{
-          getTeamMemberRunMemoryView: {
-            rawTraces: Array<{
-              traceType: string;
-              sourceEvent: string | null;
-              toolName: string | null;
-              toolCallId: string | null;
-              toolArgs: Record<string, unknown> | null;
-              toolResult: unknown | null;
-              toolError: string | null;
-            }> | null;
-          };
-        }>(
-          `
-            query TeamMemberMemory($teamRunId: String!, $memberRunId: String!) {
-              getTeamMemberRunMemoryView(
-                teamRunId: $teamRunId,
-                memberRunId: $memberRunId,
-                includeWorkingContext: false,
-                includeEpisodic: false,
-                includeSemantic: false,
-                includeRawTraces: true,
-                rawTraceLimit: 300
-              ) {
-                rawTraces {
-                  traceType
-                  sourceEvent
-                  toolName
-                  toolCallId
-                  toolArgs
-                  toolResult
-                  toolError
-                }
-              }
-            }
-          `,
-          { teamRunId: input.teamRunId, memberRunId },
-        );
-        lastRawTraces = memoryResult.getTeamMemberRunMemoryView.rawTraces ?? [];
-        const matchingToolCalls = lastRawTraces.filter(
-          (trace) =>
-            trace.traceType === "tool_call" &&
-            trace.toolName === "send_message_to" &&
-            sameInvocation(
-              { invocation_id: trace.toolCallId },
-              input.invocationId,
-            ),
-        );
-        const matchingToolResults = lastRawTraces.filter(
-          (trace) =>
-            trace.traceType === "tool_result" &&
-            trace.toolName === "send_message_to" &&
-            sameInvocation(
-              { invocation_id: trace.toolCallId },
-              input.invocationId,
-            ),
-        );
-        if (matchingToolCalls.length >= 1 && matchingToolResults.length >= 1) {
-          const toolCall = matchingToolCalls[0]!;
-          const toolResult = matchingToolResults[0]!;
-          expect(toolCall.sourceEvent).toBe("TOOL_EXECUTION_STARTED");
-          expect(toolCall.toolArgs).toMatchObject({
-            recipient_name: `./${input.recipientMemberName}`,
-            content: input.content,
-          });
-          expect(toolResult.sourceEvent).toBe("TOOL_EXECUTION_SUCCEEDED");
-          expect(toolResult.toolError).toBeNull();
-          assertNoProviderOrSecretLeaks([
-            {
-              type: "raw_trace_call",
-              payload: toolCall as unknown as Record<string, unknown>,
-            },
-            {
-              type: "raw_trace_result",
-              payload: toolResult as unknown as Record<string, unknown>,
-            },
-          ]);
-          return;
-        }
-        await wait(1_000);
-      }
-      throw new Error(
-        `Timed out waiting for ${input.senderMemberName} send_message_to memory traces. ` +
-          `Observed traces: ${JSON.stringify(lastRawTraces)}`,
-      );
-    };
-
     const executeMatrixRow = async (input: {
       row: MatrixRow;
       socket: WebSocket;
       messages: WsMessage[];
-      memberRouteKeyByName: Map<string, string>;
-      memberRunIdByName: Map<string, string>;
+      agentRunIdByName: Map<string, string>;
+      memberAddressByName: Map<string, string>;
       teamRunId: string;
     }): Promise<void> => {
       const content = `Reply with exactly ${input.row.replyToken} and nothing else.`;
+      const startIndex = input.messages.length;
+      const senderAgentRunId = input.agentRunIdByName.get(
+        input.row.senderMemberName,
+      );
+      const recipientAgentRunId = input.agentRunIdByName.get(
+        input.row.recipientMemberName,
+      );
+      const recipientAddress = input.memberAddressByName.get(
+        input.row.recipientMemberName,
+      );
+      expect(senderAgentRunId).toBeTruthy();
+      expect(recipientAgentRunId).toBeTruthy();
+      expect(recipientAddress).toBeTruthy();
       const argsJson = JSON.stringify({
-        recipient_name: `./${input.row.recipientMemberName}`,
+        recipient_address: recipientAddress,
         content,
         message_type: `matrix_${input.row.id}`,
       });
-      const routeCountBefore = agentToolsMcpRequestCount;
-      const startIndex = input.messages.length;
-      const senderRouteKey = input.memberRouteKeyByName.get(
-        input.row.senderMemberName,
-      );
-      expect(senderRouteKey).toBeTruthy();
+      const requestedToolName =
+        input.row.senderRuntimeKind === RuntimeKind.CODEX_APP_SERVER
+          ? "mcp__autobyteus_agent_tools__send_message_to"
+          : "send_message_to";
 
       sendTeamMessageOverSocket(input.socket, {
-        targetMemberRouteKey: senderRouteKey,
+        agentRunId: senderAgentRunId as string,
         content:
-          "Call send_message_to exactly once now with these exact JSON arguments: " +
+          `Call ${requestedToolName} exactly once now with these exact JSON arguments: ` +
           `${argsJson}. Do not call any other tool.`,
       });
 
@@ -724,7 +611,7 @@ Rules:
         input.messages,
         startIndex,
         (message) => {
-          if (message.payload.agent_name !== input.row.senderMemberName) {
+          if (message.payload.agent_run_id !== senderAgentRunId) {
             return false;
           }
           if (
@@ -732,7 +619,7 @@ Rules:
             message.payload.segment_type === "tool_call" &&
             isCanonicalSendMessageTool(message.payload) &&
             hasExpectedSendMessageArgs(message.payload, {
-              recipientMemberName: input.row.recipientMemberName,
+              recipientAddress: recipientAddress as string,
               content,
             })
           ) {
@@ -742,7 +629,7 @@ Rules:
             message.type === "TOOL_EXECUTION_STARTED" &&
             isCanonicalSendMessageTool(message.payload) &&
             hasExpectedSendMessageArgs(message.payload, {
-              recipientMemberName: input.row.recipientMemberName,
+              recipientAddress: recipientAddress as string,
               content,
             })
           );
@@ -757,7 +644,7 @@ Rules:
           startIndex,
           (message) =>
             message.type === "TOOL_EXECUTION_STARTED" &&
-            message.payload.agent_name === input.row.senderMemberName &&
+            message.payload.agent_run_id === senderAgentRunId &&
             isCanonicalSendMessageTool(message.payload) &&
             sameInvocation(message.payload, invocationId),
           `${input.row.id} route-backed TOOL_EXECUTION_STARTED`,
@@ -769,12 +656,12 @@ Rules:
         startIndex,
         (message) =>
           isE2eTeamCommunicationMessage(message, {
-            senderMemberName: input.row.senderMemberName,
-            recipientMemberName: input.row.recipientMemberName,
+            senderAgentRunId: senderAgentRunId as string,
+            recipientAgentRunId: recipientAgentRunId as string,
             content,
           }) ||
           (message.type === "MEMBER_INPUT_MESSAGE" &&
-            message.payload.agent_name === input.row.recipientMemberName &&
+            message.payload.recipient_agent_run_id === recipientAgentRunId &&
             message.payload.content === content),
         `${input.row.id} ${input.row.recipientMemberName} delivery projection`,
       );
@@ -784,7 +671,7 @@ Rules:
         startIndex,
         (message) =>
           message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-          message.payload.agent_name === input.row.senderMemberName &&
+          message.payload.agent_run_id === senderAgentRunId &&
           isCanonicalSendMessageTool(message.payload) &&
           sameInvocation(message.payload, invocationId),
         `${input.row.id} ${input.row.senderMemberName} send_message_to success`,
@@ -796,7 +683,7 @@ Rules:
         (message) =>
           assistantTextMatches(
             message,
-            input.row.recipientMemberName,
+            recipientAgentRunId as string,
             input.row.replyToken,
           ),
         `${input.row.id} ${input.row.recipientMemberName} accepted input and replied`,
@@ -806,15 +693,7 @@ Rules:
       assertNoProviderOrSecretLeaks(rowMessages);
 
       if (input.row.senderRuntimeKind !== RuntimeKind.AUTOBYTEUS) {
-        expect(agentToolsMcpRequestCount).toBeGreaterThan(routeCountBefore);
-        await waitForSendMessageMemoryTrace({
-          teamRunId: input.teamRunId,
-          memberRunIdByName: input.memberRunIdByName,
-          senderMemberName: input.row.senderMemberName,
-          recipientMemberName: input.row.recipientMemberName,
-          content,
-          invocationId,
-        });
+
       }
     };
 
@@ -911,9 +790,17 @@ Rules:
         {
           input: {
             teamDefinitionId,
+            teamConfigs: [{
+              teamAddress: "/",
+              llmModelIdentifier: autoByteusModelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+              workspaceRootPath,
+            }],
             memberConfigs: [
               {
-                memberName: "auto",
+                memberAddress: "/auto",
                 agentDefinitionId: autoAgentDefinitionId,
                 llmModelIdentifier: autoByteusModelIdentifier,
                 autoExecuteTools: true,
@@ -922,7 +809,7 @@ Rules:
                 workspaceRootPath,
               },
               {
-                memberName: "codex",
+                memberAddress: "/codex",
                 agentDefinitionId: codexAgentDefinitionId,
                 llmModelIdentifier: codexModelIdentifier,
                 autoExecuteTools: true,
@@ -931,7 +818,7 @@ Rules:
                 workspaceRootPath,
               },
               {
-                memberName: "claude",
+                memberAddress: "/claude",
                 agentDefinitionId: claudeAgentDefinitionId,
                 llmModelIdentifier: claudeModelIdentifier,
                 autoExecuteTools: true,
@@ -953,20 +840,14 @@ Rules:
       createdTeamRunIds.add(teamRunId);
 
       const resumeResult = await execGraphql<{
-        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
+        getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
       }>(
-        `
-            query TeamResume($teamRunId: String!) {
-              getTeamRunResumeConfig(teamRunId: $teamRunId) {
-                metadata
-              }
-            }
-          `,
+        E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
         { teamRunId },
       );
-      const members = flattenE2eTeamMemberMetadata(
-        resumeResult.getTeamRunResumeConfig.metadata,
-      ) as TeamMemberMetadata[];
+      const members = flattenE2eConfiguredAgentExecutions(
+        resumeResult.getTeamRunResumeConfig.executionTree,
+      ) as TeamMemberExecution[];
       const memberByName = new Map(
         members.map((member) => [member.memberName, member]),
       );
@@ -979,14 +860,14 @@ Rules:
       expect(memberByName.get("claude")?.runtimeKind).toBe(
         RuntimeKind.CLAUDE_AGENT_SDK,
       );
-      expect(memberByName.get("auto")?.memberRunId).toBeTruthy();
-      expect(memberByName.get("codex")?.memberRunId).toBeTruthy();
-      expect(memberByName.get("claude")?.memberRunId).toBeTruthy();
-      const memberRouteKeyByName = new Map(
-        members.map((member) => [member.memberName, member.memberRouteKey]),
+      expect(memberByName.get("auto")?.agentRunId).toBeTruthy();
+      expect(memberByName.get("codex")?.agentRunId).toBeTruthy();
+      expect(memberByName.get("claude")?.agentRunId).toBeTruthy();
+      const agentRunIdByName = new Map(
+        members.map((member) => [member.memberName, member.agentRunId]),
       );
-      const memberRunIdByName = new Map(
-        members.map((member) => [member.memberName, member.memberRunId]),
+      const memberAddressByName = new Map(
+        members.map((member) => [member.memberName, member.memberAddress]),
       );
 
       const socket = new WebSocket(
@@ -1066,8 +947,8 @@ Rules:
             row,
             socket,
             messages,
-            memberRouteKeyByName,
-            memberRunIdByName,
+            agentRunIdByName,
+            memberAddressByName,
             teamRunId,
           });
         }

@@ -1,4 +1,4 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
@@ -487,9 +487,9 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         } as any,
       });
 
-      const releaser = createNoopAgentToolMcpRunSessionReleaser();
+      const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
       const infrastructure = createAgentRunManagerInfrastructureFixture({
-        agentToolMcpRunSessionReleaser: releaser,
+        agentToolMcpRunSessionDeactivator: deactivator,
       });
       const runManager = new AgentRunManager({
         autoByteusBackendFactory: publishBackendFactory,
@@ -498,7 +498,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         activationRegistry: infrastructure.activationRegistry,
         memoryRecorder: infrastructure.memoryRecorder,
         providerInputNormalizer: infrastructure.providerInputNormalizer,
-        agentToolMcpRunSessionReleaser: releaser,
+        agentToolMcpRunSessionDeactivator: deactivator,
       });
       (AgentRunManager as any).instance = runManager;
       agentRunManagerOverridden = true;

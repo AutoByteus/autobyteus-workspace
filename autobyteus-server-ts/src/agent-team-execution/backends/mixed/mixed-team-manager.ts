@@ -24,9 +24,6 @@ import { MixedTaskTeamExecutionRegistry } from "./members/mixed-task-team-execut
 import { MixedTeamMemberConfigResolver } from "./members/mixed-team-member-config-resolver.js";
 import type { TeamAgentPlatformBinding } from "../../domain/team-agent-platform-binding.js";
 import type { FrozenTeamRunTerminationScope } from "../../domain/frozen-team-run-termination-scope.js";
-import type {
-  AgentToolMcpRunSessionReleaser,
-} from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentMemoryLocationService } from "../../../agent-memory/services/agent-memory-location-service.js";
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
@@ -52,7 +49,6 @@ export class MixedTeamManager {
     options: {
       subTeamRunFactory: MixedSubTeamRunFactory;
       agentRunManager?: AgentRunManager;
-      agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
       memoryLocationService?: AgentMemoryLocationService;
       activityInspector?: AgentConversationActivityInspector;
       memberTeamContextBuilder?: MemberTeamContextBuilder;
@@ -69,7 +65,6 @@ export class MixedTeamManager {
       configResolver: new MixedTeamMemberConfigResolver(context),
       subTeamRunFactory: options.subTeamRunFactory,
       agentRunManager: options.agentRunManager,
-      agentToolMcpRunSessionReleaser: options.agentToolMcpRunSessionReleaser,
       memoryLocationService: options.memoryLocationService,
       activityInspector: options.activityInspector,
       memberTeamContextBuilder: options.memberTeamContextBuilder,
@@ -82,7 +77,6 @@ export class MixedTeamManager {
     this.taskAgents = new MixedTaskAgentExecutionRegistry({
       teamContext: context,
       agentRunManager: options.agentRunManager,
-      agentToolMcpRunSessionReleaser: options.agentToolMcpRunSessionReleaser,
       memoryLocationService: options.memoryLocationService,
       activityInspector: options.activityInspector,
       memberTeamContextBuilder: options.memberTeamContextBuilder,

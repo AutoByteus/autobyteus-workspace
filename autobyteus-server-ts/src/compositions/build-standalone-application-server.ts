@@ -9,16 +9,11 @@ import type { StandaloneApplicationSelection } from "../standalone-application-h
 import { registerStandaloneApplicationRest } from "../standalone-application-host/api/register-standalone-application-rest.js";
 import { registerStandaloneApplicationWebSockets } from "../standalone-application-host/api/register-standalone-application-websockets.js";
 import { registerStandaloneApplicationStaticRoutes } from "../standalone-application-host/api/standalone-application-static-routes.js";
-import { registerAgentToolsMcpRoutes } from "../agent-tools/mcp/agent-tools-mcp-routes.js";
-import type {
-  AgentToolsMcpRouteDependencies,
-} from "../agent-tools/mcp/agent-tools-mcp-routes.js";
 
 export const buildStandaloneApplicationServer = async (input: {
   selection: StandaloneApplicationSelection;
   applicationRuntime: ApplicationPlatformRuntime;
   loggingConfig: LoggingConfig;
-  agentToolsRouteDependencies: AgentToolsMcpRouteDependencies;
 }): Promise<FastifyInstance> => {
   const app = fastify({
     logger: getFastifyLoggerOptions(input.loggingConfig),
@@ -45,10 +40,6 @@ export const buildStandaloneApplicationServer = async (input: {
       agentCommunicationService:
         input.applicationRuntime.realtime.agentCommunication,
     });
-    await registerAgentToolsMcpRoutes(
-      app,
-      input.agentToolsRouteDependencies,
-    );
     await registerStandaloneApplicationStaticRoutes(app, input.selection);
     return app;
   } catch (error) {

@@ -1,0 +1,218 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:6482) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-pVcPOq
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-pVcPOq/.env
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-XtnM9c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-workspaceid-e2e-XtnM9c.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Created and registered workspace ID: agent_ws_5139181003774e2c72cf7bf3d76622480a4f2c32af2277126897638f5c31a42b
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-gwv179
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-gwv179.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Created and registered workspace ID: agent_ws_107fd3ddd7d2c8aa8800321df018ea06b31c7029741eae71a05fffb3660ea8d3
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Error creating agent definition: Error: Studio application API services are not configured.
+
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 failed) 2380ms
+     × routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime 560ms
+     × interrupts a pending Claude team turn and accepts a follow-up on the same websocket 453ms
+     × creates a nested team definition and routes live Claude inter-agent messaging between leaf members 412ms
+     × preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId 464ms
+     × serves every team member projection after terminate, restore, and continue in claude team runtime 446ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+GraphQLError: Failed to create agent definition: Error: Studio application API services are not configured.
+ ❯ AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:285:13
+    283|     } catch (error) {
+    284|       logger.error(`Error creating agent definition: ${String(error)}`…
+    285|       throw new Error(`Failed to create agent definition: ${String(err…
+       |             ^
+    286|     }
+    287|   }
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98
+ ❯ execGraphql tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:233:20
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:312:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+GraphQLError: Failed to create agent definition: Error: Studio application API services are not configured.
+ ❯ AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:285:13
+    283|     } catch (error) {
+    284|       logger.error(`Error creating agent definition: ${String(error)}`…
+    285|       throw new Error(`Failed to create agent definition: ${String(err…
+       |             ^
+    286|     }
+    287|   }
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98
+ ❯ execGraphql tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:233:20
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:749:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+GraphQLError: Failed to create agent definition: Error: Studio application API services are not configured.
+ ❯ AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:285:13
+    283|     } catch (error) {
+    284|       logger.error(`Error creating agent definition: ${String(error)}`…
+    285|       throw new Error(`Failed to create agent definition: ${String(err…
+       |             ^
+    286|     }
+    287|   }
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98
+ ❯ execGraphql tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:233:20
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:991:36
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+GraphQLError: Failed to create agent definition: Error: Studio application API services are not configured.
+ ❯ AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:285:13
+    283|     } catch (error) {
+    284|       logger.error(`Error creating agent definition: ${String(error)}`…
+    285|       throw new Error(`Failed to create agent definition: ${String(err…
+       |             ^
+    286|     }
+    287|   }
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98
+ ❯ execGraphql tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:233:20
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:1264:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+GraphQLError: Failed to create agent definition: Error: Studio application API services are not configured.
+ ❯ AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:285:13
+    283|     } catch (error) {
+    284|       logger.error(`Error creating agent definition: ${String(error)}`…
+    285|       throw new Error(`Failed to create agent definition: ${String(err…
+       |             ^
+    286|     }
+    287|   }
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98
+ ❯ execGraphql tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:233:20
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:1546:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  10:02:46
+   Duration  8.53s (transform 4.14s, setup 15ms, import 5.67s, tests 2.38s, environment 0ms)
+

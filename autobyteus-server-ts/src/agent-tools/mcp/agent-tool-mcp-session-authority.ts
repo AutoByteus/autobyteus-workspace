@@ -2,10 +2,10 @@ import type {
   AgentToolMcpDescriptor,
   AgentToolMcpSessionBaseExecutionCapabilities,
   AgentToolMcpSessionOwnerIdentity,
-  RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
+import type { AgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
 
-export type AgentToolMcpSessionIssueInput = Readonly<{
+export type AgentToolMcpRunSessionActivationInput = Readonly<{
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: import("../../agent-communication/domain/agent-run-message-sender.js")
     .AgentRunMessageSenderContext;
@@ -19,25 +19,33 @@ export type AgentToolMcpSessionIssueInput = Readonly<{
     .AgentToolMcpToolExecutionObserver | null;
 }>;
 
-export type IssuedAgentToolMcpSession = Readonly<{
-  sessionId: string;
+export type ActiveAgentToolMcpRunSession = Readonly<{
+  kind: "active";
+  sessionId: AgentToolMcpRunSessionId;
   owner: AgentToolMcpSessionOwnerIdentity;
   descriptor: AgentToolMcpDescriptor;
-  redactedDescriptor: RedactedAgentToolMcpDescriptor;
 }>;
 
-export interface AgentToolMcpSessionIssuer {
-  issueForRun(input: AgentToolMcpSessionIssueInput): IssuedAgentToolMcpSession;
+export type AgentToolMcpRunSessionActivationResult =
+  | ActiveAgentToolMcpRunSession
+  | Readonly<{ kind: "not_exposed" }>;
+
+export interface AgentToolMcpRunSessionActivator {
+  activateForRun(
+    input: AgentToolMcpRunSessionActivationInput,
+  ): AgentToolMcpRunSessionActivationResult;
 }
 
-export interface AgentToolMcpRunSessionReleaser {
-  revokeForRun(runId: string): number;
-  revokeForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number;
+export interface AgentToolMcpRunSessionDeactivator {
+  deactivateForRun(runId: string): number;
 }
+
+export interface AgentToolMcpRunSessionAuthority
+  extends AgentToolMcpRunSessionActivator, AgentToolMcpRunSessionDeactivator {}
 
 export interface ScopedAgentToolMcpSessionAuthorityAssembly {
   readonly scopeIdentity: string;
-  readonly runSessions: AgentToolMcpRunSessionReleaser;
+  readonly runSessions: AgentToolMcpRunSessionDeactivator;
   complete(input: Readonly<{
     executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities;
     assertExecutionCapabilitiesReady: () => void;
@@ -47,8 +55,7 @@ export interface ScopedAgentToolMcpSessionAuthorityAssembly {
 
 export interface ScopedAgentToolMcpSessionAuthority {
   readonly scopeIdentity: string;
-  readonly issuer: AgentToolMcpSessionIssuer;
-  readonly runSessions: AgentToolMcpRunSessionReleaser;
+  readonly runSessions: AgentToolMcpRunSessionAuthority;
   assertReady(): void;
   blockNewSessions(): void;
   close(): void;

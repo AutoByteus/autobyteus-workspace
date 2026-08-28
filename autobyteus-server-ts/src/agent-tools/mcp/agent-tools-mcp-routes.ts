@@ -7,7 +7,6 @@ import {
 } from "./agent-tools-mcp-result-mapper.js";
 import {
   accepts,
-  extractBearerToken,
   handleOptions,
   isJsonContentType,
   isSupportedRouteMethod,
@@ -17,6 +16,7 @@ import {
   sendMethodNotAllowed,
   sendSseCompatibilityResponse,
 } from "./agent-tools-mcp-http-gate.js";
+import type { AgentToolsMcpLocalAccessGate } from "./agent-tools-mcp-local-access.js";
 
 const MCP_ROUTE = "/mcp/agent-tools/:sessionId";
 const SUPPORTED_PROTOCOL_VERSIONS = new Set(["2025-03-26", "2025-06-18", "2025-11-25"]);
@@ -25,6 +25,7 @@ const DEFAULT_PROTOCOL_VERSION = "2025-03-26";
 export type AgentToolsMcpRouteDependencies = Readonly<{
   registry: AgentToolMcpSessionRegistry;
   dispatcher: AgentToolsMcpMethodDispatcher;
+  localAccessGate: AgentToolsMcpLocalAccessGate;
 }>;
 
 type AgentToolsMcpRouteParams = {
@@ -35,9 +36,9 @@ export async function registerAgentToolsMcpRoutes(
   app: FastifyInstance,
   deps: AgentToolsMcpRouteDependencies,
 ): Promise<void> {
-  const { registry, dispatcher } = deps;
+  const { registry, dispatcher, localAccessGate } = deps;
 
-  registerAgentToolsMcpRequestGate(app, registry);
+  registerAgentToolsMcpRequestGate(app, registry, localAccessGate);
   await app.register(async (mcpApp) => {
     registerRawBodyParsers(mcpApp);
 
@@ -74,12 +75,7 @@ const handleAgentToolsMcpRequest = async (input: {
     return handleOptions(request, reply);
   }
 
-  const bearerToken = extractBearerToken(readSingleHeader(request.headers.authorization));
-  if (!bearerToken) {
-    return sendHttpError(reply, 401, "unauthorized", "Unauthorized");
-  }
-
-  const resolvedSession = registry.resolveSession({ sessionId: request.params.sessionId, bearerToken });
+  const resolvedSession = registry.resolveSession(request.params.sessionId);
   if (!resolvedSession.ok) {
     return sendHttpError(reply, 404, "session_unavailable", "Agent tool MCP session is unavailable.");
   }

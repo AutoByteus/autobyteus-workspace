@@ -1,4 +1,4 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
@@ -27,7 +27,6 @@ import { PublishedArtifactProjectionStore } from "../../../src/services/publishe
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
-import { getAgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import {
   BrowserBridgeLiveTestServer,
   buildOpenBrowserToolPrompt,
@@ -237,7 +236,7 @@ const createFactory = (input: {
         toolNames: input.toolNames ?? [],
       }),
     } as never,
-    agentToolMcpSessionIssuer: getAgentToolMcpSessionIssuer(),
+    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
   }).codex;
 };
 
@@ -1136,9 +1135,9 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call publish_artifacts with a JSON argument object, call publish_artifacts exactly once with those exact arguments and do not call any other tool.",
     });
 
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
     const infrastructure = createAgentRunManagerInfrastructureFixture({
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     const runManager = new AgentRunManager({
       autoByteusBackendFactory: unavailableBackendFactory,
@@ -1147,7 +1146,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;

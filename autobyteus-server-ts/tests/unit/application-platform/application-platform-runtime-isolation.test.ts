@@ -30,7 +30,7 @@ describe("application platform runtime isolation", () => {
     await Promise.all(tempRoots.splice(0).map((root) =>
       fs.rm(root, { recursive: true, force: true })));
     for (const mcpHost of mcpHosts.splice(0)) {
-      mcpHost.close();
+      await mcpHost.close();
     }
     vi.restoreAllMocks();
   });
@@ -44,7 +44,14 @@ describe("application platform runtime isolation", () => {
       AgentTeamRunManager.prototype,
       "createTeamRun",
     );
-    const agentToolsMcpHost = createAgentToolsMcpHost();
+    const agentToolsMcpHost = createAgentToolsMcpHost({
+      loggingConfig: {
+        pinoLogLevel: "silent",
+        httpAccessLogMode: "off",
+        includeNoisyHttpAccessRoutes: false,
+        scopedLogLevelOverrides: [],
+      },
+    });
     mcpHosts.push(agentToolsMcpHost);
     const agentProviderFactoryBuilder: AgentProviderFactoryBuilder = {
       createForExecution: vi.fn(() => ({
@@ -137,12 +144,11 @@ describe("application platform runtime isolation", () => {
     const closeAuthority = vi.fn();
     const abortAssembly = vi.fn();
     const runSessions = Object.freeze({
-      revokeForRun: vi.fn(() => 0),
-      revokeForOwner: vi.fn(() => 0),
+      activateForRun: vi.fn(),
+      deactivateForRun: vi.fn(() => 0),
     });
     const authority = {
       scopeIdentity: "application:app-a",
-      issuer: Object.freeze({ issueForRun: vi.fn() }),
       runSessions,
       assertReady: vi.fn(),
       blockNewSessions: vi.fn(),

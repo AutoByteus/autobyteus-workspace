@@ -147,8 +147,7 @@ const buildSession = (input: {
   configuredMcpToolSources: any[];
   owner?: { runId: string; memberRunId?: string };
 }) => ({
-  sessionId: "session",
-  tokenHash: Buffer.from("hash"),
+  sessionId: "agtrun_TmXT--itZTVoGwIbMHhbErbA4_iHiFmkFIs_WLiDXbA",
   owner: input.owner ?? { runId: "run" },
   sender,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -158,7 +157,6 @@ const buildSession = (input: {
   toolRoutes: input.toolRoutes,
   configuredMcpToolSources: input.configuredMcpToolSources,
   createdAt: new Date(),
-  revokedAt: null,
   toolExecutionObserver: null,
 });
 

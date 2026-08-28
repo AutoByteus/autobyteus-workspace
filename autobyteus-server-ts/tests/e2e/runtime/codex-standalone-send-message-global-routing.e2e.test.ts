@@ -5,24 +5,20 @@ import { createRequire } from "node:module";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import fastify, { type FastifyInstance } from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
-import { getAgentToolMcpSessionRegistry } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AGENT_TOOLS_MCP_SERVER_NAME } from "../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../src/agent-communication/services/send-message-to-tool-contract.js";
 import { getCodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-  seedInternalServerBaseUrlFromListenAddress,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const codexBinaryReady =
   spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
@@ -43,7 +39,6 @@ type WsMessage = {
 
 type AgentToolsMcpAppServerConfig = {
   url: string;
-  http_headers: { Authorization: string };
   enabled_tools: string[];
   startup_timeout_sec: number;
 };
@@ -86,21 +81,18 @@ const resolveAgentToolsMcpConfig = (
   const config = isRecord(mcpServers?.[AGENT_TOOLS_MCP_SERVER_NAME])
     ? mcpServers[AGENT_TOOLS_MCP_SERVER_NAME]
     : null;
-  const httpHeaders = isRecord(config?.http_headers)
-    ? config.http_headers
-    : null;
   if (
     !config ||
     typeof config.url !== "string" ||
-    !httpHeaders ||
-    typeof httpHeaders.Authorization !== "string" ||
-    !Array.isArray(config.enabled_tools)
+    !Array.isArray(config.enabled_tools) ||
+    "http_headers" in config
   ) {
-    throw new Error("Standalone Codex run did not materialize a usable Agent Tools MCP config.");
+    throw new Error(
+      "Standalone Codex run did not materialize a headerless Agent Tools MCP config.",
+    );
   }
   return {
     url: config.url,
-    http_headers: { Authorization: httpHeaders.Authorization },
     enabled_tools: config.enabled_tools.filter(
       (toolName): toolName is string => typeof toolName === "string",
     ),
@@ -123,7 +115,6 @@ const redactAgentToolsMcpConfig = (
   return {
     serverName: AGENT_TOOLS_MCP_SERVER_NAME,
     url: url.toString(),
-    http_headers: { Authorization: "Bearer <redacted>" },
     enabled_tools: [...config.enabled_tools],
     startup_timeout_sec: config.startup_timeout_sec,
   };
@@ -163,13 +154,12 @@ const waitForAgentToolsMcpStartup = async (input: {
   );
 };
 
-const fetchAuthenticatedSessionToolNames = async (
+const fetchHeaderlessSessionToolNames = async (
   config: AgentToolsMcpAppServerConfig,
 ): Promise<string[]> => {
   const response = await fetch(config.url, {
     method: "POST",
     headers: {
-      Authorization: config.http_headers.Authorization,
       Accept: "application/json, text/event-stream",
       "Content-Type": "application/json",
       "MCP-Protocol-Version": "2025-03-26",
@@ -184,7 +174,7 @@ const fetchAuthenticatedSessionToolNames = async (
   const payload = (await response.json()) as unknown;
   if (!response.ok || !isRecord(payload) || !isRecord(payload.result)) {
     throw new Error(
-      `Authenticated Agent Tools MCP tools/list failed: status=${response.status} payload=${JSON.stringify(payload)}`,
+      `Headerless Agent Tools MCP tools/list failed: status=${response.status} payload=${JSON.stringify(payload)}`,
     );
   }
   const tools = Array.isArray(payload.result.tools) ? payload.result.tools : [];
@@ -332,7 +322,6 @@ describeCodexStandaloneDirect(
         "utf-8",
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
-      schema = await buildGraphqlSchema();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
       const graphqlPath = require.resolve("graphql", {
@@ -341,19 +330,10 @@ describeCodexStandaloneDirect(
       const graphqlModule = await import(graphqlPath);
       graphql = graphqlModule.graphql as typeof graphqlFn;
 
-      runtimeServerApp = fastify();
-      await registerAgentToolsMcpRoutes(runtimeServerApp);
-      await runtimeServerApp.register(websocket);
-      await registerAgentWebsocket(runtimeServerApp);
-      const address = await runtimeServerApp.listen({
-        port: 0,
-        host: "127.0.0.1",
-      });
-      seedInternalServerBaseUrlFromListenAddress({
-        requestedHost: "127.0.0.1",
-        listenAddress: runtimeServerApp.server.address(),
-      });
-      runtimeServerUrl = new URL(address);
+      const started = await startStudioE2eRuntimeServer();
+      runtimeServerApp = started.fastify;
+      runtimeServerUrl = started.mainUrl;
+      schema = await buildGraphqlSchema();
     });
 
     afterAll(async () => {
@@ -632,31 +612,12 @@ describeCodexStandaloneDirect(
       );
 
       const sessionId = resolveSessionIdFromMcpUrl(agentToolsMcpConfig.url);
-      const bearerToken = agentToolsMcpConfig.http_headers.Authorization.replace(
-        /^Bearer\s+/i,
-        "",
-      );
-      const resolvedSession = getAgentToolMcpSessionRegistry().resolveSession({
-        sessionId,
-        bearerToken,
-      });
-      expect(resolvedSession.ok, "same descriptor authenticates its session").toBe(
-        true,
-      );
-      if (!resolvedSession.ok) {
-        throw new Error(
-          `Same-thread Agent Tools MCP session authentication failed: ${resolvedSession.reason}`,
-        );
-      }
-      expect(resolvedSession.session.owner.runId).toBe(senderRunId);
-      expect(resolvedSession.session.enabledTools).toContain(
-        SEND_MESSAGE_TO_TOOL_NAME,
-      );
+      expect(sessionId).toMatch(/^agtrun_[A-Za-z0-9_-]{43}$/);
 
-      const authenticatedSessionToolNames =
-        await fetchAuthenticatedSessionToolNames(agentToolsMcpConfig);
-      const authenticatedToolsListSequence = ++evidenceSequence;
-      expect(authenticatedSessionToolNames).toContain(SEND_MESSAGE_TO_TOOL_NAME);
+      const headerlessSessionToolNames =
+        await fetchHeaderlessSessionToolNames(agentToolsMcpConfig);
+      const headerlessToolsListSequence = ++evidenceSequence;
+      expect(headerlessSessionToolNames).toContain(SEND_MESSAGE_TO_TOOL_NAME);
 
       const terminalMcpStartup = await waitForAgentToolsMcpStartup({
         observations: mcpStartupObservations,
@@ -706,11 +667,11 @@ describeCodexStandaloneDirect(
             modelIdentifier,
             redactedDescriptorAndConfig:
               redactAgentToolsMcpConfig(agentToolsMcpConfig),
-            authenticatedSession: {
-              ownerRunId: resolvedSession.session.owner.runId,
+            activeHeaderlessSession: {
+              ownerRunId: senderRunId,
               sessionId: "<redacted>",
-              enabledTools: [...resolvedSession.session.enabledTools],
-              toolsList: authenticatedSessionToolNames,
+              enabledTools: [...agentToolsMcpConfig.enabled_tools],
+              toolsList: headerlessSessionToolNames,
             },
             appServer: {
               startupObservations: mcpStartupObservations,
@@ -722,7 +683,7 @@ describeCodexStandaloneDirect(
             },
             ordering: {
               createAgentRunReturnedSequence,
-              authenticatedToolsListSequence,
+              headerlessToolsListSequence,
               readySequence: terminalMcpStartup.sequence,
               appServerStatusListSequence,
               firstAppServerToolCallSequence,

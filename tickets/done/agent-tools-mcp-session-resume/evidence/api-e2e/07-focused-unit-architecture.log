@@ -1,0 +1,718 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts (13 tests | 2 failed) 10233ms
+     ✓ keeps each supported root on one exact workspace, builder, Host, and authority family 3ms
+     ✓ closes retired symbols and provider-specific construction below supported roots 295ms
+     ✓ keeps activation provider-local and deactivation at the AgentRun resource owner 1ms
+     ✓ keeps the application kernel private to its builder and owning scope 71ms
+     × fails closed on the exact direct-constructor test sets and narrow fixture property 1307ms
+     × keeps AgentTeamRunManager creation explicit and process access lookup-only 1169ms
+     ✓ binds exactly two production Mixed Team factories to complete root families 53ms
+     ✓ closes complete Agent manager and AgentRun construction to exact roots and fixtures  3178ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  1173ms
+     ✓ carries one explicit task-identity pair through every Team and task constructor  1812ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  1115ms
+     ✓ creates one frozen context path value per host and shares it across both roots 51ms
+     ✓ rejects synthetic omission, null, undefined, casts, ambient getters, and broad substitutes 3ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 7408ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  598ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1027ms
+     ✓ accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread  359ms
+     ✓ guards the exact SR-011 host definition and public/general run authority  495ms
+     ✓ guards the exact SR-013 root-bound task construction inventory  4645ms
+stderr | tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not map token-usage telemetry into AGENT_STATUS
+Run 'run-1': Codex token-usage update arrived without a turn id. Skipping persistence.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (60 tests) 33ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts (37 tests) 126ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > closes the usable query without iteration when post-handoff persistence fails
+Claude runtime turn failed for run 'run-1': Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:319:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:436:7)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Claude runtime turn failed for run 'run-1': Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:496:13)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:476:17)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:514:37)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a turn when Claude reports a conflicting provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:74:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:462:41)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a successful-looking turn that never confirms the provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:514:37)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (25 tests) 54ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (32 tests) 11ms
+stderr | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > rejects a completed reasoning snapshot without exact turn identity
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-1',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+
+stderr | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts > Codex reasoning block conversion > preserves for in-place or no-effect event: thread tokens
+Run 'run-1': Codex token-usage update for turn 'turn-1' did not include usable token counts.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts (52 tests) 29ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > builds and listens only after readable identity status SUCCEEDED
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (7 tests) 57ms
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-team-execution/mixed-team-manager.test.ts (5 tests) 64ms
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts > AgentToolsMcpHost > owns one one-shot loopback listener and publishes only ready descriptors
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts (1 test) 50ms
+stdout | tests/unit/application-platform/application-execution-scope.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > owns one complete graph-local kernel and freezes every outward capability
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects configured Team members depth-first, excludes task nodes, and deep-freezes
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects Agent launch identity without leaking the service result
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > maps restore-aware Agent and Team input without changing target or errors
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > quiesces issue admission and closes run graph before authority exactly once
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > continues authority close after shutdown failure and aggregates both failures
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > delegates construction abort exactly once after kernel transfer
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-execution-scope.test.ts (7 tests) 22ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+Published codex_app_server agent run 'run-codex'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+Published codex_app_server agent run 'run-codex_app_server'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+Published claude_agent_sdk agent run 'run-claude_agent_sdk'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+Unexpected failure while preparing agent run 'run-attach-cleanup' for runtime 'codex_app_server'. AgentRunResourceAttachmentError: Failed to attach resources for agent run 'run-attach-cleanup'.
+    at AgentRunResourceManager.attach (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts:69:13)
+    at AgentRunActivationRegistry.markPrepared (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts:122:26)
+    at AgentRunManager.prepareCandidateOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts:325:31)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  runId: 'run-attach-cleanup',
+  [errors]: [
+    Error: artifact attachment failed
+        at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:336:21
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1209:10)
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:37
+        at Traces.$ (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/traces.CCmnQaNT.js:142:27)
+        at trace (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+        at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:12),
+    Error: attached session deactivation failed
+        at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:337:21
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+        at new Promise (<anonymous>)
+        at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1209:10)
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:37
+        at Traces.$ (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/traces.CCmnQaNT.js:142:27)
+        at trace (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+        at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:12)
+  ]
+}
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+Unexpected failure while preparing agent run 'run-post-activation' for runtime 'codex_app_server'. Error: create failed after activation
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:371:31
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1026:60
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/traces.CCmnQaNT.js:142:27)
+    at trace (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+Unexpected failure while preparing agent run 'run-post-activation' for runtime 'codex_app_server'. Error: restore failed after activation
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:371:31
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1026:60
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/traces.CCmnQaNT.js:142:27)
+    at trace (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+Unexpected failure while preparing agent run 'run-cleanup-failure' for runtime 'codex_app_server'. Error: provider failed after activation
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:395:21
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/traces.CCmnQaNT.js:142:27)
+    at trace (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1653:12)
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+Published codex_app_server agent run 'run-active'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+Published codex_app_server agent run 'run-with-mcp'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+Published codex_app_server agent run 'run-cancel'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+Published codex_app_server agent run 'run-retry-finish'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+Published codex_app_server agent run 'run-coalesced'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches accepted-but-active failure without removing or retrying
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches accepted-but-active failure without removing or retrying
+Published codex_app_server agent run 'run-remained-active'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches cleanup failure after exact removal and never releases twice
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > caches cleanup failure after exact removal and never releases twice
+Published codex_app_server agent run 'run-cleanup-terminal'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+Published codex_app_server agent run 'run-not_found'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+Published codex_app_server agent run 'run-identity_mismatch'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+Published codex_app_server agent run 'run-exact-instance'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+Published codex_app_server agent run 'run-stop-all'.
+
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (24 tests) 29ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (26 tests) 18ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts (12 tests) 15ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts (8 tests) 12ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts (7 tests) 11ms
+(node:39173) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts (2 tests) 22ms
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:39174) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.767Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+Application package root path does not exist or is not a directory: /Users/normy/2026-07-18-hackathon-worktrees/evidence-desk-latest-platform-refresh/applications/evidence-desk/dist/importable-package
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.773Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases the agent manager when exclusive team-manager initialization fails
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.774Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.774Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > fails on an early process run service and releases constructed managers
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.775Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.775Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > rejects every omitted, null, or undefined required input before manager mutation
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.776Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.776Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.776Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.776Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.777Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.779Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.779Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.779Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.779Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.779Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:37:44.779Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts (4 tests) 18ms
+stdout | tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > unwinds the exact owned authority at K6
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > unwinds the exact owned authority at K7
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > transfers one complete frozen K8 kernel with fixed idempotent construction abort
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts (9 tests) 16ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (11 tests) 12ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (8 tests) 12ms
+stdout | tests/unit/agent-execution/agent-provider-factory-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-provider-factory-builder.test.ts (22 tests) 10ms
+stdout | tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts (5 tests) 6ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog > resolves configured supported tools across families with browser and team availability gates
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > keeps built-in adapter names authoritative when a configured MCP tool collides
+Configured MCP tool 'send_message_to' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > resolves configured MCP calls through a registry-backed adapter
+Tool 'FakeConfiguredMcpTool' does not define an argument schema but received arguments: {"sql":"select 1"}.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts (8 tests) 9ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (7 tests) 9ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts (5 tests) 6ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts (5 tests) 7ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts (5 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts (9 tests) 6ms
+stdout | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-local-access.test.ts (16 tests) 8ms
+ ✓ tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts (3 tests) 5ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts > MixedAgentMemberHandle managed Agent Tools cleanup > keeps the deterministic session on cancel, removes it before accepted stop, and permits fresh reactivation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts > MixedAgentMemberHandle managed Agent Tools cleanup > keeps the deterministic session on cancel, removes it before accepted stop, and permits fresh reactivation
+Published claude_agent_sdk agent run 'worker-run-1'.
+
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts (1 test) 8ms
+stdout | tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts (6 tests) 7ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts (4 tests) 11ms
+ ✓ tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts (5 tests) 6ms
+ ✓ tests/unit/agent-tools/mcp/mcp-effective-tool-result-projector.test.ts (10 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts (6 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts (5 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts (3 tests) 7ms
+ ✓ tests/unit/agent-execution/agent-run-resource-manager.test.ts (3 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.test.ts (6 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts (5 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts (2 tests) 7ms
+ ✓ tests/unit/agent-execution/backends/codex/codex-workspace-skill-materializer.test.ts (2 tests) 7ms
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-configured-tool-gating.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-config.test.ts (3 tests) 2ms
+ ❯ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts (2 tests | 1 failed) 7ms
+     × returns only the unified Agent Tools MCP HTTP server for migrated tools 6ms
+     ✓ returns null when no Agent Tools MCP descriptor has enabled tools 1ms
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-run-session-id.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-process-diagnostics.test.ts (2 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > fails closed on the exact direct-constructor test sets and narrow fixture property
+AssertionError: expected [ …(9) ] to deeply equal [ …(8) ]
+
+- Expected
++ Received
+
+@@ -3,8 +3,9 @@
+    "autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts",
+    "autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts",
+    "autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts",
+    "autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts",
+    "autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
++   "autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts",
+  ]
+
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts:538:56
+    536|       }
+    537|     }
+    538|     expect([...actual.get("AgentRunManager")!].sort()).toEqual([...AGE…
+       |                                                        ^
+    539|     expect([...actual.get("MixedTeamRunBackendFactory")!].sort())
+    540|       .toEqual([...MIXED_BACKEND_FACTORY_TESTS].sort());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps AgentTeamRunManager creation explicit and process access lookup-only
+AssertionError: expected [ …(3) ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+    "autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts",
++   "autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts",
+  ]
+
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts:568:8
+    566|     }
+    567|     expect([...actualConstruction].sort())
+    568|       .toEqual([...AGENT_TEAM_MANAGER_CONSTRUCTION_TESTS].sort());
+       |        ^
+    569|     expect([...actualInitialization].sort())
+    570|       .toEqual([...AGENT_TEAM_MANAGER_INITIALIZATION_TESTS].sort());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts > buildClaudeSessionMcpServers > returns only the unified Agent Tools MCP HTTP server for migrated tools
+AssertionError: expected { autobyteus_agent_tools: { …(3) } } to deeply equal { autobyteus_agent_tools: { …(4) } }
+
+- Expected
++ Received
+
+  {
+    "autobyteus_agent_tools": {
+      "alwaysLoad": true,
+-     "headers": {
+-       "Authorization": "Bearer fake-token",
+-     },
+      "type": "http",
+      "url": "http://127.0.0.1:3000/mcp/agent-tools/session-1",
+    },
+  }
+
+ ❯ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts:21:20
+     19|     });
+     20| 
+     21|     expect(result).toEqual({
+       |                    ^
+     22|       autobyteus_agent_tools: {
+     23|         type: "http",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 51 passed (53)
+      Tests  3 failed | 534 passed (537)
+   Start at  07:37:10
+   Duration  47.38s (transform 5.03s, setup 283ms, import 22.62s, tests 18.43s, environment 4ms)
+

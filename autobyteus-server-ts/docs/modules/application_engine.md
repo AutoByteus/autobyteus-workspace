@@ -108,7 +108,7 @@ managers but starts no new run. Business launch requests create new runs;
 post-listen recovery may restore recorded runs. Runtime shutdown is ordered so
 no new work can enter while owned capabilities are being dismantled:
 
-1. block new application Agent Tools session issue;
+1. block new application Agent Tools run-session activation;
 2. stop execution-event dispatch and close application communication, backend
    gateway/socket, and notification ingress;
 3. stop artifact-delivery intake and drain every accepted command through

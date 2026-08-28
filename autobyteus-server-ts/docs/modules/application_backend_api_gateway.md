@@ -62,12 +62,15 @@ resets that override so the bundle-owned package baseline becomes effective.
 
 ### Internal Agent Tools route is separate
 
-Both `buildStudioServer` and `buildStandaloneApplicationServer` register
-`/mcp/agent-tools/:sessionId` from the same process-owned
-`AgentToolsMcpHost`. Each application runtime issues sessions through its
-`ScopedAgentToolMcpSessionAuthority`; authenticated publication uses only that
-scope's `PublishedArtifactPublisher`. Studio's `/mcp/gateway` remains a
-separate external-client boundary and is not registered by standalone.
+Studio and the standalone application host each start one process-owned
+`AgentToolsMcpHost` on a dedicated ephemeral `127.0.0.1` listener. The main
+Studio/standalone Fastify server does not register
+`/mcp/agent-tools/:sessionId`. Each application runtime activates tokenless
+run-sessions through its `ScopedAgentToolMcpSessionAuthority`; local peer,
+`Host`, and optional `Origin` admission protects the dedicated listener, while
+publication still uses only that scope's `PublishedArtifactPublisher`.
+Studio's `/mcp/gateway` remains a separate main-server external-client boundary
+and is not registered by standalone.
 
 ### WebSocket notifications
 

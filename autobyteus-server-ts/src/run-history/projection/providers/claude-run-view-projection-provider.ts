@@ -1,7 +1,4 @@
-import {
-  getClaudeSessionManager,
-  type ClaudeSessionManager,
-} from "../../../agent-execution/backends/claude/session/claude-session-manager.js";
+import type { ClaudeSessionManager } from "../../../agent-execution/backends/claude/session/claude-session-manager.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { HistoricalReplayEvent } from "../historical-replay-event-types.js";
 import type {
@@ -139,7 +136,7 @@ export class ClaudeRunViewProjectionProvider implements RunProjectionProvider {
 
   private readonly sessionManager: ClaudeSessionManager;
 
-  constructor(sessionManager: ClaudeSessionManager = getClaudeSessionManager()) {
+  constructor(sessionManager: ClaudeSessionManager) {
     this.sessionManager = sessionManager;
   }
 

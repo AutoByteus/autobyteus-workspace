@@ -17,11 +17,8 @@ import {
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
-import {
-  getAgentToolMcpSessionIssuer,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type {
-  AgentToolMcpSessionIssuer,
+  AgentToolMcpRunSessionActivator,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   getClaudeWorkspaceSkillMaterializer,
@@ -38,7 +35,7 @@ export class ClaudeSessionManager {
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
   private readonly activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
   private readonly sdkClient: ClaudeSdkClient;
-  private readonly agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+  private readonly agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
   private readonly toolingCoordinator = new ClaudeSessionToolUseCoordinator(
     new Map(),
     new Map(),
@@ -47,15 +44,18 @@ export class ClaudeSessionManager {
   private readonly sessionCleanup: ClaudeSessionCleanup;
 
   constructor(
+    agentToolMcpRunSessions: AgentToolMcpRunSessionActivator,
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer = getAgentToolMcpSessionIssuer(),
     workspaceSkillMaterializer: WorkspaceSkillMaterializer =
       getClaudeWorkspaceSkillMaterializer(),
   ) {
+    if (!agentToolMcpRunSessions) {
+      throw new Error("Claude Agent Tools MCP run-session activator is required.");
+    }
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
-    this.agentToolMcpSessionIssuer = agentToolMcpSessionIssuer;
+    this.agentToolMcpRunSessions = agentToolMcpRunSessions;
     this.sessionCleanup = new ClaudeSessionCleanup(
       this.toolingCoordinator,
       workspaceSkillMaterializer,
@@ -172,18 +172,9 @@ export class ClaudeSessionManager {
       sdkClient: this.sdkClient,
       activeQueriesByRunId: this.activeQueriesByRunId,
       toolingCoordinator: this.toolingCoordinator,
-      agentToolMcpSessionIssuer: this.agentToolMcpSessionIssuer,
+      agentToolMcpRunSessions: this.agentToolMcpRunSessions,
       isRunSessionActive: () => this.sessions.has(runId),
       terminateRunSession: () => this.terminateRun(runId),
     };
   }
 }
-
-let cachedClaudeSessionManager: ClaudeSessionManager | null = null;
-
-export const getClaudeSessionManager = (): ClaudeSessionManager => {
-  if (!cachedClaudeSessionManager) {
-    cachedClaudeSessionManager = new ClaudeSessionManager();
-  }
-  return cachedClaudeSessionManager;
-};

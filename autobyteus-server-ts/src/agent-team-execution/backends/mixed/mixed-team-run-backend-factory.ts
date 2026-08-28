@@ -24,9 +24,6 @@ import {
   requireMemberTaskRootResolver,
   type MemberTaskRootResolver,
 } from "../../task-delegation/member-task-root-resolver.js";
-import type {
-  AgentToolMcpRunSessionReleaser,
-} from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 export type MixedTeamRunCallbacks = Readonly<{
   taskRootResolver: MemberTaskRootResolver;
@@ -39,11 +36,9 @@ export type MixedTeamManagerConstructionInput = Readonly<{
   context: TeamRunContext<MixedTeamRunContext>;
   subTeamRunFactory: MixedSubTeamRunFactory;
   callbacks: MixedTeamRunCallbacks;
-  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
 }>;
 
 export type MixedTeamRunBackendFactoryOptions = Readonly<{
-  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
   createTeamManager: (
     input: MixedTeamManagerConstructionInput,
   ) => MixedTeamManager;
@@ -69,9 +64,6 @@ const requireOptions = (
 ): MixedTeamRunBackendFactoryOptions => {
   if (
     !options
-    || !options.agentToolMcpRunSessionReleaser
-    || typeof options.agentToolMcpRunSessionReleaser.revokeForRun !== "function"
-    || typeof options.agentToolMcpRunSessionReleaser.revokeForOwner !== "function"
     || typeof options.createTeamManager !== "function"
   ) {
     throw new Error("Complete MixedTeamRunBackendFactory options are required.");
@@ -132,8 +124,6 @@ export class MixedTeamRunBackendFactory {
         context,
         subTeamRunFactory,
         callbacks: input.callbacks,
-        agentToolMcpRunSessionReleaser:
-          this.options.agentToolMcpRunSessionReleaser,
       }));
     subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (child) => this.buildTeamRunContext(child),

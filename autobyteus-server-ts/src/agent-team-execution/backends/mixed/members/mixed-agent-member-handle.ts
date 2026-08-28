@@ -15,9 +15,6 @@ import {
   getAgentConversationActivityInspector,
   type AgentConversationActivityInspector,
 } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
-import type {
-  AgentToolMcpRunSessionReleaser,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import type { ApplicationExecutionContext } from "../../../../application-orchestration/domain/models.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
@@ -71,7 +68,6 @@ export class MixedAgentMemberHandle {
     config: TeamRunAgentNode;
     activationMode: MixedConfiguredMemberActivationMode;
     agentRunManager?: AgentRunManager;
-    agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
     memoryLocationService?: AgentMemoryLocationService;
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
@@ -184,7 +180,9 @@ export class MixedAgentMemberHandle {
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
     const run = this.agentRun;
-    const prepared = run ? await run.prepareTermination() : null;
+    const prepared = run
+      ? await this.manager.prepareAgentRunTermination(run)
+      : null;
     let state: "prepared" | "cancelled" | "committed" = "prepared";
     let committed: ReturnType<PreparedLocalExecutionTermination["commit"]> | null = null;
     return Object.freeze({
@@ -216,8 +214,6 @@ export class MixedAgentMemberHandle {
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    this.options.agentToolMcpRunSessionReleaser
-      .revokeForRun(this.context.agentRunId);
     this.agentRun = null;
     this.overlay.clear();
   }
