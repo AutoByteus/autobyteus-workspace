@@ -12,6 +12,7 @@
 | DR-006 | User explicitly requested that delivery read the README and build Electron again for hands-on testing | DR-005 — integrated, built, verification-ready | Pass; README-native Linux command reconfirmed and same integrated HEAD rebuilt successfully; replacement AppImage verified and retained for testing | `delivery-evidence/dr-006/`, `delivery-integration-evidence.log`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `docs-sync-report.md` |
 | DR-007 | User requested that delivery open the rebuilt app for interactive testing | DR-006 — test artifact ready | Pass / live test in progress; AppImage launched in X11 session `:99`, visible AutoByteus window focused, embedded server ready, process session deliberately retained | `delivery-evidence/dr-007/`, `delivery-integration-evidence.log`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 | DR-008 | User declared the task done and requested finalization plus a new release | DR-007 — live interactive test in progress | Pass; user verification accepted, app closed gracefully, target unchanged after refresh, ticket archived, next patch v1.4.62 authorized | `delivery-evidence/dr-007/`, `delivery-evidence/dr-008/`, archived ticket, all final handoff/release artifacts |
+| DR-009 | Completion of the authorized repository finalization and v1.4.62 rollout | DR-008 — finalization/release authorized | Pass; ticket branch and personal finalized, v1.4.62 published, 5/5 workflows succeeded, 21 assets verified; cleanup pending | `delivery-evidence/dr-009/`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -137,3 +138,19 @@
 - Docs-sync impact: `No additional durable product-doc impact`; archive and release metadata were updated, while the DR-005 durable docs remain authoritative.
 - Remaining risks: External provider nondeterminism, the pre-existing TS6059 supplemental typecheck issue, superseded-oracle API-REV-005 history, and unchanged API-BROAD-001 history remain explicitly disclosed.
 - Rollback posture: If post-merge/release behavior regresses, preserve evidence and revert the coherent target merge/release rather than restoring v4/v6 compatibility, bearer sessions, main-listener routing, or a process-global application-tool registry.
+
+
+### DR-009 — Repository finalized and v1.4.62 rollout verified
+
+- Delivery round and trigger: Completion of the user-authorized DR-008 repository finalization and new-version release sequence.
+- Prior authoritative result: `DR-008 Pass — user verification accepted, post-acceptance target unchanged, ticket archived, and v1.4.62 authorized.`
+- Repository finalization: Final ticket commit `744fcc2c1ec1b1af774c39aa420be17b03832c05` was pushed to `origin/codex/application-owned-mcp-capability`. Local `personal` was fast-forwarded to refreshed `origin/personal`, then merge commit `29bee41a21215089e89eadc7ffe8deaf187ef24e` was pushed to `origin/personal`.
+- Merge hygiene: One pre-existing trailing space in `application-agent-tool-payload-validator.ts` was removed while amending the local merge commit. This was whitespace-only and changed no executable behavior. Non-ticket source/docs passed `git diff --check`; raw API/E2E capture and preserved diff evidence were intentionally not normalized. Repository artifact hygiene passed.
+- Release result: The documented helper created and pushed release commit/tag target `027da92cbececb7d944c5a593157cfb59e54efe0` for `v1.4.62`, updated web/gateway versions and the managed messaging manifest, and synchronized archived release notes. No duplicate manual dispatch was issued.
+- Rollout result: Android APK Release `33177833046`, Desktop Release `33177832996`, iOS App Store Connect Release `33177832991`, Release Messaging Gateway `33177833007`, and Server Docker Release `33177833021` all completed successfully.
+- Publication verification: The public non-draft, non-prerelease release is `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.62`. All 21 expected assets report uploaded, covering Android, Linux ARM64/x64, macOS ARM64/x64, Windows, update metadata, messaging-gateway artifacts, and the release manifest.
+- Current authoritative result: `Pass — repository finalized and v1.4.62 rollout verified`. Only post-finalization worktree/branch cleanup remains.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/application-owned-mcp-capability/delivery-evidence/dr-009/`.
+- Docs-sync impact: `No additional durable product-doc impact`; release metadata and final handoff records were updated.
+- Remaining risks: Pre-release residuals remain disclosed. Workflow success demonstrates publication pipeline completion, not independent installation on every consumer device or App Store review beyond the successful upload path.
+- Next action: Commit/push this rollout record, then remove the dedicated ticket worktree and merged local/remote ticket branches, prune worktree metadata, and record DR-010 cleanup.

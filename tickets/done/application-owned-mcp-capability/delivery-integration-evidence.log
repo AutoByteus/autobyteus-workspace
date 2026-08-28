@@ -289,3 +289,20 @@ Result: PASS; origin/personal remained 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b.
 - Ticket archived to tickets/done/application-owned-mcp-capability before final ticket commit.
 - Version preflight: web/gateway 1.4.61; v1.4.62 absent locally and remotely; next patch selected as 1.4.62.
 - Release method: pnpm release 1.4.62 -- --release-notes tickets/done/application-owned-mcp-capability/release-notes.md after ticket merge/push.
+
+Repository finalization and v1.4.62 rollout (DR-009)
+Date: 2026-08-28 UTC
+- Final ticket commit/push: 744fcc2c1ec1b1af774c39aa420be17b03832c05 on origin/codex/application-owned-mcp-capability.
+- Local personal fast-forwarded to origin/personal 64cb4e952; target remained unchanged after acceptance.
+- Merge commit/push: 29bee41a21215089e89eadc7ffe8deaf187ef24e to origin/personal.
+- Merge hygiene: removed one trailing space in application-agent-tool-payload-validator.ts; non-ticket source/docs diff check and repository artifact hygiene passed. Raw ticket capture/diff evidence retained original whitespace.
+$ pnpm release 1.4.62 -- --release-notes tickets/done/application-owned-mcp-capability/release-notes.md
+Result: PASS
+- Release commit/tag target: 027da92cbececb7d944c5a593157cfb59e54efe0 / v1.4.62.
+- Web/gateway versions and managed messaging manifest: 1.4.62 / v1.4.62.
+- Fresh tag push was the only trigger; no manual-dispatch duplicate.
+- Tag workflows: 5/5 success (Android 33177833046; Desktop 33177832996; iOS 33177832991; Messaging Gateway 33177833007; Server Docker 33177833021).
+- GitHub release: public, non-draft, non-prerelease, 21/21 assets uploaded.
+- URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.62
+- Durable evidence: tickets/done/application-owned-mcp-capability/delivery-evidence/dr-009/
+- Cleanup held until this rollout record is committed and pushed.
