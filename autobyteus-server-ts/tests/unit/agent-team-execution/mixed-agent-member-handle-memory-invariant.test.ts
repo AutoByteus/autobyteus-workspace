@@ -1,4 +1,3 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
@@ -120,7 +119,6 @@ const createHandle = (input: {
     config: input.node,
     activationMode: "fresh",
     agentRunManager: { prepareNewAgentRun: input.prepareNewAgentRun } as never,
-    agentToolMcpRunSessionReleaser: createNoopAgentToolMcpRunSessionReleaser(),
     memoryLocationService,
     activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
     memberTeamContextBuilder: {

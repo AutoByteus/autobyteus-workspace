@@ -1,4 +1,4 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
@@ -27,10 +27,6 @@ import { PublishedArtifactProjectionStore } from "../../../src/services/publishe
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
-import {
-  AgentToolMcpSessionService,
-  getAgentToolMcpSessionIssuer,
-} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import {
   BrowserBridgeLiveTestServer,
   buildOpenBrowserToolPrompt,
@@ -163,20 +159,11 @@ const writeBackendEventLog = async (
 const fetchCodexModelIdentifier = async (
   clientManager: CodexAppServerClientManager,
   cwd: string,
-  requiredModelIdentifier?: string,
 ): Promise<string> => {
   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
   const availableModelIdentifiers = models
     .map((model) => model.model_identifier)
     .filter((identifier): identifier is string => identifier.length > 0);
-  if (requiredModelIdentifier) {
-    if (!availableModelIdentifiers.includes(requiredModelIdentifier)) {
-      throw new Error(
-        `Codex model catalog did not return required model ${requiredModelIdentifier}. Available models: ${availableModelIdentifiers.join(", ")}`,
-      );
-    }
-    return requiredModelIdentifier;
-  }
   const preferredOrder = [
     process.env.CODEX_BACKEND_MODEL?.trim(),
     "gpt-5.3-codex",
@@ -204,21 +191,6 @@ const createFactory = (input: {
   toolNames?: string[];
 }) => {
   const inert = Object.freeze({}) as never;
-  const agentToolMcpSessionIssuer = input.toolNames?.length
-    ? getAgentToolMcpSessionIssuer()
-    : (() => {
-        const sessionService = new AgentToolMcpSessionService({
-          getInternalBaseUrl: () => "http://127.0.0.1:1",
-          executionCapabilities: {
-            publishedArtifactPublisher: { publishManyForRun: async () => [] },
-            applicationAgentTools: null,
-          },
-        });
-        return Object.freeze({
-          issueForRun: (sessionInput: Parameters<typeof sessionService.createAgentToolMcpSession>[0]) =>
-            sessionService.createAgentToolMcpSession(sessionInput),
-        });
-      })();
   const builder = createAgentProviderFactoryBuilder({
     workspaceManager: getWorkspaceManager(),
     skillService: {
@@ -258,14 +230,14 @@ const createFactory = (input: {
   return builder.createForExecution({
     agentDefinitionService: {
       getAgentDefinitionById: async () => ({
-        name: "Live Codex integration agent",
         instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
         toolNames: input.toolNames ?? [],
       }),
     } as never,
-    agentToolMcpSessionIssuer,
+    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    applicationAgentTools: null,
   }).codex;
 };
 
@@ -346,10 +318,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
         workspaceId: "workspace-codex-live-events",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -358,18 +328,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await waitForStartupReady(thread!.startup.waitForReady);
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           "Without using tools, reason carefully about whether 29 multiplied by 31 is greater than 850, then answer with only YES or NO.",
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       await waitForEvent(
         events,
@@ -449,10 +420,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
         workspaceId: "workspace-codex-approve",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -466,18 +435,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await fsPromises.writeFile(sourcePath, `${expectedToken}\n`, "utf8");
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           `Your next action must be a single terminal tool invocation that requests approval.\nRun this exact command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not answer in natural language before requesting approval. Do not simulate execution. If approval is denied, briefly acknowledge the denial and stop.`,
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       const approvalRequested = await waitForEvent(
         events,
@@ -561,10 +531,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-fail",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -574,18 +542,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
 
     const missingPath = path.join(workspaceRoot, `missing-${randomUUID()}.txt`);
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           `Your next action must be a single terminal tool invocation.\nRun this exact command once:\ncat '${escapeForSingleQuotedShell(missingPath)}'\nDo not ask for approval. Do not answer in natural language before executing the command. Do not simulate failure. If the command fails, briefly report the failure and stop.`,
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       const started = await waitForEvent(
         events,
@@ -649,10 +618,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
         workspaceId: "workspace-codex-deny",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -665,18 +632,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await fsPromises.writeFile(sourcePath, `CODEX_BACKEND_DENY_${randomUUID()}\n`, "utf8");
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       const approvalRequested = await waitForEvent(
         events,
@@ -747,10 +715,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-auto-exec",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -764,18 +730,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await fsPromises.writeFile(sourcePath, `${expectedToken}\n`, "utf8");
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not ask for approval.`,
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       await waitForEvent(
         events,
@@ -838,10 +805,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-multi-reasoning",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "xhigh" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -855,18 +820,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const secondToken = `SECOND_${randomUUID().replace(/-/g, "_")}`;
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           `Think carefully before the first tool call. Then use the terminal tool exactly twice and do not combine the commands. Do not use edit_file. Do not ask for approval. Do not simulate execution. First, think carefully about step 1 and then run exactly this command once: printf '${firstToken}\\n' > '${escapeForSingleQuotedShell(firstPath)}'. After that command completes, think carefully again about step 2 as a separate decision and then run exactly this second command once: printf '${secondToken}\\n' > '${escapeForSingleQuotedShell(secondPath)}'. Do not decide both commands in a single planning step. Only after both commands finish, reply DONE.`,
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       await waitFor(
         () =>
@@ -931,11 +897,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexModelIdentifier(
-      clientManager,
-      workspaceRoot,
-      "gpt-5.6-luna",
-    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-edit-file";
     const factory = createFactory({
       clientManager,
@@ -951,10 +913,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-edit-file",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -966,18 +926,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const targetPath = path.join(workspaceRoot, fileName);
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
-          `Use Luna's built-in apply_patch operation and do not use run_bash. Create a Python file named ${fileName} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`,
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
+          `Use the edit_file tool and do not use run_bash. Create a Python file named ${fileName} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`,
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       const editSegmentStart = await waitForEvent(
         events,
@@ -999,6 +960,13 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          resolveInvocationId(event.payload) === invocationId &&
+          event.payload.tool_name === "edit_file",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_LOG &&
           resolveInvocationId(event.payload) === invocationId &&
           event.payload.tool_name === "edit_file",
       );
@@ -1069,10 +1037,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-browser-live",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -1083,21 +1049,22 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
     const browserTitle = `Browser ${randomUUID()}`;
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           buildOpenBrowserToolPrompt({
             url: browserUrl,
             title: browserTitle,
           }),
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       const browserSuccessEvent = await waitForEvent(
         events,
@@ -1169,9 +1136,9 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call publish_artifacts with a JSON argument object, call publish_artifacts exactly once with those exact arguments and do not call any other tool.",
     });
 
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
     const infrastructure = createAgentRunManagerInfrastructureFixture({
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     const runManager = new AgentRunManager({
       autoByteusBackendFactory: unavailableBackendFactory,
@@ -1180,7 +1147,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;
@@ -1324,12 +1291,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await browserBridgeServer.start();
     Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
 
-    const runId = `run-codex-browser-surface-${randomUUID()}`;
     const factory = createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
-      runId,
+      runId: `run-codex-browser-surface-${randomUUID()}`,
       toolNames: [
         "open_tab",
         "navigate_to",
@@ -1352,10 +1318,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-browser-surface-live",
-        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -1367,22 +1331,23 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
     const browserTitle = `Browser ${randomUUID()}`;
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
-      events.push(...batch);
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
     });
 
     try {
-      const sendResult = await backend.dispatchUserInput({
-        kind: "start_turn",
-        message: new AgentInputUserMessage(
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
           buildBrowserToolSurfacePrompt({
             openUrl,
             navigateUrl,
             title: browserTitle,
           }),
         ),
-      });
-      expect(sendResult.forwarded).toBe(true);
+      );
+      expect(sendResult.accepted).toBe(true);
 
       await waitForEvent(
         events,

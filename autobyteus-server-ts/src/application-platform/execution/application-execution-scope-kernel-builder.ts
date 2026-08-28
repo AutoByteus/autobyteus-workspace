@@ -122,7 +122,7 @@ export const buildApplicationExecutionScopeKernel = (
     const providerFactories = input.agentProviderFactoryBuilder
       .createForExecution({
         agentDefinitionService: input.agentDefinitionService,
-        agentToolMcpSessionIssuer: authority.issuer,
+        agentToolMcpRunSessions: authority.runSessions,
         applicationAgentTools: input.applicationAgentTools,
       });
     const agentRunManager = new AgentRunManager({
@@ -132,7 +132,7 @@ export const buildApplicationExecutionScopeKernel = (
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer,
-      agentToolMcpRunSessionReleaser: authority.runSessions,
+      agentToolMcpRunSessionDeactivator: authority.runSessions,
     });
     const metadataService = new AgentRunMetadataService(input.memoryDir);
     const historyCatalogService = new AgentRunHistoryCatalogService(
@@ -161,14 +161,11 @@ export const buildApplicationExecutionScopeKernel = (
       taskExecutionIdentity,
       modelConfigValidator: input.modelConfigValidator,
       mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-        agentToolMcpRunSessionReleaser: authority.runSessions,
         createTeamManager: (managerInput) =>
           new MixedTeamManager(managerInput.context, {
             subTeamRunFactory: managerInput.subTeamRunFactory,
             taskRootResolver: managerInput.callbacks.taskRootResolver,
             agentRunManager,
-            agentToolMcpRunSessionReleaser:
-              managerInput.agentToolMcpRunSessionReleaser,
             memoryLocationService,
             activityInspector,
             memberTeamContextBuilder,
@@ -324,6 +321,7 @@ const assertBuildInput = (input: ApplicationExecutionScopeBuildInput): void => {
     "bindingReader",
     "artifactDeliverySink",
     "modelConfigValidator",
+    "applicationAgentTools",
   ] as const) {
     if (input[field] == null) {
       throw new Error(`Application execution scope ${field} is required.`);

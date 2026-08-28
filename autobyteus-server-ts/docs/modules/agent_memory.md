@@ -396,8 +396,9 @@ and family services/dispatchers must not write raw traces directly. Raw traces
 use canonical tool names such as `send_message_to`, `generate_image`,
 `delegate_task`, and `publish_artifacts`, preserve the provider invocation id
 as the tool-call id, and store the normalized application-facing result payload
-without provider/server-qualified tool names, MCP session ids, or bearer/header
-descriptor details. For source-confirmed MCP terminal results, the stored
+without provider/server-qualified tool names or internal MCP run-session
+routing/configuration details. The current Agent Tools descriptor is tokenless
+and headerless. For source-confirmed MCP terminal results, the stored
 result/error follows the same application-facing effective-result projection
 used by live Activity: non-null `structuredContent`, parsed single JSON text,
 plain text, joined multi-text, sanitized rich `{ items: [...] }`, empty `null`,

@@ -55,7 +55,7 @@ export class ClaudeSession {
       input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
     this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
     this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
-      input.dependencies.agentToolMcpSessionIssuer,
+      input.dependencies.agentToolMcpRunSessions,
     );
   }
 

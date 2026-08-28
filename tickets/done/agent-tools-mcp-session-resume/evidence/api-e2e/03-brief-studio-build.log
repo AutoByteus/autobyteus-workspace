@@ -1,0 +1,22 @@
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+AgentFactory (Singleton) initialized.
+(node:31555) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Build failed with 1 error:
+frontend-src/app.js:1:33: ERROR: Could not resolve "@autobyteus/application-frontend-sdk"
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+AgentFactory (Singleton) initialized.
+(node:32226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:32:01.847Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T05:32:01.847Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-28T05:32:01.848Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/applications/brief-studio/dist/importable-package/applications/brief-studio

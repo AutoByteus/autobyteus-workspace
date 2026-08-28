@@ -22,10 +22,9 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
-import { getAgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import type { ClaudeSdkStartQueryTurnOptions } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
-import type { AgentToolMcpSessionIssueInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpRunSessionActivationInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -149,9 +148,9 @@ const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u,
 
 const createExplicitSessionManager = (): ClaudeSessionManager =>
   new ClaudeSessionManager(
+    { activateForRun: () => ({ kind: "not_exposed" as const }) },
     getWorkspaceManager(),
     getClaudeSdkClient(),
-    getAgentToolMcpSessionIssuer(),
     getClaudeWorkspaceSkillMaterializer(),
   );
 
@@ -176,8 +175,8 @@ const bootstrapClaudeSession = async (
   events.length = 0;
 };
 
-describe("ClaudeSessionManager explicit Agent Tools issuer", () => {
-  it("materializes an issued provider-neutral descriptor into the Claude query config", async () => {
+describe("ClaudeSessionManager explicit Agent Tools activator", () => {
+  it("materializes an activated headerless provider-neutral descriptor into the Claude query config", async () => {
     const startQueryTurn = vi.fn(async (options: ClaudeSdkStartQueryTurnOptions) => ({
       async *[Symbol.asyncIterator]() {
         yield {
@@ -189,32 +188,31 @@ describe("ClaudeSessionManager explicit Agent Tools issuer", () => {
       interrupt: vi.fn(async () => undefined),
       close: vi.fn(() => undefined),
     }));
-    const issuer = {
-      issueForRun: vi.fn((input: AgentToolMcpSessionIssueInput) => ({
-        sessionId: "claude-manager-integration",
+    const activator = {
+      activateForRun: vi.fn((input: AgentToolMcpRunSessionActivationInput) => ({
+        kind: "active" as const,
+        sessionId: "claude-manager-integration" as never,
         owner: input.owner,
         descriptor: {
           name: "autobyteus_agent_tools",
-          transport: "streamable_http",
+          transport: "streamable_http" as const,
           serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/claude-manager-integration",
-          headers: { Authorization: "Bearer integration-only" },
           enabledTools: ["send_message_to"],
         },
-        redactedDescriptor: {} as never,
       })),
     };
     const manager = new ClaudeSessionManager(
+      activator,
       getWorkspaceManager(),
       {
         startQueryTurn,
         closeQuery: vi.fn((query) => query?.close()),
       } as never,
-      issuer as never,
       {
         cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined),
       } as never,
     );
-    const runId = `claude-manager-issuer-${randomUUID()}`;
+    const runId = `claude-manager-activator-${randomUUID()}`;
     const session = await manager.createRunSession(createRunContext({
       runId,
       modelIdentifier: "haiku",
@@ -225,16 +223,15 @@ describe("ClaudeSessionManager explicit Agent Tools issuer", () => {
     const events: ClaudeSessionEvent[] = [];
     session.subscribeRuntimeEvents((event) => events.push(event));
 
-    await session.startTurn(new AgentInputUserMessage("exercise explicit issuer"));
+    await session.startTurn(new AgentInputUserMessage("exercise explicit activator"));
     await waitForTurnSettlement(events);
 
-    expect(issuer.issueForRun).toHaveBeenCalledTimes(1);
+    expect(activator.activateForRun).toHaveBeenCalledTimes(1);
     expect(startQueryTurn).toHaveBeenCalledWith(expect.objectContaining({
       mcpServers: {
         autobyteus_agent_tools: {
           type: "http",
           url: "http://127.0.0.1:3000/mcp/agent-tools/claude-manager-integration",
-          headers: { Authorization: "Bearer integration-only" },
           alwaysLoad: true,
         },
       },

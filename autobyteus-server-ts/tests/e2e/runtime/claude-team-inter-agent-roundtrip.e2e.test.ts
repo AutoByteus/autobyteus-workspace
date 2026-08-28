@@ -5,22 +5,23 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify, { type FastifyInstance } from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-  seedInternalServerBaseUrlFromListenAddress,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import {
+  E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
+} from "../helpers/team-run-graphql-documents.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -54,33 +55,31 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberRouteKey?: string | null;
+    agentRunId: string;
     contextFilePaths?: string[];
     imageUrls?: string[];
   },
 ): void => {
   sendE2eSendMessageCommand(socket, {
-        content: input.content,
-        target_member_route_key: input.targetMemberRouteKey ?? null,
-        context_file_paths: input.contextFilePaths ?? [],
-        image_urls: input.imageUrls ?? [],
-      });
+    content: input.content,
+    agent_run_id: input.agentRunId,
+    context_file_paths: input.contextFilePaths ?? [],
+    image_urls: input.imageUrls ?? [],
+  });
 };
 
 const sendInterruptGenerationOverSocket = (
   socket: WebSocket,
   input: {
-    targetMemberRouteKey: string;
-    targetMemberRunId?: string | null;
+    agentRunId: string;
   },
 ): void => {
   socket.send(
     JSON.stringify({
       type: "INTERRUPT_GENERATION",
       payload: {
-        command_id: `client_interrupt_${input.targetMemberRouteKey.replace(/[^a-zA-Z0-9_-]/g, "_")}`,
-        target_member_route_key: input.targetMemberRouteKey,
-        ...(input.targetMemberRunId ? { target_member_run_id: input.targetMemberRunId } : {}),
+        command_id: `client_interrupt_${input.agentRunId.replace(/[^a-zA-Z0-9_-]/g, "_")}`,
+        agent_run_id: input.agentRunId,
       },
     }),
   );
@@ -139,6 +138,8 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let testDataDir: string | null = null;
+  let runtimeServerApp: FastifyInstance | null = null;
+  let runtimeServerUrl: URL;
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
@@ -154,15 +155,22 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+    const started = await startStudioE2eRuntimeServer();
+    runtimeServerApp = started.fastify;
+    runtimeServerUrl = started.mainUrl;
+    schema = await buildGraphqlSchema();
   });
 
   afterAll(async () => {
+    if (runtimeServerApp) {
+      await runtimeServerApp.close();
+      runtimeServerApp = null;
+    }
     for (const root of createdWorkspaceRoots) {
       await rm(root, { recursive: true, force: true });
     }
@@ -246,18 +254,12 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
     streamApp: FastifyInstance;
     streamUrl: URL;
   }> => {
-    const streamApp = fastify();
-    await registerAgentToolsMcpRoutes(streamApp);
-    await streamApp.register(websocket);
-    await registerAgentWebsocket(streamApp);
-    const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-    seedInternalServerBaseUrlFromListenAddress({
-      requestedHost: "127.0.0.1",
-      listenAddress: streamApp.server.address(),
-    });
+    if (!runtimeServerApp) {
+      throw new Error("Claude runtime test server is not available.");
+    }
     return {
-      streamApp,
-      streamUrl: new URL(streamAddress),
+      streamApp: runtimeServerApp,
+      streamUrl: runtimeServerUrl,
     };
   };
 
@@ -396,9 +398,17 @@ Rules:
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId,
+          teamConfigs: [{
+            teamAddress: "/",
+            llmModelIdentifier: modelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: "claude_agent_sdk",
+            workspaceRootPath,
+          }],
           memberConfigs: [
             {
-              memberName: "ping",
+              memberAddress: "/ping",
               agentDefinitionId: pingAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
@@ -407,7 +417,7 @@ Rules:
               workspaceRootPath,
             },
             {
-              memberName: "pong",
+              memberAddress: "/pong",
               agentDefinitionId: pongAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
@@ -424,52 +434,27 @@ Rules:
       const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
       createdTeamRunIds.add(teamRunId);
 
-      const teamResumeQuery = `
-        query TeamResume($teamRunId: String!) {
-          getTeamRunResumeConfig(teamRunId: $teamRunId) {
-            metadata
-          }
-        }
-      `;
-      const memoryViewQuery = `
-        query TeamMemberMemory($teamRunId: String!, $memberRunId: String!) {
-          getTeamMemberRunMemoryView(
-            teamRunId: $teamRunId,
-            memberRunId: $memberRunId,
-            includeWorkingContext: false,
-            includeEpisodic: false,
-            includeSemantic: false,
-            includeRawTraces: true,
-            rawTraceLimit: 200
-          ) {
-            rawTraces {
-              traceType
-              sourceEvent
-              toolName
-              toolCallId
-              toolArgs
-              toolResult
-              toolError
-            }
-          }
-        }
-      `;
       const resumeResult = await execGraphql<{
-        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
-      }>(teamResumeQuery, { teamRunId });
-      const members = flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata);
+        getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+      }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+      const members = flattenE2eConfiguredAgentExecutions(
+        resumeResult.getTeamRunResumeConfig.executionTree,
+      );
       const memberRunIdByName = new Map(
         members.map((member) => [
           member.memberName,
-          member.memberRunId,
+          member.agentRunId,
         ]),
+      );
+      const memberAddressByName = new Map(
+        members.map((member) => [member.memberName, member.memberAddress]),
       );
       expect(memberRunIdByName.get("ping")).toBeTruthy();
       expect(memberRunIdByName.get("pong")).toBeTruthy();
 
       const pingToken = `ROUNDTRIP_PING:${unique}`;
       const pongToken = `ROUNDTRIP_PONG:${unique}`;
-      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
+      const { streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -498,18 +483,20 @@ Rules:
       });
 
       const sendRelayInstruction = async (input: {
-        targetMemberRouteKey: "ping" | "pong";
+        senderMemberName: "ping" | "pong";
         recipientName: "ping" | "pong";
         messageType: string;
         content: string;
       }): Promise<void> => {
+        const recipientAddress = memberAddressByName.get(input.recipientName);
+        expect(recipientAddress).toBeTruthy();
         const argsJson = JSON.stringify({
-          recipient_name: `./${input.recipientName}`,
+          recipient_address: recipientAddress,
           content: input.content,
           message_type: input.messageType,
         });
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberRouteKey: input.targetMemberRouteKey,
+          agentRunId: memberRunIdByName.get(input.senderMemberName) as string,
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,
@@ -534,75 +521,6 @@ Rules:
         throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
       };
 
-      const waitForSendMessageMemoryTrace = async (input: {
-        senderMemberName: "ping" | "pong";
-        recipientMemberName: "ping" | "pong";
-        content: string;
-        invocationId: string;
-      }): Promise<void> => {
-        const memberRunId = memberRunIdByName.get(input.senderMemberName);
-        expect(memberRunId).toBeTruthy();
-        let lastRawTraces: Array<{
-          traceType: string;
-          sourceEvent: string | null;
-          toolName: string | null;
-          toolCallId: string | null;
-          toolArgs: Record<string, unknown> | null;
-          toolResult: unknown | null;
-          toolError: string | null;
-        }> = [];
-        const deadline = Date.now() + 120_000;
-        while (Date.now() < deadline) {
-          const memoryResult = await execGraphql<{
-            getTeamMemberRunMemoryView: {
-              rawTraces: Array<{
-                traceType: string;
-                sourceEvent: string | null;
-                toolName: string | null;
-                toolCallId: string | null;
-                toolArgs: Record<string, unknown> | null;
-                toolResult: unknown | null;
-                toolError: string | null;
-              }> | null;
-            };
-          }>(memoryViewQuery, { teamRunId, memberRunId });
-          lastRawTraces = memoryResult.getTeamMemberRunMemoryView.rawTraces ?? [];
-          const matchingToolCalls = lastRawTraces.filter(
-            (trace) =>
-              trace.traceType === "tool_call" &&
-              trace.toolName === "send_message_to" &&
-              trace.toolCallId === input.invocationId,
-          );
-          const matchingToolResults = lastRawTraces.filter(
-            (trace) =>
-              trace.traceType === "tool_result" &&
-              trace.toolName === "send_message_to" &&
-              trace.toolCallId === input.invocationId,
-          );
-          if (matchingToolCalls.length === 1 && matchingToolResults.length === 1) {
-            expect(matchingToolCalls[0]?.sourceEvent).toBe("TOOL_EXECUTION_STARTED");
-            expect(matchingToolCalls[0]?.toolArgs).toMatchObject({
-              recipient_name: `./${input.recipientMemberName}`,
-              content: input.content,
-            });
-            expect(matchingToolResults[0]?.sourceEvent).toBe("TOOL_EXECUTION_SUCCEEDED");
-            expect(matchingToolResults[0]?.toolError).toBeNull();
-            expect(matchingToolResults[0]?.toolResult).toMatchObject([
-              {
-                type: "text",
-                text: expect.stringContaining(`Delivered message to ./${input.recipientMemberName}`),
-              },
-            ]);
-            return;
-          }
-          await wait(1_000);
-        }
-        throw new Error(
-          `Timed out waiting for ${input.senderMemberName} send_message_to memory traces for invocation ${input.invocationId}. ` +
-            `Observed traces: ${JSON.stringify(lastRawTraces)}`,
-        );
-      };
-
       const waitForSendMessageLifecycleAndReceipt = async (input: {
         senderMemberName: "ping" | "pong";
         recipientMemberName: "ping" | "pong";
@@ -615,7 +533,10 @@ Rules:
           if (message.type !== "SEGMENT_START") {
             return false;
           }
-          if (message.payload.agent_name !== input.senderMemberName) {
+          if (
+            message.payload.agent_run_id !==
+            memberRunIdByName.get(input.senderMemberName)
+          ) {
             return false;
           }
           if (message.payload.segment_type !== "tool_call") {
@@ -637,7 +558,8 @@ Rules:
               ? (metadata.arguments as Record<string, unknown>)
               : {};
           return (
-            args.recipient_name === `./${input.recipientMemberName}` &&
+            args.recipient_address ===
+              memberAddressByName.get(input.recipientMemberName) &&
             args.content === input.content
           );
         };
@@ -650,7 +572,10 @@ Rules:
           if (message.type !== eventType) {
             return false;
           }
-          if (message.payload.agent_name !== input.senderMemberName) {
+          if (
+            message.payload.agent_run_id !==
+            memberRunIdByName.get(input.senderMemberName)
+          ) {
             return false;
           }
           if (message.payload.invocation_id !== invocationId) {
@@ -667,28 +592,33 @@ Rules:
           (message) => isMatchingSendMessageSegmentStart(message),
           `${input.senderMemberName} send_message_to SEGMENT_START`,
         );
-
-        const firstMatchingSegmentStart = streamMessages.find((message) =>
+        const matchingSegmentStart = streamMessages.find((message) =>
           isMatchingSendMessageSegmentStart(message),
         );
-        const invocationId = firstMatchingSegmentStart?.payload.id;
+        const invocationId = matchingSegmentStart?.payload.segment_id;
         expect(typeof invocationId).toBe("string");
 
-        await waitForTeamStreamEvent(
+        await waitForTeamStreamMessageAfter(
+          streamMessages,
+          0,
           (message) =>
-            isMatchingSendMessageLifecycle(
-              message,
-              "TOOL_EXECUTION_STARTED",
-              invocationId as string,
-            ),
+            message.type === "TOOL_EXECUTION_STARTED" &&
+            message.payload.agent_run_id ===
+              memberRunIdByName.get(input.senderMemberName) &&
+            message.payload.tool_name === "send_message_to" &&
+            message.payload.invocation_id === invocationId,
           `${input.senderMemberName} send_message_to TOOL_EXECUTION_STARTED`,
         );
 
         await waitForTeamStreamEvent(
           (message) =>
             isE2eTeamCommunicationMessage(message, {
-              senderMemberName: input.senderMemberName,
-              recipientMemberName: input.recipientMemberName,
+              senderAgentRunId: memberRunIdByName.get(
+                input.senderMemberName,
+              ) as string,
+              recipientAgentRunId: memberRunIdByName.get(
+                input.recipientMemberName,
+              ) as string,
               content: input.content,
             }),
           `${input.recipientMemberName} TEAM_COMMUNICATION_MESSAGE`,
@@ -707,13 +637,15 @@ Rules:
         await waitForTeamStreamEvent(
           (message) =>
             message.type === "TURN_COMPLETED" &&
-            message.payload.agent_name === input.recipientMemberName,
+            message.payload.agent_run_id ===
+              memberRunIdByName.get(input.recipientMemberName),
           `${input.recipientMemberName} response TURN_COMPLETED`,
         );
         await waitForTeamStreamEvent(
           (message) =>
             message.type === "AGENT_STATUS" &&
-            message.payload.agent_name === input.recipientMemberName &&
+            message.payload.agent_run_id ===
+              memberRunIdByName.get(input.recipientMemberName) &&
             message.payload.status === "idle",
           `${input.recipientMemberName} AGENT_STATUS IDLE after delivery`,
         );
@@ -749,19 +681,22 @@ Rules:
         expect(sendMessageFailedEvents).toHaveLength(0);
 
         expect(sendMessageStartedEvents[0]?.payload.arguments).toMatchObject({
-          recipient_name: `./${input.recipientMemberName}`,
+          recipient_address: memberAddressByName.get(input.recipientMemberName),
           content: input.content,
         });
         expect(sendMessageSucceededEvents[0]?.payload.arguments).toMatchObject({
-          recipient_name: `./${input.recipientMemberName}`,
+          recipient_address: memberAddressByName.get(input.recipientMemberName),
           content: input.content,
         });
-        expect(sendMessageSucceededEvents[0]?.payload.result).toMatchObject([
-          {
-            type: "text",
-            text: expect.stringContaining(`Delivered message to ./${input.recipientMemberName}`),
-          },
-        ]);
+        const serializedResult = sendMessageSucceededEvents[0]?.payload.result;
+        expect(typeof serializedResult).toBe("string");
+        expect(JSON.parse(serializedResult as string)).toMatchObject({
+          accepted: true,
+          code: "DELIVERED",
+          message: expect.stringContaining(
+            `Delivered message to ${memberAddressByName.get(input.recipientMemberName)}`,
+          ),
+        });
 
         const rawProviderSendMessageEvents = streamMessages.filter((message) => {
           const metadata =
@@ -781,15 +716,12 @@ Rules:
         });
         expect(rawProviderSendMessageEvents).toHaveLength(0);
 
-        await waitForSendMessageMemoryTrace({
-          ...input,
-          invocationId: invocationId as string,
-        });
+
       };
 
       try {
         await sendRelayInstruction({
-          targetMemberRouteKey: "ping",
+          senderMemberName: "ping",
           recipientName: "pong",
           content: `PING-TO-PONG ${pingToken}`,
           messageType: "roundtrip_ping",
@@ -801,7 +733,7 @@ Rules:
         });
 
         await sendRelayInstruction({
-          targetMemberRouteKey: "pong",
+          senderMemberName: "pong",
           recipientName: "ping",
           content: `PONG-TO-PING ${pongToken}`,
           messageType: "roundtrip_pong",
@@ -813,7 +745,6 @@ Rules:
         });
       } finally {
         teamSocket.close();
-        await streamApp.close();
       }
     },
     180_000,
@@ -900,9 +831,17 @@ Rules:
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId,
+          teamConfigs: [{
+            teamAddress: "/",
+            llmModelIdentifier: modelIdentifier,
+            autoExecuteTools: false,
+            skillAccessMode: "NONE",
+            runtimeKind: "claude_agent_sdk",
+            workspaceRootPath,
+          }],
           memberConfigs: [
             {
-              memberName: "worker",
+              memberAddress: "/worker",
               agentDefinitionId: workerAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: false,
@@ -919,7 +858,15 @@ Rules:
       const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
       createdTeamRunIds.add(teamRunId);
 
-      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
+      const workerResume = await execGraphql<{
+        getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+      }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+      const workerRunId = flattenE2eConfiguredAgentExecutions(
+        workerResume.getTeamRunResumeConfig.executionTree,
+      ).find((member) => member.memberName === "worker")?.agentRunId;
+      expect(workerRunId).toBeTruthy();
+
+      const { streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -936,7 +883,7 @@ Rules:
         messages.some(
           (message) =>
             ["SEGMENT_CONTENT", "SEGMENT_END", "ASSISTANT_COMPLETE"].includes(message.type) &&
-            message.payload.agent_name === "worker" &&
+            message.payload.agent_run_id === workerRunId &&
             JSON.stringify(message.payload).includes(followUpToken),
         );
       const isForbiddenRuntimeFailure = (message: TeamStreamMessage): boolean => {
@@ -951,7 +898,7 @@ Rules:
       try {
         const toolTurnStartIndex = streamMessages.length;
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberRouteKey: "worker",
+          agentRunId: workerRunId as string,
           content:
             `Create the file ${approvalTargetRelativePath} with exactly this content: ${approvalContent}. ` +
             "Use the write_file tool exactly once, use a relative path, and do not answer with plain text.",
@@ -962,19 +909,14 @@ Rules:
           toolTurnStartIndex,
           (message) =>
             message.type === "TOOL_APPROVAL_REQUESTED" &&
-            message.payload.agent_name === "worker",
+            message.payload.agent_run_id === workerRunId,
           "worker TOOL_APPROVAL_REQUESTED before interrupt",
         );
-        const workerRunId =
-          typeof approvalRequested.payload.agent_id === "string" &&
-          approvalRequested.payload.agent_id.trim().length > 0
-            ? approvalRequested.payload.agent_id.trim()
-            : undefined;
+        expect(approvalRequested.payload.agent_run_id).toBe(workerRunId);
 
         const interruptStartIndex = streamMessages.length;
         sendInterruptGenerationOverSocket(teamSocket, {
-          targetMemberRouteKey: "worker",
-          targetMemberRunId: workerRunId,
+          agentRunId: workerRunId as string,
         });
 
         await waitForTeamStreamMessageAfter(
@@ -982,7 +924,7 @@ Rules:
           interruptStartIndex,
           (message) =>
             message.type === "TURN_INTERRUPTED" &&
-            message.payload.agent_name === "worker",
+            message.payload.agent_run_id === workerRunId,
           "worker interrupted TURN_INTERRUPTED projection",
         );
         await waitForTeamStreamMessageAfter(
@@ -990,7 +932,7 @@ Rules:
           interruptStartIndex,
           (message) =>
             message.type === "AGENT_STATUS" &&
-            message.payload.agent_name === "worker" &&
+            message.payload.agent_run_id === workerRunId &&
             message.payload.status === "idle",
           "worker AGENT_STATUS IDLE after interrupt",
         );
@@ -1000,13 +942,13 @@ Rules:
           interruptedWindow.some(
             (message) =>
               message.type === "ASSISTANT_COMPLETE" &&
-              message.payload.agent_name === "worker",
+              message.payload.agent_run_id === workerRunId,
           ),
         ).toBe(false);
 
         const followUpStartIndex = streamMessages.length;
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberRouteKey: "worker",
+          agentRunId: workerRunId as string,
           content: `Reply with exactly ${followUpToken} and nothing else. Do not use tools.`,
         });
 
@@ -1015,7 +957,7 @@ Rules:
           followUpStartIndex,
           (message) =>
             message.type === "TURN_STARTED" &&
-            message.payload.agent_name === "worker",
+            message.payload.agent_run_id === workerRunId,
           "worker follow-up TURN_STARTED",
         );
         const followUpDeadline = Date.now() + 120_000;
@@ -1031,7 +973,7 @@ Rules:
           followUpStartIndex,
           (message) =>
             message.type === "AGENT_STATUS" &&
-            message.payload.agent_name === "worker" &&
+            message.payload.agent_run_id === workerRunId &&
             message.payload.status === "idle",
           "worker AGENT_STATUS IDLE after follow-up",
         );
@@ -1041,7 +983,6 @@ Rules:
         expect(forbiddenFailuresAfterInterrupt).toHaveLength(0);
       } finally {
         teamSocket.close();
-        await streamApp.close();
       }
     },
     240_000,
@@ -1172,9 +1113,27 @@ Rules:
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId: rootTeamDefinitionId,
+          teamConfigs: [
+            {
+              teamAddress: "/",
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+            {
+              teamAddress: "/research_subteam",
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+          ],
           memberConfigs: [
             {
-              memberName: "parent",
+              memberAddress: "/parent",
               agentDefinitionId: parentAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
@@ -1183,7 +1142,7 @@ Rules:
               workspaceRootPath,
             },
             {
-              memberName: "specialist",
+              memberAddress: "/research_subteam/specialist",
               agentDefinitionId: specialistAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
@@ -1201,7 +1160,25 @@ Rules:
       createdTeamRunIds.add(teamRunId);
 
       const relayToken = `NESTED-RELAY:${unique}`;
-      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
+      const nestedResume = await execGraphql<{
+        getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+      }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+      const nestedExecutions = flattenE2eConfiguredAgentExecutions(
+        nestedResume.getTeamRunResumeConfig.executionTree,
+      );
+      const nestedRunIdByName = new Map(
+        nestedExecutions.map((member) => [member.memberName, member.agentRunId]),
+      );
+      const nestedAddressByName = new Map(
+        nestedExecutions.map((member) => [member.memberName, member.memberAddress]),
+      );
+      const parentRunId = nestedRunIdByName.get("parent");
+      const specialistRunId = nestedRunIdByName.get("specialist");
+      const specialistAddress = nestedAddressByName.get("specialist");
+      expect(parentRunId).toBeTruthy();
+      expect(specialistRunId).toBeTruthy();
+      expect(specialistAddress).toBeTruthy();
+      const { streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -1249,12 +1226,12 @@ Rules:
 
       try {
         const argsJson = JSON.stringify({
-          recipient_name: "/research_subteam/specialist",
+          recipient_address: specialistAddress,
           content: `Nested relay ${relayToken}`,
           message_type: "nested_roundtrip",
         });
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberRouteKey: "parent",
+          agentRunId: parentRunId as string,
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,
@@ -1263,7 +1240,7 @@ Rules:
         await waitForTeamStreamEvent(
           (message) =>
             message.type === "SEGMENT_START" &&
-            message.payload.agent_name === "parent" &&
+            message.payload.agent_run_id === parentRunId &&
             message.payload.segment_type === "tool_call" &&
             typeof message.payload.metadata === "object" &&
             message.payload.metadata !== null &&
@@ -1275,8 +1252,8 @@ Rules:
         await waitForTeamStreamEvent(
           (message) =>
             isE2eTeamCommunicationMessage(message, {
-              senderMemberName: "parent",
-              recipientMemberName: "specialist",
+              senderAgentRunId: parentRunId as string,
+              recipientAgentRunId: specialistRunId as string,
               content: `Nested relay ${relayToken}`,
             }),
           "specialist TEAM_COMMUNICATION_MESSAGE receipt",
@@ -1285,12 +1262,11 @@ Rules:
         await waitForTeamStreamEvent(
           (message) =>
             message.type === "SEGMENT_END" &&
-            message.payload.agent_name === "specialist",
+            message.payload.agent_run_id === specialistRunId,
           "specialist response SEGMENT_END",
         );
       } finally {
         teamSocket.close();
-        await streamApp.close();
       }
     },
     180_000,
@@ -1385,15 +1361,22 @@ Rules:
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId,
+          teamConfigs: [{
+            teamAddress: "/",
+            llmModelIdentifier: modelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: "claude_agent_sdk",
+            workspaceRootPath,
+          }],
           memberConfigs: [
             {
-              memberName: "professor",
+              memberAddress: "/professor",
               agentDefinitionId: professorAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
               skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
-              workspaceId,
               workspaceRootPath,
             },
           ],
@@ -1431,7 +1414,7 @@ Rules:
                 teamRunId
                 workspaceRootPath
                 members {
-                  memberName
+                  displayName
                   workspaceRootPath
                 }
               }
@@ -1439,17 +1422,15 @@ Rules:
           }
         }
       `;
-      const teamResumeQuery = `
-        query TeamResume($teamRunId: String!) {
-          getTeamRunResumeConfig(teamRunId: $teamRunId) {
-            teamRunId
-            isActive
-            metadata
-          }
-        }
-      `;
+      const workspaceResume = await execGraphql<{
+        getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+      }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+      const professorRunId = flattenE2eConfiguredAgentExecutions(
+        workspaceResume.getTeamRunResumeConfig.executionTree,
+      ).find((member) => member.memberName === "professor")?.agentRunId;
+      expect(professorRunId).toBeTruthy();
 
-      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
+      const { streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -1478,6 +1459,7 @@ Rules:
       });
 
       sendTeamMessageOverSocket(teamSocket, {
+        agentRunId: professorRunId as string,
         content: "Reply with READY.",
       });
 
@@ -1486,7 +1468,7 @@ Rules:
         | {
             teamRunId: string;
             workspaceRootPath: string | null;
-            members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+            members: Array<{ displayName: string; workspaceRootPath: string | null }>;
           }
         | null = null;
       while (Date.now() < deadline) {
@@ -1497,7 +1479,7 @@ Rules:
               runs: Array<{
                 teamRunId: string;
                 workspaceRootPath: string | null;
-                members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+                members: Array<{ displayName: string; workspaceRootPath: string | null }>;
               }>;
             }>;
           }>;
@@ -1536,6 +1518,7 @@ Rules:
 
       const streamCountBeforeContinue = streamMessages.length;
       sendTeamMessageOverSocket(teamSocket, {
+        agentRunId: professorRunId as string,
         content: "Reply with READY again.",
       });
 
@@ -1543,7 +1526,7 @@ Rules:
         const followUpSeen = streamMessages.slice(streamCountBeforeContinue).some(
           (message) =>
             (message.type === "SEGMENT_END" || message.type === "ASSISTANT_COMPLETE") &&
-            message.payload.agent_name === "professor",
+            message.payload.agent_run_id === professorRunId,
         );
         if (followUpSeen) {
           break;
@@ -1554,7 +1537,7 @@ Rules:
         streamMessages.slice(streamCountBeforeContinue).some(
           (message) =>
             (message.type === "SEGMENT_END" || message.type === "ASSISTANT_COMPLETE") &&
-            message.payload.agent_name === "professor",
+            message.payload.agent_run_id === professorRunId,
         ),
       ).toBe(true);
 
@@ -1562,19 +1545,18 @@ Rules:
         getTeamRunResumeConfig: {
           teamRunId: string;
           isActive: boolean;
-          metadata: Record<string, unknown>;
+          executionTree: Record<string, unknown>;
         };
-      }>(teamResumeQuery, { teamRunId });
+      }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
 
       expect(resumeResult.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
       expect(
-        flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata).every(
+        flattenE2eConfiguredAgentExecutions(resumeResult.getTeamRunResumeConfig.executionTree).every(
           (binding) => binding.workspaceRootPath === workspaceRootPath,
         ),
       ).toBe(true);
 
       teamSocket.close();
-      await streamApp.close();
     },
     180_000,
   );
@@ -1686,25 +1668,31 @@ Rules:
       }>(createTeamRunMutation, {
         input: {
           teamDefinitionId,
+          teamConfigs: [{
+            teamAddress: "/",
+            llmModelIdentifier: modelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: "claude_agent_sdk",
+            workspaceRootPath,
+          }],
           memberConfigs: [
             {
-              memberName: "professor",
+              memberAddress: "/professor",
               agentDefinitionId: professorAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
               skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
-              workspaceId,
               workspaceRootPath,
             },
             {
-              memberName: "student",
+              memberAddress: "/student",
               agentDefinitionId: studentAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
               skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
-              workspaceId,
               workspaceRootPath,
             },
           ],
@@ -1714,23 +1702,6 @@ Rules:
       const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
       createdTeamRunIds.add(teamRunId);
 
-      const teamResumeQuery = `
-        query TeamResume($teamRunId: String!) {
-          getTeamRunResumeConfig(teamRunId: $teamRunId) {
-            metadata
-          }
-        }
-      `;
-      const projectionQuery = `
-        query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
-            agentRunId
-            summary
-            lastActivityAt
-            conversation
-          }
-        }
-      `;
       const terminateTeamRunMutation = `
         mutation TerminateAgentTeamRun($teamRunId: String!) {
           terminateAgentTeamRun(teamRunId: $teamRunId) {
@@ -1749,7 +1720,7 @@ Rules:
         }
       `;
 
-      const { streamApp, streamUrl } = await startClaudeRuntimeTestServer();
+      const { streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
@@ -1758,9 +1729,11 @@ Rules:
       await waitForSocketOpen(teamSocket);
 
       const resumeResult = await execGraphql<{
-        getTeamRunResumeConfig: { metadata: Record<string, unknown> };
-      }>(teamResumeQuery, { teamRunId });
-      const memberBindings = flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata);
+        getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+      }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+      const memberBindings = flattenE2eConfiguredAgentExecutions(
+        resumeResult.getTeamRunResumeConfig.executionTree,
+      );
       const professorBinding = memberBindings.find((binding) => binding.memberName === "professor");
       const studentBinding = memberBindings.find((binding) => binding.memberName === "student");
       expect(professorBinding).toBeTruthy();
@@ -1791,20 +1764,17 @@ Rules:
         },
       ];
 
-      const fetchProjection = async (memberRouteKey: string): Promise<TeamMemberProjection> => {
-        const result = await execGraphql<{
-          getTeamMemberRunProjection: TeamMemberProjection;
-        }>(projectionQuery, { teamRunId, memberRouteKey });
-        return result.getTeamMemberRunProjection;
+      const fetchProjection = async (agentRunId: string): Promise<TeamMemberProjection> => {
+        return getTeamMemberRunViewProjectionService().getProjection(teamRunId, agentRunId);
       };
 
       const waitForProjectionTokens = async (
-        memberRouteKey: string,
+        agentRunId: string,
         requiredTokens: string[],
       ): Promise<TeamMemberProjection> => {
         const deadline = Date.now() + 120_000;
         while (Date.now() < deadline) {
-          const projection = await fetchProjection(memberRouteKey);
+          const projection = await fetchProjection(agentRunId);
           const serializedConversation = JSON.stringify(projection.conversation);
           if (requiredTokens.every((token) => serializedConversation.includes(token))) {
             return projection;
@@ -1820,12 +1790,8 @@ Rules:
         member: (typeof members)[number],
         requiredTokens: string[],
       ): Promise<void> => {
-        const projection = await fetchProjection(member.binding.memberRouteKey);
-        if (member.binding.memberRunId) {
-          expect(projection.agentRunId).toBe(member.binding.memberRunId);
-        } else {
-          expect(projection.agentRunId).toBeTruthy();
-        }
+        const projection = await fetchProjection(member.binding.agentRunId);
+        expect(projection.agentRunId).toBe(member.binding.agentRunId);
         const serializedConversation = JSON.stringify(projection.conversation);
         for (const token of requiredTokens) {
           expect(serializedConversation).toContain(token);
@@ -1833,6 +1799,7 @@ Rules:
       };
 
       const waitForAssistantToken = async (
+        agentRunId: string,
         memberName: string,
         token: string,
         startIndex: number,
@@ -1842,7 +1809,7 @@ Rules:
           startIndex,
           (message) =>
             ["SEGMENT_CONTENT", "SEGMENT_END", "ASSISTANT_COMPLETE"].includes(message.type) &&
-            message.payload.agent_name === memberName &&
+            message.payload.agent_run_id === agentRunId &&
             JSON.stringify(message.payload).includes(token),
           `${memberName} assistant token ${token}`,
           120_000,
@@ -1853,11 +1820,16 @@ Rules:
         for (const member of members) {
           const startIndex = streamMessages.length;
           sendTeamMessageOverSocket(teamSocket, {
-            targetMemberRouteKey: member.binding.memberRouteKey,
+            agentRunId: member.binding.agentRunId,
             content: `Reply with exactly ${member.firstToken} and nothing else.`,
           });
-          await waitForAssistantToken(member.memberName, member.firstToken, startIndex);
-          await waitForProjectionTokens(member.binding.memberRouteKey, [member.firstToken]);
+          await waitForAssistantToken(
+            member.binding.agentRunId,
+            member.memberName,
+            member.firstToken,
+            startIndex,
+          );
+          await waitForProjectionTokens(member.binding.agentRunId, [member.firstToken]);
         }
 
         const firstTerminateResult = await execGraphql<{
@@ -1878,11 +1850,16 @@ Rules:
         for (const member of members) {
           const startIndex = streamMessages.length;
           sendTeamMessageOverSocket(teamSocket, {
-            targetMemberRouteKey: member.binding.memberRouteKey,
+            agentRunId: member.binding.agentRunId,
             content: `Reply with exactly ${member.secondToken} and nothing else.`,
           });
-          await waitForAssistantToken(member.memberName, member.secondToken, startIndex);
-          await waitForProjectionTokens(member.binding.memberRouteKey, [member.firstToken, member.secondToken]);
+          await waitForAssistantToken(
+            member.binding.agentRunId,
+            member.memberName,
+            member.secondToken,
+            startIndex,
+          );
+          await waitForProjectionTokens(member.binding.agentRunId, [member.firstToken, member.secondToken]);
         }
 
         const secondTerminateResult = await execGraphql<{
@@ -1895,7 +1872,6 @@ Rules:
         }
       } finally {
         teamSocket.close();
-        await streamApp.close();
         await execGraphql<{
           terminateAgentTeamRun: { success: boolean; message: string };
         }>(terminateTeamRunMutation, { teamRunId }).catch(() => undefined);

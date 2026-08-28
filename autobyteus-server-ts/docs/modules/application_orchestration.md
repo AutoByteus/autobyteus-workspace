@@ -2,7 +2,7 @@
 
 ## Scope
 
-Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound agents and teams, persist durable run bindings keyed by app-owned `launchRequestId`, route live input/termination to those bindings, authorize application-owned tool callers, coordinate staged package/application catalog transitions, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
+Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound agents and teams, persist durable run bindings keyed by app-owned `launchRequestId`, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
 
 ## TS Source
 
@@ -28,10 +28,6 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/services/application-execution-event-dispatch-service.ts`
 - `src/application-orchestration/services/application-orchestration-recovery-service.ts`
 - `src/application-orchestration/services/application-orchestration-startup-gate.ts`
-- `src/application-orchestration/services/application-catalog-transition-service.ts`
-- `src/application-orchestration/services/application-reentry-service.ts`
-- `src/application-agent-tools/services/application-agent-tool-gateway.ts`
-- `src/application-agent-tools/services/application-agent-tool-call-lifecycle.ts`
 - `src/application-orchestration/services/application-published-artifact-relay-service.ts`
 - `src/application-orchestration/services/application-published-artifact-delivery-queue.ts`
 - `src/application-orchestration/services/application-published-artifact-delivery-service.ts`
@@ -53,10 +49,6 @@ Owns application-authored runtime orchestration after an application backend is 
 - Runtime-originated artifact publication is a runtime-wide concern owned by the shared published-artifact subsystem. Application orchestration does not validate the tool payload or persist artifact truth; it only relays bound-run `ARTIFACT_PERSISTED` events and exposes reads through `context.publishedArtifacts`.
 - Lifecycle journals remain authoritative only for `RUN_STARTED`, `RUN_TERMINATED`, `RUN_FAILED`, and `RUN_ORPHANED`. Published artifacts do not append a second `ARTIFACT` journal family.
 - Recovery and startup gating are first-class owners. Callers should not bypass them with ad hoc resume logic.
-- Application-owned tool transport is not orchestration authority. The shared
-  application gateway uses `ApplicationRunOwnershipService` to authorize the
-  exact application, binding, root/configured member, or server-minted Team
-  descendant before it crosses into the owning worker.
 
 ## Named Backend Context Capabilities
 
@@ -93,23 +85,6 @@ Team-member selection and runtime dispatch keep public logical identity and priv
 Application Team binding members and execution producers omit the redundant application-role `runtimeKind`; their enclosing `AGENT_RUN` / `TEAM_RUN` subject supplies that role. The persisted physical Team-member row retains its private non-null storage constant. Provider and launch runtime kinds remain unchanged.
 
 `publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
-
-## Application-Owned Tool Routing
-
-Application declarations remain application-package catalog data. During run
-construction, selected names from the exact application are projected as
-immutable routes containing `applicationId`, `bindingId`, producer identity,
-and the declaration fingerprint. Claude/Codex materialize those routes in the
-scoped Agent Tools MCP session; AutoByteus-native runs materialize bound local
-tools. Both projections invoke the same `ApplicationAgentToolGateway`.
-
-The gateway admits a call only while the application's tool lane is open, then
-revalidates active availability, the current declaration fingerprint, live
-binding/producer ownership, input schema, and bounded result. It invokes the
-worker handler once through `ApplicationEngineLauncher` and
-`ApplicationEngineController`. A general-process run, another application, a
-terminal binding, stale route, forged Team member, or undeclared/unselected
-name cannot borrow the capability.
 
 ## Resource Configuration And Availability
 
@@ -181,10 +156,9 @@ publish its managers through a service locator or process-global fallback.
 `ApplicationRunBindingLaunchService` remains the business-demand boundary that
 creates a new agent or team run through those capabilities; startup recovery
 only restores runs represented by recorded nonterminal bindings. Construction
-failure unwinds the partially built scope. Shutdown quiesces new execution and
-application-tool admission, drains admitted tool calls before worker stop,
-stops Team runs before remaining Agent runs, revokes scope-owned Agent Tools
-sessions, and then closes the scope. General-process runs use a separate supervisor and
+failure unwinds the partially built scope. Shutdown quiesces new work, stops
+Team runs before remaining Agent runs, deactivates scope-owned Agent Tools run-sessions,
+and then closes the scope. General-process runs use a separate supervisor and
 session authority, so they cannot inherit application publication capability or
 application-local definition state.
 
@@ -194,28 +168,12 @@ application-local definition state.
 - `QUARANTINED` means the bundle currently has diagnostics, or the application is persisted-only after package removal/temporary disappearance, and backend/orchestration entrypoints reject with availability detail, and
 - `REENTERING` means one repaired application is being resumed without restarting unrelated applications, while backend/context-capability admission remains blocked behind retryable availability detail.
 
-`ApplicationCatalogTransitionService` serializes every package import, reload,
-removal, and exact-app reload/re-entry. For the affected old application set it
-begins `REENTERING`, suspends event dispatch, closes and drains application-tool
-admission, and stops the worker before source mutation or live catalog commit.
-It then stages the target package/application slice and application-tool delta,
-commits those already-validated in-memory assignments without yielding,
-reconciles availability and definition readiness, and recovers only eligible
-participants. Unrelated package slices, application tool lanes, workers, and
-runs remain untouched. If a source mutation fails, the same transition owner
-stages and commits the rollback source; rollback failure quarantines the
-participants.
-
-`POST /rest/applications/:applicationId/backend/reload` enters that same owner
-through `reloadAndReenter(...)`. A successful repair path:
+`POST /rest/applications/:applicationId/backend/reload` triggers app-scoped reload-and-reenter. A successful repair path now:
 
 - marks the application `REENTERING` immediately,
 - stops any pre-existing application worker before the repaired bundle returns to service,
-- stages and commits the refreshed bundle/tool slices,
-- reruns binding recovery, starts the current worker, and resumes pending-event
-  dispatch for that one application,
-- reopens application-tool admission, and
-- only then restores `ACTIVE`.
+- reruns binding recovery plus pending-event dispatch resume for that one application, and
+- only then restores `ACTIVE`, leaving the worker in `stopped` state so the next `ensure-ready` boots a fresh worker from the repaired bundle.
 
 ## Durable Binding And Lookup State
 

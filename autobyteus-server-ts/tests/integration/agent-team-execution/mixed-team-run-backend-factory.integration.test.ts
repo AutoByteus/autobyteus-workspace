@@ -13,7 +13,6 @@ import {
   testMemberTaskRootResolver,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 const createManagerStub = () => ({
   isActive: vi.fn(() => true),
@@ -65,12 +64,10 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
     const managerInputs: MixedTeamManagerConstructionInput[] = [];
     const manager = createManagerStub();
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const factory = new MixedTeamRunBackendFactory({
-      agentToolMcpRunSessionReleaser: releaser,
       createTeamManager: (input) => {
         managerInputs.push(input);
-        expect(input.agentToolMcpRunSessionReleaser).toBe(releaser);
+        expect(input).not.toHaveProperty("agentToolMcpRunSessionDeactivator");
         contexts.push(input.context);
         return manager;
       },
@@ -131,7 +128,7 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     });
     expect(managerInputs).toHaveLength(3);
     for (const input of managerInputs) {
-      expect(input.agentToolMcpRunSessionReleaser).toBe(releaser);
+      expect(input).not.toHaveProperty("agentToolMcpRunSessionDeactivator");
       expect(input.subTeamRunFactory).toBe(managerInputs[0]!.subTeamRunFactory);
       expect(input.callbacks).toBe(managerInputs[0]!.callbacks);
     }
@@ -140,8 +137,6 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
   it("rejects a root allocation mismatch before manager construction", async () => {
     const createTeamManager = vi.fn(() => createManagerStub());
     const factory = new MixedTeamRunBackendFactory({
-      agentToolMcpRunSessionReleaser:
-        createNoopAgentToolMcpRunSessionReleaser(),
       createTeamManager,
     });
     const config = createConfig();
@@ -155,11 +150,9 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
   it("restores configured provenance and exact external identities while ignoring native self-bindings", async () => {
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
     const manager = createManagerStub();
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const factory = new MixedTeamRunBackendFactory({
-      agentToolMcpRunSessionReleaser: releaser,
       createTeamManager: (input) => {
-        expect(input.agentToolMcpRunSessionReleaser).toBe(releaser);
+        expect(input).not.toHaveProperty("agentToolMcpRunSessionDeactivator");
         contexts.push(input.context);
         return manager;
       },

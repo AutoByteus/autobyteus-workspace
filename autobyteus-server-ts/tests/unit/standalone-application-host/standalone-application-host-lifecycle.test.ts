@@ -32,7 +32,6 @@ const mocks = vi.hoisted(() => {
   };
   const generalAuthority = {
     scopeIdentity: "general-process",
-    issuer: {},
     runSessions: {},
     assertReady: vi.fn(),
     blockNewSessions: vi.fn(),
@@ -46,8 +45,8 @@ const mocks = vi.hoisted(() => {
   };
   const mcpHost = {
     sessionAuthorities: { begin: vi.fn(() => generalAssembly) },
-    routeDependencies: {},
-    close: vi.fn(),
+    listen: vi.fn(async () => undefined),
+    close: vi.fn(async () => undefined),
   };
   const providerFactoryBuilder = {};
   const generalProcessRunSupervisor = { close: vi.fn(async () => undefined) };
@@ -323,12 +322,20 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     await platformInput.requireCurrentModelIdentifier("model-1");
     expect(mocks.requireCurrentModelIdentifier).toHaveBeenCalledWith("model-1");
     expect(mocks.applicationLifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.mcpHost.listen.mock.invocationCallOrder[0]!);
+    expect(mocks.mcpHost.listen.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
+    expect(mocks.app.listen.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.applicationLifecycle.recoverAfterListen.mock.invocationCallOrder[0]!);
     expect(mocks.applicationLifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
 
     await handle.close();
     expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
     expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
+    expect(mocks.app.close.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.generalProcessRunSupervisor.close.mock.invocationCallOrder[0]!);
+    expect(mocks.generalProcessRunSupervisor.close.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.mcpHost.close.mock.invocationCallOrder[0]!);
     expect(mocks.hostDefinitionServices.close).toHaveBeenCalledTimes(1);
     expect(mocks.hostDefinitionServices.close.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.closeSecretVault.mock.invocationCallOrder[0]!);

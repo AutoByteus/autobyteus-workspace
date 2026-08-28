@@ -1,4 +1,4 @@
-import { createRecordingAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createRecordingAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
@@ -9,7 +9,7 @@ import type { AgentRunBackendFactory } from "../../../src/agent-execution/backen
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentCreationError, AgentTerminationError } from "../../../src/agent-execution/errors.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import type { AgentToolMcpRunSessionReleaser } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpRunSessionDeactivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const createConfig = (runtimeKind: RuntimeKind): AgentRunConfig =>
   new AgentRunConfig({
@@ -79,10 +79,10 @@ const createManager = (input: {
   autoByteusBackendFactory: AgentRunBackendFactory;
   codexBackendFactory: AgentRunBackendFactory;
   claudeBackendFactory: AgentRunBackendFactory;
-  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+  agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
 }): AgentRunManager => {
   const infrastructure = createAgentRunManagerInfrastructureFixture({
-    agentToolMcpRunSessionReleaser: input.agentToolMcpRunSessionReleaser,
+    agentToolMcpRunSessionDeactivator: input.agentToolMcpRunSessionDeactivator,
   });
   return new AgentRunManager({
     autoByteusBackendFactory: input.autoByteusBackendFactory,
@@ -91,7 +91,7 @@ const createManager = (input: {
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,
-    agentToolMcpRunSessionReleaser: input.agentToolMcpRunSessionReleaser,
+    agentToolMcpRunSessionDeactivator: input.agentToolMcpRunSessionDeactivator,
   });
 };
 
@@ -109,7 +109,7 @@ describe("AgentRunManager integration", () => {
     const codex = createFactory(createBackend({ runId: "run-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend);
     const claude = createFactory(createBackend({ runId: "run-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend);
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: auto,
       codexBackendFactory: codex,
       claudeBackendFactory: claude,
@@ -159,7 +159,7 @@ describe("AgentRunManager integration", () => {
     const codex = createFactory(backend);
     const claude = createFactory(backend);
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: auto,
       codexBackendFactory: codex,
       claudeBackendFactory: claude,
@@ -188,7 +188,7 @@ describe("AgentRunManager integration", () => {
       ),
     };
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: claude,
@@ -210,7 +210,7 @@ describe("AgentRunManager integration", () => {
   it("evicts inactive runs when queried or listed", async () => {
     const active = createBackend({ runId: "run-active", runtimeKind: RuntimeKind.AUTOBYTEUS });
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(active.backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
@@ -234,7 +234,7 @@ describe("AgentRunManager integration", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(created.backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
@@ -263,7 +263,7 @@ describe("AgentRunManager integration", () => {
       message: "still active",
     });
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(created.backend),
@@ -287,7 +287,7 @@ describe("AgentRunManager integration", () => {
     });
     created.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(created.backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
@@ -304,7 +304,7 @@ describe("AgentRunManager integration", () => {
 
   it("rejects unsupported runtime kinds for create and restore", async () => {
     const manager = createManager({
-      agentToolMcpRunSessionReleaser: createRecordingAgentToolMcpRunSessionReleaser().releaser,
+      agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
       codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),

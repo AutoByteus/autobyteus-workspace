@@ -18,9 +18,9 @@ This gateway is intentionally separate from the run-scoped
 
 - `/mcp/gateway` is a process-level external gateway for registered
   `ToolOrigin.MCP` tools only.
-- `/mcp/agent-tools/:sessionId` is a runtime/session-scoped surface for
-  AutoByteus agent runs and may expose selected AutoByteus internal tools plus
-  selected configured MCP-origin tools for that run.
+- `/mcp/agent-tools/:sessionId` is a runtime/session-scoped surface on a
+  separate process-local loopback listener. It may expose selected AutoByteus
+  internal tools plus selected configured MCP-origin tools for that run.
 
 The gateway does not expose AutoByteus internal/run-dependent tools such as
 `send_message_to`, task delegation, media tools, browser tools, or

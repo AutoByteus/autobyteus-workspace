@@ -10,6 +10,7 @@ import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js"
 import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 import { cloneTeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 import type { MemberTaskRootResolver } from "../../agent-team-execution/task-delegation/member-task-root-resolver.js";
+import type { AgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export const AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools";
@@ -21,19 +22,6 @@ export type AgentToolMcpDescriptor = {
   name: typeof AGENT_TOOLS_MCP_SERVER_NAME;
   transport: AgentToolMcpTransport;
   serverUrl: string;
-  headers: {
-    Authorization: string;
-  };
-  enabledTools: string[];
-};
-
-export type RedactedAgentToolMcpDescriptor = {
-  name: typeof AGENT_TOOLS_MCP_SERVER_NAME;
-  transport: AgentToolMcpTransport;
-  serverUrl: string;
-  headers: {
-    Authorization: "Bearer <redacted>";
-  };
   enabledTools: string[];
 };
 
@@ -91,8 +79,7 @@ export type AgentToolMcpSessionExecutionCapabilities =
   | TeamMemberSessionExecutionCapabilities;
 
 export type AgentToolMcpSession = {
-  sessionId: string;
-  tokenHash: Buffer;
+  sessionId: AgentToolMcpRunSessionId;
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
   runtimeKind: RuntimeKind | string | null;
@@ -103,11 +90,10 @@ export type AgentToolMcpSession = {
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources: ConfiguredMcpAgentToolSource[];
   createdAt: Date;
-  revokedAt: Date | null;
   toolExecutionObserver: AgentToolMcpToolExecutionObserver | null;
 };
 
-export type AgentToolMcpCreateSessionInput = {
+export type AgentToolMcpActivateSessionInput = {
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
   runtimeExposure: RuntimeAgentToolExposure;
@@ -120,15 +106,7 @@ export type AgentToolMcpCreateSessionInput = {
   toolExecutionObserver?: AgentToolMcpToolExecutionObserver | null;
 };
 
-export type AgentToolMcpSessionResolveInput = {
-  sessionId: string;
-  bearerToken: string;
-};
-
-export type AgentToolMcpSessionResolveFailureReason =
-  | "missing_session"
-  | "revoked"
-  | "token_mismatch";
+export type AgentToolMcpSessionResolveFailureReason = "missing_session";
 
 export type AgentToolMcpSessionResolveResult =
   | { ok: true; session: AgentToolMcpSession }
@@ -171,33 +149,4 @@ export const cloneAgentToolMcpSessionExecutionCapabilities = (
       rootResolver: capabilities.taskDelegation.rootResolver,
     }),
   });
-};
-
-export const redactAgentToolMcpDescriptor = (
-  descriptor: AgentToolMcpDescriptor,
-): RedactedAgentToolMcpDescriptor => ({
-  name: descriptor.name,
-  transport: descriptor.transport,
-  serverUrl: redactSessionUrl(descriptor.serverUrl),
-  headers: { Authorization: "Bearer <redacted>" },
-  enabledTools: [...descriptor.enabledTools],
-});
-
-const redactSessionUrl = (serverUrl: string): string => {
-  try {
-    const parsed = new URL(serverUrl);
-    const pathParts = parsed.pathname.split("/");
-    const lastSegmentIndex = pathParts.length - 1;
-    if (lastSegmentIndex >= 0 && pathParts[lastSegmentIndex]) {
-      pathParts[lastSegmentIndex] = "<redacted>";
-      parsed.pathname = pathParts.join("/");
-    } else {
-      parsed.pathname = "/mcp/agent-tools/<redacted>";
-    }
-    parsed.search = "";
-    parsed.hash = "";
-    return parsed.toString();
-  } catch {
-    return "<redacted>";
-  }
 };

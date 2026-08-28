@@ -14,12 +14,17 @@ const mocks = vi.hoisted(() => {
     prepareBeforeListen: vi.fn(async () => undefined),
     recoverAfterListen: vi.fn(async () => undefined),
   };
+  const agentToolsMcpHost = {
+    listen: vi.fn(async () => "http://127.0.0.1:54321"),
+  };
   return {
     app,
     lifecycle,
+    agentToolsMcpHost,
     buildStudioServer: vi.fn(async () => ({
       fastify: app,
       applicationRuntime: { lifecycle },
+      agentToolsMcpHost,
       packageRegistryService: {},
     })),
     initializePrisma: vi.fn(async () => undefined),
@@ -183,6 +188,8 @@ describe("Studio readable-provider migration startup gate", () => {
         .toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
       expect(mocks.buildStudioServer).toHaveBeenCalledTimes(1);
       expect(mocks.lifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0]!);
+      expect(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
       expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
       expect(mocks.lifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);

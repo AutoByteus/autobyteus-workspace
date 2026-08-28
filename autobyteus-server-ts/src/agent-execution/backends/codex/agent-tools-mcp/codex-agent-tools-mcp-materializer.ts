@@ -13,7 +13,6 @@ import type { JsonObject } from "../codex-app-server-json.js";
 
 export type CodexAgentToolsMcpServerConfig = {
   url: string;
-  http_headers: AgentToolMcpDescriptor["headers"];
   enabled_tools: string[];
   startup_timeout_sec: 5;
 };
@@ -33,7 +32,6 @@ export const materializeCodexAgentToolsMcpThreadConfig = (
   mcp_servers: {
     [AGENT_TOOLS_MCP_SERVER_NAME]: {
       url: descriptor.serverUrl,
-      http_headers: { ...descriptor.headers },
       enabled_tools: [...descriptor.enabledTools],
       startup_timeout_sec: 5,
     },

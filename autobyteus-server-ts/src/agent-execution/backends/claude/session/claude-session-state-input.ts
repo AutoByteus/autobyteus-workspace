@@ -6,7 +6,7 @@ import type {
   ClaudeSdkClient,
   ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
-import type { AgentToolMcpSessionIssuer } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpRunSessionActivator } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
 import type { SystemInstructionCaptureService } from "../../../../agent-memory/services/system-instruction-capture-service.js";
 
@@ -15,7 +15,7 @@ export type ClaudeSessionDependencies = {
   sdkClient: ClaudeSdkClient;
   activeQueriesByRunId: Map<string, ClaudeSdkQueryLike>;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
-  agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+  agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
   systemInstructionCaptureService?: SystemInstructionCaptureService;
   isRunSessionActive: () => boolean;
   terminateRunSession: () => Promise<void>;

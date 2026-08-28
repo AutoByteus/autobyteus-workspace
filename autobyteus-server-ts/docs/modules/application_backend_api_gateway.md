@@ -37,13 +37,7 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - `POST /rest/applications/:applicationId/backend/ensure-ready`
   - ensures storage + worker startup and returns the resulting engine status.
 - `POST /rest/applications/:applicationId/backend/reload`
-  - asks `ApplicationCatalogTransitionService` to reload and re-enter one
-    repaired application. During the `REENTERING` window, concurrent backend
-    and application-tool admission stays blocked with retryable availability
-    detail. The transition drains admitted application-tool calls, stops the
-    old worker, stages and commits the refreshed bundle/tool slices, recovers
-    bindings, starts the current worker, resumes pending events, reopens the
-    tool lane, and only then returns the app to `ACTIVE`.
+  - asks the application-availability owner to reload and re-enter one repaired application. During the `REENTERING` window, concurrent backend admission stays blocked with retryable availability detail; a successful reload returns the app to `ACTIVE` with the worker still stopped, and only a later `ensure-ready` boots a fresh worker.
 - `POST /rest/applications/:applicationId/backend/queries/:queryName`
 - `POST /rest/applications/:applicationId/backend/commands/:commandName`
 - `POST /rest/applications/:applicationId/backend/graphql`
@@ -68,16 +62,15 @@ resets that override so the bundle-owned package baseline becomes effective.
 
 ### Internal Agent Tools route is separate
 
-Both `buildStudioServer` and `buildStandaloneApplicationServer` register
-`/mcp/agent-tools/:sessionId` from the same process-owned
-`AgentToolsMcpHost`. Each application runtime issues sessions through its
-`ScopedAgentToolMcpSessionAuthority`. Selected application-owned tool routes
-carry the exact application/binding/producer identity into the common
-application gateway, while authenticated publication uses only that scope's
-`PublishedArtifactPublisher`. These tool calls do not traverse the application
-backend REST/WebSocket gateway, even though their exact handler invocation is
-worker-owned. Studio's `/mcp/gateway` remains a
-separate external-client boundary and is not registered by standalone.
+Studio and the standalone application host each start one process-owned
+`AgentToolsMcpHost` on a dedicated ephemeral `127.0.0.1` listener. The main
+Studio/standalone Fastify server does not register
+`/mcp/agent-tools/:sessionId`. Each application runtime activates tokenless
+run-sessions through its `ScopedAgentToolMcpSessionAuthority`; local peer,
+`Host`, and optional `Origin` admission protects the dedicated listener, while
+publication still uses only that scope's `PublishedArtifactPublisher`.
+Studio's `/mcp/gateway` remains a separate main-server external-client boundary
+and is not registered by standalone.
 
 ### WebSocket notifications
 

@@ -11,7 +11,9 @@ import { AgentToolMcpSessionRegistry } from "../../../src/agent-tools/mcp/agent-
 import { AgentToolMcpSessionService } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
 import { AgentToolsMcpMethodDispatcher } from "../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
+import { AgentToolsMcpLocalAccessGate } from "../../../src/agent-tools/mcp/agent-tools-mcp-local-access.js";
 import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import type { ActiveAgentToolMcpRunSession } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   BUILT_IN_APPLICATION_PACKAGE_ID,
   FileApplicationBundleProvider,
@@ -42,17 +44,16 @@ const IMPORTABLE_PACKAGE_ROOT = path.resolve(
   "applications/brief-studio/dist/importable-package",
 );
 
-type IssuedSession = ReturnType<AgentToolMcpSessionService["createAgentToolMcpSession"]>;
+type ActiveSession = ActiveAgentToolMcpRunSession;
 
 const postMcp = (
   app: ReturnType<typeof fastify>,
-  session: IssuedSession,
+  session: ActiveSession,
   payload: unknown,
 ) => app.inject({
   method: "POST",
   url: `/mcp/agent-tools/${session.sessionId}`,
   headers: {
-    authorization: session.descriptor.headers.Authorization,
     "content-type": "application/json",
     accept: "application/json",
   },
@@ -314,12 +315,13 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
         catalog: mcpCatalog,
         toolExecutor: new AgentToolMcpToolExecutor({ catalog: mcpCatalog }),
       }),
+      localAccessGate: new AgentToolsMcpLocalAccessGate(),
     });
     await app.ready();
     const sessionService = new AgentToolMcpSessionService({
       registry: sessionRegistry,
       catalog: mcpCatalog,
-      getInternalBaseUrl: () => "http://127.0.0.1:1",
+      getLocalBaseUrl: () => "http://127.0.0.1:1",
       executionCapabilities: {
         publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
         applicationAgentTools: capability,
@@ -328,13 +330,13 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
     const issueForTeamMember = (
       row: (typeof bindingRows)[number],
       runtimeKind: RuntimeKind,
-    ): IssuedSession => {
+    ): ActiveSession => {
       const memberTeamContext = testMemberTeamContext({
         rootTeamRunId: row.teamRunId,
         memberAddress: row.memberAddress,
         agentRunId: row.agentRunId,
       });
-      return sessionService.createAgentToolMcpSession({
+      const activation = sessionService.activateForRun({
         owner: {
           runId: row.agentRunId,
           teamIdentity: memberTeamContext.identity,
@@ -357,6 +359,10 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
           },
         },
       });
+      if (activation.kind !== "active") {
+        throw new Error("Expected an active Brief Studio application session.");
+      }
+      return activation;
     };
     const alphaSession = issueForTeamMember(
       bindingRows[0]!,
@@ -366,7 +372,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       bindingRows[1]!,
       RuntimeKind.CODEX_APP_SERVER,
     );
-    const generalSession = sessionService.createAgentToolMcpSession({
+    const generalSession = sessionService.activateForRun({
       owner: { runId: "general-run" },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: "general-run",
@@ -391,13 +397,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
         }],
       },
     });
-    const generalList = await postMcp(app, generalSession, {
-      jsonrpc: "2.0",
-      id: "list-general",
-      method: "tools/list",
-      params: {},
-    });
-    expect(generalList.json()).toMatchObject({ result: { tools: [] } });
+    expect(generalSession).toEqual({ kind: "not_exposed" });
 
     const alphaResult = await postMcp(app, alphaSession, {
       jsonrpc: "2.0",
@@ -409,7 +409,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       result: {
         content: [{
           type: "text",
-          text: "Current brief: Production MCP proof (in_review).",
+          text: "Brief context: {\"briefId\":\"brief-alpha\",\"title\":\"Production MCP proof\",\"observedStatus\":\"in_review\"}",
         }],
         structuredContent: {
           briefId: "brief-alpha",
@@ -430,7 +430,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       result: {
         content: [{
           type: "text",
-          text: "Current brief: Independent application binding (drafting).",
+          text: "Brief context: {\"briefId\":\"brief-beta\",\"title\":\"Independent application binding\",\"observedStatus\":\"drafting\"}",
         }],
         structuredContent: {
           briefId: "brief-beta",
@@ -456,7 +456,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
       ready: true,
     });
 
-    expect(sessionService.revokeAgentToolMcpSession(alphaSession.sessionId)).toBe(true);
+    expect(sessionRegistry.deactivateSession(alphaSession.sessionId)).toBe(true);
     const revoked = await postMcp(app, alphaSession, {
       jsonrpc: "2.0",
       id: "call-revoked",

@@ -2,10 +2,10 @@ import type { AgentToolMcpCatalog } from "./agent-tool-mcp-catalog.js";
 import type { AgentToolMcpSessionRegistry } from "./agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "./agent-tool-mcp-session-service.js";
 import type {
-  AgentToolMcpRunSessionReleaser,
-  AgentToolMcpSessionIssueInput,
+  AgentToolMcpRunSessionActivationInput,
+  AgentToolMcpRunSessionAuthority,
+  AgentToolMcpRunSessionDeactivator,
   AgentToolMcpSessionAuthorityFactory,
-  AgentToolMcpSessionIssuer,
   ScopedAgentToolMcpSessionAuthority,
   ScopedAgentToolMcpSessionAuthorityAssembly,
 } from "./agent-tool-mcp-session-authority.js";
@@ -26,13 +26,11 @@ const requireScopeIdentity = (value: string): string => {
 
 class ScopedSessionLedger {
   private readonly ownedSessions = new Map<string, AgentToolMcpSessionOwnerIdentity>();
-  private issueBlocked = false;
+  private activationBlocked = false;
   private closeComplete = false;
 
-  readonly runSessions: AgentToolMcpRunSessionReleaser = Object.freeze({
-    revokeForRun: (runId: string) => this.revokeForRun(runId),
-    revokeForOwner: (owner: Partial<AgentToolMcpSessionOwnerIdentity>) =>
-      this.revokeForOwner(owner),
+  readonly runSessions: AgentToolMcpRunSessionDeactivator = Object.freeze({
+    deactivateForRun: (runId: string) => this.deactivateForRun(runId),
   });
 
   constructor(
@@ -41,7 +39,7 @@ class ScopedSessionLedger {
   ) {}
 
   record(sessionId: string, owner: AgentToolMcpSessionOwnerIdentity): void {
-    if (this.issueBlocked || this.closeComplete) {
+    if (this.activationBlocked || this.closeComplete) {
       throw new Error("Scoped Agent Tools MCP session authority is closing.");
     }
     if (this.ownedSessions.has(sessionId)) {
@@ -50,8 +48,13 @@ class ScopedSessionLedger {
     this.ownedSessions.set(sessionId, owner);
   }
 
+  compensateUnrecordedSession(sessionId: string): void {
+    this.ownedSessions.delete(sessionId);
+    this.registry.deactivateSession(sessionId);
+  }
+
   blockNewSessions(): void {
-    this.issueBlocked = true;
+    this.activationBlocked = true;
   }
 
   close(): void {
@@ -60,7 +63,7 @@ class ScopedSessionLedger {
     const errors: unknown[] = [];
     for (const sessionId of [...this.ownedSessions.keys()]) {
       try {
-        this.revokeOwnedSession(sessionId);
+        this.deactivateOwnedSession(sessionId);
       } catch (error) {
         errors.push(error);
       }
@@ -74,39 +77,22 @@ class ScopedSessionLedger {
     }
   }
 
-  private revokeForRun(runId: string): number {
+  private deactivateForRun(runId: string): number {
     const normalizedRunId = runId?.trim();
     return normalizedRunId
-      ? this.revokeMatching((owner) => owner.runId === normalizedRunId)
+      ? this.deactivateMatching((owner) => owner.runId === normalizedRunId)
       : 0;
   }
 
-  private revokeForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {
-    const keys = Object.keys(owner) as Array<keyof AgentToolMcpSessionOwnerIdentity>;
-    if (!keys.length) return 0;
-    return this.revokeMatching((candidate) => keys.every((key) => {
-      if (key !== "teamIdentity") return candidate[key] === owner[key];
-      const actual = candidate.teamIdentity;
-      const expected = owner.teamIdentity;
-      if (actual === expected) return true;
-      return Boolean(
-        actual && expected
-        && actual.rootTeamRunId === expected.rootTeamRunId
-        && actual.memberAddress === expected.memberAddress
-        && actual.agentRunId === expected.agentRunId,
-      );
-    }));
-  }
-
-  private revokeMatching(
+  private deactivateMatching(
     predicate: (owner: AgentToolMcpSessionOwnerIdentity) => boolean,
   ): number {
-    let revokedCount = 0;
+    let deactivatedCount = 0;
     const errors: unknown[] = [];
     for (const [sessionId, owner] of [...this.ownedSessions.entries()]) {
       if (!predicate(owner)) continue;
       try {
-        if (this.revokeOwnedSession(sessionId)) revokedCount += 1;
+        if (this.deactivateOwnedSession(sessionId)) deactivatedCount += 1;
       } catch (error) {
         errors.push(error);
       }
@@ -114,23 +100,22 @@ class ScopedSessionLedger {
     if (errors.length) {
       throw new AggregateError(
         errors,
-        `Scoped Agent Tools MCP session authority '${this.scopeIdentity}' revocation failed.`,
+        `Scoped Agent Tools MCP session authority '${this.scopeIdentity}' deactivation failed.`,
       );
     }
-    return revokedCount;
+    return deactivatedCount;
   }
 
-  private revokeOwnedSession(sessionId: string): boolean {
+  private deactivateOwnedSession(sessionId: string): boolean {
     if (!this.ownedSessions.delete(sessionId)) return false;
-    return this.registry.revokeSession(sessionId);
+    return this.registry.deactivateSession(sessionId);
   }
 }
 
 class DefaultScopedAgentToolMcpSessionAuthority
 implements ScopedAgentToolMcpSessionAuthority {
-  readonly issuer: AgentToolMcpSessionIssuer;
-  readonly runSessions: AgentToolMcpRunSessionReleaser;
-  private issueBlocked = false;
+  readonly runSessions: AgentToolMcpRunSessionAuthority;
+  private activationBlocked = false;
   private closeComplete = false;
 
   constructor(
@@ -140,24 +125,26 @@ implements ScopedAgentToolMcpSessionAuthority {
     private readonly assertHostOpen: () => void,
     private readonly assertExecutionCapabilitiesReady: () => void,
   ) {
-    this.runSessions = ledger.runSessions;
-    this.issuer = Object.freeze({
-      issueForRun: (input: AgentToolMcpSessionIssueInput) => {
+    this.runSessions = Object.freeze({
+      activateForRun: (input: AgentToolMcpRunSessionActivationInput) => {
         this.assertReady();
-        const issued = this.sessionService.createAgentToolMcpSession(input);
+        const result = this.sessionService.activateForRun(input);
+        if (result.kind === "not_exposed") return result;
         try {
-          this.ledger.record(issued.sessionId, issued.owner);
+          this.ledger.record(result.sessionId, result.owner);
         } catch (error) {
-          this.sessionService.revokeAgentToolMcpSession(issued.sessionId);
+          this.ledger.compensateUnrecordedSession(result.sessionId);
           throw error;
         }
-        return issued;
+        return result;
       },
+      deactivateForRun: (runId: string) =>
+        this.ledger.runSessions.deactivateForRun(runId),
     });
   }
 
   assertReady(): void {
-    if (this.issueBlocked || this.closeComplete) {
+    if (this.activationBlocked || this.closeComplete) {
       throw new Error("Scoped Agent Tools MCP session authority is closing.");
     }
     this.assertHostOpen();
@@ -165,7 +152,7 @@ implements ScopedAgentToolMcpSessionAuthority {
   }
 
   blockNewSessions(): void {
-    this.issueBlocked = true;
+    this.activationBlocked = true;
     this.ledger.blockNewSessions();
   }
 
@@ -179,7 +166,7 @@ implements ScopedAgentToolMcpSessionAuthority {
 
 class DefaultScopedAgentToolMcpSessionAuthorityAssembly
 implements ScopedAgentToolMcpSessionAuthorityAssembly {
-  readonly runSessions: AgentToolMcpRunSessionReleaser;
+  readonly runSessions: AgentToolMcpRunSessionDeactivator;
   private readonly ledger: ScopedSessionLedger;
   private state: AssemblyState = "ASSEMBLING";
 
@@ -187,6 +174,7 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
     readonly scopeIdentity: string,
     private readonly registry: AgentToolMcpSessionRegistry,
     private readonly catalog: AgentToolMcpCatalog,
+    private readonly getLocalBaseUrl: () => string,
     private readonly assertHostOpen: () => void,
   ) {
     this.ledger = new ScopedSessionLedger(scopeIdentity, registry);
@@ -217,6 +205,7 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
       new AgentToolMcpSessionService({
         registry: this.registry,
         catalog: this.catalog,
+        getLocalBaseUrl: this.getLocalBaseUrl,
         executionCapabilities: input.executionCapabilities,
       }),
       this.ledger,
@@ -237,15 +226,22 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
 export const createAgentToolMcpSessionAuthorityFactory = (input: Readonly<{
   registry: AgentToolMcpSessionRegistry;
   catalog: AgentToolMcpCatalog;
+  getLocalBaseUrl: () => string;
   assertHostOpen: () => void;
-}>): AgentToolMcpSessionAuthorityFactory => Object.freeze({
-  begin: ({ scopeIdentity }: Readonly<{ scopeIdentity: string }>) => {
-    input.assertHostOpen();
-    return new DefaultScopedAgentToolMcpSessionAuthorityAssembly(
-      requireScopeIdentity(scopeIdentity),
-      input.registry,
-      input.catalog,
-      input.assertHostOpen,
-    );
-  },
-});
+}>): AgentToolMcpSessionAuthorityFactory => {
+  if (typeof input?.getLocalBaseUrl !== "function") {
+    throw new Error("Agent Tools MCP local base URL reader is required.");
+  }
+  return Object.freeze({
+    begin: ({ scopeIdentity }: Readonly<{ scopeIdentity: string }>) => {
+      input.assertHostOpen();
+      return new DefaultScopedAgentToolMcpSessionAuthorityAssembly(
+        requireScopeIdentity(scopeIdentity),
+        input.registry,
+        input.catalog,
+        input.getLocalBaseUrl,
+        input.assertHostOpen,
+      );
+    },
+  });
+};

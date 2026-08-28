@@ -21,6 +21,8 @@ export const sendE2eSendMessageCommand = (
       type: "SEND_MESSAGE",
       payload: {
         ...buildE2eClientCommandIds(),
+        context_file_paths: [],
+        image_urls: [],
         ...payload,
       },
     }),

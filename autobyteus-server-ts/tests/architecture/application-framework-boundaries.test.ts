@@ -349,7 +349,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
     kind: "new",
-    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activationRegistry", "memoryRecorder", "agentToolMcpRunSessionReleaser"].map(
+    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activationRegistry", "memoryRecorder", "agentToolMcpRunSessionDeactivator"].map(
       (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
     ),
   },
@@ -421,7 +421,6 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     requiredInputs: [
       "subTeamRunFactory",
       "agentRunManager",
-      "agentToolMcpRunSessionReleaser",
       "memoryLocationService",
       "activityInspector",
       "memberTeamContextBuilder",
@@ -2911,7 +2910,7 @@ describe("application framework architecture boundaries", () => {
     ]) {
       const source = readServerSource(relativePath);
       const hostDefinitions = source.indexOf("createHostDefinitionServices({");
-      const agentTools = source.indexOf("createAgentToolsMcpHost()", hostDefinitions);
+      const agentTools = source.indexOf("createAgentToolsMcpHost({", hostDefinitions);
       const generalRuns = source.indexOf("createGeneralProcessRunSupervisor({", agentTools);
       const applicationAssembly = relativePath.startsWith("compositions/")
         ? source.indexOf("createStudioApplicationServices({", generalRuns)
@@ -2948,7 +2947,7 @@ describe("application framework architecture boundaries", () => {
       "new MemberTeamContextBuilder(\n        input.agentTeamDefinitionService",
       "teamDefinitionService: input.agentTeamDefinitionService",
       "agentRunIdentityAllocator,",
-      "agentToolMcpRunSessionReleaser:",
+      "agentToolMcpRunSessionDeactivator:",
       "taskRootResolver: managerInput.callbacks.taskRootResolver",
       "bindProcessAgentRunService(agentRunService)",
       "bindProcessTeamRunService(teamRunService)",

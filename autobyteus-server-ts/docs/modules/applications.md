@@ -161,13 +161,15 @@ the established recovery phase may restore recorded runs after the server
 listens.
 
 - Studio combines the application catalog, setup UI, iframe host, broad Studio
-  APIs, the internal `/mcp/agent-tools/:sessionId` route, and the external
-  `/mcp/gateway` client surface.
+  APIs, and the external `/mcp/gateway` client surface on its main server. Its
+  process-owned Agent Tools host starts a separate loopback-only listener for
+  `/mcp/agent-tools/:sessionId`.
 - Standalone selects exactly one local application or package, validates it
   before the server listens, serves its UI at `/`, and exposes same-origin
   bootstrap plus application backend/WebSocket surfaces under
-  `/_autobyteus/*`. It includes the internal Agent Tools route but not the
-  Studio external gateway.
+  `/_autobyteus/*`. The process-owned Agent Tools host uses a separate
+  loopback-only listener; standalone does not include the Studio external
+  gateway.
 - Standalone does not copy Studio launch overrides or platform state. A complete
   bundle-owned package baseline is sufficient to start the same package.
 - Both hosts treat package bytes as immutable input; mutable storage, logs,
@@ -177,10 +179,11 @@ listens.
   Tools session-authority assembly before constructing its run resources. The
   authority is completed only after the concrete publication capability and
   readiness assertion exist. This keeps provider construction, run cleanup,
-  and session revocation explicit and graph-local without deferred binding or a
+  and run-session deactivation explicit and graph-local without deferred binding or a
   process-global application lookup. General Process execution uses a separate
-  authority/supervisor. `/mcp/agent-tools/:sessionId` remains distinct from
-  Studio-only `/mcp/gateway`.
+  authority/supervisor. The dedicated listener's
+  `/mcp/agent-tools/:sessionId` remains distinct from Studio main-server
+  `/mcp/gateway`.
 
 Server assembly and standalone-host ownership live under
 `src/compositions/build-studio-server.ts`,

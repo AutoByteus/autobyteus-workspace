@@ -3,11 +3,8 @@ import { MixedSubTeamRunFactory } from "../../../src/agent-team-execution/backen
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 const createContextOnlyBackendFactory = () => new MixedTeamRunBackendFactory({
-  agentToolMcpRunSessionReleaser:
-    createNoopAgentToolMcpRunSessionReleaser(),
   createTeamManager: () => {
     throw new Error("Context-only backend factory must not construct a manager.");
   },

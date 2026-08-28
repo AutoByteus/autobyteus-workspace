@@ -27,7 +27,6 @@ import {
 import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
-import { getAgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
@@ -210,7 +209,8 @@ const createFactory = (input: {
         toolNames: input.toolNames ?? [],
       }),
     } as never,
-    agentToolMcpSessionIssuer: getAgentToolMcpSessionIssuer(),
+    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    applicationAgentTools: null,
   }).claude;
   const sessionManager = (factory as unknown as {
     sessionManager: ClaudeSessionManager;

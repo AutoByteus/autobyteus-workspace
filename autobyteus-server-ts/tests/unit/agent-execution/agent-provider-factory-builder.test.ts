@@ -107,7 +107,7 @@ describe("AgentProviderFactoryBuilder", () => {
 
   it("requires both execution inputs before provider construction", () => {
     const builder = createAgentProviderFactoryBuilder(createProcessInput());
-    for (const field of ["agentDefinitionService", "agentToolMcpSessionIssuer"] as const) {
+    for (const field of ["agentDefinitionService", "agentToolMcpRunSessions"] as const) {
       for (const [label, value, omit] of [
         ["omitted", undefined, true],
         ["null", null, false],
@@ -115,13 +115,26 @@ describe("AgentProviderFactoryBuilder", () => {
       ] as const) {
         const input: Record<string, unknown> = {
           agentDefinitionService: {},
-          agentToolMcpSessionIssuer: {},
+          agentToolMcpRunSessions: {},
+          applicationAgentTools: null,
         };
         if (omit) delete input[field];
         else input[field] = value;
         expect(() => builder.createForExecution(input as never), `${field} ${label}`)
           .toThrow(`Agent provider factory builder ${field} is required.`);
       }
+    }
+
+    for (const input of [
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {} },
+      {
+        agentDefinitionService: {},
+        agentToolMcpRunSessions: {},
+        applicationAgentTools: undefined,
+      },
+    ]) {
+      expect(() => builder.createForExecution(input as never))
+        .toThrow("applicationAgentTools disposition is required");
     }
   });
 
@@ -130,15 +143,19 @@ describe("AgentProviderFactoryBuilder", () => {
     const builder = createAgentProviderFactoryBuilder(process);
     const definitionA = { marker: "definition-a" };
     const definitionB = { marker: "definition-b" };
-    const issuerA = { issueForRun: vi.fn() };
-    const issuerB = { issueForRun: vi.fn() };
+    const runSessionsA = { activateForRun: vi.fn() };
+    const runSessionsB = { activateForRun: vi.fn() };
+    const capabilityA = { marker: "application-capability-a" };
+    const capabilityB = { marker: "application-capability-b" };
     const first = builder.createForExecution({
       agentDefinitionService: definitionA as never,
-      agentToolMcpSessionIssuer: issuerA as never,
+      agentToolMcpRunSessions: runSessionsA as never,
+      applicationAgentTools: capabilityA as never,
     });
     const second = builder.createForExecution({
       agentDefinitionService: definitionB as never,
-      agentToolMcpSessionIssuer: issuerB as never,
+      agentToolMcpRunSessions: runSessionsB as never,
+      applicationAgentTools: capabilityB as never,
     });
 
     expect(Object.isFrozen(builder)).toBe(true);
@@ -157,6 +174,7 @@ describe("AgentProviderFactoryBuilder", () => {
     expect(auto.waitForIdle).toBe(process.autoByteus.waitForIdle);
     expect(auto.compactionAgentRunnerFactory)
       .toBe(process.autoByteus.compactionAgentRunnerFactory);
+    expect(auto.applicationAgentTools).toBe(capabilityA);
 
     const codex = first.codex as unknown as Record<string, unknown>;
     const codexBootstrapper = codex.threadBootstrapper as Record<string, unknown>;
@@ -168,14 +186,14 @@ describe("AgentProviderFactoryBuilder", () => {
     expect(codexBootstrapper.agentDefinitionService).toBe(definitionA);
     expect(codexBootstrapper.skillService).toBe(process.skillService);
     expect(codexBootstrapper.clientManager).toBe(process.codex.clientManager);
-    expect(codexBootstrapper.agentToolMcpSessionIssuer).toBe(issuerA);
+    expect(codexBootstrapper.agentToolMcpRunSessions).toBe(runSessionsA);
 
     const claude = first.claude as unknown as Record<string, unknown>;
     const claudeManager = claude.sessionManager as Record<string, unknown>;
     const claudeBootstrapper = claude.sessionBootstrapper as Record<string, unknown>;
     expect(claudeManager.workspaceManager).toBe(process.workspaceManager);
     expect(claudeManager.sdkClient).toBe(process.claude.sdkClient);
-    expect(claudeManager.agentToolMcpSessionIssuer).toBe(issuerA);
+    expect(claudeManager.agentToolMcpRunSessions).toBe(runSessionsA);
     expect((claudeManager.sessionCleanup as Record<string, unknown>)
       .workspaceSkillMaterializer).toBe(process.claude.workspaceSkillMaterializer);
     expect(claudeBootstrapper.workspaceResolver).toBe(process.claude.workspaceResolver);
@@ -190,8 +208,22 @@ describe("AgentProviderFactoryBuilder", () => {
       .sessionManager as Record<string, unknown>;
     expect(secondCodexBootstrapper).not.toBe(codexBootstrapper);
     expect(secondCodexBootstrapper.agentDefinitionService).toBe(definitionB);
-    expect(secondCodexBootstrapper.agentToolMcpSessionIssuer).toBe(issuerB);
+    expect(secondCodexBootstrapper.agentToolMcpRunSessions).toBe(runSessionsB);
     expect(secondClaudeManager).not.toBe(claudeManager);
-    expect(secondClaudeManager.agentToolMcpSessionIssuer).toBe(issuerB);
+    expect(secondClaudeManager.agentToolMcpRunSessions).toBe(runSessionsB);
+    expect((second.autoByteus as unknown as Record<string, unknown>).applicationAgentTools)
+      .toBe(capabilityB);
+  });
+
+  it("keeps general execution application capability explicitly null", () => {
+    const factory = createAgentProviderFactoryBuilder(createProcessInput())
+      .createForExecution({
+        agentDefinitionService: {} as never,
+        agentToolMcpRunSessions: { activateForRun: vi.fn() } as never,
+        applicationAgentTools: null,
+      });
+
+    expect((factory.autoByteus as unknown as Record<string, unknown>).applicationAgentTools)
+      .toBeNull();
   });
 });

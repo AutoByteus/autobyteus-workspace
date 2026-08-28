@@ -97,8 +97,9 @@ streams and memory traces must preserve invocation id and arguments, apply
 family-specific result canonicalization where that family owns a public result
 contract, and sanitize provider/server-qualified names
 (`autobyteus_agent_tools` or
-`mcp__autobyteus_agent_tools__publish_artifacts`) plus `Authorization`,
-`Bearer`, and `http_headers` config details from app-facing payloads.
+`mcp__autobyteus_agent_tools__publish_artifacts`) plus internal run-session
+routing/configuration details from app-facing payloads. Agent Tools MCP config
+is headerless; no bearer or `http_headers` compatibility path is materialized.
 For known browser tools, Codex must emit the standard browser result object
 instead of the raw MCP content envelope so `open_tab` exposes `result.tab_id`
 directly to Browser-shell focus handling. Unknown non-AutoByteus MCP traffic

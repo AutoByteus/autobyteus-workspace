@@ -13,7 +13,7 @@ export type AgentToolMcpAvailabilityContext = {
   runtimeExposure: RuntimeAgentToolExposure;
   sender: AgentRunMessageSenderContext | null;
   executionContext: AgentToolMcpExecutionContext;
-  applicationAgentTools?: ApplicationAgentToolCapability | null;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
 };
 
 export type AgentToolMcpOperationExecutionResult = {

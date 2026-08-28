@@ -18,15 +18,13 @@ import {
 import { getTeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import type { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
 
 const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
   scopeIdentity: "general-process",
-  issuer: Object.freeze({ issueForRun: vi.fn() }),
   runSessions: Object.freeze({
-    revokeForRun: vi.fn(() => 0),
-    revokeForOwner: vi.fn(() => 0),
+    activateForRun: vi.fn(),
+    deactivateForRun: vi.fn(() => 0),
   }),
   assertReady: vi.fn(),
   blockNewSessions: vi.fn(),
@@ -47,8 +45,6 @@ const teamManagerStub = Object.freeze({
   hasOpenExecutionWork: () => false,
 }) as unknown as MixedTeamManager;
 const createBackendFactory = () => new MixedTeamRunBackendFactory({
-  agentToolMcpRunSessionReleaser:
-    createNoopAgentToolMcpRunSessionReleaser(),
   createTeamManager: () => teamManagerStub,
 });
 
@@ -98,7 +94,8 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     expect(getTeamRunService()).toBe(supervisor.teamRunService);
     expect(input.agentProviderFactoryBuilder.createForExecution).toHaveBeenCalledWith({
       agentDefinitionService: input.agentDefinitionService,
-      agentToolMcpSessionIssuer: input.agentToolMcpSessionAuthority.issuer,
+      agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
+      applicationAgentTools: null,
     });
 
     const owned = supervisor as unknown as {
@@ -121,12 +118,9 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
     const factoryOptions = (owned.agentTeamRunManager as unknown as {
       factory: { options: {
-        agentToolMcpRunSessionReleaser: object;
         createTeamManager(input: unknown): object;
       } };
     }).factory.options;
-    expect(factoryOptions.agentToolMcpRunSessionReleaser)
-      .toBe(input.agentToolMcpSessionAuthority.runSessions);
     const callbacks = {
       taskRootResolver: { resolveActiveRoot: vi.fn() },
       publish: vi.fn(),
@@ -137,8 +131,6 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       context: {} as never,
       subTeamRunFactory: {} as never,
       callbacks,
-      agentToolMcpRunSessionReleaser:
-        input.agentToolMcpSessionAuthority.runSessions,
     };
     const mixedManager = factoryOptions.createTeamManager(constructionInput) as {
       configured: { options: Record<string, unknown> };
@@ -148,8 +140,6 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const taskAgents = mixedManager.taskAgents.options;
     for (const options of [configured, taskAgents]) {
       expect(options.agentRunManager).toBe(owned.agentRunManager);
-      expect(options.agentToolMcpRunSessionReleaser)
-        .toBe(input.agentToolMcpSessionAuthority.runSessions);
       expect(options.workspaceManager).toBe(input.workspaceManager);
       expect(options.taskRootResolver).toBe(callbacks.taskRootResolver);
       expect(options.publish).toBe(callbacks.publish);

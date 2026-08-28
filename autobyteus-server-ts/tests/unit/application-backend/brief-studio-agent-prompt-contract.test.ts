@@ -90,29 +90,27 @@ describe("Brief Studio maintained Codex Agent contract", () => {
     }
   });
 
-  it("makes the researcher use Luna's built-in patch, relative publication, and a complete bounded handoff", () => {
+  it("makes the researcher complete the business artifact, relative publication, and bounded handoff", () => {
     expect(researcherPrompt.match(/Call `get_brief_context` exactly once with `\{\}`/g)).toHaveLength(1);
     expect(researcherPrompt).toContain(
       "your first tool action must be exactly one call to `get_brief_context` with `{}`",
     );
     expectInOrder(researcherPrompt, [
       "Brief context requirement:",
-      "Call `get_brief_context` exactly once with `{}` before any file change or publication.",
+      "Call `get_brief_context` exactly once with `{}` before creating or publishing the research artifact.",
       "Require a successful result",
       "Required sequence after successful context validation:",
       "Compose a complete 200-500-word research body",
-      "Use Luna's built-in `apply_patch` operation",
-      "Do not use `run_bash` for any file operation.",
-      "Require the provider-reported `apply_patch` result to succeed.",
+      "Create or replace the canonical workspace-relative artifact `brief-studio/research.md`",
+      "Confirm the required artifact was created successfully.",
       'Call `publish_artifacts` exactly for the canonical relative path with `artifacts: [{ path: "brief-studio/research.md" }]`.',
       'Call `send_message_to` with `recipient_address: "/writer"`.',
     ]);
     expect(researcherPrompt).toContain("complete 200-500-word research body verbatim—not a summary or truncated excerpt");
     expect(researcherPrompt).toContain("never calculate, capture, or hand off an absolute path");
-    expect(researcherPrompt).toContain("never use a shell fallback or claim the file exists");
-    expect(researcherPrompt).toContain("do not inspect provider protocol events or internal normalized traces");
+    expect(researcherPrompt).toContain("never claim the artifact exists");
     expect(researcherPrompt).toContain("stop without creating or publishing a file");
-    expect(researcherPrompt).not.toContain("edit_file");
+    expect(researcherPrompt).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
     expect(researcherPrompt).not.toContain("exact absolute path returned");
   });
 
@@ -124,44 +122,43 @@ describe("Brief Studio maintained Codex Agent contract", () => {
     expectInOrder(writerPrompt, [
       "wait for the researcher handoff",
       "Brief context and handoff validation:",
-      "Call `get_brief_context` exactly once with `{}` before any file change or publication.",
+      "Call `get_brief_context` exactly once with `{}` before creating or publishing the final artifact.",
       "Require your returned `briefId` to equal",
       "Require the handoff to contain the canonical relative path and the complete research body",
       "Required sequence after successful validation:",
-      "Do not call `read_file`",
+      "Use the complete research body carried in the Team message as your only research source.",
       "Under `Key evidence`, copy at least one complete non-marker bullet",
-      "Use Luna's built-in `apply_patch` operation",
-      "Do not use `run_bash` for any file operation.",
-      "Require the provider-reported `apply_patch` result to succeed.",
+      "Create or replace the canonical workspace-relative artifact `brief-studio/final-brief.md`",
+      "Confirm the required artifact was created successfully.",
       'Call `publish_artifacts` exactly for the canonical relative path with `artifacts: [{ path: "brief-studio/final-brief.md" }]`.',
+      'Call `send_message_to` with `recipient_address: "/researcher"`',
     ]);
-    expect(writerPrompt).toContain("do not access the researcher's separate workspace");
+    expect(writerPrompt).toContain("Do not open `brief-studio/research.md` or access the researcher's separate workspace");
     expect(writerPrompt).toContain("Preserve the bullet's complete wording as the deterministic research-use witness.");
-    expect(writerPrompt).toContain("the handed-off body, not a cross-workspace file read, is the only research source");
-    expect(writerPrompt).toContain("do not inspect provider protocol events or internal normalized traces");
+    expect(writerPrompt).toContain("the handed-off body, not cross-workspace access, is the only research source");
     expect(writerPrompt).toContain("stop without creating or publishing a file");
-    expect(writerPrompt).not.toContain("edit_file");
+    expect(writerPrompt).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
     expect(writerPrompt).not.toContain("exact absolute path returned");
   });
 
   it("keeps Team and launch text as supporting non-routing reinforcement", () => {
     expect(teamPrompt).toContain("each member's own `agent.md` is authoritative for its ordered work");
-    expect(teamPrompt).toContain("does not list the provider's built-in patch operation");
-    expect(teamPrompt).toContain("uses Luna's built-in `apply_patch` without `run_bash`");
+    expect(teamPrompt).toContain("configuration only determines which required business calls are available");
+    expect(teamPrompt).toContain("creates `brief-studio/research.md` with the exact marker and required business content");
     expect(teamPrompt).toContain("complete 200-500-word research body verbatim");
-    expect(teamPrompt).toContain("without `read_file` or cross-workspace access");
+    expect(teamPrompt).toContain("without cross-workspace access");
     expect(teamPrompt).toContain("`Key findings` bullet verbatim under final `Key evidence`");
-    expect(teamPrompt).toContain("neither role uses ordinary registry `read_file`/`write_file`, a shell fallback, or absolute publication paths");
-    expect(teamPrompt).toContain("never inspects provider protocol events or internal normalized traces");
-    expect(teamPrompt).not.toContain("edit_file");
+    expect(teamPrompt).toContain("reports completion to `/researcher`");
+    expect(teamPrompt).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
 
-    expect(launchServiceSource).toContain("Configured tool selection covers only routed capabilities; Luna's built-in apply_patch is not a configured tool name.");
-    expect(launchServiceSource).toContain("complete 200-500-word research body verbatim");
-    expect(launchServiceSource).toContain("without read_file or cross-workspace access");
+    expect(launchServiceSource).toContain("this launch text reinforces but does not replace them");
+    expect(launchServiceSource).toContain("required 200-500-word research body");
+    expect(launchServiceSource).toContain("complete body verbatim");
+    expect(launchServiceSource).toContain("without cross-workspace access");
     expect(launchServiceSource).toContain("complete non-marker Key findings bullet verbatim under Key evidence");
-    expect(launchServiceSource).toContain("React only to provider-reported patch success or failure; do not inspect provider protocol events or internal normalized traces.");
-    expect(launchServiceSource).toContain("without shell fallback or a fabricated artifact");
-    expect(launchServiceSource).not.toContain("edit_file");
+    expect(launchServiceSource).toContain("report completion to /researcher");
+    expect(launchServiceSource).toContain("without fabricating an artifact");
+    expect(launchServiceSource).not.toMatch(/apply_patch|edit_file|read_file|write_file|run_bash|provider-native|provider-reported|protocol|normalized trace|shell/i);
     expect(launchServiceSource).not.toContain("exact absolute path returned");
   });
 });

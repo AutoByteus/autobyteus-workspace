@@ -14,8 +14,9 @@ The current implementation replaced the old session-owned model with application
 
 ## Current Agent Tools MCP Session Scope
 
-The current Agent Tools MCP sessions are ephemeral bearer capabilities, not a
-return of the former durable application-session identity:
+The current Agent Tools MCP run-sessions are ephemeral process-memory routing
+and execution context, not a return of the former durable application-session
+identity:
 
 - `AgentToolsMcpHost` owns one process registry, tool catalog, executor,
   dispatcher, session-authority factory, and internal route family.
@@ -26,25 +27,21 @@ return of the former durable application-session identity:
   concrete publication capability and readiness assertion. General-process
   sessions use a separate authority and `GeneralProcessRunSupervisor`, so they
   cannot inherit an application's publication capability or definition graph.
-- For an application execution, the ephemeral session may also contain
-  selected application-owned tool routes. Each route freezes the current
-  application/binding/producer identity and declaration fingerprint; it is not
-  a durable application session and is not visible to general-process or other
-  application runs. Native AutoByteus application runs use a bound local
-  projection over the same application gateway instead of this HTTP route.
-- Both Studio and standalone register the internal
-  `/mcp/agent-tools/:sessionId` route. The external `/mcp/gateway` client surface
-  is separate and remains Studio-only.
-- Application-runtime shutdown blocks new run/session issue, closes and drains
-  application-tool admission while workers are still available, closes ingress,
+- Studio and the standalone host start a separate process-local Agent Tools MCP
+  listener on ephemeral `127.0.0.1`; their main Fastify instances do not
+  register the run-session route. The external `/mcp/gateway` client surface is
+  separate and remains Studio-only.
+- Application-runtime shutdown blocks new run-session activation, closes ingress,
   drains accepted artifact commands while workers can still be ensured, stops
   workers and runtime-owned team/agent runs, revokes remaining scope-owned
   sessions, and stops remaining streams. Exact run removal revokes that run's
   sessions and detaches its file-change, artifact-relay, and memory observers
   at most once.
 
-These descriptors are session-scoped capabilities; they are not stored
-application identity, wire-level application sessions, or retained snapshots.
+These tokenless descriptors carry a deterministic run-derived route on the
+current host-owned listener; they are not stored application identity,
+wire-level application sessions, authorization credentials, or retained
+snapshots.
 
 ## Current Authoritative Docs
 

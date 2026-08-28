@@ -29,11 +29,12 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 
 `AgentProviderFactoryBuilder` freezes process-wide provider primitives and
 creates AutoByteus, Codex, and Claude backend factories only from an explicit
-execution-family `AgentDefinitionService` and `AgentToolMcpSessionIssuer`.
+execution-family `AgentDefinitionService` and
+`AgentToolMcpRunSessionActivator`.
 Provider construction does not read a process-global application manager or
-session scope. Codex and Claude materializers therefore receive the exact issuer
-owned by the General Process or Application execution family that created the
-run.
+session scope. Codex and Claude materializers therefore receive the exact
+activation boundary owned by the General Process or Application execution
+family that created the run.
 
 `GeneralProcessRunSupervisor` owns the General Process Agent/Team managers,
 history services, task identity, context-file normalization, run resources, and
@@ -175,6 +176,25 @@ falls back to `thread/start`. Claude reserves one valid UUID before first input:
 the first SDK query receives only `sessionId`, later and restored queries receive
 only `resume`, and every provider-reported session ID must confirm the same UUID.
 The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
+
+## Published-Run Termination And Resource Finalization
+
+`AgentRunManager.prepareAgentRunTermination(expectedRun)` is the only
+termination preparation entrypoint for a published `AgentRun`. Direct stop,
+Mixed Team-member stop, and `stopAllAgentRuns()` all use the same exact-instance
+wrapper around `AgentRun.prepareTermination()`. Concurrent preparation and
+finish calls coalesce per exact run.
+
+Cancellation reopens the underlying run and removes the reusable preparation.
+A committed finish that returns `accepted: false` keeps the run current and the
+finish retryable. An accepted provider/runtime finish is not returned to the
+caller until the run is inactive, exact-current removal succeeds, and the
+activation registry's cleanup result is successful. That removal releases the
+same run's resources once: it deactivates the deterministic Agent Tools MCP
+run-session and detaches file-change, artifact-relay, and memory observers.
+Replacement runs are never released by stale cleanup. Thrown finalization,
+identity mismatch, or accepted-but-active outcomes are terminal for the
+committed attempt rather than being converted into success.
 
 ## Stopped Model Configuration And Restore Serialization
 
@@ -499,8 +519,8 @@ Runtime converters must canonicalize all Agent Tools MCP provider identities
 before emitting application-facing events. Provider/server-qualified names such
 as `autobyteus_agent_tools` and
 `mcp__autobyteus_agent_tools__delegate_task` normalize to canonical tool names
-such as `delegate_task`; bearer tokens, session ids, `Authorization`, and
-`http_headers` are sanitized from events, run history, and memory traces.
+such as `delegate_task`; internal run-session IDs and provider configuration
+details are not projected into events, run history, or memory traces.
 
 Source-confirmed MCP terminal result lanes use the general MCP effective-result
 projector before Activity, run history, and memory traces consume the result.

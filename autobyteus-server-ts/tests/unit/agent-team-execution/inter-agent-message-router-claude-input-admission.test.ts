@@ -121,19 +121,8 @@ describe("InterAgentMessageRouter Claude input admission", () => {
           new Map(),
           () => undefined,
         ),
-        agentToolMcpSessionIssuer: {
-          issueForRun: vi.fn((input) => ({
-            sessionId: "claude-input-test",
-            owner: input.owner,
-            descriptor: {
-              name: "autobyteus_agent_tools",
-              transport: "streamable_http",
-              serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/claude-input-test",
-              headers: { Authorization: "Bearer test-only" },
-              enabledTools: [],
-            },
-            redactedDescriptor: {} as never,
-          })),
+        agentToolMcpRunSessions: {
+          activateForRun: vi.fn(() => ({ kind: "not_exposed" })),
         } as never,
         isRunSessionActive: () => true,
         terminateRunSession: vi.fn(async () => undefined),

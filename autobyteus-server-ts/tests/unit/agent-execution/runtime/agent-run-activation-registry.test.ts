@@ -7,7 +7,7 @@ import {
 const releaseResult = (runId: string, errors: Error[] = []) => ({
   state: "released" as const,
   runId,
-  revokedSessionCount: 1,
+  deactivatedSessionCount: 1,
   detached: { fileChanges: true, artifactRelay: true, memoryRecorder: true },
   errors,
 });

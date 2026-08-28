@@ -2,11 +2,10 @@
 
 ## Scope
 
-The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools,
-selected configured MCP-origin registry tools, and selected application-owned
-business tools to external runtimes through a session-scoped Streamable HTTP
-MCP endpoint. It is a server-hosted tool surface for runtimes that cannot call
-in-process AutoByteus tool wrappers directly.
+The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools
+and selected configured MCP-origin registry tools to external runtimes through a
+session-scoped Streamable HTTP MCP endpoint. It is a server-hosted tool surface
+for runtimes that cannot call in-process AutoByteus tool wrappers directly.
 Claude Agent SDK and Codex App Server are the first production runtime
 materializers: configured Claude runs consume this endpoint through the SDK
 `mcpServers` query option, and configured Codex runs consume it through
@@ -26,10 +25,6 @@ registered `ToolOrigin.MCP` tools, not AutoByteus internal run tools.
 
 - `src/agent-tools/mcp`
 - `src/agent-tools/mcp/providers`
-- application route adapter in
-  `src/agent-tools/mcp/application-agent-tool-mcp-adapter.ts`
-- application catalog, gateway, validation, and call lifecycle in
-  `src/application-agent-tools`
 - process host in `src/agent-tools/mcp/agent-tools-mcp-host.ts`
 - session authority contract and implementation in
   `src/agent-tools/mcp/agent-tool-mcp-session-authority.ts` and
@@ -38,12 +33,13 @@ registered `ToolOrigin.MCP` tools, not AutoByteus internal run tools.
   `src/agent-execution/backends/claude/agent-tools-mcp`
 - Codex runtime materializer in
   `src/agent-execution/backends/codex/agent-tools-mcp`
-- route registration in `src/server-runtime.ts`
-- run/member lifecycle revocation hooks in:
+- dedicated loopback listener in
+  `src/agent-tools/mcp/agent-tools-mcp-local-server.ts`
+- published-run finalization path in:
   - `src/agent-execution/services/agent-run-manager.ts`
   - `src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
 
-## Public Endpoint
+## Process-Local Endpoint
 
 Generated runtime descriptors use the reserved MCP server name
 `autobyteus_agent_tools` and the Streamable HTTP transport:
@@ -52,18 +48,30 @@ Generated runtime descriptors use the reserved MCP server name
 /mcp/agent-tools/:sessionId
 ```
 
-The same endpoint handles the MCP Streamable HTTP methods:
+`AgentToolsMcpHost` owns one dedicated Fastify listener for every General and
+Application execution scope in the process. The listener binds only to
+`127.0.0.1` on an ephemeral port and registers only the Agent Tools MCP route,
+its logging policy, and its route-parameter limit. It is not registered on the
+Studio or standalone application's main Fastify instance, does not derive its
+address from the public/main server base URL, and is independent of the
+external `/mcp/gateway` route.
+
+The endpoint handles the MCP Streamable HTTP methods:
 
 - `POST` for JSON-RPC requests, notifications, and client responses.
 - `GET` for SSE compatibility with Streamable HTTP clients.
 - `OPTIONS` for local preflight handling.
-- `DELETE` currently returns `405 Method Not Allowed`; AutoByteus run/member
-  lifecycle remains the owner of session revocation.
+- `DELETE` currently returns `405 Method Not Allowed`; AutoByteus published-run
+  lifecycle remains the owner of run-session deactivation.
 
-The route validates loopback-only `Origin` values when an origin header is
-present, requires a bearer capability token for authenticated methods, redacts
-unavailable or token-mismatched sessions as `404`, and supports the negotiated
-MCP protocol versions recognized by the route dispatcher.
+Every request is admitted before method handling or session lookup. Admission
+requires the raw TCP peer address to be loopback, the `Host` header to be
+`localhost` or a loopback address, and any supplied `Origin` to be HTTP(S) on a
+current loopback host. A failed local-admission check returns `403`; an admitted
+request for an inactive run-session ID returns the redacted `404
+session_unavailable`. No bearer token or Agent Tools authorization header is
+used. The route supports the negotiated MCP protocol versions recognized by
+the route dispatcher.
 
 ## Session And Descriptor Ownership
 
@@ -72,55 +80,69 @@ dispatcher, route dependencies, and `AgentToolMcpSessionAuthorityFactory`.
 Every execution family begins a named authority assembly. The assembly is
 completed only after the family's exact publication capability and readiness
 assertion exist; aborting construction closes any partially assembled ledger.
-The completed `ScopedAgentToolMcpSessionAuthority` is the only issuer exposed to
-provider factories and the only owner allowed to revoke that scope's sessions.
+The completed `ScopedAgentToolMcpSessionAuthority` is the only run-session
+activation boundary exposed to provider factories and the only owner allowed
+to deactivate that scope's sessions.
 
 The authority delegates descriptor creation to `AgentToolMcpSessionService`.
-Each issued descriptor includes:
+Each active-run descriptor includes:
 
 - `name: "autobyteus_agent_tools"`
 - `transport: "streamable_http"`
 - `serverUrl`
-- bearer `Authorization` header
 - `enabledTools`
 
-The secret descriptor is only for the runtime session that will consume it.
-Logs, diagnostics, and handoffs should use the redacted descriptor shape, which
-redacts both the bearer token and the session id in the URL.
+The run-session ID is deterministic routing identity, not a secret. It is
+`agtrun_` plus the base64url SHA-256 digest of the normalized `AgentRun.runId`.
+The registry permits exactly one active entry for that derived ID and stores the
+current owner/sender identity, runtime exposure, tool routes, configured MCP
+source snapshots, execution context/capabilities, creation time, and optional
+execution observer. Those live values are activation-only and are never
+persisted.
 
-`AgentToolMcpSessionRegistry` stores only the token hash, owner identity, sender
-context, runtime kind, configured exposure snapshot, enabled tool list, creation
-time, revocation time, optional execution observer, and redaction-safe route
-snapshots. An application route includes its frozen application/binding/producer
-identity and declaration fingerprint; a configured MCP route includes its
-registered tool name and MCP server id.
-Active sessions do not expire from a fixed wall-clock TTL. A request is valid
-only while the session is present in the current process-memory registry, is not
-revoked, and the bearer token matches the stored token hash.
+Activation fails rather than replacing a current entry. Authoritative
+published-run termination deactivates the exact run-session as part of
+`AgentRunResourceManager.release`; scope close is the fallback that removes any
+remaining owned sessions, and host close clears the process registry. Within a
+live process, stopping and later restoring the same run reactivates the same
+route ID with fresh current execution context while the host-owned listener
+address stays stable. A process restart creates a new listener address and an
+empty registry, so restored or newly started runtimes materialize the current
+descriptor during provider bootstrap/session setup. No Agent Tools session,
+token, listener address, or descriptor is persisted.
 
-Sessions are revoked when their owning `AgentRun` is terminated or
-unregistered through `AgentRunManager`, when a mixed-team member handle is
-disposed, when its execution scope closes, or when the process host closes. A
-server/process restart clears the in-memory registry, so descriptors
-from the previous process fail with the redacted `404 session_unavailable`
-route response. Restored, resumed, or newly started runtime owners must
-materialize a fresh descriptor in the current process before they use Agent
-Tools MCP.
+## Published-Run Finalization
+
+`AgentRunManager.prepareAgentRunTermination(expectedRun)` is the single
+published-run reversible prepare and committed-finalization boundary. Direct
+Agent stop, Mixed Team-member stop, and `stopAllAgentRuns()` all use it. A
+cancelled preparation or committed `accepted: false` result leaves the current
+run, its run-session, and its attached resources active so the operation can be
+retried. An accepted finish does not return success until the exact run is
+inactive, `AgentRunActivationRegistry.removeIfCurrent(...)` removes that same
+object, and resource release has deactivated the run-session and detached the
+file-change, artifact-relay, and memory observers.
+
+`MixedAgentMemberHandle` delegates to that manager boundary and disposes its
+local handle only after accepted managed finish. It does not own a second Agent
+Tools cleanup path. Identity mismatch, cleanup failure, or an accepted finish
+that leaves the run active is terminal for that committed attempt and cannot be
+reported as successful Team stop.
 
 ## Runtime Materialization
 
-Claude Agent SDK materialization is programmatic and live-session scoped. When
-the current Claude run has at least one configured, available Agent Tools MCP
-tool, `ClaudeSession` creates an Agent Tools MCP session, reuses the private
-descriptor while that `ClaudeSession` object remains live, and passes the
-materialized SDK config under the reserved server name:
+Claude Agent SDK materialization is programmatic and provider-session scoped.
+When the current Claude run has at least one configured, available Agent Tools
+MCP tool, the Claude session lazily activates the run-session on first tooling
+setup, caches that activation for the lifetime of the `ClaudeSession`, and
+passes the materialized SDK config under the reserved server name:
 
 ```ts
 {
   autobyteus_agent_tools: {
     type: "http",
     url: descriptor.serverUrl,
-    headers: descriptor.headers,
+    alwaysLoad: true,
   },
 }
 ```
@@ -130,21 +152,20 @@ For each enabled canonical tool name, Claude pre-approves both the canonical
 name and the provider wire name such as
 `mcp__autobyteus_agent_tools__generate_image`. If no supported tool is enabled,
 the session does not create an Agent Tools MCP descriptor. Restored or newly
-created Claude sessions rematerialize a fresh descriptor instead of persisting,
-reusing, or refreshing bearer-token config by expiry.
+created Claude sessions reactivate current context instead of persisting or
+refreshing descriptor credentials.
 
-Codex App Server materialization is also live-session scoped, but uses the app
+Codex App Server materialization occurs during run bootstrap and uses the app
 server thread protocol. When a Codex standalone or team-member run has at least
 one configured, available Agent Tools MCP tool, `CodexThreadBootstrapper`
-creates an Agent Tools MCP session and passes only a thread-scoped config object
-into `thread/start` and `thread/resume`:
+activates the run-session and passes only a thread-scoped config object into
+`thread/start` and `thread/resume`:
 
 ```ts
 {
   mcp_servers: {
     autobyteus_agent_tools: {
       url: descriptor.serverUrl,
-      http_headers: descriptor.headers,
       enabled_tools: descriptor.enabledTools,
       startup_timeout_sec: 5,
     },
@@ -152,28 +173,21 @@ into `thread/start` and `thread/resume`:
 }
 ```
 
-Codex must not materialize this bearer-bearing descriptor through shared
-process-wide launch flags, `CODEX_APP_SERVER_ARGS*`, trusted
+Codex must not materialize this descriptor through shared process-wide launch
+flags, `CODEX_APP_SERVER_ARGS*`, trusted
 `.codex/config.toml`, or any other durable project file. If no supported tool is
 enabled, Codex does not create the descriptor or pass the MCP server config for
 this surface.
 
-## Route Composition And Authorization Boundary
+## Configured Tool Boundary
 
-The server-side session is the security boundary. `AgentToolMcpCatalog` derives
+Local admission plus the active server-side run-session is the execution
+boundary. `AgentToolMcpCatalog` derives
 the enabled MCP tool list from the agent's configured AutoByteus tool exposure,
-the server-supported MCP adapters, the shared tool registry, and, for an
-application execution, the exact owning application's selected declarations. It
-snapshots one source-aware route per enabled wire tool name into the session:
-`static_adapter`, `configured_mcp_tool`, or `application_agent_tool`.
-
-Application declarations are not process-global registry entries and are not
-visible in general-process or other-application sessions. All registered static
-adapter names are reserved from applications regardless of current adapter
-availability or configured-MCP precedence policy. After that reservation check,
-an application route takes precedence over a same-name configured MCP tool only
-inside the owning application's session. Outside that application, the existing
-configured-MCP/static policy remains unchanged.
+the server-supported MCP adapters, and the shared tool registry. It snapshots one
+source-aware route per enabled wire tool name into the session, either a
+`static_adapter` route for a server-owned adapter or a `configured_mcp_tool`
+route for a selected registry tool.
 
 Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
 eligible only when the registered tool name is selected by the agent definition.
@@ -193,12 +207,6 @@ enable.
 `tools/call` rejects unknown or unconfigured tools before reaching any executor.
 Stale configured MCP snapshots fail closed if the current registry definition is
 missing, no longer MCP-origin, or no longer belongs to the same MCP server id.
-Stale application snapshots fail closed when the declaration fingerprint is no
-longer current. `ApplicationAgentToolGateway` also revalidates application
-availability, the live binding and exact producer identity, and the declared
-input schema before invoking the exact owning worker once. It validates the
-bounded MCP-safe result on return. Handler or worker failures are sanitized and
-are never automatically retried.
 
 ## JSON-RPC Methods
 
@@ -213,8 +221,8 @@ The v1 endpoint handles:
 - `ping`
 
 Malformed JSON, invalid JSON-RPC envelopes, unsupported protocol versions, bad
-content negotiation, bad origins, missing bearer tokens, and unavailable
-sessions fail before tool execution.
+content negotiation, failed local admission, and unavailable sessions fail
+before tool execution.
 
 ## Supported Tool Families
 
@@ -229,13 +237,6 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - task-delegation tools from `src/agent-tools/task-delegation`
 - `publish_artifacts`
-
-Application-owned tools are catalog data rather than another static adapter
-family. A declaration becomes eligible only when the current application Agent
-or Team member selects its name. Claude and Codex consume the resulting
-`application_agent_tool` route here; AutoByteus-native application runs use a bound
-local `BaseTool` projection over the same application gateway without moving
-their existing foundation tools onto HTTP MCP.
 
 The catalog filters by the session's resolved effective tool names. That set is
 the configured Agent tool set plus the automatic Team collaboration trio when a
@@ -289,13 +290,6 @@ may also return raw MCP tool results; their `content`, `isError`,
 This raw envelope behavior is the MCP protocol boundary and must not be changed
 by application-facing result projection.
 
-Application-tool results already use the shared MCP-safe content shape. The
-application adapter maps their text, image/audio, embedded resource, resource
-link, structured-content, and explicit error fields without adding
-application-specific provider branches. Generic application arguments/results
-are not copied into a new process-wide payload log; normal access-controlled
-run traces remain the invocation evidence owner.
-
 Agent communication adapters use their dedicated mapper so `send_message_to`
 and `get_handoff_rules` expose the exact same
 `{accepted,code,message,result}` object in MCP text and `structuredContent`.
@@ -306,9 +300,9 @@ For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP
 lifecycle events are normalized to canonical application-facing tool names such
 as `send_message_to`, `open_tab`, `generate_image`, `delegate_task`, and
 `publish_artifacts`. Provider/server-qualified names such as
-`mcp__autobyteus_agent_tools__generate_image`, `autobyteus_agent_tools`, and
-bearer/header config details must not leak into frontend events, run history, or
-memory read models. Source-confirmed MCP terminal results also pass through the
+`mcp__autobyteus_agent_tools__generate_image` and `autobyteus_agent_tools`, plus
+internal run-session routing details, must not leak into frontend events, run
+history, or memory read models. Source-confirmed MCP terminal results also pass through the
 general effective-result projector at the runtime lifecycle boundary: successful
 MCP `content` / `structuredContent` envelopes become effective app-facing
 results, and `isError: true` envelopes become failed tool lifecycle events. That
@@ -327,15 +321,11 @@ gates explicitly, and add durable route/session/executor coverage.
 
 - production runtime MCP config materializers for Claude Code CLI or
   Antigravity CLI;
-- persisted MCP sessions or persisted bearer-token reuse across restored runs;
-- stale bearer-token config cleanup;
+- persisted Agent Tools run sessions or descriptors across restored runs;
+- remote/non-loopback Agent Tools MCP clients;
 - complex long-lived or resumable SSE server push;
 - exposing every local registry tool through Agent Tools MCP;
 - using Agent Tools MCP as the general external `/mcp/gateway`;
 - direct provider-native external MCP config materialization for configured MCP
   servers; and
-- moving native AutoByteus in-process tools to this HTTP MCP route;
-- allowing an application package to register a process-global tool or supply
-  its own arbitrary stdio/SSE/remote MCP server through this capability; and
-- treating provider built-ins such as Codex `apply_patch`, or downstream
-  normalized names such as `edit_file`, as Agent Tools MCP route names.
+- moving native AutoByteus in-process tools to this HTTP MCP route.

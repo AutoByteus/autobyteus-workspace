@@ -147,9 +147,10 @@ application-facing canonical names such as `send_message_to`, `generate_image`,
 apply any family-specific result canonicalization owned by the corresponding
 tool family, and sanitize nested payloads so
 `autobyteus_agent_tools`,
-`mcp__autobyteus_agent_tools__publish_artifacts`, `Authorization`, bearer
-tokens, and `http_headers` do not reach frontend events, run history, or memory
-read models.
+`mcp__autobyteus_agent_tools__publish_artifacts`, and internal run-session
+routing/configuration details do not reach frontend events, run history, or
+memory read models. The current Agent Tools MCP descriptor is headerless and
+has no bearer/`http_headers` compatibility path.
 
 Browser tools are the main family-specific exception to raw MCP result-envelope
 preservation: successful known-browser tool results must be normalized before

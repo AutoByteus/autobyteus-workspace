@@ -4,24 +4,24 @@ import type {
   AgentToolMcpSessionOwnerIdentity,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type {
-  AgentToolMcpSessionIssuer,
-  IssuedAgentToolMcpSession,
+  AgentToolMcpRunSessionActivator,
+  AgentToolMcpRunSessionActivationResult,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
 export class ClaudeAgentToolsMcpSessionState {
-  private issuedSession: IssuedAgentToolMcpSession | null = null;
+  private activation: AgentToolMcpRunSessionActivationResult | null = null;
 
-  constructor(private readonly sessionIssuer: AgentToolMcpSessionIssuer) {}
+  constructor(private readonly runSessions: AgentToolMcpRunSessionActivator) {}
 
   ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor | null {
-    const existing = this.issuedSession;
+    const existing = this.activation;
     if (existing) {
-      return existing.descriptor.enabledTools.length > 0 ? existing.descriptor : null;
+      return existing.kind === "active" ? existing.descriptor : null;
     }
 
-    const result = this.sessionIssuer.issueForRun({
+    const result = this.runSessions.activateForRun({
       owner: buildAgentToolsMcpOwnerIdentity(runContext),
       sender: buildAgentRunMessageSenderContext({
         senderRunId: runContext.runId,
@@ -41,8 +41,8 @@ export class ClaudeAgentToolsMcpSessionState {
       },
       runtimeKind: runContext.config.runtimeKind,
     });
-    this.issuedSession = result;
-    return result.descriptor.enabledTools.length > 0 ? result.descriptor : null;
+    this.activation = result;
+    return result.kind === "active" ? result.descriptor : null;
   }
 }
 

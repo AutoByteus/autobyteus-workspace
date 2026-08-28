@@ -132,7 +132,8 @@ export class GeneralProcessRunSupervisor {
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
         agentDefinitionService: input.agentDefinitionService,
-        agentToolMcpSessionIssuer: input.agentToolMcpSessionAuthority.issuer,
+        agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
+        applicationAgentTools: null,
       });
       agentRunManager = AgentRunManager.initializeProcessInstance({
         autoByteusBackendFactory: providerFactories.autoByteus,
@@ -141,7 +142,7 @@ export class GeneralProcessRunSupervisor {
         activationRegistry,
         memoryRecorder,
         providerInputNormalizer,
-        agentToolMcpRunSessionReleaser:
+        agentToolMcpRunSessionDeactivator:
           input.agentToolMcpSessionAuthority.runSessions,
       });
 
@@ -175,15 +176,11 @@ export class GeneralProcessRunSupervisor {
         taskExecutionIdentity,
         modelConfigValidator: input.modelConfigValidator,
         mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-          agentToolMcpRunSessionReleaser:
-            input.agentToolMcpSessionAuthority.runSessions,
           createTeamManager: (managerInput) =>
             new MixedTeamManager(managerInput.context, {
               subTeamRunFactory: managerInput.subTeamRunFactory,
               taskRootResolver: managerInput.callbacks.taskRootResolver,
               agentRunManager: generalAgentRunManager,
-              agentToolMcpRunSessionReleaser:
-                managerInput.agentToolMcpRunSessionReleaser,
               memoryLocationService,
               activityInspector,
               memberTeamContextBuilder,

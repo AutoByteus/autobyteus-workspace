@@ -40,13 +40,13 @@ export const cloneAgentToolMcpToolRoute = (
   route: AgentToolMcpToolRoute,
 ): AgentToolMcpToolRoute => route.kind === AGENT_TOOL_MCP_APPLICATION_TOOL_ROUTE_KIND
   ? cloneApplicationAgentToolRoute(route)
-  : { ...route };
+  : Object.freeze({ ...route });
 
 export const cloneAgentToolMcpToolRouteTable = (
   routes: AgentToolMcpToolRouteTable,
-): AgentToolMcpToolRouteTable => Object.fromEntries(
+): AgentToolMcpToolRouteTable => Object.freeze(Object.fromEntries(
   Object.entries(routes).map(([toolName, route]) => [
     toolName,
     cloneAgentToolMcpToolRoute(route),
   ]),
-);
+));

@@ -8,7 +8,6 @@ import type { LoggingConfig } from "../config/logging-config.js";
 import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js";
 import { registerHttpAccessLogPolicy } from "../logging/http-access-log-policy.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../api/fastify-runtime-config.js";
-import { registerAgentToolsMcpRoutes } from "../agent-tools/mcp/agent-tools-mcp-routes.js";
 import { registerMcpGatewayRoutes } from "../mcp-gateway/mcp-gateway-routes.js";
 import { registerRemoteAccessPolicyPlugin } from "../api/security/remote-access-policy-plugin.js";
 import { registerMobileWebStaticRoutes } from "../api/static/mobile-web.js";
@@ -71,6 +70,7 @@ import {
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
+  agentToolsMcpHost: AgentToolsMcpHost;
   applicationRuntime: ApplicationPlatformRuntime;
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
@@ -92,7 +92,7 @@ const closeStudioProcessResources = async (input: {
       input.generalProcessAuthority?.close();
     } finally {
       try {
-        input.agentToolsMcpHost?.close();
+        await input.agentToolsMcpHost?.close();
       } finally {
         try {
           input.studioApiHandle?.close();
@@ -213,7 +213,9 @@ export const buildStudioServer = async (input: {
       appDataDir: input.appConfig.getAppDataDir(),
       baseUrl: input.appConfig.getBaseUrl(),
     });
-    agentToolsMcpHost = createAgentToolsMcpHost();
+    agentToolsMcpHost = createAgentToolsMcpHost({
+      loggingConfig: input.loggingConfig,
+    });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager,
     });
@@ -291,7 +293,6 @@ export const buildStudioServer = async (input: {
         mode: input.loggingConfig.httpAccessLogMode,
         includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
       });
-      await registerAgentToolsMcpRoutes(app, agentToolsMcpHost.routeDependencies);
       await registerMcpGatewayRoutes(app);
       await app.register(cors, {
         origin: true,
@@ -315,6 +316,7 @@ export const buildStudioServer = async (input: {
       await registerGraphql(app);
       return Object.freeze({
         fastify: app,
+        agentToolsMcpHost,
         applicationRuntime: currentApplicationRuntime,
         packageRegistryService: packages.packageRegistryService,
       });

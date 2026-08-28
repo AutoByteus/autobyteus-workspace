@@ -4,10 +4,11 @@ import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communi
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
-import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
+import { AgentToolsMcpLocalAccessGate } from "../../../../src/agent-tools/mcp/agent-tools-mcp-local-access.js";
 import { AgentToolsMcpMethodDispatcher } from "../../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
 import { registerAgentToolsMcpRoutes } from "../../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import { createAgentToolMcpSessionAuthorityFactory } from "../../../../src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.js";
 import { ApplicationAgentToolCatalog } from "../../../../src/application-agent-tools/services/application-agent-tool-catalog.js";
 import { beginApplicationAgentToolCapabilityAssembly } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
 import { ApplicationAgentToolCallLifecycle } from "../../../../src/application-agent-tools/services/application-agent-tool-call-lifecycle.js";
@@ -28,20 +29,22 @@ const declaration = (applicationId: string) => ({
   },
 });
 
-const post = (app: ReturnType<typeof fastify>, session: { sessionId: string; descriptor: { headers: { Authorization: string } } }, payload: unknown) =>
-  app.inject({
-    method: "POST",
-    url: `/mcp/agent-tools/${session.sessionId}`,
-    headers: {
-      authorization: session.descriptor.headers.Authorization,
-      "content-type": "application/json",
-      accept: "application/json",
-    },
-    payload: JSON.stringify(payload),
-  });
+const post = (
+  app: ReturnType<typeof fastify>,
+  sessionId: string,
+  payload: unknown,
+) => app.inject({
+  method: "POST",
+  url: `/mcp/agent-tools/${sessionId}`,
+  headers: {
+    "content-type": "application/json",
+    accept: "application/json",
+  },
+  payload: JSON.stringify(payload),
+});
 
 describe("application-owned Agent Tools MCP routes", () => {
-  it("isolates same-name App A/App B routes across Claude/Codex, hides general and unselected sessions, and revokes bearers", async () => {
+  it("isolates exact applications, preserves tokenless session liveness through lane quiesce, and deactivates exact runs", async () => {
     const applicationCatalog = new ApplicationAgentToolCatalog();
     applicationCatalog.initializeFromBundleSnapshot({
       refreshedAt: "2026-08-27T00:00:00.000Z",
@@ -88,8 +91,10 @@ describe("application-owned Agent Tools MCP routes", () => {
       lifecycle,
       workerInvoker: { invoke: workerInvoke } as never,
     });
-    const assembly = beginApplicationAgentToolCapabilityAssembly(applicationCatalog);
-    const capability = assembly.complete(gateway);
+    const capabilityAssembly = beginApplicationAgentToolCapabilityAssembly(
+      applicationCatalog,
+    );
+    const capability = capabilityAssembly.complete(gateway);
     const registry = new AgentToolMcpSessionRegistry();
     const mcpCatalog = new AgentToolMcpCatalog({ adapters: [] });
     const app = fastify();
@@ -99,24 +104,28 @@ describe("application-owned Agent Tools MCP routes", () => {
         catalog: mcpCatalog,
         toolExecutor: new AgentToolMcpToolExecutor({ catalog: mcpCatalog }),
       }),
+      localAccessGate: new AgentToolsMcpLocalAccessGate(),
     });
     await app.ready();
-    const sessionService = new AgentToolMcpSessionService({
+    const authority = createAgentToolMcpSessionAuthorityFactory({
       registry,
       catalog: mcpCatalog,
-      getInternalBaseUrl: () => "http://127.0.0.1:1",
+      getLocalBaseUrl: () => "http://127.0.0.1:1",
+      assertHostOpen: () => undefined,
+    }).begin({ scopeIdentity: "application:app-a,app-b" }).complete({
       executionCapabilities: {
         publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
         applicationAgentTools: capability,
       },
+      assertExecutionCapabilitiesReady: () => undefined,
     });
-    const issue = (input: {
+    const activate = (input: {
       applicationId?: string;
       bindingId?: string;
       runId: string;
       runtimeKind: RuntimeKind;
       selected?: boolean;
-    }) => sessionService.createAgentToolMcpSession({
+    }) => authority.runSessions.activateForRun({
       owner: { runId: input.runId },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: input.runId,
@@ -124,7 +133,9 @@ describe("application-owned Agent Tools MCP routes", () => {
         runtimeKind: input.runtimeKind,
       }),
       runtimeKind: input.runtimeKind,
-      runtimeExposure: buildRuntimeAgentToolExposure(input.selected === false ? [] : [TOOL_NAME]),
+      runtimeExposure: buildRuntimeAgentToolExposure(
+        input.selected === false ? [] : [TOOL_NAME],
+      ),
       executionContext: input.applicationId ? {
         applicationExecutionContext: {
           applicationId: input.applicationId,
@@ -134,33 +145,45 @@ describe("application-owned Agent Tools MCP routes", () => {
       } : {},
     });
 
-    const appA = issue({
+    const appA = activate({
       applicationId: "app-a",
       bindingId: "binding-a",
       runId: "run-a",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
-    const appB = issue({
+    const appB = activate({
       applicationId: "app-b",
       bindingId: "binding-b",
       runId: "run-b",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
-    const general = issue({ runId: "run-general", runtimeKind: RuntimeKind.CODEX_APP_SERVER });
-    const unselected = issue({
+    const general = activate({
+      runId: "run-general",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    });
+    const unselected = activate({
       applicationId: "app-a",
       bindingId: "binding-a-2",
       runId: "run-a-2",
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       selected: false,
     });
+    if (appA.kind !== "active" || appB.kind !== "active") {
+      throw new Error("Expected active application sessions.");
+    }
 
     try {
+      expect(general).toEqual({ kind: "not_exposed" });
+      expect(unselected).toEqual({ kind: "not_exposed" });
+      expect(registry.listSessions()).toHaveLength(2);
+      expect(appA.descriptor).not.toHaveProperty("headers");
+      expect(appB.descriptor).not.toHaveProperty("headers");
+
       for (const [session, expectedDescription] of [
         [appA, "Read app-a"],
         [appB, "Read app-b"],
       ] as const) {
-        const listed = await post(app, session, {
+        const listed = await post(app, session.sessionId, {
           jsonrpc: "2.0", id: `list-${session.sessionId}`, method: "tools/list", params: {},
         });
         expect(listed.json()).toMatchObject({
@@ -168,25 +191,11 @@ describe("application-owned Agent Tools MCP routes", () => {
         });
       }
 
-      for (const session of [general, unselected]) {
-        const listed = await post(app, session, {
-          jsonrpc: "2.0", id: `list-${session.sessionId}`, method: "tools/list", params: {},
-        });
-        expect(listed.json()).toMatchObject({ result: { tools: [] } });
-        const rejected = await post(app, session, {
-          jsonrpc: "2.0",
-          id: `call-${session.sessionId}`,
-          method: "tools/call",
-          params: { name: TOOL_NAME, arguments: { query: "hidden" } },
-        });
-        expect(rejected.json()).toMatchObject({ error: { code: -32602 } });
-      }
-
-      const appAResult = await post(app, appA, {
+      const appAResult = await post(app, appA.sessionId, {
         jsonrpc: "2.0", id: "call-a", method: "tools/call",
         params: { name: TOOL_NAME, arguments: { query: "alpha" } },
       });
-      const appBResult = await post(app, appB, {
+      const appBResult = await post(app, appB.sessionId, {
         jsonrpc: "2.0", id: "call-b", method: "tools/call",
         params: { name: TOOL_NAME, arguments: { query: "beta" } },
       });
@@ -215,27 +224,32 @@ describe("application-owned Agent Tools MCP routes", () => {
         },
       ]);
 
-      const invalid = await post(app, appB, {
-        jsonrpc: "2.0", id: "invalid-b", method: "tools/call",
-        params: { name: TOOL_NAME, arguments: { query: 3 } },
+      await lifecycle.quiesceAndDrain("app-a");
+      const pingWhileLaneClosed = await post(app, appA.sessionId, {
+        jsonrpc: "2.0", id: "ping-a", method: "ping", params: {},
       });
-      expect(invalid.json()).toMatchObject({
+      expect(pingWhileLaneClosed.statusCode).toBe(200);
+      const quiescedCall = await post(app, appA.sessionId, {
+        jsonrpc: "2.0", id: "quiesced-a", method: "tools/call",
+        params: { name: TOOL_NAME, arguments: { query: "late" } },
+      });
+      expect(quiescedCall.json()).toMatchObject({
         result: {
           isError: true,
-          structuredContent: { code: "APPLICATION_TOOL_INVALID_INPUT" },
+          structuredContent: { code: "APPLICATION_TOOL_UNAVAILABLE" },
         },
       });
       expect(workerInvoke).toHaveBeenCalledTimes(2);
 
-      expect(sessionService.revokeAgentToolMcpSession(appA.sessionId)).toBe(true);
-      const revoked = await post(app, appA, {
-        jsonrpc: "2.0", id: "revoked", method: "tools/call",
-        params: { name: TOOL_NAME, arguments: { query: "late" } },
+      expect(authority.runSessions.deactivateForRun("run-a")).toBe(1);
+      const inactive = await post(app, appA.sessionId, {
+        jsonrpc: "2.0", id: "inactive-a", method: "ping", params: {},
       });
-      expect(revoked.statusCode).toBe(404);
-      expect(revoked.json()).toMatchObject({ error: "session_unavailable" });
-      expect(workerInvoke).toHaveBeenCalledTimes(2);
+      expect(inactive.statusCode).toBe(404);
+      expect(inactive.json()).toMatchObject({ error: "session_unavailable" });
+      expect(authority.runSessions.deactivateForRun("run-a")).toBe(0);
     } finally {
+      authority.close();
       capability.close();
       await app.close();
     }

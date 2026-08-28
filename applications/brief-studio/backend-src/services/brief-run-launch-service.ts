@@ -30,10 +30,10 @@ const buildInitialInputText = (input: {
 }): string => {
   const sections = [
     `Create or revise a reviewable brief titled "${input.title}".`,
-    "Follow each bundled role's own ordered instructions. Configured tool selection covers only routed capabilities; Luna's built-in apply_patch is not a configured tool name.",
-    "Researcher: call get_brief_context exactly once first, use Luna's built-in apply_patch without run_bash to create brief-studio/research.md, publish that canonical relative path, then hand /writer the exact marker, path, and complete 200-500-word research body verbatim.",
-    "Writer: after the handoff, call get_brief_context exactly once first, use the complete message body without read_file or cross-workspace access, copy at least one complete non-marker Key findings bullet verbatim under Key evidence, then use Luna's built-in apply_patch without run_bash to create and relatively publish brief-studio/final-brief.md.",
-    "React only to provider-reported patch success or failure; do not inspect provider protocol events or internal normalized traces. On a context, handoff, built-in-patch, or publication failure, stop normal publication and report truthfully without shell fallback or a fabricated artifact. The application binding supplies routing identity; do not pass or guess applicationId, bindingId, or briefId as tool arguments.",
+    "Follow each bundled role's own ordered business instructions; this launch text reinforces but does not replace them.",
+    "Researcher: call get_brief_context exactly once first, create brief-studio/research.md with the exact marker and required 200-500-word research body, publish that canonical relative path, then hand /writer the exact marker, path, and complete body verbatim.",
+    "Writer: after the handoff, call get_brief_context exactly once first, match the brief identity, use the complete message body without cross-workspace access, copy at least one complete non-marker Key findings bullet verbatim under Key evidence, create and publish brief-studio/final-brief.md, then report completion to /researcher.",
+    "On a context, artifact, handoff, or publication failure, stop normal publication and report truthfully without fabricating an artifact. The application binding supplies routing identity; do not pass or guess applicationId, bindingId, or briefId as tool arguments.",
   ];
 
   if (input.latestWriterSummary) {

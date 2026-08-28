@@ -1,78 +1,98 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { createAgentToolsMcpHost } from "../../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "../../../../src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.js";
-import { AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR } from "../../../../src/config/server-runtime-endpoints.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
-const createPublisher = () => ({ publishManyForRun: vi.fn().mockResolvedValue([]) });
-const createSessionInput = (runId: string) => ({
+const loggingConfig = {
+  pinoLogLevel: "silent" as const,
+  httpAccessLogMode: "off" as const,
+  includeNoisyHttpAccessRoutes: false,
+  scopedLogLevelOverrides: [],
+};
+
+const createActivationInput = (runId: string) => ({
   owner: { runId },
   sender: buildAgentRunMessageSenderContext({
     senderRunId: runId,
     senderName: runId,
-    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   }),
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   runtimeExposure: buildRuntimeAgentToolExposure(["publish_artifacts"]),
 });
-const bearerToken = (authorization: string): string => authorization.replace(/^Bearer\s+/, "");
 
 describe("AgentToolsMcpHost", () => {
-  let originalInternalBaseUrl: string | undefined;
-
-  beforeEach(() => {
-    originalInternalBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
-    process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = "http://127.0.0.1:43124";
-  });
-
-  afterEach(() => {
-    if (originalInternalBaseUrl === undefined) {
-      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
-    } else {
-      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalBaseUrl;
-    }
-  });
-
-  it("shares one route registry across scoped authorities and clears it at process close", () => {
-    const host = createAgentToolsMcpHost();
+  it("owns one one-shot loopback listener and publishes only ready descriptors", async () => {
+    const host = createAgentToolsMcpHost({ loggingConfig });
     const authority = host.sessionAuthorities.begin({ scopeIdentity: "application:test" })
       .complete({
         executionCapabilities: {
-          publishedArtifactPublisher: createPublisher(),
+          publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
           applicationAgentTools: null,
         },
         assertExecutionCapabilitiesReady: () => undefined,
       });
-    const issued = authority.issuer.issueForRun(createSessionInput("run-1"));
 
-    expect(host.routeDependencies.registry.resolveSession({
-      sessionId: issued.sessionId,
-      bearerToken: bearerToken(issued.descriptor.headers.Authorization),
-    })).toMatchObject({ ok: true, session: { owner: { runId: "run-1" } } });
+    expect(() => authority.runSessions.activateForRun(createActivationInput("run-early")))
+      .toThrow("local server is not ready");
+    await host.listen();
+    expect(() => host.listen()).toThrow("cannot listen");
 
-    host.close();
-    host.close();
-    expect(host.routeDependencies.registry.resolveSession({
-      sessionId: issued.sessionId,
-      bearerToken: bearerToken(issued.descriptor.headers.Authorization),
-    })).toMatchObject({ ok: false, reason: "missing_session" });
+    const activation = authority.runSessions.activateForRun(
+      createActivationInput("run-early"),
+    );
+    if (activation.kind !== "active") throw new Error("Expected active result.");
+    const endpoint = new URL(activation.descriptor.serverUrl);
+    expect(endpoint.hostname).toBe("127.0.0.1");
+    expect(Number(endpoint.port)).toBeGreaterThan(0);
+    expect(activation.descriptor).not.toHaveProperty("headers");
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping", params: {} }),
+    });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ result: {} });
+
+    const unsupported = await fetch(endpoint, { method: "PUT" });
+    expect(unsupported.status).toBe(405);
+
+    expect(authority.runSessions.deactivateForRun("run-early")).toBe(1);
+    const deniedPreflight = await fetch(endpoint, {
+      method: "OPTIONS",
+      headers: { origin: "https://evil.example" },
+    });
+    expect(deniedPreflight.status).toBe(403);
+    const inactive = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "ping", params: {} }),
+    });
+    expect(inactive.status).toBe(404);
+
+    await host.close();
+    await host.close();
     expect(() => host.sessionAuthorities.begin({ scopeIdentity: "application:late" }))
-      .toThrow("Agent Tools MCP host is closed.");
+      .toThrow("Agent Tools MCP host is closed");
   });
 
-  it("exposes one immutable snapshot containing every default provider adapter name", () => {
-    const expectedNames = buildDefaultAgentToolMcpAdapterProviders()
+  it("exposes one immutable snapshot of every registered static adapter name", async () => {
+    const host = createAgentToolsMcpHost({ loggingConfig });
+    const expected = buildDefaultAgentToolMcpAdapterProviders()
       .flatMap((provider) => provider.getAdapters())
       .map((adapter) => adapter.definition.name)
       .sort((left, right) => left.localeCompare(right));
-    const host = createAgentToolsMcpHost();
 
-    expect([...host.staticAdapterToolNames]).toEqual(expectedNames);
+    expect([...host.staticAdapterToolNames]).toEqual(expected);
     expect(Object.isFrozen(host.staticAdapterToolNames)).toBe(true);
-    expect("add" in host.staticAdapterToolNames).toBe(false);
-
-    host.close();
+    expect(() => (host.staticAdapterToolNames as Set<string>).add("late"))
+      .toThrow();
+    await host.close();
   });
 });

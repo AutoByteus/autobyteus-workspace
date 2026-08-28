@@ -1,0 +1,162 @@
+# Final API/E2E audits
+
+## Forbidden retired symbols in src/tests
+PASS: none found
+
+## E2E direct route-registration bypasses
+PASS: none found; E2E fixtures use the production runtime composition
+
+## Authorization/header remnants in provider descriptor fixtures
+PASS: no descriptor authorization setup remains in the selected provider fixtures
+
+## Effective non-empty lines for changed/untracked production source
+  24 autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts
+  56 autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+  63 autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts
+ 167 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+  29 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+ 492 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+  41 autobyteus-server-ts/src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.ts
+  66 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts
+ 371 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ 187 autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+ 299 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ 492 autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ 126 autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+ 479 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+  83 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+ 183 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+ 399 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ 163 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+  23 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-run-session-id.ts
+  59 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-authority.ts
+  89 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+ 127 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+ 128 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+  87 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-host.ts
+ 102 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-http-gate.ts
+  76 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-local-access.ts
+ 111 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-local-server.ts
+ 137 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+ 222 autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts
+ 322 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+  48 autobyteus-server-ts/src/compositions/build-standalone-application-server.ts
+ 332 autobyteus-server-ts/src/compositions/build-studio-server.ts
+ 137 autobyteus-server-ts/src/run-history/projection/providers/claude-run-view-projection-provider.ts
+ 287 autobyteus-server-ts/src/server-runtime.ts
+ 364 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+PASS: all changed production source files remain <=500 effective non-empty lines
+
+## Generated output cleanup
+absent autobyteus-application-backend-sdk/dist
+absent autobyteus-application-sdk-contracts/dist
+absent autobyteus-application-frontend-sdk/dist
+absent autobyteus-application-devkit/dist
+absent applications/brief-studio/dist
+absent .autobyteus/development/server-data
+PASS: generated package outputs and isolated secret-bearing browser runtime removed
+
+## git diff check
+PASS: git diff --check
+
+## final git status
+ M autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ M autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+ M autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-authority.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-host.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-http-gate.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+ M autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts
+ M autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+ M autobyteus-server-ts/src/compositions/build-standalone-application-server.ts
+ M autobyteus-server-ts/src/compositions/build-studio-server.ts
+ M autobyteus-server-ts/src/run-history/projection/providers/claude-run-view-projection-provider.ts
+ M autobyteus-server-ts/src/server-runtime.ts
+ M autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+ M autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts
+ M autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+ M autobyteus-server-ts/tests/e2e/helpers/team-run-metadata-helpers.ts
+ M autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/fixtures/agent-run-manager-infrastructure-fixtures.ts
+ D autobyteus-server-ts/tests/fixtures/agent-tool-mcp-run-session-releaser-fixtures.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-provider-factory-builder.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-native-activation.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts
+ M autobyteus-server-ts/tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts
+ M autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+ M autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts
+ M autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+ M autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+ M autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+?? autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-run-session-id.ts
+?? autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-local-access.ts
+?? autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-local-server.ts
+?? autobyteus-server-ts/tests/e2e/helpers/studio-runtime-test-server.ts
+?? autobyteus-server-ts/tests/fixtures/agent-tool-mcp-run-session-deactivator-fixtures.ts
+?? autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+?? autobyteus-server-ts/tests/integration/application-backend/studio-agent-tools-listener.integration.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tool-mcp-run-session-id.test.ts
+?? autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-local-access.test.ts
+?? tickets/in-progress/agent-tools-mcp-session-resume/
