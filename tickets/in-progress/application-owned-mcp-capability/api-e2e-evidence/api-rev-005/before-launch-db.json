@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-08-28T11:51:31.014666Z",
+  "databasePath": ".autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/db/app.sqlite",
+  "briefId": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+  "briefs": [
+    {
+      "brief_id": "brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433",
+      "title": "API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC",
+      "status": "not_started",
+      "latest_binding_id": null,
+      "latest_run_id": null,
+      "latest_binding_status": null,
+      "last_error_message": null,
+      "created_at": "2026-08-28T11:51:11.499Z",
+      "updated_at": "2026-08-28T11:51:11.499Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "bindings": [],
+  "artifacts": [],
+  "revisions": [],
+  "pending": []
+}

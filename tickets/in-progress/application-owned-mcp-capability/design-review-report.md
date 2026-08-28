@@ -7,15 +7,15 @@
 - Reviewed Design Spec: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/application-owned-mcp-intended-behavior.md`
 - Solution Revision Record Reviewed: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`–`SR-009`
+- Relevant Solution Revision IDs: `SR-001`–`SR-010`
 - Architecture Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/architecture-review-revision-record.md`
-- Triggering Downstream Artifacts Reviewed: `delivery-latest-base-conflict-report.md` (`DR-004`); `delivery-revision-record.md`; `delivery-integration-evidence.log`; the current implementation/code/API-E2E reports and revision records; `API-REV-004` identity, prompt/config, and browser evidence; and latest-base `origin/personal:tickets/done/agent-tools-mcp-session-resume/` requirements, design, review, and execution evidence.
-- Current Architecture Review Revision ID: `ARCH-REV-009`
-- Current Review Round: `9`
-- Trigger: `SR-009`, combining the user-approved business-prompt boundary clarification with the `DR-004` latest-base Agent Tools MCP ownership conflict.
-- Prior Review Round Reviewed: Round 8 / `ARCH-REV-008` / `Pass`. `IR-005`, `CRR-009`, and `API-REV-004` subsequently passed the pre-latest-base application journey; delivery then found the material run-session ownership conflict and aborted the merge.
-- Latest Authoritative Round: `9`
-- Current-State Evidence Basis: verified SR-009 artifact hashes; latest `origin/personal` commit `ebef77eb32bbeaefd4fccdb6998240264c82a3c1`; direct source reads of `AgentToolsMcpHost`, scoped authority assembly/ledger, session service/registry, provider factory builder, application execution-scope kernel, `AgentRunManager`, `AgentRunResourceManager`, general supervisor, Studio/standalone composition, and the completed `agent-tools-mcp-session-resume` package; `DR-004`'s observed 12-path merge conflict; and retained `API-REV-004` production journey evidence. Review order was behavior -> full data-flow spans -> ownership -> dependencies -> interfaces/files/transitions.
+- Triggering Downstream Artifacts Reviewed: `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` (`API-REV-005`); `code-review-report.md` / `code-review-revision-record.md` (`CRR-012`, reopened `CR-DI-002`, `CR-MP-002`); `api-e2e-coverage-investigation.md`; API-REV-005 identity/tool/artifact/publication/browser evidence and durable-test diff; and the still-relevant implementation, delivery, latest-base conflict, and lifecycle evidence retained from SR-009.
+- Current Architecture Review Revision ID: `ARCH-REV-010`
+- Current Review Round: `10`
+- Trigger: `SR-010`, the explicit user correction that removes the solution-authored zero-shell proof rule after an otherwise successful real Brief Studio run.
+- Prior Review Round Reviewed: Round 9 / `ARCH-REV-009` / `Pass`. The latest-base implementation subsequently passed source review; `API-REV-005` then passed every production architecture and Agent-to-UI criterion except the now-rejected zero-shell oracle, and `CRR-012` routed that conflict back as reopened `CR-DI-002`.
+- Latest Authoritative Round: `10`
+- Current-State Evidence Basis: verified current SR-010 solution hashes, including design SHA-256 `912188ec8f10c00811b955d36f657d476584581d5332c8f1e27a1f61e49901aa`; direct comparison of requirements, supplement, investigation, design, and SR-010; `API-REV-005`'s supported browser trigger, exact Codex/Luna member traces, application/binding/producer joins, real member-workspace artifacts, relative publications, complete handoff, reconciliation, and same-brief UI evidence; `CRR-012` failure-origin analysis; explicit user direction; and worktree status showing no production or maintained-prompt edit in SR-010. The accepted SR-009 host/session/application ownership design was rechecked for accidental change. Review order remained behavior -> full data-flow spans -> ownership -> dependencies -> interfaces/files/transitions.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -36,10 +36,10 @@
 | BEH-005 | Operational | Pass | Pass | Pass | Confirmed | Keep application-lane drain and exact run-session deactivation orthogonal. |
 | BEH-006 | Contract | Pass | Pass | Pass | Confirmed | Preserve strict v5/v7 rebuild and no durable migration. |
 | BEH-007 | System | Pass | Pass | Pass | Confirmed | Preserve existing automatic native/Team exposure unchanged. |
-| BEH-008 | User/System | Pass | Pass | Pass | Confirmed | Role prompts own business call/content/artifact/publication/handoff only; runtime mechanics remain below the prompt and optional in verification. |
+| BEH-008 | User/System | Pass | Pass | Pass | Confirmed | Role prompts own business call/content/artifact/publication/handoff only; any already-authorized runtime foundation operation, including shell, may fulfill the artifact work; operation telemetry is diagnostic only. |
 | BEH-009 | System/Operational | Pass | Pass | Pass | Confirmed | Launch/restore rematerializes current application routes; package transition never deactivates the containing run session; exact managed-run cleanup does. |
 
-The approved basis is coherent. The business-prompt clarification removes an unstable upward dependency on provider vocabulary without weakening the real Agent/browser acceptance path. The latest-base correction preserves an already-finalized production owner rather than inventing a parallel lifecycle.
+The approved basis is coherent. SR-010 removes an unrequested proof restriction rather than changing production behavior: the supported run already traversed the application capability/gateway/worker, exact member workspaces, publication/reconciliation, and browser outcome correctly. Artifact authority, workspace authorization, identity joins, read-only causality, and UI outcome remain the acceptance boundary; the runtime-selected operation is not promoted into that boundary. The SR-009 listener/session/application ownership remains unchanged.
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -53,10 +53,10 @@ The investigation notes contain the canonical supplement inventory. The suppleme
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The design records the original application boundary issue, the maintained-demo corrections, and the new superseded-session-owner conflict. | None |
-| Root-cause classification is explicit and evidence-backed | Pass | `DR-004` and latest-base source prove a `Superseded Boundary / Ownership Conflict`; the user clarification proves prompt/provider abstraction coupling. | None |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Replace the old bearer/main-listener/issuer seam now; retain latest-base host/scoped authority/run cleanup; remove provider-operation wording; defer unrelated provider, SDK, and arbitrary MCP-server work. | None |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-015–DS-017, ownership/dependency maps, exact interfaces, file allocation, removals, lifecycle matrix, sequence, and coverage make the correction actionable. | None |
+| Assessment is present for the current task posture | Pass | The design records the prior feature/latest-base refactors and separately classifies SR-010 as a requirements/proof-oracle correction with no production architecture change. | None |
+| Root-cause classification is explicit and evidence-backed | Pass | The user's explicit correction and API-REV-005 show that the only current failure was a solution-authored zero-shell oracle; the production application and Agent-to-UI path succeeded. | None |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | No production refactor is needed for SR-010. Preserve the accepted SR-009 source/prompts and correct downstream proof/test wording only; earlier accepted architecture cleanup remains intact. | None |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-013/DS-014, proof ownership, file-impact boundary, change sequence, risks, guidance, and acceptance criteria all keep production owners fixed while narrowing the proof oracle. | None |
 
 ## Spine Inventory Verdict
 
@@ -80,7 +80,7 @@ The investigation notes contain the canonical supplement inventory. The suppleme
 | DS-016 | Package-transition/run-stop interleaving | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-017 | Process listener startup/shutdown | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-The new spines have sufficient span. DS-015 begins at supported launch/restore, crosses the application scope and scoped activation boundary, materializes current route/fingerprint data, and ends at the provider/native surface. DS-016 draws the two lifecycle paths separately and names the gateway currentness check as their only join. DS-017 spans process composition through scope/run cleanup to listener close. DS-013 remains business-level from browser action to same-brief UI outcome; provider operations are no longer promoted into the application spine.
+All spines retain sufficient span. DS-013 still begins at the supported browser `Generate draft` action and ends at the same brief's `in_review` UI with the exact binding/artifact result. DS-014 still joins each real application call/result to member workspace, complete handoff, relative publication, projection, and browser evidence. SR-010 correctly removes runtime operation choice from the authoritative spine and leaves it as optional diagnostics. DS-015–DS-017 and the application route/gateway/worker/lifecycle spines are unchanged.
 
 ## Boundary Encapsulation Verdict
 
@@ -93,7 +93,7 @@ The new spines have sufficient span. DS-015 begins at supported launch/restore, 
 | `ApplicationCatalogTransitionService` | Pass | Pass | Pass | Pass | Owns supported live package/application catalog transitions; it does not own run sessions. |
 | `ApplicationReentryService` | Pass | Pass | Pass | Pass | Remains participant lifecycle only beneath the transition owner. |
 | Managed run/resource finalization | Pass | Pass | Pass | Pass | Exact published-run cleanup reaches only the scoped deactivator; package/provider code cannot partially deactivate sessions. |
-| Brief role prompt | Pass | Pass | Pass | Pass | Owns business behavior; runtime capability selection and verifier event evidence remain below/outside it. |
+| Brief role prompt | Pass | Pass | Pass | Pass | Owns business behavior only; runtime capability selection remains below it and operation telemetry remains outside the pass/fail contract. |
 | Publication/reconciliation | Pass | Pass | Pass | Pass | Relative publication and Brief projection remain separate authoritative owners; the read-only tool bypasses neither. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -108,7 +108,7 @@ The new spines have sufficient span. DS-015 begins at supported launch/restore, 
 | Package command/REST -> catalog transition | Pass | Pass | Pass | Pass | No direct refresh, tool-catalog commit, worker stop, or session teardown. |
 | Run cleanup -> deactivator | Pass | Pass | Pass | Pass | Exact run identity only; package and Team/provider adapters have no partial-owner API. |
 | Prompt -> business tools/publication/Team message | Pass | Pass | Pass | Pass | No dependency on provider operation names or normalized event labels. |
-| Evidence readers -> existing authorities | Pass | Pass | Pass | Pass | Optional provider evidence is downstream-only and never feeds routing or prompts. |
+| Evidence readers -> existing authorities | Pass | Pass | Pass | Pass | Workspace, publication, handoff, identity, and browser authorities decide acceptance; optional operation telemetry is downstream-only and cannot veto those authoritative results. |
 
 ## Interface Boundary Verdict
 
@@ -137,7 +137,7 @@ The session shape is explicit rather than an optional extension bag. Application
 | Provider/native projection | Pass | Pass | N/A | Pass | Reuse current activator and native construction seams. |
 | Application declaration/worker/ownership | Pass | Pass | Pass | Pass | New application catalog/capability/gateway/lane fills a real missing owner. |
 | Package transition | Pass | Pass | Pass | Pass | One staged transition owner remains proportionate and already accepted. |
-| Brief artifact creation/publication/UI | Pass | Pass | N/A | Pass | Reuse runtime foundation, Team handoff, publication, reconciliation, and UI without a proof-only platform feature. |
+| Brief artifact creation/publication/UI | Pass | Pass | N/A | Pass | Reuse any already-authorized runtime foundation operation plus Team handoff, publication, reconciliation, and UI without a proof-only platform feature or capability restriction. |
 | Evidence | Pass | Pass | N/A | Pass | Existing run, binding, artifact, and browser authorities remain sufficient. |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -203,7 +203,8 @@ The session shape is explicit rather than an optional extension bag. Application
 | Main-listener Agent Tools route and raw-base composition | Pass | Pass | Pass | Pass | Dedicated host listener remains sole transport. |
 | Partial-owner release/deactivation paths | Pass | Pass | Pass | Pass | Exact managed-run finalization only. |
 | Persisted/reused live capability/session state | Pass | Pass | Pass | Pass | Fresh activation/restore materialization only. |
-| Provider-operation wording in maintained prompts/team/launch | Pass | Pass | Pass | Pass | Replace with business artifact/outcome wording; runtime evidence stays verifier-side. |
+| Provider-operation wording in maintained prompts/team/launch | Pass | Pass | Pass | Pass | Business artifact/outcome wording is already authoritative; no production prompt change is needed in SR-010. |
+| Zero-shell acceptance/proof oracle | Pass | Pass | Pass | Pass | Remove from durable assertions and evidence synthesis; replacement authority is the real workspace/artifact/publication/handoff/identity/UI join. |
 | Earlier refresh/reentry split and ambiguous static readers | Pass | Pass | Pass | Pass | Prior clean removals remain explicit and are not reopened. |
 | v4/v6 generated contract outputs | Pass | Pass | Pass | Pass | Rebuild strict v5/v7 artifacts. |
 
@@ -233,10 +234,10 @@ The session shape is explicit rather than an optional extension bag. Application
 | Create/stop/restore rematerialization | Pass | Pass | Pass | Pass |
 | Package transition versus run stop | Pass | Pass | Pass | Pass |
 | Shutdown and listener close | Pass | Pass | Pass | Pass |
-| Business-prompt correction and renewed proof | Pass | Pass | Pass | Pass |
+| SR-010 proof-oracle correction with unchanged production source/prompts | Pass | Pass | Pass | Pass |
 | Prior schema/collision/catalog-transition work | Pass | Pass | Pass | Pass |
 
-Implementation can begin from latest base, reapply the reviewed application catalog/capability/gateway behavior through the new tight seams, remove old source rather than merge both paths, then execute focused topology/currentness/interleaving coverage before the renewed real browser cycle.
+The SR-009 production implementation remains authoritative. The next implementation stage should confirm that production source and maintained prompts stay unchanged, remove stale zero-shell expectations only where owned by durable tests/proof tooling, and return those durable edits through the required downstream review cycle. No capability restriction, provider policy, application file adapter, or new production seam is justified.
 
 ## Example Adequacy Verdict
 
@@ -245,7 +246,7 @@ Implementation can begin from latest base, reapply the reviewed application cata
 | Launch/restore materialization | Yes | Pass | Pass | Pass | DS-015 and the latest-base composition example show exact inputs, capability placement, record creation, descriptor, stop, and restore. |
 | Package/reload/run-stop interleaving | Yes | Pass | Pass | Pass | DS-016 and the operation matrix distinguish application lane, session record, and gateway currentness outcomes. |
 | Process listener lifecycle | Yes | Pass | Pass | Pass | DS-017 shows startup and final close ownership. |
-| Business prompt/runtime/evidence separation | Yes | Pass | Pass | Pass | DS-013/DS-014 show stable business instructions with optional downstream native evidence. |
+| Business prompt/runtime/evidence separation | Yes | Pass | Pass | Pass | DS-013/DS-014 show stable business instructions, authorized runtime-selected artifact creation, authoritative business evidence, and optional operation diagnostics. |
 | Route/result/schema/collision/catalog transition | Yes | Pass | Pass | Pass | Earlier concrete examples remain complete and consistent. |
 
 ## Material Premise Validation
@@ -262,7 +263,19 @@ Implementation can begin from latest base, reapply the reviewed application cata
 - Reachability: `Reachable`.
 - Review consequence / proportionate response: SR-009's bounded architecture rebase is required and proportionate. It does not authorize a second transport, compatibility layer, persistence policy, or new product behavior.
 
-Earlier `MP-001`, `MP-002`, `CR-MP-001`, and `CR-MP-002` remain historical validated premises for the already-resolved native-parity, package-drain, and maintained-provider corrections. SR-009 preserves those resolutions; it does not depend on a new unsupported failure scenario.
+### `MP-004` — A supported Brief Studio run can create correct authoritative artifacts through an already-authorized shell capability
+
+- Related approved requirement or established contract: BEH-008; REQ-018–REQ-021; AC-032–AC-039; the user's explicit 2026-08-28 correction that zero-shell was never required.
+- Relevant behavior ID(s): BEH-008.
+- Initiating basis kind: `User`.
+- Independent product-supported initiating trigger or applicable governing contract: on the exposed Brief Studio browser surface, the user creates/selects a brief and invokes the supported `Generate draft` action using the shipped Codex/Luna Team.
+- Support evidence: `API-REV-005` clean researcher/writer traces and provider-session events, `clean-identity-trace-artifact-ui-join.json`, exact member-workspace artifacts, publication records, Team messages, final database/browser observations, and `CRR-012`.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Brief Studio browser `Generate draft` -> GraphQL/application launch -> real configured Team members -> each member's first successful `get_brief_context` call/result -> runtime-selected authorized shell creates the exact member-workspace artifact -> relative `publish_artifacts` plus complete Team handoff -> `BriefArtifactReconciliationService` -> same-brief database/notification/GraphQL refresh -> browser shows `in_review` and the expected artifacts.
+- Lifecycle preconditions and material consequence at the claimed point: normal runtime provisioning already authorizes the shell foundation capability; application prompts do not prescribe it. The old AC-039 failed this otherwise correct production result solely because shell was selected.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: remove the zero-shell pass/fail rule and preserve the existing production architecture. Continue rejecting missing, fabricated, outside-workspace, unauthorized, unpublished, or causally unjoined output through the authoritative business evidence join. Do not add a capability restriction or production adapter.
+
+Earlier `MP-001`, `MP-002`, `CR-MP-001`, `CR-MP-002`, and `MP-003` remain historical validated premises for prior resolved design corrections. SR-010 does not reopen them or depend on an unsupported failure scenario.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -270,7 +283,7 @@ None.
 
 ## Review Decision
 
-`Pass` — SR-009 is ready for implementation.
+`Pass` — SR-010 is architecture-ready. It is a requirements/proof correction with no production architecture change.
 
 ## Findings
 
@@ -286,16 +299,13 @@ N/A — no unresolved `Design Impact`, `Requirement Gap`, or `Unclear` finding.
 
 ## Residual Risks
 
-- Conflict resolution could accidentally retain bearer/main-listener/issuer APIs or omit application authorization; the specified architecture and absence checks must guard this.
-- Restore must rematerialize current application routes/fingerprints/capability at the stable URL; no stopped record may be reused.
-- Package reload/removal and exact run stop can interleave; focused tests must prove lane/session independence, admitted-call settlement, stale route behavior, and exact cleanup.
-- General scope must carry `applicationAgentTools: null`; application scope and AutoByteus must receive only the intended tight capability.
-- Shutdown must keep application lanes closed through worker/run cleanup and close the host listener only after all scopes/provider clients are finalized.
-- Model behavior remains nondeterministic. The renewed browser proof must verify the business outcomes and not reintroduce provider-operation wording or treat optional provider events as cross-runtime authority.
-- Existing schema, raw-native parity, collision, Team-descendant ownership, catalog transition/rollback, payload/result, and strict-package risks remain implementation/test concerns, not design blockers.
+- A stale zero-shell assertion may remain in durable tests, evidence synthesis, or report wording and could falsely fail the already-correct journey; downstream must remove it without weakening the authoritative checks.
+- Removing operation-based assertions must not make fabricated, missing, outside-workspace, unauthorized, unpublished, or causally unjoined artifacts pass.
+- Model behavior remains nondeterministic; the proof should judge stable business outcomes and exact authorities rather than whichever authorized foundation operation the model selected.
+- The accepted SR-009 lifecycle, schema, collision, Team-descendant ownership, catalog transition/rollback, payload/result, and strict-package risks remain covered implementation/test concerns, not reopened design blockers.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: SR-009 has a clear data-flow span, explicit lifecycle subject ownership, clean dependency direction, tight interfaces, clean removal of the obsolete seam, and an evidence-backed no-migration transition. `ARCH-REV-009` supersedes `ARCH-REV-008` for implementation readiness.
+- Notes: SR-010 preserves SR-009's clear data-flow span, explicit lifecycle ownership, clean dependency direction, tight interfaces, and persisted-state decisions. It correctly keeps runtime operation choice below the application/business boundary and makes workspace/artifact/publication/handoff/identity/UI evidence authoritative. `ARCH-REV-010` supersedes `ARCH-REV-009` for implementation readiness.

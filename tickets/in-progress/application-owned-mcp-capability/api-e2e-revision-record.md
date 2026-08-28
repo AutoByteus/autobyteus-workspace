@@ -8,6 +8,7 @@
 | API-REV-002 | /code_reviewer CRR-004; API/E2E round 2 | SR-006; ARCH-REV-006; IR-003; CRR-004; DR-002 | Pass / 97.2% for prior scope | Fail / 87.1% |
 | API-REV-003 | /code_reviewer CRR-006; API/E2E round 3 | SR-007; ARCH-REV-007; IR-004; CRR-006; DR-002 | Fail / 87.1% for superseded SR-006 workflow | Fail / 88.6% |
 | API-REV-004 | /code_reviewer CRR-008; API/E2E round 4 | SR-008; ARCH-REV-008; IR-005; CRR-008; DR-002 | Fail / 88.6% for superseded SR-007 workflow | Pass / 97.6% |
+| API-REV-005 | /code_reviewer CRR-011; API/E2E round 5 | SR-009; ARCH-REV-009; IR-006; IR-007; CRR-011; DR-004 | Pass / 97.6% for prior state | Fail / 96.4% |
 
 ## Revision Entries
 
@@ -131,3 +132,34 @@ After API-REV-001, the user required an actual Brief Studio Agent call, correlat
 - Cleanup: owned browser/processes stopped, ports closed, isolated data and owned generated outputs removed after evidence copy, unrelated data preserved, and `git diff --check` passed.
 - Remaining risks: inherent external-provider availability/nondeterminism; pre-existing global TS6059 typecheck configuration; one transient observer-only SQLite lock; bundled bubblewrap fallback. None leaves a critical ticket criterion unproven.
 - Recommended recipient: `/code_reviewer` for proportional review of the one updated durable integration file before delivery.
+
+### API-REV-005 — Current lifecycle passes, real Brief Studio MCP succeeds, but shipped roles use shell
+
+- Triggering role, report path, and round: `/code_reviewer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`; `CRR-011`; API/E2E round 5 after the latest-base merge and `IR-006`/`IR-007`.
+- Triggering scenario IDs: renewed `AC-032`–`AC-044`, including deterministic tokenless activation, stop/restore/current-route behavior, application-lane quiesce with run-session liveness, exact deactivation, shutdown, and the supported Brief Studio Codex/Luna browser journey.
+- Related revisions: `SR-009`, `ARCH-REV-009`, `IR-006`, `IR-007`, `CRR-011`, prior `API-REV-004`, and delivery pause `DR-004`.
+- Why recorded: the latest-base merge materially changed the host/session/application execution topology and replaced the model-facing built-in-patch wording with operation-neutral business instructions. The prior passing result is valid only for its prior state and cannot prove these merged contracts.
+- Coverage decisions and durable paths changed: the deleted issuer/bearer fixture in `agent-package-private-skills.e2e.test.ts` was classified `Stale / Replace` and replaced with the current tokenless run-session activator contract; `codex-agent-run-backend-factory.integration.test.ts` was classified `Needs Update` and repaired for current run identity, memory, batch-dispatch, exact Luna, operation-neutral prompt, and test-owned routed application authority; the stale “authenticated MCP” label in `brief-studio-agent-tool-mcp.integration.test.ts` was classified `Needs Update` and corrected to tokenless MCP. No production file was changed.
+- Commands/environment delta: current stale-fixture contract `1 file / 4 tests`; current lifecycle/topology matrix `21 files / 178 tests`; package/publication matrix `10 files / 44 tests`; frontend SDK/devkit/Brief/server builds and package validation; default optional live gate compile/skip; exact actual `gpt-5.6-luna` material diagnostic `1 passed / 9 skipped`; fresh isolated backend/frontend/same-origin browser stack; Brief package import and setup through the supported UI; actual shipped researcher/writer Team; clean no-observer browser run.
+
+#### Prior Failure Resolution
+
+| Prior Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-REV-004` pre-merge lifecycle and Brief workflow | `Pass / 97.6%` for prior state | Re-executed rather than inferred; current lifecycle criteria and `AC-032`–`AC-038` pass | current topology matrix and `clean-identity-trace-artifact-ui-join.json` |
+| Deleted issuer/bearer fixture | Flagged stale fixture | Replaced before execution with current tokenless activator and capability-object contract | durable test diff and `stale-fixture-current-contract.log` |
+| Optional live Codex fixture missing current backend identity and exact current model/prompt | `Needs Update` | Repaired; exact Luna material file-change diagnostic passes | `codex-live-exact-luna-after-repair.log` and provider event JSON |
+| Current zero-shell normal-artifact requirement | Required under `AC-039` | **Not resolved in the actual shipped application journey**: both clean members selected shell; the rejected observer run independently showed the same choice | normalized raw traces and sanitized provider sessions |
+
+- Canonical artifacts updated:
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005`
+- Prior result and confidence: `API-REV-004 Pass / 97.6%` for the superseded pre-merge state.
+- Current result and confidence: **`Fail / 96.4%`**. Confidence is high because the critical failure is directly observed, not because the clean-pass threshold is met.
+- Passing material proof: `AC-032`–`AC-038` and `AC-040`–`AC-044` pass. Both real configured members call `get_brief_context` first exactly once; exact application/binding/member/run/call/publication identities join; the complete research body is handed off and used verbatim; publication reconciles the same brief to `in_review`; the browser displays two outputs and exactly one final artifact.
+- Remaining failure: `AC-039`. The authoritative clean researcher uses normalized `run_bash` call `exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e`, and the writer uses `exec-f4bcd9ea-2a42-4054-b837-f18247e028af`; provider evidence records `tools.exec_command` and no native patch/file-change for either normal artifact. Across the clean and rejected observer runs, four of four actual member executions selected shell.
+- Preliminary classification: implementation / requirement-design interaction. Operation-neutral business text plus the automatically available shell did not produce the required zero-shell behavior with the shipped Luna model. Formal origin belongs to `/code_reviewer`; a compliant repair may require `/solution_designer` reconciliation.
+- Cleanup: the owned browser and three services were stopped, ports `8015`/`3015`/`3016` were verified closed, isolated root/database and owned generated outputs were removed, unrelated state was preserved, and `git diff --check` passed.
+- Recommended recipient: `/code_reviewer` for focused failure-origin review plus proportional review of the three changed durable test files. Delivery remains paused at `DR-004`.

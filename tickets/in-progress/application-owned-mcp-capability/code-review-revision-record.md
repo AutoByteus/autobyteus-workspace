@@ -16,6 +16,8 @@ The latest canonical `code-review-report.md` or `api-e2e-test-review-report.md` 
 | `CRR-008` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 7; `/implementation_engineer` `IR-005` after `SR-008` / `ARCH-REV-008` | `Fail — Design Impact` at `CRR-007` | `Pass` | `CR-DI-002` resolved in source |
 | `CRR-009` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review Round 2; `/api_e2e_engineer` `API-REV-004` | `Implementation Review Pass` at `CRR-008`; runtime proof pending | `Test-Code Review Pass` after `API-REV-004 Pass / 97.6%` | `None` |
 | `CRR-010` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 8; `/implementation_engineer` `IR-006` after `SR-009` / `ARCH-REV-009` and delivery `DR-004` | `CRR-008` source Pass; `CRR-009` proportional test Pass for the pre-latest-base state | `Fail — Local Fix` | `CR-LF-001` |
+| `CRR-011` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 9; `/implementation_engineer` `IR-007` after `CRR-010` | `Fail — Local Fix` at `CRR-010` | `Pass` | `CR-LF-001` resolved |
+| `CRR-012` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | API/E2E Failure-Origin Review; `/api_e2e_engineer` `API-REV-005` | `Implementation Review Pass` at `CRR-011` | `Fail — Design Impact` | `CR-DI-002` reopened; `CR-MP-002` Reachable |
 
 ## Revision Entries
 
@@ -278,3 +280,61 @@ After `CRR-003`, the user clarified an additional Agent-to-UI proof expectation 
 - Material score or classification changes: current score is `9.3/10 (93.4/100)`, but API/E2E readiness is `8.4`; result changes from earlier source `Pass` to `Fail — Local Fix` for IR-006.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: repair the shared fixture without making production application capability optional, rerun the exact eight-test file and focused IR-006 collection, and return for source review. Only after a pass should API/E2E reinvestigate stale issuer/bearer coverage, exercise stop/restore/reload interleavings, and rerun the supported Brief Studio Codex/Luna browser journey. The source-only TypeScript check passes; the known full-test `TS6059` configuration issue remains external to this finding.
+
+### CRR-011 — Current-contract execution-scope fixture correction passes renewed source review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `Implementation Review`, Round 9
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`; `IR-007`; `CR-LF-001`
+- Relevant solution revision IDs: `SR-001`–`SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-001`–`IR-007`
+- Relevant API/E2E revision IDs: `API-REV-001`–`API-REV-004` as earlier-state evidence only
+- Relevant delivery revision IDs: `DR-002`, `DR-004`
+- Prior authoritative result: `CRR-010` `Fail — Local Fix`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `IR-007` corrects only the stale shared execution-scope unit fixture. It supplies one explicit non-null `ApplicationAgentToolCapability` to the unchanged required production construction boundary and proves object identity through provider `createForExecution(...)` and scoped authority `complete(...)`. No production source changed. The reviewer rerun passes the exact file at 8/8, and implementation evidence records the renewed current collection passing 16 files/107 tests.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-LF-001` | Open — `Fail`, `Local Fix` at `CRR-010` | Resolved | `CRR-010`; `IR-007`; `CRR-011` | The shared fixture now injects an explicit non-null capability without changing production validation, preserves all prior assertions, and adds provider/authority identity assertions. Reviewer exact execution passes 1 file/8 tests; implementation's renewed collection passes 16 files/107 tests. |
+| `DR-004` | Resolved in current production source at `IR-006` / `CRR-010` | Remains resolved | `DR-004`; `SR-009`; `ARCH-REV-009`; `IR-006`; `IR-007`; `CRR-011` | IR-007 has no production-source diff; the latest-base tokenless host/session/capability/lifecycle reconciliation remains unchanged. |
+| `CR-DI-002` | Resolved in current source; current merged-state runtime proof pending | Remains resolved in source | `CRR-008`; `API-REV-004`; `CRR-009`; `SR-009`; `IR-006`; `CRR-011` | Business-only maintained prompts and exact three-name Codex/Luna configurations remain unchanged; renewed runtime proof remains downstream. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved | `CRR-001`; `CRR-002`; `IR-006`; `CRR-011` | Complete registered-static name reservation and names-only readiness exposure remain unchanged. |
+
+- New or remaining finding IDs: None.
+- Material premise result: `MP-003` remains `Reachable` and resolved in production source. No new premise is required for the bounded test correction.
+- Material score or classification changes: current score is `9.5/10 (94.8/100)`, every category is at or above 9.0, and the result changes from `Fail — Local Fix` to `Pass`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: renewed API/E2E must investigate current durable coverage, classify the stale issuer/bearer fixture, exercise the current stop/restore/current-route/application-lane/exact-deactivation behaviors, and rerun the supported Brief Studio Codex/Luna browser journey. The prior `API-REV-004` pass does not prove IR-006/IR-007. The known supplemental full-test `TS6059` configuration issue remains outside this finding.
+
+### CRR-012 — Current browser proof reopens the operation-selection design conflict
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, Round 10
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`; `API-REV-005`; `AC-039`; reopened `CR-DI-002`; confirmed `CR-MP-002`
+- Relevant solution revision IDs: `SR-009`; `SR-006`–`SR-008` as maintained-workflow history
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; `ARCH-REV-006`–`ARCH-REV-008` as maintained-workflow history
+- Relevant implementation revision IDs: `IR-006`, `IR-007`; `IR-003`–`IR-005` as maintained-workflow history
+- Relevant API/E2E revision IDs: `API-REV-005`; `API-REV-004` as prior-state evidence only
+- Relevant delivery revision IDs: `DR-004`
+- Prior authoritative result: `CRR-011` implementation-source `Pass`; current runtime proof pending
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: the exact current supported-browser journey proves the application-owned MCP, current tokenless session lifecycle, Team identity, worker invocation, publication, reconciliation, and UI outcome. It also proves the reviewed SR-009 operation-selection assumption is false for the shipped workflow: business-focused prompts correctly name no foundation operation, while all four observed real Luna member executions select automatically available shell. The clean researcher/writer traces join normalized `run_bash` to provider `tools.exec_command` heredocs with no patch/file-change, violating critical `AC-039`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-DI-002` | Resolved at `CRR-008` and proven for the pre-SR-009 prompt at `API-REV-004`; preserved under SR-009 with current runtime proof pending | Reopened — `Fail`, `Design Impact` | `CRR-005`–`CRR-009`; `SR-009`; `ARCH-REV-009`; `IR-006`; `IR-007`; `CRR-011`; `API-REV-005`; `CRR-012` | The authoritative clean roles each call `get_brief_context` correctly and publish normal artifacts, but each uses one normalized `run_bash` / provider `tools.exec_command` heredoc and no file-change. An independent rejected observer run repeats shell for both members: 4/4 observed executions. |
+| `CR-LF-001` | Resolved at `CRR-011` | Remains resolved / unaffected | `CRR-010`; `IR-007`; `CRR-011`; `API-REV-005` | The current 21-file/178-test lifecycle matrix passes, including the required application capability construction path. |
+| `DR-004` | Resolved in source; current lifecycle proof pending | Resolved and runtime-proven for its lifecycle scope | `DR-004`; `SR-009`; `ARCH-REV-009`; `IR-006`; `IR-007`; `CRR-011`; `API-REV-005`; `CRR-012` | `AC-040`–`AC-044` pass on the latest-base merged state. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `CRR-002`; `API-REV-005` | No static-collision behavior is implicated; the current application call path passes. |
+
+- New or remaining finding IDs: `CR-DI-002` reopened.
+- Material premise result: `CR-MP-002` is `Reachable` on the current merge from the supported Brief Studio **Generate draft** user action through exact shipped Codex/Luna roles to shell-created normal artifacts and the otherwise successful same-brief UI outcome.
+- Material score or classification changes: no full implementation scorecard is repeated for this bounded failure-origin round. Failure classification is `Design Impact` because implementation conforms to SR-009, while the design has no enforceable owner for both operation-neutral prompts and zero-shell output.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: upstream must choose an approved enforceable runtime/provider capability policy, revise the prompt boundary with user approval, or revise the zero-shell outcome while preserving the passing application MCP and lifecycle behaviors. Retrying model choice is not a correction. API-REV-005's three durable test edits remain pending the separate successful proportional review after corrected implementation and API/E2E pass. Delivery remains paused.

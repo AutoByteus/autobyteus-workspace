@@ -14,15 +14,147 @@
 - Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
 - Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-002`
+- Relevant Delivery Revision IDs: `DR-002`, `DR-004`
 - API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004` (completed)
-- Current Investigation Round: `4`
-- Trigger: `/code_reviewer` `CRR-008` renewed implementation-source pass after `SR-008` / `ARCH-REV-008` / `IR-005` separated Luna built-in `apply_patch`, Codex native `fileChange`, and AutoByteus normalized `edit_file`. Delivery remains paused at `DR-002` pending real shipped Codex/Luna and supported-browser proof for `AC-032`–`AC-039`.
-- Prior Investigation Reviewed: Round 1 / `API-REV-001` (`Pass`, `97.2%`, retained for `BEH-001`–`BEH-007` / `AC-001`–`AC-031`), Round 2 / `API-REV-002` (`Fail`, `87.1%`, historical evidence for the superseded ordinary-file workflow), and Round 3 / `API-REV-003` (`Fail`, `88.6%`, historical evidence that normalized `edit_file` was not a viable model-facing instruction).
-- Latest Authoritative Investigation: `Round 4 completed — Pass / 97.6%; broader validation required and completed`
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Investigation Round: `5`
+- Trigger: `/code_reviewer` `CRR-011` renewed implementation-source pass after `SR-009` / `ARCH-REV-009` / `IR-006` rebased application-owned capability onto the latest-base deterministic tokenless run-session owner and `IR-007` repaired the required-capability execution-scope unit fixture. Delivery remains paused after `DR-004` pending renewed `AC-040`–`AC-044` lifecycle/topology/current-route proof and a fresh real shipped Codex/Luna supported-browser journey for `AC-032`–`AC-039`.
+- Prior Investigation Reviewed: Round 1 / `API-REV-001` (`Pass`, `97.2%`, prior platform scope), Round 2 / `API-REV-002` (`Fail`, `87.1%`, superseded ordinary-file workflow), Round 3 / `API-REV-003` (`Fail`, `88.6%`, superseded provider-vocabulary workflow), and Round 4 / `API-REV-004` (`Pass`, `97.6%`, retained as pre-latest-base production evidence but not proof of IR-006/IR-007).
+- Latest Authoritative Investigation: `Round 5 completed — lifecycle/topology matrix passed; real supported Brief Studio journey proved application MCP and same-brief UI convergence but failed critical AC-039 because both shipped Luna members created their normal artifacts through run_bash`
 
-## Round 4 SR-008 Renewal (Current Authority)
+## Round 5 SR-009 / Latest-Base Renewal (Current Authority)
+
+This renewal was written after reading the complete `SR-009` / `ARCH-REV-009` / `IR-006` / `IR-007` / `CRR-011` and `DR-004` package and **before** any Round 5 durable coverage edit or final repository/live-provider/browser execution. `API-REV-004` remains strong historical proof of the pre-latest-base Brief business journey. It cannot prove the new deterministic tokenless session topology, stop/restore rematerialization, exact deactivation, package/session orthogonality, shutdown composition, or the current merged production journey.
+
+### Approved Behavior To Prove
+
+- `AC-040`: application Claude/Codex descriptors use the one latest-base dedicated loopback listener, deterministic run-derived headerless route, and no bearer/random/main-listener/per-application/persisted-live-session seam.
+- `AC-041`: stop removes the active record; restore reuses the byte-identical URL while rematerializing current exposure, application/binding/producer identity, capability, and declaration fingerprint rather than reviving the stopped snapshot.
+- `AC-042`: general execution supplies explicit `applicationAgentTools: null`; application Claude/Codex activation receives only exact-application routes through the scoped session, and application AutoByteus receives the same capability locally. Providers own no application authorization/worker routing.
+- `AC-043`: application lane quiesce rejects new application calls and drains admitted work while the containing run session and its non-application route remain live; unchanged reentry resumes, while changed/removed routes fail currentness. Package/reentry/call-lifecycle owners never deactivate the run session.
+- `AC-044`: exact managed Agent/Team member stop and scope close deactivate current records exactly once without prematurely closing the process listener; stop/restore and application transition interleavings leave no live leak. Shutdown blocks activation/admission, drains calls, stops workers/runs/sessions/scopes, closes the application capability, then closes the host listener.
+- Renew `AC-032`–`AC-039` through the shipped browser path and actual configured `codex_app_server` / `gpt-5.6-luna` researcher/writer Team. Role/Team/launch prompts must remain business-focused and operation-agnostic. Each role must call `get_brief_context({})` exactly once at its lifecycle-correct first recorded tool action; publications and complete handoff—not the read—must cause the same-brief `in_review` UI. Current native/normalized file evidence is corroboration only and must not feed role control flow. No mocks, direct MCP substitute, model/runtime switch, or shell-created normal artifact.
+
+### Round 5 Changed Surfaces And Evidence Plan
+
+| Surface / Boundary | Classification | Existing Evidence | Remaining Critical Gap | Planned Direct Evidence |
+| --- | --- | --- | --- | --- |
+| Latest-base host, session service/registry, scoped authority | Materially rebased by IR-006 | Focused units/integrations from implementation and CRR-011 | API-REV-004 predates deterministic tokenless owner | Execute host/service/authority plus real SDK listener route tests; retain deterministic URL, no-header, active-only stop/restore evidence |
+| General/application/provider capability composition | Materially rebased | Provider/kernel/general units and architecture checks | Need renewed exact current object/capability disposition evidence | Execute general-null, application-non-null identity, provider materialization, AutoByteus-local, and architecture matrix |
+| Application lane vs run-session lifetime | Materially recomposed | New focused application route integration and transition tests | Need current quiesce/session-liveness/currentness execution | Execute admitted-call drain/reject, live non-application route, unchanged/current and changed/removed behavior, exact deactivation |
+| Team run stop/restore and shutdown | Materially rebased | Latest-base Team lifecycle, resource-manager, lifecycle, listener tests | Need renewed current collection and process-boundary shutdown check | Execute Team reject/stop/restore, exact deactivation, application shutdown drain/order, Studio listener close, and server-process signal cleanup |
+| Stale package-private-skills E2E fixture | Merge-touched durable E2E setup | Valid GraphQL/private-skill scenario, but old fixture injects deleted issuer and bearer descriptor in the old constructor position | Current file cannot compile and protects forbidden legacy API rather than approved behavior | `Needs Update`: replace only the retired issuer/bearer double with current `AgentToolMcpRunSessionActivator` returning `not_exposed`, inject it through the current first constructor parameter, and retain all private-skill assertions |
+| Maintained Brief source/package/browser journey | Business behavior preserved; session composition rebased; prompt wording generalized by SR-009 | API-REV-004 prior-state pass; current prompt/package unit/integration coverage | No IR-006/IR-007 real provider/browser proof | Rebuild/import current package; use isolated production stack and supported browser; correlate exact identities, tool calls/results, files, handoff, publications, reconciliation, DOM, and current tokenless routes |
+| Desktop shell | Out Of Scope | No shell-specific source changed | None if browser and process lifecycle pass | Do not start Electron; supported browser proves the web-equivalent renderer, while repository/process tests prove listener lifecycle |
+
+### Durable Coverage Validity Classification Before Round 5 Edits
+
+| Path / Scenario | Decision | Round 5 Action |
+| --- | --- | --- |
+| `tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts` Codex bootstrap fixture | `Needs Update` | The private-skill scenario is still required, but `AgentToolMcpSessionIssuer.issueForRun`, bearer headers, and the old constructor order are removed by SR-009. Replace with an explicit current activator returning `not_exposed`; do not preserve aliases or bearer expectations. This is the flagged issuer/bearer fixture. |
+| `tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts` | `Still Valid` | Rerun deterministic headerless activation, active-only state, zero-exposure, configured composition, exact Team ownership, same-URL fresh restore/current fingerprints, and observer semantics. |
+| `tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts` and host tests | `Still Valid` | Rerun assembly/ledger/close/idempotence, one-shot loopback ownership, readiness, and immutable static-name snapshot. |
+| `tests/integration/agent-tools/mcp/application-agent-tools-mcp-routes.integration.test.ts` | `Still Valid` | Rerun real loopback Fastify route with App A/B isolation, headerless access, application-lane quiesce while `ping` remains live, unavailable application call, and exact deactivation/404. |
+| `tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts` | `Still Valid` | Rerun rejected-stop liveness, accepted exact stop/deletion, same-route fresh restore twice, and no stale identity leakage. |
+| provider builder, general supervisor, application scope/kernel, AutoByteus application composer tests | `Still Valid` after IR-007 | Rerun explicit general `null`, application non-null capability identity, scoped authority completion, and supported provider disposition. |
+| application catalog transition, gateway/call lifecycle, platform lifecycle/shutdown, Studio/standalone listener tests | `Still Valid` | Rerun target-only drain/serialization/rollback, application call admission/currentness, shutdown drain/order/idempotence, main-listener absence, loopback close, and startup compensation. |
+| architecture boundary suites | `Still Valid` | Rerun legacy seam absence, package/session independence, provider ownership prohibition, and exact composition assertions. |
+| current Brief handler/prompt/source-plus-package tests and exact-Luna live provider integration | `Still Valid` with SR-009 wording | Rerun. The role prompt must now omit all foundation/provider operation names; verifier-side native/normalized evidence remains allowed. |
+| API-REV-004 browser/traces | `Still Valid — Historical Prior-State Evidence` | Preserve unchanged; do not count as current merged-state success. |
+| v4 manifest and v6 backend-definition fixtures | `Still Valid only as rejection inputs`; valid-state use would be `Stale / Remove` | Current maintained package remains v5/v7. Do not restore v4/v6 as valid or add compatibility reads; rebuild current outputs. |
+
+One narrow repository-resident test update is approved before execution: the flagged `agent-package-private-skills.e2e.test.ts` fixture. The obsolete assertion is the deleted issuer/bearer/session-secret construction seam; its valid private-skill behavior remains and is covered by the same scenario after current activator injection. Removal of the whole test would discard unrelated durable private-skill GraphQL/runtime coverage, so replacement of the fixture—not scenario removal—is proportionate.
+
+No new durable browser test is approved. The exact production Team journey still requires access-controlled trace/communication/application-database/workspace/DOM joins not exposed by the repository's stable browser fixtures, so Round 5 will use a ticket-local retained executable evidence harness. Any deterministic product defect or new coverage gap discovered during execution requires an investigation amendment before further durable edits.
+
+### Round 5 Initial Confidence And Broader-Validation Gate
+
+| Confidence Category | Initial Score | Basis / Gap |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 75% | Reviewed source and focused implementation evidence cover AC-040–AC-044 structurally; current API/E2E execution and merged browser proof are absent |
+| Changed-boundary execution directness | 75% | The exact new owners are identified, but API-REV-004 exercised the superseded session seam |
+| Cross-boundary integration realism and mock gap | 50% | Current host -> scoped authority -> provider -> application lane -> Team/browser chain has not been rerun |
+| Environment, configuration, identity, and fixture fidelity | 65% | Exact shipped model/config is known, but one merge-touched E2E fixture is stale and the live stack must be rebuilt from current source |
+| Failure, edge-case, lifecycle, and recovery evidence | 75% | Strong focused source tests exist, but current stop/restore/quiesce/shutdown collection has not yet been executed by API/E2E |
+| User-surface, browser, and desktop-shell confidence | 50% | Prior browser proof is historical only; current supported browser result is absent; desktop shell remains inapplicable |
+| Durable regression coverage quality and relevance | 80% | Broad focused coverage exists; the flagged issuer/bearer fixture must be corrected before the matrix is authoritative |
+
+- Overall initial Round 5 confidence: `67.1%` (simple average of seven applicable categories).
+- Broader validation decision: `Required`.
+- Approved durable change: narrow current-contract replacement inside `autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts`; no production source change, no file addition/removal, and no legacy alias.
+- Execution order: repair and focus-run the classified fixture; execute lifecycle/topology/current-route/provider/application repository matrix; build/validate the current Brief package and server; restart a fresh isolated production stack; execute supported browser Generate draft with actual shipped Team; retain correlated evidence; exercise/observe owned process shutdown; update confidence/reports and append `API-REV-005`.
+
+### Round 5 Investigation Amendment After Repository Execution Began
+
+The first optional live Codex exact-material attempt was intentionally executed after the initial classification and failed before model inference at `CodexAgentRunBackendFactory.createBackend`: the current test again omits required `agentRunId`. Direct inspection shows the latest-base merge retained only the new `applicationAgentTools: null` builder disposition while reverting the API-REV-004 reviewed live-test maintenance: all direct backend calls again use the obsolete one-argument create API, omit `memoryDir`, subscribe/post through removed high-level methods, select a default/non-exact model, tell Luna to use normalized `edit_file`, and wait for an obsolete `TOOL_LOG`. This is a **coverage regression introduced by merge resolution**, not an IR-006 production failure; the actual production browser journey constructs runs through current managers and has not yet been executed in Round 5. The failed command and stack are retained in `api-e2e-evidence/api-rev-005/codex-live-exact-luna.log`.
+
+Classification before repair:
+
+- `codex-agent-run-backend-factory.integration.test.ts` direct live backend fixture: `Needs Update`. Reapply the previously reviewed current backend identity/memory/batch-subscription/input contracts to every direct scenario, add the synthetic definition's required name, and preserve manager-owned high-level publication calls.
+- Same file exact material case: `Needs Update` for exact available `gpt-5.6-luna` and operation-neutral business instruction consistent with SR-009. Because this is a provider-boundary diagnostic rather than an application role prompt, it may ask the model to create the file without prescribing `edit_file`/`apply_patch`; verifier-owned normalized `edit_file` assertions remain.
+- Same file obsolete `TOOL_LOG` wait: `Stale / Remove`, with normalized segment-start/execution-start/success/segment-end plus actual file content retained as direct replacement evidence.
+- Same file routed-tool scenarios: `Needs Update` for latest-base explicit current run-session authority rather than deleted/global issuer behavior. A test-owned `AgentToolsMcpHost` and scoped authority supply current tokenless routes and a real `PublishedArtifactPublicationService`, are closed after each scenario, and do not create production compatibility code.
+- `brief-studio-agent-tool-mcp.integration.test.ts` scenario title only: `Needs Update` from misleading “authenticated MCP” to “tokenless MCP”; its request already sends no Authorization header and its current session behavior/assertions are valid. No behavioral assertion changes.
+
+These are narrow repository-resident durable coverage repairs. They restore current contracts already required by API-REV-004/CRR-009 and the latest-base architecture; they do not alter production source or approved behavior. The investigation remains authoritative before these additional edits.
+
+### Round 5 Completed Investigation Outcome
+
+#### Durable Coverage And Repository Matrix
+
+- The flagged package-private-skills fixture was correctly classified `Needs Update`, not removed. Its deleted issuer/bearer construction was replaced with the current explicit `AgentToolMcpRunSessionActivator` `not_exposed` result while retaining the private-skill E2E behavior. The focused result is `1 file / 4 tests` passed.
+- The merged optional Codex integration was repaired only after the amendment above. The default gate compiles and skips intentionally; the exact available `gpt-5.6-luna` material scenario passed `1 / 9 skipped` and retained a real provider `fileChange -> normalized edit_file` diagnostic.
+- The current lifecycle/topology matrix passed `21 files / 178 tests`. It directly exercises deterministic headerless activation, same-URL fresh restore/current fingerprints, explicit general-null/application-capability composition, target-only application-lane quiesce while the session's non-application `ping` remains live, exact deactivation, Team stop/restore, Studio/standalone listener ownership, and ordered/idempotent shutdown.
+- The current Brief/package/publication matrix passed `10 files / 44 tests`; SDK/devkit/Brief package builds and validation plus the production server build passed. No v4/v6 valid-state fixture was restored.
+- The optional `open_tab` provider diagnostic reached the actual model and current host but Luna selected `search_web` instead of the requested route, then became idle. This is retained as a non-material model-nondeterminism diagnostic; it is not counted as an application-tool proof or product-path failure. The supported Brief Studio journey below is the authoritative live application proof.
+
+#### Actual Supported Brief Studio Journey
+
+The current built package was imported through **Settings -> Application Packages**, loaded after normal server restart/catalog transition, saved with the exact package-default `codex_app_server` / `gpt-5.6-luna` researcher and writer configuration, and entered through the supported application host. A clean fresh brief was created and **Generate draft** was clicked. No direct MCP call, model/runtime switch, mock, backend launch substitute, manual database mutation, or UI Refresh was used.
+
+Clean identity:
+
+- Brief `brief-6e01ee36-3707-416c-9270-9a8e9f8e8838`
+- Binding `e6aa7750-a3e7-4741-b468-8c8fef5a7b23`
+- Team `brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a`
+- Researcher `brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f`; provider session `01a04838-3d52-7353-bb81-b11e20c03e7b`
+- Writer `brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e`; provider session `01a04838-cc03-75e0-96b2-933cd33e5c9b`
+
+The access-controlled AutoByteus traces prove each member's first recorded tool call is exactly one paired successful `get_brief_context({})`, with exact same-brief results. The researcher published `brief-studio/research.md`, transferred its exact marker/path/complete 300-word body, and the writer used it without `read_file`, copied a complete finding verbatim, and published `brief-studio/final-brief.md`. Binding/member/run/tool/revision joins are complete. Existing reconciliation moved the same brief to `in_review`; the notification-driven iframe rendered `2` outputs and `1 final` with both cards and markers. `AC-032`–`AC-038` pass in the machine join.
+
+#### Critical Production Failure
+
+`AC-039` fails. In the clean production run, both actual shipped Luna members selected the automatically supplied shell foundation path:
+
+- Researcher normalized trace: `run_bash`, call `exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e`, creates `brief-studio/research.md` with `mkdir` + heredoc.
+- Writer normalized trace: `run_bash`, call `exec-f4bcd9ea-2a42-4054-b837-f18247e028af`, creates `brief-studio/final-brief.md` with `mkdir` + heredoc.
+- Sanitized provider sessions independently record `tools.exec_command`; neither records a provider patch/file-change operation for these artifacts.
+
+This reproduced for both members in a separate observer-contaminated run as well. The contamination caused one application `database is locked` status and therefore is not accepted as business-state proof, but it did not create the shell choice; all four actual member executions across the two launches selected shell. The second clean run removed the observer completely and is authoritative.
+
+The application MCP itself is production-reachable and working: both real roles called the binding-derived `get_brief_context`, received the exact application-owned brief, used it, published, reconciled, and updated the supported UI. The ticket still cannot pass because the approved acceptance contract explicitly says a shell-created normal artifact cannot satisfy `AC-032`–`AC-038` and requires zero shell calls under `AC-039`.
+
+Preliminary failure-origin signal: `Implementation / requirement-design interaction`. The shipped operation-neutral business prompts correctly omit every foundation/provider operation name, while Codex/Luna still automatically receives shell execution and selected it consistently. Resolving that without reintroducing prohibited provider vocabulary may require solution/design reconciliation, not an API/E2E workaround. `/code_reviewer` must make the formal failure-origin decision.
+
+#### Final Round 5 Confidence And Routing
+
+| Confidence Category | Final Score | Basis |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 85% | `AC-032`–`AC-038` and `AC-040`–`AC-044` have direct passing evidence; critical `AC-039` fails |
+| Changed-boundary execution directness | 99% | Current merged host/session/provider/application/Team/browser paths executed |
+| Cross-boundary integration realism and mock gap | 99% | Actual package, provider, worker, Team, publication, databases, notification, and UI; no substitute |
+| Environment, configuration, identity, and fixture fidelity | 98% | Fresh isolated root, exact shipped model/config, complete identity joins; initial frontend endpoint mistake was corrected before authoritative import/run |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Current stop/restore/quiesce/deactivation/shutdown matrix plus two independent shell selections |
+| User-surface, browser, and desktop-shell confidence | 99% | Supported host/iframe journey and semantic/visual evidence; Electron-only scope is inapplicable |
+| Durable regression coverage quality and relevance | 97% | Current fixture repairs, exact live provider gate, deterministic lifecycle/package matrices; browser remains ticket-local by design |
+
+- Final validation confidence: `96.4%` (simple average, rounded).
+- Final result: `Fail` because `AC-039` is critical; high confidence describes the strength of the observed result, not requirement satisfaction.
+- Broader validation: `Required and completed`.
+- Durable Round 5 edits: three existing test files updated; no test file added or removed.
+- Required routing: cumulative failure package plus durable test changes to `/code_reviewer` for failure-origin and proportional test-code review. Delivery remains paused after `DR-004`.
+
+## Round 4 SR-008 Renewal (Historical Prior-State Authority)
 
 This renewal was written after reading the complete `SR-008` / `ARCH-REV-008` / `IR-005` / `CRR-008` package and **before** any Round 4 durable coverage edit or final repository/live-provider/browser execution. `API-REV-003` remains a high-directness regression witness for the production-reachable path and the superseded model-facing wording. It is not proof that IR-005 succeeds.
 

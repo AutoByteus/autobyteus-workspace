@@ -15,6 +15,7 @@ The latest `design-review-report.md` remains authoritative. This record captures
 | ARCH-REV-007 | Round 7; SR-007 correction after API-REV-002 / CRR-005 | SR-001–SR-007 | Pass architecture / Fail API-E2E and source failure-origin review | Pass | CR-DI-002; CR-MP-001 |
 | ARCH-REV-008 | Round 8; SR-008 correction after API-REV-003 / CRR-007 | SR-001–SR-008 | Pass architecture / Fail API-E2E and source failure-origin review | Pass | Reopened CR-DI-002; CR-MP-002 |
 | ARCH-REV-009 | Round 9; SR-009 user prompt clarification and DR-004 latest-base ownership rebase | SR-001–SR-009 | Pass architecture / delivery blocked by DR-004 | Pass | DR-004; MP-003 |
+| ARCH-REV-010 | Round 10; SR-010 user-directed removal of zero-shell proof oracle after API-REV-005 / CRR-012 | SR-001–SR-010 | Pass architecture / API-E2E failed only under superseded AC-039 | Pass | Reopened CR-DI-002; CR-MP-002; MP-004 |
 
 ## Revision Entries
 
@@ -225,3 +226,29 @@ None.
 - Material classification changes: `DR-004` is closed at design level. Architecture readiness returns to `Pass`; implementation, renewed source/API-E2E review, and delivery integration remain pending.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: conflict-resolution regression, stale restore routes/capabilities, accidental package/session lifecycle coupling, general-scope capability leakage, shutdown/listener order, model nondeterminism, and the previously recorded schema/collision/ownership/transition risks require the specified executable coverage. None is an unresolved design blocker.
+
+### ARCH-REV-010 — Authoritative business evidence replaces the unrequested zero-shell oracle
+
+- Canonical design review report: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-review-report.md`
+- Review round and trigger: Round 10, `SR-010` after `API-REV-005` completed the supported real Brief Studio journey but old AC-039 failed it solely because both models used their automatically authorized shell, followed by `CRR-012` reopening `CR-DI-002` and the user's explicit instruction to remove that condition.
+- Triggering role, report path, and finding IDs: `/solution_designer`, with `/api_e2e_engineer` evidence at `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md` (`API-REV-005`) and `/code_reviewer` classification at `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` (`CRR-012`); reopened `CR-DI-002`, `CR-MP-002`; architecture premise `MP-004`.
+- Relevant solution revision IDs: `SR-001`–`SR-010`
+- Prior authoritative decision: Architecture `Pass` at `ARCH-REV-009`; current implementation passed source review, while API-REV-005 reported `Fail / 96.4%` only because the now-superseded zero-shell clause rejected an otherwise correct real production journey.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-010 changes the approved acceptance/proof boundary, not production architecture. Maintained prompts remain business-focused; normal runtime provisioning remains authoritative and may supply shell or any other already-authorized foundation capability. Acceptance continues to require the exact member-workspace artifact, required content/path/marker, relative publication, complete handoff/result-use witness, exact application/binding/producer joins, read-only causality, and same-brief browser result. Operation telemetry becomes optional diagnostics and cannot veto an otherwise authoritative result. The SR-009 deterministic tokenless session, application capability/gateway/worker, package/session lifecycle, publication, reconciliation, and UI owners remain unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-DI-002 | Reopened by CRR-012 because old AC-039 conflicted with the successful real run | Resolved by approved SR-010 proof correction; no production Design Impact remains | API-REV-005; CRR-012; SR-010; ARCH-REV-010 | The user explicitly rejected zero-shell as an intended requirement. Current BEH-008, REQ-020/REQ-021, AC-032/AC-033/AC-038/AC-039, DS-013/DS-014, ownership, dependencies, file-impact boundary, guidance, and coverage keep all authoritative business/security/causality checks while allowing any already-authorized foundation operation. Worktree status shows no production or maintained-prompt edit in SR-010. |
+| CR-MP-002 | Reachable historical provider/model behavior premise | Reachable, but no longer authorizes a zero-shell failure or production correction | API-REV-003; CRR-007; SR-008–SR-010; ARCH-REV-008–ARCH-REV-010 | Current real runs establish that model operation selection varies. SR-010 places that variability below the application acceptance boundary; only stable artifact/workspace/publication/handoff/identity/UI consequences are authoritative. |
+| MP-003 | Reachable latest-base integration premise; resolved in SR-009 design and implementation | Resolved — confirmed | DR-004; SR-009; ARCH-REV-009; API-REV-005; SR-010 | API-REV-005 passes the deterministic tokenless listener/session lifecycle and current application route/gateway behavior. SR-010 makes no change to these owners. |
+| ARCH-DI-001 | Resolved | Resolved — confirmed | ARCH-REV-004; SR-004; SR-010 | No schema projection, raw native preparation, or common Ajv behavior changes. |
+| ARCH-DI-002 | Resolved | Resolved — confirmed | ARCH-REV-003/004; SR-003; SR-010 | No catalog-transition, participant lifecycle, staged commit, rollback, or package/session ownership changes. |
+| CR-DI-001 | Resolved | Resolved — confirmed | ARCH-REV-005; SR-005; SR-010 | Complete static-name reservation and configured-MCP precedence remain unchanged. |
+
+- New or remaining finding IDs: None. `MP-004` records the supported real shell-created journey and proves that removing the stale oracle is proportionate; it is not a remaining finding.
+- Material classification changes: the reopened `CR-DI-002` is closed by an explicitly approved requirements/proof correction. Shell use by an already-authorized runtime capability is valid diagnostic fact, not an application-architecture failure. No capability restriction, provider policy, prompt operation name, application file adapter, mutation tool, migration, or new UI/API flow is authorized or needed.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: stale zero-shell wording may remain in the proof oracle or durable tests. Removing it must not weaken exact workspace, artifact, publication, complete-handoff, identity, authorization, read-only-causality, or browser assertions. The three pending API-REV-005 durable test edits require the normal implementation/API-E2E and proportional code-review path before delivery resumes.

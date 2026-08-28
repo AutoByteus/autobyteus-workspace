@@ -2,186 +2,213 @@
 
 ## Execution Round Meta
 
-- API/E2E revision: `API-REV-004`
-- Trigger: `/code_reviewer` `CRR-008`, after `SR-008` / `ARCH-REV-008` / `IR-005`
-- Scope: renewed proof of `REQ-018`–`REQ-021`, `BEH-008`, and `AC-032`–`AC-039`
-- Prior results: `API-REV-001 Pass / 97.2%` remains valid for `AC-001`–`AC-031`; `API-REV-002 Fail / 87.1%` and `API-REV-003 Fail / 88.6%` remain historical evidence for superseded role workflows
+- API/E2E revision: `API-REV-005`
+- Trigger: `/code_reviewer` `CRR-011`, after `SR-009` / `ARCH-REV-009` / `IR-006` / `IR-007`
+- Scope: renewed current merged-state proof for `AC-032`–`AC-044`, especially deterministic tokenless activation, application-call-lane/session orthogonality, exact deactivation/shutdown, and the real shipped Brief Studio Codex/Luna browser journey
+- Prior result: `API-REV-004 Pass / 97.6%` is retained pre-latest-base evidence only; it does not prove IR-006/IR-007
 - Worktree: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability`
-- Evidence root: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-004`
+- Evidence root: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005`
 - Broader-validation decision: `Required and completed`
-- Result: **Pass**
-- Final validation confidence: **97.6%**
+- Result: **Fail**
+- Final validation confidence: **96.4%**
+- Blocking criterion: **AC-039**
 
-## Investigation And Coverage Decisions
+High confidence describes the strength and directness of the observed result. It does not turn a critical acceptance-criterion failure into a pass.
 
-The renewed investigation was recorded in `api-e2e-coverage-investigation.md` before any Round 4 durable edit or final execution. It classified the known optional Codex live integration as `Needs Update`: its prompt named downstream normalized `edit_file`, its helper selected a fallback/default model, its direct backend calls omitted the current `agentRunId`, and subsequent focused attempts exposed stale synthetic name, MCP-session authority, `memoryDir`, backend method, and `TOOL_LOG` assumptions. Each additional decision was recorded in the investigation before repair.
+## Coverage Investigation And Durable Decisions
 
-The one obsolete assertion required `TOOL_LOG` for a native file-change projection. Current canonical conversion emits segment start, normalized `TOOL_EXECUTION_STARTED(edit_file)`, `TOOL_EXECUTION_SUCCEEDED(edit_file)`, and segment end; it does not emit `TOOL_LOG`. That single assertion was classified `Stale / Remove`, with replacement coverage retained in the same live scenario and parser/converter unit suite.
+The renewed investigation was updated before every Round 5 durable edit.
 
-No durable browser scenario was added. The supported browser journey requires a live authenticated model, imported application package, cross-member traces, Team communication store, application databases, and semantic DOM observation. A ticket-local executable probe is more proportional than committing a nondeterministic paid-provider browser fixture. All probe inputs and evidence are retained.
+1. `agent-package-private-skills.e2e.test.ts` was `Needs Update`: its private-skill scenario remained valid, while its deleted `AgentToolMcpSessionIssuer`, bearer header descriptor, and old constructor position were stale. The fixture now injects the current `AgentToolMcpRunSessionActivator` returning `{ kind: "not_exposed" }`; the behavior assertions remain.
+2. The latest-base merge had reverted the previously reviewed optional Codex live fixture. After a pre-inference failure proved missing `agentRunId`, the investigation classified current `agentRunId`, `memoryDir`, batch subscription/input, exact Luna model, test-owned current scoped authority, and synthetic name repairs as `Needs Update`. The obsolete `TOOL_LOG` wait was `Stale / Remove`, replaced by the current segment/edit lifecycle and actual file content.
+3. `brief-studio-agent-tool-mcp.integration.test.ts` behavior already used the current headerless route; only the misleading “authenticated MCP” title was `Needs Update` to “tokenless MCP”.
+4. No durable browser test was added. The exact model-backed Team, access-controlled traces, application databases, publications, notification, and iframe semantic join remain proportional ticket-local executable evidence.
 
-## Compatibility And Persisted-State Scope
+## Durable Coverage Changed
 
-- Legacy/compatibility outcome: current v5 application package and v7 backend-definition contracts only; historical v4/v6 inputs remain rejection fixtures and were not restored as valid.
-- Persisted-data outcome: `Directly Usable — No Migration`. The current package was built, imported, catalog-registered, reloaded, configured, and launched through normal readers. No application data, binding identity, Agent/Team definition, global MCP configuration, or database schema was migrated or rewritten for the proof.
-- Existing Round 1 provider/worker/Team/catalog-transition/concurrency/shutdown evidence remains authoritative for unchanged `AC-001`–`AC-031`. Round 4 additionally exercised a real catalog registration/reload while preparing the current browser journey.
-
-## Durable Coverage Changed In Round 4
-
-- Added files: none.
+- Added test files: none.
+- Removed test files: none.
 - Updated:
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts`
   - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts`
-- Removed files: none.
-- Removed assertion: the obsolete file-change `TOOL_LOG` wait inside the updated integration file.
-- Replacement evidence: exact-Luna native `item.type = fileChange`, normalized `edit_file` start/success/end, shared invocation identity, actual created-file contents, and canonical parser/converter unit coverage.
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts`
+- Production source changed by API/E2E: none.
 
-The updated optional suite now pins `gpt-5.6-luna` for the material case, tells Luna to use its built-in `apply_patch`, supplies current backend identity/memory and input/subscription contracts, and keeps normalized `edit_file` assertions verifier-owned. It does not expose `edit_file` to the model or change production provider/MCP/parser/converter source.
+Because repository-resident durable coverage changed, the cumulative package requires proportional `/code_reviewer` review regardless of the execution failure.
 
-## Repository Coverage Execution
+## Repository And Process-Boundary Execution
 
 All commands ran from the assigned worktree; Vitest commands ran in `autobyteus-server-ts`.
 
-| Check | Command / Mode | Result | Evidence |
-| --- | --- | --- | --- |
-| Focused handler/prompt/Codex conversion/publication matrix | `pnpm test --run` with 6 exact files | **Pass: 6 files / 97 tests** | `focused-repository-tests.log` |
-| Current source-plus-built-package contract | `pnpm test --run tests/integration/application-backend/brief-studio-team-config.integration.test.ts` after package build | **Pass: 1 file / 4 tests** | `package-contract-integration.log` |
-| SDK/devkit/Brief package | contracts, backend SDK, frontend SDK, devkit builds; Brief build, `typecheck:backend`, and validate | **Pass** | `package-build-validation.log` |
-| Production server build | `pnpm build` | **Pass**, including sanitized built-in bootstrap smoke | `server-build.log` |
-| Optional integration default gate | no `RUN_CODEX_E2E` | **Expected skip: 1 file / 10 tests**; compile/import succeeded | `optional-codex-integration-default-skip.log` |
-| Exact live provider file-change case | `RUN_CODEX_E2E=1 CODEX_BACKEND_FLOW_TIMEOUT_MS=240000 CODEX_BACKEND_EVENT_TIMEOUT_MS=180000 pnpm test --run ... -t "converts raw Codex fileChange"` | **Pass: 1 passed / 9 skipped**, actual `gpt-5.6-luna` in 13.65 s | `optional-codex-live-exact-luna-attempt-6.log`; `codex-live-events/codex-backend-edit-file.json` |
-| Evidence synthesis | `python3 .../synthesize-evidence.py` | **Pass: all 8 AC assertions true** | `evidence-synthesis.log`; `identity-trace-artifact-ui-join.json` |
-| Diff hygiene | `git diff --check` | **Pass** before and after cleanup | command output recorded in this report |
+| Check | Result | Direct evidence |
+| --- | --- | --- |
+| Flagged package-private-skills E2E after current-contract fixture repair | **Pass: 1 file / 4 tests** | `stale-fixture-current-contract.log` |
+| Current host/session/provider/application/Team/lifecycle/architecture matrix | **Pass: 21 files / 178 tests** | `current-lifecycle-topology-matrix.log` |
+| Brief handler/source/package/real child MCP/import/reconciliation/publication matrix | **Pass: 10 files / 44 tests** | `brief-package-publication-matrix.log` |
+| Frontend SDK + devkit build; Brief backend typecheck, pack, validate; production server build and sanitized bootstrap | **Pass** | `package-and-server-build.log` |
+| Optional Codex file default gate after repair | **Expected skip: 10 tests; compile/import passed** | `codex-live-default-gate-after-repair.log` |
+| Exact live provider material case, actual `gpt-5.6-luna` | **Pass: 1 / 9 skipped**; real provider `fileChange` normalized to `edit_file` and created expected file | `codex-live-exact-luna-after-repair.log`; `codex-live-events/codex-backend-edit-file.json` |
+| Optional `open_tab` model-choice diagnostic | **Diagnostic failed:** Luna chose built-in `search_web`, not requested routed `open_tab`, then idled | `codex-live-tokenless-open-tab.log` |
+| Machine synthesis of authoritative clean browser run | **Fail: 7 assertions true, AC-039 false** | `clean-evidence-synthesis.log`; `clean-identity-trace-artifact-ui-join.json` |
 
-Supplemental `pnpm typecheck` is not a ticket failure: it stops globally on the existing `tsconfig.json` contradiction that sets `rootDir: src` while including the entire `tests` tree, producing TS6059 for unchanged tests. The production build, package typecheck, Vitest transpilation, and actual updated live integration all pass. Full output is retained in `server-typecheck.log`; the repository-wide configuration issue was already known in API-REV-001.
+The optional `open_tab` case is not used as application-MCP or ticket failure evidence. It demonstrates external model nondeterminism in an unrelated optional route-selection prompt. The actual Brief Studio model-backed application path below is authoritative.
 
-## Post-Repository Confidence And Broader Gate
+### AC-040–AC-044 Current Lifecycle Result
 
-Repository evidence directly proved the handler/config/package/conversion/publication contracts and the real exact-Luna file-change conversion, but it could not prove the maintained model-backed Team, cross-member handoff, reconciliation, notification, or browser outcome. Post-repository confidence remained below the clean target at `88.0%`; broader validation was therefore **Required**. Selected mode: supported web-equivalent Brief Studio browser surface, not Electron, because no shell/preload/IPC source changed.
+The 21-file matrix passed the current latest-base topology:
+
+- one dedicated loopback `AgentToolsMcpHost` listener and deterministic run-derived session path;
+- tokenless/headerless descriptors and active-record-only routing;
+- stopped route inactive, byte-identical URL on restore, fresh live exposure/capability/current declaration fingerprints;
+- explicit general `applicationAgentTools: null` and application non-null capability reaching provider create/execution scope completion;
+- exact-application route isolation and unchanged AutoByteus-local versus Claude/Codex-session projection ownership;
+- application lane quiesce rejects new application calls and drains admitted work while non-application `ping` remains live;
+- unchanged reentry resumes current code, while changed/removed declarations fail currentness;
+- package transition never deactivates the containing provider session;
+- exact Agent/Team member stop and scope close deactivate current records once;
+- shutdown drains calls, stops application/run/session owners, closes capability and listener, and is idempotent.
+
+Result: **AC-040–AC-044 pass**.
 
 ## Real Supported Brief Studio Browser Journey
 
-### Environment Fidelity
+### Environment And User Path
 
-- Fresh isolated data root: `.autobyteus/api-e2e-004`
-- Production-built backend: `127.0.0.1:8015`
-- Supported Nuxt frontend development path: `127.0.0.1:3015`
-- Same-origin host/proxy used by the application iframe: `127.0.0.1:3016`
-- Package imported through **Settings -> Application Packages**; applications enabled through **Settings -> Server Settings**; both role setup rows visibly selected `codex_app_server` / `gpt-5.6-luna`
-- Browser actions only for the product journey: create/select brief, click **Generate draft**, observe automatic refresh. No direct MCP, backend launch call, mock, runtime/model switch, database mutation, shell fallback, or manual UI Refresh was used.
-- Detailed steps: `browser-journey.md`
+- Fresh owned data root: `.autobyteus/api-e2e-005`
+- Production-built server: `127.0.0.1:8015`
+- Nuxt supported web-equivalent surface: `127.0.0.1:3015`
+- Same-origin application host/proxy: `127.0.0.1:3016`
+- Current built package imported through **Settings -> Application Packages**
+- Normal post-import restart performed; catalog setup loaded the exact package default for both members
+- Setup visibly showed `/researcher` and `/writer` as `codex_app_server` / `gpt-5.6-luna`; setup saved through the host UI
+- Application entered through the supported Applications catalog
+- Browser created a fresh brief, selected it, and clicked **Generate draft**
+- No direct MCP, mocked decision, model/runtime switch, backend launch substitute, manual database write, or manual UI Refresh was used
 
-Initial import occurred while applications were disabled, so the catalog correctly held the application out of readiness. Restarting only the owned backend after enabling applications preserved package registration and loaded the normal launch setup. This was an environment sequencing observation and useful catalog-transition proof, not an implementation failure.
+An initial frontend launch used its default port-8000 API endpoint and reached an unrelated older local server. That attempt was detected because the visible workspaces and manifest rejection disagreed with the isolated backend. The frontend was restarted with every HTTP/WS endpoint bound to `3016`; the authoritative import, setup, application launch, both browser runs, and all retained clean evidence occurred only after correction.
 
-### Exact Identity Join
+### Authoritative Clean Identity Join
 
-- Brief: `brief-2263879a-640f-4606-8e92-d01e53a18dd5`
-- Title: `API E2E Luna Patch Proof 2026-08-27T21:31Z`
-- Binding: `7afc3330-cff3-457a-b22b-948487a3b3be`
-- Team run: `brief_studio_team_3fcc38699ad44130b20eb4149a19cdff`
-- Researcher: `/researcher`, run `brief_studio_researcher_bef570119a744cd9a182403c0887fb7f`, provider session `01a04523-a49a-7120-818b-6f8fb03f24b2`
-- Writer: `/writer`, run `brief_studio_writer_0985ae6e8c1943e89f3e4d6d4f3b0afc`, provider session `01a04524-4851-7db2-9a4d-2dbbf43a1fac`
-- Both execution-tree launch configurations are exact `codex_app_server` / `gpt-5.6-luna` and use the application runtime workspace recorded in `team-run-execution-tree.json`.
+- Brief: `brief-6e01ee36-3707-416c-9270-9a8e9f8e8838`
+- Title: `API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC`
+- Binding: `e6aa7750-a3e7-4741-b468-8c8fef5a7b23`
+- Team run: `brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a`
+- Researcher: `/researcher`, run `brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f`, provider session `01a04838-3d52-7353-bb81-b11e20c03e7b`
+- Writer: `/writer`, run `brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e`, provider session `01a04838-cc03-75e0-96b2-933cd33e5c9b`
+- Both execution-tree member configurations: exact `codex_app_server` / `gpt-5.6-luna`
+- Both role configs: exactly `get_brief_context`, `publish_artifacts`, `send_message_to`; no selected file or shell registry tool
 
-### Researcher Chain
+### What Passed In The Actual Application Path
 
-1. First tool call exactly once: `get_brief_context({})`, call `exec-828d4468-c376-4877-9bbe-9deab42cca9e`; success returned the selected `briefId`, title, `researching`, and `ATTACHED`.
-2. Provider transcript records a built-in `tools.apply_patch` invocation and successful `patch_apply_end`; call `exec-72319685-3bad-4e41-ad8c-cdf99438f3ef` added `brief-studio/research.md`.
-3. The independent AutoByteus trace records the same call ID as normalized `edit_file` start/success; the normalized patch equals the resulting file byte-for-byte.
-4. `publish_artifacts` call `exec-35bcae80-1d0c-4175-88f0-71f2489e2b60` used exactly `brief-studio/research.md`; revision `cd1e4c77-351c-4b50-925c-cb16b5ea81b7` is joined to `/researcher`, its run, binding, and brief.
-5. Team message `teammsg_dgNX5VpVi2vNRgMuTAIXLXMegqVp-w0U` delivered to the writer at `21:33:20.834Z`, containing the exact marker, canonical relative path, and complete 307-word body. Team-message serialization omits only the file's terminal newline; every body character is otherwise identical.
+#### Researcher
 
-### Writer Chain
+1. First recorded AutoByteus tool call is exactly one `get_brief_context({})`, call `exec-1fec777b-1490-4f58-b6bc-b9b6cdf19fa5`.
+2. The paired successful result contains the selected brief ID/title, status `not_started`, binding status `ATTACHED`, and binding-derived update time.
+3. The resulting `research.md` begins with the exact compact marker derived from that result and contains a 300-word body.
+4. `publish_artifacts` call `exec-fefbc6fa-9b30-4e01-942c-b9956ac3bf61` passes exactly `brief-studio/research.md`; revision `034f9046-aa1a-453f-b208-fd68c13c9bf8` joins the exact researcher run, `/researcher`, binding, and brief.
+5. Team message `teammsg_s_Te__-J0vTe0YjYra7tjI9-0nIkU54O` contains the exact marker, relative path, and complete research body byte-for-byte apart from the file's terminal newline.
 
-1. After the handoff, first tool call exactly once: `get_brief_context({})`, call `exec-d18e28ec-0e2f-44e5-a528-5f24fe3ffe43`; success returned the same brief/binding state.
-2. Provider transcript records built-in `tools.apply_patch` and successful `patch_apply_end`; call `exec-78a17e6e-64a4-49df-b03d-3a8c9d95413d` added `brief-studio/final-brief.md`.
-3. The independent AutoByteus trace records the same call ID as normalized `edit_file` start/success; the normalized patch equals the 323-word resulting file byte-for-byte.
-4. The writer made no `read_file`; its `Key evidence` contains complete researcher bullets verbatim from the Team message.
-5. `publish_artifacts` call `exec-f11a0a4d-ff2d-44b4-a57d-c0ff94727373` used exactly `brief-studio/final-brief.md`; revision `529c3ca8-3cf1-424d-aeda-3f642b44e8ef` is joined to `/writer`, its run, binding, and brief.
+#### Writer
 
-Neither role trace contains `run_bash`, `read_file`, or `write_file`. The role configs select only the three routed names. Provider-native patch evidence and normalized verifier traces were captured independently after execution; neither role received protocol or normalized-trace feedback. Codex's provider-internal code-mode `exec` envelope called `tools.apply_patch`; it is not an AutoByteus `run_bash` or registry file call.
+1. After that handoff, first recorded AutoByteus tool call is exactly one `get_brief_context({})`, call `exec-e32cfb48-15b4-4d68-be66-b99ebc3076fd`.
+2. Its successful result contains the same brief and status `researching` after the research publication.
+3. No `read_file` or cross-member file access occurs. The final `Key evidence` copies the first complete researcher finding verbatim.
+4. `publish_artifacts` call `exec-f150cb03-3c79-4e9e-9f4a-82526667c458` passes exactly `brief-studio/final-brief.md`; revision `5004a302-335b-407b-99a1-6b3080869629` joins the exact writer run, `/writer`, binding, and brief.
+5. The writer sends the exact current marker/path and truthful publication completion back to `/researcher`.
 
-### State And Browser Outcome
+#### Business State And UI
 
-- A 20 ms read-only observer shows the launch moved the brief to `researching` before either context call.
-- State remained `researching` across the researcher context read and its research publication. The writer context read also caused no business-state transition.
-- Research publication projected one `/researcher` revision without moving to review.
-- Final publication at `21:33:47.470Z` projected at `21:33:47.484Z` and existing reconciliation moved the same brief to `in_review`.
-- Without clicking Refresh, the supported iframe rendered the same brief as **In_review**, **2** Draft outputs, and **1 final**, with Research and Final cards, both exact marker lines, both paths, and the verbatim writer evidence.
-- `final-browser-observation.json` contains ten semantic DOM assertions, all true; `final-browser-in-review.png` is supporting visual evidence.
+- Before launch the fresh business row is `not_started` with no binding or artifact.
+- The researcher context result still observes `not_started`; the read itself creates no artifact or review state.
+- Research publication creates only the researcher revision and moves the normal workflow to `researching`.
+- Writer context observes `researching`; the read creates no final revision or review state.
+- Final publication projects the writer revision and existing reconciliation moves the same brief to `in_review`.
+- Without clicking Refresh, the supported iframe displays the exact brief as **In_review**, **2** Draft outputs, **1 final**, Research and Final cards, both absolute projected paths, both exact markers, and the verbatim finding.
+- Ten semantic browser assertions pass in `clean-final-browser-observation.json`. The visible summary is captured in `clean-final-browser-in-review-summary.png`.
+
+Result: **AC-032–AC-038 pass**. This also proves that the application-level MCP capability is real and production-reachable: both actual configured members called `get_brief_context`, received the correct binding-derived application state, and used it through publication/reconciliation into the browser UI.
+
+## Critical Failure: AC-039
+
+The clean run's normal artifacts were shell-created, which the approved contract explicitly disqualifies.
+
+| Member | AutoByteus normalized evidence | Provider-native evidence | Outcome |
+| --- | --- | --- | --- |
+| Researcher | `run_bash`, `exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e` | code-mode `tools.exec_command` with `mkdir` and heredoc; no patch/file-change event | Created normal `brief-studio/research.md` through shell |
+| Writer | `run_bash`, `exec-f4bcd9ea-2a42-4054-b837-f18247e028af` | code-mode `tools.exec_command` with `mkdir` and heredoc; no patch/file-change event | Created normal `brief-studio/final-brief.md` through shell |
+
+This is not inferred from model prose. The access-controlled normalized traces and independently retained provider sessions both prove it. Neither role inspected provider protocol or normalized traces; the shell was the model's automatically supplied foundation choice.
+
+A separate first browser run had a test-harness-only SQLite lock because the 20 ms observer opened the application database with `timeout=0`. That run is retained under `failed-observer-shell-run` but is rejected as causal business-state evidence. It is still a corroborating operation-selection observation: both of its actual members also used `run_bash`. The second authoritative run used no observer at all and reproduced shell selection for both members.
+
+Current source meets the SR-009 wording rule: the role, Team, and launch text is business-focused and contains none of `apply_patch`, `edit_file`, `read_file`, `write_file`, or `run_bash`. The exact shipped model nevertheless selected its ordinary shell foundation for all four observed member executions. API/E2E cannot hide that result, reinterpret shell-created files as provider-native edits, or substitute the passing focused provider diagnostic for the shipped application behavior.
+
+Preliminary origin: **implementation / requirement-design interaction**. The accepted operation-neutral prompt constraint and automatic availability of shell do not reliably produce the required zero-shell behavior with the shipped Luna model. Formal origin belongs to `/code_reviewer`; resolving it without forbidden provider vocabulary may require `/solution_designer` reconciliation.
 
 ## Requirement / Scenario Matrix
 
-| Acceptance criterion | Result | Direct evidence |
+| Acceptance criterion | Result | Evidence |
 | --- | --- | --- |
-| AC-032 researcher first context + native patch + normalized edit + relative publication | **Pass** | researcher provider session, raw trace, file, publication revision |
-| AC-033 writer first context + handoff-only consumption + native patch + normalized edit + relative publication | **Pass** | writer provider session, raw trace, file, publication revision |
-| AC-034 exact application/binding/member/run/tool/artifact joins | **Pass** | execution tree, platform/app DB dump, machine join |
-| AC-035 supported same-brief UI `in_review` with researcher and exactly one final writer artifact | **Pass** | semantic browser observation and screenshot |
-| AC-036 context is read-only; publication/reconciliation causes UI change | **Pass** | 20 ms DB transitions correlated to context/publication timestamps |
-| AC-037 exact shipped Codex/Luna configs and provider/native-normalized separation | **Pass** | shipped snapshot, execution tree, exact-Luna live integration, provider transcripts, traces |
-| AC-038 complete handoff, no read, verbatim evidence, exact relative paths/workspace projection | **Pass** | Team message, files, raw traces, revisions, machine join |
-| AC-039 zero forbidden calls and truthful fail-closed policy | **Pass** | successful traces have zero forbidden calls; current prompt contracts plus API-REV-003 real fail-closed regression witness |
+| AC-032 researcher first context, marker, artifact, relative publication, complete handoff | **Pass** | clean researcher trace/file/publication/message/join |
+| AC-033 writer first context, handoff-only use, marker, relative publication | **Pass** | clean writer trace/file/publication/join |
+| AC-034 exact application/binding/member/run/tool/revision join; no secret | **Pass** | execution tree, app/platform DB, machine join |
+| AC-035 supported same-brief `in_review`, two outputs, exactly one final | **Pass** | semantic browser record and visible screenshot |
+| AC-036 read alone causes no business/UI mutation; publication reconciles | **Pass** | clean before snapshot, call/result times, revision/projection/final UI |
+| AC-037 shipped Codex/Luna configs, operation-agnostic business prompts, no selected file/shell tool | **Pass** | source/package snapshot, execution tree, configs |
+| AC-038 exact complete handoff, no cross-read, verbatim use, exact relative publications | **Pass** | Team message, files, traces, revisions |
+| AC-039 zero shell / ordinary file calls for normal artifacts | **Fail** | two clean normalized `run_bash` calls and two provider `tools.exec_command` invocations |
+| AC-040 deterministic tokenless/headerless dedicated listener | **Pass** | current lifecycle/topology matrix |
+| AC-041 same URL, inactive stop, fresh current restore | **Pass** | current lifecycle/topology matrix |
+| AC-042 general-null/application-only capability disposition | **Pass** | current lifecycle/topology matrix and IR-007 fixture execution |
+| AC-043 application-lane drain while run session remains live | **Pass** | real SDK application route integration in current matrix |
+| AC-044 exact deactivation and shutdown ownership/order | **Pass** | Team/resource/platform/Studio/standalone lifecycle matrix |
 
-Machine-verifiable result: every AC assertion is `true` in `identity-trace-artifact-ui-join.json`.
+Authoritative machine result: seven Brief assertions true and `AC-039` false in `clean-identity-trace-artifact-ui-join.json`.
 
 ## Validation Confidence Scorecard
 
-| Category | Final Score | Evidence / Residual |
+| Category | Score | Evidence / residual |
 | --- | ---: | --- |
-| Requirement and acceptance-criteria proof | 98% | Every AC-032–AC-039 behavior has direct repository plus executable evidence; failure-mode proof reuses the unchanged fail-closed owner from current contracts and API-REV-003 |
-| Changed-boundary execution directness | 98% | Shipped instructions, actual Luna provider records, same-ID normalized traces, publications, reconciliation, and browser all ran |
-| Cross-boundary integration realism and mock gap | 99% | Actual package, backend, model-backed Team, application databases, messages, notifications, and browser; no mock/direct MCP substitution |
-| Environment, configuration, identity, and fixture fidelity | 98% | Exact model/runtime/tools and complete application/binding/member/run/tool/revision/browser identity join in a fresh root |
-| Failure, edge-case, lifecycle, and recovery evidence | 95% | Real prior fail-closed runs, current contracts, exact live integration repair attempts, catalog reload, and API-REV-001 lifecycle matrix; provider nondeterminism remains inherent |
-| User-surface, browser, and desktop-shell confidence | 99% | Direct supported host/iframe journey with automatic refresh and semantic DOM proof; shell-specific scope is inapplicable |
-| Durable regression coverage quality and relevance | 96% | Strong deterministic source/package/unit coverage plus a gated exact real-provider integration; live browser proof remains ticket-local by design |
+| Requirement and acceptance-criteria proof | 85% | All renewed criteria except critical AC-039 have direct passing evidence; AC-039 has direct failing evidence |
+| Changed-boundary execution directness | 99% | Current merged host/session/provider/application/Team/browser paths executed |
+| Cross-boundary integration realism and mock gap | 99% | Actual package, provider, worker, Team, publication, databases, notification, browser |
+| Environment, configuration, identity, and fixture fidelity | 98% | Fresh owned root, exact shipped configs/model, complete identity joins; corrected frontend endpoint before authoritative execution |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Current stop/restore/quiesce/deactivation/shutdown matrix plus independently repeated shell selection |
+| User-surface, browser, and desktop-shell confidence | 99% | Supported host/iframe semantic and visual proof; Electron-only behavior is not in scope |
+| Durable regression coverage quality and relevance | 97% | Current fixture/live-provider repairs and deterministic lifecycle/package matrices; browser remains ticket-local by design |
 
-- Final overall confidence: `(98 + 98 + 99 + 98 + 95 + 99 + 96) / 7 = 97.6%`.
-- No applicable category is below 90%; every critical criterion has direct evidence.
-- Default clean target: **Met**.
-- Final result: **Pass**.
-
-## Residual Risks And Non-Failures
-
-- External model behavior is nondeterministic. This run used the exact shipped model twice in the Team and once in the focused live integration; all material operations passed. The gated integration provides a repeatable diagnostic, not a promise of provider availability.
-- The owned DB observer saw one transient SQLite `database is locked` read while the binding attached, then immediately resumed at 20 ms cadence. This is observer contention, not a product failure; all durable transitions and final projections were captured.
-- Codex reported that system `bubblewrap` was absent and used its bundled copy. Both provider turns and patch operations completed; no sandbox or file-boundary failure occurred.
-- The supplemental server `typecheck` rootDir/include defect is unrelated and pre-existing. Production build and all ticket-relevant TypeScript/Vitest execution passed.
-- Electron shell execution was not performed because no shell-only behavior changed; the browser path is the supported web-equivalent surface.
+- Overall: `(85 + 99 + 99 + 98 + 98 + 99 + 97) / 7 = 96.4%` rounded.
+- Clean-target status: **Not met**; requirement category is below 90% and AC-039 is critical.
+- Final result: **Fail**.
 
 ## Evidence Index
 
 | Artifact | Purpose |
 | --- | --- |
-| `identity-trace-artifact-ui-join.json` | Authoritative machine join and all eight AC assertions |
-| `shipped-instruction-and-config-snapshot.json` | Exact maintained role/Team/launch/config inputs and hashes |
-| `researcher-codex-native-session-events.json`; `writer-codex-native-session-events.json` | Sanitized provider-native built-in patch calls/results |
-| `researcher-raw-trace.jsonl`; `writer-raw-trace.jsonl` | Actual ordered context/normalized edit/publication/message calls and results |
-| `codex-live-events/codex-backend-edit-file.json` | Exact-Luna real app-server `item.type=fileChange` to normalized lifecycle proof |
-| `team-run-execution-tree.json`; `team-communication-messages.json` | Exact runtime/model/member identity and complete handoff |
-| `research.md`; `final-brief.md`; published-artifact JSON | Actual workspace outputs and snapshot identities |
-| `final-db.json`; `db-state-transitions.jsonl` | Final app/platform rows and causal 20 ms observation |
-| `final-browser-observation.json`; `final-browser-in-review.png` | Same-brief semantic and visual UI proof |
-| `browser-journey.md`; `backend.log`; `frontend.log`; `same-origin-proxy.log` | Reproducible supported-surface setup and runtime logs |
-| `durable-test-change.diff`; `sha256sums.txt` | Exact proportional-review diff and evidence-integrity manifest |
-| repository/live command logs | Exact results and all stale-fixture attempts |
+| `clean-identity-trace-artifact-ui-join.json` | Authoritative machine join and AC-032–AC-039 booleans |
+| `clean-shipped-instruction-and-config-snapshot.json` | Exact operation-agnostic role/Team/launch/config snapshot with hashes |
+| `clean-researcher-raw-trace.jsonl`; `clean-writer-raw-trace.jsonl` | Ordered paired context, forbidden shell, publication, and message evidence |
+| `clean-researcher-codex-native-session-events.json`; `clean-writer-codex-native-session-events.json` | Sanitized provider code-mode operations proving `tools.exec_command` and absence of patch/file-change |
+| `clean-team-run-execution-tree.json`; `clean-team-communication-messages.json` | Exact runtime/model/member identities and complete handoff |
+| `clean-research.md`; `clean-final-brief.md`; clean published-artifact JSON | Actual normal business outputs and publication identities |
+| `clean-before-launch-db.json`; `clean-final-db.json` | Clean business/platform binding/member/revision/event join |
+| `clean-final-browser-observation.json`; `clean-final-browser-in-review-summary.png` | Same-brief semantic and visible UI proof |
+| `failed-observer-shell-run/` | Rejected first-run business-state evidence; retained harness-failure and repeated shell-selection witness |
+| repository/build/live command logs | Exact current test/build/provider results |
+| `backend.log`; `frontend.log`; `proxy.log`; `same-origin-proxy.mjs` | Fresh supported-stack execution logs and topology |
 
-No bearer token, API secret, or generic process-wide application-tool payload log is retained.
+No bearer token, session secret, API credential, or new generic application-tool payload log is retained.
 
-## Cleanup
+## Cleanup And Routing
 
-- Closed the owned browser tab.
-- Stopped the owned backend, frontend, and same-origin proxy sessions; ports `8015`, `3015`, and `3016` were confirmed closed.
-- Copied sanitized evidence, then removed only `.autobyteus/api-e2e-004` and generated Brief/SDK/devkit build outputs owned by this run.
-- Preserved unrelated `.autobyteus/development`, other processes, and unrelated data.
-- `git diff --check` passed after cleanup.
+Cleanup completed. The owned browser tab was closed; the owned backend, frontend, and same-origin proxy were stopped; ports `8015`, `3015`, and `3016` were verified closed; and only the isolated `.autobyteus/api-e2e-005`, its unique `api-e2e-005.db`, and generated Brief/SDK/devkit build outputs were removed. Unrelated processes and data were left untouched. The retained evidence contains the service logs, and final `git diff --check` passed.
 
-## Latest Authoritative Result
+Latest authoritative result:
 
-- Result: **Pass**.
-- Confidence: **97.6%**.
-- Broader validation: **Required and completed successfully**.
-- Critical criteria: `AC-032`–`AC-039` all pass.
-- Cumulative earlier scope: `API-REV-001 Pass / 97.2%` remains valid for `AC-001`–`AC-031`.
-- Durable test change requires proportional review: **yes**; route cumulative package to `/code_reviewer` before delivery.
-- Delivery remains paused at `DR-002` until that test-code review completes.
+- Result: **Fail**.
+- Confidence: **96.4%**.
+- `AC-032`–`AC-038`, `AC-040`–`AC-044`: pass.
+- `AC-039`: fail because both clean shipped members shell-created their normal artifacts.
+- Application-owned `get_brief_context`: **production-reachable and working**.
+- Delivery: remains paused after `DR-004`.
+- Required next route: cumulative package to `/code_reviewer` for formal failure-origin decision and proportional durable-test review.

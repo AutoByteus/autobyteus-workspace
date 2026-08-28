@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "brief_studio_team_9e61de3b52ca47bbb47681b0ec13c4ba",
+  "messages": [
+    {
+      "messageId": "teammsg_XTcioPRAP8bFUOWnCkbKYfOrgR4e1THr",
+      "senderAgentRunId": "brief_studio_researcher_c69528dffd1c4e3995573d8758067998",
+      "receiverAgentRunId": "brief_studio_writer_fff0b345376341db9dbe3bcd0040c2ab",
+      "content": "Brief context: {\"briefId\":\"brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433\",\"title\":\"API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\",\"observedStatus\":\"blocked\"}\nCanonical artifact: brief-studio/research.md\n\nAPI REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\n\nKey findings\n\n- Tokenless API access can be credible only when the request carries verifiable context through an authenticated runtime, binding, or narrowly scoped session, rather than relying on a caller-supplied token.\n- A strong proof separates identity from authorization: the application binding establishes which brief is in scope, while the artifact and handoff rules constrain what each role may publish or claim.\n- Exact marker preservation is an effective integrity check because it ties the research file, writer handoff, and final brief to the same brief identity without exposing routing parameters.\n- Durable reviewability depends on publishing an existing workspace-relative file, then carrying the complete research body in the team message so the writer does not need cross-workspace access.\n\nRisks or open questions\n\nThe principal risk is confusing tokenless transport with unauthenticated access. A system may omit explicit tokens from prompts while still depending on hidden application credentials; those credentials need lifecycle, audience, and revocation controls. Another open question is how the backend reconciles a published final brief with its review state, especially when observed status is already blocked. Artifact replacement, duplicate publication, or stale context could also create ambiguity unless the marker is checked byte-for-byte. Finally, logs should avoid leaking binding metadata while retaining enough evidence to audit who created and published each artifact.\n\nRecommendations or next steps\n\nTreat tokenlessness as a presentation and routing property, not as a security guarantee. Validate the application binding server-side, derive brief identity there, and reject caller-provided identity fields. Enforce exact relative paths, atomic file creation, and publication checks before handoff. Require the writer to quote a complete research bullet verbatim, preserving provenance while keeping the message self-contained. Add automated tests for malformed markers, mismatched brief IDs, failed publication, blocked reconciliation, and retry behavior; record immutable event IDs and timestamps for each successful checkpoint.",
+      "messageType": "research_handoff",
+      "referenceFiles": [],
+      "createdAt": "2026-08-28T11:52:13.738Z"
+    },
+    {
+      "messageId": "teammsg_BogBLO6nd2Jk_nEboBK5F-N5a6ky40gX",
+      "senderAgentRunId": "brief_studio_writer_fff0b345376341db9dbe3bcd0040c2ab",
+      "receiverAgentRunId": "brief_studio_researcher_c69528dffd1c4e3995573d8758067998",
+      "content": "Completed successfully. Exact marker: Brief context: {\"briefId\":\"brief-ed4d6b1f-46a8-4d32-b4d3-4491ea068433\",\"title\":\"API REV 005 TOKENLESS PROOF 2026-08-28 11:51 UTC\",\"observedStatus\":\"researching\"}\nCanonical final path: brief-studio/final-brief.md\nPublication succeeded.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-28T11:52:47.411Z"
+    }
+  ]
+}

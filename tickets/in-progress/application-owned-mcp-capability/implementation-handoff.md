@@ -15,9 +15,12 @@
 - Triggering latest-base conflict report and delivery history: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-latest-base-conflict-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-integration-evidence.log`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-revision-record.md`
 - Paused delivery/docs artifacts: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/docs-sync-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/handoff-summary.md`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/release-deployment-report.md`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/release-notes.md`
 - Retained API-REV-004 production evidence: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-004/identity-trace-artifact-ui-join.json`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-004/shipped-instruction-and-config-snapshot.json`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-004/final-browser-observation.json`
+- Current API-REV-005 evidence and pending durable-test diff: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-identity-trace-artifact-ui-join.json`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-evidence-synthesis.log`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-browser-observation.json`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/current-lifecycle-topology-matrix.log`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/brief-package-publication-matrix.log`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/durable-test-change.diff`
 - Latest-base foundation package: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/done/agent-tools-mcp-session-resume/`
 
 ## Current Implementation Summary
+
+IR-008 applies the approved SR-010 proof-oracle correction without changing production source, maintained prompts, runtime capabilities, or repository tests. API-REV-005's exact shell-created member-workspace artifacts, relative publications, complete handoff/result-use witness, application/binding/producer identity joins, read-only causality, and same-brief browser outcome satisfy the current business evidence boundary. The provider/normalized operation labels remain optional diagnostics and no longer decide acceptance. The API-REV-005 report still records its then-correct failure under the superseded zero-shell criterion; API/E2E owns its reclassification or rerun and the three pending durable test edits.
 
 IR-007 is a test-only Local Fix for `CR-LF-001`: the shared `ApplicationExecutionScope` unit fixture now supplies one explicit non-null `ApplicationAgentToolCapability` double and asserts that exact value reaches both scoped session completion and provider construction. The production boundary remains required and non-null for application execution; no default, optional field, or compatibility path was added.
 
@@ -27,13 +30,13 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-revision-record.md`
-- Current implementation revision ID: `IR-007`
-- Related solution revision IDs: `SR-001`–`SR-009`
-- Related architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-009`
-- Related code-review revision IDs: `CRR-001`–`CRR-010`; `CRR-010` is the triggering `Fail — Local Fix`, while `CRR-008` and `CRR-009` remain valid only for the pre-latest-base source/runtime scopes
-- Related API/E2E revision IDs: `API-REV-001`–`API-REV-004`; API-REV-004 remains valid prior production evidence, not proof of IR-006
+- Current implementation revision ID: `IR-008`
+- Related solution revision IDs: `SR-001`–`SR-010`
+- Related architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-010`
+- Related code-review revision IDs: `CRR-001`–`CRR-012`; `CRR-011` passed the current production/IR-007 source, while `CRR-012`'s reopened Design Impact is resolved at requirements/design level by SR-010 / ARCH-REV-010
+- Related API/E2E revision IDs: `API-REV-001`–`API-REV-005`; API-REV-005 is current merged-state evidence whose `Fail / 96.4%` classification used the now-superseded zero-shell criterion
 - Related delivery revision IDs: `DR-001`–`DR-004`; `DR-004` is the triggering blocked result
-- Triggering finding IDs: `CR-LF-001`. The underlying IR-006 trigger remains `DR-004` latest-base `Design Impact` / material premise `MP-003` (`Reachable`), closed at design level by SR-009 / ARCH-REV-009.
+- Triggering finding IDs: reopened `CR-DI-002` and `CR-MP-002`, resolved by the approved proof-oracle correction; `MP-004` (`Reachable`) records the supported shell-created authoritative artifact journey. `CR-LF-001` remains resolved at CRR-011, and the underlying IR-006 `DR-004` / `MP-003` latest-base correction remains resolved and runtime-proven by API-REV-005.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -46,7 +49,7 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 | BEH-005 | Application catalog/call transitions remain safe without owning provider run sessions. | `application-catalog-transition-service.ts`, participant-only reentry, application call lifecycle, gateway currentness, and latest-base run cleanup. | Corrected composition. Quiescing an application lane leaves its containing tokenless MCP route and non-application methods live; only exact managed-run cleanup deactivates the full run session. No package-to-session lifecycle dependency was added. |
 | BEH-006 | Clean current contract, reproducible maintained packages, no runtime data migration. | SDK/backend/devkit v5/v7 sources and maintained application packaging. | Preserved. Brief Studio package rebuilt successfully from current dependencies; generated outputs were removed afterward. |
 | BEH-007 | Existing native foundation, Team automatic tools, configured tools, and generic preparation remain unchanged. | Existing provider composition plus application-only specialization. | Preserved. No global baseline/provider expansion, registry alias, generic `BaseTool`/schema-mapper change, or compatibility path was introduced. |
-| BEH-008 | The real Brief workflow stays context-first and business-focused; publication/reconciliation alone causes UI-visible state. | Researcher/writer `agent.md`, `team.md`, launch text, read-only `get_brief_context`, relative publication, Team handoff, unchanged reconciliation/UI spine. | Corrected. Both roles require exactly one first successful business context call at their role point, exact marker use, required content/path, publication, complete handoff, and fail-closed reporting. Model-facing text names no foundation/provider operation. |
+| BEH-008 | The real Brief workflow stays context-first and business-focused; any already-authorized runtime foundation operation may create the required artifacts, while publication/reconciliation alone causes UI-visible state. | Researcher/writer `agent.md`, `team.md`, launch text, read-only `get_brief_context`, exact member workspaces, relative publication, Team handoff, unchanged reconciliation/UI spine. | Preserved unchanged under SR-010. Both roles require exactly one first successful business context call at their role point, exact marker use, required content/path, publication, complete handoff, and fail-closed reporting. Model-facing text names no foundation/provider operation. API-REV-005 demonstrates the authoritative artifact/workspace/publication/handoff/identity/UI join; operation telemetry is diagnostic only and cannot veto it. |
 | BEH-009 | Combine latest-base fresh run-session materialization with orthogonal application-lane currentness. | Dedicated host -> scoped authority -> session service/catalog/registry -> provider materializers; gateway and transition owner remain separate. | Implemented. Active records freeze fresh current routes/capability; deactivation removes the record; restore reuses the deterministic URL but creates a fresh record from the current capability and fingerprints. Host startup/shutdown and exact managed-run cleanup remain latest-base-owned. |
 
 ## Key Files Or Areas
@@ -64,25 +67,25 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 - The run-session URL is deterministic lookup identity, not a bearer or durable authorization token. Live authority exists only in the current in-memory registry record.
 - A nullable capability is an explicit disposition, not an optional field: `null` means general execution; a live sealed capability means application execution.
 - Package `dist/` and `.autobyteus/` directories are reproducible outputs and are not repository source.
-- API-REV-004 evidence is historical evidence for IR-005; the material latest-base merge requires renewed source and runtime review.
+- API-REV-004 evidence is historical evidence for IR-005. API-REV-005 is current merged-state evidence; its recorded failure is tied only to the superseded zero-shell oracle and must be reclassified or rerun by API/E2E under current AC-039.
 
 ## Known Risks
 
-- IR-007 has not received renewed source review. CRR-010 confirmed IR-006 production alignment but failed on the stale shared fixture; API/E2E must not resume before renewed `/code_reviewer` pass.
-- The prior real browser journey and exact-Luna proof predate the latest-base session merge. They cannot establish fresh activation/currentness/interleaving behavior on IR-006.
-- One existing E2E fixture still targets the removed issuer/bearer constructor seam. Per team ownership, implementation did not rewrite repository E2E coverage; API/E2E must classify and repair/remove it during renewed coverage investigation.
+- IR-008 has not received renewed source review. CRR-011 passed the current production/IR-007 source; this round confirms SR-010 requires no production or maintained-prompt change.
+- API-REV-005 already proves the latest-base activation/currentness/interleaving and real Brief Studio business path. Its canonical report still requires API/E2E-owned proof-oracle correction and reclassification or rerun under SR-010 / AC-039.
+- API-REV-005 left three repository-resident durable test edits pending. Implementation did not alter or claim those changes; API/E2E must complete their current-expectation decision/execution and return them through proportional `/code_reviewer` review.
 - The repository's supplemental `pnpm typecheck` remains blocked by the pre-existing `tsconfig.json` `rootDir: src` plus included tests, producing TS6059 before meaningful test checking. The source-only build config typecheck passes.
 - Long-lived documentation must be reconciled by delivery against the eventual reviewed integrated state; no documentation-ready claim is made here.
-- External-model behavior remains nondeterministic. No provider/browser/API/E2E success is claimed in this handoff.
+- External-model operation choice remains nondeterministic but is no longer an acceptance oracle. No new provider/browser/API/E2E execution or downstream reclassification is claimed in IR-008.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Feature / Larger Requirement with latest-base ownership rebase`
-- Reviewed root-cause classification: `Superseded Boundary / Ownership Conflict`
-- Reviewed refactor decision: `Refactor Needed Now`
+- Reviewed change posture: `Requirements / proof-oracle correction with no production architecture change`
+- Reviewed root-cause classification: `No production design issue found; the stale acceptance oracle was the sole conflict`
+- Reviewed refactor decision: `No refactor needed for SR-010`
 - Implementation matched the reviewed assessment: `Yes`
 - If challenged, routed as Design Impact: `N/A` — no new contradiction was found
-- Evidence / notes: The implementation adopted the latest-base host/scoped authority/active registry/exact-run owners, added one tight nullable application port, and removed rather than wrapped the obsolete bearer/main-listener session seam. Application transition and run-session lifecycles meet only through gateway availability/currentness.
+- Evidence / notes: Current production already follows the accepted latest-base host/scoped authority/active registry/exact-run ownership. SR-010 changes only the proof boundary: exact artifact/workspace/publication/handoff/identity/UI evidence remains authoritative, while already-authorized runtime operation selection is below that boundary.
 
 ## Legacy / Compatibility Removal Check
 
@@ -97,7 +100,7 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 ## Persisted Data Transition Check
 
 - Approved decision: `Directly Usable — No Migration`
-- Design-spec decision reference: SR-009 persisted-data decision
+- Design-spec decision reference: SR-009 persisted-data decision, preserved unchanged by SR-010
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
 - Direct-use evidence: run sessions/capabilities/routes are process-memory-only and rematerialized; existing application/run data shapes are unchanged
 - Deviation: `None`
@@ -106,7 +109,7 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 
 - Workspace dependencies were present. The application frontend SDK and devkit were rebuilt before packing Brief Studio; package output was then cleaned.
 - A power interruption removed the active Corepack shim from PATH; `corepack enable` restored the declared pnpm tool without changing repository source.
-- No downstream API/E2E environment or browser stack was started.
+- IR-008 required no dependency or runtime environment because it changes no production source, prompt, or implementation-owned test. No downstream API/E2E environment or browser stack was started in this round.
 
 ## Local Implementation Checks Run
 
@@ -123,23 +126,22 @@ The maintained Brief Studio role, Team, and launch instructions now describe onl
 - `git diff --check` on the IR-006 implementation delta and the restored SR-009 artifact delta — passed.
 - Source-size and prohibited-vocabulary/legacy-symbol audits — passed.
 - Supplemental `pnpm typecheck` — did not pass because the existing server `tsconfig.json` includes tests outside `rootDir: src` (TS6059); source-only typecheck above passed.
+- IR-008 production/prompt currentness audit — `git diff --name-status d26ad181e -- autobyteus-server-ts/src applications/brief-studio/agent-teams/brief-studio-team applications/brief-studio/backend-src/services/brief-run-launch-service.ts` returned no delta. Researcher, writer, Team, and launch SHA-256 values exactly match the CRR-011-reviewed IR-007 state.
+- IR-008 ownership audit — no implementation-owned source/test file was changed; the three pre-existing API-REV-005 durable test edits remain untouched and API/E2E-owned.
 
 These are implementation-scoped local checks, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable. IR-006 changes backend/session composition, tests, and maintained Agent/Team/launch instructions; no frontend source, visual layout, or interaction component changed. The real same-brief browser outcome remains downstream API/E2E work after renewed source review.
+Not Applicable. IR-008 changes only implementation handoff/revision wording and no frontend source, visual layout, or interaction component. API-REV-005 already contains the real same-brief browser observation; its corrected classification remains downstream API/E2E work after renewed source review.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Re-investigate existing API/E2E coverage against the removed issuer/bearer seam before editing or executing durable coverage.
-- Prove general execution supplies `null`, application AutoByteus receives the local capability, and application Claude/Codex activation derives current routes from the same live capability.
-- Prove create/stop/restore uses the same deterministic URL with a fresh active record, current sender/owner/context/capability, and current fingerprints; changed/removed routes must fail currentness checks.
-- Interleave an admitted application call, application quiesce/reload/removal, non-application MCP ping/call, and exact run stop. Application lane closure must not deactivate the session; exact stop must.
-- Recheck Studio and standalone dedicated loopback listener startup compensation and shutdown ordering with all scopes/providers finalized before listener close.
-- Rerun the supported Brief Studio browser journey with shipped Codex/Luna configs. Assert the prompts are business-focused and operation-agnostic, both roles call context first, actual artifacts have the required marker/content/path, researcher handoff contains the complete body, writer uses it without cross-workspace reads and preserves a verbatim finding, final publication alone drives reconciliation, and the same Brief becomes `in_review`.
-- Treat provider native events only as optional verifier evidence; never as role prompt, routing, application capability, or cross-runtime authority.
+- Preserve the API-REV-005 current-lifecycle and package/publication matrices; update/re-execute only as required by the API/E2E coverage investigation.
+- Reclassify or rerun the supported Brief Studio browser journey under current AC-039. Keep the shipped Codex/Luna configs, business-focused operation-agnostic prompts, exactly-once first context calls, exact member-workspace artifacts and marker/content/paths, relative publications, complete research handoff and writer result use, exact application/binding/producer joins, read-only causality, final reconciliation, and same-brief `in_review` UI authoritative.
+- Do not reject an otherwise authoritative result because the model selected an already-authorized shell or another foundation operation. Provider/native/normalized operation events are optional diagnostics only; they are never role prompt, routing, application capability, or acceptance authority.
+- Preserve and finish the three API-REV-005 durable test edits in `agent-package-private-skills.e2e.test.ts`, `codex-agent-run-backend-factory.integration.test.ts`, and `brief-studio-agent-tool-mcp.integration.test.ts`; after successful execution, return the repository-resident test delta through proportional code review.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required after renewed source review. API-REV-001 and API-REV-004 remain valid evidence for their earlier source/runtime states, but IR-006 materially changed the integrated run-session topology and IR-007 only repairs implementation-owned unit coverage. API/E2E owns coverage validity, any durable E2E edit/removal/addition, realistic provider/browser execution, and evidence. If it changes repository-resident durable coverage, the updated package must return through proportional code review before delivery.
+Required after renewed source review. API-REV-005 is current merged-state execution evidence and satisfies the SR-010 business boundary, but its canonical `Fail / 96.4%` result was recorded under superseded AC-039 wording and has not been reclassified or rerun by its owner. API/E2E owns that proof-oracle/evidence correction, the three pending durable test edits and their execution, and the renewed canonical result. The resulting repository-resident test delta must return through proportional code review before delivery.
