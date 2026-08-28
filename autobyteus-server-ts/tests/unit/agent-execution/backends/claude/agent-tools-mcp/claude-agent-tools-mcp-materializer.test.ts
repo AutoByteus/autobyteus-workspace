@@ -12,9 +12,6 @@ const descriptor: AgentToolMcpDescriptor = {
   name: "autobyteus_agent_tools",
   transport: "streamable_http",
   serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-materializer",
-  headers: {
-    Authorization: "Bearer unit-test-token",
-  },
   enabledTools: ["send_message_to", "open_tab"],
 };
 
@@ -26,13 +23,11 @@ describe("claude-agent-tools-mcp-materializer", () => {
       autobyteus_agent_tools: {
         type: "http",
         url: "http://127.0.0.1:3000/mcp/agent-tools/session-materializer",
-        headers: {
-          Authorization: "Bearer unit-test-token",
-        },
         alwaysLoad: true,
       },
     });
     expect(result.autobyteus_agent_tools).not.toHaveProperty("enabledTools");
+    expect(result.autobyteus_agent_tools).not.toHaveProperty("headers");
   });
 
   it("derives the Claude Agent Tools send_message_to MCP wire name and canonical event name", () => {

@@ -254,6 +254,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     vaultInitializationStarted = false;
     registerShutdownHandlers(app);
     await applicationRuntime.lifecycle.prepareBeforeListen();
+    await studioServer.agentToolsMcpHost.listen();
     await app.listen({ host: options.host, port: options.port });
     logger.info(`Server listening on ${options.host}:${options.port}`);
     startChannelRunOutputDeliveryRuntime();

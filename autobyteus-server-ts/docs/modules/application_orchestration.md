@@ -157,7 +157,7 @@ publish its managers through a service locator or process-global fallback.
 creates a new agent or team run through those capabilities; startup recovery
 only restores runs represented by recorded nonterminal bindings. Construction
 failure unwinds the partially built scope. Shutdown quiesces new work, stops
-Team runs before remaining Agent runs, revokes scope-owned Agent Tools sessions,
+Team runs before remaining Agent runs, deactivates scope-owned Agent Tools run-sessions,
 and then closes the scope. General-process runs use a separate supervisor and
 session authority, so they cannot inherit application publication capability or
 application-local definition state.

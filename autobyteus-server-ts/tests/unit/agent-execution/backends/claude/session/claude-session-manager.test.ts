@@ -13,11 +13,11 @@ import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-managemen
 
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
-const createManager = (sdkClient: unknown, issuer = { issueForRun: vi.fn() }) =>
+const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn() }) =>
   new ClaudeSessionManager(
+    activator as never,
     {} as never,
     sdkClient as never,
-    issuer as never,
     { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) } as never,
   );
 
@@ -73,25 +73,25 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
   });
 
 describe("ClaudeSessionManager", () => {
-  it("propagates the exact execution issuer into every created and restored session", async () => {
-    const issuer = { issueForRun: vi.fn() };
+  it("propagates the exact run-session activator into every created and restored session", async () => {
+    const activator = { activateForRun: vi.fn() };
     const manager = createManager({
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
-    }, issuer);
+    }, activator);
 
     const created = await manager.createRunSession(
-      createRunContext({ runId: "run-create-issuer" }) as never,
+      createRunContext({ runId: "run-create-activator" }) as never,
     );
     const restored = await manager.restoreRunSession(
-      createRunContext({ runId: "run-restore-issuer" }) as never,
+      createRunContext({ runId: "run-restore-activator" }) as never,
       RESTORED_SESSION_ID,
     );
 
     for (const session of [created, restored]) {
       expect((session as unknown as {
-        dependencies: { agentToolMcpSessionIssuer: unknown };
-      }).dependencies.agentToolMcpSessionIssuer).toBe(issuer);
+        dependencies: { agentToolMcpRunSessions: unknown };
+      }).dependencies.agentToolMcpRunSessions).toBe(activator);
     }
   });
 

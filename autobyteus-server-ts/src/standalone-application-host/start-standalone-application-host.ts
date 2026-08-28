@@ -241,7 +241,9 @@ export const startStandaloneApplicationHost = async (
       appDataDir: processResources.appConfig.getAppDataDir(),
       baseUrl: processResources.appConfig.getBaseUrl(),
     });
-    agentToolsMcpHost = createAgentToolsMcpHost();
+    agentToolsMcpHost = createAgentToolsMcpHost({
+      loggingConfig: processResources.loggingConfig,
+    });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager,
     });
@@ -291,10 +293,9 @@ export const startStandaloneApplicationHost = async (
       selection,
       applicationRuntime,
       loggingConfig: processResources.loggingConfig,
-      agentToolsRouteDependencies:
-        agentToolsMcpHost.routeDependencies,
     });
     await applicationRuntime.lifecycle.prepareBeforeListen();
+    await agentToolsMcpHost.listen();
     const url = await app.listen({ host: config.host, port: config.port });
     seedInternalServerBaseUrlFromListenAddress({
       requestedHost: config.host,
@@ -312,7 +313,7 @@ export const startStandaloneApplicationHost = async (
             await generalProcessRunSupervisor!.close();
           } finally {
             try {
-              agentToolsMcpHost!.close();
+              await agentToolsMcpHost!.close();
             } finally {
               try {
                 await stopDefaultAgentRunEventPipeline();
@@ -349,7 +350,7 @@ export const startStandaloneApplicationHost = async (
             generalProcessAuthority?.close();
           } finally {
             try {
-              agentToolsMcpHost?.close();
+              await agentToolsMcpHost?.close();
             } finally {
               try {
                 await stopDefaultAgentRunEventPipeline();

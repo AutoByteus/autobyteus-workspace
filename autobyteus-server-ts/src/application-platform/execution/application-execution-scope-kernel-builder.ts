@@ -121,7 +121,7 @@ export const buildApplicationExecutionScopeKernel = (
     const providerFactories = input.agentProviderFactoryBuilder
       .createForExecution({
         agentDefinitionService: input.agentDefinitionService,
-        agentToolMcpSessionIssuer: authority.issuer,
+        agentToolMcpRunSessions: authority.runSessions,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,
@@ -130,7 +130,7 @@ export const buildApplicationExecutionScopeKernel = (
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer,
-      agentToolMcpRunSessionReleaser: authority.runSessions,
+      agentToolMcpRunSessionDeactivator: authority.runSessions,
     });
     const metadataService = new AgentRunMetadataService(input.memoryDir);
     const historyCatalogService = new AgentRunHistoryCatalogService(
@@ -159,14 +159,11 @@ export const buildApplicationExecutionScopeKernel = (
       taskExecutionIdentity,
       modelConfigValidator: input.modelConfigValidator,
       mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
-        agentToolMcpRunSessionReleaser: authority.runSessions,
         createTeamManager: (managerInput) =>
           new MixedTeamManager(managerInput.context, {
             subTeamRunFactory: managerInput.subTeamRunFactory,
             taskRootResolver: managerInput.callbacks.taskRootResolver,
             agentRunManager,
-            agentToolMcpRunSessionReleaser:
-              managerInput.agentToolMcpRunSessionReleaser,
             memoryLocationService,
             activityInspector,
             memberTeamContextBuilder,

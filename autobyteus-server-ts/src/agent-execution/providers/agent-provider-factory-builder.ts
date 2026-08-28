@@ -1,7 +1,7 @@
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { AgentToolMcpSessionIssuer } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpRunSessionActivator } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
   AutoByteusAgentRunBackendFactory,
   type AutoByteusAgentFactoryLike,
@@ -56,7 +56,7 @@ export type AgentProviderFactorySet = Readonly<{
 export interface AgentProviderFactoryBuilder {
   createForExecution(input: Readonly<{
     agentDefinitionService: AgentDefinitionService;
-    agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+    agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
   }>): AgentProviderFactorySet;
 }
 
@@ -144,24 +144,24 @@ export const createAgentProviderFactoryBuilder = (
   return Object.freeze({
     createForExecution: (input: Readonly<{
       agentDefinitionService: AgentDefinitionService;
-      agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+      agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
-      requireLeaf(input.agentToolMcpSessionIssuer, "agentToolMcpSessionIssuer");
+      requireLeaf(input.agentToolMcpRunSessions, "agentToolMcpRunSessions");
 
       const codexBootstrapper = new CodexThreadBootstrapper(
+        input.agentToolMcpRunSessions,
         process.codex.workspaceSkillMaterializer,
         process.codex.workspaceResolver,
         input.agentDefinitionService,
         process.skillService,
         process.codex.clientManager,
-        input.agentToolMcpSessionIssuer,
       );
       const claudeSessionManager = new ClaudeSessionManager(
+        input.agentToolMcpRunSessions,
         process.workspaceManager,
         process.claude.sdkClient,
-        input.agentToolMcpSessionIssuer,
         process.claude.workspaceSkillMaterializer,
       );
       return Object.freeze({

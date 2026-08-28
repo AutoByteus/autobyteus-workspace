@@ -85,15 +85,14 @@ const createHarness = (input: {
   closeFailure?: Error;
 } = {}) => {
   const runSessions = Object.freeze({
-    revokeForRun: vi.fn(() => 0),
-    revokeForOwner: vi.fn(() => 0),
+    activateForRun: vi.fn(),
+    deactivateForRun: vi.fn(() => 0),
   });
   const close = vi.fn(() => {
     if (input.closeFailure) throw input.closeFailure;
   });
   const authority: ScopedAgentToolMcpSessionAuthority = {
     scopeIdentity: "application:test",
-    issuer: Object.freeze({ issueForRun: vi.fn() }),
     runSessions,
     assertReady: vi.fn(),
     blockNewSessions: vi.fn(),
@@ -245,7 +244,7 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     expect(Object.isFrozen(kernel)).toBe(true);
     expect(harness.createForExecution).toHaveBeenCalledWith({
       agentDefinitionService: harness.buildInput.agentDefinitionService,
-      agentToolMcpSessionIssuer: harness.authority.issuer,
+      agentToolMcpRunSessions: harness.authority.runSessions,
     });
     expect(kernel.sessionAuthority).toBe(harness.authority);
 
@@ -254,13 +253,10 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     }).agentRunManager;
     const teamRunManager = (kernel.teamRunService as unknown as {
       manager: { factory: { options: {
-        agentToolMcpRunSessionReleaser: object;
         createTeamManager(input: unknown): object;
       } } };
     }).manager;
     const factoryOptions = teamRunManager.factory.options;
-    expect(factoryOptions.agentToolMcpRunSessionReleaser)
-      .toBe(harness.authority.runSessions);
     const callbacks = {
       taskRootResolver: { resolveActiveRoot: vi.fn() },
       publish: vi.fn(),
@@ -271,7 +267,6 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       context: {} as never,
       subTeamRunFactory: {} as never,
       callbacks,
-      agentToolMcpRunSessionReleaser: harness.authority.runSessions,
     };
     const mixedManager = factoryOptions.createTeamManager(constructionInput) as {
       configured: { options: Record<string, unknown> };
@@ -281,8 +276,6 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     const taskAgents = mixedManager.taskAgents.options;
     for (const options of [configured, taskAgents]) {
       expect(options.agentRunManager).toBe(agentRunManager);
-      expect(options.agentToolMcpRunSessionReleaser)
-        .toBe(harness.authority.runSessions);
       expect(options.memoryLocationService).toBe(kernel.memoryLocationService);
       expect(options.workspaceManager).toBe(harness.buildInput.workspaceManager);
       expect(options.taskRootResolver).toBe(callbacks.taskRootResolver);

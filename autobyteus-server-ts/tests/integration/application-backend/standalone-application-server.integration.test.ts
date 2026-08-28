@@ -7,10 +7,6 @@ import { ApplicationBackendNotificationHub } from "../../../src/application-back
 import { buildStandaloneApplicationServer } from "../../../src/compositions/build-standalone-application-server.js";
 import { resolveStandaloneApplicationHostConfig } from "../../../src/standalone-application-host/config/standalone-application-host-config.js";
 import { StandaloneApplicationSelectionService } from "../../../src/standalone-application-host/services/standalone-application-selection-service.js";
-import {
-  createAgentToolsMcpHost,
-  type AgentToolsMcpHost,
-} from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 
 const BRIEF_PACKAGE_ROOT = path.resolve(
   process.cwd(),
@@ -62,13 +58,9 @@ const waitForSocketMessage = async (socket: WebSocket): Promise<unknown> =>
 
 describe("standalone application server", () => {
   const apps: Array<Awaited<ReturnType<typeof buildStandaloneApplicationServer>>> = [];
-  const mcpHosts: AgentToolsMcpHost[] = [];
 
   afterEach(async () => {
     await Promise.allSettled(apps.splice(0).map((app) => app.close()));
-    for (const mcpHost of mcpHosts.splice(0)) {
-      mcpHost.close();
-    }
   });
 
   it("selects one current package, exposes only its confined surface, and leaves package bytes immutable", async () => {
@@ -113,8 +105,6 @@ describe("standalone application server", () => {
       connectApplicationWebSocket: vi.fn(),
     };
     const notificationHub = new ApplicationBackendNotificationHub();
-    const agentToolsMcpHost = createAgentToolsMcpHost();
-    mcpHosts.push(agentToolsMcpHost);
     const app = await buildStandaloneApplicationServer({
       selection,
       applicationRuntime: {
@@ -140,8 +130,6 @@ describe("standalone application server", () => {
         includeNoisyHttpAccessRoutes: false,
         scopedLogLevelOverrides: [],
       },
-      agentToolsRouteDependencies:
-        agentToolsMcpHost.routeDependencies,
     });
     apps.push(app);
 
@@ -168,6 +156,7 @@ describe("standalone application server", () => {
       "/graphql",
       "/rest/health",
       "/api/admin",
+      "/mcp/agent-tools/agtrun_main_listener_must_not_dispatch",
     ]) {
       const response = await app.inject({ method: "GET", url });
       expect(response.statusCode, url).toBe(404);
@@ -197,7 +186,7 @@ describe("standalone application server", () => {
       },
     });
 
-    const unauthenticatedAgentToolsMcp = await app.inject({
+    const absentMainListenerAgentToolsMcp = await app.inject({
       method: "POST",
       url: "/mcp/agent-tools/missing-session",
       headers: {
@@ -215,10 +204,7 @@ describe("standalone application server", () => {
         },
       },
     });
-    expect(unauthenticatedAgentToolsMcp.statusCode).toBe(401);
-    expect(unauthenticatedAgentToolsMcp.json()).toMatchObject({
-      error: "unauthorized",
-    });
+    expect(absentMainListenerAgentToolsMcp.statusCode).toBe(404);
 
     const query = await app.inject({
       method: "POST",

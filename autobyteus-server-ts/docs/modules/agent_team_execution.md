@@ -253,8 +253,15 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
 2. Stop targets the exact root TeamRun ID, closes new materialization admission,
    joins work already admitted, freezes one recursive scope, interrupts active
    turns before quiescence, and terminates every materialized configured,
-   delegated, and nested descendant. Stop retains the V2 package, catalog row,
-   task/communication history, context, and resume identity.
+   delegated, and nested descendant. Each published Agent member delegates
+   reversible preparation and committed finish to
+   `AgentRunManager.prepareAgentRunTermination(expectedRun)`; a cancelled or
+   rejected finish retains its active run/session, while an accepted finish is
+   not visible as success until exact-current removal and resource/session
+   cleanup complete. The member handle disposes only after that accepted
+   managed finish and owns no parallel Agent Tools cleanup path. Stop retains
+   the V2 package, catalog row, task/communication history, context, and resume
+   identity.
 3. The root remains managed and the lifecycle/history projection remains
    `isActive: true` until that whole scope reaches accepted terminal completion
    and the manager unregisters the exact root. A failed Stop retains the same

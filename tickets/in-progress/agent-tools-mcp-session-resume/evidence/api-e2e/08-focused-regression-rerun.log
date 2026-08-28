@@ -1,0 +1,232 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts (13 tests | 1 failed) 10081ms
+     ✓ keeps each supported root on one exact workspace, builder, Host, and authority family 2ms
+     ✓ closes retired symbols and provider-specific construction below supported roots 283ms
+     ✓ keeps activation provider-local and deactivation at the AgentRun resource owner 1ms
+     ✓ keeps the application kernel private to its builder and owning scope 71ms
+     × fails closed on the exact direct-constructor test sets and narrow fixture property 1314ms
+     ✓ keeps AgentTeamRunManager creation explicit and process access lookup-only  1137ms
+     ✓ binds exactly two production Mixed Team factories to complete root families 55ms
+     ✓ closes complete Agent manager and AgentRun construction to exact roots and fixtures  3187ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  1111ms
+     ✓ carries one explicit task-identity pair through every Team and task constructor  1771ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  1095ms
+     ✓ creates one frozen context path value per host and shares it across both roots 49ms
+     ✓ rejects synthetic omission, null, undefined, casts, ambient getters, and broad substitutes 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts (2 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > fails closed on the exact direct-constructor test sets and narrow fixture property
+AssertionError: expected [ …(6) ] to deeply equal [ …(5) ]
+
+- Expected
++ Received
+
+@@ -1,6 +1,7 @@
+  [
++   "autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-native-activation.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts",
+
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts:544:63
+    542|       .toEqual([...MIXED_BACKEND_FACTORY_TESTS].sort());
+    543|     expect([...actual.get("MixedTeamManager")!].sort()).toEqual([...MI…
+    544|     expect([...actual.get("MixedAgentMemberHandle")!].sort()).toEqual(…
+       |                                                               ^
+    545|   });
+    546| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 14 passed (15)
+   Start at  07:38:19
+   Duration  11.22s (transform 187ms, setup 28ms, import 441ms, tests 10.08s, environment 0ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (13 tests) 9986ms
+     ✓ fails closed on the exact direct-constructor test sets and narrow fixture property  1302ms
+     ✓ keeps AgentTeamRunManager creation explicit and process access lookup-only  1114ms
+     ✓ closes complete Agent manager and AgentRun construction to exact roots and fixtures  3119ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  1115ms
+     ✓ carries one explicit task-identity pair through every Team and task constructor  1759ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  1089ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  07:38:39
+   Duration  10.96s (transform 144ms, setup 17ms, import 394ms, tests 9.99s, environment 0ms)
+

@@ -99,24 +99,24 @@ describe("Brief package team prompt authority", () => {
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
       taskRootResolver: testMemberTaskRootResolver(),
     });
-    const issueForRun = vi.fn((input: {
+    const activateForRun = vi.fn((input: {
       owner: { runId: string };
       runtimeExposure: { requestedToolNames: string[] };
     }) => ({
+      kind: "active" as const,
       sessionId: "brief-researcher",
       owner: input.owner,
       descriptor: {
         name: "autobyteus_agent_tools",
         transport: "streamable_http",
         serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/brief-researcher",
-        headers: { Authorization: "Bearer test-token" },
         enabledTools: input.runtimeExposure.requestedToolNames.filter(
           (toolName) => toolName !== "write_file",
         ),
       },
-      redactedDescriptor: {} as never,
     }));
     const bootstrapper = new CodexThreadBootstrapper(
+      { activateForRun } as never,
       {
         materializeConfiguredWorkspaceSkills: vi.fn(async () => []),
       } as never,
@@ -131,7 +131,6 @@ describe("Brief package team prompt authority", () => {
         acquireClient: vi.fn(),
         releaseClient: vi.fn(async () => undefined),
       } as never,
-      { issueForRun } as never,
     );
 
     const result = await bootstrapper.bootstrapForCreate(new AgentRunContext({
@@ -165,7 +164,7 @@ describe("Brief package team prompt authority", () => {
     expect(prompt).toContain("## AgentTeam Collaboration");
     expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).toContain("writer");
-    expect(issueForRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(activateForRun).toHaveBeenCalledWith(expect.objectContaining({
       owner: expect.objectContaining({
         runId: "brief-researcher-run",
         teamIdentity: {

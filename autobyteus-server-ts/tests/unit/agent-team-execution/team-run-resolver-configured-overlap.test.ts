@@ -1,4 +1,3 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentConversationActivityInspector } from "../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
@@ -67,7 +66,6 @@ describe("TeamRunResolver configured child overlap", () => {
       prepareRestoreAgentRun: vi.fn(),
       prepareRestoreAgentRunFromPlatformState: vi.fn(),
     };
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const memoryDir = "/tmp/configured-overlap";
     const memoryLocationService = new AgentMemoryLocationService({
       memoryDir,
@@ -77,10 +75,7 @@ describe("TeamRunResolver configured child overlap", () => {
     const memberTeamContextBuilder = new MemberTeamContextBuilder();
     const workspaceManager = WorkspaceManager.getInstance();
     const backendFactory = new MixedTeamRunBackendFactory({
-      agentToolMcpRunSessionReleaser: releaser,
       createTeamManager: (input) => new MixedTeamManager(input.context, {
-        agentToolMcpRunSessionReleaser:
-          input.agentToolMcpRunSessionReleaser,
         subTeamRunFactory: input.subTeamRunFactory,
         agentRunManager: agentRunManager as never,
         memoryLocationService,

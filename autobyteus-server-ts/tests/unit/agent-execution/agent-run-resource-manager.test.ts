@@ -11,9 +11,9 @@ describe("AgentRunResourceManager", () => {
     const fileDispose = vi.fn();
     const relayDispose = vi.fn();
     const memoryDispose = vi.fn();
-    const revokeForRun = vi.fn(() => 2);
+    const deactivateForRun = vi.fn(() => 2);
     const manager = new AgentRunResourceManager({
-      runSessions: { revokeForRun, revokeForOwner: vi.fn(() => 0) },
+      runSessions: { deactivateForRun },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
@@ -26,11 +26,11 @@ describe("AgentRunResourceManager", () => {
 
     expect(first).toMatchObject({
       state: "released",
-      revokedSessionCount: 2,
+      deactivatedSessionCount: 2,
       detached: { fileChanges: true, artifactRelay: true, memoryRecorder: true },
     });
     expect(second.state).toBe("already_released");
-    expect(revokeForRun).toHaveBeenCalledTimes(1);
+    expect(deactivateForRun).toHaveBeenCalledTimes(1);
     expect(fileDispose).toHaveBeenCalledTimes(1);
     expect(relayDispose).toHaveBeenCalledTimes(1);
     expect(memoryDispose).toHaveBeenCalledTimes(1);
@@ -38,9 +38,9 @@ describe("AgentRunResourceManager", () => {
 
   it("rolls back partial attachment before reporting the original failure", () => {
     const fileDispose = vi.fn();
-    const revokeForRun = vi.fn(() => 0);
+    const deactivateForRun = vi.fn(() => 0);
     const manager = new AgentRunResourceManager({
-      runSessions: { revokeForRun, revokeForOwner: vi.fn(() => 0) },
+      runSessions: { deactivateForRun },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: {
         attachToRun: vi.fn(() => { throw new Error("relay attach failed"); }),
@@ -53,18 +53,18 @@ describe("AgentRunResourceManager", () => {
       AgentRunResourceAttachmentError,
     );
     expect(fileDispose).toHaveBeenCalledTimes(1);
-    expect(revokeForRun).toHaveBeenCalledTimes(1);
+    expect(deactivateForRun).toHaveBeenCalledTimes(1);
     expect(manager.release("run-partial", run as never).state)
       .toBe("already_released");
   });
 
   it("attempts every cleanup category and reports all failures once", () => {
-    const revokeForRun = vi.fn(() => { throw new Error("revoke failed"); });
+    const deactivateForRun = vi.fn(() => { throw new Error("deactivate failed"); });
     const fileDispose = vi.fn(() => { throw new Error("file failed"); });
     const relayDispose = vi.fn(() => { throw new Error("relay failed"); });
     const memoryDispose = vi.fn(() => { throw new Error("memory failed"); });
     const manager = new AgentRunResourceManager({
-      runSessions: { revokeForRun, revokeForOwner: vi.fn(() => 0) },
+      runSessions: { deactivateForRun },
       runFileChangeService: { attachToRun: vi.fn(() => fileDispose) },
       publishedArtifactRelayService: { attachToRun: vi.fn(() => relayDispose) },
       memoryRecorder: { attachToRun: vi.fn(() => memoryDispose) },
@@ -74,13 +74,13 @@ describe("AgentRunResourceManager", () => {
 
     const result = manager.release(run.runId, run as never);
     expect(result.errors.map((error) => error.message)).toEqual([
-      "revoke failed",
+      "deactivate failed",
       "file failed",
       "relay failed",
       "memory failed",
     ]);
     expect(manager.release(run.runId, run as never).state).toBe("already_released");
-    expect(revokeForRun).toHaveBeenCalledOnce();
+    expect(deactivateForRun).toHaveBeenCalledOnce();
     expect(fileDispose).toHaveBeenCalledOnce();
     expect(relayDispose).toHaveBeenCalledOnce();
     expect(memoryDispose).toHaveBeenCalledOnce();

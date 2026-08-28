@@ -1,6 +1,11 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
+import type { AgentOperationResult } from "../domain/agent-operation-result.js";
+import type {
+  CommittedAgentRunTermination,
+  PreparedAgentRunTermination,
+} from "../domain/prepared-agent-run-termination.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -18,7 +23,7 @@ import {
 } from "../errors.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import type {
-  AgentToolMcpRunSessionReleaser,
+  AgentToolMcpRunSessionDeactivator,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentRunResourceAttachmentError } from "./agent-run-resource-manager.js";
 import {
@@ -44,7 +49,7 @@ export type AgentRunManagerOptions = Readonly<{
   activationRegistry: AgentRunActivationRegistry;
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
-  agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+  agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
 }>;
 
 export class AgentRunManager {
@@ -55,8 +60,12 @@ export class AgentRunManager {
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
-  private readonly agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
+  private readonly agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
   private readonly inFlightPreparations = new Set<Promise<AgentRunActivationCandidate>>();
+  private readonly managedTerminationPreparations = new WeakMap<
+    AgentRun,
+    Promise<PreparedAgentRunTermination>
+  >();
 
   static getInstance(): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -85,7 +94,7 @@ export class AgentRunManager {
       options?.activationRegistry,
       options?.memoryRecorder,
       options?.providerInputNormalizer,
-      options?.agentToolMcpRunSessionReleaser,
+      options?.agentToolMcpRunSessionDeactivator,
     ];
     if (required.some((value) => !value)) {
       throw new Error("AgentRunManager requires all seven execution-family dependencies.");
@@ -98,8 +107,8 @@ export class AgentRunManager {
     this.claudeBackendFactory = options.claudeBackendFactory;
     this.memoryRecorder = options.memoryRecorder;
     this.providerInputNormalizer = options.providerInputNormalizer;
-    this.agentToolMcpRunSessionReleaser =
-      options.agentToolMcpRunSessionReleaser;
+    this.agentToolMcpRunSessionDeactivator =
+      options.agentToolMcpRunSessionDeactivator;
     this.activationRegistry = options.activationRegistry;
     logger.info("AgentRunManager initialized.");
   }
@@ -168,23 +177,82 @@ export class AgentRunManager {
     return this.activationRegistry.listActiveRunIds();
   }
 
+  prepareAgentRunTermination(
+    expectedRun: AgentRun,
+  ): Promise<PreparedAgentRunTermination> {
+    if (this.activationRegistry.getActiveRun(expectedRun.runId) !== expectedRun) {
+      return Promise.reject(new AgentTerminationError(
+        `Agent run '${expectedRun.runId}' is not the current published run.`,
+      ));
+    }
+    const existing = this.managedTerminationPreparations.get(expectedRun);
+    if (existing) return existing;
+    const preparation = expectedRun.prepareTermination().then((runPreparation) => {
+      let state: "prepared" | "cancelled" | "committed" = "prepared";
+      let committed: CommittedAgentRunTermination | null = null;
+      return Object.freeze({
+        cancel: () => {
+          if (state !== "prepared") return;
+          state = "cancelled";
+          runPreparation.cancel();
+          if (this.managedTerminationPreparations.get(expectedRun) === preparation) {
+            this.managedTerminationPreparations.delete(expectedRun);
+          }
+        },
+        commit: () => {
+          if (state === "cancelled") {
+            throw new AgentTerminationError(
+              `Agent run '${expectedRun.runId}' termination preparation was cancelled.`,
+            );
+          }
+          if (committed) return committed;
+          state = "committed";
+          const runTermination = runPreparation.commit();
+          let currentAttempt: Promise<AgentOperationResult> | null = null;
+          let terminalAttempt: Promise<AgentOperationResult> | null = null;
+          committed = Object.freeze({
+            finish: () => {
+              if (terminalAttempt) return terminalAttempt;
+              if (currentAttempt) return currentAttempt;
+              const attempt = this.finishPublishedAgentRunTermination(
+                expectedRun,
+                runTermination,
+              );
+              currentAttempt = attempt;
+              void attempt.then((result) => {
+                if (result.accepted) terminalAttempt = attempt;
+                else if (currentAttempt === attempt) currentAttempt = null;
+              }, () => {
+                terminalAttempt = attempt;
+              });
+              return attempt;
+            },
+          });
+          return committed;
+        },
+      });
+    });
+    this.managedTerminationPreparations.set(expectedRun, preparation);
+    void preparation.catch(() => {
+      if (this.managedTerminationPreparations.get(expectedRun) === preparation) {
+        this.managedTerminationPreparations.delete(expectedRun);
+      }
+    });
+    return preparation;
+  }
+
   async terminateAgentRun(runId: string): Promise<boolean> {
     const normalizedRunId = normalizeRequiredRunId(runId);
     try {
       const activeRun = this.getActiveRun(normalizedRunId);
       if (!activeRun) return false;
-      const result = await activeRun.terminate();
-      if (!result.accepted || activeRun.isActive()) return false;
-      const removal = this.activationRegistry.removeIfCurrent({
-        runId: normalizedRunId,
-        expectedRun: activeRun,
-        reason: "explicit_termination",
-      });
-      this.activationRegistry.assertCleanupSucceeded(removal);
-      return removal.kind === "removed";
+      const prepared = await this.prepareAgentRunTermination(activeRun);
+      return (await prepared.commit().finish()).accepted;
     } catch (error) {
       logger.error(`Failed to terminate agent run '${normalizedRunId}': ${String(error)}`);
-      if (error instanceof AgentRunRemovalCleanupError) throw error;
+      if (error instanceof AgentRunRemovalCleanupError || error instanceof AgentTerminationError) {
+        throw error;
+      }
       throw new AgentTerminationError(String(error));
     }
   }
@@ -205,17 +273,11 @@ export class AgentRunManager {
 
     for (const run of snapshot.activeRuns) {
       try {
-        const termination = await run.terminate();
-        if (!termination.accepted || run.isActive()) {
+        const prepared = await this.prepareAgentRunTermination(run);
+        const termination = await prepared.commit().finish();
+        if (!termination.accepted) {
           errors.push(new Error(`Agent run '${run.runId}' did not become inactive during stop.`));
-          continue;
         }
-        const removal = this.activationRegistry.removeIfCurrent({
-          runId: run.runId,
-          expectedRun: run,
-          reason: "stop_all",
-        });
-        if (removal.kind === "removed") errors.push(...removal.resources.errors);
       } catch (error) {
         errors.push(error);
       }
@@ -333,7 +395,7 @@ export class AgentRunManager {
         && !(primaryError instanceof AgentRunResourceAttachmentError)
       ) {
         try {
-          this.agentToolMcpRunSessionReleaser.revokeForRun(claim.runId);
+          this.agentToolMcpRunSessionDeactivator.deactivateForRun(claim.runId);
         } catch (error) {
           errors.push(error instanceof Error ? error : new Error(String(error)));
         }
@@ -344,7 +406,7 @@ export class AgentRunManager {
       }
     } else {
       try {
-        this.agentToolMcpRunSessionReleaser.revokeForRun(claim.runId);
+        this.agentToolMcpRunSessionDeactivator.deactivateForRun(claim.runId);
       } catch (error) {
         errors.push(error instanceof Error ? error : new Error(String(error)));
       }
@@ -382,6 +444,31 @@ export class AgentRunManager {
       if (!backend.isActive()) return { kind: "aborted" };
       return { kind: "quarantined", error: error instanceof Error ? error : new Error(String(error)) };
     }
+  }
+
+  private async finishPublishedAgentRunTermination(
+    expectedRun: AgentRun,
+    runTermination: CommittedAgentRunTermination,
+  ) {
+    const result = await runTermination.finish();
+    if (!result.accepted) return result;
+    if (expectedRun.isActive()) {
+      throw new AgentTerminationError(
+        `Agent run '${expectedRun.runId}' accepted termination but remained active.`,
+      );
+    }
+    const removal = this.activationRegistry.removeIfCurrent({
+      runId: expectedRun.runId,
+      expectedRun,
+      reason: "explicit_termination",
+    });
+    if (removal.kind !== "removed") {
+      throw new AgentTerminationError(
+        `Agent run '${expectedRun.runId}' is no longer the current published run.`,
+      );
+    }
+    this.activationRegistry.assertCleanupSucceeded(removal);
+    return result;
   }
 
   private cleanupError(runId: string, cause: Error): AgentRunActivationError {

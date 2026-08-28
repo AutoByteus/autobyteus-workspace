@@ -5,17 +5,13 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify, { type FastifyInstance } from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-  seedInternalServerBaseUrlFromListenAddress,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -28,6 +24,11 @@ import type {
   ConfiguredTeamExecutionDto,
   TeamRunExecutionTreeDto,
 } from "@autobyteus/team-stream-contracts";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import {
+  closeLiveRuntimeSecretVault,
+  initializeLiveRuntimeSecretVaultFromEnvironment,
+} from "../helpers/live-runtime-secret-vault-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const codexBinaryReady =
@@ -313,7 +314,7 @@ describeNestedMixedRuntime(
         "utf-8",
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
-      schema = await buildGraphqlSchema();
+      await initializeLiveRuntimeSecretVaultFromEnvironment();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
       const graphqlPath = require.resolve("graphql", {
@@ -322,19 +323,10 @@ describeNestedMixedRuntime(
       const graphqlModule = await import(graphqlPath);
       graphql = graphqlModule.graphql as typeof graphqlFn;
 
-      runtimeServerApp = fastify();
-      await registerAgentToolsMcpRoutes(runtimeServerApp);
-      await runtimeServerApp.register(websocket);
-      await registerAgentWebsocket(runtimeServerApp);
-      const streamAddress = await runtimeServerApp.listen({
-        port: 0,
-        host: "127.0.0.1",
-      });
-      seedInternalServerBaseUrlFromListenAddress({
-        requestedHost: "127.0.0.1",
-        listenAddress: runtimeServerApp.server.address(),
-      });
-      runtimeServerUrl = new URL(streamAddress);
+      const started = await startStudioE2eRuntimeServer();
+      runtimeServerApp = started.fastify;
+      runtimeServerUrl = started.mainUrl;
+      schema = await buildGraphqlSchema();
     });
 
     afterAll(async () => {
@@ -354,6 +346,7 @@ describeNestedMixedRuntime(
         await runtimeServerApp.close();
         runtimeServerApp = null;
       }
+      await closeLiveRuntimeSecretVault();
       for (const root of createdWorkspaceRoots) {
         await rm(root, { recursive: true, force: true });
       }

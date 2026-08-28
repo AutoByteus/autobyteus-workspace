@@ -3,7 +3,6 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import type { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { testAgentNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
 
 const callbacks = () => ({
   taskRootResolver: testMemberTaskRootResolver(),
@@ -35,10 +34,8 @@ describe("MixedTeamRunBackendFactory", () => {
         }),
       ],
     });
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const managerInputs: unknown[] = [];
     const factory = new MixedTeamRunBackendFactory({
-      agentToolMcpRunSessionReleaser: releaser,
       createTeamManager: (input) => {
         managerInputs.push(input);
         captured.push(input.context);
@@ -51,7 +48,6 @@ describe("MixedTeamRunBackendFactory", () => {
     expect(backend.teamRunId).toBe(config.rootTeam.teamRunId);
     expect(captured).toHaveLength(1);
     expect(managerInputs[0]).toEqual(expect.objectContaining({
-      agentToolMcpRunSessionReleaser: releaser,
       context: captured[0],
     }));
     expect(captured[0]?.runtimeContext?.configuredMemberActivationMode).toBe("fresh");
@@ -86,10 +82,8 @@ describe("MixedTeamRunBackendFactory", () => {
         }),
       ],
     });
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
     const managerInputs: unknown[] = [];
     const factory = new MixedTeamRunBackendFactory({
-      agentToolMcpRunSessionReleaser: releaser,
       createTeamManager: (input) => {
         managerInputs.push(input);
         captured.push(input.context);
@@ -104,7 +98,6 @@ describe("MixedTeamRunBackendFactory", () => {
     expect(native?.kind).toBe("agent");
     expect(native?.getPlatformAgentRunId()).toBeNull();
     expect(managerInputs[0]).toEqual(expect.objectContaining({
-      agentToolMcpRunSessionReleaser: releaser,
       context: captured[0],
     }));
     for (const value of [undefined, null]) {
@@ -116,16 +109,11 @@ describe("MixedTeamRunBackendFactory", () => {
     }
   });
 
-  it("requires both the exact run-session releaser and manager construction capability", () => {
+  it("requires the manager construction capability", () => {
     const valid = {
-      agentToolMcpRunSessionReleaser:
-        createNoopAgentToolMcpRunSessionReleaser(),
       createTeamManager: () => createManagerStub(),
     };
-    for (const property of [
-      "agentToolMcpRunSessionReleaser",
-      "createTeamManager",
-    ] as const) {
+    for (const property of ["createTeamManager"] as const) {
       for (const value of ["omitted", null, undefined] as const) {
         const options = { ...valid } as Record<string, unknown>;
         if (value === "omitted") delete options[property];

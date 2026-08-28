@@ -5,23 +5,28 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import fastify, { type FastifyInstance } from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-  seedInternalServerBaseUrlFromListenAddress,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import {
+  E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
+} from "../helpers/team-run-graphql-documents.js";
+import {
+  closeLiveRuntimeSecretVault,
+  initializeLiveRuntimeSecretVaultFromEnvironment,
+} from "../helpers/live-runtime-secret-vault-helpers.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const codexBinaryReady =
@@ -78,10 +83,10 @@ type WsMessage = {
   payload: Record<string, unknown>;
 };
 
-type TeamMemberMetadata = {
+type TeamMemberExecution = {
+  memberAddress: string;
   memberName: string;
-  memberRouteKey: string;
-  memberRunId: string;
+  agentRunId: string;
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   workspaceRootPath: string | null;
@@ -156,21 +161,10 @@ const waitForMessageAfter = async (
 
 const assistantTextMatches = (
   message: WsMessage,
-  memberName: string,
+  agentRunId: string,
   token: string,
 ): boolean => {
-  const agentName =
-    typeof message.payload.agent_name === "string"
-      ? message.payload.agent_name
-      : null;
-  const memberRouteKey =
-    typeof message.payload.member_route_key === "string"
-      ? message.payload.member_route_key
-      : null;
-  if (
-    (agentName && agentName !== memberName) ||
-    (memberRouteKey && memberRouteKey !== memberName)
-  ) {
+  if (message.payload.agent_run_id !== agentRunId) {
     return false;
   }
 
@@ -224,27 +218,27 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberRouteKey?: string | null;
+    agentRunId: string;
     contextFilePaths?: string[];
     imageUrls?: string[];
   },
 ): void => {
   sendE2eSendMessageCommand(socket, {
     content: input.content,
-    target_member_route_key: input.targetMemberRouteKey ?? null,
+    agent_run_id: input.agentRunId,
     context_file_paths: input.contextFilePaths ?? [],
     image_urls: input.imageUrls ?? [],
   });
 };
 
 const findMemberBinding = (
-  members: TeamMemberMetadata[],
+  members: TeamMemberExecution[],
   memberName: string,
-): TeamMemberMetadata => {
+): TeamMemberExecution => {
   const binding =
     members.find((member) => member.memberName === memberName) ?? null;
   expect(binding).toBeTruthy();
-  return binding as TeamMemberMetadata;
+  return binding as TeamMemberExecution;
 };
 
 describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
@@ -272,7 +266,7 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    schema = await buildGraphqlSchema();
+    await initializeLiveRuntimeSecretVaultFromEnvironment();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", {
@@ -281,19 +275,10 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
 
-    runtimeServerApp = fastify();
-    await registerAgentToolsMcpRoutes(runtimeServerApp);
-    await runtimeServerApp.register(websocket);
-    await registerAgentWebsocket(runtimeServerApp);
-    const streamAddress = await runtimeServerApp.listen({
-      port: 0,
-      host: "127.0.0.1",
-    });
-    seedInternalServerBaseUrlFromListenAddress({
-      requestedHost: "127.0.0.1",
-      listenAddress: runtimeServerApp.server.address(),
-    });
-    runtimeServerUrl = new URL(streamAddress);
+    const started = await startStudioE2eRuntimeServer();
+    runtimeServerApp = started.fastify;
+    runtimeServerUrl = started.mainUrl;
+    schema = await buildGraphqlSchema();
   });
 
   afterAll(async () => {
@@ -313,6 +298,7 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
       await runtimeServerApp.close();
       runtimeServerApp = null;
     }
+    await closeLiveRuntimeSecretVault();
 
     for (const root of createdWorkspaceRoots) {
       await rm(root, { recursive: true, force: true });
@@ -520,13 +506,18 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
       }
     `;
 
+    const codexMcpToolRule =
+      input.memberName === "specialist"
+        ? " For this Codex member, send_message_to means the Agent Tools MCP tool " +
+          "mcp__autobyteus_agent_tools__send_message_to; never use Codex's native collaboration router."
+        : "";
     const instructions = `
 You are participating in a live mixed-runtime team validation.
 
 Rules:
 1. Follow direct user instructions exactly.
 2. Do not explore the environment or run diagnostics.
-3. The only tool you may execute is send_message_to.
+3. The only tool you may execute is send_message_to.${codexMcpToolRule}
 4. If the user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
 5. If you receive a teammate message that asks for an exact token, reply in plain assistant text with that exact token and nothing else.
 6. Do not use send_message_to unless the current direct user instruction explicitly provides JSON arguments for it.
@@ -585,13 +576,16 @@ Rules:
     startIndex: number;
     senderMemberName: string;
     recipientMemberName: string;
+    recipientAddress: string;
+    senderAgentRunId: string;
+    recipientAgentRunId: string;
     content: string;
   }): Promise<void> => {
     await waitForMessageAfter(
       input.messages,
       input.startIndex,
       (message) => {
-        if (message.payload.agent_name !== input.senderMemberName) {
+        if (message.payload.agent_run_id !== input.senderAgentRunId) {
           return false;
         }
 
@@ -613,7 +607,7 @@ Rules:
               ? (metadata.arguments as Record<string, unknown>)
               : null;
           return (
-            args?.recipient_name === `./${input.recipientMemberName}` &&
+            args?.recipient_address === input.recipientAddress &&
             args.content === input.content
           );
         }
@@ -631,47 +625,37 @@ Rules:
       input.startIndex,
       (message) =>
         isE2eTeamCommunicationMessage(message, {
-          senderMemberName: input.senderMemberName,
-          recipientMemberName: input.recipientMemberName,
+          senderAgentRunId: input.senderAgentRunId,
+          recipientAgentRunId: input.recipientAgentRunId,
           content: input.content,
         }) ||
         (message.type === "MEMBER_INPUT_MESSAGE" &&
-          message.payload.agent_name === input.recipientMemberName &&
+          message.payload.recipient_agent_run_id === input.recipientAgentRunId &&
           message.payload.content === input.content),
       `${input.recipientMemberName} delivery message`,
     );
   };
 
-  const fetchResumeMetadata = async (
+  const fetchConfiguredExecutions = async (
     teamRunId: string,
-  ): Promise<TeamMemberMetadata[]> => {
-    const teamResumeQuery = `
-      query TeamResume($teamRunId: String!) {
-        getTeamRunResumeConfig(teamRunId: $teamRunId) {
-          teamRunId
-          isActive
-          metadata
-        }
-      }
-    `;
-
+  ): Promise<TeamMemberExecution[]> => {
     const result = await execGraphql<{
       getTeamRunResumeConfig: {
         teamRunId: string;
         isActive: boolean;
-        metadata: Record<string, unknown>;
+        executionTree: Record<string, unknown>;
       };
-    }>(teamResumeQuery, { teamRunId });
+    }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
 
     expect(result.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
-    return flattenE2eTeamMemberMetadata(
-      result.getTeamRunResumeConfig.metadata,
-    ) as TeamMemberMetadata[];
+    return flattenE2eConfiguredAgentExecutions(
+      result.getTeamRunResumeConfig.executionTree,
+    ) as TeamMemberExecution[];
   };
 
   const waitForProjectionTokens = async (input: {
     teamRunId: string;
-    memberRouteKey: string;
+    agentRunId: string;
     requiredTokens: string[];
   }): Promise<{
     agentRunId: string;
@@ -679,17 +663,6 @@ Rules:
     lastActivityAt: string | null;
     conversation: Array<Record<string, unknown>>;
   }> => {
-    const projectionQuery = `
-      query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-        getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
-          agentRunId
-          summary
-          lastActivityAt
-          conversation
-        }
-      }
-    `;
-
     let projection: {
       agentRunId: string;
       summary: string | null;
@@ -698,18 +671,10 @@ Rules:
     } | null = null;
     const deadline = Date.now() + 120_000;
     while (Date.now() < deadline) {
-      const result = await execGraphql<{
-        getTeamMemberRunProjection: {
-          agentRunId: string;
-          summary: string | null;
-          lastActivityAt: string | null;
-          conversation: Array<Record<string, unknown>>;
-        };
-      }>(projectionQuery, {
-        teamRunId: input.teamRunId,
-        memberRouteKey: input.memberRouteKey,
-      });
-      projection = result.getTeamMemberRunProjection;
+      projection = await getTeamMemberRunViewProjectionService().getProjection(
+        input.teamRunId,
+        input.agentRunId,
+      );
       const serializedConversation = JSON.stringify(projection.conversation);
       if (
         input.requiredTokens.every((token) =>
@@ -722,7 +687,7 @@ Rules:
     }
 
     throw new Error(
-      `Timed out waiting for projection tokens for route '${input.memberRouteKey}'.`,
+      `Timed out waiting for projection tokens for agent run '${input.agentRunId}'.`,
     );
   };
 
@@ -838,6 +803,16 @@ Rules:
       .teamRunId as string;
     createdTeamRunIds.add(teamRunId);
 
+    const initialExecutions = await fetchConfiguredExecutions(teamRunId);
+    const initialCoordinator = findMemberBinding(
+      initialExecutions,
+      "coordinator",
+    );
+    const initialSpecialist = findMemberBinding(
+      initialExecutions,
+      "specialist",
+    );
+
     const preRestoreAutoToCodexReplyToken = `MIXED_A2C_BEFORE_${unique}`;
     const preRestoreCodexToAutoReplyToken = `MIXED_C2A_BEFORE_${unique}`;
     const postRestoreAutoToCodexReplyToken = `MIXED_A2C_AFTER_${unique}`;
@@ -848,7 +823,7 @@ Rules:
       messageType: string,
     ): string => {
       const argsJson = JSON.stringify({
-        recipient_name: "./specialist",
+        recipient_address: initialSpecialist.memberAddress,
         content: `Reply with exactly ${replyToken} and nothing else.`,
         message_type: messageType,
       });
@@ -860,18 +835,18 @@ Rules:
       messageType: string,
     ): string => {
       const argsJson = JSON.stringify({
-        recipient_name: "./coordinator",
+        recipient_address: initialCoordinator.memberAddress,
         content: `Reply with exactly ${replyToken} and nothing else.`,
         message_type: messageType,
       });
-      return `Call send_message_to exactly once now with these exact JSON arguments: ${argsJson}. Do not call any other tool.`;
+      return `Call mcp__autobyteus_agent_tools__send_message_to exactly once now with these exact JSON arguments: ${argsJson}. Do not call any other tool.`;
     };
 
     const firstConnection = await openTeamSocket(teamRunId);
     try {
       const autoToCodexStartIndex = firstConnection.messages.length;
       sendTeamMessageOverSocket(firstConnection.socket, {
-        targetMemberRouteKey: "coordinator",
+        agentRunId: initialCoordinator.agentRunId,
         content: autoToCodexInstruction(
           preRestoreAutoToCodexReplyToken,
           "mixed_a2c_before_restore",
@@ -882,23 +857,23 @@ Rules:
         startIndex: autoToCodexStartIndex,
         senderMemberName: "coordinator",
         recipientMemberName: "specialist",
+        recipientAddress: initialSpecialist.memberAddress,
+        senderAgentRunId: initialCoordinator.agentRunId,
+        recipientAgentRunId: initialSpecialist.agentRunId,
         content: `Reply with exactly ${preRestoreAutoToCodexReplyToken} and nothing else.`,
       });
       await waitForMessageAfter(
         firstConnection.messages,
         autoToCodexStartIndex,
         (message) =>
-          assistantTextMatches(
-            message,
-            "specialist",
-            preRestoreAutoToCodexReplyToken,
-          ),
-        "specialist reply before restore",
+          message.type === "TURN_COMPLETED" &&
+          message.payload.agent_run_id === initialSpecialist.agentRunId,
+        "specialist turn completion before restore; token verified by projection",
       );
 
       const codexToAutoStartIndex = firstConnection.messages.length;
       sendTeamMessageOverSocket(firstConnection.socket, {
-        targetMemberRouteKey: "specialist",
+        agentRunId: initialSpecialist.agentRunId,
         content: codexToAutoInstruction(
           preRestoreCodexToAutoReplyToken,
           "mixed_c2a_before_restore",
@@ -909,6 +884,9 @@ Rules:
         startIndex: codexToAutoStartIndex,
         senderMemberName: "specialist",
         recipientMemberName: "coordinator",
+        recipientAddress: initialCoordinator.memberAddress,
+        senderAgentRunId: initialSpecialist.agentRunId,
+        recipientAgentRunId: initialCoordinator.agentRunId,
         content: `Reply with exactly ${preRestoreCodexToAutoReplyToken} and nothing else.`,
       });
       await waitForMessageAfter(
@@ -917,7 +895,7 @@ Rules:
         (message) =>
           assistantTextMatches(
             message,
-            "coordinator",
+            initialCoordinator.agentRunId,
             preRestoreCodexToAutoReplyToken,
           ),
         "coordinator reply before restore",
@@ -939,7 +917,7 @@ Rules:
     }>(terminateMutation, { teamRunId });
     expect(firstTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
-    const storedBeforeRestore = await fetchResumeMetadata(teamRunId);
+    const storedBeforeRestore = await fetchConfiguredExecutions(teamRunId);
     expect(storedBeforeRestore).toHaveLength(2);
 
     const coordinatorBeforeRestore = findMemberBinding(
@@ -967,11 +945,11 @@ Rules:
 
     const coordinatorProjectionBeforeRestore = await waitForProjectionTokens({
       teamRunId,
-      memberRouteKey: coordinatorBeforeRestore.memberRouteKey,
+      agentRunId: coordinatorBeforeRestore.agentRunId,
       requiredTokens: [preRestoreCodexToAutoReplyToken],
     });
     expect(coordinatorProjectionBeforeRestore.agentRunId).toBe(
-      coordinatorBeforeRestore.memberRunId,
+      coordinatorBeforeRestore.agentRunId,
     );
     expect(
       JSON.stringify(coordinatorProjectionBeforeRestore.conversation),
@@ -979,11 +957,11 @@ Rules:
 
     const specialistProjectionBeforeRestore = await waitForProjectionTokens({
       teamRunId,
-      memberRouteKey: specialistBeforeRestore.memberRouteKey,
+      agentRunId: specialistBeforeRestore.agentRunId,
       requiredTokens: [preRestoreAutoToCodexReplyToken],
     });
     expect(specialistProjectionBeforeRestore.agentRunId).toBe(
-      specialistBeforeRestore.memberRunId,
+      specialistBeforeRestore.agentRunId,
     );
     expect(
       JSON.stringify(specialistProjectionBeforeRestore.conversation),
@@ -1013,7 +991,7 @@ Rules:
       const autoToCodexAfterRestoreStartIndex =
         secondConnection.messages.length;
       sendTeamMessageOverSocket(secondConnection.socket, {
-        targetMemberRouteKey: "coordinator",
+        agentRunId: coordinatorBeforeRestore.agentRunId,
         content: autoToCodexInstruction(
           postRestoreAutoToCodexReplyToken,
           "mixed_a2c_after_restore",
@@ -1024,24 +1002,24 @@ Rules:
         startIndex: autoToCodexAfterRestoreStartIndex,
         senderMemberName: "coordinator",
         recipientMemberName: "specialist",
+        recipientAddress: specialistBeforeRestore.memberAddress,
+        senderAgentRunId: coordinatorBeforeRestore.agentRunId,
+        recipientAgentRunId: specialistBeforeRestore.agentRunId,
         content: `Reply with exactly ${postRestoreAutoToCodexReplyToken} and nothing else.`,
       });
       await waitForMessageAfter(
         secondConnection.messages,
         autoToCodexAfterRestoreStartIndex,
         (message) =>
-          assistantTextMatches(
-            message,
-            "specialist",
-            postRestoreAutoToCodexReplyToken,
-          ),
-        "specialist reply after restore",
+          message.type === "TURN_COMPLETED" &&
+          message.payload.agent_run_id === specialistBeforeRestore.agentRunId,
+        "specialist turn completion after restore; token verified by projection",
       );
 
       const codexToAutoAfterRestoreStartIndex =
         secondConnection.messages.length;
       sendTeamMessageOverSocket(secondConnection.socket, {
-        targetMemberRouteKey: "specialist",
+        agentRunId: specialistBeforeRestore.agentRunId,
         content: codexToAutoInstruction(
           postRestoreCodexToAutoReplyToken,
           "mixed_c2a_after_restore",
@@ -1052,6 +1030,9 @@ Rules:
         startIndex: codexToAutoAfterRestoreStartIndex,
         senderMemberName: "specialist",
         recipientMemberName: "coordinator",
+        recipientAddress: coordinatorBeforeRestore.memberAddress,
+        senderAgentRunId: specialistBeforeRestore.agentRunId,
+        recipientAgentRunId: coordinatorBeforeRestore.agentRunId,
         content: `Reply with exactly ${postRestoreCodexToAutoReplyToken} and nothing else.`,
       });
       await waitForMessageAfter(
@@ -1060,7 +1041,7 @@ Rules:
         (message) =>
           assistantTextMatches(
             message,
-            "coordinator",
+            coordinatorBeforeRestore.agentRunId,
             postRestoreCodexToAutoReplyToken,
           ),
         "coordinator reply after restore",
@@ -1074,7 +1055,7 @@ Rules:
     }>(terminateMutation, { teamRunId });
     expect(secondTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
-    const storedAfterRestore = await fetchResumeMetadata(teamRunId);
+    const storedAfterRestore = await fetchConfiguredExecutions(teamRunId);
     const coordinatorAfterRestore = findMemberBinding(
       storedAfterRestore,
       "coordinator",
@@ -1095,11 +1076,11 @@ Rules:
     );
     expect(coordinatorAfterRestore.workspaceRootPath).toBe(workspaceRootPath);
     expect(specialistAfterRestore.workspaceRootPath).toBe(workspaceRootPath);
-    expect(coordinatorAfterRestore.memberRouteKey).toBe(
-      coordinatorBeforeRestore.memberRouteKey,
+    expect(coordinatorAfterRestore.memberAddress).toBe(
+      coordinatorBeforeRestore.memberAddress,
     );
-    expect(specialistAfterRestore.memberRouteKey).toBe(
-      specialistBeforeRestore.memberRouteKey,
+    expect(specialistAfterRestore.memberAddress).toBe(
+      specialistBeforeRestore.memberAddress,
     );
     expect(specialistAfterRestore.platformAgentRunId).toBe(
       specialistBeforeRestore.platformAgentRunId,
@@ -1107,7 +1088,7 @@ Rules:
 
     const coordinatorProjectionAfterRestore = await waitForProjectionTokens({
       teamRunId,
-      memberRouteKey: coordinatorAfterRestore.memberRouteKey,
+      agentRunId: coordinatorAfterRestore.agentRunId,
       requiredTokens: [
         preRestoreCodexToAutoReplyToken,
         postRestoreCodexToAutoReplyToken,
@@ -1125,7 +1106,7 @@ Rules:
 
     const specialistProjectionAfterRestore = await waitForProjectionTokens({
       teamRunId,
-      memberRouteKey: specialistAfterRestore.memberRouteKey,
+      agentRunId: specialistAfterRestore.agentRunId,
       requiredTokens: [
         preRestoreAutoToCodexReplyToken,
         postRestoreAutoToCodexReplyToken,

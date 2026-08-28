@@ -1,17 +1,8 @@
 import { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
-import {
-  getCodexThreadManager,
-  type CodexThreadManager,
-} from "../thread/codex-thread-manager.js";
-import {
-  getCodexThreadBootstrapper,
-  type CodexThreadBootstrapper,
-} from "./codex-thread-bootstrapper.js";
-import {
-  getCodexThreadCleanup,
-  type CodexThreadCleanup,
-} from "./codex-thread-cleanup.js";
+import type { CodexThreadManager } from "../thread/codex-thread-manager.js";
+import type { CodexThreadBootstrapper } from "./codex-thread-bootstrapper.js";
+import type { CodexThreadCleanup } from "./codex-thread-cleanup.js";
 import { CodexAgentRunBackend } from "./codex-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 
@@ -21,9 +12,9 @@ export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly threadBootstrapper: CodexThreadBootstrapper;
   private readonly threadCleanup: CodexThreadCleanup;
   constructor(
-    threadManager: CodexThreadManager = getCodexThreadManager(),
-    threadBootstrapper: CodexThreadBootstrapper = getCodexThreadBootstrapper(),
-    threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
+    threadManager: CodexThreadManager,
+    threadBootstrapper: CodexThreadBootstrapper,
+    threadCleanup: CodexThreadCleanup,
   ) {
     this.threadManager = threadManager;
     this.threadBootstrapper = threadBootstrapper;
@@ -77,12 +68,3 @@ export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
     return backend;
   }
 }
-
-let cachedCodexAgentRunBackendFactory: CodexAgentRunBackendFactory | null = null;
-
-export const getCodexAgentRunBackendFactory = (): CodexAgentRunBackendFactory => {
-  if (!cachedCodexAgentRunBackendFactory) {
-    cachedCodexAgentRunBackendFactory = new CodexAgentRunBackendFactory();
-  }
-  return cachedCodexAgentRunBackendFactory;
-};

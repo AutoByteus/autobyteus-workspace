@@ -11,9 +11,6 @@ import { MixedAgentMemberContext, type MixedTeamRunContext } from "../mixed-team
 import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 import type { TeamAgentPlatformBinding } from "../../../domain/team-agent-platform-binding.js";
-import type {
-  AgentToolMcpRunSessionReleaser,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
 import type { AgentConversationActivityInspector } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
@@ -33,7 +30,6 @@ export class MixedTaskAgentExecutionRegistry {
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     agentRunManager?: AgentRunManager;
-    agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
     memoryLocationService?: AgentMemoryLocationService;
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
@@ -71,8 +67,6 @@ export class MixedTaskAgentExecutionRegistry {
       config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: null }),
       activationMode: "fresh",
       agentRunManager: this.options.agentRunManager,
-      agentToolMcpRunSessionReleaser:
-        this.options.agentToolMcpRunSessionReleaser,
       memoryLocationService: this.options.memoryLocationService,
       activityInspector: this.options.activityInspector,
       memberTeamContextBuilder: this.options.memberTeamContextBuilder,

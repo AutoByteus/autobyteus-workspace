@@ -1,6 +1,6 @@
 import type { AgentRun } from "../domain/agent-run.js";
 import type {
-  AgentToolMcpRunSessionReleaser,
+  AgentToolMcpRunSessionDeactivator,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import type { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
@@ -9,7 +9,7 @@ import type { RunFileChangeService } from "../../services/run-file-changes/run-f
 export type AgentRunResourceReleaseResult = Readonly<{
   state: "released" | "already_released";
   runId: string;
-  revokedSessionCount: number;
+  deactivatedSessionCount: number;
   detached: Readonly<{
     fileChanges: boolean;
     artifactRelay: boolean;
@@ -42,7 +42,7 @@ export class AgentRunResourceManager {
   private readonly resourcesByRunId = new Map<string, ResourceRecord>();
 
   constructor(private readonly dependencies: {
-    runSessions: AgentToolMcpRunSessionReleaser;
+    runSessions: AgentToolMcpRunSessionDeactivator;
     runFileChangeService: Pick<RunFileChangeService, "attachToRun">;
     publishedArtifactRelayService: Pick<ApplicationPublishedArtifactRelayService, "attachToRun">;
     memoryRecorder: Pick<AgentRunMemoryRecorder, "attachToRun">;
@@ -80,7 +80,7 @@ export class AgentRunResourceManager {
     }
     this.resourcesByRunId.delete(runId);
     const errors: Error[] = [];
-    let revokedSessionCount = 0;
+    let deactivatedSessionCount = 0;
     const detached = {
       fileChanges: false,
       artifactRelay: false,
@@ -88,7 +88,7 @@ export class AgentRunResourceManager {
     };
 
     try {
-      revokedSessionCount = this.dependencies.runSessions.revokeForRun(runId);
+      deactivatedSessionCount = this.dependencies.runSessions.deactivateForRun(runId);
     } catch (error) {
       errors.push(toError(error));
     }
@@ -99,7 +99,7 @@ export class AgentRunResourceManager {
     return Object.freeze({
       state: "released" as const,
       runId,
-      revokedSessionCount,
+      deactivatedSessionCount,
       detached: Object.freeze(detached),
       errors: Object.freeze(errors),
     });
@@ -126,7 +126,7 @@ export class AgentRunResourceManager {
     return Object.freeze({
       state: "already_released" as const,
       runId,
-      revokedSessionCount: 0,
+      deactivatedSessionCount: 0,
       detached: Object.freeze({
         fileChanges: false,
         artifactRelay: false,

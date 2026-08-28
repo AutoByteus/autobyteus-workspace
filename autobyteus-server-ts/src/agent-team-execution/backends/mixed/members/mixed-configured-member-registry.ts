@@ -8,9 +8,6 @@ import { MixedSubTeamMemberHandle } from "./mixed-sub-team-member-handle.js";
 import type { MixedConfiguredMemberHandle, MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
 import type { TeamAgentPlatformBinding } from "../../../domain/team-agent-platform-binding.js";
-import type {
-  AgentToolMcpRunSessionReleaser,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
 import type { AgentConversationActivityInspector } from "../../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
@@ -30,7 +27,6 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
     configResolver: MixedTeamMemberConfigResolver;
     subTeamRunFactory: import("../mixed-sub-team-run-factory.js").MixedSubTeamRunFactory;
     agentRunManager?: AgentRunManager;
-    agentToolMcpRunSessionReleaser: AgentToolMcpRunSessionReleaser;
     memoryLocationService?: AgentMemoryLocationService;
     activityInspector?: AgentConversationActivityInspector;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
@@ -65,8 +61,6 @@ export class MixedConfiguredMemberRegistry implements ConfiguredMemberRegistryAc
           config: node,
           activationMode: this.options.teamContext.runtimeContext.configuredMemberActivationMode,
           agentRunManager: this.options.agentRunManager,
-          agentToolMcpRunSessionReleaser:
-            this.options.agentToolMcpRunSessionReleaser,
           memoryLocationService: this.options.memoryLocationService,
           activityInspector: this.options.activityInspector,
           memberTeamContextBuilder: this.options.memberTeamContextBuilder,

@@ -1,4 +1,4 @@
-import { createNoopAgentToolMcpRunSessionReleaser } from "../../fixtures/agent-tool-mcp-run-session-releaser-fixtures.js";
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
@@ -135,9 +135,9 @@ describe("AgentRunService fresh definition runtime integration", () => {
       waitForIdle: async () => undefined,
     });
 
-    const releaser = createNoopAgentToolMcpRunSessionReleaser();
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
     const infrastructure = createAgentRunManagerInfrastructureFixture({
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     const manager = new AgentRunManager({
       autoByteusBackendFactory,
@@ -146,7 +146,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
-      agentToolMcpRunSessionReleaser: releaser,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     const memoryDir = appConfigProvider.config.getMemoryDir();
     const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
