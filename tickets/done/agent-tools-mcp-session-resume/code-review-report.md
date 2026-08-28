@@ -3,19 +3,19 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: the five evidence artifacts, prior design/architecture artifacts, and the `CRR-001` review/reroute artifacts in the cumulative package
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/solution-revision-record.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-004` correcting `SR-003`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-005`, retaining the unaffected `ARCH-REV-004` decisions
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-002` correcting `IR-001`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-revision-record.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
 - Current Review Round: `2`
 - Trigger: `/implementation_engineer` submitted `IR-002` after `SR-004` / `ARCH-REV-005` corrected `CR-F-001` and incorporated `CR-F-002`.

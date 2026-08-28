@@ -2,21 +2,21 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/session-unavailable-after-team-resume.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/codex-app-server-mcp-rebind-probe.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/full-product-software-team-reproduction.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/full-product-software-team-session-unavailable.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/external-mcp-gateway-settings.png`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/architecture-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/session-unavailable-after-team-resume.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/codex-app-server-mcp-rebind-probe.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/full-product-software-team-reproduction.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/full-product-software-team-session-unavailable.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/external-mcp-gateway-settings.png`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/architecture-review-revision-record.md`
 - Triggering rework reports:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-revision-record.md`
 - Triggering reviewed decision: `CRR-001` findings `CR-F-001` and `CR-F-002`, corrected by `SR-004` and passed by `ARCH-REV-005` with no new findings.
 
 ## Current Implementation Summary
@@ -24,7 +24,7 @@
 The complete current implementation retains the `IR-001` deterministic tokenless Agent Tools endpoint, unified Codex/Claude activation, active-only registry, dedicated process-local listener, and preserved main/gateway contracts. `IR-002` corrects the supported Team-stop lifecycle: `AgentRunManager.prepareAgentRunTermination(expectedRun)` is now the sole published-run reversible prepare/finalization boundary for Mixed Team, direct, and stop-all termination. It coalesces exact-run preparation and committed finish attempts, preserves cancellation and `accepted:false` retry state, and returns accepted only after exact-current removal plus successful resource/session cleanup. Terminal inactivity, identity, and cleanup failures are cached and cannot become Team success. Dormant partial-owner Agent Tools cleanup APIs and fixtures were removed.
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
@@ -99,8 +99,8 @@ The complete current implementation retains the `IR-001` deterministic tokenless
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume`
-- Project: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Project: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts`
 - Branch/baseline: `codex/agent-tools-mcp-session-resume` at `bf396dd5ed541cf6ef2179b305132b079aadd7ab` before the uncommitted IR-001/IR-002 implementation.
 - Project-required shared packages were built for validation; generated untracked shared `dist/` directories were removed afterward.
 - One mistakenly empty Vitest file-selection command began repository discovery and was interrupted during E2E module import before producing a test result. It is not used as implementation evidence; no API/E2E result is claimed.

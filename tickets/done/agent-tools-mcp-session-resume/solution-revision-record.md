@@ -33,7 +33,7 @@ The latest requirements, investigation notes, design spec, and listed evidence s
 
 ### SR-002 — Unified deterministic local run endpoint supersedes persistent binding
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`; architecture-review round 2 / `ARCH-REV-002`.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`; architecture-review round 2 / `ARCH-REV-002`.
 - Triggering finding IDs: `ARCH-F-001`.
 - Prior authoritative result: `SR-001` specified an encrypted persistent Codex binding and passed round-1 architecture review; that direction was superseded by the user's later approval recorded in `ARCH-REV-002`.
 - Current authoritative result: revised approved requirements and a new implementation-ready design for one deterministic, non-secret, run-scoped local Agent Tools endpoint, one active-only lifecycle for Codex and Claude, explicit loopback-only Agent Tools admission, no Agent Tools persistence, and an unchanged external MCP Gateway.
@@ -51,7 +51,7 @@ The latest requirements, investigation notes, design spec, and listed evidence s
 
 ### SR-003 — One process-wide loopback listener resolves main-bind conflict
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`; architecture-review round 3 / `ARCH-REV-003`.
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`; architecture-review round 3 / `ARCH-REV-003`.
 - Triggering finding IDs: `ARCH-F-002`; `ARCH-F-001` is verified resolved.
 - Prior authoritative result: `SR-002` correctly established deterministic tokenless run identity, universal active-only lifecycle, loopback request admission, no persistence, and unchanged gateway behavior, but assumed the main listener could always supply a loopback-reachable descriptor. ARCH-REV-003 proved that supported specific non-loopback-only binds contradict that assumption.
 - Current authoritative result: the user explicitly approved one application-wide Agent Tools listener bound to `127.0.0.1` on an OS-assigned port and shared by every run. The dedicated listener is the sole Agent Tools transport; Studio/standalone main listeners preserve their exact requested bind and no longer register Agent Tools.
@@ -69,7 +69,7 @@ The latest requirements, investigation notes, design spec, and listed evidence s
 
 ### SR-004 — Authoritative published-run termination closes the Team-stop cleanup gap
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md`; source-review round 1 / `CRR-001`.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md`; source-review round 1 / `CRR-001`.
 - Triggering finding IDs: `CR-F-001` (blocking Design Impact) and `CR-F-002` (required local cleanup); material premise `CR-MP-001`.
 - Prior authoritative result: `SR-003` passed as `ARCH-REV-004` and was implemented as uncommitted `IR-001`, but the reviewed DS-002 incorrectly assumed supported Team-member stop reached AgentRun resource cleanup.
 - Current authoritative result: revised approved requirements and design make `AgentRunManager` the one published-run reversible prepare / committed finalization boundary used by direct, Team, and stop-all termination. `MixedAgentMemberHandle` delegates the exact run there and disposes only after managed accepted finish; exact-current activation removal and `AgentRunResourceManager.release` complete before Team success. Cancellation and rejected finish retain active state. Dormant partial-owner Agent Tools cleanup APIs are removed.

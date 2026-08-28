@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-001 — Deterministic tokenless Agent Tools run endpoint baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`; `ARCH-REV-004`.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`; `ARCH-REV-004`.
 - Triggering finding IDs: `N/A` (Pass with no findings; prior `ARCH-F-001` and `ARCH-F-002` verified resolved upstream).
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-002 — Manager-owned published-run termination closes Team-stop cleanup
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md`; `CRR-001`, followed by reviewed authorization from `/architecture_reviewer` in `ARCH-REV-005`.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md`; `CRR-001`, followed by reviewed authorization from `/architecture_reviewer` in `ARCH-REV-005`.
 - Triggering finding IDs: `CR-F-001`, `CR-F-002`.
 - Classification: `Local Fix` against the reviewed `SR-004` Design Impact correction.
 - Prior authoritative result: `IR-001` implemented `SR-003`, but `CRR-001` failed source review because supported Mixed Team termination bypassed published-run resource/session finalization and dormant partial-owner cleanup APIs remained.

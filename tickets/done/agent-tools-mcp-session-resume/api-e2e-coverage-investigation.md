@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-spec.md`
-- Supplemental Task Artifacts: the five evidence artifacts under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/`, including the real-product reproduction and Codex 0.150.1 rebind probe
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/solution-revision-record.md` (`SR-004`, retaining `SR-003`)
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/architecture-review-revision-record.md` (`ARCH-REV-005`, retaining `ARCH-REV-004`)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/implementation-revision-record.md` (`IR-002`, correcting `IR-001`)
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-revision-record.md` (`CRR-004`, retaining authoritative implementation review `CRR-002`)
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-spec.md`
+- Supplemental Task Artifacts: the five evidence artifacts under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/`, including the real-product reproduction and Codex 0.150.1 rebind probe
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/solution-revision-record.md` (`SR-004`, retaining `SR-003`)
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/architecture-review-revision-record.md` (`ARCH-REV-005`, retaining `ARCH-REV-004`)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/implementation-revision-record.md` (`IR-002`, correcting `IR-001`)
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-revision-record.md` (`CRR-004`, retaining authoritative implementation review `CRR-002`)
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-003`
 - Current Investigation Round: `3` (completed)
 - Trigger: `CRR-004` repeated proportional test-review `Local Fix Fail` (`TR-F-003`) after `API-REV-002`; implementation source remains `CRR-002 Pass`
@@ -67,7 +67,7 @@ The implementation handoff's compatibility check is clean and its persisted-data
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume`; project `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts`
+- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`; project `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts`
 - Project type and runtime stack: pnpm workspace; Node.js/TypeScript; Vitest in fork pool with serial files; Fastify; GraphQL/REST/WebSocket; Prisma/SQLite; Codex App Server and Claude Agent SDK provider integrations
 - Conflicting, missing, or unclear project instructions: `AGENTS.md` documents Vitest execution from the project; the root scripts define deterministic and live E2E. `pnpm typecheck` uses `tsconfig.json`, which the implementation handoff records as independently unsuitable because tests lie outside `rootDir: src`; `tsconfig.build.json --noEmit` and `pnpm build` are authoritative production compile checks. No conflict blocks coverage work.
 - Required environment variables or secrets available: unknown until the documented live-E2E preflight executes. Deterministic suites require no provider secret. Secret values will not be recorded.
@@ -255,7 +255,7 @@ This scorecard is the repository-only gate before the selected live/provider/bro
 
 ## CRR-003 Local-Fix Re-entry Investigation (Before Round-2 Durable Edits)
 
-- Reviewed triggering artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-test-review-report.md`
+- Reviewed triggering artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-test-review-report.md`
 - Prior API/E2E result rechecked: `API-REV-001 Pass / 97%`; the direct implementation evidence remains valid, but delivery readiness is suspended until the changed durable live-Team coverage is current and clean.
 - Re-entry classification: `Local Fix` owned by `/api_e2e_engineer`; no requirement, design, or implementation-source reroute.
 
@@ -320,7 +320,7 @@ Round-2 final confidence scorecard:
 
 ## CRR-004 Local-Fix Re-entry Investigation (Before Round-3 Durable Edits)
 
-- Triggering report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-test-review-report.md` (`CRR-004`)
+- Triggering report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-test-review-report.md` (`CRR-004`)
 - Prior result rechecked: `API-REV-002 Pass / 97%`; `TR-F-001` and `TR-F-002` remain resolved, but delivery readiness is suspended for `TR-F-003`.
 - Classification: `Local Fix` owned by `/api_e2e_engineer`; implementation and architecture remain the authoritative `CRR-002 Pass` and are not reopened.
 

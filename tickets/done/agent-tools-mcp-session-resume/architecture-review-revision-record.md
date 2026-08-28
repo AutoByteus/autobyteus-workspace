@@ -1,6 +1,6 @@
 # Architecture Review Revision Record
 
-The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md` is authoritative. This file records the concise architecture-review history.
+The latest `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md` is authoritative. This file records the concise architecture-review history.
 
 ## Revision Index
 
@@ -16,7 +16,7 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-ses
 
 ### ARCH-REV-001 — Stable binding architecture baseline passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
 - Review round and trigger: round 1; initial package ready for architecture review after user approval.
 - Triggering role, report path, and finding IDs: `/solution_designer`; initial package with no prior design-review report; finding IDs `N/A`.
 - Relevant solution revision IDs: `SR-001`
@@ -35,7 +35,7 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-ses
 
 ### ARCH-REV-002 — User-approved simplification supersedes persistent binding design
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
 - Review round and trigger: round 2; after the pass, the user approved one stable run-scoped local Agent Tools endpoint for Codex and Claude and asked whether the independent external MCP Gateway remains functional.
 - Triggering role, report path, and finding IDs: user conversation; canonical design review report above; `ARCH-F-001`.
 - Relevant solution revision IDs: `SR-001` pending a new `SR-*` revision.
@@ -54,7 +54,7 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-ses
 
 ### ARCH-REV-003 — Simplified design exposes an unresolved non-loopback-bind contract
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
 - Review round and trigger: round 3; `/solution_designer` submitted `SR-002` as the resolution of `ARCH-F-001` for full re-review.
 - Triggering role, report path, and finding IDs: `/solution_designer`; canonical design review report above; prior `ARCH-F-001`, new `ARCH-F-002`.
 - Relevant solution revision IDs: `SR-002` superseding `SR-001`
@@ -75,7 +75,7 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-ses
 
 ### ARCH-REV-004 — Process-wide loopback listener design passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
 - Review round and trigger: round 4; `/solution_designer` submitted `SR-003` after the user approved one application-wide loopback-only Agent Tools listener as the resolution of `ARCH-F-002`.
 - Triggering role, report path, and finding IDs: `/solution_designer`; canonical design review report above; prior `ARCH-F-002`; `ARCH-F-001` remains resolved.
 - Relevant solution revision IDs: `SR-003` superseding `SR-002` and `SR-001`
@@ -96,9 +96,9 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-ses
 
 ### ARCH-REV-005 — Manager-owned published-run finalization design passes
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md`
 - Review round and trigger: round 5; `/solution_designer` submitted `SR-004` after `CRR-001` returned the uncommitted `IR-001` implementation for a supported Team-stop cleanup bypass and dormant partial-owner cleanup APIs.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md`; `CR-F-001`, `CR-F-002`; material premise `CR-MP-001`.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md`; `CR-F-001`, `CR-F-002`; material premise `CR-MP-001`.
 - Relevant solution revision IDs: `SR-004` correcting `SR-003`; `SR-002` and `SR-001` remain superseded history.
 - Prior authoritative decision: `Pass` (`ARCH-REV-004`), followed by downstream source-review `Fail` (`CRR-001`).
 - Current authoritative decision: `Pass`.

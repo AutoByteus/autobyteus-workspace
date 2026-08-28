@@ -3,7 +3,7 @@
 - Date: 2026-08-28 (Europe/Berlin)
 - Browser surface: AutoByteus `open_tab` against the web-equivalent development frontend at `http://127.0.0.1:3000`
 - Backend surface: isolated ticket worktree development server at `http://127.0.0.1:8000`
-- Runtime data root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/.autobyteus/development/server-data`
+- Runtime data root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.autobyteus/development/server-data`
 - Server/browser correlation log: `17-dev-stack-browser.log`
 - Result: **PASS**
 

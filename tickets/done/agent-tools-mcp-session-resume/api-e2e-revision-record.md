@@ -12,7 +12,7 @@
 
 ### API-REV-001 — Deterministic Agent Tools lifecycle and real Classroom validation baseline
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md`; API/E2E round 1
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md`; API/E2E round 1
 - Triggering finding or scenario IDs: mandatory post-`CRR-002` coverage investigation; `API-SC-ROUTE-001`, `API-SC-TEAM-001`, `API-SC-LISTENER-001`, `API-SC-PROVIDER-001`, `API-SC-CODEX-LIVE-001`, `API-SC-CODEX-TEAM-001`, `API-BROWSER-CLASSROOM-001`, `API-BROWSER-NESTED-001`
 - Related revisions: `SR-004`, `ARCH-REV-005`, `IR-002`, `CRR-002`
 - Why recorded: this is the first completed API/E2E result. It establishes the authoritative baseline after classifying every stale issuer/releaser integration/E2E fixture and completing repository, real-provider, lifecycle, and explicitly requested browser validation.
@@ -29,8 +29,8 @@
 None. This is the initial API/E2E baseline; prior result and confidence are `N/A`.
 
 - Canonical artifacts updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-execution-coverage-report.md`
   - this revision record
 - Prior result/confidence: `N/A`
 - Current result/confidence: `Pass / 97%`
@@ -40,7 +40,7 @@ None. This is the initial API/E2E baseline; prior result and confidence are `N/A
 
 ### API-REV-002 — Current Team DTO and GraphQL durable coverage repair
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-test-review-report.md`; API/E2E Local Fix round 2 after `CRR-003`
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-test-review-report.md`; API/E2E Local Fix round 2 after `CRR-003`
 - Triggering findings: `TR-F-001` (four stale name-keyed Codex websocket/projection assertions) and `TR-F-002` (removed metadata/member-route GraphQL fields plus compatibility-only helper decoding)
 - Related revisions: `API-REV-001`, `CRR-003`; implementation source remains under authoritative `CRR-002 Pass`
 - Why recorded: the first proportional test review suspended delivery despite the clean implementation result; this round repairs and re-executes the changed durable test/helper package.
@@ -56,8 +56,8 @@ None. This is the initial API/E2E baseline; prior result and confidence are `N/A
 | `TR-F-002` | API/E2E-owned Local Fix | current-schema-only helper/documents/callers; compatibility decoding absent; documents validate without provider gates | `74-round2-final-build-contract-regression.log`; `75-round2-final-audits-cleanup.log` |
 
 - Canonical artifacts updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-execution-coverage-report.md`
   - this revision record
 - Prior result/confidence: `Pass / 97%`, with delivery suspended by `CRR-003`
 - Current result/confidence: `Pass / 97%`
@@ -67,7 +67,7 @@ None. This is the initial API/E2E baseline; prior result and confidence are `N/A
 
 ### API-REV-003 — Current Team task-event durable coverage repair
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-test-review-report.md`; API/E2E Local Fix round 3 after `CRR-004`
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-test-review-report.md`; API/E2E Local Fix round 3 after `CRR-004`
 - Triggering finding: `TR-F-003` — the changed mixed-task live file waited for retired task activation/result wire events and compatibility-only task/execution fields.
 - Related revisions: `API-REV-002`, `CRR-004`; implementation source remains under authoritative `CRR-002 Pass`.
 - Why recorded: the second proportional test review suspended delivery until task-Agent activation, task-Team activation, submission, and review assertions matched the strict current Team stream contract and were executable without provider gates.
@@ -84,8 +84,8 @@ None. This is the initial API/E2E baseline; prior result and confidence are `N/A
 | provider-gated contract blind spot | API/E2E-owned Local Fix | new ungated current task-event contract executes 2/2 independently of live capability | `77`, `78`, `81`, `83` |
 
 - Canonical artifacts updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/api-e2e-execution-coverage-report.md`
   - this revision record
 - Prior result/confidence: `Pass / 97%`, with delivery suspended by `CRR-004`.
 - Current result/confidence: `Pass / 97%`.

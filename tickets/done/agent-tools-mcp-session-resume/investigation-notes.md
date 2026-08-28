@@ -16,7 +16,7 @@ CRR-001 traced the exact supported Team-row stop to `TeamRunService -> AgentTeam
 
 ## Bootstrap / Repository Context
 
-- Repository: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume
+- Repository: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
 - Branch: codex/agent-tools-mcp-session-resume
 - Upstream/base/finalization target: origin/personal
 - Bootstrap base commit: bf396dd5ed541cf6ef2179b305132b079aadd7ab
@@ -26,13 +26,13 @@ CRR-001 traced the exact supported Team-row stop to `TeamRunService -> AgentTeam
 
 ## Triggering Review / Approval
 
-- Prior architecture result: `ARCH-REV-004` / Pass for `SR-003`; canonical report: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md
-- Triggering code review: `CRR-001` / Fail / Design Impact; canonical report: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md
+- Prior architecture result: `ARCH-REV-004` / Pass for `SR-003`; canonical report: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md
+- Triggering code review: `CRR-001` / Fail / Design Impact; canonical report: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md
 - Blocking finding: `CR-F-001` — supported Team stop bypasses AgentRun resource ownership and leaves the deterministic Agent Tools record active.
 - Required cleanup in the same return: `CR-F-002` — remove dormant `deactivateForOwner(Partial<Owner>)`, registry owner-selector cleanup, and matching helpers; no supported caller exists.
 - Required correction: preserve all approved SR-003 behavior; make `AgentRunManager` the authoritative two-phase termination/finalization boundary for published AgentRuns; have `MixedAgentMemberHandle` delegate exact-run preparation there; release resources/deactivate before accepted Team stop succeeds; preserve cancellation/rejection; keep Mixed Team independent from Agent Tools policy.
-- Architecture review history: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/architecture-review-revision-record.md
-- Code review history: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-revision-record.md
+- Architecture review history: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/architecture-review-revision-record.md
+- Code review history: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-revision-record.md
 
 ## Source / Evidence Log
 
@@ -383,15 +383,15 @@ Final durable coverage edits/removals belong to downstream API/E2E ownership aft
 
 | Artifact Path | Purpose | Related IDs | Status / Approval |
 | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/session-unavailable-after-team-resume.png | Original user failure | BEH-001, BEH-004 | Current evidence / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/codex-app-server-mcp-rebind-probe.md | Causal same-process evidence | BEH-001, BEH-002 | Current, conclusion revised / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/full-product-software-team-reproduction.md | Exact product reproduction | BEH-001–BEH-005 | Current / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/full-product-software-team-session-unavailable.png | Visual exact-repro evidence | BEH-001, BEH-004 | Current / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/evidence/external-mcp-gateway-settings.png | Gateway endpoint/token UX | BEH-008 | Current / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/design-review-report.md | Architecture review through ARCH-REV-004 | All | Current review / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/architecture-review-revision-record.md | Architecture-review history through ARCH-REV-004 | All | Current review history / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-report.md | CRR-001, CR-MP-001, CR-F-001, CR-F-002 authority | BEH-001, BEH-004, BEH-005, BEH-007 | Current review / N/A |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/tickets/in-progress/agent-tools-mcp-session-resume/code-review-revision-record.md | Code-review reroute history | BEH-001, BEH-004, BEH-005, BEH-007 | Current review history / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/session-unavailable-after-team-resume.png | Original user failure | BEH-001, BEH-004 | Current evidence / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/codex-app-server-mcp-rebind-probe.md | Causal same-process evidence | BEH-001, BEH-002 | Current, conclusion revised / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/full-product-software-team-reproduction.md | Exact product reproduction | BEH-001–BEH-005 | Current / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/full-product-software-team-session-unavailable.png | Visual exact-repro evidence | BEH-001, BEH-004 | Current / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/evidence/external-mcp-gateway-settings.png | Gateway endpoint/token UX | BEH-008 | Current / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/design-review-report.md | Architecture review through ARCH-REV-004 | All | Current review / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/architecture-review-revision-record.md | Architecture-review history through ARCH-REV-004 | All | Current review history / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-report.md | CRR-001, CR-MP-001, CR-F-001, CR-F-002 authority | BEH-001, BEH-004, BEH-005, BEH-007 | Current review / N/A |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-tools-mcp-session-resume/code-review-revision-record.md | Code-review reroute history | BEH-001, BEH-004, BEH-005, BEH-007 | Current review history / N/A |
 
 ## Notes For Architecture Reviewer
 
