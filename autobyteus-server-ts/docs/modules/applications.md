@@ -9,6 +9,8 @@ Application-owned runtime orchestration, backend transport, worker lifecycle, an
 ## TS Source
 
 - `src/application-bundles`
+- `src/application-agent-tools`
+- `src/application-orchestration/services/application-catalog-transition-service.ts`
 - `src/api/graphql/types/application.ts`
 - `src/api/rest/application-bundles.ts`
 
@@ -25,12 +27,15 @@ Each application bundle lives under `applications/<application-id>/` and must sa
 
 ### `application.json`
 
-- `manifestVersion` must be `"4"`.
+- `manifestVersion` must be `"5"`.
 - `id` must match the bundle folder name.
 - `ui.entryHtml` is required and must point to a file under `ui/`.
 - `ui.frontendSdkContractVersion` must be `"6"`.
 - `icon` is optional and must also stay under `ui/`.
 - `backend.bundleManifest` is required and must point to a file under `backend/`.
+- `agentTools[]` is optional and declares import-safe application-owned tool
+  names, descriptions, and portable object input schemas. It does not load
+  handler code during discovery or grant a tool to an unconfigured run.
 
 There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents and teams are discovered from `agents/` and `agent-teams/` and surfaced to callers as `bundleResources[]`. Applications may also declare `executionResourceSlots[]` in `application.json` to describe the app-consumable execution resources that the host setup flow must configure before entry. The generic Applications host does not auto-launch any one of them.
 
@@ -41,10 +46,12 @@ There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents 
 - `moduleFormat` must be `"esm"`.
 - `distribution` must be `"self-contained"`.
 - `targetRuntime.engine` must be `"node"` and `targetRuntime.semver` declares the supported Node range.
-- `sdkCompatibility.backendDefinitionContractVersion` must be `"6"`; unsupported bundles are rejected during discovery.
+- `sdkCompatibility.backendDefinitionContractVersion` must be `"7"`; unsupported bundles are rejected during discovery.
 - `sdkCompatibility.frontendSdkContractVersion` must be `"6"`.
 - `supportedExposures` is the sole seven-flag exposure authority (`queries`, `commands`, `routes`, `graphql`, `notifications`, `eventHandlers`, `webSockets`).
-- The loaded backend definition must use contract version `"6"`; `webSocketRoutes` are admitted only when `webSockets` is enabled.
+- The loaded backend definition must use contract version `"7"`; its
+  `agentToolHandlers` names must match the manifest declarations exactly, and
+  `webSocketRoutes` are admitted only when `webSockets` is enabled.
 - `migrationsDir` and `assetsDir` are optional, but when present they must also stay under `backend/`.
 
 The platform does not install app dependencies or run app builds at import/start time. Imported application backends must ship the needed `backend/dist/**` artifacts inside the bundle.
@@ -90,6 +97,11 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - If the same physical applications root is also presented as an additional package root, discovery skips the duplicate additional-root entry instead of minting a competing package identity.
 - The protected managed built-in applications root and the bundled source root are not valid user-configured additional package roots.
 - Bundle validation checks UI asset paths, backend manifest integrity, and application-owned team integrity including nested `agent-teams/<team-id>/agents/*` members before a bundle reaches the catalog.
+- Application-tool declaration parsing is strict and import-safe. Every name
+  registered by a platform/static Agent Tools MCP adapter is reserved from
+  applications, including adapters that are unavailable in the current host;
+  an invalid collision quarantines the application rather than shadowing the
+  platform tool.
 - GraphQL exposes transport-neutral UI asset paths (`iconAssetPath`, `entryHtmlAssetPath`) plus `bundleResources[]` and manifest-declared `executionResourceSlots[]` rather than host-usable absolute URLs or launch-time runtime state.
 - `Application.executionResourceSlots` gives the frontend enough contract detail to summarize required host-managed setup on catalog cards and host pages without promoting raw execution-resource identities into the primary catalog UX.
 - Backend exposures are not surfaced as raw public URLs in the catalog; they stay behind the platform-owned backend API gateway and iframe bootstrap transport. The standard application-bound agent connection is a separate direct host capability and does not traverse that gateway or the application worker.
@@ -103,7 +115,12 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 
 - `ApplicationPackageRegistryService` owns package-root and registry-record state plus settings-facing source summaries and debug details.
 - `ApplicationPackageCommandService` owns import, reload, remove, validation, managed-install cleanup, and rollback.
-- `ApplicationCatalogRefreshCoordinator` is the only owner of the ordered bundle refresh, availability reconciliation, agent-definition refresh, and team-definition refresh sequence.
+- `ApplicationCatalogTransitionService` is the only live package/application
+  catalog commit owner. It serializes import, reload, removal, and exact-app
+  re-entry; closes and drains affected application-tool calls; stops affected
+  workers; stages the target bundle slice and matching application-tool delta;
+  commits those validated in-memory assignments together; and then reconciles,
+  recovers, or quarantines only the affected applications.
 - Default list rows hide empty platform-owned built-in packages, show non-empty built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
 - Linked local package rows may show the user-chosen root path directly.
 - GitHub-installed package rows use repository identity by default; managed install paths stay in details/debug-only surfaces.
@@ -120,6 +137,12 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - The applications module owns discovery, validation, catalog metadata, app-scoped availability diagnostics, and asset serving only; it does not own live run bindings, event journals, backend request handling, worker lifecycle, or per-app storage.
 - After a catalog entry is selected, the generic host loads the application's saved launch setup for declared `executionResourceSlots[]`, blocks entry until required setup is launch-ready, and only then ensures the application backend is ready and boots the iframe.
 - If the application backend later wants runtime work, it calls the named `context.agentExecution`, `context.agentResources`, or `context.publishedArtifacts` capability through the application-orchestration boundary.
+- Selected application-owned tool names are resolved against the exact
+  application's immutable declaration snapshot. Claude/Codex receive those
+  routes through their scoped Agent Tools MCP descriptor; AutoByteus-native
+  runs receive bound local projections over the same authorization, validation,
+  worker, and result capability. The catalog never enters the process-global
+  tool registry or a general-process execution scope.
 - Bundles therefore remain the durable package/distribution boundary, while orchestration, backend transport, engine startup, and storage state have separate authoritative owners.
 
 ## Dual-Host Servers And Application Runtime
@@ -178,7 +201,7 @@ it is not loaded by Studio or standalone startup.
 | --- | --- | --- | --- | --- |
 | `AFB-001` | REST, WebSocket, standalone application APIs, and standalone bootstrap | `application-platform-runtime-contracts.ts` and exact subject inputs supplied by assembly | Runtime builder/lifecycle, stores, recovery/availability state, run/session/publication, engine/queue, or shutdown internals | Depend on the exact runtime projection or have the assembly root supply the subject input. |
 | `AFB-002` | Studio GraphQL and production application presentation source | GraphQL package/query/command contracts; application SDK contracts/client and presentation-local helpers | GraphQL access to private application runtime owners; Studio presentation access to server package/bundle/runtime implementation | Use the declared GraphQL contract or an application SDK/presentation-local helper. |
-| `AFB-003` | Application package and bundle owners | Their own stores, readers, commands, providers, and domain contracts | API/presentation, server assembly, standalone host, or private application runtime | Keep the dependency inside the package/bundle owner. The sole cross-owner seam is `ApplicationCatalogRefreshCoordinator` -> `ApplicationCatalogReconciliationService`. |
+| `AFB-003` | Application package and bundle owners | Their own stores, readers, commands, providers, and domain contracts | API/presentation, server assembly, standalone host, or private application runtime | Keep the dependency inside the package/bundle owner. Only `ApplicationPackageCommandService` may invoke `ApplicationCatalogTransitionService`; that transition owner coordinates catalog reconciliation without exposing runtime internals to package/bundle code. |
 | `AFB-004` | Application runtime construction, application MCP session scope/manager, and publish adapter | Complete application-scoped publication/run/session-provider/team-context injection | Direct process-global/default calls or omission, `null`, `undefined`, or opaque spread of a required graph-local input | Inject the named application-scoped dependency. Genuine general-process selection belongs only in `build-studio-server.ts` or `start-standalone-application-host.ts`. |
 | `AFB-005` | Maintained Brief/Socratic frontend/backend source and every valid devkit template `src` tree | Project-local source, application SDKs, Node built-ins, and libraries declared by the importer's own manifest | Server/web/Electron/standalone/devkit host internals, undeclared libraries, or local/alias paths escaping the owning project | Use local/SDK source or declare a genuine library in that project's own manifest; do not borrow another project's declaration. |
 

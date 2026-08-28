@@ -2,7 +2,7 @@
 
 ## Status
 
-`Approved by the user on 2026-08-27`
+`Approved by the user on 2026-08-27; amended by explicit post-API user direction and technically corrected within approved Option A after CR-DI-002 / CR-MP-001 and CR-MP-002 on 2026-08-27`
 
 ## Purpose And Authority
 
@@ -34,6 +34,11 @@ The application does not bundle or start its own arbitrary MCP network/`stdio` s
 | Binding/producer authorization and worker routing | `ApplicationPlatformRuntime` application-tool boundary | Uses authoritative session/binding context; never an argument-supplied application ID. |
 | Tool selection | Agent/Team definition `toolNames` for application business tools | Application-owned tools require explicit selection. Existing automatic native-foundation and Team-collaboration provisioning remains unchanged and additive. |
 | Provider adaptation | Existing provider-neutral runtime boundary | Every supported runtime receives the same selected application-tool meaning and isolation. The later design may use the existing scoped MCP descriptor or a native bound-tool projection as appropriate, but must not duplicate application business policy. |
+| Maintained application demonstration | Brief Studio package-owned Team/Agent prompts plus existing application workflow | A real configured Agent calls the read-only tool first, uses the result in the normal published artifacts, and the existing projection/UI makes the result-informed workflow observable. |
+| Maintained Luna model-facing file instruction | Current built-in `apply_patch` operation | Each role tells the fixed `gpt-5.6-luna` model to use built-in `apply_patch` for its canonical checkpoint; this is a provider/model instruction, not a routed tool registration. |
+| Codex file-change protocol and AutoByteus observability | Codex `item/fileChange` / `file_change`, existing AutoByteus normalization to `edit_file` | Retain native file-change start/completion and normalized successful `edit_file` lifecycle as execution evidence; never use normalized `edit_file` as though it were the model-facing operation name. |
+| Maintained cross-member/file publication | Existing Team handoff and `publish_artifacts` relative-path contract | Create both checkpoints without configured ordinary registry file tools or shell fallback; carry the complete research body in the handoff so the writer does not need `read_file`. |
+| Proof observability | Existing access-controlled Agent run trace, application Team binding, artifact projection records, and browser surface | Correlate tool call/result and exact identity without copying generic application arguments/results into new process-wide operational logs. |
 
 ## Clarified Runtime Boundary
 
@@ -96,15 +101,23 @@ The return value is a JSON-serializable, bounded MCP-safe tool result supporting
 
 ## Representative Maintained Proof
 
-At least one maintained application will expose a real read-only tool backed by its own durable business data. Its package-owned Agent/Team member will select and call the tool through the shared MCP endpoint. The proof must show:
+Brief Studio exposes the real read-only `get_brief_context` tool backed by its own durable business data. Its maintained `codex_app_server` / `gpt-5.6-luna` researcher and writer roles each select it and, for a fresh draft run, each individual `agent.md` requires exactly one successful call as that role's first tool action. The researcher calls before any file change or publication; the writer calls after receiving the handoff and before any file change or publication. The roles reuse the returned `briefId`, title, and status and include the exact compact-JSON line `Brief context: {"briefId":"…","title":"…","observedStatus":"…"}` (fixed key order and JSON-escaped values) in their normal published artifact. A missing/error result or cross-member brief mismatch stops normal publication rather than allowing guessed identity.
+
+The role configs select only the routed application/collaboration/publication names that Codex can actually receive; they do not select ordinary registry `read_file`/`write_file`, built-in `apply_patch`, or normalized `edit_file`. After context validation, the researcher instructs Luna to use its built-in `apply_patch` operation—never `run_bash`—to create `brief-studio/research.md`, publishes that workspace-relative path, and sends the writer the exact marker, canonical path, and complete research checkpoint body. The writer consumes that body without `read_file`, copies at least one complete non-marker `Key findings` bullet verbatim into the final brief's `Key evidence` section, instructs Luna to use built-in `apply_patch`—never `run_bash`—to create `brief-studio/final-brief.md`, and publishes that workspace-relative path. A successful checkpoint is evidenced by Codex native `item/fileChange` / `file_change` activity and the corresponding AutoByteus normalized successful `edit_file` lifecycle for the same member run. If Luna reports built-in patch execution unavailable or failed, or routed publication/handoff is unavailable or fails, the role reports a blocker and stops rather than manufacturing a file or normal final publication. Independently, retained evidence must reject any purported success that lacks the native/normalized event pair.
+
+The proof must use a real configured model-backed Agent/Team, not a direct MCP caller or mocked decision, and must show:
 
 - exact caller binding ownership;
 - correct application worker and application database;
 - no visibility from a general session or the other maintained application;
 - identical Studio and standalone behavior;
-- reload/stale-route and cleanup behavior.
+- reload/stale-route and cleanup behavior;
+- one paired `get_brief_context` call/result trace per participating member, joined by `toolCallId` and member `agentRunId` to the exact application, binding, and canonical member address;
+- the same `briefId` carried from the tool result into the research/final artifact marker and from publication into Brief Studio's application-owned projection;
+- browser evidence on the supported Brief Studio surface that the same selected brief reaches `in_review`, workflow diagnostics show the same launch binding, and the final artifact body visibly contains the same marker.
+- actual provider trace evidence that each role's context call precedes its model-facing built-in `apply_patch` instruction and resulting Codex `fileChange`; that AutoByteus records the corresponding normalized `edit_file` lifecycle under the same member run; that both canonical relative paths resolve inside the corresponding run workspace; and that successful traces contain no `run_bash`, `read_file`, or `write_file` invocation.
 
-The sample is proof of the platform capability, not a new application UI workflow.
+`get_brief_context` remains read-only. Its call alone does not mutate Brief Studio or change the UI. The observable state change remains the existing `Luna built-in apply_patch -> Codex item/fileChange or file_change -> AutoByteus normalized edit_file evidence -> publish_artifacts(workspace-relative path) -> artifact relay/reconciliation -> ready-for-review notification -> GraphQL refresh -> UI` workflow. The three names belong to different boundaries and are not interchangeable: `apply_patch` is the current model-facing instruction, `fileChange`/`file_change` is Codex protocol activity, and `edit_file` is AutoByteus's normalized observability label. No new mutation tool, platform-wide Codex file adapter/dynamic registry-tool projection, database field, GraphQL operation, or UI workflow is introduced. Existing access-controlled Agent traces may retain the provider-visible call/result under their normal policy; new process-wide payload logging is forbidden. If no real provider is usable, this expanded live proof is blocked rather than replaced by a mock, while the earlier direct-MCP proof remains valid lower-level evidence.
 
 ## Contract Transition
 
@@ -115,6 +128,10 @@ The sample is proof of the platform capability, not a new application UI workflo
 
 ## Approval Record
 
-Approved by the user on 2026-08-27 on the following interpretation. After the runtime/provisioning discussion, the user confirmed that the design was clear and asked the solution designer to proceed with design:
+Initially approved by the user on 2026-08-27 on the following interpretation. After the runtime/provisioning discussion, the user confirmed that the design was clear and asked the solution designer to proceed with design:
 
 > Existing automatic native-foundation and Team-collaboration provisioning remains unchanged. Applications explicitly select their additional configured and business tools. Application-owned in-worker business tools use one runtime-neutral, application-scoped capability with exact application/binding/run isolation across supported runtimes. Runtime-specific provisioning must not change that behavior. Arbitrary application-bundled MCP server processes and the broader external developer SDK journey remain deferred.
+
+Post-API amendment on 2026-08-27: the user explicitly authorized improving the Brief Studio demonstration and its individual maintained Agent prompts so an actual application Agent reliably calls `get_brief_context` and uses the result. This approves the read-only Option A above: the tool informs the existing artifact publication/projection/UI workflow; it does not directly mutate application/UI state.
+
+Post-failure technical correction on 2026-08-27: API-REV-002/CRR-005 proved the real Codex members can call the application tool but cannot receive configured ordinary registry `read_file`/`write_file`. That correction preserved the approved Option A outcome but incorrectly used normalized `edit_file` as the model-facing name. API-REV-003/CRR-007 then reproduced that failure twice and established the exact current chain: instruct Luna with built-in `apply_patch`; require Codex `item/fileChange` / `file_change`; observe it through AutoByteus normalized `edit_file`. This SR-008 correction keeps existing workspace-relative publication and complete Team handoff and does not authorize broader provider tool exposure, a runtime/model change, or a generic platform `apply_patch` API.

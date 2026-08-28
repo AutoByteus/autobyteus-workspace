@@ -2,261 +2,186 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/requirements.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/investigation-notes.md`
-- Design Spec: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-spec.md`
-- Supplemental Task Artifacts: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/application-owned-mcp-intended-behavior.md`
-- Solution Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/solution-revision-record.md`
-- Design Review Report: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/design-review-report.md`
-- Architecture Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/architecture-review-revision-record.md`
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-revision-record.md`
-- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
-- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-revision-record.md`
-- Delivery Revision Record: `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: `1`
-- Trigger: `/code_reviewer` CRR-002 pass and request for mandatory coverage investigation plus the real provider/worker/Team/catalog-transition/concurrency/shutdown matrix; the user additionally required a production-reachable real application path and proposed Brief Studio.
-- Prior Round Reviewed: `N/A`; no prior completed API/E2E result existed.
-- Latest Authoritative Round: `Round 1`
+- API/E2E revision: `API-REV-004`
+- Trigger: `/code_reviewer` `CRR-008`, after `SR-008` / `ARCH-REV-008` / `IR-005`
+- Scope: renewed proof of `REQ-018`–`REQ-021`, `BEH-008`, and `AC-032`–`AC-039`
+- Prior results: `API-REV-001 Pass / 97.2%` remains valid for `AC-001`–`AC-031`; `API-REV-002 Fail / 87.1%` and `API-REV-003 Fail / 88.6%` remain historical evidence for superseded role workflows
+- Worktree: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability`
+- Evidence root: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-004`
+- Broader-validation decision: `Required and completed`
+- Result: **Pass**
+- Final validation confidence: **97.6%**
 
-## Investigation And Execution Basis
+## Investigation And Coverage Decisions
 
-- Coverage investigation artifact: the canonical path above.
-- Investigation completed before durable coverage changes or final execution: `Yes`.
-- Investigation plan followed: `Yes`, with one strengthening deviation: API-BRF-001 became a retained full MCP integration over the shipped Brief Studio package rather than only a direct handler/unit or temporary probe.
-- Existing coverage decisions revised during execution: the v4/v6 fixtures classified `Needs Update` were converted to v5/v7, with v4/v6 retained only as rejection inputs; the deleted refresh coordinator test classified `Stale / Remove` was removed and replaced by transition-owner coverage; one REST status expectation was updated to include current `agentTools: []`.
-- Reroute required before or during execution: `No`.
-- Notes: all feature-critical scenarios pass. Broader unrelated repository failures are recorded explicitly below and were not used as feature evidence.
+The renewed investigation was recorded in `api-e2e-coverage-investigation.md` before any Round 4 durable edit or final execution. It classified the known optional Codex live integration as `Needs Update`: its prompt named downstream normalized `edit_file`, its helper selected a fallback/default model, its direct backend calls omitted the current `agentRunId`, and subsequent focused attempts exposed stale synthetic name, MCP-session authority, `memoryDir`, backend method, and `TOOL_LOG` assumptions. Each additional decision was recorded in the investigation before repair.
 
-## Compatibility / Legacy Scope Check
+The one obsolete assertion required `TOOL_LOG` for a native file-change projection. Current canonical conversion emits segment start, normalized `TOOL_EXECUTION_STARTED(edit_file)`, `TOOL_EXECUTION_SUCCEEDED(edit_file)`, and segment end; it does not emit `TOOL_LOG`. That single assertion was classified `Stale / Remove`, with replacement coverage retained in the same live scenario and parser/converter unit suite.
 
-- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`.
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`.
-- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes`.
-- Durable coverage added or retained only for compatibility-only behavior: `No`; retired v4/v6 values are negative tests only.
-- If compatibility-related invalid scope was observed, reroute classification used: `N/A`.
-- Upstream recipient notified: `N/A`.
+No durable browser scenario was added. The supported browser journey requires a live authenticated model, imported application package, cross-member traces, Team communication store, application databases, and semantic DOM observation. A ticket-local executable probe is more proportional than committing a nondeterministic paid-provider browser fixture. All probe inputs and evidence are retained.
 
-## Changed Boundary And Evidence Matrix
+## Compatibility And Persisted-State Scope
 
-| Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
-| --- | --- | --- | --- | --- | --- | --- |
-| API-MCP-001 | REQ-005/006/009; AC-006, AC-010–014 | App-specific selection, same-name isolation, general/unselected exclusion, configured/static precedence | Actual Fastify Agent Tools MCP JSON-RPC list/call with bearer sessions | Durable + Live API | Pass | `application-agent-tools-mcp-routes.integration.test.ts`, `agent-tool-mcp-catalog.test.ts`, final matrix log |
-| API-RUN-001 | REQ-003/005/010/012; AC-001/005/019 | AutoByteus native composition and invocation parity | Actual native tool adapter plus live AutoByteus backend factory | Durable | Pass | `application-agent-tool.test.ts`, both AutoByteus factory test files |
-| API-WRK-001 | REQ-002/007–011; AC-002/003/015–020 | v7 exact handler map, worker protocol, bounded raw payload/result and crash handling | Real Node child worker, application storage, SQLite, process exit 19 | Durable + Process | Pass | `application-agent-tool-worker.integration.test.ts`, loader/gateway tests |
-| API-TEAM-001 | REQ-006/007/011; AC-008/015/016 | Exact configured/dynamic Team producer identity and stale/forged rejection | Binding store, ownership service, live root topology, MCP Team sessions | Durable | Pass | ownership, execution-scope, and Brief production MCP tests |
-| API-CAT-001/002/003 | REQ-013–015; AC-021–024/027 | Target-only package transition, participant close/recover, paired commit/rollback/quarantine | Production transition/reentry/command classes with deterministic barriers | Durable | Pass | transition, reentry, command, availability tests |
-| API-CON-001 | REQ-013–015; AC-021/024/027 | Call admission/drain and transition mutex | Deferred barriers; ordinary gateway work shown outside transition mutex | Durable | Pass | transition and lifecycle tests |
-| API-LIFE-001/002 | REQ-015; AC-020/025–027 | Crash/no retry, bearer revocation, shutdown drain before workers, idempotency | Real worker crash, MCP revocation, lifecycle order assertions | Durable + Process | Pass | worker, MCP, lifecycle tests |
-| API-PKG-001 | REQ-016/017; AC-028/029 | Strict v5/v7 cut, generated output rebuild, no compatibility reader | Devkit tests; Brief/Socratic typecheck/build/validate; source scans | Durable + CLI | Pass | package matrix log; loader/devkit/provider tests |
-| API-BRF-001 | REQ-002/007/011; AC-017/030/031 | Maintained application business handler and binding-owned state | Shipped Brief package -> authenticated MCP -> exact Team binding -> gateway -> real child worker -> real application SQLite | Durable + Live API + Process | Pass | `brief-studio-agent-tool-mcp.integration.test.ts`; focused and final matrix logs |
-| API-SHD-001 | REQ-005/012/015; AC-010/026/030 | Studio/standalone composition ownership and shutdown ordering | Runtime construction, lifecycle and architecture checks | Durable | Pass | lifecycle, runtime-isolation, architecture tests |
-| API-BROAD-001 | General repository regression screen | Unchanged workspace/run-history/process-owner boundaries | Root deterministic `test:e2e`, then individual reproduction | Live repository | Out Of Scope residual | 49 files/174 tests pass; 25 repeat failures in five unrelated files; logs below |
+- Legacy/compatibility outcome: current v5 application package and v7 backend-definition contracts only; historical v4/v6 inputs remain rejection fixtures and were not restored as valid.
+- Persisted-data outcome: `Directly Usable — No Migration`. The current package was built, imported, catalog-registered, reloaded, configured, and launched through normal readers. No application data, binding identity, Agent/Team definition, global MCP configuration, or database schema was migrated or rewritten for the proof.
+- Existing Round 1 provider/worker/Team/catalog-transition/concurrency/shutdown evidence remains authoritative for unchanged `AC-001`–`AC-031`. Round 4 additionally exercised a real catalog registration/reload while preparing the current browser journey.
 
-## Additional Repository Coverage Execution
+## Durable Coverage Changed In Round 4
 
-The coverage investigation is authoritative for the full command table. The decisive execution results were:
+- Added files: none.
+- Updated:
+  - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts`
+- Removed files: none.
+- Removed assertion: the obsolete file-change `TOOL_LOG` wait inside the updated integration file.
+- Replacement evidence: exact-Luna native `item.type = fileChange`, normalized `edit_file` start/success/end, shared invocation identity, actual created-file contents, and canonical parser/converter unit coverage.
 
-| Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
-| --- | --- | --- | --- | --- | --- |
-| 1 | `corepack pnpm --filter autobyteus-server-ts test --run <33 feature files> --no-watch` | Worktree root; Brief package built first | Complete feature matrix including production Brief | Pass: 33 files, 234 tests | `/tmp/application-owned-mcp-final-matrix-with-brief.log` |
-| 2 | `corepack pnpm --filter autobyteus-server-ts build` | Worktree root | Server/shared TypeScript build and sanitized bootstrap | Pass | `/tmp/application-owned-mcp-server-build-final.log` |
-| 3 | Devkit test and frontend/devkit/Brief/Socratic typecheck/build/validate matrix | Worktree and package roots | Strict current packages and directly usable maintained app | Pass | `/tmp/application-owned-mcp-package-matrix-final.log` |
-| 4 | `corepack pnpm test:e2e:real:preflight` | Isolated loopback runtime | Optional capability/environment preflight | Pass: 18/18 | `/tmp/application-owned-mcp-real-provider-preflight.log` |
-| 5 | `corepack pnpm test:e2e` plus focused failure reruns | Worktree root | Broad regression screen | Partial broad result; feature-relevant corrected Codex fixture 4/4 and token analytics retry 3/3 pass; five unrelated files remain red | `/tmp/application-owned-mcp-root-e2e.log`, `/tmp/application-owned-mcp-broad-failure-rechecks.log` |
-| 6 | `git diff --check` and retired-symbol/version scans | Worktree root | Patch/legacy integrity | Pass | Round-1 command evidence |
+The updated optional suite now pins `gpt-5.6-luna` for the material case, tells Luna to use its built-in `apply_patch`, supplies current backend identity/memory and input/subscription contracts, and keeps normalized `edit_file` assertions verifier-owned. It does not expose `edit_file` to the model or change production provider/MCP/parser/converter source.
+
+## Repository Coverage Execution
+
+All commands ran from the assigned worktree; Vitest commands ran in `autobyteus-server-ts`.
+
+| Check | Command / Mode | Result | Evidence |
+| --- | --- | --- | --- |
+| Focused handler/prompt/Codex conversion/publication matrix | `pnpm test --run` with 6 exact files | **Pass: 6 files / 97 tests** | `focused-repository-tests.log` |
+| Current source-plus-built-package contract | `pnpm test --run tests/integration/application-backend/brief-studio-team-config.integration.test.ts` after package build | **Pass: 1 file / 4 tests** | `package-contract-integration.log` |
+| SDK/devkit/Brief package | contracts, backend SDK, frontend SDK, devkit builds; Brief build, `typecheck:backend`, and validate | **Pass** | `package-build-validation.log` |
+| Production server build | `pnpm build` | **Pass**, including sanitized built-in bootstrap smoke | `server-build.log` |
+| Optional integration default gate | no `RUN_CODEX_E2E` | **Expected skip: 1 file / 10 tests**; compile/import succeeded | `optional-codex-integration-default-skip.log` |
+| Exact live provider file-change case | `RUN_CODEX_E2E=1 CODEX_BACKEND_FLOW_TIMEOUT_MS=240000 CODEX_BACKEND_EVENT_TIMEOUT_MS=180000 pnpm test --run ... -t "converts raw Codex fileChange"` | **Pass: 1 passed / 9 skipped**, actual `gpt-5.6-luna` in 13.65 s | `optional-codex-live-exact-luna-attempt-6.log`; `codex-live-events/codex-backend-edit-file.json` |
+| Evidence synthesis | `python3 .../synthesize-evidence.py` | **Pass: all 8 AC assertions true** | `evidence-synthesis.log`; `identity-trace-artifact-ui-join.json` |
+| Diff hygiene | `git diff --check` | **Pass** before and after cleanup | command output recorded in this report |
+
+Supplemental `pnpm typecheck` is not a ticket failure: it stops globally on the existing `tsconfig.json` contradiction that sets `rootDir: src` while including the entire `tests` tree, producing TS6059 for unchanged tests. The production build, package typecheck, Vitest transpilation, and actual updated live integration all pass. Full output is retained in `server-typecheck.log`; the repository-wide configuration issue was already known in API-REV-001.
+
+## Post-Repository Confidence And Broader Gate
+
+Repository evidence directly proved the handler/config/package/conversion/publication contracts and the real exact-Luna file-change conversion, but it could not prove the maintained model-backed Team, cross-member handoff, reconciliation, notification, or browser outcome. Post-repository confidence remained below the clean target at `88.0%`; broader validation was therefore **Required**. Selected mode: supported web-equivalent Brief Studio browser surface, not Electron, because no shell/preload/IPC source changed.
+
+## Real Supported Brief Studio Browser Journey
+
+### Environment Fidelity
+
+- Fresh isolated data root: `.autobyteus/api-e2e-004`
+- Production-built backend: `127.0.0.1:8015`
+- Supported Nuxt frontend development path: `127.0.0.1:3015`
+- Same-origin host/proxy used by the application iframe: `127.0.0.1:3016`
+- Package imported through **Settings -> Application Packages**; applications enabled through **Settings -> Server Settings**; both role setup rows visibly selected `codex_app_server` / `gpt-5.6-luna`
+- Browser actions only for the product journey: create/select brief, click **Generate draft**, observe automatic refresh. No direct MCP, backend launch call, mock, runtime/model switch, database mutation, shell fallback, or manual UI Refresh was used.
+- Detailed steps: `browser-journey.md`
+
+Initial import occurred while applications were disabled, so the catalog correctly held the application out of readiness. Restarting only the owned backend after enabling applications preserved package registration and loaded the normal launch setup. This was an environment sequencing observation and useful catalog-transition proof, not an implementation failure.
+
+### Exact Identity Join
+
+- Brief: `brief-2263879a-640f-4606-8e92-d01e53a18dd5`
+- Title: `API E2E Luna Patch Proof 2026-08-27T21:31Z`
+- Binding: `7afc3330-cff3-457a-b22b-948487a3b3be`
+- Team run: `brief_studio_team_3fcc38699ad44130b20eb4149a19cdff`
+- Researcher: `/researcher`, run `brief_studio_researcher_bef570119a744cd9a182403c0887fb7f`, provider session `01a04523-a49a-7120-818b-6f8fb03f24b2`
+- Writer: `/writer`, run `brief_studio_writer_0985ae6e8c1943e89f3e4d6d4f3b0afc`, provider session `01a04524-4851-7db2-9a4d-2dbbf43a1fac`
+- Both execution-tree launch configurations are exact `codex_app_server` / `gpt-5.6-luna` and use the application runtime workspace recorded in `team-run-execution-tree.json`.
+
+### Researcher Chain
+
+1. First tool call exactly once: `get_brief_context({})`, call `exec-828d4468-c376-4877-9bbe-9deab42cca9e`; success returned the selected `briefId`, title, `researching`, and `ATTACHED`.
+2. Provider transcript records a built-in `tools.apply_patch` invocation and successful `patch_apply_end`; call `exec-72319685-3bad-4e41-ad8c-cdf99438f3ef` added `brief-studio/research.md`.
+3. The independent AutoByteus trace records the same call ID as normalized `edit_file` start/success; the normalized patch equals the resulting file byte-for-byte.
+4. `publish_artifacts` call `exec-35bcae80-1d0c-4175-88f0-71f2489e2b60` used exactly `brief-studio/research.md`; revision `cd1e4c77-351c-4b50-925c-cb16b5ea81b7` is joined to `/researcher`, its run, binding, and brief.
+5. Team message `teammsg_dgNX5VpVi2vNRgMuTAIXLXMegqVp-w0U` delivered to the writer at `21:33:20.834Z`, containing the exact marker, canonical relative path, and complete 307-word body. Team-message serialization omits only the file's terminal newline; every body character is otherwise identical.
+
+### Writer Chain
+
+1. After the handoff, first tool call exactly once: `get_brief_context({})`, call `exec-d18e28ec-0e2f-44e5-a528-5f24fe3ffe43`; success returned the same brief/binding state.
+2. Provider transcript records built-in `tools.apply_patch` and successful `patch_apply_end`; call `exec-78a17e6e-64a4-49df-b03d-3a8c9d95413d` added `brief-studio/final-brief.md`.
+3. The independent AutoByteus trace records the same call ID as normalized `edit_file` start/success; the normalized patch equals the 323-word resulting file byte-for-byte.
+4. The writer made no `read_file`; its `Key evidence` contains complete researcher bullets verbatim from the Team message.
+5. `publish_artifacts` call `exec-f11a0a4d-ff2d-44b4-a57d-c0ff94727373` used exactly `brief-studio/final-brief.md`; revision `529c3ca8-3cf1-424d-aeda-3f642b44e8ef` is joined to `/writer`, its run, binding, and brief.
+
+Neither role trace contains `run_bash`, `read_file`, or `write_file`. The role configs select only the three routed names. Provider-native patch evidence and normalized verifier traces were captured independently after execution; neither role received protocol or normalized-trace feedback. Codex's provider-internal code-mode `exec` envelope called `tools.apply_patch`; it is not an AutoByteus `run_bash` or registry file call.
+
+### State And Browser Outcome
+
+- A 20 ms read-only observer shows the launch moved the brief to `researching` before either context call.
+- State remained `researching` across the researcher context read and its research publication. The writer context read also caused no business-state transition.
+- Research publication projected one `/researcher` revision without moving to review.
+- Final publication at `21:33:47.470Z` projected at `21:33:47.484Z` and existing reconciliation moved the same brief to `in_review`.
+- Without clicking Refresh, the supported iframe rendered the same brief as **In_review**, **2** Draft outputs, and **1 final**, with Research and Final cards, both exact marker lines, both paths, and the verbatim writer evidence.
+- `final-browser-observation.json` contains ten semantic DOM assertions, all true; `final-browser-in-review.png` is supporting visual evidence.
+
+## Requirement / Scenario Matrix
+
+| Acceptance criterion | Result | Direct evidence |
+| --- | --- | --- |
+| AC-032 researcher first context + native patch + normalized edit + relative publication | **Pass** | researcher provider session, raw trace, file, publication revision |
+| AC-033 writer first context + handoff-only consumption + native patch + normalized edit + relative publication | **Pass** | writer provider session, raw trace, file, publication revision |
+| AC-034 exact application/binding/member/run/tool/artifact joins | **Pass** | execution tree, platform/app DB dump, machine join |
+| AC-035 supported same-brief UI `in_review` with researcher and exactly one final writer artifact | **Pass** | semantic browser observation and screenshot |
+| AC-036 context is read-only; publication/reconciliation causes UI change | **Pass** | 20 ms DB transitions correlated to context/publication timestamps |
+| AC-037 exact shipped Codex/Luna configs and provider/native-normalized separation | **Pass** | shipped snapshot, execution tree, exact-Luna live integration, provider transcripts, traces |
+| AC-038 complete handoff, no read, verbatim evidence, exact relative paths/workspace projection | **Pass** | Team message, files, raw traces, revisions, machine join |
+| AC-039 zero forbidden calls and truthful fail-closed policy | **Pass** | successful traces have zero forbidden calls; current prompt contracts plus API-REV-003 real fail-closed regression witness |
+
+Machine-verifiable result: every AC assertion is `true` in `identity-trace-artifact-ui-join.json`.
 
 ## Validation Confidence Scorecard
 
-| Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
-| --- | ---: | ---: | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 97% | 98% | +1 | All critical ACs map to passing durable cases; maintained Brief route added | Optional external inference was not executed |
-| Changed-boundary execution directness | 97% | 98% | +1 | Actual MCP raw HTTP and native calls both reach production gateway/worker paths | Studio UI is intentionally not involved |
-| Cross-boundary integration realism and mock gap | 95% | 96% | +1 | Real built Brief package, migrations, bearer session, Team identity, child worker, SQLite result | Brief startup reconciliation uses a deterministic empty-list host seam |
-| Environment, configuration, identity, and fixture fidelity | 96% | 97% | +1 | v5/v7 generated package, two exact Team bindings, Claude/Codex runtime kinds, general and revoked sessions | External keys and LM Studio are unavailable |
-| Failure, edge-case, lifecycle, and recovery evidence | 97% | 98% | +1 | Crash/no retry, invalid/oversize, stale routes, reentry/rollback/quarantine, drain/revocation/shutdown all execute | Five unrelated broad E2E files remain red |
-| User-surface, browser, and desktop-shell confidence | N/A | N/A | — | No changed user/browser/shell boundary | None claimed |
-| Durable regression coverage quality and relevance | 96% | 96% | 0 | Stale coverage removed/replaced; production Brief path retained | Proportional test-code review remains pending |
+| Category | Final Score | Evidence / Residual |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 98% | Every AC-032–AC-039 behavior has direct repository plus executable evidence; failure-mode proof reuses the unchanged fail-closed owner from current contracts and API-REV-003 |
+| Changed-boundary execution directness | 98% | Shipped instructions, actual Luna provider records, same-ID normalized traces, publications, reconciliation, and browser all ran |
+| Cross-boundary integration realism and mock gap | 99% | Actual package, backend, model-backed Team, application databases, messages, notifications, and browser; no mock/direct MCP substitution |
+| Environment, configuration, identity, and fixture fidelity | 98% | Exact model/runtime/tools and complete application/binding/member/run/tool/revision/browser identity join in a fresh root |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Real prior fail-closed runs, current contracts, exact live integration repair attempts, catalog reload, and API-REV-001 lifecycle matrix; provider nondeterminism remains inherent |
+| User-surface, browser, and desktop-shell confidence | 99% | Direct supported host/iframe journey with automatic refresh and semantic DOM proof; shell-specific scope is inapplicable |
+| Durable regression coverage quality and relevance | 96% | Strong deterministic source/package/unit coverage plus a gated exact real-provider integration; live browser proof remains ticket-local by design |
 
-- Overall post-repository confidence: `96.3%`.
-- Overall final confidence: `97.2%`.
-- Calculation method: simple average of six applicable categories.
-- Confidence change produced by broader validation: `+0.9 percentage points`, primarily from the shipped Brief Studio production path, real child worker, maintained package validation, and provider preflight.
-- Every critical acceptance criterion directly proven: `Yes`.
-- Any final applicable category below `90%`: `No`.
-- Default final confidence target of `95%` met: `Yes`.
-- Confidence-limiting residual risks: no optional paid external inference; unrelated workspace/run-history E2E setup failures; repository supplemental `typecheck` is blocked by its current rootDir/include configuration, while the authoritative server build passes.
+- Final overall confidence: `(98 + 98 + 99 + 98 + 95 + 99 + 96) / 7 = 97.6%`.
+- No applicable category is below 90%; every critical criterion has direct evidence.
+- Default clean target: **Met**.
+- Final result: **Pass**.
 
-## Broader Validation Decision And Execution
+## Residual Risks And Non-Failures
 
-- Decision and selected execution mode from the investigation: `Required — Live API + Lifecycle + Worker or Distributed + CLI`.
-- Material deviation from the planned mode or rationale: the user requested an unmistakably production-reachable real application case, so API-BRF-001 was strengthened into a durable shipped Brief Studio MCP integration instead of relying on a handler unit plus synthetic worker fixture.
-- Confidence gap addressed: whether the maintained declaration/handler actually survives packaging and can be selected by an application Team session, authorized by exact binding/member identity, executed through authenticated MCP and the production gateway, and run in the real child worker against application-owned state.
-- Startup order/readiness: build shared/frontend/devkit; build and validate Brief; create isolated FileApplicationBundleProvider and app-data root; apply real Brief migrations; seed two business bindings; register actual MCP route; issue exact Team sessions; first tool call lazy-starts the worker; assert worker `ready`; revoke; stop/close all owned resources.
-- Environment: Linux, Node 22 project runtime, pnpm 10.28.2, Fastify inject transport, Node child worker, SQLite temp data, UTC.
-- Identities/session state: `/researcher` in `team-alpha`/`binding-alpha` under Claude runtime kind, `/writer` in `team-beta`/`binding-beta` under Codex runtime kind, one general Codex-kind session, and one revoked bearer.
+- External model behavior is nondeterministic. This run used the exact shipped model twice in the Team and once in the focused live integration; all material operations passed. The gated integration provides a repeatable diagnostic, not a promise of provider availability.
+- The owned DB observer saw one transient SQLite `database is locked` read while the binding attached, then immediately resumed at 20 ms cadence. This is observer contention, not a product failure; all durable transitions and final projections were captured.
+- Codex reported that system `bubblewrap` was absent and used its bundled copy. Both provider turns and patch operations completed; no sandbox or file-boundary failure occurred.
+- The supplemental server `typecheck` rootDir/include defect is unrelated and pre-existing. Production build and all ticket-relevant TypeScript/Vitest execution passed.
+- Electron shell execution was not performed because no shell-only behavior changed; the browser path is the supported web-equivalent surface.
 
-| Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
-| --- | --- | --- | --- | --- |
-| Discover built Brief package | Manifest v5 exposes `get_brief_context`; package has no diagnostics | Exact declaration and description discovered | Test assertions / package validation | Pass |
-| List from application Team session | One application tool appears | One exact `get_brief_context` descriptor returned | MCP JSON-RPC `tools/list` | Pass |
-| List from general session | Application tool absent | Empty tool list | MCP JSON-RPC `tools/list` | Pass |
-| Call from binding-alpha/Claude-kind | Alpha Brief returned | `Production MCP proof (in_review)` and exact structured row | MCP -> gateway -> real worker -> SQLite | Pass |
-| Call from binding-beta/Codex-kind | Beta Brief returned, not alpha | `Independent application binding (drafting)` and exact structured row | Same real path with second Team identity | Pass |
-| Team authorization | Exact root/member/run identities checked | Both identities observed exactly | Ownership service spy at live-topology seam | Pass |
-| Revoke alpha bearer | Later call unavailable | HTTP 404 `session_unavailable` | Actual MCP route | Pass |
-| Cleanup | Worker/session/Fastify/temp state close | Test and matrix exit cleanly | afterEach and controller state | Pass |
+## Evidence Index
 
-## Desktop Application Validation
+| Artifact | Purpose |
+| --- | --- |
+| `identity-trace-artifact-ui-join.json` | Authoritative machine join and all eight AC assertions |
+| `shipped-instruction-and-config-snapshot.json` | Exact maintained role/Team/launch/config inputs and hashes |
+| `researcher-codex-native-session-events.json`; `writer-codex-native-session-events.json` | Sanitized provider-native built-in patch calls/results |
+| `researcher-raw-trace.jsonl`; `writer-raw-trace.jsonl` | Actual ordered context/normalized edit/publication/message calls and results |
+| `codex-live-events/codex-backend-edit-file.json` | Exact-Luna real app-server `item.type=fileChange` to normalized lifecycle proof |
+| `team-run-execution-tree.json`; `team-communication-messages.json` | Exact runtime/model/member identity and complete handoff |
+| `research.md`; `final-brief.md`; published-artifact JSON | Actual workspace outputs and snapshot identities |
+| `final-db.json`; `db-state-transitions.jsonl` | Final app/platform rows and causal 20 ms observation |
+| `final-browser-observation.json`; `final-browser-in-review.png` | Same-brief semantic and visual UI proof |
+| `browser-journey.md`; `backend.log`; `frontend.log`; `same-origin-proxy.log` | Reproducible supported-surface setup and runtime logs |
+| `durable-test-change.diff`; `sha256sums.txt` | Exact proportional-review diff and evidence-integrity manifest |
+| repository/live command logs | Exact results and all stale-fixture attempts |
 
-- Validation approach executed: no browser or Electron execution.
-- Browser-tested web-equivalent behavior: `N/A`; no renderer boundary changed.
-- Shell-specific or lifecycle behavior: `N/A`; no preload/IPC/window/native packaging boundary changed.
-- Effect on any already-running desktop application: `None`.
-- Behavior not directly proven and confidence consequence: no desktop behavior is claimed; direct backend API/process validation is more relevant.
+No bearer token, API secret, or generic process-wide application-tool payload log is retained.
 
-## Platform / Runtime Targets
+## Cleanup
 
-- Operating system / platform: Linux container.
-- Runtime/framework: project Node 22 target, pnpm 10.28.2, Vitest 4.0.18, Fastify, Prisma SQLite, Node child workers.
-- Browser/engine: `N/A`.
-- Locale/timezone: execution context UTC; deterministic timestamps used for Brief assertions.
-
-## Lifecycle / Upgrade / Restart / Persisted-Data Checks
-
-- Approved persisted-data decision: generated v4/v6 packages are discarded/rebuilt; application/platform databases and definition/config records are directly usable without migration.
-- Representative existing data exercised: current Brief migrations created application SQLite; two separately existing Brief/business binding rows and platform binding records were read through the normal handler/ownership path.
-- Result: Brief and Socratic packages rebuild/validate on manifest v5/backend v7; old v4/v6 inputs are rejected; current durable rows are read directly without an application-tool migration or rewrite.
-- Migration completion/recovery evidence: `N/A`; no migration was approved.
-- Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`.
-- Residual untested persisted-data risk: negligible for this read-only capability; full historical production data was not copied, appropriately avoiding user data.
-
-## Tests Implemented Or Updated
-
-| Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
-| --- | --- | --- | --- | --- |
-| `autobyteus-application-devkit/tests/application-devkit.test.mjs` | Updated | v5 generation, v4 rejection | Pass: 21/21 devkit | Current strict fixture |
-| `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | Updated | Removed owner/new dependency boundaries | Pass | Architecture matrix |
-| `autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts` | Updated | Current MCP session issuer | Pass: 4/4 | Stale fixture repaired |
-| `autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts` | Updated | Live native provider path | Pass | Live backend construction |
-| `autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts` | Updated | v7/current exposure fixture | Pass | Existing behavior retained |
-| `autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts` | Updated | v7/current exposure fixture | Pass | Existing behavior retained |
-| `autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts` | Updated | v7 plus current `agentTools` status | Pass | Stale expected shape corrected |
-| `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts` | Updated | v7/current exposure fixture | Pass | Existing behavior retained |
-| `autobyteus-server-ts/tests/integration/agent-tools/mcp/application-agent-tools-mcp-routes.integration.test.ts` | Added | App/general/same-name MCP isolation/call/revocation | Pass | Actual Fastify route |
-| `autobyteus-server-ts/tests/integration/application-backend/application-agent-tool-worker.integration.test.ts` | Added | Real v7 worker/storage/crash/no retry | Pass | Actual child process |
-| `autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts` | Added | Shipped Brief MCP production path | Pass | User-requested production-reachable case |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.test.ts` | Added | Native raw object/parity/result/abort | Pass | Native adapter |
-| `autobyteus-server-ts/tests/unit/application-agent-tools/application-agent-tool-gateway.test.ts` | Added | Stale/invalid/oversize/result/crash | Pass | Exact gateway behavior |
-| `autobyteus-server-ts/tests/unit/application-backend/brief-agent-tool.test.ts` | Added | Binding-derived business state | Pass | Direct maintained handler |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-catalog-transition-service.test.ts` | Added | Target slice/commit/mutex/rollback/quarantine | Pass | Replacement owner |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-reentry-service.test.ts` | Added | Participant drain/recovery/removal | Pass | No catalog mutation |
-| `autobyteus-server-ts/tests/unit/application-platform/application-definition-runtime-readiness.test.ts` | Added | Complete static namespace collision | Pass | IR-002 retained/rerun |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts` | Updated | Actual native composition/invocation | Pass | Includes application capability |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts` | Updated | Exact application context forwarding | Pass | Real session object seam |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts` | Updated | Exact application context forwarding | Pass | Real bootstrap object seam |
-| `autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts` | Updated | Static/configured/application precedence | Pass | IR-002 retained/rerun |
-| `autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts` | Updated | Immutable all-provider static names snapshot | Pass | IR-002 retained/rerun |
-| `autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts` | Updated | v5/v7 declarations | Pass | Current fixture |
-| `autobyteus-server-ts/tests/unit/application-engine/application-backend-definition-loader.test.ts` | Updated | v7 exact handler map/v6 rejection | Pass | Exact missing/extra/non-function cases |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-availability-service.test.ts` | Updated | Retain valid availability only | Pass | Obsolete reentry section removed |
-| `autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts` | Updated | Agent/Team/dynamic/stale identity | Pass | Exact ownership matrix |
-| `autobyteus-server-ts/tests/unit/application-packages/application-package-command-service.test.ts` | Updated | One transition owner/apply/rollback/finalize | Pass | Old refresh expectations replaced |
-| `autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts` | Updated | Live configured/dynamic Team topology | Pass | Root identity path |
-| `autobyteus-server-ts/tests/unit/application-platform/application-platform-lifecycle.test.ts` | Updated | Catalog/tool lane/shutdown drain order | Pass | Shutdown matrix |
-| `autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts` | Updated | Transition/runtime graph isolation | Pass | Composition matrix |
-
-## Tests Removed As Stale Or Obsolete
-
-| Path / Scenario | Obsolete Assertion | Upstream Evidence | Replacement Coverage Or No-Replacement Rationale |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts` | Deleted coordinator destructively refreshes and reconciles catalog | REQ-013–015, DS-006/DS-011 removal, implementation deletes module | Replaced by `application-catalog-transition-service.test.ts`, command-service transition tests, and reentry participant tests |
-| Direct reload/reentry block within `application-availability-service.test.ts` | Reentry owns bundle catalog mutation | Same catalog-transition ownership decision | Replaced by focused reentry and transition files; independent availability tests retained |
-
-## Durable Coverage Changed In The Codebase
-
-- Repository-resident durable coverage added, updated, or removed this round: `Yes`.
-- Paths added or updated: all paths in the Tests Implemented Or Updated table.
-- Paths removed: `autobyteus-server-ts/tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts`; obsolete direct-reentry scenarios were removed from `application-availability-service.test.ts` while that file remains.
-- Added or updated paths attached for proportional test-code review: `Yes`, in the `/code_reviewer` handoff reference package.
-- Diff/repository evidence supplied for removed paths: working-tree diff plus this exact path/rationale.
-
-## Other Execution Artifacts
-
-| Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
-| --- | --- | --- | --- |
-| `/tmp/application-owned-mcp-final-matrix-with-brief.log` | Decisive 33-file/234-test feature matrix | Temporary execution log | Pass |
-| `/tmp/application-owned-mcp-package-matrix-final.log` | Devkit and maintained package output | Temporary execution log | Pass |
-| `/tmp/application-owned-mcp-server-build-final.log` | Server build/bootstrap | Temporary execution log | Pass |
-| `/tmp/application-owned-mcp-real-provider-preflight.log` | Value-safe capability preflight | Temporary execution log | 18/18; no secrets captured |
-| `/tmp/application-owned-mcp-root-e2e.log` | Broad suite | Temporary execution log | Partial, residual failures retained truthfully |
-| `/tmp/application-owned-mcp-broad-failure-rechecks.log` | Individual broad failure classification | Temporary execution log | 25 repeat failures in five unrelated files |
-| `/tmp/application-owned-mcp-server-typecheck.log` | Supplemental configuration failure | Temporary execution log | TS6059 rootDir/include issue |
-
-## Temporary Execution Methods / Scaffolding
-
-| Path / Method | Why Needed | Result / Evidence | Cleanup Result |
-| --- | --- | --- | --- |
-| Test-owned temp package/app-data/SQLite roots | Real worker, binding, and storage isolation | All feature integration tests pass | Removed by test `afterEach` |
-| Generated Brief/Socratic/shared `dist` outputs | Build/validate and real package execution | Packages valid; Brief path passes | Removed after final evidence |
-| Isolated real-provider preflight runtime | Project-supported environment classification | 18/18 preflight tests pass | `tests/.tmp/live-e2e-runtime` removed |
-| Clean base-worktree broad-failure comparison attempt | Check whether unrelated broad failures predate the branch | Could not start because base checkout has no dependencies/`tsc` | No process/data created; report makes no baseline-pass claim |
-
-## Dependencies Mocked Or Emulated
-
-| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
-| --- | --- | --- | --- |
-| Brief startup artifact reconciliation run listing | Empty-list `ApplicationOrchestrationHostService` seam | Keeps this test focused on the application-owned MCP handler; real ownership is separately backed by the actual binding store/service | Small: handler/gateway/worker/storage are real; startup reconciliation is not the changed call path |
-| Paid OpenAI/Anthropic/other inference and local LM Studio | Provider materializer/session tests plus official repository preflight | Secrets absent; LM Studio unavailable; model choosing to call a tool is nondeterministic and not the server routing contract | Bounded optional integration risk only |
-| Catalog/package side effects in transition unit tests | Deterministic fake participants and promise barriers around production transition class | Needed to prove exact order, rollback and concurrency without mutating unrelated packages | Offset by real package build/provider and worker tests |
-
-## Result Summary
-
-| Result | Scenario IDs | Summary / Reason |
-| --- | --- | --- |
-| Pass | API-MCP-001, API-RUN-001, API-WRK-001, API-TEAM-001, API-CAT-001/002/003, API-CON-001, API-LIFE-001/002, API-PKG-001, API-BRF-001, API-SHD-001 | All ticket-critical scenarios pass through durable direct evidence |
-| Out Of Scope residual | API-BROAD-001 | 25 failures reproduce in five unchanged workspace/run-history E2E files around process-manager initialization; recorded, not hidden |
-| Not Tested | Optional paid external inference | Required credentials/local model unavailable and not necessary for the changed server contract |
-| Blocked supplemental check | Server `typecheck` only | Repository tsconfig includes tests outside `rootDir=src`; authoritative build passes |
-
-## Cleanup Performed
-
-| Resource / Process / Data | Ownership | Cleanup Action | Result |
-| --- | --- | --- | --- |
-| Child application workers | Test-owned | `engineLauncher.stop/stopAll` in cleanup | Clean |
-| Fastify/MCP hosts and bearer sessions | Test-owned | revoke/close/app.close | Clean |
-| Temp application/package/storage roots | Test-owned | recursive removal in test cleanup | Clean |
-| Brief/Socratic/shared generated `dist` | Validation-owned | removed after evidence | Clean |
-| Real-provider live-E2E runtime | Validation-owned | harness cleanup plus explicit directory removal | Clean |
-| Existing user/development processes/data | Not owned | not touched | Clean |
-
-## Preliminary Classification
-
-- Feature result: `Pass`.
-- Broad residual failures: `Local Fix` in unrelated workspace/process-manager E2E setup, not an application-owned-tool implementation failure. A base-branch execution comparison was unavailable because the clean base checkout lacks installed dependencies; therefore they remain explicit residuals, not asserted historical passes.
-- Supplemental typecheck: repository configuration limitation; server build is the valid compile evidence.
-
-## Recommended Recipient
-
-`/code_reviewer` for proportional review of all added/updated/removed durable coverage before delivery.
-
-Handoff transport status: delivered to `/code_reviewer` after the user restored the AutoByteus team-tool session. Earlier HTTP 404 `session_unavailable` attempts are superseded by the confirmed `DELIVERED` result.
-
-## Evidence / Notes
-
-The production-reachable concern is directly addressed: the test does not invent a synthetic Brief handler. It builds and validates the maintained Brief Studio importable package, discovers its actual v5 manifest declaration, loads its actual v7 `get_brief_context` handler in the real child worker, authorizes exact Team/binding/member identity, and calls it through the authenticated Agent Tools MCP HTTP route against real application SQLite data. The synthetic worker integration remains only for crash/invalid-result behaviors that the maintained read-only Brief handler intentionally does not implement.
+- Closed the owned browser tab.
+- Stopped the owned backend, frontend, and same-origin proxy sessions; ports `8015`, `3015`, and `3016` were confirmed closed.
+- Copied sanitized evidence, then removed only `.autobyteus/api-e2e-004` and generated Brief/SDK/devkit build outputs owned by this run.
+- Preserved unrelated `.autobyteus/development`, other processes, and unrelated data.
+- `git diff --check` passed after cleanup.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`.
-- Final validation confidence: `97.2%`.
-- Default `95%` confidence target met: `Yes`.
-- Any final applicable confidence category below `90%`: `No`.
-- Broader validation decision: `Required — completed`.
-- Critical acceptance criteria lacking direct proof: `None`.
-- Required next recipient: `/code_reviewer` for proportional test-code review.
-- Notes: durable coverage changed, so delivery must wait for the required test-code review pass.
+- Result: **Pass**.
+- Confidence: **97.6%**.
+- Broader validation: **Required and completed successfully**.
+- Critical criteria: `AC-032`–`AC-039` all pass.
+- Cumulative earlier scope: `API-REV-001 Pass / 97.2%` remains valid for `AC-001`–`AC-031`.
+- Durable test change requires proportional review: **yes**; route cumulative package to `/code_reviewer` before delivery.
+- Delivery remains paused at `DR-002` until that test-code review completes.

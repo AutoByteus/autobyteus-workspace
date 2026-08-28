@@ -1,0 +1,72 @@
+2:App root directory: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+3:App data directory: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002
+5:Config file path: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/.env
+6:Loading environment from: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/.env
+11:Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts/logging_config.ini
+14:APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+15:APP DATA DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002
+16:DB DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/db
+17:LOGS DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/logs
+18:DOWNLOAD DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/download
+19:MEMORY DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/memory
+26:Datasource "db": SQLite database "api-e2e-002.db" at "file:/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/db/api-e2e-002.db"
+33:(node:19225) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+34:(Use `node --trace-warnings ...` to show where the warning was created)
+43:Creating temp workspace at: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/temp_workspace
+44:Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/temp_workspace.
+45:Initialized TempWorkspace at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/temp_workspace with fixed ID 'temp_ws_default'
+57:Successfully registered tool definition: 'read_file'
+58:Successfully registered tool definition: 'write_file'
+59:Successfully registered tool definition: 'edit_file'
+60:Successfully registered tool definition: 'run_bash'
+61:Successfully registered tool definition: 'start_background_process'
+62:Successfully registered tool definition: 'get_background_processes'
+63:Successfully registered tool definition: 'get_process_output'
+64:Successfully registered tool definition: 'stop_background_process'
+65:Successfully registered tool definition: 'search_web'
+66:Successfully registered tool definition: 'read_media_file'
+67:Successfully registered tool definition: 'download_media'
+68:Successfully registered tool definition: 'read_url'
+70:Successfully registered tool definition: 'delegate_task'
+71:Successfully registered tool definition: 'submit_task_result'
+72:Successfully registered tool definition: 'review_task_result'
+73:Successfully registered tool definition: 'generate_image'
+74:Successfully registered tool definition: 'edit_image'
+75:Successfully registered tool definition: 'generate_speech'
+76:Successfully registered tool definition: 'generate_video'
+79:Successfully registered tool definition: 'publish_artifacts'
+82:Successfully registered tool definition: 'send_message_to'
+83:Successfully registered tool definition: 'get_handoff_rules'
+86:Successfully registered tool definition: 'search_web'
+94:[CodexAppServerClient] stderr: 2026-08-27T19:26:20.398585Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+95:[CodexAppServerClient] stderr: 2026-08-27T19:26:20.639842Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+96:[CodexAppServerClient] stderr: 2026-08-27T19:26:20.876060Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+97:[CodexAppServerClient] stderr: 2026-08-27T19:26:21.113253Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+103:CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+104:Populating MCP server config cache for the first time...
+105:Running MCP tool registration background task...
+106:Loading and registering all MCP server configurations from file...
+108:MCP server config cache populated with 0 items.
+109:Found 0 total MCP server configs.
+110:Synchronized cached configurations with the core MCP config service.
+111:Pre-loaded 0 MCP server configs into cache.
+112:Finished loading and registering all MCP server configurations.
+113:Background task 'MCP Tool Registration' completed successfully.
+123:[CodexAppServerClient] stderr: 2026-08-27T19:27:40.437504Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+124:[CodexAppServerClient] stderr: 2026-08-27T19:27:40.693854Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+125:[CodexAppServerClient] stderr: 2026-08-27T19:27:40.997234Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+126:[CodexAppServerClient] stderr: 2026-08-27T19:27:41.190165Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+127:[CodexAppServerClient] stderr: 2026-08-27T19:27:41.449099Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+128:[CodexAppServerClient] stderr: 2026-08-27T19:28:49.859922Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+129:[CodexAppServerClient] stderr: 2026-08-27T19:28:50.068388Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+130:[CodexAppServerClient] stderr: 2026-08-27T19:28:50.297829Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+131:[CodexAppServerClient] stderr: 2026-08-27T19:28:50.505500Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+132:Creating new workspace for rootPath: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime
+133:Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime.
+135:Creating new workspace for rootPath: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime
+136:Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime.
+138:[CodexAppServerClient] stderr: 2026-08-27T19:28:50.916209Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+139:Published codex_app_server agent run 'brief_studio_researcher_31ab01dc03334b479956d19666e5c737'.
+140:Creating new workspace for rootPath: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime
+141:Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime.
+143:Published codex_app_server agent run 'brief_studio_writer_622a56ced1c6435396c5bab6283626e8'.

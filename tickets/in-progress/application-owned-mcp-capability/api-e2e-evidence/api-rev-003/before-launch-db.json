@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-08-27T20:33:36.469027Z",
+  "databasePath": ".autobyteus/api-e2e-003/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/db/app.sqlite",
+  "briefId": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+  "briefs": [
+    {
+      "brief_id": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+      "title": "API E2E \"Native Edit\" \\ 2026-08-27T20:32Z",
+      "status": "not_started",
+      "latest_binding_id": null,
+      "latest_run_id": null,
+      "latest_binding_status": null,
+      "last_error_message": null,
+      "created_at": "2026-08-27T20:33:09.739Z",
+      "updated_at": "2026-08-27T20:33:09.739Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "bindings": [],
+  "artifacts": [],
+  "revisions": [],
+  "pending": []
+}

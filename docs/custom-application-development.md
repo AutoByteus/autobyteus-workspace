@@ -89,7 +89,7 @@ input.
 autobyteus-app validate --package-root dist/importable-package
 ```
 
-The devkit validator checks package-root shape, application manifest v4 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v6 frontend-SDK/backend-definition versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
+The devkit validator checks package-root shape, application manifest v5 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v6 frontend-SDK and v7 backend-definition versions, application-owned agent-tool declarations, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
 
 ## Develop in either real host
 
@@ -158,6 +158,81 @@ Each artifact item accepts only `path` and optional `description`; blank descrip
 The old singular `publish_artifact` tool is not registered, exposed, allowlisted, discoverable, or mapped as an alias. Existing custom agent configs that still list only `publish_artifact` must be migrated to `publish_artifacts` before they can publish artifacts.
 
 Application backends observe durable published artifacts through `artifactHandlers.persisted`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`.
+
+## Application-owned agent tools
+
+An application can publish business-specific tools to its own Agent and Team
+runs without registering them as process-global tools or hosting another MCP
+server. Declare a static catalog in `application.json`:
+
+```json
+{
+  "manifestVersion": "5",
+  "agentTools": [
+    {
+      "name": "get_record_context",
+      "description": "Read the current application record context.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}
+```
+
+Implement the exact declared name in the v7 backend definition:
+
+```ts
+export default defineApplication({
+  definitionContractVersion: '7',
+  agentToolHandlers: {
+    get_record_context: async (_args, context) => ({
+      content: [{
+        type: 'text',
+        text: `Binding: ${context.caller.bindingId}`,
+      }],
+      structuredContent: {
+        bindingId: context.caller.bindingId,
+      },
+    }),
+  },
+})
+```
+
+The declaration and handler name sets must match exactly. The portable input
+schema supports object, array, string, integer, number, and boolean properties
+with the constraints represented by the shared contracts. Runtime arguments
+are validated against that declaration before the worker handler runs, and
+results are checked as bounded MCP-safe content before they leave the worker.
+
+The host derives `context.caller.applicationId`, `bindingId`, `agentRunId`, and
+optional `memberAddress` from the live application binding. Do not accept those
+values as model-supplied routing arguments. A declaration is also not a grant:
+the relevant Agent or Team member must select the name through its normal
+`toolNames` configuration.
+
+Claude and Codex application runs receive selected application tools through
+the existing authenticated Agent Tools MCP session. AutoByteus-native
+application runs receive bound local tools over the same application catalog,
+authorization, schema, worker, and result boundary. Application tools never
+enter the process-global registry. Platform/static names are reserved, and an
+application-local name can override a configured external MCP tool only inside
+that owning application's session; other applications and general-process runs
+do not inherit it.
+
+Package import, reload, removal, repaired-app re-entry, and platform shutdown
+close tool admission and drain already admitted calls before stopping the
+affected application worker. Calls are completion-coupled and are not retried
+automatically, so mutating handlers must define their own safe/idempotent
+business semantics.
+
+Brief Studio is the maintained read-only example. Its Agent first calls
+`get_brief_context`, then the normal model file-change, relative artifact
+publication, application reconciliation, notification, and UI refresh path
+produces the visible business-state change. The context tool itself does not
+mutate the Brief or the UI.
 
 ## Runtime skill access
 

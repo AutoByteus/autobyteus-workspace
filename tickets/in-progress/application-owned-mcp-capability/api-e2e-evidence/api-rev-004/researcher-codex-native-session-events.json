@@ -1,0 +1,33 @@
+{
+  "agentRunId": "brief_studio_researcher_bef570119a744cd9a182403c0887fb7f",
+  "platformSession": {
+    "id": "01a04523-a49a-7120-818b-6f8fb03f24b2",
+    "modelProvider": "openai",
+    "cwd": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-004/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime",
+    "cliVersion": "0.150.1",
+    "originator": "autobyteus-server-ts"
+  },
+  "providerNativePatchInvocation": {
+    "timestamp": "2026-08-27T21:33:07.399Z",
+    "recordType": "custom_tool_call",
+    "operation": "tools.apply_patch",
+    "providerCallId": "call_ljTJ7rIE2JTBqKqLOjzwJ7dq",
+    "input": "const patch = \"*** Begin Patch\\n*** Add File: brief-studio/research.md\\n+Brief context: {\\\"briefId\\\":\\\"brief-2263879a-640f-4606-8e92-d01e53a18dd5\\\",\\\"title\\\":\\\"API E2E Luna Patch Proof 2026-08-27T21:31Z\\\",\\\"observedStatus\\\":\\\"researching\\\"}\\n+\\n+# API E2E Luna Patch Proof 2026-08-27T21:31Z\\n+\\n+## Key findings\\n+\\n+- The Brief Studio workflow separates application-routed capabilities from Luna's built-in patch operation, so file creation must be performed by the provider patch tool rather than a configured registry tool.\\n+- A reviewable artifact is only trustworthy when its first line preserves the exact brief-context marker returned by the application binding.\\n+- The canonical researcher output is `brief-studio/research.md`, and publication should reference that workspace-relative path rather than an absolute filesystem location.\\n+- The writer's handoff must be self-contained: the complete research body, marker, and relative path belong in one delivered message because the writer cannot rely on cross-workspace reads.\\n+- The final brief should demonstrate evidence continuity by reproducing at least one complete, non-marker Key findings bullet under a Key evidence heading.\\n+\\n+## Risks or open questions\\n+\\n+The main operational risk is treating a successful-looking tool invocation as sufficient without checking the provider-reported result. Patch or publication failures must stop the normal sequence and be reported plainly, with no shell fallback or invented checkpoint. Another risk is marker drift: changing whitespace, field order, identity, title, or observed status can make the artifact impossible to reconcile. The workflow also depends on the writer receiving the full body verbatim; truncation or summary-only handoff would weaken reviewability. Finally, the brief's business-state transition is owned by application reconciliation after final publication, so artifact publication alone should not be described as the final review-state update.\\n+\\n+## Recommendations or next steps\\n+\\n+Validate the exact context marker once, then create the canonical research file through built-in `apply_patch`. Require and record patch success before publishing the same relative path. Send the writer one complete handoff containing the marker, path, and body verbatim. The writer should independently validate its single context result, match the brief identity, quote one complete finding, patch `brief-studio/final-brief.md`, publish it relatively, and report only confirmed outcomes.\\n*** End Patch\";\nconst r = await tools.apply_patch(patch);\ntext(r);\n"
+  },
+  "providerNativePatchResult": {
+    "timestamp": "2026-08-27T21:33:07.411Z",
+    "type": "patch_apply_end",
+    "call_id": "exec-72319685-3bad-4e41-ad8c-cdf99438f3ef",
+    "turn_id": "01a04523-a4f6-7483-9466-60fef5e6ef42",
+    "stdout": "Success. Updated the following files:\nA brief-studio/research.md\n",
+    "stderr": "",
+    "success": true,
+    "changes": {
+      "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-004/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md": {
+        "type": "add",
+        "content": "Brief context: {\"briefId\":\"brief-2263879a-640f-4606-8e92-d01e53a18dd5\",\"title\":\"API E2E Luna Patch Proof 2026-08-27T21:31Z\",\"observedStatus\":\"researching\"}\n\n# API E2E Luna Patch Proof 2026-08-27T21:31Z\n\n## Key findings\n\n- The Brief Studio workflow separates application-routed capabilities from Luna's built-in patch operation, so file creation must be performed by the provider patch tool rather than a configured registry tool.\n- A reviewable artifact is only trustworthy when its first line preserves the exact brief-context marker returned by the application binding.\n- The canonical researcher output is `brief-studio/research.md`, and publication should reference that workspace-relative path rather than an absolute filesystem location.\n- The writer's handoff must be self-contained: the complete research body, marker, and relative path belong in one delivered message because the writer cannot rely on cross-workspace reads.\n- The final brief should demonstrate evidence continuity by reproducing at least one complete, non-marker Key findings bullet under a Key evidence heading.\n\n## Risks or open questions\n\nThe main operational risk is treating a successful-looking tool invocation as sufficient without checking the provider-reported result. Patch or publication failures must stop the normal sequence and be reported plainly, with no shell fallback or invented checkpoint. Another risk is marker drift: changing whitespace, field order, identity, title, or observed status can make the artifact impossible to reconcile. The workflow also depends on the writer receiving the full body verbatim; truncation or summary-only handoff would weaken reviewability. Finally, the brief's business-state transition is owned by application reconciliation after final publication, so artifact publication alone should not be described as the final review-state update.\n\n## Recommendations or next steps\n\nValidate the exact context marker once, then create the canonical research file through built-in `apply_patch`. Require and record patch success before publishing the same relative path. Send the writer one complete handoff containing the marker, path, and body verbatim. The writer should independently validate its single context result, match the brief identity, quote one complete finding, patch `brief-studio/final-brief.md`, publish it relatively, and report only confirmed outcomes.\n"
+      }
+    },
+    "status": "completed"
+  }
+}

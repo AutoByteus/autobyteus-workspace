@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "assertions": {
+    "AC-032_actual_shipped_team_model_and_tools": true,
+    "AC-033_exactly_once_first_context_per_member": true,
+    "AC-034_exact_brief_binding_member_agentRun_toolCall_join": true,
+    "AC-035_context_read_alone_does_not_mutate_business_or_ui_state": true,
+    "AC-036_native_patch_normalized_edit_and_provider_success": true,
+    "AC-037_zero_shell_or_ordinary_file_calls_and_no_trace_feedback": true,
+    "AC-038_complete_verbatim_handoff_and_relative_publication": true,
+    "AC-039_publication_reconciliation_and_same_brief_browser_outcome": true
+  },
+  "researchWords": 307,
+  "writerWords": 323
+}

@@ -25,17 +25,24 @@ export const getBriefContext: ApplicationAgentToolHandler = async (_input, conte
     };
   }
 
+  const snapshot = {
+    briefId: current.brief.briefId,
+    title: current.brief.title,
+    status: current.brief.status,
+    latestBindingStatus: current.brief.latestBindingStatus,
+    updatedAt: current.brief.updatedAt,
+  };
+  const marker = JSON.stringify({
+    briefId: snapshot.briefId,
+    title: snapshot.title,
+    observedStatus: snapshot.status,
+  });
+
   return {
     content: [{
       type: "text",
-      text: `Current brief: ${current.brief.title} (${current.brief.status}).`,
+      text: `Brief context: ${marker}`,
     }],
-    structuredContent: {
-      briefId: current.brief.briefId,
-      title: current.brief.title,
-      status: current.brief.status,
-      latestBindingStatus: current.brief.latestBindingStatus,
-      updatedAt: current.brief.updatedAt,
-    },
+    structuredContent: snapshot,
   };
 };

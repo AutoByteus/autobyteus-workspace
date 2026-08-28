@@ -2,10 +2,11 @@
 
 ## Scope
 
-The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools
-and selected configured MCP-origin registry tools to external runtimes through a
-session-scoped Streamable HTTP MCP endpoint. It is a server-hosted tool surface
-for runtimes that cannot call in-process AutoByteus tool wrappers directly.
+The AutoByteus Agent Tools MCP Server exposes selected server-owned agent tools,
+selected configured MCP-origin registry tools, and selected application-owned
+business tools to external runtimes through a session-scoped Streamable HTTP
+MCP endpoint. It is a server-hosted tool surface for runtimes that cannot call
+in-process AutoByteus tool wrappers directly.
 Claude Agent SDK and Codex App Server are the first production runtime
 materializers: configured Claude runs consume this endpoint through the SDK
 `mcpServers` query option, and configured Codex runs consume it through
@@ -25,6 +26,10 @@ registered `ToolOrigin.MCP` tools, not AutoByteus internal run tools.
 
 - `src/agent-tools/mcp`
 - `src/agent-tools/mcp/providers`
+- application route adapter in
+  `src/agent-tools/mcp/application-agent-tool-mcp-adapter.ts`
+- application catalog, gateway, validation, and call lifecycle in
+  `src/application-agent-tools`
 - process host in `src/agent-tools/mcp/agent-tools-mcp-host.ts`
 - session authority contract and implementation in
   `src/agent-tools/mcp/agent-tool-mcp-session-authority.ts` and
@@ -85,8 +90,10 @@ redacts both the bearer token and the session id in the URL.
 
 `AgentToolMcpSessionRegistry` stores only the token hash, owner identity, sender
 context, runtime kind, configured exposure snapshot, enabled tool list, creation
-time, revocation time, optional execution observer, and redaction-safe
-configured MCP source snapshots (`kind`, registered tool name, MCP server id).
+time, revocation time, optional execution observer, and redaction-safe route
+snapshots. An application route includes its frozen application/binding/producer
+identity and declaration fingerprint; a configured MCP route includes its
+registered tool name and MCP server id.
 Active sessions do not expire from a fixed wall-clock TTL. A request is valid
 only while the session is present in the current process-memory registry, is not
 revoked, and the bearer token matches the stored token hash.
@@ -151,14 +158,22 @@ process-wide launch flags, `CODEX_APP_SERVER_ARGS*`, trusted
 enabled, Codex does not create the descriptor or pass the MCP server config for
 this surface.
 
-## Configured Tool Boundary
+## Route Composition And Authorization Boundary
 
 The server-side session is the security boundary. `AgentToolMcpCatalog` derives
 the enabled MCP tool list from the agent's configured AutoByteus tool exposure,
-the server-supported MCP adapters, and the shared tool registry. It snapshots one
-source-aware route per enabled wire tool name into the session, either a
-`static_adapter` route for a server-owned adapter or a `configured_mcp_tool`
-route for a selected registry tool.
+the server-supported MCP adapters, the shared tool registry, and, for an
+application execution, the exact owning application's selected declarations. It
+snapshots one source-aware route per enabled wire tool name into the session:
+`static_adapter`, `configured_mcp_tool`, or `application_agent_tool`.
+
+Application declarations are not process-global registry entries and are not
+visible in general-process or other-application sessions. All registered static
+adapter names are reserved from applications regardless of current adapter
+availability or configured-MCP precedence policy. After that reservation check,
+an application route takes precedence over a same-name configured MCP tool only
+inside the owning application's session. Outside that application, the existing
+configured-MCP/static policy remains unchanged.
 
 Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
 eligible only when the registered tool name is selected by the agent definition.
@@ -178,6 +193,12 @@ enable.
 `tools/call` rejects unknown or unconfigured tools before reaching any executor.
 Stale configured MCP snapshots fail closed if the current registry definition is
 missing, no longer MCP-origin, or no longer belongs to the same MCP server id.
+Stale application snapshots fail closed when the declaration fingerprint is no
+longer current. `ApplicationAgentToolGateway` also revalidates application
+availability, the live binding and exact producer identity, and the declared
+input schema before invoking the exact owning worker once. It validates the
+bounded MCP-safe result on return. Handler or worker failures are sanitized and
+are never automatically retried.
 
 ## JSON-RPC Methods
 
@@ -208,6 +229,13 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - task-delegation tools from `src/agent-tools/task-delegation`
 - `publish_artifacts`
+
+Application-owned tools are catalog data rather than another static adapter
+family. A declaration becomes eligible only when the current application Agent
+or Team member selects its name. Claude and Codex consume the resulting
+`application_agent_tool` route here; AutoByteus-native application runs use a bound
+local `BaseTool` projection over the same application gateway without moving
+their existing foundation tools onto HTTP MCP.
 
 The catalog filters by the session's resolved effective tool names. That set is
 the configured Agent tool set plus the automatic Team collaboration trio when a
@@ -261,6 +289,13 @@ may also return raw MCP tool results; their `content`, `isError`,
 This raw envelope behavior is the MCP protocol boundary and must not be changed
 by application-facing result projection.
 
+Application-tool results already use the shared MCP-safe content shape. The
+application adapter maps their text, image/audio, embedded resource, resource
+link, structured-content, and explicit error fields without adding
+application-specific provider branches. Generic application arguments/results
+are not copied into a new process-wide payload log; normal access-controlled
+run traces remain the invocation evidence owner.
+
 Agent communication adapters use their dedicated mapper so `send_message_to`
 and `get_handoff_rules` expose the exact same
 `{accepted,code,message,result}` object in MCP text and `structuredContent`.
@@ -299,4 +334,8 @@ gates explicitly, and add durable route/session/executor coverage.
 - using Agent Tools MCP as the general external `/mcp/gateway`;
 - direct provider-native external MCP config materialization for configured MCP
   servers; and
-- moving native AutoByteus in-process tools to this HTTP MCP route.
+- moving native AutoByteus in-process tools to this HTTP MCP route;
+- allowing an application package to register a process-global tool or supply
+  its own arbitrary stdio/SSE/remote MCP server through this capability; and
+- treating provider built-ins such as Codex `apply_patch`, or downstream
+  normalized names such as `edit_file`, as Agent Tools MCP route names.

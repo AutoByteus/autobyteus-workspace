@@ -1,0 +1,61 @@
+{
+  "observedAt": "2026-08-27T20:36:35.242747Z",
+  "databasePath": ".autobyteus/api-e2e-003/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/db/app.sqlite",
+  "briefs": [
+    {
+      "brief_id": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+      "title": "API E2E \"Native Edit\" \\ 2026-08-27T20:32Z",
+      "status": "not_started",
+      "latest_binding_id": "7aa49eaa-12c0-4eb8-a4ad-f18e3a804bf2",
+      "latest_run_id": "brief_studio_team_e90a16c31d294a018a1bc2f504088b25",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-08-27T20:33:09.739Z",
+      "updated_at": "2026-08-27T20:35:17.644Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "e595a06b-7266-4b78-af69-b65f1c7cade5",
+      "brief_id": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+      "launch_request_id": "brief-launch-request-50d62473-76b1-4fb8-af53-a873381f7be8",
+      "run_id": "brief_studio_team_2a81aec1b08f43a7b6e22d97427d470e",
+      "created_at": "2026-08-27T20:33:47.053Z",
+      "updated_at": "2026-08-27T20:33:45.765Z",
+      "artifact_catchup_completed_at": null
+    },
+    {
+      "binding_id": "7aa49eaa-12c0-4eb8-a4ad-f18e3a804bf2",
+      "brief_id": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+      "launch_request_id": "brief-launch-request-5f1bcc11-1df0-4de3-845d-a24a35ea9b02",
+      "run_id": "brief_studio_team_e90a16c31d294a018a1bc2f504088b25",
+      "created_at": "2026-08-27T20:35:17.622Z",
+      "updated_at": "2026-08-27T20:35:16.896Z",
+      "artifact_catchup_completed_at": null
+    }
+  ],
+  "artifacts": [],
+  "revisions": [],
+  "pending": [
+    {
+      "launch_request_id": "brief-launch-request-50d62473-76b1-4fb8-af53-a873381f7be8",
+      "brief_id": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+      "status": "COMMITTED",
+      "binding_id": "e595a06b-7266-4b78-af69-b65f1c7cade5",
+      "created_at": "2026-08-27T20:33:45.765Z",
+      "updated_at": "2026-08-27T20:33:45.765Z",
+      "committed_at": "2026-08-27T20:33:47.088Z"
+    },
+    {
+      "launch_request_id": "brief-launch-request-5f1bcc11-1df0-4de3-845d-a24a35ea9b02",
+      "brief_id": "brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea",
+      "status": "COMMITTED",
+      "binding_id": "7aa49eaa-12c0-4eb8-a4ad-f18e3a804bf2",
+      "created_at": "2026-08-27T20:35:16.896Z",
+      "updated_at": "2026-08-27T20:35:16.896Z",
+      "committed_at": "2026-08-27T20:35:17.674Z"
+    }
+  ]
+}

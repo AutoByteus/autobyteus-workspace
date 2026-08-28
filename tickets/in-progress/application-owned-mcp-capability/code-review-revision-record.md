@@ -9,6 +9,12 @@ The latest canonical `code-review-report.md` or `api-e2e-test-review-report.md` 
 | `CRR-001` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 1; `/implementation_engineer` `IR-001` | `N/A` | `Fail — Design Impact` | `CR-DI-001` |
 | `CRR-002` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 2; `/implementation_engineer` `IR-002` after `SR-005` / `ARCH-REV-005` | `Fail — Design Impact` | `Pass` | `CR-DI-001` resolved |
 | `CRR-003` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review Round 1; `/api_e2e_engineer` `API-REV-001` | `Implementation Review Pass` | `Test-Code Review Pass` | `None` |
+| `CRR-004` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 3; `/implementation_engineer` `IR-003` after post-API `SR-006` / `ARCH-REV-006` | `Implementation Review Pass`; delivery paused at `DR-002` for the new scope | `Pass` | `None` |
+| `CRR-005` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | API/E2E Failure-Origin Review; `/api_e2e_engineer` `API-REV-002` | `Implementation Review Pass` at `CRR-004` | `Fail — Design Impact` | `CR-DI-002` |
+| `CRR-006` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 5; `/implementation_engineer` `IR-004` after `SR-007` / `ARCH-REV-007` | `Fail — Design Impact` at `CRR-005` | `Pass` | `CR-DI-002` resolved in source |
+| `CRR-007` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | API/E2E Failure-Origin Review; `/api_e2e_engineer` `API-REV-003` | `Implementation Review Pass` at `CRR-006` | `Fail — Design Impact` | `CR-DI-002` reopened; `CR-MP-002` Reachable |
+| `CRR-008` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md` | Implementation Review Round 7; `/implementation_engineer` `IR-005` after `SR-008` / `ARCH-REV-008` | `Fail — Design Impact` at `CRR-007` | `Pass` | `CR-DI-002` resolved in source |
+| `CRR-009` | `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review Round 2; `/api_e2e_engineer` `API-REV-004` | `Implementation Review Pass` at `CRR-008`; runtime proof pending | `Test-Code Review Pass` after `API-REV-004 Pass / 97.6%` | `None` |
 
 ## Revision Entries
 
@@ -82,3 +88,164 @@ None.
 - Material score or classification changes: no full implementation scorecard change; the separate proportional test-code result is `Pass`. `API-REV-001` remains `Pass / 97.2%`.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: `API-BROAD-001` retains 25 reproducible failures in five unchanged workspace/run-history files; supplemental server typecheck remains blocked by the repository rootDir/include configuration; optional external inference was not configured. These are explicit non-ticket residuals and do not invalidate the reviewed durable feature coverage.
+
+#### Post-Result Routing Note (Not A New Review Revision)
+
+After `CRR-003`, the user clarified an additional Agent-to-UI proof expectation that `API-REV-001` does not claim: an actual Brief Studio Agent must choose/call `get_brief_context`, correlated logs must show the call/result, and the same workflow must yield a UI-observable result. The durable test-code `Pass` remains valid, but the earlier delivery recommendation is superseded pending `/solution_designer` resolution of the `Requirement Gap` recorded at `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-agent-ui-proof-gap.md`. This routing note did not itself create a review revision; `CRR-004` below records the later completed `IR-003` source review.
+
+### CRR-004 — Maintained Agent-to-UI source correction passes renewed review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `Implementation Review`, Round 3
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`; `IR-003`; user-approved post-API Requirement Gap (no assigned finding ID)
+- Relevant solution revision IDs: `SR-001`–`SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-001`–`IR-003`
+- Relevant API/E2E revision IDs: `API-REV-001` (valid for its prior scope; renewed `AC-032`–`AC-035` proof pending)
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: implementation-source `Pass` at `CRR-002`; durable test-code `Pass` at `CRR-003`; delivery paused at `DR-002` for the approved additional scope
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `IR-003` implements the focused `SR-006` / `ARCH-REV-006` read-only maintained-demo design. Researcher and writer role prompts independently own their lifecycle-correct exactly-once first call, exact marker reuse, identity comparison, and fail-closed behavior; Team/launch prose stays secondary; the handler emits one exact compact marker from one binding-derived read snapshot without mutating state. No platform, frontend, GraphQL, storage, tracing, logging, or reconciliation source changed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| Post-API Agent/UI Requirement Gap (unassigned) | Open — delivery paused at `DR-002`; source had not implemented newly approved `BEH-008` | Requirements/design/source resolved; runtime proof pending API/E2E | `SR-006`; `ARCH-REV-006`; `IR-003`; `CRR-004`; `DR-002` | Current prompts, configs, launch input, read-only handler, and focused tests match `REQ-018`–`REQ-020`; reviewer ran 2 files/7 tests successfully, `git diff --check` passed, prohibited production areas have no delta, and generated outputs were cleaned. `AC-032`–`AC-035` remain explicit real-provider/browser obligations rather than source-review evidence. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: the latest source score is `9.5/10 (95.0/100)` with every category at or above 9.0; behavior basis remains `Confirmed`; result is `Pass`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: real configured-provider compliance, paired call/result and binding/member/artifact correlation, no-read-mutation proof, and same-brief browser rendering remain unexecuted for `SR-006`; provider unavailability or model noncompliance must not be replaced with mocks/direct MCP; the known broader Brief Studio Team configuration fixture requires renewed coverage classification; delivery remains paused at `DR-002`.
+
+### CRR-005 — Real Codex execution exposes an unviable maintained file-operation contract
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, Round 4
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`; `API-REV-002`; `API-BRF-AGENT-001`, `API-BRF-AGENT-002`, `API-BRF-JOIN-001`, `API-BRF-UI-001`, `API-BRF-READ-001`; new `CR-DI-002`
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-002`; `API-REV-001` remains valid for prior scope
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-004` implementation-source `Pass`; `API-REV-001` / `CRR-003` remain passed for `AC-001`–`AC-031`
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: the supported browser-launched shipped Codex/Luna Team executed and proved that the role configs' selected `read_file`/`write_file` names do not reach Codex. `CodexThreadBootstrapper` has no dynamic registrations and passes only filtered Agent Tools MCP routes; default adapters omit the file tools and the configured-MCP resolver ignores their ordinary registry definitions. The researcher therefore published a shell-created blocker, the writer produced no final artifact and later repeated context, and the UI rendered `blocked`. This is a production-valid design/implementation-contract mismatch, not a test or environment defect.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| Post-API Agent/UI Requirement Gap (unassigned) | Requirements/design/source marked resolved at `CRR-004`; runtime proof pending | Upstream intent remains defined, but the reviewed design is incomplete and now represented by `CR-DI-002` | `SR-006`; `ARCH-REV-006`; `IR-003`; `CRR-004`; `API-REV-002`; `CRR-005` | Real configured browser execution reached the exact target path and failed because the required file operations are absent from the selected runtime's provider-facing exposure. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `SR-005`; `ARCH-REV-005`; `IR-002`; `CRR-002`; `API-REV-001` | `API-REV-002` does not contradict registered-static collision behavior or the earlier platform scope. |
+
+- New or remaining finding IDs: `CR-DI-002`
+- Material score or classification changes: the `CRR-004` overall score is no longer authoritative for `BEH-008`. Affected categories change from data-flow `9.5` to `8.5`, API/E2E readiness `9.2` to `6.5`, and runtime correctness `9.4` to `7.5`; classification is `Design Impact`.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: the correct product remedy is not locally determined. Runtime/config change, Codex file-operation exposure, and workflow revision have distinct scope/security/provider consequences. The second writer call is downstream of the blocker path on this run and should not justify generic exactly-once machinery before the normal path is fixed. The Round 2 durable test edit has not received proportional successful-test review. Delivery remains paused at `DR-002`.
+
+### CRR-006 — Maintained Codex native-edit and complete-handoff correction passes renewed source review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `Implementation Review`, Round 5
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`; `IR-004`; prior `CR-DI-002` and reachable premise `CR-MP-001`
+- Relevant solution revision IDs: `SR-001`–`SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-001`–`IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-005` `Fail — Design Impact`; `API-REV-002` remains valid failure evidence for the superseded pre-IR-004 workflow
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `IR-004` implements the focused `SR-007` / `ARCH-REV-007` correction at the real provider/data edge. Both maintained configs select only the three routed application/publication/Team capabilities and retain Codex/Luna. Role-local prompts use Codex provider-native `edit_file`, prohibit shell and ordinary file fallbacks, publish canonical member-relative paths, transfer the complete research body, and let the writer consume it without a cross-workspace read. Existing provider composition, application-tool platform, publication/reconciliation, storage, GraphQL, and frontend owners remain unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-DI-002` | Open — `Fail`, `Design Impact` | Resolved in source; runtime proof pending | `API-REV-002`; `CRR-005`; `SR-007`; `ARCH-REV-007`; `IR-004`; `CRR-006` | Current configs are exactly Codex/Luna plus `get_brief_context`, `publish_artifacts`, and `send_message_to`. Researcher/writer prompts independently require context first, native edit, no shell/ordinary file tools, exact relative publication, and fail-closed handling; the researcher sends exact marker/path/full body and the writer uses it without read access. Existing Codex native-edit normalization and exact-run workspace-relative publication were traced in production source. Reviewer Vitest passed 2 files/8 tests and publication-owner tests passed 2 files/24 tests; exact-config, no-Codex/MCP-production-delta, generated-output-cleanup, source-size, and `git diff --check` invariants passed. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `CRR-002`; `IR-004`; `CRR-006` | IR-004 has no provider/MCP platform production delta and does not affect registered-static collision behavior. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: the current source score is `9.5/10 (95.0/100)` with every category at or above 9.0; behavior basis is `Confirmed`; `CR-DI-002` changes from open Design Impact to resolved in source; authoritative result changes from `Fail` to `Pass`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: the exact real Codex/Luna supported-browser path must now prove one application call/result per member, successful normalized native edit, zero shell/read/write calls, complete handoff and verbatim research use, exact member-workspace relative publication, publication-caused reconciliation, and the same-brief UI outcome. Provider unavailability or model noncompliance must remain a truthful blocked/fail result rather than a mock/direct-MCP/runtime-switch substitute. Any later durable coverage changes require proportional test-code review. Delivery remains paused at `DR-002`.
+
+### CRR-007 — Real Luna execution proves the replacement still names the wrong model-facing primitive
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, Round 6
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`; `API-REV-003`; `API-BRF-AGENT-001`, `API-BRF-AGENT-002`, `API-BRF-JOIN-001`, `API-BRF-UI-001`, `API-BRF-READ-001`, `API-BRF-NATIVE-001`, `API-BRF-HANDOFF-001`, `API-BRF-FAILCLOSED-001`; reused `CR-DI-002`; new `CR-MP-002`
+- Relevant solution revision IDs: `SR-007`
+- Relevant architecture-review revision IDs: `ARCH-REV-007`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-003`; `API-REV-002` remains prior failure evidence; `API-REV-001` remains passed for `AC-001`–`AC-031`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-006` implementation-source `Pass`; `CR-DI-002` marked resolved in source with runtime proof pending
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: two independent current supported-browser runs prove that real Luna interprets the maintained “provider-native `edit_file`” instruction as unavailable and correctly fails closed before any native file change or publication. A focused exact `codex-cli 0.150.1` app-server/Luna diagnostic forbidding shell succeeds when the model-facing instruction uses `apply_patch`, emitting native `item/fileChange`; current AutoByteus source then correctly normalizes that event family to `edit_file`. SR-007 conflated the model-facing instruction, provider protocol event, and normalized evidence name.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-DI-002` | Resolved in source at `CRR-006`; runtime pending | Reopened — `Fail`, `Design Impact` | `CRR-005`; `SR-007`; `ARCH-REV-007`; `IR-004`; `CRR-006`; `API-REV-003`; `CRR-007` | The ordinary registry-file mismatch remains removed, but its prescribed replacement still fails twice at the exact fixed model. Exact Luna app-server evidence separates model-facing `apply_patch`, native `fileChange`, and normalized `edit_file`. The current roles use the third name as the first. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `CRR-002`; `API-REV-001`; `CRR-007` | No collision-policy path is implicated. |
+
+- New or remaining finding IDs: `CR-DI-002`.
+- Material premise result: `CR-MP-002` is `Reachable` from the supported Brief Studio **Generate draft** user action through the exact current Team/model path to the zero-publication/unchanged-UI consequence.
+- Material score or classification changes: the `CRR-006` overall score is no longer authoritative for `BEH-008`; affected data-flow, interface clarity, API/E2E readiness, and runtime correctness scores are `8.0`, `8.0`, `6.0`, and `6.5`. Classification is `Design Impact`.
+- Review-gap note: `CRR-006` incorrectly treated provider event normalization and a skipped live integration that normally selects other models as evidence for the required Luna model-facing name. The current integration also stops before inference when run with Luna because its backend factory call omits the now-required run ID. Exact provider/model proof should have remained `Unclear` rather than supporting the source pass.
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: upstream must distinguish the model-facing built-in patch instruction from `fileChange` protocol events and normalized `edit_file` evidence without inventing a generic platform API. The focused likely correction retains current configs, no shell/ordinary-file tools, relative publication, full Team handoff, fail-closed behavior, and existing projection/UI causality. Architecture, implementation, source review, and the same real provider/browser API/E2E cycle must repeat. No Round 3 durable coverage changed. Delivery remains paused at `DR-002`.
+
+### CRR-008 — Luna built-in patch instruction passes renewed source review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/code-review-report.md`
+- Review entry point and round: `Implementation Review`, Round 7
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md`; `IR-005`; reopened `CR-DI-002`; reachable `CR-MP-002`
+- Relevant solution revision IDs: `SR-001`–`SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`–`ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-001`–`IR-005`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`, `API-REV-003`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-007` `Fail — Design Impact`; `API-REV-003` remains valid failure evidence for the superseded IR-004 wording
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `IR-005` implements `SR-008` / `ARCH-REV-008` at the exact maintained instruction boundary. Researcher/writer prompts now name Luna built-in `apply_patch`, depend only on provider-reported patch success/failure, and expressly avoid protocol/normalized trace inspection. Team/launch text provides the same bounded reinforcement. Configs remain Codex/Luna with only the three routed capabilities; native/normalized/ordinary file names and shell remain absent. Codex parser/converter, provider/MCP composition, application tool platform, publication/reconciliation, storage, GraphQL, and frontend source are unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-DI-002` | Reopened — `Fail`, `Design Impact` at `CRR-007` | Resolved in source; runtime proof pending | `API-REV-003`; `CRR-007`; `SR-008`; `ARCH-REV-008`; `IR-005`; `CRR-008` | Current model-facing role/Team/launch text contains `apply_patch` and excludes normalized `edit_file` and ambiguous provider-native wording. Roles use provider-reported results only. Exact configs omit `read_file`, `write_file`, `apply_patch`, `edit_file`, and `run_bash`; provider/MCP/converter production paths are unchanged. Reviewer tests passed 4 files/32 tests and vocabulary/config/cleanup/diff invariants passed; implementation evidence records package integration 1 file/4 tests plus package build/validation. |
+| `CR-DI-001` | Resolved at `CRR-002` | Remains resolved / unaffected | `CRR-001`; `CRR-002`; `API-REV-001`; `CRR-008` | No registered-static collision path changed. |
+
+- New or remaining finding IDs: None.
+- Material premise result: `CR-MP-002` remains `Reachable` and is addressed in current source by the exact Luna instruction proven in the focused app-server diagnostic without routing/alias/provider expansion.
+- Material score or classification changes: current source score is `9.6/10 (95.5/100)` with every category at or above 9.0; behavior basis returns from `Contradicted` to `Confirmed`; result changes from `Fail — Design Impact` to `Pass`.
+- Recommended recipient: `/api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must classify the known stale optional Codex integration and rerun the exact current supported-browser path, proving prompt/source package, native `fileChange`, normalized `edit_file`, zero forbidden operations, exact member/context/workspace/message/publication joins, publication-caused reconciliation, and same-brief UI outcome. API-REV-003 is not current success evidence. Durable test edits must return for proportional review. Delivery remains paused at `DR-002`.
+
+### CRR-009 — Current exact-Luna durable integration passes proportional test-code review
+
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, Round 2
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md`; `API-REV-004`; `AC-032`–`AC-039`
+- Relevant solution revision IDs: `SR-008`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-004`; `API-REV-001` remains valid for `AC-001`–`AC-031`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-008` implementation-source `Pass`; renewed real provider/browser proof and any durable API/E2E edits remained pending
+- Current authoritative result: `Test-Code Review Pass`
+- What changed in the review result and why: API/E2E updated one opt-in live Codex integration to current backend fixture contracts and the approved exact-Luna instruction/provider/normalization separation. The material test now requires available `gpt-5.6-luna`, instructs built-in `apply_patch`, retains invocation-correlated normalized `edit_file` lifecycle and actual-file assertions, and removes only a stale `TOOL_LOG` expectation that is not part of the current native file-change projection. The complete durable diff, current test, default-gate compile/skip, exact live pass, and successful production browser evidence are coherent.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-DI-002` | Resolved in source at `CRR-008`; runtime proof pending | Resolved in current production-reachable execution; no test-code finding | `CRR-007`; `SR-008`; `ARCH-REV-008`; `IR-005`; `CRR-008`; `API-REV-004`; `CRR-009` | Actual shipped researcher and writer used built-in patching; provider `fileChange` IDs join normalized `edit_file`; exact publication/reconciliation rendered the same Brief `in_review`. The updated durable exact-Luna integration independently passes the provider/converter boundary. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no full implementation scorecard was reopened. The proportional durable test-code result is `Pass`; `API-REV-004` reports `Pass / 97.6%`.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: inherent external-model availability/nondeterminism; the pre-existing supplemental server `rootDir/include` `TS6059` defect; one transient observer-only SQLite lock; bundled-bubblewrap fallback. None creates an actionable durable-test finding or contradicts the completed production path. Delivery must resume from `DR-002` with its required tracked-remote/base refresh and integrated-state checks.

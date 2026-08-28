@@ -37,7 +37,13 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - `POST /rest/applications/:applicationId/backend/ensure-ready`
   - ensures storage + worker startup and returns the resulting engine status.
 - `POST /rest/applications/:applicationId/backend/reload`
-  - asks the application-availability owner to reload and re-enter one repaired application. During the `REENTERING` window, concurrent backend admission stays blocked with retryable availability detail; a successful reload returns the app to `ACTIVE` with the worker still stopped, and only a later `ensure-ready` boots a fresh worker.
+  - asks `ApplicationCatalogTransitionService` to reload and re-enter one
+    repaired application. During the `REENTERING` window, concurrent backend
+    and application-tool admission stays blocked with retryable availability
+    detail. The transition drains admitted application-tool calls, stops the
+    old worker, stages and commits the refreshed bundle/tool slices, recovers
+    bindings, starts the current worker, resumes pending events, reopens the
+    tool lane, and only then returns the app to `ACTIVE`.
 - `POST /rest/applications/:applicationId/backend/queries/:queryName`
 - `POST /rest/applications/:applicationId/backend/commands/:commandName`
 - `POST /rest/applications/:applicationId/backend/graphql`
@@ -65,8 +71,12 @@ resets that override so the bundle-owned package baseline becomes effective.
 Both `buildStudioServer` and `buildStandaloneApplicationServer` register
 `/mcp/agent-tools/:sessionId` from the same process-owned
 `AgentToolsMcpHost`. Each application runtime issues sessions through its
-`ScopedAgentToolMcpSessionAuthority`; authenticated publication uses only that
-scope's `PublishedArtifactPublisher`. Studio's `/mcp/gateway` remains a
+`ScopedAgentToolMcpSessionAuthority`. Selected application-owned tool routes
+carry the exact application/binding/producer identity into the common
+application gateway, while authenticated publication uses only that scope's
+`PublishedArtifactPublisher`. These tool calls do not traverse the application
+backend REST/WebSocket gateway, even though their exact handler invocation is
+worker-owned. Studio's `/mcp/gateway` remains a
 separate external-client boundary and is not registered by standalone.
 
 ### WebSocket notifications

@@ -26,10 +26,17 @@ return of the former durable application-session identity:
   concrete publication capability and readiness assertion. General-process
   sessions use a separate authority and `GeneralProcessRunSupervisor`, so they
   cannot inherit an application's publication capability or definition graph.
+- For an application execution, the ephemeral session may also contain
+  selected application-owned tool routes. Each route freezes the current
+  application/binding/producer identity and declaration fingerprint; it is not
+  a durable application session and is not visible to general-process or other
+  application runs. Native AutoByteus application runs use a bound local
+  projection over the same application gateway instead of this HTTP route.
 - Both Studio and standalone register the internal
   `/mcp/agent-tools/:sessionId` route. The external `/mcp/gateway` client surface
   is separate and remains Studio-only.
-- Application-runtime shutdown blocks new session issue, closes ingress,
+- Application-runtime shutdown blocks new run/session issue, closes and drains
+  application-tool admission while workers are still available, closes ingress,
   drains accepted artifact commands while workers can still be ensured, stops
   workers and runtime-owned team/agent runs, revokes remaining scope-owned
   sessions, and stops remaining streams. Exact run removal revokes that run's

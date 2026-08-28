@@ -82,6 +82,21 @@ const createApplicationDatabase = async (): Promise<string> => {
   return databasePath;
 };
 
+const readBusinessState = (databasePath: string) => {
+  const database = new DatabaseSync(databasePath, { readOnly: true });
+  try {
+    return {
+      briefs: database.prepare("SELECT * FROM briefs ORDER BY brief_id").all(),
+      bindings: database.prepare("SELECT * FROM brief_bindings ORDER BY binding_id").all(),
+      artifacts: database.prepare(
+        "SELECT * FROM brief_artifacts ORDER BY brief_id, artifact_kind",
+      ).all(),
+    };
+  } finally {
+    database.close();
+  }
+};
+
 const context = (appDatabasePath: string, bindingId: string) => ({
   requestContext: null,
   storage: {
@@ -106,13 +121,16 @@ describe("Brief Studio get_brief_context application Agent Tool", () => {
       fs.rm(root, { recursive: true, force: true })));
   });
 
-  it("derives the owning brief from caller bindingId rather than another application record", async () => {
+  it("derives the owning brief from caller bindingId and returns the canonical marker", async () => {
     const appDatabasePath = await createApplicationDatabase();
     const handler = briefStudioApplication.agentToolHandlers?.get_brief_context;
     expect(handler).toBeTypeOf("function");
 
     await expect(handler!({}, context(appDatabasePath, "binding-a"))).resolves.toEqual({
-      content: [{ type: "text", text: "Current brief: Application-owned tools (in_review)." }],
+      content: [{
+        type: "text",
+        text: "Brief context: {\"briefId\":\"brief-a\",\"title\":\"Application-owned tools\",\"observedStatus\":\"in_review\"}",
+      }],
       structuredContent: {
         briefId: "brief-a",
         title: "Application-owned tools",
@@ -121,6 +139,42 @@ describe("Brief Studio get_brief_context application Agent Tool", () => {
         updatedAt: "2026-08-27T10:00:01.000Z",
       },
     });
+  });
+
+  it("keeps the marker compact and applies ordinary JSON escaping from the same snapshot", async () => {
+    const appDatabasePath = await createApplicationDatabase();
+    const database = new DatabaseSync(appDatabasePath);
+    try {
+      database.prepare("UPDATE briefs SET title = ? WHERE brief_id = ?")
+        .run("Quoted \"title\"\nnext\\path", "brief-a");
+    } finally {
+      database.close();
+    }
+
+    const handler = briefStudioApplication.agentToolHandlers!.get_brief_context;
+    await expect(handler({}, context(appDatabasePath, "binding-a"))).resolves.toEqual({
+      content: [{
+        type: "text",
+        text: "Brief context: {\"briefId\":\"brief-a\",\"title\":\"Quoted \\\"title\\\"\\nnext\\\\path\",\"observedStatus\":\"in_review\"}",
+      }],
+      structuredContent: {
+        briefId: "brief-a",
+        title: "Quoted \"title\"\nnext\\path",
+        status: "in_review",
+        latestBindingStatus: "ATTACHED",
+        updatedAt: "2026-08-27T10:00:01.000Z",
+      },
+    });
+  });
+
+  it("does not mutate Brief Studio business state when reading context", async () => {
+    const appDatabasePath = await createApplicationDatabase();
+    const before = readBusinessState(appDatabasePath);
+    const handler = briefStudioApplication.agentToolHandlers!.get_brief_context;
+
+    await handler({}, context(appDatabasePath, "binding-a"));
+
+    expect(readBusinessState(appDatabasePath)).toEqual(before);
   });
 
   it("returns an explicit safe error result when the caller binding has no brief", async () => {

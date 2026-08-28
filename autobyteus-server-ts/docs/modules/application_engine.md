@@ -55,13 +55,16 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 ## Worker Contract
 
 - The worker loads a self-contained ESM backend module.
-- The backend definition contract version must be `"6"`; unsupported definitions are rejected before any handler or lifecycle hook runs.
+- The backend definition contract version must be `"7"`; unsupported definitions are rejected before any handler or lifecycle hook runs.
+- The loaded `agentToolHandlers` name set must exactly match the owning v5
+  manifest's `agentTools[]` declarations. A missing, extra, or non-function
+  handler fails definition readiness before tool invocation.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Custom `webSocketRoutes` run in the worker-owned `ApplicationBackendHost`; standard application-agent communication never traverses the engine or worker.
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.
 - Worker notifications flow back to the host over the engine protocol and are re-published by the backend API gateway.
 - Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
-- Accepted application work is completion-coupled in both JSON-line RPC directions. Host-to-worker queries, commands, routes, GraphQL, WebSocket callbacks, lifecycle/event/artifact handlers, and worker-to-host context-capability calls remain pending until the remote handler returns its actual result or domain error, or until transport/worker close makes completion impossible. There is no independent live-work deadline that may report failure while the remote operation continues.
+- Accepted application work is completion-coupled in both JSON-line RPC directions. Host-to-worker queries, commands, routes, GraphQL, WebSocket callbacks, lifecycle/event/artifact handlers, application-agent-tool handlers, and worker-to-host context-capability calls remain pending until the remote handler returns its actual result or domain error, or until transport/worker close makes completion impossible. There is no independent live-work deadline that may report failure while the remote operation continues.
 - Bounded deadlines remain lifecycle controls only. Startup definition loading and stop/close may time out, but those paths abort the worker and await closure before exposing the timeout.
 
 ## Invocation Boundary
@@ -74,7 +77,8 @@ Once ready, `ApplicationEngineController` is the only owner used to invoke:
 - application GraphQL execution,
 - custom application WebSocket session open/message/close handling,
 - application event handlers, and
-- optional backend agent-event observer callbacks, and
+- optional backend agent-event observer callbacks,
+- application-owned agent-tool handlers, and
 - worker-originated context-capability requests.
 
 The gateway and orchestration owners both depend on this boundary instead of reaching into worker details directly.
@@ -108,25 +112,29 @@ managers but starts no new run. Business launch requests create new runs;
 post-listen recovery may restore recorded runs. Runtime shutdown is ordered so
 no new work can enter while owned capabilities are being dismantled:
 
-1. block new application Agent Tools session issue;
-2. stop execution-event dispatch and close application communication, backend
+1. quiesce the application execution scope so it cannot create new runs or
+   issue new application Agent Tools sessions;
+2. close application-tool admission and drain every already admitted tool call
+   through its completion-coupled worker invocation;
+3. stop execution-event dispatch and close application communication, backend
    gateway/socket, and notification ingress;
-3. stop artifact-delivery intake and drain every accepted command through
+4. stop artifact-delivery intake and drain every accepted command through
    launcher ensure plus controller invoke;
-4. dispose remaining run observers and stop application workers;
-5. quiesce the runtime's `ApplicationExecutionScope`, then use
-   `ApplicationExecutionShutdownCoordinator` to stop runtime-owned team runs
+5. dispose remaining run observers and stop application workers;
+6. close the runtime's `ApplicationExecutionScope` through
+   `ApplicationExecutionShutdownCoordinator`, which stops runtime-owned team runs
    before remaining runtime-owned agent runs; exact run removal also revokes
    run sessions and detaches file/artifact/memory observers;
-6. close the scope's `ScopedAgentToolMcpSessionAuthority`; and
-7. stop remaining streaming surfaces.
+7. close the application-tool lifecycle/capability and the scope's
+   `ScopedAgentToolMcpSessionAuthority`; and
+8. stop remaining streaming surfaces.
 
 The process-level `AgentToolsMcpHost` closes only after the application runtime
 and separate General Process run supervisor have stopped. There is no deferred
 publisher or handler state.
-This ordering prevents a stopped application from retaining a publication
-capability, accepting new runtime-scoped work, or abandoning accepted artifact
-delivery after a worker exit.
+This ordering prevents a stopped application from retaining a publication or
+application-tool capability, accepting new runtime-scoped work, or abandoning
+an admitted tool call or accepted artifact delivery after a worker exit.
 
 ## Related Docs
 
