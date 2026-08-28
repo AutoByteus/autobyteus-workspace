@@ -23,9 +23,10 @@ It demonstrates:
 
 The bundled `brief-studio-team` is intentionally pinned to
 `codex_app_server` / `gpt-5.6-luna`. Its researcher and writer each select only
-`get_brief_context`, `publish_artifacts`, and `send_message_to`. They do not
-configure ordinary registry file tools, shell, provider built-ins, or
-normalized trace names as routed tools.
+the application/business routes `get_brief_context`, `publish_artifacts`, and
+`send_message_to`. Foundation operations are supplied automatically by the
+runtime rather than configured as application routes or prescribed by the role
+prompts.
 
 For a fresh draft:
 
@@ -33,30 +34,29 @@ For a fresh draft:
    action. The read-only handler derives the selected Brief from the
    application binding and returns the `briefId`, title, and observed status.
 2. The researcher writes the exact compact `Brief context:` marker and research
-   body to `brief-studio/research.md` using Luna's built-in `apply_patch`, then
-   publishes that workspace-relative path.
+   body to `brief-studio/research.md` with an authorized foundation operation
+   chosen by the runtime/model, then publishes that workspace-relative path.
 3. The researcher sends `/writer` the marker, canonical relative path, and the
    complete research body. The writer does not read across member workspaces.
 4. After receiving the handoff, the writer calls `get_brief_context` exactly
    once as its first tool action, rejects a Brief-identity mismatch, and uses
    the complete handoff body. At least one complete research `Key findings`
    bullet is copied under the final `Key evidence` section.
-5. The writer uses built-in `apply_patch` to create
-   `brief-studio/final-brief.md` and publishes that relative path. Existing
-   artifact relay/reconciliation changes the same Brief to `in_review`, emits
-   the ready-for-review notification, and refreshes the existing UI.
+5. The writer creates `brief-studio/final-brief.md` with an authorized
+   foundation operation and publishes that relative path. Existing artifact
+   relay/reconciliation changes the same Brief to `in_review`, emits the
+   ready-for-review notification, and refreshes the existing UI.
 
-The three file-operation names describe different layers and must not be
-conflated: `apply_patch` is the model-facing Codex/Luna built-in; Codex reports
-the resulting native `item/fileChange` / `file_change`; AutoByteus records that
-provider activity as normalized `edit_file` lifecycle evidence. Neither
-`apply_patch` nor `edit_file` belongs in the role `toolNames`, and roles react
-only to the provider-reported patch result rather than reading protocol or
-trace internals.
+Artifact acceptance is operation-neutral. Any foundation capability already
+authorized and supplied by the runtime, including shell, may create the normal
+artifact. Provider-native and normalized operation events remain useful
+diagnostics, but they neither replace the workspace artifact nor make an
+otherwise correct artifact pass or fail. Foundation-operation names therefore
+stay out of the role `toolNames` and `agent.md` business instructions.
 
-`get_brief_context` never mutates Brief business state. If context, patch,
-publication, or the required handoff fails, the role reports a truthful blocker
-and stops without shell fallback or fabricated publication. The browser-visible
+`get_brief_context` never mutates Brief business state. If context, artifact
+creation, publication, or the required handoff fails, the role reports a
+truthful blocker and stops without fabricated publication. The browser-visible
 state transition is owned only by the established final-artifact publication
 and reconciliation path.
 

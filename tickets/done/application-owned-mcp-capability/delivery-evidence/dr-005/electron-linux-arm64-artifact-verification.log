@@ -1,0 +1,8 @@
+Electron artifact verification
+UTC: 2026-08-28T12:48:40Z
+path: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage
+size_bytes: 646839531
+mode: -rwxr-xr-x (755)
+modified: 2026-08-28 12:48:25.130491022 +0000
+/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=4b12022a0a60af0d4b7920deac219fcbd1d92080, stripped
+f26c67915011af6e326e3e3b31e686b23081bf95169b63d4934589c2973a5f83  /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage

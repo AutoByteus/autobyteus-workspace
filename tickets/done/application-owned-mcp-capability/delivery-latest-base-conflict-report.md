@@ -2,10 +2,13 @@
 
 ## Status
 
-`Blocked — Design Impact in the Agent Tools MCP session ownership boundary.`
+`Resolved history — SR-009/ARCH-REV-009/IR-006–IR-007 reconciled the
+Agent Tools MCP session ownership boundary; API-REV-006/CRR-014 validated the
+result and DR-005 integrated the current base without conflict.`
 
 - Ticket: `application-owned-mcp-capability`
-- Delivery revision: `DR-004`
+- Historical blocking revision: `DR-004`
+- Resolving delivery revision: `DR-005`
 - Date: `2026-08-28`
 - Ticket checkpoint: `aaf7e076ed66c5daaf142f896230ad63085330c7`
 - Previous integrated base: `origin/personal` `bf396dd5ed541cf6ef2179b305132b079aadd7ab`
@@ -13,7 +16,13 @@
 - Latest-base commits: `7f6d2d4cb`, `754a945a4`, merge `2afd4bfc6`, release bump `ebef77eb3`
 - Attempted integration: `git merge --no-ff origin/personal`
 - Result: `Conflict; merge aborted after evidence capture`
-- Electron build: `Not run` because no valid latest-base integrated source state exists.
+- DR-004 Electron build: `Not run` because no valid latest-base integrated source state existed.
+- DR-005 latest base: `origin/personal` `64cb4e952a6053fb267fdc43859fb30ae8bcdf6b`
+- DR-005 integrated HEAD: `7ab0a996834830a0d8f2c74e406bc1b9bd4926cb`
+- DR-005 Electron build: `Pass`; Linux ARM64 AppImage produced and retained for user verification.
+
+The remaining sections preserve the exact DR-004 conflict evidence. They are
+historical and no longer describe the current delivery gate.
 
 ## Candidate Protection
 
@@ -49,7 +58,7 @@ The application-owned capability currently extends the prior session model with 
 11. `autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts`
 12. `autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts`
 
-## Required Upstream Resolution
+## Required Upstream Resolution — Completed
 
 The renewed design must decide and document:
 
@@ -61,11 +70,19 @@ The renewed design must decide and document:
 6. which durable provider/session/application tests replace or update the conflicted expectations; and
 7. how the long-lived docs describe the combined endpoint, security, and lifecycle model.
 
-After that solution update, the normal architecture, implementation, code-review, API/E2E, proportional durable-test review, and delivery cycle must repeat. Because the target-base change is material, prior user acknowledgement of DR-003 cannot authorize finalization of the eventual merged behavior; renewed verification will be required.
+That cycle completed through SR-009/SR-010, ARCH-REV-009/ARCH-REV-010,
+IR-006–IR-008, CRR-013/CRR-014, and API-REV-006. DR-005 then merged the latest
+tracked base cleanly and built the Electron AppImage. Because the resulting
+handoff materially differs from DR-003, renewed user verification is still
+required before repository finalization.
 
-## Build Disposition
+## Build Disposition — Completed At DR-005
 
-The requested Electron build was intentionally not run against the pre-integration checkpoint. A successful build of stale source would not demonstrate that this ticket is based on latest `origin/personal`. Run the repository-documented Electron build only after the combined design is implemented, reviewed, integrated without conflict, and at least one relevant executable path passes.
+The DR-004 decision not to build stale source remains correct. At DR-005 the
+reviewed combined state was checkpointed, latest `origin/personal` merged
+cleanly, and the repository-documented `pnpm build:electron:linux` command
+completed with exit status 0. The resulting Linux ARM64 AppImage and integrity
+evidence are recorded in `delivery-evidence/dr-005/`.
 
 ## Relevant Artifacts
 
@@ -81,6 +98,6 @@ The requested Electron build was intentionally not run against the pre-integrati
 - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/handoff-summary.md`
 - `/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/release-deployment-report.md`
 
-The new base ticket is present at commit `ebef77eb32bbeaefd4fccdb6998240264c82a3c1`
-under `tickets/done/agent-tools-mcp-session-resume/`; it is intentionally not
-materialized into this worktree after the conflicting merge was aborted.
+The base ticket from commit `ebef77eb32bbeaefd4fccdb6998240264c82a3c1` is now
+an ancestor of the DR-005 integrated branch. This report is retained so the
+initial design-impact send-back and its later resolution remain auditable.

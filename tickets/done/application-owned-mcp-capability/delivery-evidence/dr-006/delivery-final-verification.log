@@ -1,0 +1,14 @@
+DR-006 final verification
+UTC: 2026-08-28T13:03:32Z
+$ git diff --check
+PASS
+$ artifact SHA-256
+autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage: OK
+$ evidence secret-shaped-value scan
+PASS
+$ latest base ancestry
+HEAD=7ab0a996834830a0d8f2c74e406bc1b9bd4926cb
+origin/personal=64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+origin-only / ticket-only=0	10
+PASS
+$ untracked files outside ticket delivery evidence

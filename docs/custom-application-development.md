@@ -213,26 +213,34 @@ values as model-supplied routing arguments. A declaration is also not a grant:
 the relevant Agent or Team member must select the name through its normal
 `toolNames` configuration.
 
-Claude and Codex application runs receive selected application tools through
-the existing authenticated Agent Tools MCP session. AutoByteus-native
-application runs receive bound local tools over the same application catalog,
-authorization, schema, worker, and result boundary. Application tools never
-enter the process-global registry. Platform/static names are reserved, and an
-application-local name can override a configured external MCP tool only inside
-that owning application's session; other applications and general-process runs
-do not inherit it.
+Claude and Codex application runs receive selected application tools through a
+live tokenless Agent Tools MCP run-session on the process-owned dedicated
+loopback listener. The headerless deterministic route is routing identity, not
+an authorization credential; local listener admission, the active in-memory
+record, and the application gateway's current binding/producer checks provide
+the live boundary. AutoByteus-native application runs receive bound local tools
+over the same application catalog, authorization, schema, worker, and result
+boundary. Application tools never enter the process-global registry.
+Platform/static names are reserved, and an application-local name can override
+a configured external MCP tool only inside that owning application's session;
+other applications and general-process runs do not inherit it.
 
-Package import, reload, removal, repaired-app re-entry, and platform shutdown
-close tool admission and drain already admitted calls before stopping the
-affected application worker. Calls are completion-coupled and are not retried
-automatically, so mutating handlers must define their own safe/idempotent
-business semantics.
+Package import, reload, removal, and repaired-app re-entry close only the
+affected application-tool lane and drain its already admitted calls before
+stopping the affected worker. The containing run-session stays active for its
+other routes. Exact Agent/Team run stop deactivates the whole run-session, and
+platform shutdown orders application drain, worker/run cleanup, and process
+listener close through their distinct owners. Calls are completion-coupled and
+are not retried automatically, so mutating handlers must define their own
+safe/idempotent business semantics.
 
 Brief Studio is the maintained read-only example. Its Agent first calls
-`get_brief_context`, then the normal model file-change, relative artifact
-publication, application reconciliation, notification, and UI refresh path
-produces the visible business-state change. The context tool itself does not
-mutate the Brief or the UI.
+`get_brief_context`, then uses an already-authorized runtime foundation
+operation to create the required workspace artifact. Relative publication,
+application reconciliation, notification, and UI refresh produce the visible
+business-state change. The chosen foundation operation is not part of the
+application contract, and the context tool itself does not mutate the Brief or
+the UI.
 
 ## Runtime skill access
 
