@@ -117,7 +117,7 @@ describe("token usage analytics aggregation policy", () => {
     }
   });
 
-  it("still rejects a null cost on a usage-bearing bucket when the range has a known cost", () => {
+  it("reconciles known partial cost while preserving a usage-bearing missing-cost bucket", () => {
     const sources = [
       facet({ observed_at: "2026-01-01T12:00:00.000Z" }),
       facet({
@@ -139,9 +139,46 @@ describe("token usage analytics aggregation policy", () => {
     const buckets = buildTokenUsageAnalyticsBuckets(sources, range, "DAY");
     const aggregate = buildTokenUsageCostSummaryAggregate(sources);
 
+    expect(aggregate.estimated_api_total_cost).toBe(0.12);
+    expect(tokenUsageAnalyticsCostQuality(sources, aggregate)).toMatchObject({
+      kind: "PARTIAL",
+      currency: "USD",
+      missingPriceDimensions: ["input", "output"],
+    });
     expect(buckets[1]?.costQuality.kind).toBe("MISSING");
+    expect(buckets[1]?.costQuality.missingPriceDimensions).toEqual(["input", "output"]);
     expect(buckets[1]?.aggregate.estimated_api_total_cost).toBeNull();
     expect(() => assertTokenUsageAnalyticsBucketReconciliation(buckets, range, aggregate, "DAY"))
+      .not.toThrow();
+  });
+
+  it("still rejects a usage-bearing null cost without missing-cost evidence", () => {
+    const sources = [
+      facet({ observed_at: "2026-01-01T12:00:00.000Z" }),
+      facet({
+        observed_at: "2026-01-02T12:00:00.000Z",
+        api_cost_status: "price_missing",
+        pricing_status: "missing",
+        currency: null,
+        missing_price_dimensions: ["input", "output"],
+        estimated_api_input_cost: null,
+        estimated_api_standard_input_cost: null,
+        estimated_api_output_cost: null,
+        estimated_api_total_cost: null,
+      }),
+    ];
+    const range = {
+      startTime: new Date("2026-01-01T00:00:00.000Z"),
+      endTimeExclusive: new Date("2026-01-03T00:00:00.000Z"),
+    };
+    const buckets = buildTokenUsageAnalyticsBuckets(sources, range, "DAY");
+    const invalidBuckets = buckets.map((bucket, index) => index === 1 ? {
+      ...bucket,
+      costQuality: { ...bucket.costQuality, kind: "COMPLETE" as const },
+    } : bucket);
+    const aggregate = buildTokenUsageCostSummaryAggregate(sources);
+
+    expect(() => assertTokenUsageAnalyticsBucketReconciliation(invalidBuckets, range, aggregate, "DAY"))
       .toThrow("TOKEN_USAGE_ANALYTICS_DAY_COST_RECONCILIATION_FAILED");
   });
 });

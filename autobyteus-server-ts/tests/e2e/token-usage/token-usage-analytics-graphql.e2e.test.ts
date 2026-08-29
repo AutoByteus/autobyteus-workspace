@@ -232,6 +232,89 @@ describe("token usage analytics GraphQL E2E", () => {
     expect(filtered.filterOptions.providers).toHaveLength(3);
   });
 
+  it("returns priced and fully unpriced usage days as one partial-cost GraphQL result", async () => {
+    await new SqlTokenUsageAnalyticsRepository(rootPrismaClient)
+      .initializeCoverage(new Date("2026-08-01T00:00:00.000Z"));
+
+    await write({
+      runId: `${PREFIX}partial-priced`,
+      observedAt: "2026-08-01T12:00:00.000Z",
+      inputTokens: 100,
+      outputTokens: 20,
+      modelProvider: "ANTHROPIC",
+      providerName: "Partial Cost Provider",
+      modelIdentifier: `${PREFIX}partial-model`,
+      totalCost: 0.12,
+      inputCost: 0.1,
+      outputCost: 0.02,
+    });
+    const missingRunId = remember(`${PREFIX}partial-unpriced`);
+    await store.recordObservation({
+      ...buildCurrentTokenUsagePayload({
+        runId: missingRunId,
+        observedAt: "2026-08-02T12:00:00.000Z",
+        inputTokens: 200,
+        outputTokens: 40,
+        modelProvider: "ANTHROPIC",
+        providerName: "Partial Cost Provider",
+        modelIdentifier: `${PREFIX}partial-model`,
+        apiCostStatus: "price_missing",
+        pricingStatus: "missing",
+        currency: null,
+        totalCost: null,
+        inputCost: null,
+        outputCost: null,
+      }),
+      missing_price_dimensions: ["standard_input", "output"],
+    });
+
+    const response = await execute({
+      rangePreset: "CUSTOM",
+      startTime: "2026-08-01T00:00:00.000Z",
+      endTimeExclusive: "2026-08-04T00:00:00.000Z",
+      runtimeKind: null,
+      providerKey: null,
+      modelKey: null,
+    });
+
+    expect(response.errors).toBeUndefined();
+    const result = (response.data as any).tokenUsageAnalytics;
+    expect(result.selectedAggregate).toMatchObject({
+      totalTokens: 360,
+      estimatedApiTotalCost: 0.12,
+      currency: "USD",
+      apiCostStatus: "mixed",
+      usageReportCount: 2,
+      missingPriceDimensions: ["output", "standard_input"],
+    });
+    expect(result.selectedCostQuality).toEqual({
+      kind: "PARTIAL",
+      currency: "USD",
+      missingPriceDimensions: ["output", "standard_input"],
+    });
+    expect(result.trendBuckets).toHaveLength(3);
+    expect(result.trendBuckets[0]).toMatchObject({
+      bucketStart: "2026-08-01T00:00:00.000Z",
+      aggregate: { totalTokens: 120, estimatedApiTotalCost: 0.12, usageReportCount: 1 },
+      costQuality: { kind: "COMPLETE", currency: "USD", missingPriceDimensions: [] },
+    });
+    expect(result.trendBuckets[1]).toMatchObject({
+      bucketStart: "2026-08-02T00:00:00.000Z",
+      aggregate: { totalTokens: 240, estimatedApiTotalCost: null, usageReportCount: 1 },
+      costQuality: { kind: "MISSING", currency: null, missingPriceDimensions: ["output", "standard_input"] },
+    });
+    expect(result.trendBuckets[2]).toMatchObject({
+      bucketStart: "2026-08-03T00:00:00.000Z",
+      aggregate: { totalTokens: 0, estimatedApiTotalCost: null, usageReportCount: 0 },
+      costQuality: { kind: "NO_USAGE", currency: null, missingPriceDimensions: [] },
+    });
+    expect(result.trendBuckets
+      .reduce((sum: number, bucket: any) => sum + (bucket.aggregate.estimatedApiTotalCost ?? 0), 0))
+      .toBe(result.selectedAggregate.estimatedApiTotalCost);
+    expect(result.breakdownRows).toHaveLength(2);
+    expect(result.breakdownRows.map((row: any) => row.costQuality.kind)).toEqual(["MISSING", "COMPLETE"]);
+  });
+
   it("keeps pre-feature run rows directly usable without analytics backfill and persists honest coverage", async () => {
     const runId = `${PREFIX}pre-feature-run`;
     await write({

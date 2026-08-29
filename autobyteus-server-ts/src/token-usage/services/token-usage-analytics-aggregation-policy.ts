@@ -102,13 +102,17 @@ export const assertTokenUsageAnalyticsBucketReconciliation = (
     throw new Error(`TOKEN_USAGE_ANALYTICS_${subject}_RECONCILIATION_FAILED`);
   }
   if (aggregate.estimated_api_total_cost === null) return;
-  const usageBearingCosts = buckets
-    .filter((bucket) => bucket.aggregate.usage_report_count > 0 || bucket.aggregate.total_tokens > 0)
-    .map((bucket) => bucket.aggregate.estimated_api_total_cost);
-  if (usageBearingCosts.some((cost) => cost === null)) {
+  const usageBearingBuckets = buckets
+    .filter((bucket) => bucket.aggregate.usage_report_count > 0 || bucket.aggregate.total_tokens > 0);
+  if (usageBearingBuckets.some((bucket) =>
+    bucket.aggregate.estimated_api_total_cost === null && bucket.costQuality.kind !== "MISSING")) {
     throw new Error(`TOKEN_USAGE_ANALYTICS_${subject}_COST_RECONCILIATION_FAILED`);
   }
-  const costTotal = usageBearingCosts.reduce<number>((sum, cost) => sum + (cost ?? 0), 0);
+  const knownCosts = usageBearingBuckets.flatMap((bucket) => {
+    const cost = bucket.aggregate.estimated_api_total_cost;
+    return cost === null ? [] : [cost];
+  });
+  const costTotal = knownCosts.reduce((sum, cost) => sum + cost, 0);
   const tolerance = Math.max(1, Math.abs(aggregate.estimated_api_total_cost)) * 1e-12;
   if (Math.abs(costTotal - aggregate.estimated_api_total_cost) > tolerance) {
     throw new Error(`TOKEN_USAGE_ANALYTICS_${subject}_COST_RECONCILIATION_FAILED`);
