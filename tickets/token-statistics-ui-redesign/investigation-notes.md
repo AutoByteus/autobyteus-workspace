@@ -10,27 +10,28 @@
 - Base or reference revision: Explicitly reset to `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Success. `personal` and `origin/personal` resolved to the same commit when the worktree was created; after the user clarification, the task branch was explicitly hard-reset to `origin/personal` and verified clean.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-004`
-- Investigation status: Requirements Visualization `RV-004` incorporates the user's daily-point line preference; awaiting direction review and remaining clarification
+- Current requirements revision ID: `RER-005`
+- Investigation status: Requirement Impact `RI-001` recorded; RV-004 blocked pending user resolution of contributor/comparison/input-label/grouping decisions
 
 ## Initial Request And Clarifications
 
 - Original request: “the current token statistics page looks so ugly. its very unprofessional. here we need better ui” with two current-state screenshots.
-- Clarifications received: “make sure bootstrap from origin/personal okay?” The user confirmed `origin/personal` as the required source baseline.
-- User-supplied facts and constraints: The current visible result is unacceptable on visual/professional-quality grounds. Two captures show the populated Analytics state, including partial coverage, no comparable prior data, large metrics, charts, ranked breakdown, and exact table.
-- Initial ambiguity: “Better UI” does not determine the future information hierarchy, filter compaction, exact-evidence pattern, or how far the visual language should extend into Run details. These are material product-experience decisions and justify an interactive Requirements Visualization.
+- Clarifications received: The user confirmed `origin/personal` as the required source baseline; selected a point-marked line instead of daily bars; rejected `Dominant driver`/`Usage drivers` as primary concepts; prioritized monthly/daily Tokens/Cost and cache-aware token composition; and questioned prior-period percentage comparison.
+- User-supplied facts and constraints: The current visible result is unacceptable on visual/professional-quality grounds. Cache rate is especially important to the price-sensitive use case. No proposed UI fact may be invented outside the current source-pin data contracts.
+- Initial ambiguity: The remaining material choices are whether contributor identity and prior comparison remain as optional secondary detail, the precise standard-input label, user-facing identity grouping, filter disclosure, and Run-details restyle extent.
 
 ## Product And Domain Understanding
 
 - Product area: AutoByteus web/Electron Settings > Token Statistics.
 - Affected actors or systems: Token-usage viewers, evidence-oriented users, run investigators, frontend presentation, localization/accessibility behavior.
-- Existing user or operational purpose: Explain observed token/cost consumption over UTC calendar periods, compare pace, rank drivers, expose exact evidence/CSV, and retain a distinct creation-time/lifetime Run-details investigation workflow.
+- Existing user or operational purpose: Explain monthly/daily observed token use or estimated spend, expose cache-aware token composition and exact evidence/CSV, and retain a distinct creation-time/lifetime Run-details investigation workflow. Identity ranking and prior comparison are no longer assumed primary.
 - Relevant terminology:
   - **Analytics:** Observation-time calendar-period projection and comparison.
   - **Run details:** Runs selected by creation time (or established fallback), displaying lifetime totals.
   - **Coverage:** Whether analytical tracking fully or partially covers the selected UTC period.
   - **Cost quality:** Complete, partial, missing, local/no-bill, or mixed-currency evidence.
-  - **Primary exact facts:** Runtime/provider/model identity, token total/components, estimated cost/status, currency, and contribution share.
+  - **Primary exact facts:** Total tokens/spend, total input, standard input, cached-read input, cache hit rate/state, output, cost/coverage quality, and daily buckets.
+  - **Standard input:** Current `standardInputTokens` component charged at the standard/cache-miss rate; excludes cached reads and cache-write components. Final visible label remains a user decision.
 
 ## Source Log
 
@@ -52,6 +53,8 @@
 | 2026-08-29 | Product repository evidence | Updated `prototype-ticket.md` and Product correction message | Verify the user-requested bootstrap lineage | Accepted baseline implementation `6ba98942…` is durably integrated by fast-forward at prototype `origin/personal` tip `16638137…`; exploratory commits remain only on the ticket branch | Preserve exact repo/revision distinction in requirements |
 | 2026-08-29 | Product feasibility audit | `implementation-feasibility-audit.md`; `validation/contract-feasibility-audit.txt`; RV-003 review record | Prove proposed facts/actions exist in the current source-pin contracts | Audit maps remaining UI to current analytics/Run-details fields and derivations; unsupported Run-details model `Runs` count was removed; contract audit PASS and browser validation 16/16 | Preserve audit as supporting evidence; forbid invented fields |
 | 2026-08-29 | User / Product visualization | User preference relayed with RV-004 review/validation | Resolve the within-month trend form | User prefers a line/curve with visible point markers instead of vertical bars for daily usage within a month; RV-004 renders 29 points, no bars/fill, and complete accessible bucket text; browser validation 17/17 | Incorporate as REQ-015/AC-015; overall direction remains open |
+| 2026-08-29 | Product requirement impact / user feedback | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md` (`RI-001`) | Reconcile the user's real primary questions with RV-004 requirements | Contributor/driver ranking is unintuitive and non-primary; cache-aware composition and monthly/daily Tokens/Cost are primary; prior comparison is questionable | Revise affected Draft requirements and ask DEC-005–DEC-008 before RV-005 |
+| 2026-08-29 | Code / Contract | `token-usage-component-basis.ts`; `token-usage-cost-summary-aggregate.ts`; generated analytics fields; current cost-breakdown UI | Define cache/input terms without invention | `standardInputTokens` is the standard/cache-miss-rate component; gross input includes standard, cache-read, and applicable cache-write components; cache hit rate is cache-read/gross input; cache states distinguish positive/zero/not-reported/unsupported/unknown | Recommend precise `Standard input` label and truthful cache-state text |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -143,14 +146,14 @@ No live product server was launched in this requirements round. The user supplie
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — Requirements Visualization RV-004 returned; direction clarification pending; likely Final Prototype afterward`
-- Decision rationale: The user directly rejects the current visual quality, and material decisions about information hierarchy, control density, unavailable states, exact-table presentation, and Run-details cohesion cannot be resolved reliably in prose. RV-004 supplies two interactive, current-contract-feasible treatments and incorporates the resolved daily-point line form. Once the user selects or combines the overall direction, a final production-oriented prototype/UI-UX specification is likely justified because this is a material UI redesign.
-- Requirement / behavior IDs involved: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-015`; `DEC-001`–`DEC-004`.
-- Product decisions or uncertainties to resolve: Exact hierarchy; compact filter interaction; no-comparison treatment; breakdown/exact-evidence density; extent of Run-details restyle.
-- Critical journey and states: Open populated partial/no-comparison Analytics (matching supplied evidence); inspect totals/trend/drivers; open/close filters if applicable; switch to a full/comparable state; inspect exact driver evidence; switch to Run details; narrow the viewport/content.
+- Prototype needed: `Yes — RV-004 blocked by RI-001; focused requirements decisions needed before RV-005; likely Final Prototype afterward`
+- Decision rationale: RV-004 clarified trend form and feasibility but still centers contributor/comparison concepts the user does not consider primary. Requirements Engineering must first resolve optional-detail/terminology decisions, then Product Design must create RV-005 around monthly/daily Tokens/Cost and cache-aware composition.
+- Requirement / behavior IDs involved: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-016`; `DEC-002`, `DEC-004`, `DEC-005`–`DEC-008`.
+- Product decisions or uncertainties to resolve: Contributor identity retention; prior comparison retention/placement; Standard vs Uncached input label; user-facing identity grouping; compact filter interaction; extent of Run-details restyle.
+- Critical journey and states: Open populated current month; inspect monthly token/spend total; switch Tokens/Cost and read the daily point trend; understand total/standard/cached input, cache state/rate, and output; optionally open retained comparison/identity detail; inspect truthful cache-unavailable states; switch to Run details; narrow the viewport/content.
 - Known constraints and non-goals: Preserve analytics/Run-details contracts, truthfulness, accessibility, CSV, no redundant page title, manual Settings navigation; no backend/new-feature work.
 - Alternative evidence path / next action when no prototype is used: Not recommended; static prose would not resolve the user's visual-quality judgment.
-- Prototype request artifact / message reference: Requirements Visualization handoff delivered to Product Design; returned outcome `Requirements Visualization Ready`, current revision `RV-004`, review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`.
+- Prototype request artifact / message reference: Requirements Visualization handoff delivered to Product Design; current visualizer `RV-004`; returned Requirement Impact `RI-001` at `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md`; Product ticket blocked pending Requirements resolution.
 - Established separate prototype repository/root and ticket reference, when applicable: Canonical repository `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`; ticket `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; ticket branch `prototype/reqpkg-tsui-001`.
 
 ## Prototype Findings
@@ -158,13 +161,13 @@ No live product server was launched in this requirements round. The user supplie
 - Prototype package path: `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001`
 - Approved UI/UX specification path: `N/A — exploratory Requirements Visualization mode; no final ui-ux-spec.md`
 - Review URL: Direction A `http://127.0.0.1:3262/?direction=focus`; Direction B `http://127.0.0.1:3262/?direction=dense`; deterministic scenes may append `&scene=comparable`, `filters`, `evidence`, `runs`, or `narrow`.
-- Explicit user-confirmation reference: `N/A — awaiting user selection; Product correctly claims no approval.`
+- Explicit user-confirmation reference: Daily trend and primary-question feedback are recorded; no overall approval. RV-004 is explicitly blocked by RI-001.
 - Journeys and scenarios validated: Partial/no comparison, full/comparable, filters, exact evidence, Run details, constrained desktop, actual 390×844 narrow viewport, export feedback, keyboard navigation resizing.
 - Final visual-reference paths: `N/A — VIS-001–VIS-008 are exploratory only`; directory `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references`.
-- Product decisions supported by evidence: Direction A demonstrates focused hierarchy with compact filter disclosure and row evidence; Direction B demonstrates an always-visible dense explorer and ledger-first composition. RV-003 proves the remaining proposed facts/actions can bind to current source-pin contracts without backend changes. RV-004 resolves the within-month daily trend as a point-marked line with no bars or fill. Neither overall direction is selected.
-- Alternatives rejected or still open: RV-001 review chrome was removed; an unsupported illustrative Run-details model `Runs` count was removed in RV-003 rather than unsafely inferred; vertical daily bars and area fill are rejected by RV-004. Direction A/B/hybrid and remaining `DEC-001`–`DEC-004` choices remain open.
+- Product decisions supported by evidence: RV-003 proves current-contract feasibility; RV-004 resolves the daily point-marked line. RI-001 proves the preferred monthly/daily/cache-composition facts exist without backend changes and invalidates contributor ranking as primary.
+- Alternatives rejected or still open: RV-001 review chrome, unsupported `Runs` count, daily bars/fill, and primary `Dominant driver`/`Usage drivers` are rejected. Contributor/prior comparison optional retention, input label, grouping, filters, and Run-details extent remain open.
 - Mocked boundaries and production gaps: Synthetic local totals, costs, coverage/pricing, filters, drivers, runs, CSV feedback, and navigation width; no backend, persistence, production services/data, or file-writing export. Loading/error/empty/local/mixed/localization permutations remain protected by the accepted baseline rather than duplicated.
-- Requirements sections affected: UI/Experience links, Supplemental Artifacts, Readiness, Product Prototype Decision, and revision history; no behavior requirement changed yet.
+- Requirements sections affected: Problem/success, BEH-003, use cases, REQ-002/004–006/012/016, AC-001/003–006/011/016, scenarios, UI/Experience, open decisions, readiness, and revision history.
 
 ## Supplemental Artifact Inventory
 
@@ -174,11 +177,12 @@ No live product server was launched in this requirements round. The user supplie
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/requirements_engineering_team_a245406e04604ce28e52af265218b458/requirements_engineer_9dd659bd74f940469dd4932c55ebf19d/context_files/ctx_38f329cd9412__image.png` | User | Current breakdown/table evidence | Rejected data-density layout | REQ-006–REQ-009, AC-005–AC-008 | Current-state evidence | Not a desired-state approval |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` | Prior project | Preserve behavior semantics and document current visual baseline | Analytics | REQ-002–REQ-012 | Visual treatment superseded | Semantics remain approved |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Prior project | Truthful field/source contract | Analytics evidence | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Preserved | Previously approved |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md` | Product Design & Prototyping | Ticket, repository lineage, revisions, and review state | RV-004 | REQ-001–REQ-015 | Awaiting User Review | External Product artifact; not overall requirements approval |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | Product Design & Prototyping | Review URLs, state coverage, feasibility/trend validation, limitations, and next decision | RV-004 | REQ-001–REQ-015; DEC-001–DEC-004 | Ready for Review | REQ-015 clarified; overall direction exploratory |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Product Design & Prototyping | Direction/state visual evidence including daily-point trend | VIS-001–VIS-008 / RV-004 | REQ-001–REQ-015 | Exploratory | Trend form clarified; final direction non-normative until user decision/final prototype |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md` | Product Design & Prototyping | Ticket, repository lineage, revisions, and review/impact state | RV-004 / RI-001 | REQ-001–REQ-016 | Blocked pending Requirements resolution | External Product artifact; not overall requirements approval |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | Product Design & Prototyping | Review URLs, state coverage, feasibility/trend validation, limitations, and impact state | RV-004 / RI-001 | REQ-001–REQ-016; DEC-001–DEC-008 | Blocked | REQ-015 clarified; RV-004 hierarchy superseded pending RV-005 |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Product Design & Prototyping | Direction/state visual evidence including daily-point trend | VIS-001–VIS-008 / RV-004 | REQ-001–REQ-016 | Retained exploratory evidence | Trend form clarified; primary hierarchy blocked by RI-001 |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/implementation-feasibility-audit.md` | Product Design & Prototyping | Map every remaining proposed fact/action to current contracts and record unsupported-field correction | FA-001 / RV-003 | REQ-002–REQ-013 | PASS | Supporting evidence; not a final implementation design |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/validation/contract-feasibility-audit.txt` | Product Design & Prototyping | Machine-readable source-pin contract checks | RV-003 | REQ-002–REQ-013 | PASS | Supporting evidence |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md` | Product Design & Prototyping | RI-001 user-priority conflict and feasible cache-composition mapping | RI-001 / RV-004 | REQ-002, REQ-004–REQ-006, REQ-012, REQ-016 | Open — Requirements decision required | Blocks RV-005/final direction until resolved |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -191,15 +195,18 @@ No live product server was launched in this requirements round. The user supplie
 | RSK-002 | Risk | A polished primary view could leave Run details visibly legacy or expand scope excessively. | Requires explicit DEC-004 choice. | User | Active |
 | RSK-003 | Risk | Formatter cleanup could round an exact evidence surface or mismatch active locale. | Could reduce trust while improving appearance. | Downstream verification | Active |
 | RSK-004 | Risk | A responsive exact table may reintroduce inaccessible hidden data. | Exact evidence must remain exhaustive and keyboard/touch reachable. | Product Design/downstream validation | Active |
+| UNK-002 | Unknown | Whether contributor identity and prior comparison remain as optional detail, plus the final standard-input label/grouping controls. | Determines RV-005 scope and prevents Product from silently inventing hierarchy. | User / Requirements Engineering | Open — DEC-005–DEC-008 |
+| RSK-005 | Risk | Labeling `standardInputTokens` simply `Uncached input` may imply it includes cache-write tokens, which it does not. | Price-sensitive composition must reconcile truthfully. | User decision DEC-007; helper definition mandatory | Active |
 
 ## Requirement Implications
 
 - The work is not a greenfield analytics dashboard: the current behavior and data contract are mature and heavily constrained. The redesign must operate within those semantics.
-- The user's concern is best treated as a hierarchy/density/system-cohesion problem, not a request to add more analytics.
+- The user's concern is a hierarchy/density/system-cohesion problem and a clarification of which existing facts are primary, not a request for new analytics fields.
 - Absence states are currently truthful but visually over-weighted; future treatment must preserve text while reducing dead space.
 - The exact table is both an accessibility/evidence surface and a visual-density problem. The redesign may prioritize or disclose secondary columns, but cannot delete their information.
 - Prior user decisions about the page title and manual Settings navigation remain constraints.
 - Interactive product evidence is required before the requirements package can be approved.
+- Monthly/daily Tokens/Cost and cache-aware composition replace contributor ranking as the primary hierarchy. Exact identity/comparison contracts may remain available without being primary.
 
 ## Notes For Downstream Architecture Design Or Direct Implementation
 
