@@ -7,6 +7,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | Revision ID | Trigger / Round | Prior Status | Current Status | Affected Requirement / Behavior IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | RER-001 | Initial request, current-state/code investigation, and `origin/personal` bootstrap clarification | N/A | Draft — Requirements Visualization Needed | BEH-001–BEH-006; REQ-001–REQ-014; AC-001–AC-014; DEC-001–DEC-004 | Coherent requirements baseline and focused visualization decision set |
+| RER-002 | Product Design returned clean Requirements Visualization RV-002 and corrected durable prototype baseline integration | Draft — Requirements Visualization Needed | Draft — Requirements Visualization Review Pending | No requirement text changed; DEC-001–DEC-004 remain open | Linked review URLs, repository lineage, visual evidence, validation, and limitations; awaiting user selection |
 
 ## Revision Entries
 
@@ -24,3 +25,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture or direct-implementation route impact: No engineering route is allowed before the visual decisions, requirements approval, readiness gate, and routing assessment.
 - Remaining gaps, assumptions, or blocked decisions: `DEC-001` hierarchy, `DEC-002` control density, `DEC-003` exact-evidence presentation, `DEC-004` Run-details extent; `ASM-001`–`ASM-003` require confirmation.
 - Next action or recipient: Apply dynamic handoff rules for outcome `Requirements Visualization Needed`; Product Design & Prototyping should bootstrap the selected frontend from pinned `origin/personal`, produce a review-ready interactive visualizer, and return its review URL/artifacts to Requirements Engineering for user clarification.
+
+### RER-002 — Clean RV-002 visualization ready for user decision
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: Product Design returned `Requirements Visualization Ready` revision `RV-002`, including clean product-only Direction A/B URLs, `VIS-001`–`VIS-008`, 15/15 Chromium validation, and a follow-up repository correction confirming the accepted baseline is durably integrated on the prototype repository's `origin/personal`.
+- Prior authoritative status: `Draft — Requirements Visualization Needed`
+- Current authoritative status: `Draft — Requirements Visualization Review Pending`
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: Requirements and behavior text unchanged; `DEC-001`–`DEC-004` remain open; UI/Experience evidence and readiness metadata updated.
+- Why this baseline or revision was recorded: The requirements clarification now has stable interactive evidence, durable Product-owned paths, and verified repository lineage, but the user has not selected a direction.
+- Canonical artifact sections changed: Document Status; UI, Interaction, and Experience Requirements; Supplemental Artifacts; Readiness Check; Product Prototype Decision; Prototype Findings; Supplemental Artifact Inventory; Source Log.
+- Supplemental artifacts added, changed, or removed: Added Product ticket, RV-002 brief/review, visualizer source, validation, and exploratory visual-reference directory. No Product artifacts were copied or recreated.
+- Prototype evidence or product decisions incorporated: Direction A illustrates focused hierarchy/collapsible filters/expandable evidence; Direction B illustrates always-visible dense controls/ledger-first evidence. RV-001 review chrome is rejected and removed. No A/B decision is incorporated yet.
+- User approval impact: None. Product correctly records `Awaiting User Review`; neither exploratory direction is normative.
+- Downstream architecture or direct-implementation route impact: No change; engineering routing remains prohibited until user clarification, any final prototype, explicit approval, readiness, and routing assessment.
+- Remaining gaps, assumptions, or blocked decisions: User must choose A/B/hybrid and resolve filter disclosure, exact-evidence pattern, and Run-details unification under `DEC-001`–`DEC-004`.
+- Next action or recipient: User reviews `http://127.0.0.1:3262/?direction=focus` and `http://127.0.0.1:3262/?direction=dense`; Requirements Engineering records the decision and decides whether to request Final Prototype mode.

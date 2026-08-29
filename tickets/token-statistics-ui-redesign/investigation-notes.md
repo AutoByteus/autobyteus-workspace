@@ -10,8 +10,8 @@
 - Base or reference revision: Explicitly reset to `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Success. `personal` and `origin/personal` resolved to the same commit when the worktree was created; after the user clarification, the task branch was explicitly hard-reset to `origin/personal` and verified clean.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-001`
-- Investigation status: Coherent Draft baseline; `Requirements Visualization Needed`
+- Current requirements revision ID: `RER-002`
+- Investigation status: Requirements Visualization `RV-002` ready; awaiting user review and clarification
 
 ## Initial Request And Clarifications
 
@@ -48,6 +48,8 @@
 | 2026-08-29 | Prior artifact | `tickets/done/token-statistics-analytics/{requirements.md,ui-ux-spec.md,token-usage-analytics-data-contract.md}` | Recover prior approved behavior and visual baseline | Current implementation closely follows earlier question-first card dashboard; user now reopens/rejects its visual treatment, not its data semantics | Mark visual baseline superseded, semantics preserved |
 | 2026-08-29 | Prior artifact | `tickets/done/token-statistics-remove-header/requirements.md`; `tickets/done/token-statistics-full-width/{requirements.md,ui-ux-spec.md}` | Identify explicit layout decisions to preserve | No redundant content title; Settings navigation resize stays wholly manual | Include scope guardrail |
 | 2026-08-29 | Runtime evidence | Supplied screenshots inspected at original resolution | Examine actual populated rendering | Excess chrome/whitespace, weak prioritization, raw-looking precision, empty comparison prominence, and table scan/overflow issues are visible at a large desktop viewport | Use as current-state prototype baseline |
+| 2026-08-29 | Product artifact | `requirements-visualization-review.md`, RV-002 visual references, and Product return message | Evaluate exploratory future-state evidence | Two clean product-only directions cover partial/comparable/filter/evidence/Run-details/narrow states; 15/15 Chromium checks passed; no approval claimed | Ask user to select A/B/hybrid and clarify DEC-001–DEC-004 |
+| 2026-08-29 | Product repository evidence | Updated `prototype-ticket.md` and Product correction message | Verify the user-requested bootstrap lineage | Accepted baseline implementation `6ba98942…` is durably integrated by fast-forward at prototype `origin/personal` tip `16638137…`; exploratory commits remain only on the ticket branch | Preserve exact repo/revision distinction in requirements |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -139,28 +141,28 @@ No live product server was launched in this requirements round. The user supplie
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — Requirements Visualization now; likely Final Prototype after clarification`
-- Decision rationale: The user directly rejects the current visual quality, and material decisions about information hierarchy, control density, unavailable states, exact-table presentation, and Run-details cohesion cannot be resolved reliably in prose. The least expensive next evidence is an interactive exploratory visualizer comparing credible treatments. Once the direction is selected, a final production-oriented prototype/UI-UX specification is likely justified because this is a material UI redesign.
+- Prototype needed: `Yes — Requirements Visualization RV-002 returned; user clarification pending; likely Final Prototype afterward`
+- Decision rationale: The user directly rejects the current visual quality, and material decisions about information hierarchy, control density, unavailable states, exact-table presentation, and Run-details cohesion cannot be resolved reliably in prose. RV-002 now supplies two interactive treatments. Once the user selects or combines them, a final production-oriented prototype/UI-UX specification is likely justified because this is a material UI redesign.
 - Requirement / behavior IDs involved: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-014`; `DEC-001`–`DEC-004`.
 - Product decisions or uncertainties to resolve: Exact hierarchy; compact filter interaction; no-comparison treatment; breakdown/exact-evidence density; extent of Run-details restyle.
 - Critical journey and states: Open populated partial/no-comparison Analytics (matching supplied evidence); inspect totals/trend/drivers; open/close filters if applicable; switch to a full/comparable state; inspect exact driver evidence; switch to Run details; narrow the viewport/content.
 - Known constraints and non-goals: Preserve analytics/Run-details contracts, truthfulness, accessibility, CSV, no redundant page title, manual Settings navigation; no backend/new-feature work.
 - Alternative evidence path / next action when no prototype is used: Not recommended; static prose would not resolve the user's visual-quality judgment.
-- Prototype request artifact / message reference: Dynamic handoff message for outcome `Requirements Visualization Needed`; Product Design artifact paths pending.
-- Established separate prototype repository/root and ticket reference, when applicable: None yet. Product Design owns creation and records.
+- Prototype request artifact / message reference: Requirements Visualization handoff delivered to Product Design; returned outcome `Requirements Visualization Ready`, revision `RV-002`, review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`.
+- Established separate prototype repository/root and ticket reference, when applicable: Canonical repository `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`; ticket `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; ticket branch `prototype/reqpkg-tsui-001`.
 
 ## Prototype Findings
 
-- Prototype package path: `N/A — pending`
-- Approved UI/UX specification path: `N/A — pending`
-- Review URL: `N/A — pending`
-- Explicit user-confirmation reference: `N/A — pending`
-- Journeys and scenarios validated: `N/A — pending`
-- Final visual-reference paths: `N/A — pending`
-- Product decisions supported by evidence: `N/A — pending`
-- Alternatives rejected or still open: `DEC-001`–`DEC-004`
-- Mocked boundaries and production gaps: `N/A — pending`
-- Requirements sections affected: Requirements, Acceptance Criteria, UI/Experience, Open Decisions, Readiness, and later routing assessment.
+- Prototype package path: `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001`
+- Approved UI/UX specification path: `N/A — exploratory Requirements Visualization mode; no final ui-ux-spec.md`
+- Review URL: Direction A `http://127.0.0.1:3262/?direction=focus`; Direction B `http://127.0.0.1:3262/?direction=dense`; deterministic scenes may append `&scene=comparable`, `filters`, `evidence`, `runs`, or `narrow`.
+- Explicit user-confirmation reference: `N/A — awaiting user selection; Product correctly claims no approval.`
+- Journeys and scenarios validated: Partial/no comparison, full/comparable, filters, exact evidence, Run details, constrained desktop, actual 390×844 narrow viewport, export feedback, keyboard navigation resizing.
+- Final visual-reference paths: `N/A — VIS-001–VIS-008 are exploratory only`; directory `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references`.
+- Product decisions supported by evidence: Direction A demonstrates focused hierarchy with compact filter disclosure and row evidence; Direction B demonstrates an always-visible dense explorer and ledger-first composition. Neither is selected.
+- Alternatives rejected or still open: RV-001 review chrome was removed; Direction A/B/hybrid and `DEC-001`–`DEC-004` remain open.
+- Mocked boundaries and production gaps: Synthetic local totals, costs, coverage/pricing, filters, drivers, runs, CSV feedback, and navigation width; no backend, persistence, production services/data, or file-writing export. Loading/error/empty/local/mixed/localization permutations remain protected by the accepted baseline rather than duplicated.
+- Requirements sections affected: UI/Experience links, Supplemental Artifacts, Readiness, Product Prototype Decision, and revision history; no behavior requirement changed yet.
 
 ## Supplemental Artifact Inventory
 
@@ -170,6 +172,9 @@ No live product server was launched in this requirements round. The user supplie
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/requirements_engineering_team_a245406e04604ce28e52af265218b458/requirements_engineer_9dd659bd74f940469dd4932c55ebf19d/context_files/ctx_38f329cd9412__image.png` | User | Current breakdown/table evidence | Rejected data-density layout | REQ-006–REQ-009, AC-005–AC-008 | Current-state evidence | Not a desired-state approval |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` | Prior project | Preserve behavior semantics and document current visual baseline | Analytics | REQ-002–REQ-012 | Visual treatment superseded | Semantics remain approved |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Prior project | Truthful field/source contract | Analytics evidence | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Preserved | Previously approved |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md` | Product Design & Prototyping | Ticket, repository lineage, revisions, and review state | RV-002 | REQ-001–REQ-014 | Awaiting User Review | External Product artifact; not requirements approval |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | Product Design & Prototyping | Review URLs, state coverage, validation, limitations, and next decision | RV-002 | REQ-001–REQ-014; DEC-001–DEC-004 | Ready for Review | Exploratory clarification only |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Product Design & Prototyping | Direction/state visual evidence | VIS-001–VIS-008 | REQ-001–REQ-014 | Exploratory | Non-normative until user decision/final prototype |
 
 ## Assumptions, Unknowns, And Risks
 

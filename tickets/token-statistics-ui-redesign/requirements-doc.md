@@ -2,13 +2,13 @@
 
 ## Document Status
 
-- Status: `Draft — Requirements Visualization Needed`
+- Status: `Draft — Requirements Visualization Review Pending`
 - Package ID: `REQPKG-TSUI-001`
-- Current requirements revision ID: `RER-001`
+- Current requirements revision ID: `RER-002`
 - Request / ticket: Improve the professionalism and usability of Settings > Token Statistics
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-29
-- Approval state and reference: Not yet approved. The user described the current page as ugly and unprofessional and requested a better UI; the material visual decisions in `DEC-001`–`DEC-004` require interactive review before intended behavior can be approved.
+- Approval state and reference: Not yet approved. Product Design returned exploratory Requirements Visualization `RV-002`; the user must select or combine Direction A/B and resolve `DEC-001`–`DEC-004` before intended behavior can be approved.
 - Source baseline: `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 
 ## Problem And Desired Outcome
@@ -133,13 +133,13 @@
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: `Yes`
-- Linked UI/UX or interaction supplement: Current approved-but-superseded visual baseline is `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md`; it remains authoritative for analytics semantics, not for the rejected visual treatment. A new Requirements Visualization package is pending.
-- Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: `N/A — Requirements Visualization requested; no approved future-state prototype yet.`
-- Product prototype ticket record and folder (externally owned): `N/A — pending Product Design & Prototyping intake.`
-- Prototype revision or commit: `N/A — pending.`
-- UI/UX user-confirmation reference: `N/A — pending user review.`
-- Approved visual-reference baseline: The two user-supplied captures are the rejected current-state baseline, not desired-state references.
-- Normative visual and interaction details: Pending `DEC-001`–`DEC-004`. Requirements Visualization must compare credible treatments for hierarchy/density while preserving `REQ-002`–`REQ-014`.
+- Linked UI/UX or interaction supplement: Exploratory brief `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-brief.md` and review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`. The prior specification at `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` remains authoritative for analytics semantics, not for the rejected visual treatment.
+- Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: Exploratory visualizer source `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/visualizers/REQPKG-TSUI-001`; clean review URLs: Direction A `http://127.0.0.1:3262/?direction=focus`, Direction B `http://127.0.0.1:3262/?direction=dense`. Canonical prototype repository/root: `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree: `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`. No final `ui-ux-spec.md` exists in exploratory mode.
+- Product prototype ticket record and folder (externally owned): `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; folder `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001`.
+- Prototype revision or commit: Visualization `RV-002` at `0832b74ce830c5510bb9ffb5802095e4ee2a7567`; ticket metadata through `8b9157d3b8391bc8617ff202ccabf4db649d0ab2`. Accepted prototype baseline implementation `6ba98942c669329f70ba902db4a2880375ad52ad`; its verified fast-forward integration tip on the prototype repository's `origin/personal` is `16638137bdb8ebe627507dac6c3c8bdbc5edf9d6`.
+- UI/UX user-confirmation reference: `N/A — RV-002 awaits user selection; no approval claimed.`
+- Approved visual-reference baseline: None yet. `VIS-001`–`VIS-008` are exploratory clarification evidence, not normative final screenshots. The two user-supplied captures remain the rejected current-state baseline.
+- Normative visual and interaction details: Pending the user's Direction A/B/hybrid decision and `DEC-001`–`DEC-004` clarifications. `RV-002` presents a focused hierarchy and a dense explorer while preserving `REQ-002`–`REQ-014`.
 - Explicitly illustrative fixture content or permitted implementation variation: Populated fixture values in the supplied captures and visualization may be illustrative; data meanings, state labels, and cost/coverage semantics are not illustrative.
 - Required screens/states/transitions/feedback/responsive/accessibility outcomes: Desktop populated partial/no-comparison; desktop full/comparable; compact filter state; breakdown exact evidence; Run details; loading/empty/error; and narrow responsive behavior sufficient to resolve `DEC-001`–`DEC-004`.
 - Explicitly unresolved product decisions: `DEC-001`–`DEC-004`.
@@ -180,6 +180,8 @@
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/requirements_engineering_team_a245406e04604ce28e52af265218b458/requirements_engineer_9dd659bd74f940469dd4932c55ebf19d/context_files/ctx_38f329cd9412__image.png` | Rejected current-state breakdown/table capture | REQ-006–REQ-009 | Current-state evidence | User supplied; not a desired-state approval basis |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` | Existing analytics semantics and previously approved/current visual baseline | REQ-002–REQ-012 | Partially superseded | Semantics preserved; visual treatment reopened by this request |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Visible-field/source and truthfulness contract | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Preserved evidence | Previously approved and unchanged by this UI request |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | RV-002 review URLs, covered states, validation, limitations, and decision question | REQ-001–REQ-014; AC-001–AC-014 | Ready for user review | Exploratory only; no user approval yet |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Direction A/B and state captures `VIS-001`–`VIS-008` | REQ-001–REQ-014; DEC-001–DEC-004 | Exploratory visual evidence | Non-normative until a direction is selected and finalized |
 
 ## Assumptions
 
@@ -224,12 +226,12 @@
 - Scope and non-goals are clear: `Yes`
 - Requirements and acceptance criteria are testable and traceable: `Yes, at visualization-round fidelity`
 - Applicable scenarios are covered: `Yes`
-- Prototype and supplemental evidence is integrated consistently: `No — new visualization pending`
+- Prototype and supplemental evidence is integrated consistently: `Yes for exploratory visualization; final prototype N/A at this stage`
 - Applicable UI/UX approval and final visual-reference basis are recorded: `No — pending visualization and later final prototype`
 - Material assumptions and open decisions are visible: `Yes`
 - User approval received: `No`
 - Requirements package ready for downstream route: `No`
-- Remaining blocker: User review of a Product Design Requirements Visualization resolving `DEC-001`–`DEC-004`; if approved, Requirements Engineering will reconcile the decisions, determine whether a final production prototype is needed, and request explicit requirements approval.
+- Remaining blocker: User selection of Direction A, Direction B, or a hybrid, including control disclosure, exact-evidence treatment, and Run-details unification for `DEC-001`–`DEC-004`; Requirements Engineering will then reconcile the decisions and request final prototype production if warranted.
 
 ## Architecture Design Routing Assessment
 
