@@ -1,0 +1,69 @@
+STATIC/INTEGRATION BOUNDARY AUDIT — subteam-aggregate-status API-REV-002
+Integrated candidate: b56806e75d4753b6534ed905771e29a064e05b60
+Merge parents: ab6a1209c2f7864a2fff139538fc466ad2b78312 e664db7cfd725bc6fa1633b71c53954a3fe66e44
+Comparison base: origin/personal
+
+Checks:
+  [PASS] Integrated candidate identity
+         b56806e75d4753b6534ed905771e29a064e05b60
+  [PASS] Merge parent identity and order
+         ab6a1209c2f7864a2fff139538fc466ad2b78312 e664db7cfd725bc6fa1633b71c53954a3fe66e44
+  [PASS] Validated feature/test/fixture/README assets byte-equivalent to API-REV-001 candidate
+         no differences
+  [PASS] Aggregate locale entries preserved exactly in English and Simplified Chinese
+         en/running=Team status: Running; en/initializing=Team status: Initializing; en/error=Team status: Error; en/idle=Team status: Idle; en/offline=Team status: Offline; zh-CN/running=团队状态：运行中; zh-CN/initializing=团队状态：正在初始化; zh-CN/error=团队状态：错误; zh-CN/idle=团队状态：空闲; zh-CN/offline=团队状态：离线
+  [PASS] Nested-Team browser script is retained
+         node tests/e2e/nested-team-aggregate-status-probe.mjs
+  [PASS] Current-base existing-run browser script is retained
+         node tests/e2e/existing-run-model-config-probe.mjs
+  [PASS] Current-base package version preserved
+         1.4.62
+  [PASS] Current-base packageManager preserved
+         pnpm@10.28.1
+  [PASS] Package metadata differs from origin/personal only by nested-Team E2E script
+         semantic JSON comparison after removing intended script
+  [PASS] Production delta is limited to the three approved presentation/derivation files
+         autobyteus-web/components/workspace/history/NestedTeamAggregateStatusDot.vue, autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue, autobyteus-web/components/workspace/history/workspaceHistoryNestedTeamStatus.ts
+  [PASS] No API/backend/store/type/Electron/database/migration path changed by the feature
+         none
+  [PASS] No network/poller/persistence/lifecycle/readiness/interrupt/delete authority token added in production lines
+         none
+  [PASS] No unmerged index entries remain
+         none
+  [PASS] No uncommitted production/package/test change exists
+         none
+  [PASS] Integrated candidate diff has no whitespace errors
+         none
+
+Changed paths versus origin/personal:
+  autobyteus-web/README.md
+  autobyteus-web/components/workspace/history/NestedTeamAggregateStatusDot.vue
+  autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+  autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+  autobyteus-web/components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts
+  autobyteus-web/components/workspace/history/workspaceHistoryNestedTeamStatus.ts
+  autobyteus-web/localization/messages/en/workspace.ts
+  autobyteus-web/localization/messages/zh-CN/workspace.ts
+  autobyteus-web/package.json
+  autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue
+  autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs
+  tickets/in-progress/subteam-aggregate-status/api-e2e-coverage-investigation.md
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/browser/collapsed-live-idle.png
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/browser/evidence.json
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/browser/expanded-running.png
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/browser/localized-zh-cn.png
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/browser/nuxt.log
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/repository-build-and-guards.log
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/static-boundary-audit.txt
+  tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-001/typecheck-baseline.log
+  tickets/in-progress/subteam-aggregate-status/api-e2e-execution-coverage-report.md
+  tickets/in-progress/subteam-aggregate-status/api-e2e-revision-record.md
+  tickets/in-progress/subteam-aggregate-status/implementation-handoff.md
+  tickets/in-progress/subteam-aggregate-status/implementation-revision-record.md
+  tickets/in-progress/subteam-aggregate-status/investigation-notes.md
+  tickets/in-progress/subteam-aggregate-status/requirements-doc.md
+  tickets/in-progress/subteam-aggregate-status/requirements-revision-record.md
+
+Untracked Delivery-owned DR-001 artifacts were intentionally excluded from API/E2E ownership and staging.
+
+Result: PASS

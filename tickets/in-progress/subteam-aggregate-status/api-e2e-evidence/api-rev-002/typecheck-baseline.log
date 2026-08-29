@@ -1,0 +1,459 @@
+API-REV-002 integrated nuxi typecheck baseline
+HEAD: b56806e75d4753b6534ed905771e29a064e05b60
+Started: 2026-08-29T18:12:44Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+build/scripts/afterPack.ts(9,10): error TS1484: 'AfterPackContext' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+build/scripts/build.ts(1,17): error TS1484: 'Configuration' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+build/scripts/macSign.ts(5,37): error TS1484: 'MacSigningSubject' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+build/scripts/macSigningDiscovery.ts(3,37): error TS1484: 'MacSigningSubject' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+components/agentTeams/AgentTeamEdit.vue(82,5): error TS2783: 'id' is specified more than once, so this usage will be overwritten.
+components/agents/MarketplaceFilter.vue(60,32): error TS2307: Cannot find module '~/stores/agents' or its corresponding type declarations.
+components/agents/MarketplaceFilter.vue(87,59): error TS7006: Parameter 'agent' implicitly has an 'any' type.
+components/agents/RemoteAgentCard.vue(82,33): error TS2307: Cannot find module '~/stores/agents' or its corresponding type declarations.
+components/agents/RunningAgentCard.vue(59,15): error TS2305: Module '"~/generated/graphql"' has no exported member 'GetAgentRunsQuery'.
+components/agents/__tests__/GroupableTagInput.spec.ts(15,9): error TS2322: Type '{ type: string; tags: string[]; }' is not assignable to type 'GroupedSource | FlatSource'.
+  Type '{ type: string; tags: string[]; }' is not assignable to type 'FlatSource'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"flat"'.
+components/agents/__tests__/GroupableTagInput.spec.ts(28,9): error TS2322: Type '{ type: string; tags: string[]; }' is not assignable to type 'GroupedSource | FlatSource'.
+  Type '{ type: string; tags: string[]; }' is not assignable to type 'FlatSource'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"flat"'.
+components/agents/__tests__/GroupableTagInput.spec.ts(44,9): error TS2322: Type '{ type: string; tags: string[]; }' is not assignable to type 'GroupedSource | FlatSource'.
+  Type '{ type: string; tags: string[]; }' is not assignable to type 'FlatSource'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"flat"'.
+components/applications/__tests__/ApplicationIframeHost.spec.ts(198,9): error TS2739: Type '{ backendBaseUrl: null; backendNotificationsUrl: null; }' is missing the following properties from type 'ApplicationHostTransport': backendWebSocketBaseUrl, agentCommunicationWebSocketBaseUrl
+components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts(92,73): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(251,67): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(252,70): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(303,71): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(305,80): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationShell.spec.ts(335,78): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/__tests__/ApplicationSurface.spec.ts(218,79): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(159,9): error TS2322: Type '{ slotKey: string; name: string; allowedExecutionResourceKinds: string[]; supportedLaunchConfig: { AGENT_TEAM: { runtimeKind: boolean; llmModelIdentifier: boolean; llmConfig: boolean; workspaceRootPath: boolean; memberOverrides: { ...; }; }; }; }' is not assignable to type 'ApplicationExecutionResourceSlotDeclaration'.
+  Types of property 'allowedExecutionResourceKinds' are incompatible.
+    Type 'string[]' is not assignable to type 'ApplicationExecutionResourceKind[]'.
+      Type 'string' is not assignable to type 'ApplicationExecutionResourceKind'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(160,9): error TS4104: The type 'readonly [{ readonly memberAddress: "/researcher"; readonly displayName: "researcher"; readonly agentDefinitionId: "bundle-agent__researcher"; readonly runtimeKind: "codex_app_server"; readonly llmModelIdentifier: "gpt-5.6-luna"; readonly llmConfig: null; readonly provenance: { ...; }; }, { ...; }]' is 'readonly' and cannot be assigned to the mutable type 'ApplicationResolvedLaunchBaselineLeaf[]'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(213,9): error TS2322: Type '{ slotKey: string; name: string; allowedExecutionResourceKinds: string[]; supportedLaunchConfig: { AGENT_TEAM: { runtimeKind: boolean; llmModelIdentifier: boolean; llmConfig: boolean; workspaceRootPath: boolean; memberOverrides: { ...; }; }; }; }' is not assignable to type 'ApplicationExecutionResourceSlotDeclaration'.
+  Types of property 'allowedExecutionResourceKinds' are incompatible.
+    Type 'string[]' is not assignable to type 'ApplicationExecutionResourceKind[]'.
+      Type 'string' is not assignable to type 'ApplicationExecutionResourceKind'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(214,9): error TS4104: The type 'readonly [{ readonly memberAddress: "/researcher"; readonly displayName: "researcher"; readonly agentDefinitionId: "bundle-agent__researcher"; readonly runtimeKind: "codex_app_server"; readonly llmModelIdentifier: "gpt-5.6-luna"; readonly llmConfig: null; readonly provenance: { ...; }; }, { ...; }]' is 'readonly' and cannot be assigned to the mutable type 'ApplicationResolvedLaunchBaselineLeaf[]'.
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts(244,80): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/conversation/__tests__/AIMessage.spec.ts(139,5): error TS2554: Expected 4 arguments, but got 3.
+components/conversation/__tests__/AIMessage.spec.ts(141,5): error TS2554: Expected 4 arguments, but got 3.
+components/conversation/__tests__/AIMessage.spec.ts(161,5): error TS2554: Expected 4 arguments, but got 3.
+components/fileExplorer/MonacoEditor.vue(21,11): error TS2367: This comparison appears to be unintentional because the types 'WordWrapSetting' and '"wordwrapcolumn"' have no overlap.
+components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts(96,48): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts(49,27): error TS2339: Property 'style' does not exist on type 'VueNode<Element>'.
+components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts(53,29): error TS2339: Property 'style' does not exist on type 'VueNode<Element>'.
+components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts(110,20): error TS2339: Property 'focus' does not exist on type 'VueNode<Element>'.
+components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts(136,86): error TS2339: Property 'style' does not exist on type 'VueNode<Element>'.
+components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts(137,86): error TS2339: Property 'style' does not exist on type 'VueNode<Element>'.
+components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts(82,3): error TS2741: Property 'workspaceMetadata' is missing in type '{ agentDefinitionId: string; agentDefinitionName: string; llmModelIdentifier: string; runtimeKind: string; workspaceId: string; autoExecuteTools: false; skillAccessMode: "PRELOADED_ONLY"; isLocked: false; }' but required in type 'AgentRunConfig'.
+components/mobile/__tests__/MobileRemoteAccessShell.spec.ts(602,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(partialState: _DeepPartial<{ subject: { readonly kind: "agent_run"; readonly runId: string; } | { readonly kind: "team_run"; readonly rootTeamRunId: string; } | { readonly kind: "team_draft"; readonly draftId: TeamLaunchDraftId; } | null; }>): void', gave the following error.
+    Object literal may only specify known properties, and 'selectedRunId' does not exist in type '_DeepPartial<{ subject: { readonly kind: "agent_run"; readonly runId: string; } | { readonly kind: "team_run"; readonly rootTeamRunId: string; } | { readonly kind: "team_draft"; readonly draftId: TeamLaunchDraftId; } | null; }>'.
+  Overload 2 of 2, '(stateMutator: (state: { subject: { readonly kind: "agent_run"; readonly runId: string; } | { readonly kind: "team_run"; readonly rootTeamRunId: string; } | { readonly kind: "team_draft"; readonly draftId: TeamLaunchDraftId; } | null; }) => any): void', gave the following error.
+    Object literal may only specify known properties, and 'selectedRunId' does not exist in type '(state: { subject: { readonly kind: "agent_run"; readonly runId: string; } | { readonly kind: "team_run"; readonly rootTeamRunId: string; } | { readonly kind: "team_draft"; readonly draftId: TeamLaunchDraftId; } | null; }) => any'.
+components/server/ServerLogViewer.vue(130,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+components/settings/ExtensionsManager.vue(26,8): error TS2322: Type '(languageMode: VoiceInputLanguageMode) => Promise<void>' is not assignable to type '(value: string) => any'.
+  Types of parameters 'languageMode' and 'value' are incompatible.
+    Type 'string' is not assignable to type 'VoiceInputLanguageMode'.
+components/settings/messaging/__tests__/ScannableQrCodePanel.spec.ts(17,58): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/messaging/__tests__/ScannableQrCodePanel.spec.ts(28,62): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/messaging/__tests__/SetupVerificationCard.spec.ts(37,11): error TS2322: Type '"LAUNCH_PRESET_NOT_READY"' is not assignable to type '"GATEWAY_UNREACHABLE" | "GATEWAY_RUNTIME_CRITICAL" | "PROVIDER_NOT_READY" | "PERSONAL_MODE_DISABLED" | "SESSION_NOT_READY" | "SERVER_BINDING_API_UNAVAILABLE" | "BINDING_NOT_READY" | "TARGET_RUNTIME_NOT_ACTIVE" | "TARGET_OPTIONS_UNAVAILABLE" | "VERIFICATION_ERROR"'.
+components/settings/messaging/__tests__/SetupVerificationCard.spec.ts(54,82): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts(168,55): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts(177,55): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts(183,43): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/providerApiKey/customProvider/CustomProviderDetailsCard.vue(27,84): error TS2322: Type 'number | null' is not assignable to type 'string | number'.
+  Type 'null' is not assignable to type 'string | number'.
+components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts(142,7): error TS2322: Type '"OPENAI_COMPATIBLE"' is not assignable to type 'LLMProvider'.
+components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts(120,3): error TS2353: Object literal may only specify known properties, and 'memberAgentRunId' does not exist in type 'TokenUsageTaskStatisticsRow'.
+components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts(171,5): error TS2353: Object literal may only specify known properties, and 'memberAgentRunId' does not exist in type 'TokenUsageTaskStatisticsRow'.
+components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts(204,5): error TS2353: Object literal may only specify known properties, and 'memberAgentRunId' does not exist in type 'TokenUsageTaskStatisticsRow'.
+components/settings/token-usage/analytics/TokenUsageBreakdown.vue(95,3): error TS2322: Type 'number | null | undefined' is not assignable to type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts(124,46): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts(68,44): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/settings/token-usage/analytics/__tests__/tokenUsageAnalyticsTestFixtures.ts(19,3): error TS2820: Type '"known"' is not assignable to type 'TokenUsageCacheState'. Did you mean '"unknown"'?
+components/tools/McpServerFormModal.vue(378,48): error TS7006: Parameter 'arg' implicitly has an 'any' type.
+components/workspace/agent/__tests__/AgentEventMonitor.spec.ts(99,71): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "teamMember"; teamRunId: string; memberAddress: string; agentRunId: string; }'.
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts(228,5): error TS18047: 'state.artifact' is possibly 'null'.
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts(229,5): error TS18047: 'state.artifact' is possibly 'null'.
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts(230,5): error TS18047: 'state.artifact' is possibly 'null'.
+components/workspace/agent/__tests__/ArtifactList.spec.ts(36,5): error TS2322: Type 'Record<string, unknown>' is not assignable to type 'VNodeProps & { __v_isVNode?: undefined; [Symbol.iterator]?: undefined; } & Record<string, any> & { readonly artifacts: AgentArtifactViewerItem[]; readonly selectedArtifactId?: string | ... 1 more ... | undefined; readonly onSelect?: ((...args: any[]) => any) | undefined; } & AllowedComponentProps & ComponentCustomPr...'.
+  Property 'artifacts' is missing in type 'Record<string, unknown>' but required in type '{ readonly artifacts: AgentArtifactViewerItem[]; readonly selectedArtifactId?: string | null | undefined; readonly onSelect?: ((...args: any[]) => any) | undefined; }'.
+components/workspace/config/WorkspaceConfigForm.vue(22,44): error TS2307: Cannot find module '~/types/TeamLaunchProfile' or its corresponding type declarations.
+components/workspace/config/__tests__/ModelConfigSection.spec.ts(133,7): error TS2353: Object literal may only specify known properties, and 'modelId' does not exist in type 'Partial<{ readonly schema: UiModelConfigSchema | null; readonly modelConfig: Record<string, unknown> | null | undefined; readonly disabled?: boolean | undefined; ... 25 more ...; style?: unknown; } & { ...; } & VNodeProps & AllowedComponentProps & ComponentCustomProps>'.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(23,78): error TS2322: Type 'string' is not assignable to type 'null'.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(29,66): error TS2339: Property 'llmModelIdentifier' does not exist on type 'never'.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(33,7): error TS2322: Type 'string' is not assignable to type 'null'.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(65,11): error TS2698: Spread types may only be created from object types.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(175,9): error TS2698: Spread types may only be created from object types.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(183,72): error TS2345: Argument of type '{ code: string; message: string; subjectAddress: any; subjectKind: string; }' is not assignable to parameter of type 'never'.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(254,7): error TS2322: Type 'string' is not assignable to type 'null'.
+components/workspace/config/__tests__/RunConfigPanel.spec.ts(651,5): error TS7053: Element implicitly has an 'any' type because expression of type '"/Research"' can't be used to index type '{}'.
+  Property '/Research' does not exist on type '{}'.
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts(122,31): error TS2339: Property 'querySelector' does not exist on type '{}'.
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts(123,31): error TS2339: Property 'tagName' does not exist on type '{}'.
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts(124,31): error TS2339: Property 'querySelector' does not exist on type '{}'.
+components/workspace/config/__tests__/WorkspaceSelector.spec.ts(554,64): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts(278,26): error TS2322: Type 'string' is not assignable to type '{ reference_id: string; path: string; type: "audio" | "image" | "video" | "file" | "other" | "csv" | "pdf" | "excel"; created_at: string; updated_at: string; }'.
+components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts(21,5): error TS2353: Object literal may only specify known properties, and 'memberKind' does not exist in type 'TeamMemberTreeRow'.
+components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts(7,15): error TS2305: Module '"~/stores/fileExplorer"' has no exported member 'FileDataType'.
+components/workspace/team/__tests__/TeamDelegatedTaskItemDetail.spec.ts(17,18): error TS2322: Type 'string' is not assignable to type 'DelegatedTaskDisplayStatus'.
+components/workspace/team/__tests__/TeamWorkspaceView.spec.ts(83,60): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+components/workspace/tools/VncViewer.vue(18,12): error TS2322: Type '{}' is not assignable to type 'string'.
+components/workspace/tools/__tests__/BrowserPanel.spec.ts(66,56): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+composables/__tests__/useAccessibleDrawer.spec.ts(117,20): error TS2339: Property 'focus' does not exist on type 'VueNode<Element>'.
+composables/__tests__/useAccessibleDrawer.spec.ts(180,19): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(181,31): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(182,19): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(183,31): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(211,19): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(212,31): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(213,19): error TS2532: Object is possibly 'undefined'.
+composables/__tests__/useAccessibleDrawer.spec.ts(214,31): error TS2532: Object is possibly 'undefined'.
+composables/mobile/__tests__/useMobileFileContextCoordinator.spec.ts(42,3): error TS2353: Object literal may only specify known properties, and 'focusedMemberRouteKey' does not exist in type '{ kind: "team-run"; teamRunId: string; teamDefinitionId: string; title: string; summary: string; workspaceRootPath: string; focusedAgentRunId: string; isActive: boolean; lastActivityAt: string; statusLabel: string; }'.
+composables/mobile/__tests__/useMobileFileContextCoordinator.spec.ts(49,9): error TS2741: Property 'workspaceMetadata' is missing in type '{ agentDefinitionId: string; agentDefinitionName: string; llmModelIdentifier: string; runtimeKind: string; workspaceId: string; autoExecuteTools: false; skillAccessMode: "PRELOADED_ONLY"; isLocked: false; }' but required in type 'AgentRunConfig'.
+composables/mobile/__tests__/useMobileWorkCatalog.spec.ts(55,20): error TS2322: Type '{ teamRunId: string; teamDefinitionId: string; teamDefinitionName: string; coordinatorAddress: string; summary: string; createdAt: string; isActive: boolean; members: { memberAddress: string; displayName: string; agentRunId: string; status: AgentStatus; }[]; rootTeam: { ...; }; }' is not assignable to type 'TeamRunHistoryItem'.
+  Types of property 'rootTeam' are incompatible.
+    Type '{ kind: string; address: string; teamDefinitionId: string; teamRunId: string; coordinatorAddress: string; children: never[]; }' is missing the following properties from type 'Readonly<{ address: "/"; team_definition_id: string; team_definition_name: string; team_run_id: string; coordinator_address: string; default_launch_configuration: Readonly<{ runtime_kind: "autobyteus" | "codex_app_server" | "claude_agent_sdk"; ... 4 more ...; workspace_root_path: string | null; }>; members: readonly...': team_definition_id, team_definition_name, team_run_id, coordinator_address, and 3 more.
+composables/mobile/useMobileRunSetupController.ts(309,20): error TS2339: Property 'setWorkspaceLoading' does not exist on type 'Store<"agentRunConfig", AgentRunConfigState, { hasConfig(): boolean; isConfigured(): boolean; displayName(): string; }, { setTemplate(agentDefinition: AgentDefinition): void; ... 10 more ...; clearConfig(): void; }> | Store<...>'.
+  Property 'setWorkspaceLoading' does not exist on type 'Store<"teamRunConfig", TeamLaunchDraftState, { selectedDraft(state: { drafts: Map<TeamLaunchDraftId, { readonly draftId: TeamLaunchDraftId; readonly config: { ...; }; readonly teamWorkspaceAuthoringByTeamAddress: Readonly<...>; readonly focusedMemberAddress: string; readonly pendingInputsByMemberAddress: Readonly<.....'.
+composables/mobile/useMobileRunSetupController.ts(316,22): error TS2339: Property 'setWorkspaceLoaded' does not exist on type 'Store<"agentRunConfig", AgentRunConfigState, { hasConfig(): boolean; isConfigured(): boolean; displayName(): string; }, { setTemplate(agentDefinition: AgentDefinition): void; ... 10 more ...; clearConfig(): void; }> | Store<...>'.
+  Property 'setWorkspaceLoaded' does not exist on type 'Store<"teamRunConfig", TeamLaunchDraftState, { selectedDraft(state: { drafts: Map<TeamLaunchDraftId, { readonly draftId: TeamLaunchDraftId; readonly config: { ...; }; readonly teamWorkspaceAuthoringByTeamAddress: Readonly<...>; readonly focusedMemberAddress: string; readonly pendingInputsByMemberAddress: Readonly<.....'.
+composables/mobile/useMobileRunSetupController.ts(323,22): error TS2339: Property 'setWorkspaceError' does not exist on type 'Store<"agentRunConfig", AgentRunConfigState, { hasConfig(): boolean; isConfigured(): boolean; displayName(): string; }, { setTemplate(agentDefinition: AgentDefinition): void; ... 10 more ...; clearConfig(): void; }> | Store<...>'.
+  Property 'setWorkspaceError' does not exist on type 'Store<"teamRunConfig", TeamLaunchDraftState, { selectedDraft(state: { drafts: Map<TeamLaunchDraftId, { readonly draftId: TeamLaunchDraftId; readonly config: { ...; }; readonly teamWorkspaceAuthoringByTeamAddress: Readonly<...>; readonly focusedMemberAddress: string; readonly pendingInputsByMemberAddress: Readonly<.....'.
+composables/useVncSession.ts(24,43): error TS2345: Argument of type 'string | { value: string; }' is not assignable to parameter of type 'ComputedRef<string> | MaybeRef<string>'.
+  Type '{ value: string; }' is not assignable to type 'ComputedRef<string> | MaybeRef<string>'.
+    Type '{ value: string; }' is missing the following properties from type 'WritableComputedRef<string, string>': [WritableComputedRefSymbol], effect, [ComputedRefSymbol], [RefSymbol]
+composables/useVncSession.ts(25,48): error TS2345: Argument of type 'string | { value: string; }' is not assignable to parameter of type 'ComputedRef<string> | MaybeRef<string>'.
+  Type '{ value: string; }' is not assignable to type 'ComputedRef<string> | MaybeRef<string>'.
+    Type '{ value: string; }' is missing the following properties from type 'WritableComputedRef<string, string>': [WritableComputedRefSymbol], effect, [ComputedRefSymbol], [RefSymbol]
+electron/extensions/__tests__/managedExtensionService.realRelease.spec.ts(18,3): error TS2322: Type 'ArrayBuffer | SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+  Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+electron/server/__tests__/BaseServerManager.spec.ts(99,13): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseServerManager'.
+electron/server/__tests__/BaseServerManager.spec.ts(103,19): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseServerManager'.
+electron/server/__tests__/BaseServerManager.spec.ts(138,33): error TS2345: Argument of type 'PathLike' is not assignable to parameter of type 'string'.
+  Type 'URL' is not assignable to type 'string'.
+electron/server/__tests__/BaseServerManager.spec.ts(138,65): error TS2345: Argument of type 'PathLike' is not assignable to parameter of type 'string'.
+  Type 'URL' is not assignable to type 'string'.
+electron/server/__tests__/BaseServerManager.spec.ts(145,26): error TS2339: Property 'mockImplementationOnce' does not exist on type '(path: PathLike, options?: RmOptions | undefined) => Promise<void>'.
+electron/server/__tests__/platformServerEnvironment.spec.ts(61,10): error TS2352: Conversion of type 'EventEmitter<DefaultEventMap> & { pid: number; exitCode: null; signalCode: null; stdout: PassThrough; stderr: PassThrough; }' to type 'ChildProcess' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'EventEmitter<DefaultEventMap> & { pid: number; exitCode: null; signalCode: null; stdout: PassThrough; stderr: PassThrough; }' is missing the following properties from type 'ChildProcess': stdin, stdio, killed, connected, and 8 more.
+electron/server/services/__tests__/AppDataService.spec.ts(92,35): error TS2345: Argument of type 'PathLike' is not assignable to parameter of type 'string'.
+  Type 'URL' is not assignable to type 'string'.
+electron/server/services/__tests__/AppDataService.spec.ts(250,28): error TS2339: Property 'mockImplementation' does not exist on type '(path: PathLike, options?: RmOptions | undefined) => Promise<void>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(29,23): error TS2339: Property 'mockResolvedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(45,23): error TS2339: Property 'mockResolvedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(59,23): error TS2339: Property 'mockRejectedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(70,23): error TS2339: Property 'mockRejectedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(79,23): error TS2339: Property 'mockRejectedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(93,23): error TS2339: Property 'mockResolvedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(109,23): error TS2339: Property 'mockResolvedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(120,10): error TS2339: Property 'mockRejectedValueOnce' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+electron/server/services/__tests__/HealthChecker.spec.ts(129,23): error TS2339: Property 'mockRejectedValue' does not exist on type '<T = any, R = AxiosResponse<T, any, {}>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>'.
+generated/graphql.ts(2,38): error TS2307: Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+generated/graphql.ts(3,36): error TS2307: Cannot find module '@vue/composition-api' or its corresponding type declarations.
+layouts/__tests__/default-drawer.spec.ts(128,73): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+layouts/__tests__/default-drawer.spec.ts(201,25): error TS2339: Property 'focus' does not exist on type 'VueNode<Element>'.
+localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts(39,14): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "workspace.runModelConfig.loading": string; "workspace.runModelConfig.runUnavailable": string; "workspace.runModelConfig.save": string; "workspace.runModelConfig.saving": string; "workspace.runModelConfig.verifying": string; ... 176 more ...; "workspace.components.workspace.skillImprovement.SkillImprovementCompose...'.
+  No index signature with a parameter of type 'string' was found on type '{ "workspace.runModelConfig.loading": string; "workspace.runModelConfig.runUnavailable": string; "workspace.runModelConfig.save": string; "workspace.runModelConfig.saving": string; "workspace.runModelConfig.verifying": string; ... 176 more ...; "workspace.components.workspace.skillImprovement.SkillImprovementCompose...'.
+localization/messages/__tests__/teamTaskLifecycleCatalog.spec.ts(40,14): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "workspace.runModelConfig.loading": string; "workspace.runModelConfig.runUnavailable": string; "workspace.runModelConfig.save": string; "workspace.runModelConfig.saving": string; "workspace.runModelConfig.verifying": string; ... 176 more ...; "workspace.components.workspace.skillImprovement.SkillImprovementCompose...'.
+  No index signature with a parameter of type 'string' was found on type '{ "workspace.runModelConfig.loading": string; "workspace.runModelConfig.runUnavailable": string; "workspace.runModelConfig.save": string; "workspace.runModelConfig.saving": string; "workspace.runModelConfig.verifying": string; ... 176 more ...; "workspace.components.workspace.skillImprovement.SkillImprovementCompose...'.
+middleware/__tests__/feature-flags.global.spec.ts(29,11): error TS2554: Expected 2 arguments, but got 1.
+middleware/__tests__/feature-flags.global.spec.ts(38,11): error TS2554: Expected 2 arguments, but got 1.
+middleware/__tests__/feature-flags.global.spec.ts(46,11): error TS2554: Expected 2 arguments, but got 1.
+middleware/__tests__/feature-flags.global.spec.ts(52,11): error TS2554: Expected 2 arguments, but got 1.
+modules/devhandler-compat.ts(14,31): error TS2345: Argument of type 'string' is not assignable to parameter of type 'HookKeys<NuxtHooks>'.
+modules/electron/index.ts(8,8): error TS2307: Cannot find module 'vite' or its corresponding type declarations.
+modules/electron/index.ts(53,26): error TS2540: Cannot assign to 'plugins' because it is a read-only property.
+modules/electron/index.ts(193,59): error TS2307: Cannot find module 'vue-bundle-renderer' or its corresponding type declarations.
+nuxt.config.ts(254,3): error TS1117: An object literal cannot have multiple properties with the same name.
+nuxt.config.ts(260,53): error TS2345: Argument of type '{ postcss: { plugins: { 'postcss-import': {}; 'tailwindcss/nesting': {}; tailwindcss: {}; autoprefixer: {}; }; }; compatibilityDate: string; build: { transpile: string[]; }; ignore: string[]; hooks?: { 'build:before': () => void; 'nitro:init': (nitro: any) => void; 'nitro:build:before': () => void; } | undefined; .....' is not assignable to parameter of type 'NuxtConfig'.
+  The types of 'vite.worker.format' are incompatible between these types.
+    Type 'string' is not assignable to type '"es" | "iife" | undefined'.
+pages/agent-teams.vue(96,23): error TS2551: Property 'clearReturnToTeam' does not exist on type 'AgentTeamNavigationPayload'. Did you mean 'returnToTeam'?
+  Property 'clearReturnToTeam' does not exist on type '{ target: "agents"; view: "detail"; id: string; returnToTeam: string; }'.
+plugins/30.apollo.client.ts(1,67): error TS2307: Cannot find module '@apollo/client/core' or its corresponding type declarations.
+plugins/30.apollo.client.ts(2,25): error TS2307: Cannot find module '@apollo/client/link/error' or its corresponding type declarations.
+plugins/30.apollo.client.ts(27,32): error TS7031: Binding element 'graphQLErrors' implicitly has an 'any' type.
+plugins/30.apollo.client.ts(27,47): error TS7031: Binding element 'networkError' implicitly has an 'any' type.
+plugins/30.apollo.client.ts(27,61): error TS7031: Binding element 'operation' implicitly has an 'any' type.
+plugins/30.apollo.client.ts(29,30): error TS7006: Parameter 'error' implicitly has an 'any' type.
+plugins/30.apollo.client.ts(51,36): error TS7006: Parameter 'operation' implicitly has an 'any' type.
+plugins/30.apollo.client.ts(51,47): error TS7006: Parameter 'forward' implicitly has an 'any' type.
+plugins/__tests__/apollo.client.spec.ts(3,21): error TS2307: Cannot find module '@apollo/client/core' or its corresponding type declarations.
+services/agentStreaming/__tests__/TeamStreamingService.spec.ts(164,52): error TS2339: Property 'segments' does not exist on type 'AIMessage | UserMessage'.
+  Property 'segments' does not exist on type 'UserMessage'.
+services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts(36,128): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }'.
+services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts(43,92): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }'.
+services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts(46,92): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }'.
+services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts(80,17): error TS2345: Argument of type '{ readonly kind: "standalone"; readonly context: AgentContext; readonly runId: "member-run-1"; readonly teamRunId?: undefined; readonly memberRouteKey?: undefined; readonly memberRunId?: undefined; } | { ...; }' is not assignable to parameter of type 'AgentStreamProjectionTarget'.
+  Type '{ readonly kind: "team_member"; readonly context: AgentContext; readonly teamRunId: "team-1"; readonly memberRouteKey: "worker"; readonly memberRunId: "member-run-1"; readonly runId?: undefined; }' is not assignable to type 'AgentStreamProjectionTarget'.
+    Type '{ readonly kind: "team_member"; readonly context: AgentContext; readonly teamRunId: "team-1"; readonly memberRouteKey: "worker"; readonly memberRunId: "member-run-1"; readonly runId?: undefined; }' is missing the following properties from type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }': agentRunId, memberAddress
+services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts(109,3): error TS2554: Expected 4 arguments, but got 3.
+services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts(130,56): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }'.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(115,9): error TS2554: Expected 4 arguments, but got 3.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(451,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.
+  Type '{ code: string; message: string; }' is not assignable to type 'Readonly<{ code: string; message: string; details?: string | null | undefined; provider_status?: string | number | null | undefined; provider_code?: string | null | undefined; provider_request_id?: string | ... 1 more ... | undefined; }> & Readonly<...>'.
+    Type '{ code: string; message: string; }' is missing the following properties from type 'Readonly<{ error_scope: null; error_effect: null; turn_id: null; }>': error_scope, error_effect, turn_id
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(466,7): error TS2554: Expected 4 arguments, but got 3.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(473,19): error TS2345: Argument of type '{ code: string; message: string; }' is not assignable to parameter of type 'ErrorPayload'.
+  Type '{ code: string; message: string; }' is not assignable to type 'Readonly<{ code: string; message: string; details?: string | null | undefined; provider_status?: string | number | null | undefined; provider_code?: string | null | undefined; provider_request_id?: string | ... 1 more ... | undefined; }> & Readonly<...>'.
+    Type '{ code: string; message: string; }' is missing the following properties from type 'Readonly<{ error_scope: null; error_effect: null; turn_id: null; }>': error_scope, error_effect, turn_id
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(495,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.
+  Type '{ code: string; message: string; }' is not assignable to type 'Readonly<{ code: string; message: string; details?: string | null | undefined; provider_status?: string | number | null | undefined; provider_code?: string | null | undefined; provider_request_id?: string | ... 1 more ... | undefined; }> & Readonly<...>'.
+    Type '{ code: string; message: string; }' is missing the following properties from type 'Readonly<{ error_scope: null; error_effect: null; turn_id: null; }>': error_scope, error_effect, turn_id
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(528,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.
+  Type '{ code: string; message: string; }' is not assignable to type 'Readonly<{ code: string; message: string; details?: string | null | undefined; provider_status?: string | number | null | undefined; provider_code?: string | null | undefined; provider_request_id?: string | ... 1 more ... | undefined; }> & Readonly<...>'.
+    Type '{ code: string; message: string; }' is missing the following properties from type 'Readonly<{ error_scope: null; error_effect: null; turn_id: null; }>': error_scope, error_effect, turn_id
+services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts(34,7): error TS2345: Argument of type '{ content: string; received_at: string; message_id: string; dedupe_key: string; context_file_paths: never[]; }' is not assignable to parameter of type 'MemberInputMessagePayload'.
+  Property 'recipient_agent_run_id' is missing in type '{ content: string; received_at: string; message_id: string; dedupe_key: string; context_file_paths: never[]; }' but required in type 'MemberInputMessagePayload'.
+services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts(56,7): error TS2345: Argument of type '{ content: string; message_id: string; dedupe_key: string; context_file_paths: { path: string; type: string; }[]; }' is not assignable to parameter of type 'MemberInputMessagePayload'.
+  Property 'recipient_agent_run_id' is missing in type '{ content: string; message_id: string; dedupe_key: string; context_file_paths: { path: string; type: string; }[]; }' but required in type 'MemberInputMessagePayload'.
+services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts(79,7): error TS2345: Argument of type '{ content: string; message_id: string; dedupe_key: string; context_file_paths: never[]; }' is not assignable to parameter of type 'MemberInputMessagePayload'.
+  Property 'recipient_agent_run_id' is missing in type '{ content: string; message_id: string; dedupe_key: string; context_file_paths: never[]; }' but required in type 'MemberInputMessagePayload'.
+services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts(97,7): error TS2345: Argument of type '{ content: string; message_id: string; context_file_paths: { path: string; type: string; }[]; }' is not assignable to parameter of type 'MemberInputMessagePayload'.
+  Property 'recipient_agent_run_id' is missing in type '{ content: string; message_id: string; context_file_paths: { path: string; type: string; }[]; }' but required in type 'MemberInputMessagePayload'.
+services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts(368,7): error TS2345: Argument of type '{ code: string; message: string; }' is not assignable to parameter of type 'ErrorPayload'.
+  Type '{ code: string; message: string; }' is not assignable to type 'Readonly<{ code: string; message: string; details?: string | null | undefined; provider_status?: string | number | null | undefined; provider_code?: string | null | undefined; provider_request_id?: string | ... 1 more ... | undefined; }> & Readonly<...>'.
+    Type '{ code: string; message: string; }' is missing the following properties from type 'Readonly<{ error_scope: null; error_effect: null; turn_id: null; }>': error_scope, error_effect, turn_id
+services/agentStreaming/transport/__tests__/WebSocketClient.spec.ts(7,30): error TS2729: Property 'CONNECTING' is used before its initialization.
+services/eventMonitor/__tests__/recentEventMonitorMutationCoordinator.spec.ts(30,3): error TS2554: Expected 4 arguments, but got 3.
+services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts(26,3): error TS2554: Expected 4 arguments, but got 3.
+services/fileExplorerStreaming/FileExplorerStreamingService.ts(172,81): error TS2339: Property 'type' does not exist on type 'never'.
+services/qr/qrCodeDataUrlService.ts(1,20): error TS7016: Could not find a declaration file for module 'qrcode'. '/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/qrcode@1.5.4/node_modules/qrcode/lib/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/qrcode` if it exists or add a new declaration (.d.ts) file containing `declare module 'qrcode';`
+services/runHydration/__tests__/runProjectionConversation.spec.ts(20,11): error TS2353: Object literal may only specify known properties, and 'status' does not exist in type 'RunProjectionConversationEntry'.
+services/runHydration/__tests__/runProjectionConversation.spec.ts(63,11): error TS2353: Object literal may only specify known properties, and 'status' does not exist in type 'RunProjectionConversationEntry'.
+services/runHydration/__tests__/runProjectionConversation.spec.ts(76,11): error TS2353: Object literal may only specify known properties, and 'status' does not exist in type 'RunProjectionConversationEntry'.
+services/runHydration/__tests__/taskDelegationGraphqlDtoProjection.spec.ts(71,5): error TS2322: Type '"task-agent-run"' is not assignable to type 'null'.
+services/runSubmission/__tests__/localUserSubmission.spec.ts(90,9): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; teamRunId: string; agentRunId: string; }'.
+services/runSubmission/__tests__/localUserSubmission.spec.ts(165,9): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; teamRunId: string; agentRunId: string; }'.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(164,27): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.
+stores/__tests__/agentContextsStore.spec.ts(24,3): error TS2353: Object literal may only specify known properties, and 'prompts' does not exist in type 'AgentDefinition'.
+stores/__tests__/agentContextsStore.spec.ts(250,22): error TS2339: Property 'isSubscribed' does not exist on type '{ config: { agentDefinitionId: string; agentDefinitionName: string; agentAvatarUrl?: string | null | undefined; llmModelIdentifier: string; runtimeKind: string; workspaceId: string | null; ... 4 more ...; llmConfig?: Record<...> | ... 1 more ... | undefined; }; ... 5 more ...; readonly lastAIMessage: { ...; } | unde...'.
+stores/__tests__/agentTeamRunStore.spec.ts(792,68): error TS2339: Property 'repairAddresses' does not exist on type 'Readonly<TeamRunFormModel>'.
+  Property 'repairAddresses' does not exist on type 'Readonly<Readonly<{ mode: "existing"; definitionLabel: string; root: ExistingTeamScopeFormModel; members: readonly ExistingTeamFormMemberNode[]; isActive: boolean; modelConfigEditable: boolean; modelConfigReason: string | null; saving: boolean; }>>'.
+stores/__tests__/appUpdateStore.spec.ts(76,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/appUpdateStore.spec.ts(245,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/appUpdateStore.spec.ts(287,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/appUpdateStore.spec.ts(296,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/appUpdateStore.spec.ts(336,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/appUpdateStore.spec.ts(386,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/appUpdateStore.spec.ts(387,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/browserShellStore.spec.ts(230,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/existingRunModelConfigStore.spec.ts(149,7): error TS2322: Type '{ editable: boolean; reason: string; }' is not assignable to type '{ editable: boolean; reason: null; }'.
+  Types of property 'reason' are incompatible.
+    Type 'string' is not assignable to type 'null'.
+stores/__tests__/existingRunModelConfigStore.spec.ts(167,7): error TS2322: Type '{ editable: boolean; reason: string; }' is not assignable to type '{ editable: boolean; reason: null; }'.
+  Types of property 'reason' are incompatible.
+    Type 'string' is not assignable to type 'null'.
+stores/__tests__/extensionsStore.spec.ts(147,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/__tests__/messagingChannelBindingOptionsStore.spec.ts(74,11): error TS2322: Type 'null' is not assignable to type 'string'.
+stores/__tests__/messagingChannelBindingOptionsStore.spec.ts(83,11): error TS2322: Type 'null' is not assignable to type 'ExternalChannelTeamLaunchPresetModel'.
+stores/__tests__/messagingChannelBindingOptionsStore.spec.ts(105,11): error TS2322: Type 'null' is not assignable to type 'string'.
+stores/__tests__/messagingChannelBindingOptionsStore.spec.ts(114,11): error TS2322: Type 'null' is not assignable to type 'ExternalChannelTeamLaunchPresetModel'.
+stores/__tests__/messagingChannelBindingSetupStore.spec.ts(84,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingChannelBindingSetupStore.spec.ts(129,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingChannelBindingSetupStore.spec.ts(180,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingChannelBindingSetupStore.spec.ts(224,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingChannelBindingSetupStore.spec.ts(282,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingChannelBindingSetupStore.spec.ts(326,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(163,9): error TS2322: Type '"WECHAT"' is not assignable to type '"DISCORD"'.
+stores/__tests__/messagingVerificationStore.spec.ts(164,9): error TS2322: Type '"PERSONAL_SESSION"' is not assignable to type '"BUSINESS_API"'.
+stores/__tests__/messagingVerificationStore.spec.ts(251,9): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(253,9): error TS2322: Type 'null' is not assignable to type '{ workspaceRootPath: string; llmModelIdentifier: string; runtimeKind: string; autoExecuteTools: boolean; skillAccessMode: "PRELOADED_ONLY"; llmConfig: null; } | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(261,43): error TS2367: This comparison appears to be unintentional because the types '"GATEWAY_UNREACHABLE" | "GATEWAY_RUNTIME_CRITICAL" | "PROVIDER_NOT_READY" | "PERSONAL_MODE_DISABLED" | "SESSION_NOT_READY" | "SERVER_BINDING_API_UNAVAILABLE" | "BINDING_NOT_READY" | "TARGET_RUNTIME_NOT_ACTIVE" | "TARGET_OPTIONS_UNAVAILABLE" | "VERIFICATION_ERROR"' and '"LAUNCH_PRESET_NOT_READY"' have no overlap.
+stores/__tests__/messagingVerificationStore.spec.ts(286,9): error TS2322: Type '"TELEGRAM"' is not assignable to type '"DISCORD"'.
+stores/__tests__/messagingVerificationStore.spec.ts(289,9): error TS2322: Type '"TEAM"' is not assignable to type '"AGENT"'.
+stores/__tests__/messagingVerificationStore.spec.ts(290,9): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(291,9): error TS2322: Type 'string' is not assignable to type 'null | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(292,9): error TS2322: Type 'null' is not assignable to type '{ workspaceRootPath: string; llmModelIdentifier: string; runtimeKind: string; autoExecuteTools: boolean; skillAccessMode: "PRELOADED_ONLY"; llmConfig: null; } | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(293,9): error TS2322: Type '{ workspaceRootPath: string; llmModelIdentifier: string; runtimeKind: string; autoExecuteTools: false; skillAccessMode: string; llmConfig: null; }' is not assignable to type 'null | undefined'.
+stores/__tests__/messagingVerificationStore.spec.ts(420,9): error TS2322: Type '"TELEGRAM"' is not assignable to type '"DISCORD"'.
+stores/__tests__/runHistoryStore.spec.ts(2254,9): error TS2353: Object literal may only specify known properties, and 'metadata' does not exist in type 'TeamRunResumeConfigPayload'.
+stores/__tests__/runHistoryTeamExecutionRows.spec.ts(149,13): error TS2322: Type '"task_team"' is not assignable to type '"task_team_agent" | "task_team_member"'.
+stores/__tests__/workspaceStore.spec.ts(476,7): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+stores/agentDefinitionOptionsStore.ts(30,36): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/appDataMigrationsStore.ts(78,39): error TS7006: Parameter 'error' implicitly has an 'any' type.
+stores/appDataMigrationsStore.ts(105,39): error TS7006: Parameter 'error' implicitly has an 'any' type.
+stores/audioStore.ts(69,35): error TS2322: Type '{ [x: number]: number; readonly BYTES_PER_ELEMENT: number; readonly buffer: { readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => ArrayBuffer; ... 6 more ...; readonly [Symbol.toStringTag]: "ArrayBuffer"; } | { ...; }; ... 40 more ...; readonly [Symbol.toStringTag]: "Uint8Ar...' is not assignable to type 'BlobPart'.
+  Type '{ [x: number]: number; readonly BYTES_PER_ELEMENT: number; readonly buffer: { readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => ArrayBuffer; ... 6 more ...; readonly [Symbol.toStringTag]: "ArrayBuffer"; } | { ...; }; ... 40 more ...; readonly [Symbol.toStringTag]: "Uint8Ar...' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type '{ readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => ArrayBuffer; readonly maxByteLength: number; readonly resizable: boolean; ... 4 more ...; readonly [Symbol.toStringTag]: "ArrayBuffer"; } | { ...; }' is not assignable to type 'ArrayBuffer'.
+        Type '{ readonly byteLength: number; slice: (begin?: number | undefined, end?: number | undefined) => SharedArrayBuffer; readonly growable: boolean; readonly maxByteLength: number; grow: (newByteLength?: number | undefined) => void; readonly [Symbol.toStringTag]: "SharedArrayBuffer"; }' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+stores/audioStore.ts(139,86): error TS2345: Argument of type 'ArrayBufferLike' is not assignable to parameter of type 'ArrayBuffer'.
+  Type 'SharedArrayBuffer' is missing the following properties from type 'ArrayBuffer': resizable, resize, detached, transfer, transferToFixedLength
+stores/existingRunModelConfigStore.ts(119,27): error TS2339: Property 'runId' does not exist on type '{ readonly kind: "agent"; readonly runId: string; } | { readonly kind: "team"; readonly teamRunId: string; }'.
+  Property 'runId' does not exist on type '{ readonly kind: "team"; readonly teamRunId: string; }'.
+stores/existingRunModelConfigStore.ts(120,27): error TS2339: Property 'teamRunId' does not exist on type '{ readonly kind: "agent"; readonly runId: string; } | { readonly kind: "team"; readonly teamRunId: string; }'.
+  Property 'teamRunId' does not exist on type '{ readonly kind: "agent"; readonly runId: string; }'.
+stores/fileExplorer.ts(22,7): error TS2322: Type '{ tree: { name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }; nodeIdToNode: Record<...>; ... 20 more ...; recentStructuralChangeEchoes: { ...; }[]; } | null' is not assignable to type 'WorkspaceFileExplorerState | null'.
+  Type '{ tree: { name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }; nodeIdToNode: Record<...>; ... 20 more ...; recentStructuralChangeEchoes: { ...; }[]; }' is not assignable to type 'WorkspaceFileExplorerState'.
+    Types of property 'tree' are incompatible.
+      Type '{ name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }' is missing the following properties from type 'TreeNode': findInsertIndex, compareNodes
+stores/fileExplorer.ts(100,7): error TS2322: Type '{ tree: { name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }; nodeIdToNode: Record<...>; ... 20 more ...; recentStructuralChangeEchoes: { ...; }[]; }' is not assignable to type 'WorkspaceFileExplorerState'.
+  Types of property 'tree' are incompatible.
+    Type '{ name: string; path: string; is_file: boolean; children: ...[]; id: string; childrenLoaded: boolean; addChild: (node: TreeNode) => void; sortChildren: () => void; }' is missing the following properties from type 'TreeNode': findInsertIndex, compareNodes
+stores/fileExplorerSearchActions.ts(49,55): error TS7006: Parameter 'error' implicitly has an 'any' type.
+stores/fileExplorerSearchActions.ts(52,62): error TS7006: Parameter 'filePath' implicitly has an 'any' type.
+stores/fileExplorerTreeActions.ts(87,37): error TS7006: Parameter 'change' implicitly has an 'any' type.
+stores/mediaLibraryStore.ts(57,22): error TS18046: 'response.data' is of type 'unknown'.
+stores/mediaLibraryStore.ts(58,27): error TS18046: 'response.data' is of type 'unknown'.
+stores/messagingProviderFlowStore.ts(29,19): error TS2339: Property 'stepStatesForProvider' does not exist on type '_StoreWithGetters_Readonly<{ currentProvider(): MessagingProvider; stepStates(): SetupStepState[]; }> & _StoreWithGetters_Writable<...> & PiniaCustomProperties<...>'.
+stores/messagingVerificationStore.ts(422,15): error TS2322: Type '"LAUNCH_PRESET_NOT_READY"' is not assignable to type '"GATEWAY_UNREACHABLE" | "GATEWAY_RUNTIME_CRITICAL" | "PROVIDER_NOT_READY" | "PERSONAL_MODE_DISABLED" | "SESSION_NOT_READY" | "SERVER_BINDING_API_UNAVAILABLE" | "BINDING_NOT_READY" | "TARGET_RUNTIME_NOT_ACTIVE" | "TARGET_OPTIONS_UNAVAILABLE" | "VERIFICATION_ERROR"'.
+stores/skillSourcesStore.ts(36,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillSourcesStore.ts(62,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillSourcesStore.ts(88,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(43,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(72,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(110,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(140,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(166,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(188,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(216,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(253,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(289,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(310,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(333,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/skillStore.ts(370,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(130,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(156,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(182,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(237,44): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(271,44): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(299,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(327,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(356,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(385,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/transcriptionStore.ts(100,54): error TS2339: Property 'currentRequirement' does not exist on type 'Store<"agentRun", {}, {}, { sendUserInputAndSubscribe(): Promise<void>; connectToAgentStream(runId: string): AgentStreamingService | null; ... 6 more ...; closeAgent(runIdToClose: string, options: { ...; }): Promise<...>; }>'.
+stores/transcriptionStore.ts(101,27): error TS2339: Property 'updateUserRequirement' does not exist on type 'Store<"agentRun", {}, {}, { sendUserInputAndSubscribe(): Promise<void>; connectToAgentStream(runId: string): AgentStreamingService | null; ... 6 more ...; closeAgent(runIdToClose: string, options: { ...; }): Promise<...>; }>'.
+stores/transcriptionStore.ts(119,58): error TS2339: Property 'type' does not exist on type 'never'.
+stores/transcriptionStore.ts(259,21): error TS2339: Property 'updateUserRequirement' does not exist on type 'Store<"agentRun", {}, {}, { sendUserInputAndSubscribe(): Promise<void>; connectToAgentStream(runId: string): AgentStreamingService | null; ... 6 more ...; closeAgent(runIdToClose: string, options: { ...; }): Promise<...>; }>'.
+test-support/currentTeamTestFixtures.ts(152,3): error TS2322: Type 'Record<string, unknown> | null' is not assignable to type 'Readonly<Record<string, JsonValue>> | null'.
+  Type 'Record<string, unknown>' is not assignable to type 'Readonly<Record<string, JsonValue>>'.
+    'string' index signatures are incompatible.
+      Type 'unknown' is not assignable to type 'JsonValue'.
+test-support/currentTeamTestFixtures.ts(196,3): error TS2322: Type '({ kind: "task_team_agent"; address: string; agent_run_id: string; platform_agent_run_id: null; team_run_id?: undefined; members?: undefined; task_executions?: undefined; } | { kind: "task_team"; ... 5 more ...; platform_agent_run_id?: undefined; })[]' is not assignable to type 'TaskTeamMemberExecutionDto[]'.
+  Type '{ kind: "task_team_agent"; address: string; agent_run_id: string; platform_agent_run_id: null; team_run_id?: undefined; members?: undefined; task_executions?: undefined; } | { kind: "task_team"; ... 5 more ...; platform_agent_run_id?: undefined; }' is not assignable to type 'TaskTeamMemberExecutionDto'.
+    Type '{ kind: "task_team"; address: string; team_run_id: string; members: TaskTeamMemberExecutionDto[]; task_executions: never[]; agent_run_id?: undefined; platform_agent_run_id?: undefined; }' is not assignable to type 'TaskTeamMemberExecutionDto'.
+      Type '{ kind: "task_team"; address: string; team_run_id: string; members: TaskTeamMemberExecutionDto[]; task_executions: never[]; agent_run_id?: undefined; platform_agent_run_id?: undefined; }' is not assignable to type 'Readonly<{ kind: "task_team_member"; address: string; team_run_id: string; members: readonly TaskTeamMemberExecutionDto[]; task_executions: readonly TaskExecutionDto[]; }>'.
+        Types of property 'kind' are incompatible.
+          Type '"task_team"' is not assignable to type '"task_team_member"'.
+test-support/currentTeamTestFixtures.ts(237,32): error TS2322: Type 'Readonly<{ task_id: string; delegator_agent_run_id: string; recipient_address: string; task_execution: { agent_run_id: string; team_run_id?: undefined; } | { team_run_id: string; agent_run_id?: undefined; }; ... 4 more ...; created_at: string; }>' is not assignable to type 'Readonly<{ task_id: string; delegator_agent_run_id: string; recipient_address: string; task_execution: { agent_run_id: string; } | { team_run_id: string; }; description: string; reference_files: { ...; }[]; status: "interrupted" | ... 2 more ... | "awaiting_review"; updates: ({ ...; } | ... 1 more ... | { ...; })[];...'.
+  Types of property 'reference_files' are incompatible.
+    The type 'readonly { reference_id: string; path: string; type: "audio" | "image" | "video" | "file" | "other" | "csv" | "pdf" | "excel"; created_at: string; updated_at: string; }[]' is 'readonly' and cannot be assigned to the mutable type '{ reference_id: string; path: string; type: "audio" | "image" | "video" | "file" | "other" | "csv" | "pdf" | "excel"; created_at: string; updated_at: string; }[]'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(47,55): error TS2339: Property 'focusedMemberRouteKey' does not exist on type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(71,33): error TS2305: Module '"~/types/agent/AgentTeamContext"' has no exported member 'TeamMemberNode'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(129,11): error TS2339: Property 'isSubscribed' does not exist on type 'AgentContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(213,7): error TS2741: Property 'view' is missing in type '{ teamRunId: string; config: { teamDefinitionId: string; teamDefinitionName: string; runtimeKind: string; workspaceId: string; workspaceMetadata: { workspaceId: string; workspaceRootPath: string; displayName: string; kind: "filesystem"; }; ... 5 more ...; isLocked: boolean; }; ... 7 more ...; isSubscribed: boolean; }' but required in type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(222,59): error TS7006: Parameter 'child' implicitly has an 'any' type.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(233,38): error TS2339: Property 'teamRunId' does not exist on type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(241,9): error TS2741: Property 'view' is missing in type '{ teamRunId: string; config: { teamDefinitionId: string; teamDefinitionName: string; runtimeKind: string; workspaceId: string; workspaceMetadata: { workspaceId: string; workspaceRootPath: string; displayName: string; kind: "filesystem"; }; ... 5 more ...; isLocked: boolean; }; ... 7 more ...; isSubscribed: boolean; }' but required in type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(254,36): error TS2339: Property 'teamRunId' does not exist on type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(261,7): error TS2322: Type '{ kind: "team_member"; context: any; teamRunId: any; memberRouteKey: string; memberRunId: any; }[]' is not assignable to type 'AgentStreamProjectionTarget[]'.
+  Type '{ kind: "team_member"; context: any; teamRunId: any; memberRouteKey: string; memberRunId: any; }' is not assignable to type 'AgentStreamProjectionTarget'.
+    Type '{ kind: "team_member"; context: any; teamRunId: any; memberRouteKey: string; memberRunId: any; }' is missing the following properties from type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }': agentRunId, memberAddress
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(264,33): error TS2339: Property 'teamRunId' does not exist on type '{ readonly view: { getRootTeamRunId: () => string; getTeamDefinitionName: () => string; getExecutionTree: () => Readonly<{ schema_version: 2; created_at: string; archived_at: string | null; application_binding: Readonly<...> | null; handoffs: readonly Readonly<...>[]; root_team: Readonly<...>; }>; ... 18 more ...; a...'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(264,56): error TS2339: Property 'teamRunId' does not exist on type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(265,26): error TS2339: Property 'leafAgentContextsByRouteKey' does not exist on type '{ readonly view: { getRootTeamRunId: () => string; getTeamDefinitionName: () => string; getExecutionTree: () => Readonly<{ schema_version: 2; created_at: string; archived_at: string | null; application_binding: Readonly<...> | null; handoffs: readonly Readonly<...>[]; root_team: Readonly<...>; }>; ... 18 more ...; a...'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(268,35): error TS2339: Property 'teamRunId' does not exist on type '{ readonly view: { getRootTeamRunId: () => string; getTeamDefinitionName: () => string; getExecutionTree: () => Readonly<{ schema_version: 2; created_at: string; archived_at: string | null; application_binding: Readonly<...> | null; handoffs: readonly Readonly<...>[]; root_team: Readonly<...>; }>; ... 18 more ...; a...'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(268,70): error TS2339: Property 'teamRunId' does not exist on type '{ readonly view: { getRootTeamRunId: () => string; getTeamDefinitionName: () => string; getExecutionTree: () => Readonly<{ schema_version: 2; created_at: string; archived_at: string | null; application_binding: Readonly<...> | null; handoffs: readonly Readonly<...>[]; root_team: Readonly<...>; }>; ... 18 more ...; a...'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(270,53): error TS2339: Property 'teamRunId' does not exist on type '{ readonly view: { getRootTeamRunId: () => string; getTeamDefinitionName: () => string; getExecutionTree: () => Readonly<{ schema_version: 2; created_at: string; archived_at: string | null; application_binding: Readonly<...> | null; handoffs: readonly Readonly<...>[]; root_team: Readonly<...>; }>; ... 18 more ...; a...'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(270,64): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type '{ kind: "team_member"; context: AgentContext; teamRunId: string; agentRunId: string; memberAddress: string; }'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(272,60): error TS2339: Property 'teamRunId' does not exist on type '{ readonly view: { getRootTeamRunId: () => string; getTeamDefinitionName: () => string; getExecutionTree: () => Readonly<{ schema_version: 2; created_at: string; archived_at: string | null; application_binding: Readonly<...> | null; handoffs: readonly Readonly<...>[]; root_team: Readonly<...>; }>; ... 18 more ...; a...'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(407,70): error TS2339: Property 'content' does not exist on type 'AIResponseSegment'.
+  Property 'content' does not exist on type 'WriteFileSegment'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(412,117): error TS2339: Property 'teamRunId' does not exist on type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(414,34): error TS2339: Property 'focusedMemberRouteKey' does not exist on type '{ teamRunId: string; teamDefinitionId: string; teamDefinitionName: string; workspaceRootPath: string; summary: string; lastActivityAt: string; isActive: boolean; deleteLifecycle: TeamRunDeleteLifecycle; focusedAgentRunId: string; rootTeam: { ...; }; members: { ...; }[]; executionRows: ({ ...; } | { ...; })[]; }'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(416,37): error TS2339: Property 'memberRouteKey' does not exist on type '{ kind: "stable_member"; row: { teamRunId: string; kind: "agent" | "agent_team"; memberAddress: string; displayName: string; agentRunId?: string | null | undefined; teamDefinitionId?: string | ... 1 more ... | undefined; ... 8 more ...; children: ...[]; }; ... 8 more ...; hasChildren: boolean; } | { ...; }'.
+  Property 'memberRouteKey' does not exist on type '{ kind: "stable_member"; row: { teamRunId: string; kind: "agent" | "agent_team"; memberAddress: string; displayName: string; agentRunId?: string | null | undefined; teamDefinitionId?: string | null | undefined; ... 8 more ...; children: ...[]; }; ... 8 more ...; hasChildren: boolean; }'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(419,19): error TS2339: Property 'currentStatus' does not exist on type '{ kind: "stable_member"; row: { teamRunId: string; kind: "agent" | "agent_team"; memberAddress: string; displayName: string; agentRunId?: string | null | undefined; teamDefinitionId?: string | ... 1 more ... | undefined; ... 8 more ...; children: ...[]; }; ... 8 more ...; hasChildren: boolean; } | { ...; }'.
+  Property 'currentStatus' does not exist on type '{ kind: "stable_member"; row: { teamRunId: string; kind: "agent" | "agent_team"; memberAddress: string; displayName: string; agentRunId?: string | null | undefined; teamDefinitionId?: string | null | undefined; ... 8 more ...; children: ...[]; }; ... 8 more ...; hasChildren: boolean; }'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(493,3): error TS2353: Object literal may only specify known properties, and 'canTerminateTeam' does not exist in type 'WorkspaceHistorySectionState'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(499,70): error TS2339: Property 'memberName' does not exist on type 'TeamMemberTreeRow'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(506,3): error TS2322: Type '(row: RunHistoryTeamExecutionRow) => void' is not assignable to type '(member: TeamMemberFocusTarget, workspaceId?: string | undefined) => void | Promise<void>'.
+  Types of parameters 'row' and 'member' are incompatible.
+    Type 'TeamMemberFocusTarget' is not assignable to type 'RunHistoryTeamExecutionRow'.
+      Type 'TeamMemberFocusTarget' is missing the following properties from type 'RunHistoryTransientExecutionRow': kind, transientKind, currentStatus, teamRunIdForNode, and 5 more.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(507,14): error TS2339: Property 'focusedMemberRouteKey' does not exist on type 'AgentTeamContext'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(507,42): error TS2339: Property 'memberRouteKey' does not exist on type 'RunHistoryTeamExecutionRow'.
+  Property 'memberRouteKey' does not exist on type 'RunHistoryStableExecutionRow'.
+tests/e2e/fixtures/background-agent-renderer-contention.page.vue(508,68): error TS2339: Property 'memberRouteKey' does not exist on type 'RunHistoryTeamExecutionRow'.
+  Property 'memberRouteKey' does not exist on type 'RunHistoryStableExecutionRow'.
+tests/e2e/fixtures/interrupt-result-presentation.page.vue(127,47): error TS2339: Property 'isSubscribed' does not exist on type 'AgentContext'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(52,33): error TS2305: Module '"~/types/agent/AgentTeamContext"' has no exported member 'AgentTeamMemberNode'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(76,3): error TS2353: Object literal may only specify known properties, and 'memberKind' does not exist in type 'TeamMemberTreeRow'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(113,26): error TS2339: Property 'memberKind' does not exist on type 'TeamMemberTreeRow'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(114,7): error TS2353: Object literal may only specify known properties, and 'memberRouteKey' does not exist in type 'RunHistoryStableExecutionRow'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(114,30): error TS2339: Property 'memberRouteKey' does not exist on type 'TeamMemberTreeRow'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(115,30): error TS2339: Property 'memberPath' does not exist on type 'TeamMemberTreeRow'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(139,23): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(getter: ComputedGetter<TeamRunHistoryDefinitionGroup[]>, debugOptions?: DebuggerOptions | undefined): ComputedRef<...>', gave the following error.
+    Type '{ teamRunId: string; teamDefinitionId: string; teamDefinitionName: string; coordinatorMemberRouteKey: string; workspaceRootPath: string; summary: string; createdAt: string; isActive: boolean; members: never[]; }[]' is not assignable to type 'TeamRunHistoryItem[]'.
+      Type '{ teamRunId: string; teamDefinitionId: string; teamDefinitionName: string; coordinatorMemberRouteKey: string; workspaceRootPath: string; summary: string; createdAt: string; isActive: boolean; members: never[]; }' is missing the following properties from type 'TeamRunHistoryItem': coordinatorAddress, rootTeam
+  Overload 2 of 2, '(options: WritableComputedOptions<TeamRunHistoryDefinitionGroup[], TeamRunHistoryDefinitionGroup[]>, debugOptions?: DebuggerOptions | undefined): WritableComputedRef<...>', gave the following error.
+    Argument of type '() => { teamDefinitionId: string; teamDefinitionName: string; runs: { teamRunId: string; teamDefinitionId: string; teamDefinitionName: string; coordinatorMemberRouteKey: string; workspaceRootPath: string; summary: string; createdAt: string; isActive: boolean; members: never[]; }[]; }[]' is not assignable to parameter of type 'WritableComputedOptions<TeamRunHistoryDefinitionGroup[], TeamRunHistoryDefinitionGroup[]>'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(169,5): error TS2353: Object literal may only specify known properties, and 'teamRunId' does not exist in type 'AgentTeamContext'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(232,3): error TS2353: Object literal may only specify known properties, and 'canTerminateTeam' does not exist in type 'WorkspaceHistorySectionState'.
+tests/e2e/fixtures/team-activity-presentation.page.vue(232,22): error TS7006: Parameter 'isActive' implicitly has an 'any' type.
+tests/e2e/fixtures/team-activity-presentation.page.vue(246,70): error TS2339: Property 'memberName' does not exist on type 'TeamMemberTreeRow'.
+tests/integration/agent-team-definition.integration.test.ts(80,33): error TS2339: Property 'requiredNodeId' does not exist on type 'TeamMemberInput'.
+tests/integration/agent-team-definition.integration.test.ts(81,33): error TS2339: Property 'preferredNodeId' does not exist on type 'TeamMemberInput'.
+tests/integration/voice-input-extension.integration.test.ts(259,5): error TS2739: Type '{ contextId: string; requirement: string; contextFilePaths: never[]; }' is missing the following properties from type '{ config: { agentDefinitionId: string; agentDefinitionName: string; agentAvatarUrl?: string | null | undefined; llmModelIdentifier: string; runtimeKind: string; workspaceId: string | null; ... 4 more ...; llmConfig?: Record<...> | ... 1 more ... | undefined; }; ... 5 more ...; readonly lastAIMessage: { ...; } | unde...': config, state, submissionPending, conversation, lastAIMessage
+tests/setup/websocket.ts(1,23): error TS7016: Could not find a declaration file for module 'ws'. '/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/ws@8.19.0/node_modules/ws/wrapper.mjs' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/ws` if it exists or add a new declaration (.d.ts) file containing `declare module 'ws';`
+tests/setup/websocket.ts(15,3): error TS2322: Type '() => Promise<{}>' is not assignable to type '$Fetch<unknown, NitroFetchRequest> & (() => Promise<{}>)'.
+  Type '() => Promise<{}>' is missing the following properties from type '$Fetch<unknown, NitroFetchRequest>': raw, create
+tests/stores/llmProviderConfigStore.test.ts(241,52): error TS2345: Argument of type '{ runtimeKind: string; ownerProvider: { id: string; name: string; providerType: string; isCustom: boolean; baseUrl: null; catalogMode: "STATIC" | "DISCOVERED"; }; sources: { modelKind: "LLM" | "AUDIO" | "IMAGE"; ... 4 more ...; safeMessage: null; }[]; llmModels: { ...; }[]; audioModels: { ...; }[]; imageModels: { .....' is not assignable to parameter of type 'ProviderModelCatalogSnapshot'.
+  The types of 'ownerProvider.providerType' are incompatible between these types.
+    Type 'string' is not assignable to type 'LLMProvider'.
+tests/stores/llmProviderConfigStore.test.ts(327,52): error TS2345: Argument of type '{ runtimeKind: string; ownerProvider: { id: string; name: string; providerType: string; isCustom: boolean; baseUrl: null; catalogMode: "STATIC" | "DISCOVERED"; }; sources: { modelKind: string; ... 4 more ...; safeMessage: string | null; }[]; llmModels: { ...; }[]; audioModels: never[]; imageModels: never[]; videoMod...' is not assignable to parameter of type 'ProviderModelCatalogSnapshot'.
+  The types of 'ownerProvider.providerType' are incompatible between these types.
+    Type 'string' is not assignable to type 'LLMProvider'.
+utils/apolloClient.ts(1,33): error TS2307: Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+utils/apolloClient.ts(12,62): error TS2339: Property 'clients' does not exist on type '{}'.
+utils/apolloClient.ts(16,22): error TS2339: Property 'defaultClient' does not exist on type '{}'.
+utils/application/__tests__/applicationHostTransport.spec.ts(12,42): error TS2345: Argument of type '{ graphqlHttp: string; graphqlWs: string; rest: string; }' is not assignable to parameter of type 'NodeEndpoints'.
+  Type '{ graphqlHttp: string; graphqlWs: string; rest: string; }' is missing the following properties from type 'NodeEndpoints': agentWs, teamWs, terminalWs, fileExplorerWs, health
+utils/application/__tests__/applicationHostTransport.spec.ts(21,42): error TS2345: Argument of type '{ graphqlHttp: string; graphqlWs: string; rest: string; }' is not assignable to parameter of type 'NodeEndpoints'.
+  Type '{ graphqlHttp: string; graphqlWs: string; rest: string; }' is missing the following properties from type 'NodeEndpoints': agentWs, teamWs, terminalWs, fileExplorerWs, health
+utils/fileExplorer/__tests__/stateSync.test.ts(63,11): error TS2739: Type '{ id: string; name: string; path: string; is_file: false; children: never[]; childrenLoaded: true; }' is missing the following properties from type 'TreeNode': addChild, findInsertIndex, compareNodes, sortChildren
+utils/fileExplorer/__tests__/stateSync.test.ts(80,11): error TS2739: Type '{ id: string; name: string; path: string; is_file: true; children: never[]; childrenLoaded: true; }' is missing the following properties from type 'TreeNode': addChild, findInsertIndex, compareNodes, sortChildren
+utils/teamLaunchReadinessCore.ts(75,9): error TS2353: Object literal may only specify known properties, and 'memberName' does not exist in type 'TeamLaunchReadinessBlockingIssue'.
+utils/teamLaunchReadinessCore.ts(75,35): error TS2339: Property 'memberName' does not exist on type 'TeamLaunchProfileMemberReadinessInput'.
+utils/teamLaunchReadinessCore.ts(77,35): error TS2339: Property 'memberName' does not exist on type 'TeamLaunchProfileMemberReadinessInput'.
+
+ ERROR  Process exited with non-zero status (2)
+
+    at G._waitForOutput (/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/tinyexec@1.0.2/node_modules/tinyexec/dist/main.js:574:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.run (/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/typecheck-C8wVgBzd.mjs:66:3)
+    at async runCommand (/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:188:47)
+    at async runCommand (/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:185:21)
+    at async runMain (/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10) 
+
+
+
+TYPECHECK_EXIT_CODE=1
+Completed: 2026-08-29T18:13:23Z
