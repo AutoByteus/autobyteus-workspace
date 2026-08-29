@@ -71,7 +71,7 @@ const { translate } = vi.hoisted(() => {
 });
 
 vi.mock('~/composables/useLocalization', () => ({
-  useLocalization: () => ({ t: translate }),
+  useLocalization: () => ({ t: translate, resolvedLocale: { value: 'en' } }),
 }));
 
 const buildAggregate = (overrides: Partial<TokenUsageCostSummaryAggregate> = {}): TokenUsageCostSummaryAggregate => ({

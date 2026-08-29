@@ -36,7 +36,7 @@ const translate = (key: string, params?: Record<string, string | number>) => {
 };
 
 vi.mock('~/composables/useLocalization', () => ({
-  useLocalization: () => ({ t: translate }),
+  useLocalization: () => ({ t: translate, resolvedLocale: { value: 'en' } }),
 }));
 
 const aggregate = (overrides: Partial<TokenUsageCostSummaryAggregate> = {}): TokenUsageCostSummaryAggregate => ({

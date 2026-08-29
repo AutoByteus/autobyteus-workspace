@@ -15,13 +15,16 @@ export const shortId = (value: string | null | undefined): string => {
   return normalized.length <= 8 ? normalized : `…${normalized.slice(-8)}`;
 };
 
-export const createTokenUsageStatisticsFormatter = (t: TokenUsageTranslator) => {
-  const formatInteger = (value: number): string => new Intl.NumberFormat().format(value);
+export const createTokenUsageStatisticsFormatter = (
+  t: TokenUsageTranslator,
+  getLocale: () => string | undefined = () => undefined,
+) => {
+  const formatInteger = (value: number): string => new Intl.NumberFormat(getLocale()).format(value);
 
   const formatCompactInteger = (value: number): string => {
     const absoluteValue = Math.abs(value);
     if (absoluteValue < 10_000) return formatInteger(value);
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(getLocale(), {
       notation: 'compact',
       compactDisplay: 'short',
       maximumFractionDigits: absoluteValue >= 1_000_000 ? 2 : 1,
@@ -29,15 +32,24 @@ export const createTokenUsageStatisticsFormatter = (t: TokenUsageTranslator) => 
   };
 
   const formatRatePercent = (value: number | null): string => (
-    value === null ? t('shell.tokenUsage.unknown') : `${(value * 100).toFixed(1)}%`
+    value === null
+      ? t('shell.tokenUsage.unknown')
+      : new Intl.NumberFormat(getLocale(), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value)
   );
 
   const formatCostAmount = (value: number | null, currency: string | null): string => {
     if (value === null) return t('shell.tokenUsage.unpriced');
     const fractionDigits = Math.abs(value) >= 1 ? 2 : 4;
-    return new Intl.NumberFormat(undefined, {
+    if (!currency) {
+      const amount = new Intl.NumberFormat(getLocale(), {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      }).format(value);
+      return `${amount} · ${t('settings.components.settings.TokenUsageAnalytics.currencyUnavailable')}`;
+    }
+    return new Intl.NumberFormat(getLocale(), {
       style: 'currency',
-      currency: currency || 'USD',
+      currency,
       currencyDisplay: 'narrowSymbol',
       minimumFractionDigits: fractionDigits,
       maximumFractionDigits: fractionDigits,
@@ -91,7 +103,7 @@ export const createTokenUsageStatisticsFormatter = (t: TokenUsageTranslator) => 
   const formatCreatedAt = (value: string): string => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(getLocale(), {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

@@ -5,23 +5,28 @@ import TokenUsageAnalyticsControls from '../TokenUsageAnalyticsControls.vue';
 import TokenUsageAnalyticsView from '../TokenUsageAnalyticsView.vue';
 import { aggregate, analyticsResult } from './tokenUsageAnalyticsTestFixtures';
 
-const { storeSlot, messages, download } = vi.hoisted(() => ({
+const { storeSlot, messages } = vi.hoisted(() => ({
   storeSlot: { store: null as any },
-  download: vi.fn(),
   messages: {
     controls: 'Analytics controls', thisMonth: 'This month', lastMonth: 'Last month', last3Months: 'Last 3 months',
     last12Months: 'Last 12 months', custom: 'Custom', startDate: 'Start date', endDate: 'End date', apply: 'Apply',
     runtime: 'Runtime', provider: 'Provider', model: 'Model', all: 'All', metric: 'Metric', tokens: 'Tokens',
-    estimatedCost: 'Estimated cost', filtersActive: 'Filters active', allUsage: 'All usage', clearFilters: 'Clear filters',
-    exportCsv: 'Export CSV', chooseBothDates: 'Choose both dates to apply a custom range.',
+    estimatedCost: 'Estimated cost', cost: 'Cost', filtersActive: 'Filters active', allUsage: 'All usage', clearFilters: 'Clear filters',
+    utcRange: 'UTC range', utcRangeHelp: 'Presets and Custom dates use fixed UTC boundaries.', filters: 'Filters',
+    filterCurrentResult: 'Filter current result', selectionRefetch: 'Selections refetch one coherent result.',
+    clearAll: 'Clear all', allRuntimes: 'All runtimes', allProviders: 'All providers', allModels: 'All models', applyFilters: 'Apply filters',
+    chooseBothDates: 'Choose both dates to apply a custom range.',
     invalidDateOrder: 'Choose a start date on or before the end date.', loading: 'Loading analytics', loaded: 'Analytics loaded',
     retry: 'Retry', unavailableEmpty: 'Earlier analytics are unavailable.', noTrackedUsage: 'No tracked token usage in this period.',
-    widenOrClear: 'Try a wider range or clear filters.', fullCoverage: 'Full analytics coverage',
+    widenOrClear: 'Try a wider range or clear filters.', fullCoverage: 'Full analytics coverage', fullCoverageShort: 'Full coverage',
     partialCoverage: 'Partial coverage', unavailableCoverage: 'Analytics unavailable', trackingSince: 'Tracking since {date}',
     unavailableDetail: 'Earlier monthly usage cannot be reconstructed; tracking began {date}.',
     mixedCurrencies: 'Multiple currencies cannot be combined.', partialPricing: 'Some usage is unpriced.',
     missingPricing: 'Pricing is missing.', localUsage: 'Local usage has no API bill.', notInvoice: 'Not a provider invoice.',
-    summary: 'Analytics summary', totalTokens: 'Total tokens', estimatedApiCost: 'Estimated API cost',
+    summary: 'Analytics summary', totalTokens: 'Total tokens', uncachedInput: 'Uncached input', cachedInput: 'Cached input',
+    uncachedInputDefinition: 'Uncached definition', cacheReads: 'Cache reads', generatedTokens: 'Generated output',
+    cacheHitRate: 'Cache hit rate', cacheRateDefinition: 'Cache definition', cacheUnknown: 'Unknown',
+    exactTokens: '{value} exact', estimatedApiCost: 'Estimated API cost',
     tokensPerActiveDay: 'Tokens per active day', comparedPrior: 'Compared with prior period', input: 'input', output: 'output',
     qualityCOMPLETE: 'Complete estimate', qualityNO_USAGE: 'No usage', qualityPARTIAL: 'Partial estimate',
     activeDays: 'active days', prior: 'Prior', noComparableData: 'No comparable data',
@@ -32,11 +37,9 @@ const { storeSlot, messages, download } = vi.hoisted(() => ({
 vi.mock('~/stores/tokenUsageAnalytics', () => ({
   useTokenUsageAnalyticsStore: () => storeSlot.store,
 }));
-vi.mock('~/utils/tokenUsageAnalyticsCsv', () => ({
-  downloadTokenUsageAnalyticsCsv: download,
-}));
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
+    resolvedLocale: { value: 'en' },
     t: (key: string, params?: Record<string, string | number>) => {
       const template = messages[key.split('.').pop() ?? key] ?? key;
       return Object.entries(params ?? {}).reduce(
@@ -76,7 +79,6 @@ const createStore = (overrides: Record<string, unknown> = {}) => {
 const viewStubs = {
   TokenUsageAnalyticsControls: { template: '<section data-test="controls">controls</section>' },
   TokenUsageTrendChart: { template: '<section data-test="trend">trend</section>' },
-  TokenUsagePaceChart: { template: '<section data-test="pace">pace</section>' },
   TokenUsageBreakdown: { template: '<section data-test="breakdown">breakdown</section>' },
 };
 
@@ -90,7 +92,7 @@ describe('TokenUsageAnalytics controls and coherent states', () => {
     const wrapper = mount(TokenUsageAnalyticsControls, { props: { metric: 'TOKENS' } });
 
     expect(wrapper.get('section').attributes('aria-label')).toBe('Analytics controls');
-    expect(wrapper.text()).toContain('UTC');
+    expect(wrapper.text()).toContain('UTC range');
     const radios = wrapper.findAll('[role="radio"]');
     expect(radios).toHaveLength(2);
     expect(radios[0]!.attributes('aria-checked')).toBe('true');
@@ -101,6 +103,7 @@ describe('TokenUsageAnalytics controls and coherent states', () => {
     expect(wrapper.emitted('update:metric')).toEqual([['COST']]);
     expect(storeSlot.store.selection).toMatchObject(originalSelection);
 
+    await wrapper.findAll('button')[0]!.trigger('click');
     const custom = wrapper.findAll('button').find((button) => button.text() === 'Custom')!;
     await custom.trigger('click');
     expect(storeSlot.store.setPreset).toHaveBeenCalledWith('CUSTOM');
@@ -116,12 +119,50 @@ describe('TokenUsageAnalytics controls and coherent states', () => {
     await nextTick();
     await apply.trigger('click');
     expect(storeSlot.store.fetch).toHaveBeenCalledTimes(1);
+    expect(wrapper.text()).not.toMatch(/Export CSV/i);
+  });
+
+  it('applies disclosed filters as one fetch and returns focus to the named trigger', async () => {
+    const wrapper = mount(TokenUsageAnalyticsControls, { props: { metric: 'TOKENS' }, attachTo: document.body });
+    const filterButton = wrapper.findAll('button').find((button) => button.text().includes('Filters'))!;
+    await filterButton.trigger('click');
+
+    expect(filterButton.attributes('aria-expanded')).toBe('true');
+    expect(wrapper.text()).toContain('Runtime');
+    expect(wrapper.text()).toContain('Provider');
+    expect(wrapper.text()).toContain('Model');
+    const selects = wrapper.findAll('select');
+    await selects[0]!.setValue('codex_app_server');
+    await selects[1]!.setValue('provider-key');
+    await selects[2]!.setValue('model-key');
+    expect(storeSlot.store.fetch).not.toHaveBeenCalled();
+    expect(storeSlot.store.selection).toMatchObject({ runtimeKind: null, providerKey: null, modelKey: null });
+
+    await wrapper.findAll('button').find((button) => button.text() === 'Apply filters')!.trigger('click');
+    await nextTick();
+    expect(storeSlot.store.fetch).toHaveBeenCalledTimes(1);
+    expect(storeSlot.store.selection).toMatchObject({
+      runtimeKind: 'codex_app_server', providerKey: 'provider-key', modelKey: 'model-key',
+    });
+    expect(filterButton.attributes('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(filterButton.element);
+
+    await filterButton.trigger('click');
+    await wrapper.findAll('button').find((button) => button.text() === 'Clear all')!.trigger('click');
+    await wrapper.get('#token-usage-filter-panel').trigger('keydown', { key: 'Escape' });
+    await nextTick();
+    expect(storeSlot.store.selection).toMatchObject({
+      runtimeKind: 'codex_app_server', providerKey: 'provider-key', modelKey: 'model-key',
+    });
+    expect(filterButton.attributes('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(filterButton.element);
+    wrapper.unmount();
   });
 
   it('hides result surfaces while loading and exposes an announced retryable error', async () => {
     storeSlot.store = createStore({ loading: true });
     const loading = mount(TokenUsageAnalyticsView, { global: { stubs: viewStubs } });
-    expect(loading.get('[aria-busy="true"]').exists()).toBe(true);
+    expect(loading.find('[aria-busy="true"]').exists()).toBe(true);
     expect(loading.find('[data-test="trend"]').exists()).toBe(false);
     expect(loading.text()).toContain('Loading analytics');
 
@@ -163,7 +204,7 @@ describe('TokenUsageAnalytics controls and coherent states', () => {
     expect(populated.text()).toContain('Partial coverage');
     expect(populated.text()).toContain('Some usage is unpriced.');
     expect(populated.find('[data-test="trend"]').exists()).toBe(true);
-    expect(populated.find('[data-test="pace"]').exists()).toBe(true);
+    expect(populated.find('[data-test="pace"]').exists()).toBe(false);
     expect(populated.find('[data-test="breakdown"]').exists()).toBe(true);
   });
 });
