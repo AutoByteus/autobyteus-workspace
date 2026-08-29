@@ -10,8 +10,8 @@
 - Base or reference revision: Explicitly reset to `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Success. `personal` and `origin/personal` resolved to the same commit when the worktree was created; after the user clarification, the task branch was explicitly hard-reset to `origin/personal` and verified clean.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-002`
-- Investigation status: Requirements Visualization `RV-002` ready; awaiting user review and clarification
+- Current requirements revision ID: `RER-003`
+- Investigation status: Requirements Visualization `RV-003` current-contract feasibility corrected; awaiting user review and clarification
 
 ## Initial Request And Clarifications
 
@@ -50,6 +50,7 @@
 | 2026-08-29 | Runtime evidence | Supplied screenshots inspected at original resolution | Examine actual populated rendering | Excess chrome/whitespace, weak prioritization, raw-looking precision, empty comparison prominence, and table scan/overflow issues are visible at a large desktop viewport | Use as current-state prototype baseline |
 | 2026-08-29 | Product artifact | `requirements-visualization-review.md`, RV-002 visual references, and Product return message | Evaluate exploratory future-state evidence | Two clean product-only directions cover partial/comparable/filter/evidence/Run-details/narrow states; 15/15 Chromium checks passed; no approval claimed | Ask user to select A/B/hybrid and clarify DEC-001–DEC-004 |
 | 2026-08-29 | Product repository evidence | Updated `prototype-ticket.md` and Product correction message | Verify the user-requested bootstrap lineage | Accepted baseline implementation `6ba98942…` is durably integrated by fast-forward at prototype `origin/personal` tip `16638137…`; exploratory commits remain only on the ticket branch | Preserve exact repo/revision distinction in requirements |
+| 2026-08-29 | Product feasibility audit | `implementation-feasibility-audit.md`; `validation/contract-feasibility-audit.txt`; RV-003 review record | Prove proposed facts/actions exist in the current source-pin contracts | Audit maps remaining UI to current analytics/Run-details fields and derivations; unsupported Run-details model `Runs` count was removed; contract audit PASS and browser validation 16/16 | Preserve audit as supporting evidence; forbid invented fields |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -141,14 +142,14 @@ No live product server was launched in this requirements round. The user supplie
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — Requirements Visualization RV-002 returned; user clarification pending; likely Final Prototype afterward`
-- Decision rationale: The user directly rejects the current visual quality, and material decisions about information hierarchy, control density, unavailable states, exact-table presentation, and Run-details cohesion cannot be resolved reliably in prose. RV-002 now supplies two interactive treatments. Once the user selects or combines them, a final production-oriented prototype/UI-UX specification is likely justified because this is a material UI redesign.
+- Prototype needed: `Yes — Requirements Visualization RV-003 returned; user clarification pending; likely Final Prototype afterward`
+- Decision rationale: The user directly rejects the current visual quality, and material decisions about information hierarchy, control density, unavailable states, exact-table presentation, and Run-details cohesion cannot be resolved reliably in prose. RV-003 supplies two interactive, current-contract-feasible treatments. Once the user selects or combines them, a final production-oriented prototype/UI-UX specification is likely justified because this is a material UI redesign.
 - Requirement / behavior IDs involved: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-014`; `DEC-001`–`DEC-004`.
 - Product decisions or uncertainties to resolve: Exact hierarchy; compact filter interaction; no-comparison treatment; breakdown/exact-evidence density; extent of Run-details restyle.
 - Critical journey and states: Open populated partial/no-comparison Analytics (matching supplied evidence); inspect totals/trend/drivers; open/close filters if applicable; switch to a full/comparable state; inspect exact driver evidence; switch to Run details; narrow the viewport/content.
 - Known constraints and non-goals: Preserve analytics/Run-details contracts, truthfulness, accessibility, CSV, no redundant page title, manual Settings navigation; no backend/new-feature work.
 - Alternative evidence path / next action when no prototype is used: Not recommended; static prose would not resolve the user's visual-quality judgment.
-- Prototype request artifact / message reference: Requirements Visualization handoff delivered to Product Design; returned outcome `Requirements Visualization Ready`, revision `RV-002`, review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`.
+- Prototype request artifact / message reference: Requirements Visualization handoff delivered to Product Design; returned outcome `Requirements Visualization Ready`, current revision `RV-003`, review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`.
 - Established separate prototype repository/root and ticket reference, when applicable: Canonical repository `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`; ticket `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; ticket branch `prototype/reqpkg-tsui-001`.
 
 ## Prototype Findings
@@ -159,8 +160,8 @@ No live product server was launched in this requirements round. The user supplie
 - Explicit user-confirmation reference: `N/A — awaiting user selection; Product correctly claims no approval.`
 - Journeys and scenarios validated: Partial/no comparison, full/comparable, filters, exact evidence, Run details, constrained desktop, actual 390×844 narrow viewport, export feedback, keyboard navigation resizing.
 - Final visual-reference paths: `N/A — VIS-001–VIS-008 are exploratory only`; directory `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references`.
-- Product decisions supported by evidence: Direction A demonstrates focused hierarchy with compact filter disclosure and row evidence; Direction B demonstrates an always-visible dense explorer and ledger-first composition. Neither is selected.
-- Alternatives rejected or still open: RV-001 review chrome was removed; Direction A/B/hybrid and `DEC-001`–`DEC-004` remain open.
+- Product decisions supported by evidence: Direction A demonstrates focused hierarchy with compact filter disclosure and row evidence; Direction B demonstrates an always-visible dense explorer and ledger-first composition. RV-003 proves the remaining proposed facts/actions can bind to current source-pin contracts without backend changes. Neither direction is selected.
+- Alternatives rejected or still open: RV-001 review chrome was removed; an unsupported illustrative Run-details model `Runs` count was removed in RV-003 rather than unsafely inferred; Direction A/B/hybrid and `DEC-001`–`DEC-004` remain open.
 - Mocked boundaries and production gaps: Synthetic local totals, costs, coverage/pricing, filters, drivers, runs, CSV feedback, and navigation width; no backend, persistence, production services/data, or file-writing export. Loading/error/empty/local/mixed/localization permutations remain protected by the accepted baseline rather than duplicated.
 - Requirements sections affected: UI/Experience links, Supplemental Artifacts, Readiness, Product Prototype Decision, and revision history; no behavior requirement changed yet.
 
@@ -175,6 +176,8 @@ No live product server was launched in this requirements round. The user supplie
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md` | Product Design & Prototyping | Ticket, repository lineage, revisions, and review state | RV-002 | REQ-001–REQ-014 | Awaiting User Review | External Product artifact; not requirements approval |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | Product Design & Prototyping | Review URLs, state coverage, validation, limitations, and next decision | RV-002 | REQ-001–REQ-014; DEC-001–DEC-004 | Ready for Review | Exploratory clarification only |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Product Design & Prototyping | Direction/state visual evidence | VIS-001–VIS-008 | REQ-001–REQ-014 | Exploratory | Non-normative until user decision/final prototype |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/implementation-feasibility-audit.md` | Product Design & Prototyping | Map every remaining proposed fact/action to current contracts and record unsupported-field correction | FA-001 / RV-003 | REQ-002–REQ-013 | PASS | Supporting evidence; not a final implementation design |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/validation/contract-feasibility-audit.txt` | Product Design & Prototyping | Machine-readable source-pin contract checks | RV-003 | REQ-002–REQ-013 | PASS | Supporting evidence |
 
 ## Assumptions, Unknowns, And Risks
 

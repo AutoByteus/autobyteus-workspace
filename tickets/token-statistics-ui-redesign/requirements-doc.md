@@ -4,11 +4,11 @@
 
 - Status: `Draft — Requirements Visualization Review Pending`
 - Package ID: `REQPKG-TSUI-001`
-- Current requirements revision ID: `RER-002`
+- Current requirements revision ID: `RER-003`
 - Request / ticket: Improve the professionalism and usability of Settings > Token Statistics
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-29
-- Approval state and reference: Not yet approved. Product Design returned exploratory Requirements Visualization `RV-002`; the user must select or combine Direction A/B and resolve `DEC-001`–`DEC-004` before intended behavior can be approved.
+- Approval state and reference: Not yet approved. Product Design returned exploratory Requirements Visualization `RV-003`, including current-contract feasibility proof and removal of one unsupported illustrative field; the user must select or combine Direction A/B and resolve `DEC-001`–`DEC-004` before intended behavior can be approved.
 - Source baseline: `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 
 ## Problem And Desired Outcome
@@ -136,10 +136,10 @@
 - Linked UI/UX or interaction supplement: Exploratory brief `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-brief.md` and review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`. The prior specification at `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` remains authoritative for analytics semantics, not for the rejected visual treatment.
 - Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: Exploratory visualizer source `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/visualizers/REQPKG-TSUI-001`; clean review URLs: Direction A `http://127.0.0.1:3262/?direction=focus`, Direction B `http://127.0.0.1:3262/?direction=dense`. Canonical prototype repository/root: `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree: `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`. No final `ui-ux-spec.md` exists in exploratory mode.
 - Product prototype ticket record and folder (externally owned): `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; folder `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001`.
-- Prototype revision or commit: Visualization `RV-002` at `0832b74ce830c5510bb9ffb5802095e4ee2a7567`; ticket metadata through `8b9157d3b8391bc8617ff202ccabf4db649d0ab2`. Accepted prototype baseline implementation `6ba98942c669329f70ba902db4a2880375ad52ad`; its verified fast-forward integration tip on the prototype repository's `origin/personal` is `16638137bdb8ebe627507dac6c3c8bdbc5edf9d6`.
-- UI/UX user-confirmation reference: `N/A — RV-002 awaits user selection; no approval claimed.`
+- Prototype revision or commit: Visualization `RV-003` and feasibility audit at `82505829cb62937f5acd479ce17668a66178a7a0`; ticket metadata through `e87642c952412cd06802ca8afe66ffbc3799bade`. Accepted prototype baseline implementation `6ba98942c669329f70ba902db4a2880375ad52ad`; its verified fast-forward integration tip on the prototype repository's `origin/personal` is `16638137bdb8ebe627507dac6c3c8bdbc5edf9d6`.
+- UI/UX user-confirmation reference: `N/A — RV-003 awaits user selection; no approval claimed.`
 - Approved visual-reference baseline: None yet. `VIS-001`–`VIS-008` are exploratory clarification evidence, not normative final screenshots. The two user-supplied captures remain the rejected current-state baseline.
-- Normative visual and interaction details: Pending the user's Direction A/B/hybrid decision and `DEC-001`–`DEC-004` clarifications. `RV-002` presents a focused hierarchy and a dense explorer while preserving `REQ-002`–`REQ-014`.
+- Normative visual and interaction details: Pending the user's Direction A/B/hybrid decision and `DEC-001`–`DEC-004` clarifications. `RV-003` presents a focused hierarchy and a dense explorer using only facts mapped to the current source-pin contracts. The unsupported illustrative Run-details model `Runs` count is forbidden because no authoritative current field exists.
 - Explicitly illustrative fixture content or permitted implementation variation: Populated fixture values in the supplied captures and visualization may be illustrative; data meanings, state labels, and cost/coverage semantics are not illustrative.
 - Required screens/states/transitions/feedback/responsive/accessibility outcomes: Desktop populated partial/no-comparison; desktop full/comparable; compact filter state; breakdown exact evidence; Run details; loading/empty/error; and narrow responsive behavior sufficient to resolve `DEC-001`–`DEC-004`.
 - Explicitly unresolved product decisions: `DEC-001`–`DEC-004`.
@@ -182,6 +182,7 @@
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Visible-field/source and truthfulness contract | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Preserved evidence | Previously approved and unchanged by this UI request |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | RV-002 review URLs, covered states, validation, limitations, and decision question | REQ-001–REQ-014; AC-001–AC-014 | Ready for user review | Exploratory only; no user approval yet |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Direction A/B and state captures `VIS-001`–`VIS-008` | REQ-001–REQ-014; DEC-001–DEC-004 | Exploratory visual evidence | Non-normative until a direction is selected and finalized |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/implementation-feasibility-audit.md` | Field/action mapping to current frontend/server/GraphQL contracts and correction of unsupported `Runs` count | REQ-002–REQ-013; AC-001–AC-012 | `PASS` for RV-003 current-contract feasibility | Supporting evidence; no change to the no-backend-change scope |
 
 ## Assumptions
 
