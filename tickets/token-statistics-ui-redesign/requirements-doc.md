@@ -2,13 +2,13 @@
 
 ## Document Status
 
-- Status: `Draft — User-Confirmed Visualization Direction; Final Prototype Needed`
+- Status: `Approved — Direct Implementation Ready`
 - Package ID: `REQPKG-TSUI-001`
-- Current requirements revision ID: `RER-009`
+- Current requirements revision ID: `RER-010`
 - Request / ticket: Improve the professionalism and usability of Settings > Token Statistics
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-29
-- Approval state and reference: The user explicitly confirmed RV-007's focused Analytics and lightly unified Run-details direction on 2026-08-29, called the complete Token Statistics page the final direction to implement, and requested a final UI/UX specification plus final screenshots. The user then explicitly removed the Analytics Export CSV control and functionality (`DEC-009`). All behavior-defining decisions are resolved. Overall requirements/final UI approval remains pending receipt and user confirmation of the separate Final Prototype package.
+- Approval state and reference: `Approved`. On 2026-08-29, after verifying the actual final runnable and complete removal of Export CSV UI/functionality, the user stated: “okay. i approve the final product prototype. now”. The approved Product package is revision `72c360bf88cd1a46e62298315de5236c4de424bf`, with runnable behavior at `3de6227769c33cfdbefa42f22b44a0de83329563` and normative `VIS-009`–`VIS-015`.
 - Source baseline: `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 
 ## Problem And Desired Outcome
@@ -143,16 +143,16 @@
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: `Yes`
-- Linked UI/UX or interaction supplement: Exploratory brief `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-brief.md` and review record `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md`. The prior specification at `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` remains authoritative for analytics semantics, not for the rejected visual treatment.
-- Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: User-selected exploratory focus visualizer `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/visualizers/REQPKG-TSUI-001` at `http://127.0.0.1:3262/?direction=focus`; the dense URL is rejected historical comparison evidence. Canonical prototype repository/root: `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree: `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`. No final `ui-ux-spec.md` exists yet; the user explicitly requested that separate Final Prototype deliverable.
-- Product prototype ticket record and folder (externally owned): `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; folder `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001`.
-- Prototype revision or commit: User-confirmed visualization direction `RV-007`: content commit `726f414a4f1acf2e32e859c7b6e8a90584d1b6d6`, review metadata commit `578efc4e3d4929fcce55e1c130f1c6092fda7f44`; browser validation 18/18. It fixes six equal summary columns, `Uncached input`, visible `Detailed usage` with grouping, the open-top plot, focused controls, and light Run-details unification. The later `DEC-009` CSV removal is an explicit final-prototype delta and is not claimed as visible in RV-007. RV-003 feasibility remains intact. Accepted prototype baseline implementation `6ba98942c669329f70ba902db4a2880375ad52ad`; its verified fast-forward integration tip on prototype `origin/personal` is `16638137bdb8ebe627507dac6c3c8bdbc5edf9d6`.
-- UI/UX user-confirmation reference: On 2026-08-29 the user stated they were satisfied with the complete RV-007 Token Statistics page, including Analytics and Run details, called it the final direction to implement, and requested the final UI/UX specification plus final screenshots. The user subsequently explicitly removed Export CSV functionality; this delta is included in the Final Prototype request.
-- Approved visual-reference baseline: RV-007 focused `VIS-001`, `VIS-003`, `VIS-004`, `VIS-005`, `VIS-007`, and `VIS-008` are user-confirmed direction evidence, but remain exploratory rather than normative final screenshots. The final Product-owned reference set must incorporate `DEC-009` and receive user confirmation. Dense-direction and original supplied images remain rejected/historical evidence.
-- Normative visual and interaction details: `REQ-002`/`REQ-016` fix six equal columns and `Uncached input`; `REQ-003`/`REQ-012` fix focused filters and no CSV export; `REQ-004`–`REQ-006` fix no comparison/driver/ratio plus visible Detailed usage; `REQ-013` fixes light Run-details unification; `REQ-015` fixes the open-top point-marked line. RV-007 is the approved direction, not the final normative package. The unsupported illustrative Run-details model `Runs` count remains forbidden.
-- Explicitly illustrative fixture content or permitted implementation variation: Populated fixture values in the supplied captures and visualization may be illustrative; data meanings, state labels, and cost/coverage semantics are not illustrative.
-- Required screens/states/transitions/feedback/responsive/accessibility outcomes: Focused desktop populated partial coverage; desktop complete-cost; comparable/non-comparable fixtures with no comparison presentation; Tokens/Cost open-top daily trend; positive/zero/unreported/unsupported/unknown cache states; compact filters open/applied/cleared; visible Detailed usage grouping and row detail; lightly unified Run details Task/Model paths; loading/empty/error; narrow responsive behavior; and absence of CSV export in every state/accessibility tree.
-- Explicitly unresolved product decisions: None. Final Prototype production, final artifact verification, and final user confirmation remain process gates rather than open behavior decisions.
+- Linked UI/UX or interaction supplement: Approved Product-owned specification `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/ui-ux-spec.md`; behavior matrix `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/ui-behavior-test-matrix.md`; assumptions `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/prototype-assumptions.md`. Historical visualization review remains at `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/requirements-visualization-review.md`.
+- Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: Canonical repository/root `/home/autobyteus/workspace/autobyteus-web-prototype`; run `corepack pnpm dev --port 3210` and open `http://127.0.0.1:3210/settings?section=token-usage`. Approved UI/UX specification and support artifacts are under `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001`.
+- Product prototype ticket record and folder (externally owned): `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/prototype-ticket.md`; folder `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001`.
+- Prototype revision or commit: Approved runnable behavior `3de6227769c33cfdbefa42f22b44a0de83329563`; user-approved package/normative references `72c360bf88cd1a46e62298315de5236c4de424bf`; terminal local and `origin/personal` revision `550e8bd8737ddb645cc12f674d693bed76a09e9f`. Accepted baseline implementation remains `6ba98942c669329f70ba902db4a2880375ad52ad`; required source pin remains `9d0fd7c570d58da1af2c7a40279327c8a20a8093`.
+- UI/UX user-confirmation reference: Product ticket and approved UI/UX specification record the user's 2026-08-29 statement, after confirming complete CSV removal: “okay. i approve the final product prototype. now”. Post-approval validation and references were produced afterward.
+- Approved visual-reference baseline: Normative final references `VIS-009`–`VIS-015` at `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/visual-references`, with hashes and mappings in `final-reference-manifest.json`. Earlier `VIS-001`–`VIS-008` and `review-evidence` are non-normative history.
+- Normative visual and interaction details: Every visible detail in the approved `ui-ux-spec.md` and `VIS-009`–`VIS-015` is requirements-defining unless the specification explicitly marks it illustrative or a permitted variation. This includes six equal summary peers/order, focused controls, complete CSV absence, open-top point-marked line, visible Detailed usage/grouping, light Run-details unification, state semantics, accessibility, and responsive behavior.
+- Explicitly illustrative fixture content or permitted implementation variation: Dates, counts, costs, provider/model/runtime/task/team names, valid row order/count, and fixture data may vary. Approved responsive variation is summary reflow `6→3→2`, narrow X-tick reduction `5→3`, and contained table scrolling. Field meanings, labels, state semantics, summary order/equality, core actions, and CSV absence may not vary.
+- Required screens/states/transitions/feedback/responsive/accessibility outcomes: Defined by `UXJ-001`–`UXJ-007`, `UIS-001`–`UIS-006`, and `VIS-009`–`VIS-015` in the approved UI/UX package, plus validated loading/error/empty/local/mixed/cache variants and negative-export checks.
+- Explicitly unresolved product decisions: None.
 
 ## Quality And Non-Functional Requirements
 
@@ -170,7 +170,7 @@
 - Data or state that must be preserved: Existing token usage records, analytical projections, pricing/coverage evidence, query contracts, and authoritative on-page exact evidence. No CSV output is preserved because the export capability is removed.
 - Loss, reset, rebuild, or regeneration that is acceptable: No production data loss/reset. Transient presentational state may reset on page remount as it does today unless the approved prototype states otherwise.
 - Retention, privacy, compliance, volume, downtime, or operational constraints: No new telemetry, upload, sharing, or retained user preference is authorized.
-- Unknowns requiring downstream investigation: None material for Requirements Visualization. Implementation must confirm no visual refactor changes query triggers or exact value formatting.
+- Unknowns requiring downstream investigation: None material to requirements readiness or routing. Production implementation must confirm that the approved visual refactor preserves query triggers, authoritative exact values, active-locale formatting, and every retained truth state.
 
 ## External Contracts And Dependencies
 
@@ -178,7 +178,7 @@
 | --- | --- | --- | --- |
 | Token usage analytics GraphQL result | Applied/comparison ranges, coverage, aggregates, buckets, breakdown rows, filters, and cost-quality metadata remain the one coherent source. | Current generated types/store and prior approved data contract | No contract change authorized |
 | Run-details query/store | Creation-time selection with lifetime totals and existing task/model evidence remains intact. | Current code/tests/docs | Visual unification must not blur period semantics |
-| Chart.js | The approved open-top daily line and accessible equivalent must remain achievable. | Current components/package dependency; RV-007 | Final prototype must verify responsive tick/label treatment |
+| Chart.js | The approved open-top daily line and accessible equivalent must remain achievable. | Current components/package dependency; approved `ui-ux-spec.md`; final `VIS-009`, `VIS-012`, `VIS-015`; 19/19 browser validation | Production implementation must preserve responsive tick/label treatment and complete accessible bucket evidence |
 | Localization runtime and `Intl` | Presentation follows active product locale and supports compact/exact formats. | Current localization/formatting code | Current environment-default formatting should be checked against active-locale behavior downstream |
 | Settings resizable shell | Content must work at user-selected navigation widths; no automatic width changes. | Prior approved full-width requirements and current `settings.vue` | Dense exact data must adapt without altering shell policy |
 
@@ -190,11 +190,16 @@
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/requirements_engineering_team_a245406e04604ce28e52af265218b458/requirements_engineer_9dd659bd74f940469dd4932c55ebf19d/context_files/ctx_38f329cd9412__image.png` | Rejected current-state breakdown/table capture | REQ-006–REQ-009 | Current-state evidence | User supplied; not a desired-state approval basis |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` | Existing analytics semantics and previously approved/current visual baseline | REQ-002–REQ-012 | Partially superseded | Semantics preserved; visual treatment reopened by this request |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Visible-field/source and truthfulness contract | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Partially superseded | Analytics data meanings remain preserved; CSV presentation/export is superseded by `DEC-009` |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | RV-007 user-confirmed focused direction, covered states, validation, limitations, and explicit Final Prototype request | REQ-001–REQ-016; AC-001–AC-016; DEC-001–DEC-008 | User-confirmed direction | Exploratory, not final normative UI/UX; later CSV-removal delta must be applied in Final Prototype |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/validation/browser-validation.json` | Deterministic RV-007 browser evidence for equal summary columns, filtered cache values, open-top daily line, responsive behavior, and forbidden terms | REQ-002–REQ-007, REQ-009, REQ-011, REQ-013, REQ-015, REQ-016; AC-001–AC-007, AC-012, AC-015, AC-016 | `PASS` 18/18 | Supporting direction evidence; does not validate later CSV removal |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Direction/state captures `VIS-001`–`VIS-008`, updated through RV-007 | REQ-001–REQ-016; DEC-001–DEC-008 | User-confirmed exploratory evidence | Focus captures govern Final Prototype direction except explicit fixture content and later `DEC-009`; dense captures are rejected history |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/implementation-feasibility-audit.md` | Field/action mapping to current frontend/server/GraphQL contracts and correction of unsupported `Runs` count | REQ-002–REQ-013; AC-001–AC-012 | `PASS` for RV-003 current-contract feasibility | Supporting evidence; no change to the no-backend-change scope |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md` | RI-001 conflict, user-directed hierarchy/removals, and feasible cache-composition mapping | REQ-002, REQ-004–REQ-006, REQ-012, REQ-016; AC-001, AC-003–AC-006, AC-011, AC-016 | Resolved in canonical requirements | Retained traceability evidence; no longer blocks Final Prototype |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/prototype-ticket.md` | Final Prototype provenance, user approval, validation, integration, and closure | REQ-001–REQ-016; AC-001–AC-016 | `Completed` | Authoritative Product lifecycle record |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/ui-ux-spec.md` | Approved final UI/UX behavior, journeys, states, visuals, accessibility, content, and implementation-fidelity boundary | REQ-001–REQ-016; AC-001–AC-016; SCN-001–SCN-007 | `Approved` | Normative behavior-defining supplement |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/visual-references/final-reference-manifest.json` | Hashes and requirement/journey mappings for normative `VIS-009`–`VIS-015` | REQ-001–REQ-016; AC-001–AC-016 | `PASS` 7/7 | Normative visual-reference index |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/visual-references` | Normative final references `VIS-009`–`VIS-015`; earlier exploratory history | REQ-001–REQ-016; AC-001–AC-016 | Approved final set | Visible details normative subject to explicit illustrative/permitted-variation entries |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/ui-behavior-test-matrix.md` | Final requirement/state/journey validation matrix | REQ-001–REQ-016; AC-001–AC-016 | Complete | Downstream validation basis |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/prototype-assumptions.md` | Synthetic fixtures, mocked mechanisms, and production boundaries | REQ-001–REQ-016 | Complete | Normative boundary/limitation record |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/validation/final-prototype` | Typecheck/lint/tests/boundaries/build/browser/reference/post-integration validation | REQ-001–REQ-016; AC-001–AC-016 | Final PASS | Supporting verification evidence |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/requirements-visualization-review.md` | RV-007 clarification history and Final Prototype request | DEC-001–DEC-008 | Historical | Non-normative after final package |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/implementation-feasibility-audit.md` | Current-contract mapping and unsupported `Runs` correction | REQ-002–REQ-013; AC-001–AC-012 | `PASS` | Supporting evidence; no backend change |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/requirement-impact.md` | RI-001 conflict and resolution history | REQ-002, REQ-004–REQ-006, REQ-012, REQ-016 | Resolved | Retained traceability evidence |
 
 ## Assumptions
 
@@ -223,20 +228,20 @@
 
 | Requirement ID | Behavior IDs | Acceptance-Criteria IDs | Scenario IDs | Supplemental / Prototype Evidence |
 | --- | --- | --- | --- | --- |
-| REQ-001–REQ-005 | BEH-001–BEH-004 | AC-001–AC-004 | SCN-001, SCN-002, SCN-006 | RV-007 focus `VIS-001`/`VIS-003`, validation `VAL-001`/`VAL-004`, supplied current-state capture 1 |
-| REQ-006 | BEH-003 | AC-005, AC-006 | SCN-003, SCN-004 | RV-007 `VIS-001`/`VIS-004`; prior data contract |
-| REQ-007–REQ-009 | BEH-001–BEH-006 | AC-002, AC-005, AC-007, AC-008 | SCN-001–SCN-004 | RV-007 focused desktop/constrained/narrow evidence; supplied current captures |
-| REQ-010–REQ-012 | BEH-002–BEH-006 | AC-002, AC-004, AC-006, AC-009–AC-011 | SCN-001–SCN-004, SCN-006 | Current code/tests, prior contract, RV-007, explicit DEC-009 Final Prototype delta |
-| REQ-013 | BEH-005 | AC-012 | SCN-005 | Current Run-details code/tests; RV-007 `VIS-005` |
+| REQ-001–REQ-005 | BEH-001–BEH-004 | AC-001–AC-004 | SCN-001, SCN-002, SCN-006 | Approved `ui-ux-spec.md`; final `VIS-009`, `VIS-010`, `VIS-012`, `VIS-015`; final browser validation; supplied current-state capture 1 |
+| REQ-006 | BEH-003 | AC-005, AC-006 | SCN-003, SCN-004 | Approved `ui-ux-spec.md`; final `VIS-011`; prior data contract; final browser validation |
+| REQ-007–REQ-009 | BEH-001–BEH-006 | AC-002, AC-005, AC-007, AC-008 | SCN-001–SCN-004 | Approved `ui-ux-spec.md`; final desktop/narrow `VIS-009`–`VIS-012`, `VIS-015`; supplied current captures |
+| REQ-010–REQ-012 | BEH-002–BEH-006 | AC-002, AC-004, AC-006, AC-009–AC-011 | SCN-001–SCN-004, SCN-006 | Current code/tests, prior contract, approved final Product package, negative-export/state validation |
+| REQ-013 | BEH-005 | AC-012 | SCN-005 | Current Run-details code/tests; final `VIS-013`, `VIS-014`; approved `ui-ux-spec.md` |
 | REQ-014 | BEH-001 | AC-013 | SCN-001, SCN-005 | Prior approved header/navigation requirements |
-| REQ-015 | BEH-003 | AC-015 | SCN-001 | RV-007 review, `VIS-001`, browser validation `VAL-016` |
-| REQ-016 | BEH-003, BEH-006 | AC-001, AC-011, AC-016 | SCN-001, SCN-002, SCN-007 | RI-001/RV-007, `VAL-004`, current aggregate/component-basis contract, feasibility audit |
+| REQ-015 | BEH-003 | AC-015 | SCN-001 | Approved `ui-ux-spec.md`; final `VIS-009`, `VIS-012`, `VIS-015`; final browser validation |
+| REQ-016 | BEH-003, BEH-006 | AC-001, AC-011, AC-016 | SCN-001, SCN-002, SCN-007 | Approved `ui-ux-spec.md`; final `VIS-009`, `VIS-012`, `VIS-015`; current aggregate/component-basis contract; feasibility audit |
 
 ## Downstream Architecture Input
 
 - Product and system constraints architecture must preserve: Existing analytics and Run-details data/query contracts, fixed UTC semantics, coverage/pricing truthfulness, on-page exact data, localization boundary, current Settings navigation policy, and accessibility semantics; CSV export is explicitly removed.
-- Decisions intentionally deferred to architecture design: None yet. Target architecture is not being designed during this visualization round.
-- Technical facts architecture should verify: Current change appears presentation-focused within existing frontend ownership, but the approved prototype may affect shared formatting/chart/table patterns; routing assessment will be performed only after user approval.
+- Decisions intentionally deferred to architecture design: None. The approved package requires no API, persisted-data, security/privacy, concurrency/lifecycle, deployment, ownership-boundary, migration, new-pattern, or structural-refactoring decision.
+- Technical facts downstream engineering should verify: The browser-only Product prototype is implementation-oriented evidence, not production architecture. Production work must bind the approved presentation to the existing frontend stores/generated GraphQL types and retained component/state behavior without inventing fields or requests.
 - Known feasibility or integration risks: Dense exact evidence and Chart.js accessibility/responsive behavior; ensuring formatter changes preserve on-page exact values; fully removing CSV UI/behavior and related tests without affecting analytics queries; avoiding extra fetches from presentational state changes.
 
 ## Readiness Check
@@ -246,28 +251,28 @@
 - Scope and non-goals are clear: `Yes`
 - Requirements and acceptance criteria are testable and traceable: `Yes`
 - Applicable scenarios are covered: `Yes`
-- Prototype and supplemental evidence is integrated consistently: `Yes — user-confirmed RV-007 direction plus explicit DEC-009 delta; exploratory evidence is explicitly non-normative`
-- Applicable UI/UX approval and final visual-reference basis are recorded: `Partial — visualization direction is user-confirmed; final Product-owned ui-ux-spec.md and normative screenshots are requested and pending`
+- Prototype and supplemental evidence is integrated consistently: `Yes — approved Final Prototype reconciles RV-007 plus DEC-009; exploratory evidence remains explicitly non-normative`
+- Applicable UI/UX approval and final visual-reference basis are recorded: `Yes — Product-owned ui-ux-spec.md, normative VIS-009–VIS-015, manifest, assumptions, behavior matrix, and validation are linked`
 - Material assumptions and open decisions are visible: `Yes — no material behavior decision remains open`
-- User approval received: `Partial — intended visualization direction and CSV removal are explicit; final prototype confirmation is still required`
-- Requirements package ready for downstream route: `No`
-- Remaining blocker: Product must deliver the separate Final Prototype package—runnable prototype at the canonical repository root, Product-owned `ui-ux-spec.md`, normative final screenshots, validation, and repository finalization—incorporating RV-007 plus DEC-009. Requirements Engineering must then reconcile the package and obtain final user confirmation before architecture routing.
+- User approval received: `Yes — on 2026-08-29, after verifying the actual final runnable and complete CSV removal, the user stated: “okay. i approve the final product prototype. now”`
+- Requirements package ready for downstream route: `Yes`
+- Remaining blocker: `None`
 
 ## Architecture Design Routing Assessment
 
-Not yet performed. The package is Draft and the Readiness Gate has not passed because the user-requested Final Prototype package and final confirmation are pending.
+The approved requirements and Product UI/UX package passed the Readiness Gate. Requirements Engineering then assessed the change boundary against the current source-pin frontend/server/GraphQL evidence and the completed browser-only Product prototype. This assessment selects a route; it does not prescribe target architecture or replace downstream engineering judgment.
 
-- Assessment status: `Blocked pending Final Prototype and final user approval`
-- Assessment owner and date: Requirements Engineering; pending
-- Preliminary task size: `N/A — assessment not yet permitted`
-- Preliminary architectural risk: `N/A — assessment not yet permitted`
-- Structural surfaces reviewed: Current frontend page/components, analytics store/types, Settings shell, tests, prior UI/UX/data-contract artifacts.
-- Payload/content surfaces reviewed: User captures, localization labels, analytics result fields, exact table/export evidence.
-- Structural-impact triggers: `No backend/GraphQL/persistence/accounting trigger found; final frontend structural impact remains unassessed until the final prototype package is reconciled`
-- Evidence paths: See investigation notes and Supplemental Artifacts.
-- Decision rationale: Routing assessment occurs only after explicit approval and a passed readiness gate.
-- Selected route: `N/A — Final Prototype first`
-- Outcome classification: `Prototype Needed`
-- Direct-route conditions all satisfied: `N/A — not assessed`
-- Architecture design, review, and design-revision artifacts: `N/A — not applicable at this stage`
-- Downstream re-entry trigger: Product returns the completed Final Prototype package, Requirements Engineering verifies/reconciles it, and the user explicitly confirms the final UI/UX basis.
+- Assessment status: `Complete`
+- Assessment owner and date: Requirements Engineering; 2026-08-29
+- Preliminary task size: `Medium`
+- Preliminary architectural risk: `Low`
+- Structural surfaces reviewed: Existing Settings page/Token Statistics component ownership; analytics controls, state composition, summaries, Chart.js trend, Detailed-usage evidence, Run-details components/tables, Pinia store, generated GraphQL types/query, localization/formatting utilities, tests, and local CSV path slated for removal.
+- Payload/content surfaces reviewed: User captures; approved labels/copy; analytics aggregate, daily-bucket, breakdown, coverage, pricing, and cache fields; synthetic Product fixtures; final `ui-ux-spec.md`; normative `VIS-009`–`VIS-015`.
+- Structural-impact triggers: `Absent`. No API/external-contract, persisted-schema/invariant, security/privacy, concurrency/lifecycle, deployment, subsystem/ownership-boundary, migration, new architectural-pattern, or required structural-refactoring change is authorized or needed. Existing comparison fields may remain unused; no new backend field or operation is required.
+- Evidence paths: Canonical investigation notes; current code/tests at source pin `9d0fd7c570d58da1af2c7a40279327c8a20a8093`; Product `implementation-feasibility-audit.md`; approved `ui-ux-spec.md`; `prototype-assumptions.md`; `ui-behavior-test-matrix.md`; final validation under `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/validation/final-prototype`.
+- Decision rationale: The approved work is a bounded frontend presentation and client-feature removal within existing ownership and contracts. The current structural surfaces already support every required fact/state; the final Product package validates the intended experience without introducing a production architecture decision. Medium size reflects the breadth of Analytics, retained states, responsive/accessibility/localization coverage, and light Run-details unification, not structural risk.
+- Selected route: `Implementation Engineer`
+- Outcome classification: `Approved Direct-Implementation`
+- Direct-route conditions all satisfied: `Yes — Medium, Low preliminary risk, no present or unknown structural trigger, existing ownership/surfaces support the work, and no architecture-owned technical decision remains`
+- Architecture design, review, and design-revision artifacts: `N/A — not applicable for the direct route`
+- Downstream re-entry trigger: Implementation Engineer must recheck the direct-route evidence. Return `Design Impact` if implementation proves a structural trigger or architecture-owned decision is required; return `Requirement Gap` if the approved behavior, contract, or scope cannot be met without changing product intent.
