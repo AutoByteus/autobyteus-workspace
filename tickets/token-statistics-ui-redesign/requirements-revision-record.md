@@ -9,6 +9,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-001 | Initial request, current-state/code investigation, and `origin/personal` bootstrap clarification | N/A | Draft — Requirements Visualization Needed | BEH-001–BEH-006; REQ-001–REQ-014; AC-001–AC-014; DEC-001–DEC-004 | Coherent requirements baseline and focused visualization decision set |
 | RER-002 | Product Design returned clean Requirements Visualization RV-002 and corrected durable prototype baseline integration | Draft — Requirements Visualization Needed | Draft — Requirements Visualization Review Pending | No requirement text changed; DEC-001–DEC-004 remain open | Linked review URLs, repository lineage, visual evidence, validation, and limitations; awaiting user selection |
 | RER-003 | User required current-data proof; Product Design returned RV-003 contract-feasibility audit and removed one unsupported illustrative field | Draft — Requirements Visualization Review Pending | Draft — Requirements Visualization Review Pending | REQ-012/no-backend boundary confirmed; DEC-001–DEC-004 remain open | Current-contract feasibility PASS; unsupported Run-details `Runs` count removed; no requirement impact |
+| RER-004 | User selected a daily line/curve with visible point markers over vertical bars; Product Design returned RV-004 | Draft — Requirements Visualization Review Pending | Draft — Requirements Visualization Review Pending | BEH-003; REQ-015; AC-015; SCN-001; DEC-001 partially resolved | Daily trend form incorporated and validated; overall A/B/hybrid direction remains open |
 
 ## Revision Entries
 
@@ -56,3 +57,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture or direct-implementation route impact: No backend/GraphQL/persistence change is required by the remaining proposal. Final routing still awaits user selection, final prototype decision, approval, and readiness assessment.
 - Remaining gaps, assumptions, or blocked decisions: User selection of Direction A/B/hybrid and `DEC-001`–`DEC-004`.
 - Next action or recipient: User reviews the unchanged clean Direction A/B URLs and selects the desired hierarchy/control/evidence/Run-details direction.
+
+### RER-004 — Daily usage trend form clarified
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user stated that usage per day within a month should be a line/curve with visible point markers rather than vertical bars. Product Design returned RV-004 with both directions updated and browser validation 17/17.
+- Prior authoritative status: `Draft — Requirements Visualization Review Pending`
+- Current authoritative status: `Draft — Requirements Visualization Review Pending`
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: `BEH-003`; new `REQ-015`; new `AC-015`; `SCN-001`; `DEC-001` partially resolved.
+- Why this baseline or revision was recorded: This is a material visual-behavior decision that governs the primary within-month trend and is now explicit/testable rather than an implementation preference.
+- Canonical artifact sections changed: Current/desired behavior; Requirements; Acceptance Criteria; Scenario SCN-001; UI/Experience revision; Open Decisions; Traceability; Readiness; investigation evidence/prototype findings.
+- Supplemental artifacts added, changed, or removed: Product-owned RV-004 review, validation, and `VIS-001`/`VIS-002` were updated in place; no Requirements-owned UI artifact was created.
+- Prototype evidence or product decisions incorporated: A 29-point daily line with visible markers, restrained date guides, emphasized exact labels, full accessible series, no vertical bars, and no area fill. Current-contract feasibility from RV-003 remains intact.
+- User approval impact: The daily trend form is clarified and included in the Draft approval basis; this is not approval of the overall requirements or either direction.
+- Downstream architecture or direct-implementation route impact: No new backend/contract surface; current `trendBuckets` DAY granularity supports the behavior. Final routing still awaits overall selection and approval.
+- Remaining gaps, assumptions, or blocked decisions: Direction A/B/hybrid; remaining hierarchy, control disclosure, exact-evidence treatment, and Run-details unification choices.
+- Next action or recipient: User reviews the revised A/B visualizations and selects the remaining direction.
