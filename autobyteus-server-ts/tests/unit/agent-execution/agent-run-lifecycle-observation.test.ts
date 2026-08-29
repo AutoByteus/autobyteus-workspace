@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
+import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
 
 const event = (
   eventType: AgentRunEventType,
@@ -25,11 +27,19 @@ describe("AgentRunService lifecycle observation", () => {
       }),
       isActive: vi.fn(() => true),
     };
+    const lifecycleService = Object.create(
+      StandaloneAgentRunLifecycleService.prototype,
+    ) as StandaloneAgentRunLifecycleService;
+    const provisioningService = Object.create(
+      AgentRunProvisioningService.prototype,
+    ) as AgentRunProvisioningService;
     const service = new AgentRunService("/tmp/agent-run-lifecycle-observation", {
       agentRunManager: { getActiveRun: vi.fn(() => activeRun) } as any,
       metadataService: {} as any,
       historyCatalogService: {} as any,
       workspaceManager: {} as any,
+      provisioningService,
+      lifecycleService,
     });
     const observed: Array<{ phase: string; errorMessage?: string | null }> = [];
     const unsubscribe = await service.observeAgentRunLifecycle("run-1", (item) => observed.push(item));

@@ -4,16 +4,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mockTerminationService = vi.hoisted(() => ({
   terminateAgentRun: vi.fn(),
   restoreAgentRun: vi.fn(),
+  getAgentRun: vi.fn(),
+}));
+const mockRunModelConfigService = vi.hoisted(() => ({
+  updateStoppedAgentRunModelConfig: vi.fn(),
 }));
 
 vi.mock(
-  "../../../../../src/agent-execution/services/agent-run-service.js",
+  "../../../../../src/api/graphql/studio-application-api-services.js",
   () => ({
-    getAgentRunService: () => mockTerminationService,
+    getStudioAgentRunService: () => mockTerminationService,
+    getStudioRunModelConfigService: () => mockRunModelConfigService,
   }),
 );
 
-import { AgentRunManager } from "../../../../../src/agent-execution/services/agent-run-manager.js";
 import {
   AgentRunResolver,
   type ApproveToolInvocationInput,
@@ -24,6 +28,33 @@ describe("AgentRunResolver", () => {
     vi.restoreAllMocks();
     mockTerminationService.terminateAgentRun.mockReset();
     mockTerminationService.restoreAgentRun.mockReset();
+    mockTerminationService.getAgentRun.mockReset();
+    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockReset();
+  });
+
+  it("routes only stopped model-config updates through the owner-aware Studio service", async () => {
+    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockResolvedValue({
+      success: false,
+      outcome: "RUN_ACTIVE",
+      message: "locked",
+      isActive: true,
+      editability: { editable: false, reason: "RUN_ACTIVE" },
+      canonical: { llmConfig: { reasoning_effort: "medium" } },
+      fieldErrors: [],
+    });
+    const resolver = new AgentRunResolver();
+
+    await expect(resolver.updateStoppedAgentRunModelConfig({
+      agentRunId: "run-1",
+      llmConfig: { reasoning_effort: "high" },
+    })).resolves.toMatchObject({
+      outcome: "RUN_ACTIVE",
+      canonicalLlmConfig: { reasoning_effort: "medium" },
+    });
+    expect(mockRunModelConfigService.updateStoppedAgentRunModelConfig).toHaveBeenCalledWith({
+      agentRunId: "run-1",
+      llmConfig: { reasoning_effort: "high" },
+    });
   });
 
   it("routes restore through AgentRunService", async () => {
@@ -49,10 +80,7 @@ describe("AgentRunResolver", () => {
     const activeRun = {
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
     };
-    const agentRunManager = {
-      getActiveRun: vi.fn().mockReturnValue(activeRun),
-    };
-    vi.spyOn(AgentRunManager, "getInstance").mockReturnValue(agentRunManager as never);
+    mockTerminationService.getAgentRun.mockReturnValue(activeRun);
     const resolver = new AgentRunResolver();
 
     const result = await resolver.approveToolInvocation({
@@ -66,7 +94,7 @@ describe("AgentRunResolver", () => {
       success: true,
       message: "Tool invocation approval/denial successfully sent to agent.",
     });
-    expect(agentRunManager.getActiveRun).toHaveBeenCalledWith("run-native-1");
+    expect(mockTerminationService.getAgentRun).toHaveBeenCalledWith("run-native-1");
     expect(activeRun.approveToolInvocation).toHaveBeenCalledWith("tool-1", true, null);
   });
 });

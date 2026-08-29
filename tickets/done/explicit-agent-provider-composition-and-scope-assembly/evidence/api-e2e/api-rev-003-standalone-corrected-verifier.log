@@ -1,0 +1,18 @@
+{
+  "scenario": "APIE2E-DUALHOST-003-STANDALONE-CORRECTED-VERIFIER",
+  "result": "PASS",
+  "observed": {
+    "transcriptX5": true,
+    "agentSocket": {
+      "url": "ws://127.0.0.1:43651/_autobyteus/agent/cde0efce-4aae-4088-be3f-f956949a9b64/targets/agent-team-member/socratic_math_tutor_f1cada753c7d473f9c4f6625f236dbac",
+      "sent": 1,
+      "received": 29
+    },
+    "notificationSocket": {
+      "url": "ws://127.0.0.1:43651/_autobyteus/backend/notifications",
+      "sent": 0,
+      "received": 3
+    }
+  },
+  "note": "Corrects only the temporary harness URL literal; observations are from the same real browser run."
+}

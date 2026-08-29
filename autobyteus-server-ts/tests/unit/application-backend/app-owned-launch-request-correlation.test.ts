@@ -9,6 +9,7 @@ import type {
   ApplicationPublishedArtifactEvent,
   ApplicationAgentBinding,
   ApplicationAgentTeamBinding,
+  ApplicationEffectiveLaunchConfiguration,
 } from "@autobyteus/application-sdk-contracts";
 import { createBriefRunLaunchService } from "../../../../applications/brief-studio/backend-src/services/brief-run-launch-service.ts";
 import { createBriefArtifactReconciliationService } from "../../../../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts";
@@ -44,9 +45,116 @@ type CapabilityOverrides = {
   listBindings?: ApplicationHandlerContext["agentExecution"]["list"];
   sendInput?: ApplicationHandlerContext["agentExecution"]["sendInput"];
   terminate?: ApplicationHandlerContext["agentExecution"]["terminate"];
-  getConfigured?: ApplicationHandlerContext["agentResources"]["getConfigured"];
+  requireRunnable?: ApplicationHandlerContext["agentResources"]["requireRunnable"];
   listArtifacts?: ApplicationHandlerContext["publishedArtifacts"]["list"];
   readRevision?: ApplicationHandlerContext["publishedArtifacts"]["readRevision"];
+};
+
+const buildRunnableTeamConfiguration = (input: {
+  slotKey: string;
+  localId?: string;
+  definitionId?: string;
+  leaves: Array<{
+    memberAddress: string;
+    displayName: string;
+    agentDefinitionId: string;
+    runtimeKind: string;
+    llmModelIdentifier: string;
+    llmConfig?: Record<string, unknown> | null;
+    workspaceRootPath: string;
+  }>;
+}): ApplicationEffectiveLaunchConfiguration => {
+  const rootProfile = input.leaves[0];
+  if (!rootProfile) {
+    throw new Error("A runnable Team configuration requires at least one launch profile.");
+  }
+  const executionResourceRef = input.definitionId
+    ? {
+        source: "shared" as const,
+        kind: "AGENT_TEAM" as const,
+        definitionId: input.definitionId,
+      }
+    : {
+        source: "bundle" as const,
+        kind: "AGENT_TEAM" as const,
+        localId: input.localId!,
+      };
+  return {
+    slotKey: input.slotKey,
+    executionResourceRef,
+    resourceDefinitionId: input.definitionId ?? `bundle-team__${input.localId}`,
+    resourceKind: "AGENT_TEAM",
+    teamScopes: [{
+      teamAddress: "/",
+      displayName: "Root Team",
+      teamDefinitionId: input.definitionId ?? `bundle-team__${input.localId}`,
+      runtimeKind: rootProfile.runtimeKind,
+      llmModelIdentifier: rootProfile.llmModelIdentifier,
+      llmConfig: rootProfile.llmConfig ?? null,
+      workspaceRootPath: rootProfile.workspaceRootPath,
+      provenance: {
+        runtimeKind: { kind: "HOST_SLOT_OVERRIDE" },
+        llmModelIdentifier: { kind: "HOST_SLOT_OVERRIDE" },
+        llmConfig: rootProfile.llmConfig ? { kind: "HOST_SLOT_OVERRIDE" } : null,
+        workspaceRootPath: "HOST_OVERRIDE",
+      },
+    }],
+    leaves: input.leaves.map((leaf) => ({
+      ...leaf,
+      llmConfig: leaf.llmConfig ?? null,
+      provenance: {
+        runtimeKind: { kind: "HOST_SLOT_OVERRIDE" },
+        llmModelIdentifier: { kind: "HOST_SLOT_OVERRIDE" },
+        llmConfig: leaf.llmConfig ? { kind: "HOST_SLOT_OVERRIDE" } : null,
+        workspaceRootPath: "HOST_OVERRIDE",
+      },
+    })),
+  };
+};
+
+const buildDefaultRunnableTeamConfiguration = (
+  slotKey: string,
+): ApplicationEffectiveLaunchConfiguration => {
+  if (slotKey === "lessonTutorTeam") {
+    return buildRunnableTeamConfiguration({
+      slotKey,
+      localId: "socratic-math-team",
+      leaves: [{
+        memberAddress: "/tutor",
+        displayName: "Tutor",
+        agentDefinitionId: "bundle-agent__tutor",
+        runtimeKind: "autobyteus",
+        llmModelIdentifier: "gpt-test",
+        llmConfig: { reasoning_effort: "high" },
+        workspaceRootPath: "/tmp/application-test-runtime",
+      }],
+    });
+  }
+  if (slotKey === "draftingTeam") {
+    return buildRunnableTeamConfiguration({
+      slotKey,
+      localId: "brief-studio-team",
+      leaves: [
+        {
+          memberAddress: "/researcher",
+          displayName: "Researcher",
+          agentDefinitionId: "bundle-agent__researcher",
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "gpt-test",
+          workspaceRootPath: "/tmp/application-test-runtime",
+        },
+        {
+          memberAddress: "/writer",
+          displayName: "Writer",
+          agentDefinitionId: "bundle-agent__writer",
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "gpt-test",
+          workspaceRootPath: "/tmp/application-test-runtime",
+        },
+      ],
+    });
+  }
+  throw new Error(`Unexpected application resource slot '${slotKey}'.`);
 };
 
 const buildCapabilities = (overrides: CapabilityOverrides = {}) => ({
@@ -63,35 +171,15 @@ const buildCapabilities = (overrides: CapabilityOverrides = {}) => ({
     sendInput: overrides.sendInput ?? vi.fn(async () => {
       throw new Error("agentExecution.sendInput was not mocked for this test.");
     }),
+    subscribeEventStream: vi.fn(async () => {
+      throw new Error("agentExecution.subscribeEventStream was not mocked for this test.");
+    }),
     terminate: overrides.terminate ?? vi.fn(async () => null),
   },
   agentResources: {
     listAvailable: vi.fn(async () => []),
-    getConfigured: overrides.getConfigured ?? vi.fn(async (slotKey: string) => {
-    if (slotKey === "lessonTutorTeam") {
-      return {
-        slotKey,
-        executionResourceRef: {
-          source: "bundle",
-          kind: "AGENT_TEAM",
-          localId: "socratic-math-team",
-        },
-        launchProfile: null,
-      };
-    }
-    if (slotKey === "draftingTeam") {
-      return {
-        slotKey,
-        executionResourceRef: {
-          source: "bundle",
-          kind: "AGENT_TEAM",
-          localId: "brief-studio-team",
-        },
-        launchProfile: null,
-      };
-    }
-    return null;
-    }),
+    requireRunnable: overrides.requireRunnable
+      ?? vi.fn(async (slotKey: string) => buildDefaultRunnableTeamConfiguration(slotKey)),
   },
   publishedArtifacts: {
     list: overrides.listArtifacts ?? vi.fn(async () => []),
@@ -182,24 +270,18 @@ const buildBriefBinding = (launchRequestId: string): ApplicationAgentBinding | A
   },
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run-brief-1",
+    teamRunId: "team-run-brief-1",
     definitionId: "brief-team-definition",
     members: [
       {
-        memberName: "researcher",
-        memberRouteKey: "researcher",
+        memberAddress: "/researcher",
         displayName: "Researcher",
-        teamPath: [],
-        runId: "team-run-brief-1::researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
+        agentRunId: "team-run-brief-1::researcher",
       },
       {
-        memberName: "writer",
-        memberRouteKey: "writer",
+        memberAddress: "/writer",
         displayName: "Writer",
-        teamPath: [],
-        runId: "team-run-brief-1::writer",
-        runtimeKind: "AGENT_TEAM_MEMBER",
+        agentRunId: "team-run-brief-1::writer",
       },
     ],
   },
@@ -224,16 +306,13 @@ const buildLessonBinding = (
   },
   runtime: {
     subject: "TEAM_RUN",
-    runId: "team-run-lesson-1",
+    teamRunId: "team-run-lesson-1",
     definitionId: "socratic-team-definition",
     members: [
       {
-        memberName: "tutor",
-        memberRouteKey: "tutor",
+        memberAddress: "/tutor",
         displayName: "Tutor",
-        teamPath: [],
-        runId: "team-run-lesson-1::tutor",
-        runtimeKind: "AGENT_TEAM_MEMBER",
+        agentRunId: "team-run-lesson-1::tutor",
       },
     ],
   },
@@ -260,12 +339,8 @@ const buildBriefArtifactEvent = (
   publishedAt: "2026-04-19T12:15:00.000Z",
   binding,
   producer: {
-    memberRouteKey: "researcher",
-    memberName: "researcher",
+    agentRunId: "team-run-brief-1::researcher",
     displayName: "Researcher",
-    teamPath: [],
-    runId: "team-run-brief-1::researcher",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -281,12 +356,8 @@ const buildBriefFinalArtifactEvent = (
   publishedAt: "2026-04-19T12:16:00.000Z",
   binding,
   producer: {
-    memberRouteKey: "writer",
-    memberName: "writer",
+    agentRunId: "team-run-brief-1::writer",
     displayName: "Writer",
-    teamPath: [],
-    runId: "team-run-brief-1::writer",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -302,12 +373,8 @@ const buildLessonArtifactEvent = (
   publishedAt: "2026-04-19T12:25:00.000Z",
   binding,
   producer: {
-    memberRouteKey: "tutor",
-    memberName: "tutor",
+    agentRunId: "team-run-lesson-1::tutor",
     displayName: "Tutor",
-    teamPath: [],
-    runId: "team-run-lesson-1::tutor",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -323,12 +390,8 @@ const buildLessonHintArtifactEvent = (
   publishedAt: "2026-04-19T12:26:00.000Z",
   binding,
   producer: {
-    memberRouteKey: "tutor",
-    memberName: "tutor",
+    agentRunId: "team-run-lesson-1::tutor",
     displayName: "Tutor",
-    teamPath: [],
-    runId: "team-run-lesson-1::tutor",
-    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -361,7 +424,7 @@ describe("App-owned launchRequestId correlation", () => {
   it("fails Brief Studio launch before startAgentTeam when configured-resource readback rejects an invalid slot selection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-invalid-slot-", BRIEF_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
-      getConfigured: vi.fn(async () => {
+      requireRunnable: vi.fn(async () => {
         throw new Error(
           "Application execution resource slot 'draftingTeam' has invalid persisted override: Application execution resource slot 'draftingTeam' does not allow resource kind 'AGENT'.",
         );
@@ -379,7 +442,6 @@ describe("App-owned launchRequestId correlation", () => {
     await expect(
       service.launchDraftRun({
         briefId: createdBrief.briefId,
-        llmModelIdentifier: "gpt-test",
       }),
     ).rejects.toThrow("Application execution resource slot 'draftingTeam' has invalid persisted override");
 
@@ -405,18 +467,22 @@ describe("App-owned launchRequestId correlation", () => {
     await expect(
       service.launchDraftRun({
         briefId: createdBrief.briefId,
-        llmModelIdentifier: "gpt-test",
       }),
     ).rejects.toThrow("startAgentTeam failed after binding creation");
 
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
-        mode: "preset",
-        launchPreset: expect.objectContaining({
+        mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "autobyteus",
           llmModelIdentifier: "gpt-test",
-          autoExecuteTools: true,
-        }),
+        })],
+        memberConfigs: expect.arrayContaining([
+          expect.objectContaining({ memberAddress: "/researcher", llmModelIdentifier: "gpt-test" }),
+          expect.objectContaining({ memberAddress: "/writer", llmModelIdentifier: "gpt-test" }),
+        ]),
       }),
     }));
 
@@ -466,35 +532,27 @@ describe("App-owned launchRequestId correlation", () => {
   it("launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-defaults-", BRIEF_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
-      getConfigured: vi.fn(async () => ({
+      requireRunnable: vi.fn(async () => buildRunnableTeamConfiguration({
         slotKey: "draftingTeam",
-        executionResourceRef: {
-          source: "shared",
-          kind: "AGENT_TEAM",
-          definitionId: "shared-writing-team",
-        },
-        launchProfile: {
-          kind: "AGENT_TEAM",
-          defaults: {
+        definitionId: "shared-writing-team",
+        leaves: [
+          {
+            memberAddress: "/researcher",
+            displayName: "Researcher",
+            agentDefinitionId: "bundle-agent__researcher",
             runtimeKind: "lmstudio",
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: "/tmp/brief-studio",
           },
-          memberProfiles: [
-            {
-              memberRouteKey: "researcher",
-              memberName: "researcher",
-              agentDefinitionId: "bundle-agent__researcher",
-            },
-            {
-              memberRouteKey: "writer",
-              memberName: "writer",
-              agentDefinitionId: "bundle-agent__writer",
-              runtimeKind: "lmstudio",
-              llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
-            },
-          ],
-        },
+          {
+            memberAddress: "/writer",
+            displayName: "Writer",
+            agentDefinitionId: "bundle-agent__writer",
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: "/tmp/brief-studio",
+          },
+        ],
       })),
       startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildBriefBinding(input.launchRequestId)),
     });
@@ -518,16 +576,22 @@ describe("App-owned launchRequestId correlation", () => {
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/brief-studio",
+        })],
         memberConfigs: expect.arrayContaining([
           expect.objectContaining({
-            memberRouteKey: "researcher",
+            memberAddress: "/researcher",
             runtimeKind: "lmstudio",
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: "/tmp/brief-studio",
             autoExecuteTools: true,
           }),
           expect.objectContaining({
-            memberRouteKey: "writer",
+            memberAddress: "/writer",
             runtimeKind: "lmstudio",
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: "/tmp/brief-studio",
@@ -541,33 +605,27 @@ describe("App-owned launchRequestId correlation", () => {
   it("launches Brief Studio from explicit per-member team profiles when defaults are null", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-member-launch-configs-", BRIEF_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
-      getConfigured: vi.fn(async () => ({
+      requireRunnable: vi.fn(async () => buildRunnableTeamConfiguration({
         slotKey: "draftingTeam",
-        executionResourceRef: {
-          source: "shared",
-          kind: "AGENT_TEAM",
-          definitionId: "shared-writing-team",
-        },
-        launchProfile: {
-          kind: "AGENT_TEAM",
-          defaults: null,
-          memberProfiles: [
-            {
-              memberRouteKey: "researcher",
-              memberName: "researcher",
-              agentDefinitionId: "bundle-agent__researcher",
-              runtimeKind: "autobyteus",
-              llmModelIdentifier: "openai/gpt-5",
-            },
-            {
-              memberRouteKey: "writer",
-              memberName: "writer",
-              agentDefinitionId: "bundle-agent__writer",
-              runtimeKind: "lmstudio",
-              llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
-            },
-          ],
-        },
+        definitionId: "shared-writing-team",
+        leaves: [
+          {
+            memberAddress: "/researcher",
+            displayName: "Researcher",
+            agentDefinitionId: "bundle-agent__researcher",
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: "openai/gpt-5",
+            workspaceRootPath: path.join(path.dirname(appDatabasePath), "runtime"),
+          },
+          {
+            memberAddress: "/writer",
+            displayName: "Writer",
+            agentDefinitionId: "bundle-agent__writer",
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: path.join(path.dirname(appDatabasePath), "runtime"),
+          },
+        ],
       })),
       startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildBriefBinding(input.launchRequestId)),
     });
@@ -593,14 +651,14 @@ describe("App-owned launchRequestId correlation", () => {
         mode: "memberConfigs",
         memberConfigs: [
           expect.objectContaining({
-            memberRouteKey: "researcher",
+            memberAddress: "/researcher",
             runtimeKind: "autobyteus",
             llmModelIdentifier: "openai/gpt-5",
             workspaceRootPath: context.storage.runtimePath,
             autoExecuteTools: true,
           }),
           expect.objectContaining({
-            memberRouteKey: "writer",
+            memberAddress: "/writer",
             runtimeKind: "lmstudio",
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: context.storage.runtimePath,
@@ -716,7 +774,6 @@ describe("App-owned launchRequestId correlation", () => {
 
     await expect(service.launchDraftRun({
       briefId: createdBrief.briefId,
-      llmModelIdentifier: "gpt-test",
     })).resolves.toEqual({
       briefId: createdBrief.briefId,
       bindingId: "binding-brief-1",
@@ -766,7 +823,6 @@ describe("App-owned launchRequestId correlation", () => {
     await expect(
       createLessonRuntimeService(context).startLesson({
         prompt: "Solve 2x + 3 = 11",
-        llmModelIdentifier: "gpt-test",
       }),
     ).rejects.toThrow("lesson start failed after binding creation");
 
@@ -775,12 +831,18 @@ describe("App-owned launchRequestId correlation", () => {
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
-        mode: "preset",
-        launchPreset: expect.objectContaining({
+        mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "gpt-test",
+        })],
+        memberConfigs: [expect.objectContaining({
+          memberAddress: "/tutor",
           llmModelIdentifier: "gpt-test",
           autoExecuteTools: true,
           llmConfig: { reasoning_effort: "high" },
-        }),
+        })],
       }),
     }));
 
@@ -836,7 +898,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(sendInput).toHaveBeenCalledWith({
       address: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_RUN" },
+        memberAddress: null,
       },
       input: {
         text: "Why should I subtract five first?",
@@ -849,7 +911,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(lesson).toMatchObject({
       tutorTargetAddress: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+        memberAddress: "/tutor",
       },
       messages: [expect.objectContaining({
         role: "student",
@@ -876,7 +938,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(sendInput).toHaveBeenCalledWith({
       address: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_RUN" },
+        memberAddress: null,
       },
       input: {
         text: "The student requests a hint. Help with the first step.",
@@ -889,7 +951,7 @@ describe("App-owned launchRequestId correlation", () => {
     expect(lesson).toMatchObject({
       tutorTargetAddress: {
         bindingId: "binding-lesson-1",
-        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+        memberAddress: "/tutor",
       },
       messages: [expect.objectContaining({
         role: "student",
@@ -902,28 +964,18 @@ describe("App-owned launchRequestId correlation", () => {
   it("launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-defaults-", SOCRATIC_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
-      getConfigured: vi.fn(async () => ({
+      requireRunnable: vi.fn(async () => buildRunnableTeamConfiguration({
         slotKey: "lessonTutorTeam",
-        executionResourceRef: {
-          source: "bundle",
-          kind: "AGENT_TEAM",
-          localId: "socratic-math-team",
-        },
-        launchProfile: {
-          kind: "AGENT_TEAM",
-          defaults: {
+        localId: "socratic-math-team",
+        leaves: [{
+          memberAddress: "/tutor",
+          displayName: "Tutor",
+          agentDefinitionId: "bundle-agent__tutor",
             runtimeKind: "lmstudio",
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            llmConfig: { reasoning_effort: "high" },
             workspaceRootPath: "/tmp/lessons",
-          },
-          memberProfiles: [
-            {
-              memberRouteKey: "tutor",
-              memberName: "tutor",
-              agentDefinitionId: "bundle-agent__tutor",
-            },
-          ],
-        },
+        }],
       })),
       startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildLessonBinding(input.launchRequestId)),
       get: vi.fn(async () => buildLessonBinding("lesson-launch-request-1")),
@@ -943,9 +995,15 @@ describe("App-owned launchRequestId correlation", () => {
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
+        teamConfigs: [expect.objectContaining({
+          teamAddress: "/",
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/lessons",
+        })],
         memberConfigs: [
           expect.objectContaining({
-            memberRouteKey: "tutor",
+            memberAddress: "/tutor",
             runtimeKind: "lmstudio",
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: "/tmp/lessons",
@@ -959,10 +1017,7 @@ describe("App-owned launchRequestId correlation", () => {
       lessonId: expect.any(String),
       tutorTargetAddress: {
         bindingId: "binding-lesson-1",
-        target: {
-          kind: "AGENT_TEAM_MEMBER",
-          memberRouteKey: "tutor",
-        },
+        memberAddress: "/tutor",
       },
     });
     expect(capabilities.agentExecution.get).toHaveBeenCalledOnce();
@@ -972,26 +1027,18 @@ describe("App-owned launchRequestId correlation", () => {
   it("launches Socratic lessons from explicit per-member team profiles when defaults are null", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-member-launch-configs-", SOCRATIC_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
-      getConfigured: vi.fn(async () => ({
+      requireRunnable: vi.fn(async () => buildRunnableTeamConfiguration({
         slotKey: "lessonTutorTeam",
-        executionResourceRef: {
-          source: "bundle",
-          kind: "AGENT_TEAM",
-          localId: "socratic-math-team",
-        },
-        launchProfile: {
-          kind: "AGENT_TEAM",
-          defaults: null,
-          memberProfiles: [
-            {
-              memberRouteKey: "tutor",
-              memberName: "tutor",
-              agentDefinitionId: "bundle-agent__tutor",
-              runtimeKind: "autobyteus",
-              llmModelIdentifier: "openai/gpt-5",
-            },
-          ],
-        },
+        localId: "socratic-math-team",
+        leaves: [{
+          memberAddress: "/tutor",
+          displayName: "Tutor",
+          agentDefinitionId: "bundle-agent__tutor",
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "openai/gpt-5",
+          llmConfig: { reasoning_effort: "high" },
+          workspaceRootPath: path.join(path.dirname(appDatabasePath), "runtime"),
+        }],
       })),
       startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildLessonBinding(input.launchRequestId)),
     });
@@ -1012,7 +1059,7 @@ describe("App-owned launchRequestId correlation", () => {
         mode: "memberConfigs",
         memberConfigs: [
           expect.objectContaining({
-            memberRouteKey: "tutor",
+            memberAddress: "/tutor",
             runtimeKind: "autobyteus",
             llmModelIdentifier: "openai/gpt-5",
             workspaceRootPath: context.storage.runtimePath,
@@ -1177,7 +1224,6 @@ describe("App-owned launchRequestId correlation", () => {
 
     const lesson = await createLessonRuntimeService(context).startLesson({
       prompt: "Solve 2x + 3 = 11",
-      llmModelIdentifier: "gpt-test",
     });
 
     expect(lesson).toMatchObject({
@@ -1193,7 +1239,7 @@ describe("App-owned launchRequestId correlation", () => {
   it("fails Socratic startLesson before startAgentTeam when configured-resource readback rejects an invalid slot selection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-invalid-slot-", SOCRATIC_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
-      getConfigured: vi.fn(async () => {
+      requireRunnable: vi.fn(async () => {
         throw new Error(
           "Application execution resource slot 'lessonTutorTeam' has invalid manifest default: Application execution resource could not be resolved for application 'test-app'.",
         );
@@ -1208,7 +1254,6 @@ describe("App-owned launchRequestId correlation", () => {
     await expect(
       createLessonRuntimeService(context).startLesson({
         prompt: "Solve 2x + 3 = 11",
-        llmModelIdentifier: "gpt-test",
       }),
     ).rejects.toThrow("Application execution resource slot 'lessonTutorTeam' has invalid manifest default");
 

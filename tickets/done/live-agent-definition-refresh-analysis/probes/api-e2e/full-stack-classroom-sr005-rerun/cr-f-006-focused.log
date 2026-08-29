@@ -1,0 +1,856 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:4930) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+Custom app data directory set to: /tmp/agent-package-private-skills-data-AhGFW7
+Config file not found in new data directory: Error: Configuration file not found: /tmp/agent-package-private-skills-data-AhGFW7/.env
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-26T04:41:03.367Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T04:41:03.367Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-26T04:41:03.368Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-26T04:41:03.388Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-26T04:41:03.388Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-26T04:41:03.400Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-26T04:41:03.400Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 2 items.
+
+stderr | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Tool 'run_bash' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Resolved skill 'autobyteus_single_1787719263389_de76174e3de93' to path: /tmp/agent-package-private-local-1787719263389_de76174e3de93-3JKuvZ/agents/autobyteus-single-agent-1787719263389_de76174e3de93/skills/autobyteus_single_1787719263389_de76174e3de93
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Resolved skill 'autobyteus_tone_1787719263389_de76174e3de93' to path: /tmp/agent-package-private-local-1787719263389_de76174e3de93-3JKuvZ/agents/autobyteus-multi-agent-1787719263389_de76174e3de93/skills/autobyteus_tone_1787719263389_de76174e3de93
+Resolved skill 'autobyteus_outline_1787719263389_de76174e3de93' to path: /tmp/agent-package-private-local-1787719263389_de76174e3de93-3JKuvZ/agents/autobyteus-multi-agent-1787719263389_de76174e3de93/skills/autobyteus_outline_1787719263389_de76174e3de93
+
+stderr | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Tool 'run_bash' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-26T04:41:03.413Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-26T04:41:03.413Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-26T04:41:03.426Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-26T04:41:03.426Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Starting directory traversal for: '/tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-single-1787719263414_a85d84eae4a9f/skills/single_private_1787719263414_a85d84eae4a9f' with max_depth=null
+Creating on-demand SkillWorkspace for: single_private_1787719263414_a85d84eae4a9f
+Creating on-demand SkillWorkspace for: single_private_1787719263414_a85d84eae4a9f
+Creating on-demand SkillWorkspace for: tone_1787719263414_a85d84eae4a9f
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Created metadata-only FileSystemWorkspace at /tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-single-1787719263414_a85d84eae4a9f/skills/single_private_1787719263414_a85d84eae4a9f.
+Initialized SkillWorkspace for skill 'single_private_1787719263414_a85d84eae4a9f' at /tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-single-1787719263414_a85d84eae4a9f/skills/single_private_1787719263414_a85d84eae4a9f
+Created metadata-only FileSystemWorkspace at /tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-single-1787719263414_a85d84eae4a9f/skills/single_private_1787719263414_a85d84eae4a9f.
+Initialized SkillWorkspace for skill 'single_private_1787719263414_a85d84eae4a9f' at /tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-single-1787719263414_a85d84eae4a9f/skills/single_private_1787719263414_a85d84eae4a9f
+Created metadata-only FileSystemWorkspace at /tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-multi-1787719263414_a85d84eae4a9f/skills/tone_1787719263414_a85d84eae4a9f.
+Initialized SkillWorkspace for skill 'tone_1787719263414_a85d84eae4a9f' at /tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-multi-1787719263414_a85d84eae4a9f/skills/tone_1787719263414_a85d84eae4a9f
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Created WorkspaceFileExplorer for skill_ws_single_private_1787719263414_a85d84eae4a9f (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_single_private_1787719263414_a85d84eae4a9f (graphql-file-content).
+Created WorkspaceFileExplorer for skill_ws_tone_1787719263414_a85d84eae4a9f (graphql-file-content).
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Directory traversal for '/tmp/agent-package-private-local-1787719263414_a85d84eae4a9f-pLtjEI/agents/shared-single-1787719263414_a85d84eae4a9f/skills/single_private_1787719263414_a85d84eae4a9f' completed in 0.0090 seconds.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-26T04:41:03.449Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-26T04:41:03.449Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-26T04:41:03.462Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-26T04:41:03.464Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Starting directory traversal for: '/tmp/agent-package-private-local-1787719263450_4e0661d9fdb61-cHeG4E/agent-teams/team-1787719263450_4e0661d9fdb61/skills/team_shared_1787719263450_4e0661d9fdb61' with max_depth=null
+Creating on-demand SkillWorkspace for: team_shared_1787719263450_4e0661d9fdb61
+Creating on-demand SkillWorkspace for: team_shared_1787719263450_4e0661d9fdb61
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Created metadata-only FileSystemWorkspace at /tmp/agent-package-private-local-1787719263450_4e0661d9fdb61-cHeG4E/agent-teams/team-1787719263450_4e0661d9fdb61/skills/team_shared_1787719263450_4e0661d9fdb61.
+Initialized SkillWorkspace for skill 'team_shared_1787719263450_4e0661d9fdb61' at /tmp/agent-package-private-local-1787719263450_4e0661d9fdb61-cHeG4E/agent-teams/team-1787719263450_4e0661d9fdb61/skills/team_shared_1787719263450_4e0661d9fdb61
+Created metadata-only FileSystemWorkspace at /tmp/agent-package-private-local-1787719263450_4e0661d9fdb61-cHeG4E/agent-teams/team-1787719263450_4e0661d9fdb61/skills/team_shared_1787719263450_4e0661d9fdb61.
+Initialized SkillWorkspace for skill 'team_shared_1787719263450_4e0661d9fdb61' at /tmp/agent-package-private-local-1787719263450_4e0661d9fdb61-cHeG4E/agent-teams/team-1787719263450_4e0661d9fdb61/skills/team_shared_1787719263450_4e0661d9fdb61
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Created WorkspaceFileExplorer for skill_ws_team_shared_1787719263450_4e0661d9fdb61 (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_team_shared_1787719263450_4e0661d9fdb61 (graphql-file-content).
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Directory traversal for '/tmp/agent-package-private-local-1787719263450_4e0661d9fdb61-cHeG4E/agent-teams/team-1787719263450_4e0661d9fdb61/skills/team_shared_1787719263450_4e0661d9fdb61' completed in 0.0060 seconds.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-26T04:41:03.491Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-26T04:41:03.491Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (4 tests) 222ms
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:4959) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-3Zi5hf/test_ws_root
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-3Zi5hf/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created and registered workspace ID: agent_ws_cc9a3fa9da44ba0aaeafd2294100f9b6aa14e0ac022e628183f3fd7adc72be48
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace agent_ws_cc9a3fa9da44ba0aaeafd2294100f9b6aa14e0ac022e628183f3fd7adc72be48
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rOH6D6/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rOH6D6/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_a819e255f2f39a345f6b438a14e828eb5ee0d85e33e03941a95d74c313838c2f
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_a819e255f2f39a345f6b438a14e828eb5ee0d85e33e03941a95d74c313838c2f
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Creating temp workspace at: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rOH6D6/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rOH6D6/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_a819e255f2f39a345f6b438a14e828eb5ee0d85e33e03941a95d74c313838c2f
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_a819e255f2f39a345f6b438a14e828eb5ee0d85e33e03941a95d74c313838c2f
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-zKPyvU/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-zKPyvU/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created and registered workspace ID: agent_ws_c6d6a865703513f85c0f49e753e40bb267a9f82f6895b317ac1e875341adaef7
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Creating temp workspace at: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace agent_ws_c6d6a865703513f85c0f49e753e40bb267a9f82f6895b317ac1e875341adaef7
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-9UzGqu/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-9UzGqu/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created and registered workspace ID: agent_ws_c795875d40544ac62345e7de58f0c09fbecd4135e35507bf3c58f195edcda9d8
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Closing FileSystemWorkspace agent_ws_c795875d40544ac62345e7de58f0c09fbecd4135e35507bf3c58f195edcda9d8
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-M0autz/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-M0autz/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created and registered workspace ID: agent_ws_bb3422db165a7c8cc553dde7160cfe3446314f83870b9756f3f6c0e8c728cc6d
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Closing FileSystemWorkspace agent_ws_bb3422db165a7c8cc553dde7160cfe3446314f83870b9756f3f6c0e8c728cc6d
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Creating temp workspace at: /tmp/autobyteus-workspace-hHiUgR/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-hHiUgR/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-hHiUgR/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Creating temp workspace at: /tmp/autobyteus-workspace-Rb67tT/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Rb67tT/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-Rb67tT/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Rb67tT/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Rb67tT/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-nIJYM5/server-data/temp_workspace/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Creating temp workspace at: /tmp/autobyteus-workspace-nIJYM5/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-nIJYM5/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-nIJYM5/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-tCpIuO/created-during-list
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/created-during-list.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Creating temp workspace at: /tmp/autobyteus-workspace-tCpIuO/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-tCpIuO/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created and registered workspace ID: agent_ws_2566cc691d1c75d148b8e11ec2c2a2c137d9e855acf4b0c207629e0e5d843d54
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/existing-a.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/existing-b.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/existing-a.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/existing-b.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-tCpIuO/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace agent_ws_2566cc691d1c75d148b8e11ec2c2a2c137d9e855acf4b0c207629e0e5d843d54
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-KRS714.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-slZBYH/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-DJHGRT.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rs3bl8.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-rzucU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-vo7IqC.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-Yftdj7.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-YhB4QZ.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-gFhSw1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-HpenBl/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-pFFuLn/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-ZcucK1/ignored_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+Custom app data directory set to: /tmp/autobyteus-workspace-ihCEFh/server-data
+Config file not found in new data directory: Error: Configuration file not found: /tmp/autobyteus-workspace-ihCEFh/server-data/.env
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Creating temp workspace at: /tmp/autobyteus-workspace-ihCEFh/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ihCEFh/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-ihCEFh/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests) 167ms
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:4971) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T04:41:09.108Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.206Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.234Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition created successfully with ID: team-team-def-1787719269182-da00644165d2c
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.254Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team-team-def-1787719269182-da00644165d2c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719269182-da00644165d2c updated successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.266Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team-team-def-1787719269182-da00644165d2c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719269182-da00644165d2c updated successfully.
+
+stderr | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Error updating agent team definition: CollaborationContractError: Collaboration target '/missing' was not found in team 'team_team_def_1787719269182_da00644165d2c'.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.291Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team-team-def-1787719269182-da00644165d2c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719269182-da00644165d2c updated successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.303Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID team-team-def-1787719269182-da00644165d2c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719269182-da00644165d2c deleted successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.322Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:41:09.337Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:41:09.362Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:41:09.378Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-08-26T04:41:09.407Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-08-26T04:41:09.427Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-08-26T04:41:09.591Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-08-26T04:41:09.613Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+[2026-08-26T04:41:09.627Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+[2026-08-26T04:41:09.649Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stderr | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Error creating agent team definition: Error: Coordinator member name must match one of nodes.memberName values.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+[2026-08-26T04:41:09.662Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+[2026-08-26T04:41:09.682Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests | 3 failed) 576ms
+     ✓ creates, updates, lists templates, and deletes agent team definitions 156ms
+     × round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows 41ms
+     × exposes team-local subteams in GraphQL with ownership metadata and local member scopes 49ms
+     × exposes company-level team-local departments and their local agents without promoting departments to root catalog entries 186ms
+     ✓ exposes md-centric team GraphQL output contract 36ms
+     ✓ returns validation error when coordinatorMemberName is not present in nodes 33ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+AssertionError: expected undefined to deeply equal [ { …(4) } ]
+
+- Expected: 
+[
+  {
+    "memberName": "local_reviewer",
+    "ref": "reviewer",
+    "refScope": "TEAM_LOCAL",
+    "refType": "AGENT",
+  },
+]
+
++ Received: 
+undefined
+
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:743:48
+    741|     }>(getQuery, { id: teamId });
+    742| 
+    743|     expect(fetched.agentTeamDefinition?.nodes).toEqual([
+       |                                                ^
+    744|       {
+    745|         memberName: "local_reviewer",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+AssertionError: expected undefined to match object { …(4) }
+
+- Expected: 
+{
+  "id": "company_team_local_subteam_graphql_1787719269379_5ca019b7a7618",
+  "nodes": [
+    {
+      "memberName": "root_lead",
+      "ref": "root-lead",
+      "refScope": "TEAM_LOCAL",
+      "refType": "AGENT",
+    },
+    {
+      "memberName": "department",
+      "ref": "department_team_local_subteam_graphql_1787719269379_5ca019b7a7618",
+      "refScope": "TEAM_LOCAL",
+      "refType": "AGENT_TEAM",
+    },
+  ],
+  "ownerTeamId": null,
+  "ownershipScope": "SHARED",
+}
+
++ Received: 
+undefined
+
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:999:20
+    997|     const local = result.agentTeamDefinitions.find((team) => team.id =…
+    998| 
+    999|     expect(parent).toMatchObject({
+       |                    ^
+    1000|       id: parentTeamId,
+    1001|       ownershipScope: "SHARED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+AssertionError: expected undefined to match object { …(5) }
+
+- Expected: 
+{
+  "id": "northstar_company_local_departments_graphql_1787719269428_73695db05ea7b",
+  "name": "Northstar Operating Company company_local_departments_graphql_1787719269428_73695db05ea7b",
+  "ownerTeamId": null,
+  "ownerTeamName": null,
+  "ownershipScope": "SHARED",
+}
+
++ Received: 
+undefined
+
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:1218:20
+    1216| 
+    1217|     const parent = result.agentTeamDefinitions.find((team) => team.id …
+    1218|     expect(parent).toMatchObject({
+       |                    ^
+    1219|       id: parentTeamId,
+    1220|       name: parentTeamName,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  3 failed | 18 passed (21)
+   Start at  04:40:52
+   Duration  17.50s (transform 6.81s, setup 58ms, import 14.92s, tests 965ms, environment 0ms)
+

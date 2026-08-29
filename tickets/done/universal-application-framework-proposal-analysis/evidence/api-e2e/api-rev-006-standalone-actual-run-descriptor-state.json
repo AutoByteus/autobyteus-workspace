@@ -1,0 +1,54 @@
+{
+  "capturedAt": "2026-07-30T05:09:09.940Z",
+  "runs": [
+    {
+      "runId": "brief_studio_researcher_41db3ad31cbb4ae28e7ff2722e4dec1d",
+      "runConfig": {
+        "agentDefinitionId": "team-local-agent:bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "memberName": "researcher",
+        "memberRouteKey": "researcher",
+        "sendMessageToEnabled": true,
+        "allowedRecipientNames": [
+          "writer"
+        ]
+      },
+      "threadId": "019fb169-835b-7c13-9e4f-4462099b7d46",
+      "appServerConfig": null
+    }
+  ],
+  "bootstrapperDefinitionLookups": [
+    {
+      "index": 0,
+      "error": null,
+      "definition": null
+    }
+  ],
+  "registries": [
+    {
+      "index": 0,
+      "sessions": [
+        {
+          "sessionId": "<redacted>",
+          "owner": {
+            "runId": "brief_studio_researcher_41db3ad31cbb4ae28e7ff2722e4dec1d",
+            "teamRunId": "brief_studio_team_a1a303a2e32e4ee5b5d3d5c8421577c9",
+            "memberRunId": "brief_studio_researcher_41db3ad31cbb4ae28e7ff2722e4dec1d",
+            "memberRouteKey": "researcher",
+            "memberName": "researcher"
+          },
+          "enabledTools": [],
+          "configuredToolNames": [],
+          "revoked": false
+        }
+      ]
+    }
+  ],
+  "codexThreadMcpObservation": {
+    "threadId": "019fb169-835b-7c13-9e4f-4462099b7d46",
+    "mcpServerCount": 2,
+    "autobyteusServerPresent": false,
+    "source": "Codex logs_2.sqlite connection_manager and rollout developer/tool surface"
+  }
+}

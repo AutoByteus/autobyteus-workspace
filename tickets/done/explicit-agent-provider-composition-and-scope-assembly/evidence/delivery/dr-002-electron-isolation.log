@@ -1,0 +1,12 @@
+# DR-002 packaged Electron isolation verification
+started_utc=2026-08-26T14:16:20Z
+baseline_listener=AutoByteu 53536 normy   26u  IPv4 0x54e6a393de65d0b0      0t0  TCP *:29695 (LISTEN);
+command=pnpm -C autobyteus-web test:e2e:electron:isolation --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-002-electron-isolation
+
+> autobyteus@1.4.58 test:e2e:electron:isolation /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-web
+> node tests/e2e/electron-launch-profile-probe.mjs --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-002-electron-isolation
+
+[electron-launch-profile-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-002-electron-isolation/electron-launch-profile-evidence.json
+completed_utc=2026-08-26T14:16:42Z
+exit_code=0
+post_listener=AutoByteu 53536 normy   26u  IPv4 0x54e6a393de65d0b0      0t0  TCP *:29695 (LISTEN);

@@ -1,0 +1,147 @@
+CRR-016 IR-009 source and structural review evidence
+
+=== identity/topology ===
+HEAD=8a7955e9455eadc1be689aa4802384381f2107d8
+merge=53dd98b53490947ed96d4dda9fb45d9c80719740
+merge-parent-1=95c63b5a982ba90ccbb8c6345af66a9485fa5a78
+merge-parent-2=389748b0b9f0dea051aaed18641de131cf0adbbb
+merge-base=52b4be02ea793f2071fe5a63a94664ab25196433
+artifact-commits-after-merge:
+8a7955e94 docs(ticket): record v1.4.57 implementation handoff
+
+=== exact Personal delta and overlap ===
+personal-delta-paths=95
+checkpoint-delta-paths=1988
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+=== independent merge-tree reproduction ===
+a5bf78a5b36a73ec6fec0415ec23a4e043be03d2
+100644 03599f30cbdb414a65c720f887f235657bd6cc35 1	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 2ed4f7264b86463a119ec881724099dbca82919e 2	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 c26ebff529f03822fa8f5567c62e0b7c3de735b6 3	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 94512fe0287f5583f183765e690326636bed0f85 1	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 72bf6a8c09c0456f49d99f52b162c713349b83d2 2	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 2edbab5870242833e12d3bad67f4df76fdf80465 3	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+Auto-merging autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Auto-merging autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+merge-tree-exit=1
+
+=== Personal-delta files differing in merged result ===
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+=== five production/type path equality ===
+MATCH autobyteus-web/types/workspace/WorkspaceSelectionState.ts
+MATCH autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+MATCH autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+MATCH autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+MATCH autobyteus-web/components/workspace/config/RunConfigPanel.vue
+
+=== changed implementation-source effective line audit ===
+   6 effective |    7 raw | autobyteus-web/types/workspace/WorkspaceSelectionState.ts
+ 288 effective |  334 raw | autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+ 133 effective |  150 raw | autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+ 217 effective |  237 raw | autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+ 433 effective |  477 raw | autobyteus-web/components/workspace/config/RunConfigPanel.vue
+
+=== retired/forbidden controlled-selector seam scan ===
+PASS: no retired partial selector seam
+
+=== current controlled/provider fixture seam ===
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:194:      providersWithModelsForSelection: vi.fn((runtimeKind: string) =>
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:197:      providerSnapshots: vi.fn(() => []),
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:203:      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:257:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:266:            props: ['modelValue', 'disabled', 'options'],
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:267:            emits: ['update:modelValue'],
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:352:    const workspaceSelection = {
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:357:    const { wrapper } = buildWrapper({}, mockTeamDef, { workspaceSelection })
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:360:    expect(selector.props('modelValue')).toEqual(workspaceSelection)
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:367:    selector.vm.$emit('update:modelValue', nextSelection)
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:369:    expect(wrapper.emitted('update:workspaceSelection')).toEqual([[nextSelection]])
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts:495:    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:12:    props: ['modelValue', 'isLoading', 'error', 'disabled', 'workspaceLocked'],
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:13:    emits: ['update:modelValue'],
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:21:    props: ['modelValue', 'disabled', 'options'],
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:22:    emits: ['update:modelValue'],
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:56:      providersWithModelsForSelection: vi.fn((_runtimeKind: string) => providerRowsForSelection),
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:57:      providerSnapshots: vi.fn(() => []),
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:62:      ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:137:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:149:    const workspaceSelection = {
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:159:        workspaceSelection,
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:164:    expect(selector.props('modelValue')).toEqual(workspaceSelection)
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:171:    selector.vm.$emit('update:modelValue', nextSelection)
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:173:    expect(wrapper.emitted('update:workspaceSelection')).toEqual([[nextSelection]])
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:188:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:215:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:253:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:307:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:317:    await modelSelect.vm.$emit('update:modelValue', 'deepseek-v4-flash')
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:394:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:467:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:502:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:514:    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-3.5')
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:553:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:569:    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-3.5')
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts:604:        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+
+=== broad failure path blob identity ===
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+ checkpoint=46d90f556836df6330b003efaa3d27bb290175b2
+ personal=46d90f556836df6330b003efaa3d27bb290175b2
+ merge=46d90f556836df6330b003efaa3d27bb290175b2
+autobyteus-web/tests/integration/workspace-history-draft-send.integration.test.ts
+ checkpoint=5c6832247890733b46158915a891d416c5e6383e
+ personal=5c6832247890733b46158915a891d416c5e6383e
+ merge=5c6832247890733b46158915a891d416c5e6383e
+autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+ checkpoint=f199186f94d646dc0114f809b093a8fbdbcefdd5
+ personal=f199186f94d646dc0114f809b093a8fbdbcefdd5
+ merge=f199186f94d646dc0114f809b093a8fbdbcefdd5
+autobyteus-web/localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+ checkpoint=09cb1acf49f34f6511f0cbb7c38eee4a60103e75
+ personal=09cb1acf49f34f6511f0cbb7c38eee4a60103e75
+ merge=09cb1acf49f34f6511f0cbb7c38eee4a60103e75
+autobyteus-web/electron/server/__tests__/platformServerEnvironment.spec.ts
+ checkpoint=d92979ae3cffc36bfd3c9387c6b3406f42647883
+ personal=d92979ae3cffc36bfd3c9387c6b3406f42647883
+ merge=d92979ae3cffc36bfd3c9387c6b3406f42647883
+
+=== diff/marker/cleanup checks ===
+PASS: no conflict marker in changed paths
+PASS: diff checks
+
+=== validation summaries ===
+ ✓ tests/stores/llmProviderConfigStore.test.ts (12 tests) 28ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (19 tests) 103ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (11 tests) 179ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 215ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (13 tests) 153ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (26 tests) 158ms
+
+ Test Files  7 passed (7)
+      Tests  100 passed (100)
+   Start at  12:30:13
+   Duration  10.34s (transform 5.44s, setup 57.37s, collect 2.59s, tests 844ms, environment 3.59s, prepare 2.36s)
+
+[nitro]   ├─ /index.html (42ms)
+[nitro]   ├─ /200.html (42ms)
+[nitro]   ├─ /404.html (42ms)
+[nitro] ℹ Prerendered 15 routes in 0.653 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+└  ✨ Build complete!
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-016-typecheck-blocker.log:7:Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tsc' is not defined by "exports" in /Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/typescript/package.json
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-016-typecheck-blocker.log:18:  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-016-full-web-characterization.log:4283:⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-016-full-web-characterization.log:4365: Test Files  4 failed | 420 passed | 2 skipped (426)
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/code-review/crr-016-full-web-characterization.log:4366:      Tests  5 failed | 2320 passed | 2 skipped (2327)
+
+=== generated prerequisite/build output cleanup ===
+PASS: no generated review output remains

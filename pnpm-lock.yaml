@@ -17,6 +17,9 @@ importers:
         specifier: workspace:*
         version: link:../../autobyteus-application-frontend-sdk
     devDependencies:
+      '@autobyteus/application-devkit':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-devkit
       '@types/node':
         specifier: ^25.0.10
         version: 25.3.0
@@ -33,6 +36,9 @@ importers:
         specifier: workspace:*
         version: link:../../autobyteus-application-frontend-sdk
     devDependencies:
+      '@autobyteus/application-devkit':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-devkit
       '@types/node':
         specifier: ^25.0.10
         version: 25.3.0
@@ -61,9 +67,18 @@ importers:
       '@autobyteus/application-sdk-contracts':
         specifier: workspace:*
         version: link:../autobyteus-application-sdk-contracts
+      autobyteus-server-ts:
+        specifier: workspace:*
+        version: link:../autobyteus-server-ts
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
       esbuild:
         specifier: ^0.27.3
         version: 0.27.3
+      playwright-core:
+        specifier: ^1.48.0
+        version: 1.58.2
     devDependencies:
       '@autobyteus/application-backend-sdk':
         specifier: workspace:*
@@ -154,6 +169,9 @@ importers:
       '@prisma/client':
         specifier: ^5.22.0
         version: 5.22.0(prisma@5.22.0)
+      ajv:
+        specifier: ^8.17.1
+        version: 8.18.0
       autobyteus-ts:
         specifier: workspace:*
         version: link:../autobyteus-ts
@@ -188,8 +206,8 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2
       repository_prisma:
-        specifier: ^1.0.9
-        version: 1.0.9(@prisma/client@5.22.0(prisma@5.22.0))
+        specifier: ^1.0.10
+        version: 1.0.10(@prisma/client@5.22.0(prisma@5.22.0))
       type-graphql:
         specifier: ^2.0.0-rc.2
         version: 2.0.0-rc.3(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
@@ -206,6 +224,9 @@ importers:
       '@types/node':
         specifier: ^25.0.10
         version: 25.3.0
+      '@vue/compiler-sfc':
+        specifier: ^3.5.28
+        version: 3.5.28
       prisma:
         specifier: ^5.22.0
         version: 5.22.0
@@ -7168,8 +7189,8 @@ packages:
   remove-trailing-spaces@1.0.9:
     resolution: {integrity: sha512-xzG7w5IRijvIkHIjDk65URsJJ7k4J95wmcArY5PRcmjldIOl7oTvG8+X2Ag690R7SfwiOcHrWZKVc1Pp5WIOzA==}
 
-  repository_prisma@1.0.9:
-    resolution: {integrity: sha512-LY1ZkCpUQyj3kSUC7dBYjyBdezvscCOTTMNMNQFsy4g3InKlWii04hHFNMcIriDU4pQVsexx59+rDTPfN+S7YQ==}
+  repository_prisma@1.0.10:
+    resolution: {integrity: sha512-pU9uNyvq4Y0N8VmYOBgG6TXNxxV6WeFTuHd6kMI0Flr8frc51rzKCNVeZMFv04dNfwXOJ7n23x4Msv7gt1Z8Nw==}
     peerDependencies:
       '@prisma/client': ^5.22.0
 
@@ -7511,11 +7532,6 @@ packages:
 
   sponge-case@1.0.1:
     resolution: {integrity: sha512-dblb9Et4DAtiZ5YSUZHLl4XhH4uK80GhAZrVXdN4O2P4gQ40Wa5UIOPUHlA/nFd2PLblBZWUioLMMAVrgpoYcA==}
-
-  srvx@0.11.7:
-    resolution: {integrity: sha512-p9qj9wkv/MqG1VoJpOsqXv1QcaVcYRk7ifsC6i3TEwDXFyugdhJN4J3KzQPZq2IJJ2ZCt7ASOB++85pEK38jRw==}
-    engines: {node: '>=20.16.0'}
-    hasBin: true
 
   srvx@0.11.9:
     resolution: {integrity: sha512-97wWJS6F0KTKAhDlHVmBzMvlBOp5FiNp3XrLoodIgYJpXxgG5tE9rX4Pg7s46n2shI4wtEsMATTS1+rI3/ubzA==}
@@ -10464,7 +10480,7 @@ snapshots:
       pkg-types: 2.3.0
       scule: 1.3.0
       semver: 7.7.4
-      srvx: 0.11.7
+      srvx: 0.11.9
       std-env: 3.10.0
       tinyexec: 1.0.2
       ufo: 1.6.3
@@ -16331,7 +16347,7 @@ snapshots:
 
   remove-trailing-spaces@1.0.9: {}
 
-  repository_prisma@1.0.9(@prisma/client@5.22.0(prisma@5.22.0)):
+  repository_prisma@1.0.10(@prisma/client@5.22.0(prisma@5.22.0)):
     dependencies:
       '@prisma/client': 5.22.0(prisma@5.22.0)
       uuid: 13.0.0
@@ -16739,8 +16755,6 @@ snapshots:
   sponge-case@1.0.1:
     dependencies:
       tslib: 2.8.1
-
-  srvx@0.11.7: {}
 
   srvx@0.11.9: {}
 

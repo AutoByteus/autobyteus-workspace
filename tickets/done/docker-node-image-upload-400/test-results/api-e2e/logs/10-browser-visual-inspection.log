@@ -1,0 +1,8 @@
+# Browser screenshot visual inspection
+UTC date: 2026-08-27
+Inspector: api_e2e_engineer using view_image
+
+- nested-image-send.png: PASS. student_one is visibly focused; exact unique nested-image message appears in the conversation feed; uploaded red PNG is rendered under Context files; composer reset shows Context Files (0).
+- nested-text-send.png: PASS. student_two is visibly focused; exact unique nested-text-only message appears in the conversation feed; no attachment is rendered; composer remains Context Files (0).
+- direct-root-image-send.png: PASS. Teacher is visibly focused; exact unique direct-root image message appears; uploaded red PNG is rendered; composer reset shows Context Files (0).
+- No broken-image icon, error banner, or unexpected dialog is visible in any screenshot.

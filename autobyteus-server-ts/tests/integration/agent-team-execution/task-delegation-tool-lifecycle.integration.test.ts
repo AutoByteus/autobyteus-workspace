@@ -14,6 +14,7 @@ import type { PreparedLocalExecutionTermination } from "../../../src/agent-team-
 import type { PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
 import type { PreparedTaskSettlement } from "../../../src/agent-team-execution/domain/prepared-task-settlement.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PrepareTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
 import type { PrepareTaskTeamInput } from "../../../src/agent-team-execution/domain/task-team-execution.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -38,7 +39,6 @@ import {
   TASK_DELEGATION_TOOL_NAME_LIST,
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "../../../src/agent-tools/task-delegation/task-delegation-tool-manifest.js";
-import { TaskDelegationToolRunRouter } from "../../../src/agent-tools/task-delegation/task-delegation-tool-run-router.js";
 import { TaskDelegationToolService } from "../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
@@ -259,6 +259,7 @@ const createHarness = async () => {
     currentConfig,
   );
   const publisher = new TeamRunEventPublisher();
+  let allocatedTaskAgentOrdinal = 0;
   let root: RootTeamRun | null = null;
   const persistence = new TeamRunPersistenceCoordinator({
     rootTeamRunId,
@@ -269,6 +270,10 @@ const createHarness = async () => {
     enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
   });
   root = new RootTeamRun({
+    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+      allocateForAgentDefinition: async (agentDefinitionId) =>
+        `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
+    }),
     rootRun: new TeamRun(backend.context, backend),
     config: currentConfig,
     tree,
@@ -277,10 +282,14 @@ const createHarness = async () => {
     persistence,
     publisher,
   });
-  const service = new TaskDelegationToolService(new TaskDelegationToolRunRouter({
-    resolveTeamRun: vi.fn(async (id: string) => id === rootTeamRunId ? root : null),
-  } as never));
-  return { memoryDir, rootDir, root, service, backend };
+  const rootResolver = Object.freeze({
+    resolveActiveRoot: async () => {
+      if (!root?.isActive()) throw new Error("RootTeamRun is inactive.");
+      return root;
+    },
+  });
+  const service = new TaskDelegationToolService();
+  return { memoryDir, rootDir, root, rootResolver, service, backend };
 };
 
 afterEach(async () => {
@@ -288,10 +297,15 @@ afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
 });
 
-const context = (memberAddress: string, agentRunId: string, rootId = rootTeamRunId) => Object.freeze({
+const context = (
+  rootResolver: Awaited<ReturnType<typeof createHarness>>["rootResolver"],
+  memberAddress: string,
+  agentRunId: string,
+  rootId = rootTeamRunId,
+) => Object.freeze({
   identity: createTeamMemberExecutionIdentity({ rootTeamRunId: rootId, memberAddress, agentRunId }),
+  rootResolver,
 });
-const coordinator = context("/coordinator", "run-coordinator");
 
 const execute = async (
   service: TaskDelegationToolService,
@@ -306,6 +320,7 @@ const execute = async (
 describe("current universal task-delegation tool lifecycle integration", () => {
   it("persists delegate -> submit -> request revision -> resubmit -> accept through the three public tools", async () => {
     const harness = await createHarness();
+    const coordinator = context(harness.rootResolver, "/coordinator", "run-coordinator");
     const created = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
       recipient_address: "/worker",
       description: "Solve the assigned classroom exercise and return evidence.",
@@ -328,7 +343,7 @@ describe("current universal task-delegation tool lifecycle integration", () => {
       settledAt: null,
     });
 
-    const assignee = context("/worker", taskAgentRunId);
+    const assignee = context(harness.rootResolver, "/worker", taskAgentRunId);
     await expect(execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, assignee, {
       message: "Initial result.", reference_files: [],
     })).resolves.toMatchObject({ task_id: taskId, status: "awaiting_review" });
@@ -364,17 +379,43 @@ describe("current universal task-delegation tool lifecycle integration", () => {
     ]);
   });
 
+  it("keeps identical general and application identities bound to their own root capabilities", async () => {
+    const general = await createHarness();
+    const application = await createHarness();
+    const generalCoordinator = context(general.rootResolver, "/coordinator", "run-coordinator");
+    const applicationCoordinator = context(application.rootResolver, "/coordinator", "run-coordinator");
+
+    await execute(application.service, DELEGATE_TASK_TOOL_NAME, applicationCoordinator, {
+      recipient_address: "/worker",
+      description: "Application-scoped task.",
+      reference_files: [],
+    });
+    expect(application.root.getTaskRecordsSnapshot().records).toHaveLength(1);
+    expect(general.root.getTaskRecordsSnapshot().records).toEqual([]);
+
+    await execute(general.service, DELEGATE_TASK_TOOL_NAME, generalCoordinator, {
+      recipient_address: "/worker",
+      description: "General-scoped task.",
+      reference_files: [],
+    });
+    expect(general.root.getTaskRecordsSnapshot().records).toHaveLength(1);
+    expect(application.root.getTaskRecordsSnapshot().records).toHaveLength(1);
+    expect(general.backend.preparedAgents).toHaveLength(1);
+    expect(application.backend.preparedAgents).toHaveLength(1);
+  });
+
   it("lets a fresh task Agent delegate a nested sibling task and preserves exact review ownership", async () => {
     const harness = await createHarness();
+    const coordinator = context(harness.rootResolver, "/coordinator", "run-coordinator");
     const parent = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
       recipient_address: "/worker", description: "Parent task", reference_files: [],
     }) as { task_id: string; target_agent_run_id: string };
-    const parentContext = context("/worker", parent.target_agent_run_id);
+    const parentContext = context(harness.rootResolver, "/worker", parent.target_agent_run_id);
     const child = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, parentContext, {
       recipient_address: "/reviewer", description: "Review the parent work", reference_files: [],
     }) as { task_id: string; target_agent_run_id: string };
 
-    await execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, context("/reviewer", child.target_agent_run_id), {
+    await execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, context(harness.rootResolver, "/reviewer", child.target_agent_run_id), {
       message: "Child review complete.", reference_files: [],
     });
     await expect(execute(harness.service, REVIEW_TASK_RESULT_TOOL_NAME, parentContext, {
@@ -394,6 +435,7 @@ describe("current universal task-delegation tool lifecycle integration", () => {
 
   it("materializes a fresh task AgentTeam and lets its concrete coordinator delegate inside that exact task TeamRun", async () => {
     const harness = await createHarness();
+    const coordinator = context(harness.rootResolver, "/coordinator", "run-coordinator");
     const parent = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     }) as { task_id: string; target_agent_run_id: string };
@@ -410,7 +452,7 @@ describe("current universal task-delegation tool lifecycle integration", () => {
       ]),
     });
 
-    const taskTeamCoordinator = context("/design_team/team_lead", parent.target_agent_run_id);
+    const taskTeamCoordinator = context(harness.rootResolver, "/design_team/team_lead", parent.target_agent_run_id);
     const child = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, taskTeamCoordinator, {
       recipient_address: "/design_team/implementer",
       description: "Implement the task-Team plan",
@@ -423,7 +465,7 @@ describe("current universal task-delegation tool lifecycle integration", () => {
       agentRunId: child.target_agent_run_id,
     });
 
-    await execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, context("/design_team/implementer", child.target_agent_run_id), {
+    await execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, context(harness.rootResolver, "/design_team/implementer", child.target_agent_run_id), {
       message: "Implementation complete.", reference_files: [],
     });
     await execute(harness.service, REVIEW_TASK_RESULT_TOOL_NAME, taskTeamCoordinator, {
@@ -444,6 +486,7 @@ describe("current universal task-delegation tool lifecycle integration", () => {
 
   it("rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation", async () => {
     const harness = await createHarness();
+    const coordinator = context(harness.rootResolver, "/coordinator", "run-coordinator");
     for (const recipient_address of [
       "/coordinator",
       "/",
@@ -458,9 +501,9 @@ describe("current universal task-delegation tool lifecycle integration", () => {
         reference_files: [],
       })).rejects.toBeTruthy();
     }
-    await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, context("/coordinator", "run-coordinator", "foreign-root"), {
+    await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, context(harness.rootResolver, "/coordinator", "run-coordinator", "foreign-root"), {
       recipient_address: "/worker", description: "foreign", reference_files: [],
-    })).rejects.toMatchObject({ code: "TEAM_RUN_NOT_FOUND" });
+    })).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
     expect(harness.root.getTaskRecordsSnapshot().records).toEqual([]);
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
     expect(harness.backend.preparedAgents).toEqual([]);
@@ -469,6 +512,7 @@ describe("current universal task-delegation tool lifecycle integration", () => {
 
   it("validates absolute reference files before preparation and persists the exact accepted path", async () => {
     const harness = await createHarness();
+    const coordinator = context(harness.rootResolver, "/coordinator", "run-coordinator");
     await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
       recipient_address: "/worker",
       description: "Read the reference",

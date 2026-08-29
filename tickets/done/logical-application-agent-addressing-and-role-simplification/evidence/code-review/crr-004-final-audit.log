@@ -1,0 +1,23 @@
+CRR-004 final audit 2026-08-26T17:15:47Z
+HEAD 31c674d0c31181c96d2198ed2b2f7a9996f2f4cb
+--- status
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-coverage-investigation.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/api-e2e/
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/
+--- generated prerequisite dist
+absent
+--- diff check
+--- unresolved merge entries
+--- conflict markers in changed production
+--- CR-002 correction assertions
+autobyteus-server-ts/tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts:22:  it("retains one outer request across one deferred nested host capability and returns its exact result", async () => {
+autobyteus-server-ts/tests/unit/application-engine/application-engine-client.test.ts:35:  it("keeps live correlation beyond 30 seconds and resolves the exact late response", async () => {
+autobyteus-server-ts/tests/unit/application-engine/application-worker-host-bridge-client.test.ts:9:  it("keeps a nested host capability correlated beyond 30 seconds", async () => {
+autobyteus-server-ts/tests/unit/application-engine/application-engine-control-request.test.ts:66:  it("makes a fired deadline authoritative and rejects only after ordered worker cleanup", async () => {
+autobyteus-server-ts/tests/unit/application-engine/application-engine-controller.test.ts:15:  it("completion-couples every application-work method without a request deadline", async () => {

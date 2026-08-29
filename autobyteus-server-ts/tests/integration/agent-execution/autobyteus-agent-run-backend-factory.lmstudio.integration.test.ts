@@ -1,3 +1,5 @@
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -11,6 +13,7 @@ import { registerWriteFileTool } from "autobyteus-ts/tools/file/write-file.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { registerPublishArtifactsTool } from "../../../src/agent-tools/published-artifacts/publish-artifacts-tool.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import {
   AgentRunEventType,
@@ -20,6 +23,11 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
 const LMSTUDIO_MODEL_ENV_VAR = "LMSTUDIO_MODEL_ID";
@@ -479,14 +487,18 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         } as any,
       });
 
+      const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+      const infrastructure = createAgentRunManagerInfrastructureFixture({
+        agentToolMcpRunSessionDeactivator: deactivator,
+      });
       const runManager = new AgentRunManager({
         autoByteusBackendFactory: publishBackendFactory,
-        runFileChangeService: {
-          attachToRun: () => () => undefined,
-        } as any,
-        publishedArtifactRelayService: {
-          attachToRun: () => () => undefined,
-        } as any,
+        codexBackendFactory: unavailableBackendFactory,
+        claudeBackendFactory: unavailableBackendFactory,
+        activationRegistry: infrastructure.activationRegistry,
+        memoryRecorder: infrastructure.memoryRecorder,
+        providerInputNormalizer: infrastructure.providerInputNormalizer,
+        agentToolMcpRunSessionDeactivator: deactivator,
       });
       (AgentRunManager as any).instance = runManager;
       agentRunManagerOverridden = true;

@@ -1,0 +1,6 @@
+date=2026-08-26T16:31:21Z
+platform=Darwin arm64
+node=v22.23.1
+pnpm=10.28.2
+chrome=Google Chrome 151.0.7922.175
+browser_mode=headless Chrome viewport=1440x1100-or-1200 locale=system timezone=Europe/Berlin

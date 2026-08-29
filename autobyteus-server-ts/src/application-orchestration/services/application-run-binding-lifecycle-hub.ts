@@ -12,18 +12,6 @@ const keyFor = (applicationId: string, bindingId: string): string =>
   `${applicationId}\u0000${bindingId}`;
 
 export class ApplicationRunBindingLifecycleHub {
-  private static instance: ApplicationRunBindingLifecycleHub | null = null;
-
-  static getInstance(): ApplicationRunBindingLifecycleHub {
-    if (!this.instance) this.instance = new ApplicationRunBindingLifecycleHub();
-    return this.instance;
-  }
-
-  static resetInstance(): void {
-    this.instance = null;
-    cachedApplicationRunBindingLifecycleHub = null;
-  }
-
   private readonly listeners = new Map<string, Set<TerminalListener>>();
 
   observeTerminal(
@@ -55,12 +43,3 @@ export class ApplicationRunBindingLifecycleHub {
     }
   }
 }
-
-let cachedApplicationRunBindingLifecycleHub: ApplicationRunBindingLifecycleHub | null = null;
-
-export const getApplicationRunBindingLifecycleHub = (): ApplicationRunBindingLifecycleHub => {
-  if (!cachedApplicationRunBindingLifecycleHub) {
-    cachedApplicationRunBindingLifecycleHub = ApplicationRunBindingLifecycleHub.getInstance();
-  }
-  return cachedApplicationRunBindingLifecycleHub;
-};

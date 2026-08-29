@@ -1,0 +1,471 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /private/tmp/api-rev-003-provider-composition/studio
+AppConfig instance created.
+Config file path: /private/tmp/api-rev-003-provider-composition/studio/.env
+Loading environment from: /private/tmp/api-rev-003-provider-composition/studio/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../private/tmp/api-rev-003-provider-composition/studio/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio
+DB DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/db
+LOGS DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/download
+MEMORY DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev-003-provider-composition/studio/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:38012) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T13:31:27.487Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev-003-provider-composition/studio/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-08-26T13:31:27.592Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T13:31:27.603Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Agent definition cache populated with 49 items.
+{"level":30,"time":1787751087633,"pid":38012,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:43660"}
+[2026-08-26T13:31:27.634Z] [INFO] [server.runtime] Server listening on 127.0.0.1:43660
+[2026-08-26T13:31:27.635Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:43660
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /private/tmp/api-rev-003-provider-composition/studio
+AppConfig instance created.
+Config file path: /private/tmp/api-rev-003-provider-composition/studio/.env
+Loading environment from: /private/tmp/api-rev-003-provider-composition/studio/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../private/tmp/api-rev-003-provider-composition/studio/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:43660
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:43660
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio
+DB DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/db
+LOGS DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/download
+MEMORY DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev-003-provider-composition/studio/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:38323) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T13:31:40.750Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev-003-provider-composition/studio/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-08-26T13:31:40.872Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T13:31:40.885Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 33 items.
+Agent definition cache populated with 49 items.
+{"level":30,"time":1787751101441,"pid":38323,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:43660"}
+[2026-08-26T13:31:41.442Z] [INFO] [server.runtime] Server listening on 127.0.0.1:43660
+[2026-08-26T13:31:41.443Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:43660
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/private/tmp/api-rev-003-provider-composition/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Discovering Ollama models from host: http://127.0.0.1:11434
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect to LM Studio at http://127.0.0.1:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Started filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 6308e7d1-6479-414f-96a4-9b391d3ecb21 for workspace temp_ws_default
+Created file explorer session 6308e7d1-6479-414f-96a4-9b391d3ecb21 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 6308e7d1-6479-414f-96a4-9b391d3ecb21 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+FileExplorerSession closed: 6308e7d1-6479-414f-96a4-9b391d3ecb21
+Closed file explorer session 6308e7d1-6479-414f-96a4-9b391d3ecb21. Active sessions: 0
+File explorer WebSocket disconnected: 6308e7d1-6479-414f-96a4-9b391d3ecb21
+FileSystemWatcher initialized for '/private/tmp/api-rev-003-provider-composition/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 204de9a5-95d9-424b-8aea-ebe9b052cded for workspace temp_ws_default
+Created file explorer session 204de9a5-95d9-424b-8aea-ebe9b052cded for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 204de9a5-95d9-424b-8aea-ebe9b052cded for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+FileExplorerSession closed: 204de9a5-95d9-424b-8aea-ebe9b052cded
+Closed file explorer session 204de9a5-95d9-424b-8aea-ebe9b052cded. Active sessions: 0
+File explorer WebSocket disconnected: 204de9a5-95d9-424b-8aea-ebe9b052cded
+FileSystemWatcher initialized for '/private/tmp/api-rev-003-provider-composition/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ce7c6f9a-5ca4-49bf-9ca7-3010527b3c38 for workspace temp_ws_default
+Created file explorer session ce7c6f9a-5ca4-49bf-9ca7-3010527b3c38 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: ce7c6f9a-5ca4-49bf-9ca7-3010527b3c38 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+FileExplorerSession closed: ce7c6f9a-5ca4-49bf-9ca7-3010527b3c38
+Closed file explorer session ce7c6f9a-5ca4-49bf-9ca7-3010527b3c38. Active sessions: 0
+File explorer WebSocket disconnected: ce7c6f9a-5ca4-49bf-9ca7-3010527b3c38
+FileSystemWatcher initialized for '/private/tmp/api-rev-003-provider-composition/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 546c06aa-7f98-48d1-a2ab-29a6c6b27e92 for workspace temp_ws_default
+Created file explorer session 546c06aa-7f98-48d1-a2ab-29a6c6b27e92 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 546c06aa-7f98-48d1-a2ab-29a6c6b27e92 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /private/tmp/api-rev-003-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_945d289aa8804310ba96e836e876da13/test_teacher_e149b72d930c437a830188719334e406/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-003-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_945d289aa8804310ba96e836e876da13/student_study_group_59ea7ee13a054840b3e30d3cd5f3ba54/student_one_e8640d9966574dcfba7b5cb06c589622/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-003-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_945d289aa8804310ba96e836e876da13/student_study_group_59ea7ee13a054840b3e30d3cd5f3ba54/student_two_96a102b1cbba45ba9381120bbf4e21fd/raw_traces_active.jsonl
+Released file watcher lease for /private/tmp/api-rev-003-provider-composition/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+FileExplorerSession closed: 546c06aa-7f98-48d1-a2ab-29a6c6b27e92
+Closed file explorer session 546c06aa-7f98-48d1-a2ab-29a6c6b27e92. Active sessions: 0
+File explorer WebSocket disconnected: 546c06aa-7f98-48d1-a2ab-29a6c6b27e92
+Agent team websocket attached for team run nested_classroom_test_team_945d289aa8804310ba96e836e876da13
+Created agent session f80616c7-fd47-4b2b-b5e1-ac767c78c19a for run nested_classroom_test_team_945d289aa8804310ba96e836e876da13
+Agent Team WebSocket connected: session=f80616c7-fd47-4b2b-b5e1-ac767c78c19a, run=nested_classroom_test_team_945d289aa8804310ba96e836e876da13
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'test_teacher_e149b72d930c437a830188719334e406'.
+Closed agent session f80616c7-fd47-4b2b-b5e1-ac767c78c19a
+Memory file missing: /private/tmp/api-rev-003-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_945d289aa8804310ba96e836e876da13/student_study_group_59ea7ee13a054840b3e30d3cd5f3ba54/student_one_e8640d9966574dcfba7b5cb06c589622/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-003-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_945d289aa8804310ba96e836e876da13/student_study_group_59ea7ee13a054840b3e30d3cd5f3ba54/student_two_96a102b1cbba45ba9381120bbf4e21fd/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_945d289aa8804310ba96e836e876da13
+Created agent session 2a8934e3-6cb9-40da-a652-6ceb5966ebde for run nested_classroom_test_team_945d289aa8804310ba96e836e876da13
+Agent Team WebSocket connected: session=2a8934e3-6cb9-40da-a652-6ceb5966ebde, run=nested_classroom_test_team_945d289aa8804310ba96e836e876da13
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 2a8934e3-6cb9-40da-a652-6ceb5966ebde
+Creating new workspace for rootPath: /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime.
+Created and registered workspace ID: agent_ws_3b70c821918b65aef6744bea0055a4ee8edc02ed3e8b69a6d28d297fa76e0183
+Creating new workspace for rootPath: /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime.
+Reusing registered workspace ID: agent_ws_3b70c821918b65aef6744bea0055a4ee8edc02ed3e8b69a6d28d297fa76e0183
+Published codex_app_server agent run 'socratic_math_tutor_b60870f587454112a3dbc4116cd39c5c'.
+Creating new workspace for rootPath: /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime.
+Created and registered workspace ID: agent_ws_54fb4c8b90329cf9737bdd86d82d8148cec9a5c33c4f4437e806ab3aae02009d
+Creating new workspace for rootPath: /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime.
+Reusing registered workspace ID: agent_ws_54fb4c8b90329cf9737bdd86d82d8148cec9a5c33c4f4437e806ab3aae02009d
+Published codex_app_server agent run 'brief_studio_researcher_4423b449ea9f419683329c6f4903c179'.
+Creating new workspace for rootPath: /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime.
+Reusing registered workspace ID: agent_ws_54fb4c8b90329cf9737bdd86d82d8148cec9a5c33c4f4437e806ab3aae02009d
+Published codex_app_server agent run 'brief_studio_writer_1f6ded50dd274ee3b440ab74f007a8cb'.
+{"level":40,"time":1787752407235,"pid":38323,"hostname":"MacBookPro","reqId":"req-h2","method":"POST","url":"/mcp/agent-tools/missing","statusCode":401,"elapsedMs":0.2849998474121094,"msg":"http request completed"}
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /private/tmp/api-rev-003-provider-composition/studio
+AppConfig instance created.
+Config file path: /private/tmp/api-rev-003-provider-composition/studio/.env
+Loading environment from: /private/tmp/api-rev-003-provider-composition/studio/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../private/tmp/api-rev-003-provider-composition/studio/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:43660
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:43660
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio
+DB DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/db
+LOGS DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/download
+MEMORY DIRECTORY: /private/tmp/api-rev-003-provider-composition/studio/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev-003-provider-composition/studio/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:60400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T13:54:14.021Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev-003-provider-composition/studio/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev-003-provider-composition/studio/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-08-26T13:54:14.135Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T13:54:14.149Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 33 items.
+Agent definition cache populated with 49 items.
+{"level":30,"time":1787752454688,"pid":60400,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:43660"}
+[2026-08-26T13:54:14.689Z] [INFO] [server.runtime] Server listening on 127.0.0.1:43660
+[2026-08-26T13:54:14.689Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:43660
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime.
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-003-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime.

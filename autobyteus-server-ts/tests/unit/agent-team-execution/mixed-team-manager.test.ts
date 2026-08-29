@@ -10,7 +10,7 @@ import {
   createRootTeamRunPhysicalScope,
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { address, testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { address, testAgentNode, testAgentTeamNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const rootRunId = "root-team-run";
 const rootLead = testAgentNode("/lead", { agentRunId: "lead-run" });
@@ -140,6 +140,7 @@ const buildManager = () => {
   const manager = new MixedTeamManager(context, {
     subTeamRunFactory: { materializeConfiguredChild, prepareFreshTaskTeam } as never,
     agentRunManager: { createAgentRun: vi.fn() } as never,
+    taskRootResolver: testMemberTaskRootResolver(),
     publish: vi.fn(),
     deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
     acceptPlatformBinding: vi.fn(async () => undefined),

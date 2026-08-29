@@ -1,0 +1,616 @@
+## shared contract builds
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-backend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json
+
+## backend SDK tests
+
+> @autobyteus/application-backend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk
+> vitest run --no-watch
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk
+
+ ✓ tests/launch-profile.test.ts (4 tests) 6ms
+ ✓ tests/application-agent-target-address.test.ts (6 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  14:25:08
+   Duration  233ms (transform 193ms, setup 0ms, import 218ms, tests 11ms, environment 0ms)
+
+## focused server tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts (15 tests) 2121ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  571ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1135ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > builds and listens only after readable identity status SUCCEEDED
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (7 tests) 46ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:88077) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts > TeamRunExecutionTreeV2AppDataMigration > is registered once immediately after its memory-layout prerequisite
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts (4 tests) 40ms
+stdout | tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:88078) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts > TeamAgentMemoryLayoutAppDataMigration > registers required-on-startup ANYTIME recovery after V1 and gates canonical snapshot migrations
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts (4 tests) 40ms
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects current-schema admission before constructing a new team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts (16 tests) 14ms
+ ✓ tests/unit/application-platform/application-launch-team-scope-projection.test.ts (2 tests) 14ms
+ ✓ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts (11 tests) 9ms
+ ✓ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts (10 tests) 7ms
+
+ Test Files  8 passed (8)
+      Tests  69 passed (69)
+   Start at  14:25:09
+   Duration  10.89s (transform 3.35s, setup 47ms, import 7.32s, tests 2.29s, environment 1ms)
+
+## supplemental V2 catalog/location migration selection
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for invalid-run: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for mismatched-directory: Run metadata identity or required fields are invalid.
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-kdkRSo/agents/codex-unlink-failure/working_context_snapshot.json
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts (4 tests | 2 failed) 35ms
+     × removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent 13ms
+     ✓ does not traverse directory symlinks and unlinks only the eligible snapshot symlink, not its target 5ms
+     × preserves snapshots when metadata is invalid or mismatched and reports actionable failures 8ms
+     ✓ reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry 8ms
+ ✓ tests/unit/run-history/services/team-run-package-catalog.test.ts (2 tests) 164ms
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:90601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (6 tests | 1 failed) 59ms
+     ✓ converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 18ms
+     ✓ converts standalone v4 with zero-byte lineage, exact active provenance, exact cleanup, and idempotence 10ms
+     ✓ uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives 7ms
+     ✓ skips any nonempty-lineage location before snapshot inspection or cleanup 4ms
+     ✓ retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 11ms
+     × runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+AssertionError: expected [ 4, 6 ] to deeply equal [ 4, 5 ]
+
+- Expected
++ Received
+
+  [
+    4,
+-   5,
++   6,
+  ]
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts:348:42
+    346|     const activeNameIndex = defaultDefinitions.findIndex((item) => ite…
+    347|     const nativeIndex = defaultDefinitions.findIndex((item) => item in…
+    348|     expect([layoutIndex, externalIndex]).toEqual([v1Index + 1, v1Index…
+       |                                          ^
+    349|     expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
+    350|       externalIndex + 1,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+TypeError: Cannot read properties of undefined (reading 'runtimeKind')
+ ❯ cloneAgentLaunchConfiguration src/agent-team-execution/domain/team-run-config.ts:94:22
+     92|   label = "launchConfiguration",
+     93| ): AgentLaunchConfiguration => Object.freeze({
+     94|   runtimeKind: value.runtimeKind,
+       |                      ^
+     95|   llmModelIdentifier: required(value.llmModelIdentifier, `${label}.llm…
+     96|   llmConfig: freezeRecord(value.llmConfig as Record<string, unknown> |…
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:154:33
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:122:48
+ ❯ cloneTeamRunNode src/agent-team-execution/domain/team-run-config.ts:122:48
+ ❯ new TeamRunConfig src/agent-team-execution/domain/team-run-config.ts:200:21
+ ❯ testTeamRunConfig tests/fixtures/current-team-run-fixtures.ts:91:22
+ ❯ testExecutionTree tests/fixtures/current-team-run-fixtures.ts:135:11
+ ❯ writeTeamMetadata tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts:101:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+AssertionError: expected [ { …(4) }, { …(4) }, { …(4) }, …(1) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   ObjectContaining {
++ [
++   {
++     "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-D8yfVb/agents/invalid-run/run_metadata.json",
+      "itemId": "agents/invalid-run:metadata",
+-     "message": StringContaining "not valid current run metadata",
++     "message": "Standalone metadata exists but is not valid current run metadata.",
+      "status": "FAILED",
+    },
+-   ObjectContaining {
++   {
++     "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-D8yfVb/agents/mismatched-directory/run_metadata.json",
+      "itemId": "agents/mismatched-directory:metadata",
+-     "message": StringContaining "does not match directory",
++     "message": "Standalone metadata exists but is not valid current run metadata.",
+      "status": "FAILED",
++   },
++   {
++     "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-D8yfVb/agents/invalid-run/working_context_snapshot.json",
++     "itemId": "agents/invalid-run/working_context_snapshot.json",
++     "message": "Snapshot has no exact current metadata-derived external runtime classification.",
++     "status": "SKIPPED",
++   },
++   {
++     "filePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-D8yfVb/agents/mismatched-directory/working_context_snapshot.json",
++     "itemId": "agents/mismatched-directory/working_context_snapshot.json",
++     "message": "Snapshot has no exact current metadata-derived external runtime classification.",
++     "status": "SKIPPED",
+    },
+  ]
+
+ ❯ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts:321:36
+    319|     expect(await exists(invalidSnapshot)).toBe(true);
+    320|     expect(await exists(mismatchedSnapshot)).toBe(true);
+    321|     expect(result.summary.details).toEqual(expect.arrayContaining([
+       |                                    ^
+    322|       expect.objectContaining({
+    323|         itemId: "agents/invalid-run:metadata",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  3 failed | 9 passed (12)
+   Start at  14:25:57
+   Duration  6.12s (transform 3.22s, setup 24ms, import 5.16s, tests 259ms, environment 0ms)
+
+
+=== CRR-018 WEB HIERARCHICAL CONFIG SELECTION ===
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (11 tests) 123ms
+ ✓ components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts (5 tests) 49ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (6 tests) 66ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (8 tests) 155ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (31 tests) 281ms
+
+ Test Files  5 passed (5)
+      Tests  61 passed (61)
+   Start at  14:27:57
+   Duration  8.32s (transform 4.19s, setup 33.85s, collect 1.76s, tests 674ms, environment 1.58s, prepare 963ms)
+
+web_selection_exit=0
+
+=== CRR-018 SERVER BUILD-CONFIG TYPESCRIPT ===
+src/agent-execution/services/agent-run-service.ts(16,62): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/rest/application-backend-route-handlers.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/rest/application-backends.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/rest/application-execution-resources.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/websocket/application-agent-communication.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/api/websocket/application-backends.ts(2,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/domain/application-agent-communication-models.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-frame-parser.ts(3,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-frame-parser.ts(4,58): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-service.ts(2,52): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-session.ts(9,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-communication/services/application-agent-communication-session.ts(10,58): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/domain/application-agent-streaming-models.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-event-mapper.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-event-projector.ts(1,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-runtime-source.ts(1,51): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-stream-subscription.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-streaming-service.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-agent-streaming/services/application-agent-streaming-service.ts(110,67): error TS2322: Type 'unknown' is not assignable to type 'Error'.
+src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts(2,53): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-backend-api-gateway/websockets/application-backend-websocket-session-service.ts(2,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/domain/models.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/utils/application-backend-manifest.ts(8,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/utils/application-backend-manifest.ts(101,23): error TS2538: Type 'symbol' cannot be used as an index type.
+src/application-bundles/utils/application-backend-manifest.ts(102,70): error TS2731: Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.
+src/application-bundles/utils/application-backend-manifest.ts(104,19): error TS2538: Type 'symbol' cannot be used as an index type.
+src/application-bundles/utils/application-manifest.ts(15,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-bundles/utils/application-manifest.ts(270,7): error TS2322: Type 'Set<string | number | symbol>' is not assignable to type 'ReadonlySet<string>'.
+  Types of property 'forEach' are incompatible.
+    Type '(callbackfn: (value: string | number | symbol, value2: string | number | symbol, set: Set<string | number | symbol>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: string, value2: string, set: ReadonlySet<string>) => void, thisArg?: any) => void'.
+      Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+        Types of parameters 'value' and 'value' are incompatible.
+          Type 'string | number | symbol' is not assignable to type 'string'.
+            Type 'number' is not assignable to type 'string'.
+src/application-bundles/utils/application-manifest.ts(298,7): error TS2322: Type 'Set<string | number | symbol>' is not assignable to type 'ReadonlySet<string>'.
+  Types of property 'forEach' are incompatible.
+    Type '(callbackfn: (value: string | number | symbol, value2: string | number | symbol, set: Set<string | number | symbol>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: string, value2: string, set: ReadonlySet<string>) => void, thisArg?: any) => void'.
+      Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+        Types of parameters 'value' and 'value' are incompatible.
+          Type 'string | number | symbol' is not assignable to type 'string'.
+            Type 'number' is not assignable to type 'string'.
+src/application-bundles/utils/application-manifest.ts(304,7): error TS2322: Type 'Set<string | number | symbol>' is not assignable to type 'ReadonlySet<string>'.
+  Types of property 'forEach' are incompatible.
+    Type '(callbackfn: (value: string | number | symbol, value2: string | number | symbol, set: Set<string | number | symbol>) => void, thisArg?: any) => void' is not assignable to type '(callbackfn: (value: string, value2: string, set: ReadonlySet<string>) => void, thisArg?: any) => void'.
+      Types of parameters 'callbackfn' and 'callbackfn' are incompatible.
+        Types of parameters 'value' and 'value' are incompatible.
+          Type 'string | number | symbol' is not assignable to type 'string'.
+            Type 'number' is not assignable to type 'string'.
+src/application-engine/runtime/application-engine-client.ts(7,59): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/runtime/application-engine-client.ts(281,49): error TS2339: Property 'code' does not exist on type '{}'.
+src/application-engine/runtime/application-engine-client.ts(281,80): error TS2339: Property 'recoverable' does not exist on type '{}'.
+src/application-engine/runtime/protocol.ts(20,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-agent-stream-observer-activation-barrier.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-engine-controller.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-engine-launcher.ts(1,46): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/services/application-engine-state-registry.ts(2,46): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-agent-stream-observer-registry.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-backend-definition-loader.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-backend-definition-loader.ts(85,60): error TS7006: Parameter 'route' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(85,67): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(103,46): error TS7006: Parameter 'segment' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(103,55): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(141,50): error TS7031: Binding element 'method' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(141,58): error TS7031: Binding element 'path' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-definition-loader.ts(142,68): error TS7031: Binding element 'path' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-host.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-backend-host.ts(102,75): error TS7006: Parameter 'route' implicitly has an 'any' type.
+src/application-engine/worker/application-backend-host.ts(105,42): error TS2339: Property 'handler' does not exist on type '{ path: string; }'.
+src/application-engine/worker/application-backend-host.ts(129,34): error TS2339: Property 'open' does not exist on type '{ path: string; }'.
+src/application-engine/worker/application-handler-context-factory.ts(11,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-handler-context-factory.ts(12,59): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-handler-context-factory.ts(37,31): error TS7006: Parameter 'filter' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(40,33): error TS7006: Parameter 'slotKey' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(45,22): error TS7006: Parameter 'runId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(48,30): error TS7006: Parameter 'revisionInput' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(52,35): error TS7006: Parameter 'topic' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(52,42): error TS7006: Parameter 'payload' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(65,26): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(66,30): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(67,25): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(68,25): error TS7006: Parameter 'bindingId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(69,19): error TS7006: Parameter 'bindingId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(70,20): error TS7006: Parameter 'filter' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(71,37): error TS7006: Parameter 'launchRequestId' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(72,36): error TS7006: Parameter 'address' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(72,45): error TS7006: Parameter 'observer' implicitly has an 'any' type.
+src/application-engine/worker/application-handler-context-factory.ts(72,55): error TS7006: Parameter 'options' implicitly has an 'any' type.
+src/application-engine/worker/application-websocket-session-registry.ts(8,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-engine/worker/application-websocket-session-registry.ts(74,14): error TS7006: Parameter 'frame' implicitly has an 'any' type.
+src/application-engine/worker/application-worker-host-bridge-client.ts(10,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/application-agent-input-validator.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/models.ts(9,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/domain/models.ts(13,50): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-agent-target-authorization-service.ts(1,82): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-execution-event-ingress-service.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-execution-resource-resolver.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-orchestration-host-service.ts(14,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-published-artifact-delivery-queue.ts(1,56): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-published-artifact-relay-service.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-run-binding-launch-service.ts(13,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/services/application-runtime-input-normalizer.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/stores/application-execution-event-journal-store.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/stores/application-launch-override-store.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-orchestration/stores/application-run-binding-store.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-current-model-selection-guard.ts(1,62): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-execution-resource-ref.ts(1,54): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-configuration-diagnostics.ts(4,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-configuration-diagnostics.ts(13,33): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(15,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(190,35): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(316,10): error TS7006: Parameter 'subject' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-configuration-service.ts(462,58): error TS7006: Parameter 'leaf' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-host-capability-validator.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-override-normalizer.ts(13,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(12,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(234,55): error TS7006: Parameter 'member' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(238,48): error TS7006: Parameter 'scope' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-override-overlay.ts(243,40): error TS7006: Parameter 'leaf' implicitly has an 'any' type.
+src/application-platform/launch-configuration/application-launch-resource-baseline-builder.ts(8,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/launch-configuration/application-launch-stored-override-reader.ts(7,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/application-platform/runtime/application-definition-runtime-readiness.ts(60,64): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/application-platform/runtime/application-runtime-definition-validator.ts(3,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/standalone-application-host/api/register-standalone-application-rest.ts(2,48): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/standalone-application-host/api/register-standalone-application-websockets.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+src/standalone-application-host/services/standalone-application-bootstrap-service.ts(1,60): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+server_tsc_exit=2
+
+=== CRR-018 BUILD PREREQUISITES + SERVER BUILD-CONFIG TYPESCRIPT RERUN ===
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-backend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json
+
+contracts_build_exit=0 backend_sdk_build_exit=0 server_tsc_rerun_exit=0
+
+=== CRR-018 SERVER PRODUCTION BUILD ===
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 120ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+server_production_build_exit=0

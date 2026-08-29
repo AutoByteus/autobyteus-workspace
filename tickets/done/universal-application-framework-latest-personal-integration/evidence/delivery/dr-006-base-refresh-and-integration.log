@@ -1,0 +1,327 @@
+DR-006 latest origin/personal refresh and integration evidence
+timestamp_before_fetch=2026-08-24T04:49:26Z
+branch=codex/universal-application-framework-latest-personal-integration
+checkpoint_head=a23849f165879050e2c9b676a2e9652d8a593c93
+previous_integrated_base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+tracking_before_fetch=a00f0d07d00450785c424b6ab79d2ca8fe828869
+$ git fetch origin personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+timestamp_after_fetch=2026-08-24T04:49:28Z
+tracking_after_fetch=a00f0d07d00450785c424b6ab79d2ca8fe828869
+merge_base_before_integration=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+divergence_before_integration=145	5
+new_base_commit_count=5
+--- new base commits ---
+a00f0d07d (origin/personal, origin/HEAD, personal, codex/dynamic-agent-team-runtime) chore(delivery): record nested history finalization
+a2b4e8156 Merge nested team history restart hydration
+83c068c7f chore(delivery): archive nested team history restart repair
+78bfd0a34 fix(web): restore settled task history navigation
+e6bca7a8b fix: restore nested team history hydration
+--- changed paths ---
+D	api-e2e-coverage-investigation.md
+D	api-e2e-execution-coverage-report.md
+D	api-e2e-revision-record.md
+D	api-e2e-test-review-report.md
+D	architecture-review-revision-record.md
+M	autobyteus-server-ts/README.md
+M	autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+M	autobyteus-server-ts/docs/features/memory_sync.md
+M	autobyteus-server-ts/docs/modules/agent_team_execution.md
+M	autobyteus-server-ts/src/agent-memory/domain/agent-memory-location.ts
+M	autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts
+M	autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+M	autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts
+A	autobyteus-server-ts/src/agent-team-execution/domain/team-run-physical-scope.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts
+M	autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts
+M	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+M	autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+A	autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-native-activation.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+A	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+A	autobyteus-server-ts/tests/unit/agent-team-execution/team-run-physical-scope.test.ts
+M	autobyteus-server-ts/tests/unit/agent-team-execution/team-run.test.ts
+M	autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+A	autobyteus-server-ts/tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts
+M	autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+M	autobyteus-web/docs/agent_execution_architecture.md
+M	autobyteus-web/docs/memory.md
+M	autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+M	autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+M	autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+M	autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+M	autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts
+M	autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+D	code-review-report.md
+D	code-review-revision-record.md
+D	design-review-report.md
+D	design-spec.md
+D	implementation-handoff.md
+D	implementation-revision-record.md
+D	investigation-notes.md
+D	requirements.md
+D	solution-revision-record.md
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-coverage-investigation.md
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/frontend-focused.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/implementation-changed-test-files.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/memory-sync-multiprocess-focused.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/nested-team-history-restart-focused.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend-active-cold-restart.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend-final-restart.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend-initialize.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend-live.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend-port.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend-restart.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/backend.pid
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/cleanup-report.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/cold-task-browser-failure-analysis.md
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/debug-pinia.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/debug-pinia.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/excluded-misconfigured-restart.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/frontend-port.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/frontend.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/health-after-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/health-final-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/health-initialize.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/health-live.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-abrupt-restart.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-after-restart-query.graphql
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-byte-preservation-summary.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-cold-ui-team-control-and-missing-task-row.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-graphql-after-restart-summary.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-graphql-after-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-memory-files-after-restart.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-memory-files-before-restart.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-phase-a-recover.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-phase-a-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-phase-a.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-phase-b.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-resume-after-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-resume-before-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-run-catalog.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-task-member-before-cold-restart.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-active-task-projection-after-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-active-phase-a-recover.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-active-phase-a.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-active-phase-b.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-cold-ui-gap-probe.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-phase-a-recover.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-phase-a.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-classroom-phase-b.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-cold-ui-gap-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-cold-ui-gap.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-phase-a-recover.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-phase-a-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-phase-a.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-phase-b.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/live-task-member-before-restart.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/memory-files-before-restart.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/package-import.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/providers.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/resume-after-restart.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/resume-cold-task.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/root-team-run-id.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/runtime-root.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/secret-import-dry-run.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/secret-import.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/real-classroom/team-definitions.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/repository-audits.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/repository-focused-e2e.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/repository-owner-focused-files.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/repository-owner-focused.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/durable-test-diff.patch
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/final-artifact-audit.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/final-authority-audit.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/frontend-build.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/frontend-focused.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/frontend-guards.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/historical-team-lazy-hydration-before-fix.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/historical-team-lazy-hydration.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/nested-classroom-fixture-diff.patch
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/approval-debug-2.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/approval-debug.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend-after-002a-cold-restart.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend-after-002b-cold-restart.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend-after-002c-cold-restart.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend-initial.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend-port.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend-reloaded-fixture.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/backend.pid
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/catalog-checks.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/cleanup-report.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/database-path.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/frontend-port.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/frontend-runtime-build.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/frontend.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/frontend.pid
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/health-initial.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-cold-history.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-post-continuation.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-post-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-post.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-post.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-assert.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-assert.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-before-stop.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-complete.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-complete.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-resume.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre-resume.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-pre.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002a-server-stopped-at.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-aborted-cleanup.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-cold-history.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-post-continuation.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-post-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-post.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-post.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre-before-stop.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-pre.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002b-server-stopped-at.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-both-settled-task-rows.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-cold-task-member.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-final-assert.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-final-assert.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-final-historical-proof.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-after-restore.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-probe.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-probe.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-live-projection-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-post-continuation.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-post-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-post.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-post.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre-accepted.png
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre-result.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-pre.mjs
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/nth-live-002c-server-stopped-at.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/real-boundary-graphql-capture.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/real-boundary-graphql-capture.py
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/real-boundary-graphql-summary.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/real-boundary-graphql.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/runtime-artifact-hashes.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/runtime-root.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/secret-import-dry-run.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/secret-import.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/secret-leak-audit.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/real-classroom/setup-summary.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/repository-audits.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/runtime-audits.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/server-build.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-2/server-durable-e2e.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/final-user-restart-audit.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/inspect-live-electron.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/inspect_live_electron.py
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/live-electron-diagnostics.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/live-electron-filesystem-and-process.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/live-electron-summary.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/prior-misconfigured-restart-correlation.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/real-migration-log-inventory.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/secret-leak-audit.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-3/user-electron-data/user-electron-migration-failure-analysis.md
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-4/recovery/inspect-live-electron.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-4/recovery/inspect_live_electron.py
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-4/recovery/live-electron-diagnostics.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/round-4/recovery/live-electron-summary.json
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/server-build.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/server-full-e2e-failing-files.txt
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/server-full-e2e-failures-serial.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/server-full-e2e.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-evidence/team-run-v1-production-upgrade-focused.log
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-execution-coverage-report.md
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-revision-record.md
+A	tickets/done/nested-team-history-restart-hydration/api-e2e-test-review-report.md
+A	tickets/done/nested-team-history-restart-hydration/architecture-review-revision-record.md
+A	tickets/done/nested-team-history-restart-hydration/code-review-report.md
+A	tickets/done/nested-team-history-restart-hydration/code-review-revision-record.md
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-001-docs-sync-checks.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-001-handoff-readiness.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-001-initial-integration-refresh.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-002-electron-artifact-verification.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-002-electron-mac-build.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-002-electron-zip-verification.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-002-handoff-readiness.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-003-finalization-gate-audit.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-004-pre-finalization-audit.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-004-private-fixture-finalization.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-004-reentry-integration-refresh.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-005-repository-finalization-and-cleanup.log
+A	tickets/done/nested-team-history-restart-hydration/delivery-revision-record.md
+A	tickets/done/nested-team-history-restart-hydration/design-review-report.md
+A	tickets/done/nested-team-history-restart-hydration/design-spec.md
+A	tickets/done/nested-team-history-restart-hydration/docs-sync-report.md
+A	tickets/done/nested-team-history-restart-hydration/handoff-summary.md
+A	tickets/done/nested-team-history-restart-hydration/implementation-handoff.md
+A	tickets/done/nested-team-history-restart-hydration/implementation-revision-record.md
+A	tickets/done/nested-team-history-restart-hydration/investigation-evidence/affected-codex-nested-member-post-restart.png
+A	tickets/done/nested-team-history-restart-hydration/investigation-evidence/controlled-autobyteus-nested-member-post-restart.png
+A	tickets/done/nested-team-history-restart-hydration/investigation-evidence/nested-team-restart-reproduction.md
+A	tickets/done/nested-team-history-restart-hydration/investigation-evidence/production-ledger-contamination-recovery-assessment.md
+A	tickets/done/nested-team-history-restart-hydration/investigation-evidence/root-member-history-control.png
+A	tickets/done/nested-team-history-restart-hydration/investigation-notes.md
+A	tickets/done/nested-team-history-restart-hydration/release-deployment-report.md
+A	tickets/done/nested-team-history-restart-hydration/requirements.md
+A	tickets/done/nested-team-history-restart-hydration/solution-revision-record.md
+--- migrations delta ---
+M	autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts
+M	autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts
+A	autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts
+--- merge-tree preview ---
+8175a0ece73b14816a457c97bdc0ee9c603eaf6d
+100644 3b2b8e21b71f38ff7080ef3b943e8072b37ded96 1	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+100644 e6c77f6afedb41e4224ca7e26e2319ddd401f521 2	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+100644 e54a64c392e1a811e050bddfad7063ea7163afc9 3	autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+100644 e8c992e212a799355cc97f44f7958105a4cb52d0 1	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+100644 8fe7da413d00652088146b28e84c821a3450bedd 2	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+100644 dedc16fe47627b98a2d2270335dffcf3487ed003 3	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+100644 0cc8cd82b9d4da7d74a9385651f70b96258570cb 1	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+100644 2b80ed54fe41514e53411857855fdfb787e43aae 2	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+100644 dde8617edab5a76b712529e1f9a39f6b0a4e9565 3	autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+
+Auto-merging autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+Auto-merging autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+merge_tree_exit_code=1
+--- delivery disposition ---
+classification=Design Impact
+conflict_path_count=3
+new_base_app_data_migration=team-agent-memory-layout-app-data-migration
+actual_merge_started=no
+electron_rebuild_started=no
+route=/solution_designer
+head_after_preview=a23849f165879050e2c9b676a2e9652d8a593c93
+unmerged_path_count=0
+FINAL=BLOCKED_DESIGN_IMPACT

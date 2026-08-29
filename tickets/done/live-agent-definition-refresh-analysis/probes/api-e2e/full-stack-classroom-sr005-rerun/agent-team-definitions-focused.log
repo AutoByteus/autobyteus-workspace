@@ -1,0 +1,262 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:5127) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T04:42:03.791Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:03.907Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:03.931Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition created successfully with ID: team-team-def-1787719323884-31e8202b6793c
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:03.949Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team-team-def-1787719323884-31e8202b6793c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719323884-31e8202b6793c updated successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:03.959Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team-team-def-1787719323884-31e8202b6793c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719323884-31e8202b6793c updated successfully.
+
+stderr | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Error updating agent team definition: CollaborationContractError: Collaboration target '/missing' was not found in team 'team_team_def_1787719323884_31e8202b6793c'.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:03.982Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team-team-def-1787719323884-31e8202b6793c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719323884-31e8202b6793c updated successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:03.990Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID team-team-def-1787719323884-31e8202b6793c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent Team Definition with ID team-team-def-1787719323884-31e8202b6793c deleted successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:04.008Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-08-26T04:42:04.022Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Agent definition cache populated with 13 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:42:04.045Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:42:04.057Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:42:04.076Z] [INFO] [agent-team-definition.cache] In-memory cache: Updated agent team definition with ID team_local_team_local_graphql_1787719324023_3aaa0eb4caa8c.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Agent Team Definition with ID team_local_team_local_graphql_1787719324023_3aaa0eb4caa8c updated successfully.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:42:04.088Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-08-26T04:42:04.107Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-08-26T04:42:04.120Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-08-26T04:42:04.135Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-08-26T04:42:04.155Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-08-26T04:42:04.174Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-08-26T04:42:04.203Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-08-26T04:42:04.228Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 25 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-08-26T04:42:04.349Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-08-26T04:42:04.367Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+[2026-08-26T04:42:04.379Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+[2026-08-26T04:42:04.397Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+stderr | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Error creating agent team definition: Error: Coordinator member name must match one of nodes.memberName values.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Agent definition cache populated with 12 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+[2026-08-26T04:42:04.409Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+[2026-08-26T04:42:04.427Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 19 items.
+
+ ✓ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests) 639ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  04:41:53
+   Duration  10.72s (transform 6.29s, setup 33ms, import 9.18s, tests 639ms, environment 0ms)
+

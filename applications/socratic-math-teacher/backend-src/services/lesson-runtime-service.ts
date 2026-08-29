@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import {
-  buildConfiguredTeamRunLaunch,
-  resolveConfiguredTeamLaunchProfile,
+  buildEffectiveTeamRunLaunch,
   type ApplicationHandlerContext,
 } from "@autobyteus/application-backend-sdk";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
@@ -11,11 +10,6 @@ import { createPendingLaunchRequestRepository } from "../repositories/pending-la
 import { createLessonReadService } from "./lesson-read-service.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
-const SOCRATIC_TEAM_RESOURCE = {
-  source: "bundle",
-  kind: "AGENT_TEAM",
-  localId: "socratic-math-team",
-} as const;
 const LESSON_TUTOR_TEAM_SLOT_KEY = "lessonTutorTeam" as const;
 
 const requireNonEmptyString = (value: string | null | undefined, fieldName: string): string => {
@@ -79,15 +73,8 @@ const resolveStartLessonProjection = (input: {
   };
 };
 
-const resolveLessonTutorTeamConfiguration = async (context: ApplicationHandlerContext) => {
-  return resolveConfiguredTeamLaunchProfile({
-    configuredResource: await context.agentResources.getConfigured(LESSON_TUTOR_TEAM_SLOT_KEY),
-    fallbackExecutionResourceRef: SOCRATIC_TEAM_RESOURCE,
-  });
-};
-
 export const createLessonRuntimeService = (context: ApplicationHandlerContext) => ({
-  async startLesson(input: { prompt: string; llmModelIdentifier?: string | null }) {
+  async startLesson(input: { prompt: string }) {
     const prompt = requireNonEmptyString(input.prompt, "prompt");
     const lessonId = `lesson-${randomUUID()}`;
     const createdAt = new Date().toISOString();
@@ -118,18 +105,14 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
       });
     });
     const pendingLaunchRequest = correlationService.createPendingLaunchRequest(lessonId);
-    const tutorTeam = await resolveLessonTutorTeamConfiguration(context);
-    const workspaceRootPath = tutorTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
+    const tutorTeam = await context.agentResources.requireRunnable(LESSON_TUTOR_TEAM_SLOT_KEY);
 
     try {
       const binding = await context.agentExecution.startAgentTeam({
         launchRequestId: pendingLaunchRequest.launchRequestId,
         executionResourceRef: tutorTeam.executionResourceRef,
-        launch: buildConfiguredTeamRunLaunch({
-          launchProfile: tutorTeam.launchProfile,
-          workspaceRootPath,
-          llmModelIdentifier: input.llmModelIdentifier,
-          llmConfig: { reasoning_effort: "high" },
+        launch: buildEffectiveTeamRunLaunch({
+          configuration: tutorTeam,
         }),
       });
 
@@ -225,7 +208,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
     });
 
     await context.agentExecution.sendInput({
-      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+      address: { bindingId, memberAddress: null },
       input: {
         text,
         metadata: { lessonId },
@@ -270,7 +253,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
     });
 
     await context.agentExecution.sendInput({
-      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+      address: { bindingId, memberAddress: null },
       input: {
         text: `The student requests a hint. ${detail}`,
         metadata: { lessonId, requestKind: "hint" },

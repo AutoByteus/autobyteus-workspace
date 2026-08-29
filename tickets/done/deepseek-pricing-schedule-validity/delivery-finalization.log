@@ -1,0 +1,10 @@
+2026-08-27 delivery finalization
+user verification: received; finalize and release new version
+ticket archive: tickets/in-progress/deepseek-pricing-schedule-validity -> tickets/done/deepseek-pricing-schedule-validity
+ticket commit/push: 90636a1299ee5bca8c625fa697b8c3c5add5f7da / origin codex/deepseek-pricing-schedule-validity
+target refresh: origin/personal e7ae5e1e4631d3e8b3c3aaf1a0f73b5d1c0f9cf8; no advancement after verification
+target merge/push: d4a6f4579 / origin personal
+release command: pnpm release 1.4.60 -- --release-notes tickets/done/deepseek-pricing-schedule-validity/release-notes.md
+release commit: f7849c286
+release tag/push: v1.4.60
+release workflows: tag-triggered, asynchronous

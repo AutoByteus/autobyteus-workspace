@@ -1,8 +1,9 @@
 import type {
-  ApplicationBackendBundleManifestV1,
+  ApplicationBackendBundleManifest,
   ApplicationBackendSupportedExposures,
   ApplicationExecutionResourceSlotDeclaration,
   ApplicationExecutionResourceKind,
+  ApplicationAgentToolDeclaration,
 } from "@autobyteus/application-sdk-contracts";
 
 export type ApplicationBundleExecutionResource = {
@@ -16,10 +17,10 @@ export type ApplicationBackendBundle = {
   manifestRelativePath: string;
   entryModulePath: string;
   entryModuleRelativePath: string;
-  moduleFormat: ApplicationBackendBundleManifestV1["moduleFormat"];
-  distribution: ApplicationBackendBundleManifestV1["distribution"];
-  targetRuntime: ApplicationBackendBundleManifestV1["targetRuntime"];
-  sdkCompatibility: ApplicationBackendBundleManifestV1["sdkCompatibility"];
+  moduleFormat: ApplicationBackendBundleManifest["moduleFormat"];
+  distribution: ApplicationBackendBundleManifest["distribution"];
+  targetRuntime: ApplicationBackendBundleManifest["targetRuntime"];
+  sdkCompatibility: ApplicationBackendBundleManifest["sdkCompatibility"];
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDirPath: string | null;
   migrationsDirRelativePath: string | null;
@@ -37,6 +38,7 @@ export type ApplicationCatalogEntry = {
   entryHtmlAssetPath: string;
   bundleResources: ApplicationBundleExecutionResource[];
   executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
+  agentTools: readonly ApplicationAgentToolDeclaration[];
   writable: boolean;
 };
 
@@ -70,6 +72,7 @@ export type ValidatedApplicationBundle = {
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
   executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
+  agentTools: readonly ApplicationAgentToolDeclaration[];
   localAgentIds: string[];
   localTeamIds: string[];
   writable: boolean;

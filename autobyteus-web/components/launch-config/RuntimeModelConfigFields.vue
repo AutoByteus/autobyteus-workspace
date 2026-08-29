@@ -36,7 +36,7 @@
         :model-value="llmModelIdentifier || ''"
         @update:modelValue="updateModel"
         :options="groupedModelOptions"
-        :disabled="disabledComputed || !availableProviderGroups.length"
+        :disabled="modelSelectionLockedComputed || !availableProviderGroups.length"
         :placeholder="modelPlaceholderText"
         search-placeholder="Search models..."
         :variant="controlVariant"
@@ -49,13 +49,20 @@
       >
         {{ historicalValueUnavailableMessage }}
       </p>
+      <p v-if="isLoadingModels" role="status" class="mt-1 text-xs text-blue-700">
+        {{ t('workspace.runModelConfig.loadingModels') }}
+      </p>
+      <div v-else-if="modelLoadError" role="alert" class="mt-2 flex items-center justify-between gap-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <span>{{ t('workspace.runModelConfig.catalogError') }}</span>
+        <button type="button" class="font-semibold underline" :disabled="disabledComputed" @click="retryModelCatalog">{{ t('workspace.runModelConfig.retry') }}</button>
+      </div>
     </div>
 
     <ModelConfigSection
       :schema="modelConfigSchema"
       :model-config="llmConfig"
-      :disabled="disabledComputed"
-      :read-only="readOnlyComputed"
+      :disabled="modelConfigDisabledComputed"
+      :read-only="modelConfigReadOnlyComputed"
       :apply-defaults="true"
       :thinking-label="thinkingLabel"
       :thinking-description="thinkingDescription"
@@ -65,9 +72,13 @@
       :historical="historicalModelConfig"
       :historical-value-unavailable-message="historicalValueUnavailableMessage"
       :historical-model-config-title="historicalModelConfigTitle"
+      :validation-errors="mergedValidationErrors"
       :control-variant="controlVariant"
       @update:config="updateModelConfig"
     />
+    <p v-if="showNoAdjustableSettings" class="text-xs text-gray-500">
+      {{ t('workspace.runModelConfig.noAdjustableSettings') }}
+    </p>
   </div>
 </template>
 
@@ -84,6 +95,11 @@ import {
   resolveEffectiveScopedRuntimeKind,
   useRuntimeScopedModelSelection,
 } from '~/composables/useRuntimeScopedModelSelection'
+import { projectHistoricalModelConfigFields } from '~/utils/historicalModelConfigFields'
+import { validateUiModelConfig, type UiModelConfigValidationIssue } from '~/utils/llmConfigSchema'
+import { useLocalization } from '~/composables/useLocalization'
+
+const { t } = useLocalization()
 
 const props = defineProps<{
   runtimeKind?: string | null
@@ -92,6 +108,9 @@ const props = defineProps<{
   disabled?: boolean
   readOnly?: boolean
   runtimeSelectionLocked?: boolean
+  modelSelectionLocked?: boolean
+  modelConfigDisabled?: boolean
+  modelConfigReadOnly?: boolean
   allowBlankRuntime?: boolean
   blankRuntimeLabel?: string
   runtimeLabel?: string
@@ -108,18 +127,24 @@ const props = defineProps<{
   historicalValueUnavailableMessage?: string
   historicalModelConfigTitle?: string
   historicalModelConfig?: boolean
+  validationErrors?: Readonly<Record<string, string>>
 }>()
 
 const emit = defineEmits<{
   (e: 'update:runtimeKind', value: string): void
   (e: 'update:llmModelIdentifier', value: string): void
   (e: 'update:llmConfig', value: Record<string, unknown> | null): void
+  (e: 'schema-state', value: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
 }>()
 
 const disabledComputed = computed(() => props.disabled === true)
 const readOnlyComputed = computed(() => props.readOnly === true)
+const modelConfigReadOnlyComputed = computed(() => readOnlyComputed.value || props.modelConfigReadOnly === true)
 const runtimeSelectionLockedComputed = computed(
   () => disabledComputed.value || props.runtimeSelectionLocked === true,
+)
+const modelSelectionLockedComputed = computed(
+  () => disabledComputed.value || props.modelSelectionLocked === true,
 )
 const allowBlankRuntime = computed(() => props.allowBlankRuntime === true)
 const runtimeLabelText = computed(() => props.runtimeLabel ?? 'Runtime')
@@ -146,8 +171,10 @@ const {
   groupedModelOptions,
   hasModelIdentifier,
   isLoadingModels,
+  modelLoadError,
   modelConfigSchemaByIdentifier,
   normalizedStoredRuntimeKind,
+  reloadModelsForRuntime,
   runtimeOptions,
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({
@@ -160,7 +187,7 @@ watch(
   async (runtimeKind, previousRuntimeKind) => {
     const normalizedStoredRuntime = normalizeScopedRuntimeKind(runtimeKind, allowBlankRuntime.value)
     if ((props.runtimeKind ?? '') !== normalizedStoredRuntime) {
-      if (readOnlyComputed.value) {
+      if (readOnlyComputed.value || runtimeSelectionLockedComputed.value) {
         return
       }
       emit('update:runtimeKind', normalizedStoredRuntime)
@@ -171,14 +198,18 @@ watch(
       typeof previousRuntimeKind !== 'undefined' &&
       resolveEffectiveScopedRuntimeKind(previousRuntimeKind) !== effectiveRuntimeKind.value
 
-    await ensureModelsForRuntime(effectiveRuntimeKind.value)
+    try {
+      await ensureModelsForRuntime(resolveEffectiveScopedRuntimeKind(effectiveRuntimeKind.value))
+    } catch {
+      return
+    }
 
     if (
       validateSelectedModel &&
       props.llmModelIdentifier &&
       !hasModelIdentifier(props.llmModelIdentifier)
     ) {
-      if (readOnlyComputed.value) {
+      if (readOnlyComputed.value || modelSelectionLockedComputed.value) {
         return
       }
       emit('update:llmModelIdentifier', '')
@@ -222,13 +253,68 @@ const modelConfigSchema = computed(() =>
   modelConfigSchemaByIdentifier(props.llmModelIdentifier),
 )
 const selectedModelUnavailable = computed(() => Boolean(
-  readOnlyComputed.value &&
+  props.historicalModelConfig &&
   props.llmModelIdentifier?.trim() &&
   !isLoadingModels.value &&
   !hasModelIdentifier(props.llmModelIdentifier),
 ))
+const modelConfigUnavailable = computed(() => Boolean(
+  modelLoadError.value || selectedModelUnavailable.value || historicalResidualsPresent.value,
+))
+const historicalResidualsPresent = computed(() => Boolean(
+  props.historicalModelConfig && projectHistoricalModelConfigFields(props.llmConfig, modelConfigSchema.value)
+    .some((field) => field.kind === 'historical_residual'),
+))
+const validationMessage = (issue: UiModelConfigValidationIssue): string => {
+  const key = `workspace.runModelConfig.validation.${issue.code}`
+  return t(key, issue.expected === undefined ? undefined : { expected: issue.expected })
+}
+const localValidationIssues = computed(() => modelConfigSchema.value
+  ? validateUiModelConfig(modelConfigSchema.value, props.llmConfig)
+  : [])
+const localValidationErrors = computed<Record<string, string>>(() => Object.fromEntries(
+  localValidationIssues.value.map((issue) => [issue.key, validationMessage(issue)]),
+))
+const mergedValidationErrors = computed<Record<string, string>>(() => ({
+  ...localValidationErrors.value,
+  ...(props.validationErrors ?? {}),
+}))
+const modelConfigDisabledComputed = computed(() =>
+  disabledComputed.value || props.modelConfigDisabled === true || modelConfigUnavailable.value || isLoadingModels.value,
+)
+const showNoAdjustableSettings = computed(() => Boolean(
+  !isLoadingModels.value && !modelConfigUnavailable.value && props.llmModelIdentifier?.trim() && !modelConfigSchema.value,
+))
+
+watch(
+  [isLoadingModels, modelLoadError, selectedModelUnavailable, modelConfigSchema, historicalResidualsPresent, mergedValidationErrors],
+  () => {
+    if (isLoadingModels.value) {
+      emit('schema-state', { status: 'loading', message: null })
+    } else if (modelConfigUnavailable.value) {
+      emit('schema-state', {
+        status: 'unavailable',
+        message: modelLoadError.value || (historicalResidualsPresent.value
+          ? t('workspace.runModelConfig.schemaUnavailable')
+          : historicalValueUnavailableMessage.value),
+      })
+    } else if (Object.keys(mergedValidationErrors.value).length) {
+      emit('schema-state', {
+        status: 'invalid',
+        message: Object.values(mergedValidationErrors.value)[0] ?? null,
+      })
+    } else {
+      emit('schema-state', { status: 'ready', message: null })
+    }
+  },
+  { immediate: true },
+)
+
+const retryModelCatalog = () => {
+  void reloadModelsForRuntime(resolveEffectiveScopedRuntimeKind(effectiveRuntimeKind.value))
+}
 const updateRuntimeKind = (value: string) => {
-  if (readOnlyComputed.value) return
+  if (readOnlyComputed.value || runtimeSelectionLockedComputed.value) return
   const normalizedRuntime = normalizeScopedRuntimeKind(value, allowBlankRuntime.value)
   if (normalizedRuntime === normalizedStoredRuntimeKind.value) {
     return
@@ -239,7 +325,7 @@ const updateRuntimeKind = (value: string) => {
 }
 
 const updateModel = (value: string) => {
-  if (readOnlyComputed.value) return
+  if (readOnlyComputed.value || modelSelectionLockedComputed.value) return
   if (value === (props.llmModelIdentifier ?? '')) {
     return
   }
@@ -248,7 +334,7 @@ const updateModel = (value: string) => {
 }
 
 const updateModelConfig = (config: Record<string, unknown> | null) => {
-  if (readOnlyComputed.value) return
+  if (modelConfigReadOnlyComputed.value || modelConfigDisabledComputed.value) return
   emit('update:llmConfig', config)
 }
 </script>

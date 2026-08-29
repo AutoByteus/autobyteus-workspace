@@ -6,7 +6,6 @@ import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
@@ -16,19 +15,50 @@ import {
   toAgentToolMcpToolResult,
   type AgentToolMcpToolAdapter,
 } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
+import {
+  testMemberTaskRootResolver,
+  testMemberTeamContext,
+} from "../../../fixtures/current-team-run-fixtures.js";
+import type { ApplicationAgentToolCapability } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
+import type { ApplicationAgentToolRoute } from "../../../../src/application-agent-tools/domain/application-agent-tool-route.js";
 
-const buildSender = () => buildAgentRunMessageSenderContext({
-  senderRunId: "run-1",
-  senderName: "agent-one",
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+const createPublisher = () => ({ publishManyForRun: vi.fn(async () => []) });
+
+const buildSender = (runId = "run-1") => buildAgentRunMessageSenderContext({
+  senderRunId: runId,
+  senderName: runId,
 });
 
-const buildService = (registry = new AgentToolMcpSessionRegistry()) => new AgentToolMcpSessionService({
+const buildSendMessageAdapter = (
+  dispatch: ReturnType<typeof vi.fn> = vi.fn(),
+): AgentToolMcpToolAdapter => ({
+  definition: {
+    name: SEND_MESSAGE_TO_TOOL_NAME,
+    description: "Send a message",
+    inputSchema: { type: "object", properties: {}, required: [] },
+  },
+  isAvailable: () => true,
+  execute: async ({ session, rawArguments }) =>
+    toAgentToolMcpOperationResult(await dispatch({
+      toolName: SEND_MESSAGE_TO_TOOL_NAME,
+      rawArguments,
+      sender: session.sender,
+    })),
+});
+
+const buildService = (
+  registry = new AgentToolMcpSessionRegistry(),
+  catalog = new AgentToolMcpCatalog({ adapters: [buildSendMessageAdapter()] }),
+  getLocalBaseUrl: () => string = () => "http://127.0.0.1:43124",
+  applicationAgentTools: ApplicationAgentToolCapability | null = null,
+) => new AgentToolMcpSessionService({
   registry,
-  catalog: new AgentToolMcpCatalog({
-    adapters: [buildSendMessageAdapter(vi.fn())],
-  }),
-  getInternalBaseUrl: () => "http://127.0.0.1:8080",
+  catalog,
+  getLocalBaseUrl,
+  executionCapabilities: {
+    publishedArtifactPublisher: createPublisher(),
+    applicationAgentTools,
+  },
 });
 
 class FakeConfiguredMcpTool extends BaseTool {
@@ -39,229 +69,246 @@ class FakeConfiguredMcpTool extends BaseTool {
   }
 }
 
-const buildMcpDefinition = (name: string, serverId: string): ToolDefinition => new ToolDefinition(
-  name,
-  `Description for ${name}`,
-  ToolOrigin.MCP,
-  "MCP",
-  () => new ParameterSchema(),
-  () => null,
-  {
-    customFactory: () => new FakeConfiguredMcpTool(),
-    metadata: { mcp_server_id: serverId },
-  },
-);
-
 class FakeToolRegistry {
   private readonly definitions = new Map<string, ToolDefinition>();
   register(definition: ToolDefinition): void { this.definitions.set(definition.name, definition); }
   getToolDefinition(name: string): ToolDefinition | undefined { return this.definitions.get(name); }
   createTool(name: string): BaseTool {
     const definition = this.definitions.get(name);
-    if (!definition) {
-      throw new Error(`No definition for ${name}`);
-    }
+    if (!definition) throw new Error(`No definition for ${name}`);
     const tool = definition.customFactory!();
     tool.definition = definition;
     return tool;
   }
 }
 
-const buildSendMessageAdapter = (dispatch: ReturnType<typeof vi.fn>): AgentToolMcpToolAdapter => ({
-  definition: {
-    name: SEND_MESSAGE_TO_TOOL_NAME,
-    description: "Send a message",
-    inputSchema: { type: "object", properties: {}, required: [] },
-  },
-  isAvailable: () => true,
-  execute: async ({ session, rawArguments }) => toAgentToolMcpOperationResult(await dispatch({
-    toolName: SEND_MESSAGE_TO_TOOL_NAME,
-    rawArguments,
-    sender: session.sender,
-  })),
-});
-
 describe("AgentToolMcpSessionService", () => {
-  it("creates a secret descriptor from configured-and-supported tools without storing raw tokens", () => {
+  it("activates a deterministic headerless descriptor and active-only record", () => {
     const registry = new AgentToolMcpSessionRegistry();
     const service = buildService(registry);
-
-    const result = service.createAgentToolMcpSession({
-      owner: { runId: "run-1" },
+    const activation = service.activateForRun({
+      owner: { runId: "  run-1  " },
       sender: buildSender(),
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      runtimeExposure: buildRuntimeAgentToolExposure([
-        SEND_MESSAGE_TO_TOOL_NAME,
-        "open_tab",
-      ]),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
 
-    expect(result.descriptor).toMatchObject({
-      name: "autobyteus_agent_tools",
-      transport: "streamable_http",
-      enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
-      headers: { Authorization: expect.stringMatching(/^Bearer\s+\S+$/) },
+    expect(activation).toMatchObject({
+      kind: "active",
+      sessionId: "agtrun_TmXT--itZTVoGwIbMHhbErbA4_iHiFmkFIs_WLiDXbA",
+      descriptor: {
+        name: "autobyteus_agent_tools",
+        transport: "streamable_http",
+        enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
+      },
     });
-    expect(result.descriptor.serverUrl).toBe(
-      `http://127.0.0.1:8080/mcp/agent-tools/${result.session.sessionId}`,
+    if (activation.kind !== "active") throw new Error("Expected active result.");
+    expect(activation.descriptor.serverUrl).toBe(
+      `http://127.0.0.1:43124/mcp/agent-tools/${activation.sessionId}`,
     );
-    const rawToken = result.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(result.session.tokenHash.toString("utf8")).not.toContain(rawToken);
-    expect(registry.resolveSession({ sessionId: result.session.sessionId, bearerToken: rawToken }).ok).toBe(true);
-
-    expect(result.redactedDescriptor.headers.Authorization).toBe("Bearer <redacted>");
-    expect(result.redactedDescriptor.serverUrl).toBe("http://127.0.0.1:8080/mcp/agent-tools/%3Credacted%3E");
-    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(rawToken);
-    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.session.sessionId);
+    expect(activation.descriptor).not.toHaveProperty("headers");
+    expect(registry.resolveSession(activation.sessionId)).toMatchObject({
+      ok: true,
+      session: { owner: { runId: "run-1" } },
+    });
+    expect(Object.isFrozen(activation)).toBe(true);
+    expect(Object.isFrozen(activation.descriptor)).toBe(true);
+    const resolved = registry.resolveSession(activation.sessionId);
+    if (!resolved.ok) throw new Error("Expected active record.");
+    expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
   });
 
-  it("creates descriptor enabled tools and session sources for selected configured MCP registry tools", () => {
-    const sessionRegistry = new AgentToolMcpSessionRegistry();
-    const toolRegistry = new FakeToolRegistry();
-    toolRegistry.register(buildMcpDefinition("db_query", "sqlite"));
-    const service = new AgentToolMcpSessionService({
-      registry: sessionRegistry,
-      catalog: new AgentToolMcpCatalog({
-        adapters: [buildSendMessageAdapter(vi.fn())],
-        registry: toolRegistry as any,
-      }),
-      getInternalBaseUrl: () => "http://127.0.0.1:8080",
+  it("returns not_exposed without reading readiness or inserting a record", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const getLocalBaseUrl = vi.fn(() => { throw new Error("not ready"); });
+    const result = buildService(registry, undefined, getLocalBaseUrl).activateForRun({
+      owner: { runId: "run-hidden" },
+      sender: buildSender("run-hidden"),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
     });
 
-    const result = service.createAgentToolMcpSession({
+    expect(result).toEqual({ kind: "not_exposed" });
+    expect(getLocalBaseUrl).not.toHaveBeenCalled();
+    expect(registry.listSessions()).toEqual([]);
+  });
+
+  it("fails before insertion when the owned local listener is not ready", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const service = buildService(registry, undefined, () => {
+      throw new Error("local listener not ready");
+    });
+    expect(() => service.activateForRun({
+      owner: { runId: "run-not-ready" },
+      sender: buildSender("run-not-ready"),
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+    })).toThrow("local listener not ready");
+    expect(registry.listSessions()).toEqual([]);
+  });
+
+  it("composes configured MCP routes into the active record", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const toolRegistry = new FakeToolRegistry();
+    toolRegistry.register(new ToolDefinition(
+      "db_query",
+      "Query database",
+      ToolOrigin.MCP,
+      "MCP",
+      () => new ParameterSchema(),
+      () => null,
+      {
+        customFactory: () => new FakeConfiguredMcpTool(),
+        metadata: { mcp_server_id: "sqlite" },
+      },
+    ));
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [buildSendMessageAdapter()],
+      registry: toolRegistry as never,
+    });
+    const result = buildService(registry, catalog).activateForRun({
       owner: { runId: "run-configured" },
-      sender: buildSender(),
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      sender: buildSender("run-configured"),
       runtimeExposure: buildRuntimeAgentToolExposure([
         "db_query",
         SEND_MESSAGE_TO_TOOL_NAME,
       ]),
     });
-
-    expect(result.descriptor.enabledTools).toEqual([
-      "db_query",
-      SEND_MESSAGE_TO_TOOL_NAME,
-    ]);
-    expect(result.session.enabledTools).toEqual(result.descriptor.enabledTools);
-    expect(result.session.configuredMcpToolSources).toEqual([
+    if (result.kind !== "active") throw new Error("Expected active result.");
+    const resolved = registry.resolveSession(result.sessionId);
+    if (!resolved.ok) throw new Error("Expected active record.");
+    expect(resolved.session.configuredMcpToolSources).toEqual([
       { kind: "configured_mcp_tool", registeredToolName: "db_query", mcpServerId: "sqlite" },
     ]);
-    expect(result.session.toolRoutes).toEqual({
-      [SEND_MESSAGE_TO_TOOL_NAME]: {
-        kind: "static_adapter",
-        toolName: SEND_MESSAGE_TO_TOOL_NAME,
-      },
-      db_query: {
-        kind: "configured_mcp_tool",
-        registeredToolName: "db_query",
-        mcpServerId: "sqlite",
-      },
+    expect(resolved.session.toolRoutes.db_query).toEqual({
+      kind: "configured_mcp_tool",
+      registeredToolName: "db_query",
+      mcpServerId: "sqlite",
     });
-    expect(result.redactedDescriptor.enabledTools).toEqual(result.descriptor.enabledTools);
-
-    const rawToken = result.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(JSON.stringify(result.session.configuredMcpToolSources)).not.toContain(rawToken);
-    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(rawToken);
-    expect(JSON.stringify(result.redactedDescriptor)).not.toContain(result.session.sessionId);
-    expect(sessionRegistry.resolveSession({
-      sessionId: result.session.sessionId,
-      bearerToken: rawToken,
-    }).ok).toBe(true);
   });
 
-  it("does not expose send_message_to when it was not configured", () => {
-    const service = buildService();
-
-    const result = service.createAgentToolMcpSession({
-      owner: { runId: "run-2" },
-      sender: buildSender(),
-      runtimeExposure: buildRuntimeAgentToolExposure(["open_tab"]),
+  it("builds exact Team-member capabilities and rejects mismatched ownership", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const rootResolver = testMemberTaskRootResolver();
+    const memberTeamContext = testMemberTeamContext({
+      rootTeamRunId: "root-team",
+      memberAddress: "/researcher",
+      agentRunId: "researcher-run",
+      taskRootResolver: rootResolver,
     });
-
-    expect(result.descriptor.enabledTools).toEqual([]);
-    expect(result.session.enabledTools).toEqual([]);
-  });
-
-  it("resolves beyond the old active TTL, revokes explicitly, and revokes sessions by owner identity", () => {
-    let now = new Date("2026-06-13T10:00:00.000Z");
-    const registry = new AgentToolMcpSessionRegistry({ now: () => now });
     const service = buildService(registry);
-    const created = service.createAgentToolMcpSession({
-      owner: { runId: "member-run-3" },
-      sender: buildSender(),
+    const result = service.activateForRun({
+      owner: { runId: "researcher-run", teamIdentity: memberTeamContext.identity },
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: "researcher-run",
+        memberTeamContext,
+      }),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
     });
-    const token = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
+    if (result.kind !== "active") throw new Error("Expected active result.");
+    const resolved = registry.resolveSession(result.sessionId);
+    if (!resolved.ok || resolved.session.executionCapabilities.kind !== "team_member") {
+      throw new Error("Expected Team-member capabilities.");
+    }
+    expect(resolved.session.executionCapabilities.taskDelegation.rootResolver).toBe(rootResolver);
+    expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
 
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token }).ok).toBe(true);
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: "wrong" })).toMatchObject({
-      ok: false,
-      reason: "token_mismatch",
-    });
-
-    now = new Date("2026-06-14T00:00:00.001Z");
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token }).ok).toBe(true);
-    expect(service.revokeAgentToolMcpSession(created.session.sessionId)).toBe(true);
-    expect(registry.resolveSession({ sessionId: created.session.sessionId, bearerToken: token })).toMatchObject({
-      ok: false,
-      reason: "revoked",
-    });
-
-    const second = service.createAgentToolMcpSession({
-      owner: { runId: "member-run-3" },
-      sender: buildSender(),
+    expect(() => service.activateForRun({
+      owner: { runId: "other-run", teamIdentity: memberTeamContext.identity },
+      sender: buildAgentRunMessageSenderContext({
+        senderRunId: "researcher-run",
+        memberTeamContext,
+      }),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
-    });
-    const nonMatching = service.createAgentToolMcpSession({
-      owner: { runId: "member-run-other" },
-      sender: buildSender(),
-      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
-    });
-    const secondToken = second.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    const nonMatchingToken = nonMatching.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    expect(service.revokeAgentToolMcpSessionsForAgentRun("member-run-3")).toBe(1);
-    expect(registry.resolveSession({ sessionId: second.session.sessionId, bearerToken: secondToken })).toMatchObject({
-      ok: false,
-      reason: "revoked",
-    });
-    expect(registry.resolveSession({
-      sessionId: nonMatching.session.sessionId,
-      bearerToken: nonMatchingToken,
-    }).ok).toBe(true);
+    })).toThrow("does not match");
   });
 
-  it("treats a fresh in-memory registry as unable to resolve old descriptors", () => {
-    const originalRegistry = new AgentToolMcpSessionRegistry();
-    const service = buildService(originalRegistry);
-    const created = service.createAgentToolMcpSession({
-      owner: { runId: "run-restart" },
-      sender: buildSender(),
-      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
-    });
-    const oldToken = created.descriptor.headers.Authorization.replace(/^Bearer\s+/, "");
-    const freshRegistry = new AgentToolMcpSessionRegistry();
+  it("rematerializes current application routes at the same deterministic URL after stop", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const resolveSelectedRoutes = vi.fn();
+    const capability = {
+      resolveSelectedRoutes,
+      invoke: vi.fn(),
+      close: vi.fn(),
+    } as unknown as ApplicationAgentToolCapability;
+    const catalog = new AgentToolMcpCatalog({ adapters: [] });
+    const service = buildService(
+      registry,
+      catalog,
+      () => "http://127.0.0.1:43124",
+      capability,
+    );
+    const route = (fingerprint: string): ApplicationAgentToolRoute => Object.freeze({
+      kind: "application_agent_tool",
+      identity: Object.freeze({
+        applicationId: "brief-studio",
+        bindingId: "binding-1",
+        producer: Object.freeze({ kind: "agent", agentRunId: "run-app" }),
+      }),
+      declarationSnapshot: Object.freeze({
+        declaration: Object.freeze({
+          name: "get_brief_context",
+          description: `Context ${fingerprint}`,
+          inputSchema: Object.freeze({ type: "object", properties: Object.freeze({}) }),
+        }),
+        fingerprint,
+      }),
+    }) as ApplicationAgentToolRoute;
+    resolveSelectedRoutes.mockReturnValueOnce(new Map([
+      ["get_brief_context", route("v1")],
+    ]));
+    const activationInput = {
+      owner: { runId: "run-app" },
+      sender: buildSender("run-app"),
+      runtimeExposure: buildRuntimeAgentToolExposure(["get_brief_context"]),
+      executionContext: {
+        applicationExecutionContext: {
+          applicationId: "brief-studio",
+          bindingId: "binding-1",
+          producer: { agentRunId: "run-app", displayName: "Brief agent" },
+        },
+      },
+    };
 
-    expect(originalRegistry.resolveSession({
-      sessionId: created.session.sessionId,
-      bearerToken: oldToken,
-    }).ok).toBe(true);
-    expect(freshRegistry.resolveSession({
-      sessionId: created.session.sessionId,
-      bearerToken: oldToken,
-    })).toMatchObject({ ok: false, reason: "missing_session" });
+    const first = service.activateForRun(activationInput);
+    if (first.kind !== "active") throw new Error("Expected active result.");
+    const firstRecord = registry.resolveSession(first.sessionId);
+    if (!firstRecord.ok) throw new Error("Expected active record.");
+    expect(firstRecord.session.executionCapabilities.applicationAgentTools).toBe(capability);
+    expect(firstRecord.session.toolRoutes.get_brief_context).toMatchObject({
+      declarationSnapshot: { fingerprint: "v1" },
+    });
+    expect(Object.isFrozen(firstRecord.session.toolRoutes)).toBe(true);
+    expect(registry.deactivateSession(first.sessionId)).toBe(true);
+
+    resolveSelectedRoutes.mockReturnValueOnce(new Map([
+      ["get_brief_context", route("v2")],
+    ]));
+    const restored = service.activateForRun(activationInput);
+    if (restored.kind !== "active") throw new Error("Expected active result.");
+    const restoredRecord = registry.resolveSession(restored.sessionId);
+    if (!restoredRecord.ok) throw new Error("Expected restored record.");
+    expect(restored.descriptor.serverUrl).toBe(first.descriptor.serverUrl);
+    expect(restoredRecord.session).not.toBe(firstRecord.session);
+    expect(restoredRecord.session.toolRoutes.get_brief_context).toMatchObject({
+      declarationSnapshot: { fingerprint: "v2" },
+    });
+    expect(resolveSelectedRoutes).toHaveBeenCalledTimes(2);
   });
 });
 
 describe("AgentToolMcpToolExecutor", () => {
-  it("delegates send_message_to to the shared dispatcher and emits observer events", async () => {
-    const dispatch = vi.fn(async () => ({ accepted: true, code: "DELIVERED", message: "Delivered message." }));
+  it("dispatches with current live sender context and emits observer events", async () => {
+    const dispatch = vi.fn(async () => ({ accepted: true, code: "DELIVERED", message: "Delivered." }));
     const starts = vi.fn();
     const completes = vi.fn();
     const registry = new AgentToolMcpSessionRegistry();
-    const { session } = registry.createSession({
-      owner: { runId: "run-4" },
-      sender: buildSender(),
+    const session = registry.activateSession({
+      owner: { runId: "run-executor" },
+      sender: buildSender("run-executor"),
       runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: createPublisher(),
+        applicationAgentTools: null,
+      },
       enabledTools: [SEND_MESSAGE_TO_TOOL_NAME],
       toolRoutes: {
         [SEND_MESSAGE_TO_TOOL_NAME]: {
@@ -269,42 +316,28 @@ describe("AgentToolMcpToolExecutor", () => {
           toolName: SEND_MESSAGE_TO_TOOL_NAME,
         },
       },
-      toolExecutionObserver: {
-        onToolStart: starts,
-        onToolComplete: completes,
-      },
+      toolExecutionObserver: { onToolStart: starts, onToolComplete: completes },
     });
     const executor = new AgentToolMcpToolExecutor({
       catalog: new AgentToolMcpCatalog({ adapters: [buildSendMessageAdapter(dispatch)] }),
     });
 
-    const result = await executor.executeAgentToolMcpCall({
+    await executor.executeAgentToolMcpCall({
       session,
       toolName: SEND_MESSAGE_TO_TOOL_NAME,
-      rawArguments: { target_agent_run_id: "run-5", content: "hello" },
+      rawArguments: { content: "hello" },
     });
-
-    expect(result).toMatchObject({ kind: "operation_result", result: { accepted: true, message: "Delivered message." } });
-    expect(dispatch).toHaveBeenCalledWith({
-      toolName: SEND_MESSAGE_TO_TOOL_NAME,
-      rawArguments: { target_agent_run_id: "run-5", content: "hello" },
-      sender: session.sender,
-    });
-    expect(starts).toHaveBeenCalledWith({
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ sender: session.sender }));
+    expect(starts).toHaveBeenCalledWith(expect.objectContaining({
       sessionId: session.sessionId,
-      toolName: SEND_MESSAGE_TO_TOOL_NAME,
-      senderRunId: "run-1",
-    });
-    expect(completes).toHaveBeenCalledWith(expect.objectContaining({
-      accepted: true,
-      code: "DELIVERED",
+      senderRunId: "run-executor",
     }));
+    expect(completes).toHaveBeenCalledWith(expect.objectContaining({ accepted: true }));
   });
 
-  it("emits observer completion as rejected for raw MCP error results", async () => {
+  it("reports raw MCP semantic errors as rejected observer completions", async () => {
     const completes = vi.fn();
-    const registry = new AgentToolMcpSessionRegistry();
-    const rawMcpAdapter: AgentToolMcpToolAdapter = {
+    const adapter: AgentToolMcpToolAdapter = {
       definition: {
         name: "db_query",
         description: "Query database",
@@ -312,36 +345,27 @@ describe("AgentToolMcpToolExecutor", () => {
       },
       isAvailable: () => true,
       execute: async () => toAgentToolMcpToolResult({
-        content: [{ type: "text", text: "remote failure" }],
+        content: [{ type: "text", text: "failed" }],
         isError: true,
       }),
     };
-    const { session } = registry.createSession({
-      owner: { runId: "run-raw-mcp" },
-      sender: buildSender(),
+    const registry = new AgentToolMcpSessionRegistry();
+    const session = registry.activateSession({
+      owner: { runId: "run-error" },
+      sender: buildSender("run-error"),
       runtimeExposure: buildRuntimeAgentToolExposure(["db_query"]),
-      enabledTools: ["db_query"],
-      toolRoutes: {
-        db_query: {
-          kind: "static_adapter",
-          toolName: "db_query",
-        },
+      executionCapabilities: {
+        kind: "agent",
+        publishedArtifactPublisher: createPublisher(),
+        applicationAgentTools: null,
       },
+      enabledTools: ["db_query"],
+      toolRoutes: { db_query: { kind: "static_adapter", toolName: "db_query" } },
       toolExecutionObserver: { onToolComplete: completes },
     });
-    const executor = new AgentToolMcpToolExecutor({
-      catalog: new AgentToolMcpCatalog({ adapters: [rawMcpAdapter] }),
-    });
-
-    await executor.executeAgentToolMcpCall({
-      session,
-      toolName: "db_query",
-      rawArguments: {},
-    });
-
-    expect(completes).toHaveBeenCalledWith(expect.objectContaining({
-      accepted: false,
-      code: null,
-    }));
+    await new AgentToolMcpToolExecutor({
+      catalog: new AgentToolMcpCatalog({ adapters: [adapter] }),
+    }).executeAgentToolMcpCall({ session, toolName: "db_query", rawArguments: {} });
+    expect(completes).toHaveBeenCalledWith(expect.objectContaining({ accepted: false }));
   });
 });

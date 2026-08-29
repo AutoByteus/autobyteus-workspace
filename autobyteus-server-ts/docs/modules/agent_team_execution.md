@@ -22,6 +22,10 @@ projection through one server-owned boundary.
   addresses while runtime traversal remains internal to the manager tree.
 - Per-Agent runtime selection stays below the Team boundary. `AgentRunManager`
   selects the AutoByteus, Codex, or Claude backend from each launch setting.
+  Each execution family injects its own provider factories, definition
+  services, session authority, memory/context environment, and task-execution
+  identity capabilities; Team execution never reaches across to another
+  family's manager or identity allocator.
 
 ## Launch-Time Identity
 
@@ -125,6 +129,42 @@ only after cleanup is confirmed. An indeterminate durable write, publication
 failure after durability, or uncertain candidate cleanup fail-stops/quarantines
 the owning root or run instead of admitting duplicate work.
 
+Task delegation receives narrow capabilities from
+`createTaskExecutionIdentityCapabilities(...)` rather than an Agent manager or
+allocator object. The task path may allocate and inspect only the identities it
+needs, preserving the same General Process versus Application execution-family
+boundary for task Agents and task Teams.
+
+## Stopped Team Model Configuration
+
+`AgentTeamRunManager.updateStoppedModelConfigs(...)` owns General Process
+updates to persisted Team `llmConfig`. It runs inside the same root transition
+lane as restore, rechecks that no root remains manager-owned, rejects archived
+or non-cataloged packages, and writes the current V2 execution tree through the
+existing atomic tree store. Save-first therefore makes the new values visible
+to the next restore; restore-first returns `RUN_ACTIVE` without writing.
+
+Each patch targets one exact configured Team or configured Agent address.
+`TeamRunModelConfigMutator` resolves that address in the immutable stored
+topology and replaces only `defaultLaunchConfiguration.llmConfig` or
+`launchConfiguration.llmConfig`. It cannot change runtime/model identity,
+workspace, automatic-tool policy, concrete run IDs, provider bindings, task
+nodes, hierarchy, or addresses. Every scope validates against its own fixed
+runtime/model schema before the tree is written.
+
+The browser may plan bounded propagation from a parent edit, but the server
+receives the resulting exact-scope patches rather than inheritance intent. The
+planner preserves descendants that started divergent or were edited directly,
+and stopped-run editing exposes no Reset-to-definition action because the V2
+snapshot does not preserve original override provenance. No configuration
+revision, rebase, or cross-client merge protocol is part of this boundary.
+
+Studio checks the separate Application ownership lease before delegating to the
+General root lane. A nonterminal Application binding keeps both Agent and Team
+resume reads locked and direct stopped updates at `RUN_ACTIVE`; terminal release
+restores ordinary General eligibility. See [Run History](./run_history.md) and
+[Application Orchestration](./application_orchestration.md).
+
 ## Nested Member Identity And Commands
 
 The root ID must match the bound TeamRun. The member address must exist in the
@@ -213,8 +253,15 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
 2. Stop targets the exact root TeamRun ID, closes new materialization admission,
    joins work already admitted, freezes one recursive scope, interrupts active
    turns before quiescence, and terminates every materialized configured,
-   delegated, and nested descendant. Stop retains the V2 package, catalog row,
-   task/communication history, context, and resume identity.
+   delegated, and nested descendant. Each published Agent member delegates
+   reversible preparation and committed finish to
+   `AgentRunManager.prepareAgentRunTermination(expectedRun)`; a cancelled or
+   rejected finish retains its active run/session, while an accepted finish is
+   not visible as success until exact-current removal and resource/session
+   cleanup complete. The member handle disposes only after that accepted
+   managed finish and owns no parallel Agent Tools cleanup path. Stop retains
+   the V2 package, catalog row, task/communication history, context, and resume
+   identity.
 3. The root remains managed and the lifecycle/history projection remains
    `isActive: true` until that whole scope reaches accepted terminal completion
    and the manager unregisters the exact root. A failed Stop retains the same

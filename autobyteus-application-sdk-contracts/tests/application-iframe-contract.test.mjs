@@ -2,44 +2,54 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   APPLICATION_IFRAME_BOOTSTRAP_EVENT,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+  APPLICATION_IFRAME_CONTRACT_VERSION,
   APPLICATION_IFRAME_READY_EVENT,
-  createApplicationHostBootstrapEnvelopeV4,
-  createApplicationUiReadyEnvelopeV4,
+  createApplicationHostBootstrapEnvelope,
+  createApplicationUiReadyEnvelope,
   decodeApplicationAgentTargetUrl,
   doesApplicationHostOriginMatch,
   encodeApplicationAgentTargetUrl,
-  isApplicationHostBootstrapEnvelopeV4,
-  isApplicationUiReadyEnvelopeV4,
+  isApplicationHostBootstrapEnvelope,
+  isApplicationUiReadyEnvelope,
   normalizeApplicationHostOrigin,
   readApplicationIframeLaunchHints,
 } from '../dist/index.js';
 
 const IFRAME_LAUNCH_ID = 'bundle-app__pkg__sample-app::iframe-launch-1';
 
-test('application agent target path codec round-trips encoded binding and member identities', () => {
+test('application agent target URL codec round-trips logical root and nested member identities', () => {
   const address = {
     bindingId: 'binding/one',
-    target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: 'reviewer two' },
+    memberAddress: '/research/reviewer two',
   };
   const encoded = encodeApplicationAgentTargetUrl(address);
-  assert.equal(encoded, '/binding%2Fone/targets/agent-team-member/reviewer%20two');
+  assert.equal(encoded, '/binding%2Fone/targets/member/%2Fresearch%2Freviewer%20two');
   assert.deepEqual(decodeApplicationAgentTargetUrl(encoded), address);
+  assert.deepEqual(
+    decodeApplicationAgentTargetUrl(encodeApplicationAgentTargetUrl({ bindingId: 'binding/one', memberAddress: null })),
+    { bindingId: 'binding/one', memberAddress: null },
+  );
 });
 
-test('application agent target path decoder rejects non-canonical and incomplete paths', () => {
+test('application agent target URL decoder rejects non-canonical and incomplete paths', () => {
   for (const pathValue of [
     '/binding//targets/agent-run',
-    '/binding/targets/agent-run/',
-    '/binding/targets/agent-team-member',
+    '/binding/targets/root/',
+    '/binding/targets/member',
+    '/binding/targets/member/%2F',
+    '/binding/targets/member/%2Freviewer%2F',
+    '/binding/targets/member/%2Freviewer%2F..%2Fwriter',
     '/binding/targets/unknown',
-    '/binding/targets/agent-run?view=compact',
+    '/binding/targets/root?view=compact',
+    '/binding/targets/agent-run',
+    '/binding/targets/agent-team-run',
+    '/binding/targets/agent-team-member/reviewer',
   ]) {
     assert.equal(decodeApplicationAgentTargetUrl(pathValue), null);
   }
 });
 
-const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelopeV4({
+const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelope({
   host: { origin: 'http://127.0.0.1:43123' },
   application: {
     applicationId: 'bundle-app__pkg__sample-app',
@@ -65,7 +75,7 @@ test('readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint quer
   );
 
   assert.deepEqual(hints, {
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION,
     applicationId: 'bundle-app__pkg__sample-app',
     iframeLaunchId: IFRAME_LAUNCH_ID,
     hostOrigin: 'http://127.0.0.1:43123',
@@ -105,7 +115,7 @@ test('packaged host-origin normalization preserves the file/null equivalence rul
 });
 
 test('ready and bootstrap validators accept tight v4 envelopes and reject malformed variants', () => {
-  const readyEnvelope = createApplicationUiReadyEnvelopeV4({
+  const readyEnvelope = createApplicationUiReadyEnvelope({
     applicationId: 'bundle-app__pkg__sample-app',
     iframeLaunchId: IFRAME_LAUNCH_ID,
   });
@@ -113,8 +123,8 @@ test('ready and bootstrap validators accept tight v4 envelopes and reject malfor
 
   assert.equal(readyEnvelope.eventName, APPLICATION_IFRAME_READY_EVENT);
   assert.equal(bootstrapEnvelope.eventName, APPLICATION_IFRAME_BOOTSTRAP_EVENT);
-  assert.equal(isApplicationUiReadyEnvelopeV4(readyEnvelope), true);
-  assert.equal(isApplicationHostBootstrapEnvelopeV4(bootstrapEnvelope), true);
+  assert.equal(isApplicationUiReadyEnvelope(readyEnvelope), true);
+  assert.equal(isApplicationHostBootstrapEnvelope(bootstrapEnvelope), true);
   assert.deepEqual(bootstrapEnvelope.payload.requestContext, {
     applicationId: 'bundle-app__pkg__sample-app',
   });
@@ -132,9 +142,9 @@ test('ready and bootstrap validators accept tight v4 envelopes and reject malfor
     },
   };
 
-  assert.equal(isApplicationHostBootstrapEnvelopeV4(malformedBootstrapEnvelope), false);
+  assert.equal(isApplicationHostBootstrapEnvelope(malformedBootstrapEnvelope), false);
   assert.equal(
-    isApplicationUiReadyEnvelopeV4({
+    isApplicationUiReadyEnvelope({
       ...readyEnvelope,
       payload: {
         applicationId: 'bundle-app__pkg__sample-app',
@@ -143,7 +153,7 @@ test('ready and bootstrap validators accept tight v4 envelopes and reject malfor
     false,
   );
   assert.equal(
-    isApplicationHostBootstrapEnvelopeV4({
+    isApplicationHostBootstrapEnvelope({
       ...bootstrapEnvelope,
       payload: {
         ...bootstrapEnvelope.payload,

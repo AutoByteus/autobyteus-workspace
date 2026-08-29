@@ -1,0 +1,11 @@
+=== API-REV-001 clean-cut/package integrity baseline ===
+TRACKED_APP_FILES=99
+$ git diff --check
+DIFF_CHECK=PASS
+$ retired supported-production symbol scan
+RETIRED_SYMBOL_SCAN=PASS
+$ physical runtime_kind occurrences
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:42:      runtime_kind TEXT NOT NULL,
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:167:           runtime_kind
+EXPECTED_PHYSICAL_CONSTANT_OWNER_ONLY=PASS
+RESULT=PASS

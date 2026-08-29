@@ -1,0 +1,22 @@
+socratic-math-teacher source_before=82f820e3e57ee3daaf69442370b5df53091857a05e18b4f8b78b361238c4759a source_changed=d02e54fd09cca431a3cc35d47d0965295c2ca946b2d24f5c5a560cc0525bc522 source_restored=82f820e3e57ee3daaf69442370b5df53091857a05e18b4f8b78b361238c4759a restored_ok=True
+brief-studio source_before=ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0 source_changed=d66c5e1888dbf7fdbcc1a4c7611c09e067d624db68159a77e96a68acc1288b76 source_restored=ef092b0eea0eaa49783c0e2fa2c886c3789bd708fb07173061eabdd5f35d81c0 restored_ok=True
+
+## Socratic watcher evidence
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fsocratic-math-teacher%2Fdist%2Fimportable-package
+Use Studio's “Reload application” action to remount the current application view.
+Application source changed: frontend-src/styles.css
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fsocratic-math-teacher%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/styles.css
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fsocratic-math-teacher%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+
+## Brief watcher evidence
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Use Studio's “Reload application” action to remount the current application view.
+Application source changed: frontend-src/styles.css
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.
+Application source changed: frontend-src/styles.css
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-latest-personal-integration%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Studio package reload complete; remount the view with “Reload application”.

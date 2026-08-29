@@ -1,0 +1,18 @@
+{
+  "cwd": "/private/tmp/api-rev002-socratic-standalone.vwoaip/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572/runtime",
+  "cwdExists": false,
+  "executableExists": true,
+  "status": null,
+  "errorCode": "ENOENT",
+  "errorMessage": "spawnSync /Applications/Codex.app/Contents/Resources/codex ENOENT",
+  "stdoutPrefix": ""
+}
+{
+  "cwd": "/private/tmp/api-rev002-socratic-standalone.vwoaip",
+  "cwdExists": true,
+  "executableExists": true,
+  "status": 0,
+  "errorCode": null,
+  "errorMessage": null,
+  "stdoutPrefix": "[experimental] Run the app server or related tooling\n\nUsage: codex app-server [O"
+}

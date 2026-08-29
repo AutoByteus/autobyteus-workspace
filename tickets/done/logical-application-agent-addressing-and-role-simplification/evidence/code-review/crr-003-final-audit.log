@@ -1,0 +1,44 @@
+CRR-003 final artifact audit
+UTC: 2026-08-26T16:38:36Z
+HEAD: 159dd376906374d2caa50251f98d4456f2584328
+
+5:- Review Entry Point: `API/E2E Failure-Origin Review`
+14:- Current Code Review Revision ID: `CRR-003`
+16:- Trigger: `API-REV-001` Fail / 93; `APIE2E-F001` cold launch/reentry returned HTTP 500 before later durable completion at reviewed HEAD `159dd376906374d2caa50251f98d4456f2584328`
+22:- Failing Scenario IDs: `APIE2E-F001`, `APIE2E-STUDIO-COLD-RESTART-001`, `APIE2E-BRIEF-STANDALONE-001`, `APIE2E-RECOVERY-001`
+150:- Conclusion: `APIE2E-F001` is not caused by IR-002 logical addressing. It is pre-existing cross-cutting request/commit semantics exposed by realistic cold-provider latency. It was not reasonably attributable during source review because source alone did not establish that supported cold latency crosses the fixed deadline; API-REV-001 supplies that reachability evidence.
+154:### `CR-002` — Application worker timeouts report failure without resolving mutation commit authority
+162:- Classification: `Design Impact`
+170:## Recommended Recipient
+178:- API/E2E must rerun the exact cold Studio/standalone scenarios after a reviewed correction; current logical-address proof remains valid but cannot yield an overall Pass while `APIE2E-F001` is open.
+182:- Review Decision: `Fail`
+183:- Review Entry Point: `API/E2E Failure-Origin Review`
+186:- Failure Origin: pre-existing cross-cutting application worker/host request-and-commit design, not IR-002 logical addressing.
+187:- Classification: `Design Impact`
+188:- Recommended Recipient: `/solution_designer`
+189:- Notes: `APIE2E-F001` must return through solution/design review, implementation, source review, and API/E2E.
+
+# Code Review Revision Record
+
+## Revision Index
+
+| Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
+| --- | --- | --- | --- | --- | --- |
+| `CRR-001` | `code-review-report.md` | Initial implementation-source review of IR-001 | `N/A` | `Fail / 93` | `CR-001` |
+| `CRR-002` | `code-review-report.md` | Affected implementation-source re-review of IR-002 | `Fail / 93` | `Pass / 97` | `CR-001` resolved |
+| `CRR-003` | `code-review-report.md` | Focused failure-origin review of API-REV-001 / APIE2E-F001 | `Pass / 97` source review | `Fail — Design Impact` | `CR-002` |
+
+## Revision Entries
+
+### CRR-001 — Initial logical-address implementation review
+
+
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-coverage-investigation.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/api-e2e/
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/

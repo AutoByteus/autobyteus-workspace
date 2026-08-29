@@ -6,6 +6,7 @@ import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
+import { ApplicationExecutionProducerProjector } from "../../application-orchestration/domain/application-execution-producer-projector.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -23,12 +24,10 @@ const normalizeTimestamp = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 const normalizeApplicationExecutionContext = (
-  value: ApplicationExecutionContext | null | undefined,
+  value: unknown,
 ): ApplicationExecutionContext | null => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  return { ...value };
+  if (value === null || value === undefined) return null;
+  return ApplicationExecutionProducerProjector.projectContext(value);
 };
 
 const normalizeMetadata = (

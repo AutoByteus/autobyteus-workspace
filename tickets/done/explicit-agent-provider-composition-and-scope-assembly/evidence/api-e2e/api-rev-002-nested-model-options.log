@@ -1,0 +1,311 @@
+ROOT SET Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+OpenAI / GPT-5.6-Luna (default reasoning: medium)
+
+This model will be used by all members unless overridden.
+
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+Reasoning Effort ⓘ
+low
+medium
+high
+xhigh
+max
+Fast mode ⓘ
+Default
+fast
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+TEAM SCOPES [
+  {
+    address: '/StudentStudyGroup',
+    text: 'StudentStudyGroupTeam/StudentStudyGroupInheritedRuntimeAutoByteusCodex App ServerClaude Agent SDKRuntime used by this Team scope.Default LLM ModelOpenAI / GPT-5.6-Luna (default reasoning: medium)Nested Teams and Agents inherit this value unless customized.ThinkingThinking configuration not available for this model.Use settingAdvancedReasoning Effort ⓘlowmediumhighxhighmaxFast mode ⓘDefaultfastWorkspace Directory Existing  New 📁 Temp Workspace (Default)Default temporary workspace Workspace: Temp'
+  }
+]
+NESTED COUNT 1
+NESTED SELECTS BEFORE 9
+TOGGLE StudentStudyGroup
+TEAM
+/StudentStudyGroup
+Inherited
+NESTED TEXT StudentStudyGroup
+TEAM
+/StudentStudyGroup
+Inherited
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Runtime used by this Team scope.
+
+Default LLM Model
+OpenAI / GPT-5.6-Luna (default reasoning: medium)
+
+Nested Teams and Agents inherit this value unless customized.
+
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+Reasoning Effort ⓘ
+low
+medium
+high
+xhigh
+max
+Fast mode ⓘ
+Default
+fast
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+Inherited by descendant scopes without an override.
+
+Auto approve tools
+student_one
+Coordinator
+
+StudentStudyGroup / student_one
+
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+student_two
+
+StudentStudyGroup / student_two
+
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+
+Thinking configuration not available for this model.
+
+Use setting
+Advanced
+NESTED SELECTS [
+  {
+    id: 'team-scope-StudentStudyGroup-runtime-kind',
+    value: 'codex_app_server',
+    options: [ [Object], [Object], [Object] ]
+  },
+  {
+    id: 'team-scope-StudentStudyGroup-reasoning_effort',
+    value: 'medium',
+    options: [ [Object], [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'team-scope-StudentStudyGroup-service_tier',
+    value: '__default__',
+    options: [ [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--StudentStudyGroup-student_one',
+    value: '',
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'config--StudentStudyGroup-student_one-reasoning_effort',
+    value: 'medium',
+    options: [ [Object], [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'config--StudentStudyGroup-student_one-service_tier',
+    value: '__default__',
+    options: [ [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--StudentStudyGroup-student_two',
+    value: '',
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'config--StudentStudyGroup-student_two-reasoning_effort',
+    value: 'medium',
+    options: [ [Object], [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'config--StudentStudyGroup-student_two-service_tier',
+    value: '__default__',
+    options: [ [Object], [Object] ]
+  }
+]
+NESTED AFTER AUTO StudentStudyGroup
+TEAM
+/StudentStudyGroup
+Customized
+Reset
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Runtime used by this Team scope.
+
+Default LLM Model
+OpenAI / gpt-5.6-luna
+
+Nested Teams and Agents inherit this value unless customized.
+
+Thinking
+Use setting
+Advanced
+Reasoning Effort ⓘ
+none
+low
+medium
+high
+xhigh
+max
+Reasoning Summary ⓘ
+none
+auto
+concise
+detailed
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+Inherited by descendant scopes without an override.
+
+Auto approve tools
+student_one
+Coordinator
+
+StudentStudyGroup / student_one
+
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+Use setting
+Advanced
+student_two
+
+StudentStudyGroup / student_two
+
+Runtime
+Global default
+AutoByteus
+Codex App Server
+Claude Agent SDK
+LLM Model
+Global default
+Auto approve
+Global default
+Thinking
+Use setting
+Advanced
+NESTED BUTTONS [
+  'StudentStudyGroupTeam/StudentStudyGroupCustomized',
+  'Reset',
+  'OpenAI / gpt-5.6-luna',
+  'Use setting',
+  'Advanced',
+  '📁 Temp Workspace (Default)Default temporary workspace',
+  'Global default',
+  'Use setting',
+  'Advanced',
+  'Global default',
+  'Use setting',
+  'Advanced'
+]
+MB 1 Global default
+OPT [
+  'Agents',
+  'Agent Teams',
+  'Applications',
+  'Skills',
+  'Memory',
+  'Nodes',
+  'claude-fable-5',
+  'claude-opus-4.7',
+  'claude-opus-4.8',
+  'claude-opus-5',
+  'claude-sonnet-4.6',
+  'claude-sonnet-5',
+  'deepseek-v4-flash',
+  'deepseek-v4-pro',
+  'gemini-3.1-pro-preview',
+  'gemini-3.7-flash',
+  'glm-5.3',
+  'grok-4.6',
+  'kimi-k3',
+  'minimax-m3',
+  'devstral-2',
+  'mistral-large-3',
+  'gpt-5.4',
+  'gpt-5.4-mini',
+  'gpt-5.5',
+  'gpt-5.6-luna',
+  'gpt-5.6-sol',
+  'gpt-5.6-terra',
+  'DeepSeek V4 Flash 0731 (Qwen)',
+  'DeepSeek V4 Pro (Qwen)',
+  'GLM-5.2 (Qwen)',
+  'qwen3-max',
+  'qwen3.7-max',
+  'qwen3.8-max'
+]

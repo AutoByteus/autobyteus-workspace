@@ -73,7 +73,7 @@ const createRun = (input: {
     terminate: vi.fn(async () => ({ accepted: true })),
   };
   return {
-    run: new AgentRun({ context, backend, commandObservers: [input.recorder] }),
+    run: new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context, backend, commandObservers: [input.recorder] }),
   };
 };
 

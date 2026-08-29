@@ -1,0 +1,67 @@
+API-REV-008 topology, conflict/overlap, legacy and prototype isolation audit
+recordedAt=2026-08-24T08:20:46Z
+head=5492815bd66d5714abc7c2c19fd478f043b3c3e6
+semanticMerge=9a9150bea90a94ff43e67c417e5a424fd9dc76ce
+mergeParents=a23849f165879050e2c9b676a2e9652d8a593c93 c5b87df4d6db15969ba70adee9dfd8394b1e7385
+ancestor a23849f165879050e2c9b676a2e9652d8a593c93 PASS
+ancestor c5b87df4d6db15969ba70adee9dfd8394b1e7385 PASS
+unmergedEntries=0
+conflictInventoryPaths=5
+overlapInventoryPaths=10
+== conflict/overlap paths present ==
+present autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+present autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+present autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+present autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+present autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+present autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+present autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+present autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+present autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+present autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+== retired owners ==
+absent autobyteus-server-ts/src/llm-management/providers/autobyteus-llm-model-provider.ts
+absent autobyteus-server-ts/src/llm-management/providers/cached-autobyteus-llm-model-provider.ts
+absent autobyteus-server-ts/src/llm-management/services/autobyteus-model-catalog.ts
+absent autobyteus-server-ts/src/multimedia-management/providers/audio-model-provider.ts
+absent autobyteus-server-ts/src/multimedia-management/providers/cached-audio-model-provider.ts
+absent autobyteus-server-ts/src/multimedia-management/providers/cached-image-model-provider.ts
+absent autobyteus-server-ts/src/multimedia-management/providers/cached-video-model-provider.ts
+absent autobyteus-server-ts/src/multimedia-management/providers/image-model-provider.ts
+absent autobyteus-server-ts/src/multimedia-management/services/audio-model-service.ts
+absent autobyteus-server-ts/src/multimedia-management/services/image-model-service.ts
+absent autobyteus-server-ts/src/multimedia-management/services/video-model-service.ts
+affectedLegacyReferences=0
+prototypeFiles=1934
+prototypeByteIdentity=PASS
+prototypeWorkspaceIsolation=PASS
+prototypeProductionReferences=0
+governedConflictMarkers=14
+gitDiffCheck=PASS
+== initial owner-preserved status ==
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-runtime-contracts.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-design-analysis.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-008-topology.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-006-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-conflict-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-2-design-analysis.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-3-design-analysis.md
+== exact Git conflict-marker correction ==
+The preceding broad equals-line count includes third-party notice/build-log separators and is not a Git-marker result.
+exactGovernedGitConflictMarkers=0
+exactMarkerResult=PASS

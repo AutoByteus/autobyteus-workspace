@@ -1,0 +1,22 @@
+# live active shutdown cleanup
+2026-07-30T08:04:37Z
+## listeners
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+## owned processes
+89559 22343       00:05 /bin/bash -lc sleep 3\012{\012 echo '# live active shutdown cleanup'; date -u +%FT%TZ\012 echo '## listeners'; for p in 43124 9229 8000 3000; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then echo "busy $p"; lsof -nP -iTCP:$p -sTCP:LISTEN; else echo "clear $p"; fi; done\012 echo '## owned processes'; ps -axo pid,ppid,etime,command | rg 'universal-application-framework-proposal-analysis/(applications/brief-studio|autobyteus-server-ts/dist/application-engine/worker)|brief_studio_researcher_23ad38223f4e488583d50ba4ca3387d5|brief_studio_team_d40564af00964cafb0d8f752443cfca3' || true\012 echo '## selected app state after active stop'; appdb=$(find applications/brief-studio/.autobyteus/dev/data/applications -path '*/db/app.sqlite' | head -1); sqlite3 -header -json "$appdb" "select brief_id,title,status,latest_run_id,latest_binding_status,last_error_message from briefs where title like 'API REV 008%';"\012 echo '## memory directories'; find applications/brief-studio/.autobyteus/dev/data/memory -maxdepth 3 -type d | sort | tail -30\012} | tee tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-008-active-shutdown-cleanup.log
+89872 89559       00:01 /bin/bash -lc sleep 3\012{\012 echo '# live active shutdown cleanup'; date -u +%FT%TZ\012 echo '## listeners'; for p in 43124 9229 8000 3000; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then echo "busy $p"; lsof -nP -iTCP:$p -sTCP:LISTEN; else echo "clear $p"; fi; done\012 echo '## owned processes'; ps -axo pid,ppid,etime,command | rg 'universal-application-framework-proposal-analysis/(applications/brief-studio|autobyteus-server-ts/dist/application-engine/worker)|brief_studio_researcher_23ad38223f4e488583d50ba4ca3387d5|brief_studio_team_d40564af00964cafb0d8f752443cfca3' || true\012 echo '## selected app state after active stop'; appdb=$(find applications/brief-studio/.autobyteus/dev/data/applications -path '*/db/app.sqlite' | head -1); sqlite3 -header -json "$appdb" "select brief_id,title,status,latest_run_id,latest_binding_status,last_error_message from briefs where title like 'API REV 008%';"\012 echo '## memory directories'; find applications/brief-studio/.autobyteus/dev/data/memory -maxdepth 3 -type d | sort | tail -30\012} | tee tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-008-active-shutdown-cleanup.log
+89884 89872       00:00 rg universal-application-framework-proposal-analysis/(applications/brief-studio|autobyteus-server-ts/dist/application-engine/worker)|brief_studio_researcher_23ad38223f4e488583d50ba4ca3387d5|brief_studio_team_d40564af00964cafb0d8f752443cfca3
+## selected app state after active stop
+[{"brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","title":"API REV 008 graph publication shutdown 1785398337317","status":"in_review","latest_run_id":"brief_studio_team_d130f60668e247b4a5b4c066d6aac59b","latest_binding_status":"ATTACHED","last_error_message":null},
+{"brief_id":"brief-91aedddd-f7c1-4c64-98e6-3f83b787e025","title":"API REV 008 active shutdown 1785398647060","status":"not_started","latest_run_id":"brief_studio_team_d40564af00964cafb0d8f752443cfca3","latest_binding_status":"ATTACHED","last_error_message":null}]
+## memory directories
+applications/brief-studio/.autobyteus/dev/data/memory
+applications/brief-studio/.autobyteus/dev/data/memory/agent_teams
+applications/brief-studio/.autobyteus/dev/data/memory/agent_teams/brief_studio_team_d130f60668e247b4a5b4c066d6aac59b
+applications/brief-studio/.autobyteus/dev/data/memory/agent_teams/brief_studio_team_d130f60668e247b4a5b4c066d6aac59b/brief_studio_researcher_dadfa335b241414da361903c080f88a7
+applications/brief-studio/.autobyteus/dev/data/memory/agent_teams/brief_studio_team_d130f60668e247b4a5b4c066d6aac59b/brief_studio_writer_93ad650792ee4bba9b99280832aa7689
+applications/brief-studio/.autobyteus/dev/data/memory/agent_teams/brief_studio_team_d40564af00964cafb0d8f752443cfca3
+applications/brief-studio/.autobyteus/dev/data/memory/agent_teams/brief_studio_team_d40564af00964cafb0d8f752443cfca3/brief_studio_researcher_23ad38223f4e488583d50ba4ca3387d5

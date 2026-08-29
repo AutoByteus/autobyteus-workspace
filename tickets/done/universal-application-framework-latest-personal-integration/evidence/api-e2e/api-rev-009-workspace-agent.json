@@ -1,0 +1,177 @@
+{
+  "scenario": "APIE2E-WORKSPACE-AGENT-009",
+  "assertions": {
+    "newModeSelected": true,
+    "pathAfterEntry": "/private/tmp/api-rev009-agent-workspace",
+    "pathAfterRuntimeEdit": "/private/tmp/api-rev009-agent-workspace",
+    "pathAfterModelEdit": "/private/tmp/api-rev009-agent-workspace",
+    "selectedRuntime": "codex_app_server",
+    "selectedModelVisible": false,
+    "urlAfterRun": "http://127.0.0.1:3049/workspace",
+    "bodyAfterRun": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nC\nNew - Codex\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n0 Events\nNo activity history yet.",
+    "launchLikeRequestDelta": 0,
+    "visibleWorkspacePath": false,
+    "newInputRemaining": null
+  },
+  "trace": [
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetApplicationsCapability"
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAllWorkspaces"
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentDefinitions"
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetAgentTeamDefinitions"
+    },
+    {
+      "phase": "response",
+      "operationName": "GetApplicationsCapability",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAllWorkspaces",
+      "status": 200,
+      "ids": [
+        [
+          "workspaceId",
+          "temp_ws_default"
+        ],
+        [
+          "workspaceId",
+          "temp_ws_default"
+        ]
+      ],
+      "hasErrors": false
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentTeamDefinitions",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "response",
+      "operationName": "GetAgentDefinitions",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetServerSettings"
+    },
+    {
+      "phase": "response",
+      "operationName": "GetServerSettings",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetRuntimeAvailabilities"
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetProviderModelCatalogSnapshots"
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetFolderChildren"
+    },
+    {
+      "phase": "response",
+      "operationName": "GetRuntimeAvailabilities",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "response",
+      "operationName": "GetFolderChildren",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetProviderModelCatalogSnapshots"
+    },
+    {
+      "phase": "response",
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "CreateWorkspace"
+    },
+    {
+      "phase": "response",
+      "operationName": "CreateWorkspace",
+      "status": 200,
+      "ids": [
+        [
+          "workspaceId",
+          "agent_ws_0352e41210e3a07b563733611af4fb72c68c5f08823150269fed6073a76942e7"
+        ]
+      ],
+      "hasErrors": false
+    },
+    {
+      "phase": "request",
+      "method": "POST",
+      "url": "/graphql",
+      "operationName": "GetSkillImprovementCapability"
+    },
+    {
+      "phase": "response",
+      "operationName": "GetSkillImprovementCapability",
+      "status": 200,
+      "ids": [],
+      "hasErrors": false
+    }
+  ],
+  "consoleErrorCount": 0,
+  "consoleErrors": []
+}

@@ -1,0 +1,7 @@
+2026-08-26T03:48:06Z
+validation-owned port 33123: CLOSED
+validation-owned port 38123: CLOSED
+.autobyteus/development: REMOVED
+backend-sdk dist: REMOVED
+sdk-contracts dist: REMOVED
+unrelated shared port-8000 process left untouched:    63 Tue Aug 25 12:17:50 2026 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data

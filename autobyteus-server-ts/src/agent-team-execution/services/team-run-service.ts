@@ -19,6 +19,9 @@ import {
   type TeamScopeLaunchInput,
 } from "./team-definition-topology-planner.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
+import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -51,6 +54,13 @@ export interface CreateTeamRunInput {
   teamDefinitionId: string;
   teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
+  applicationBinding?: { applicationId: string; bindingId: string } | null;
+}
+
+export interface CreateTeamRunFromRootConfigInput {
+  teamDefinitionId: string;
+  rootConfig: TeamRunPresetInput;
+  memberConfigs?: TeamRunMemberConfigInput[] | null;
   applicationBinding?: { applicationId: string; bindingId: string } | null;
 }
 
@@ -138,12 +148,9 @@ export class TeamRunService {
     }
   }
 
-  async createTeamRunFromRootConfig(input: {
-    teamDefinitionId: string;
-    rootConfig: TeamRunPresetInput;
-    memberConfigs?: TeamRunMemberConfigInput[] | null;
-    applicationBinding?: { applicationId: string; bindingId: string } | null;
-  }): Promise<RootTeamRun> {
+  async createTeamRunFromRootConfig(
+    input: CreateTeamRunFromRootConfigInput,
+  ): Promise<RootTeamRun> {
     const rootConfig = normalizePreset(input.rootConfig);
     const expanded = await this.planner.buildRootLaunchInputs({
       teamDefinitionId: required(input.teamDefinitionId, "teamDefinitionId"),
@@ -201,6 +208,12 @@ export class TeamRunService {
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
     return success;
   }
+  updateStoppedModelConfigs(input: {
+    teamRunId: string;
+    patches: readonly TeamRunModelConfigPatch[];
+  }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
+    return this.manager.updateStoppedModelConfigs(input);
+  }
   async observeTeamRunLifecycle(teamRunId: string, listener: (event: ObservedRunLifecycleEvent) => void): Promise<(() => void) | null> {
     const root = await this.resolveActiveTeamRun(teamRunId);
     if (!root) return null;
@@ -229,6 +242,20 @@ export class TeamRunService {
 }
 
 let cached: TeamRunService | null = null;
+export const bindProcessTeamRunService = (service: TeamRunService): void => {
+  if (!service) {
+    throw new Error("A process TeamRunService instance is required.");
+  }
+  if (cached) {
+    throw new Error("The process TeamRunService is already initialized.");
+  }
+  cached = service;
+};
+export const releaseProcessTeamRunService = (service: TeamRunService): void => {
+  if (cached === service) {
+    cached = null;
+  }
+};
 export const getTeamRunService = (): TeamRunService => cached ??= new TeamRunService();
 const required = (value: string, field: string): string => {
   const normalized = value.trim();

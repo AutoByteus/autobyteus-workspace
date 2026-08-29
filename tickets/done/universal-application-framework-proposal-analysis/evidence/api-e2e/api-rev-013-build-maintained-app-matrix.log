@@ -1,0 +1,374 @@
+# API-REV-013 proportional build and maintained application matrix
+HEAD=53eb73795c616148f01c2f6e0207f6b410410e24
+START=2026-07-31T12:58:58Z
+
+## server build
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 97ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+## devkit full suite
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Successfully registered tool definition: 'read_file'
+# Successfully registered tool definition: 'write_file'
+# Successfully registered tool definition: 'edit_file'
+# Successfully registered tool definition: 'replace_in_file'
+# Successfully registered tool definition: 'insert_in_file'
+# Successfully registered tool definition: 'run_bash'
+# Successfully registered tool definition: 'start_background_process'
+# Successfully registered tool definition: 'get_background_processes'
+# Successfully registered tool definition: 'get_process_output'
+# Successfully registered tool definition: 'stop_background_process'
+# Successfully registered tool definition: 'search_web'
+# Successfully registered tool definition: 'read_media_file'
+# Successfully registered tool definition: 'download_media'
+# Successfully registered tool definition: 'read_url'
+# Successfully registered tool definition: 'add_todo'
+# Successfully registered tool definition: 'create_todo_list'
+# Successfully registered tool definition: 'get_todo_list'
+# Successfully registered tool definition: 'update_todo_status'
+# AgentFactory (Singleton) initialized.
+# (node:1826) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 18.953125
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:15.916Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 45.749083
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:15.948Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: atomic development pack keeps generated package metadata canonical after staging rename
+ok 3 - atomic development pack keeps generated package metadata canonical after staging rename
+  ---
+  duration_ms: 30.816667
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:15.990Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 42.303666
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:16.013Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 22.686042
+      type: 'test'
+      ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:16.038Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 25.293875
+      type: 'test'
+      ...
+    1..3
+ok 4 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 90.73575
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:16.061Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 5 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 22.075
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:16.083Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 6 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 22.347042
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 5.855833
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 5.710208
+      type: 'test'
+      ...
+    1..2
+ok 7 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 11.853291
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 8 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 5.142667
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 6.088291
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 10.063959
+      type: 'test'
+      ...
+    1..2
+ok 9 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 16.379833
+  type: 'test'
+  ...
+# CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+# [2026-07-31T12:59:16.143Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 10 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 26.487583
+  type: 'test'
+  ...
+# Subtest: controlled development browser retains and explicitly reloads the active page
+ok 11 - controlled development browser retains and explicitly reloads the active page
+  ---
+  duration_ms: 258.211208
+  type: 'test'
+  ...
+# Subtest: project watcher replaces resolved input subscriptions after config changes
+ok 12 - project watcher replaces resolved input subscriptions after config changes
+  ---
+  duration_ms: 58.111125
+  type: 'test'
+  ...
+# Subtest: Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+ok 13 - Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+  ---
+  duration_ms: 3.531708
+  type: 'test'
+  ...
+1..13
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1662.280459
+
+## Brief Studio build / validate / backend typecheck
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> autobyteus-app pack
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:1845) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:17.942Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:17.943Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-31T12:59:17.943Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/dist/importable-package/applications/brief-studio
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:1868) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:19.067Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:19.068Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-31T12:59:19.068Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/dist/importable-package
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+## Socratic Math Teacher build / validate / backend typecheck
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher
+> autobyteus-app pack
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:1913) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:21.413Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:21.413Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-31T12:59:21.414Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:1936) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:22.500Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T12:59:22.500Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-31T12:59:22.501Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher/dist/importable-package
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+
+END=2026-07-31T12:59:23Z

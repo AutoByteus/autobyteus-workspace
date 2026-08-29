@@ -10,7 +10,10 @@ import { createArtifactRepository } from "../repositories/artifact-repository.js
 import { createBriefArtifactRevisionRepository } from "../repositories/brief-artifact-revision-repository.js";
 import { createBriefBindingRepository } from "../repositories/brief-binding-repository.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
-import { resolveBriefArtifactPathRule } from "./brief-artifact-paths.js";
+import {
+  findBriefArtifactPathRule,
+  resolveBriefArtifactPathRule,
+} from "./brief-artifact-paths.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
 const TERMINAL_BINDING_STATUSES = new Set(["TERMINATED", "FAILED", "ORPHANED"]);
@@ -37,7 +40,7 @@ const sortArtifacts = <T extends { updatedAt: string; createdAt: string }>(artif
 const resolveProducerForRun = (
   binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
   runId: string,
-): ApplicationExecutionProducer | null => {
+): { producer: ApplicationExecutionProducer; memberAddress: string } | null => {
   if (binding.runtime.subject !== "TEAM_RUN") {
     return null;
   }
@@ -46,9 +49,11 @@ const resolveProducerForRun = (
     return null;
   }
   return {
-    agentRunId: member.agentRunId,
-    displayName: member.displayName,
-    runtimeKind: member.runtimeKind,
+    producer: {
+      agentRunId: member.agentRunId,
+      displayName: member.displayName,
+    },
+    memberAddress: member.memberAddress,
   };
 };
 
@@ -108,17 +113,20 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
 
       const runIds = resolveBindingRunIds(binding);
       for (const runId of runIds) {
-        const producer = resolveProducerForRun(binding, runId);
-        if (!producer) {
+        const resolvedProducer = resolveProducerForRun(binding, runId);
+        if (!resolvedProducer) {
           continue;
         }
         const publishedArtifacts = sortArtifacts(
           await context.publishedArtifacts.list(runId),
         );
         for (const artifact of publishedArtifacts) {
+          if (!findBriefArtifactPathRule(resolvedProducer.memberAddress, artifact.path)) {
+            continue;
+          }
           await this.projectArtifactRevision({
             binding,
-            producer,
+            producer: resolvedProducer.producer,
             runId,
             revisionId: artifact.revisionId,
             path: artifact.path,

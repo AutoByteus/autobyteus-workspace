@@ -1,0 +1,661 @@
+# DR-006 Post-Integration Check
+timestamp_utc=2026-07-31T13:24:38Z
+head=fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2
+base=ea6d6b011035d71dc9594d61ad035470985fca8e
+divergence=0/98
+test_file_count=32
+
+## Command 1: pnpm -C autobyteus-server-ts build
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 112ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.9.1                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+command_1_result=PASS
+
+## Command 2: exact API-REV-013 architecture/runtime matrix
+pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts tests/integration/application-backend/application-agent-communication-ws.integration.test.ts tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts tests/integration/application-backend/application-backend-rest-ws.integration.test.ts tests/integration/application-backend/application-context-capabilities.integration.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/integration/application-backend/brief-studio-team-config.integration.test.ts tests/integration/application-backend/standalone-application-server.integration.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/agent-run-resource-manager.test.ts tests/unit/agent-execution/runtime/active-agent-run-registry.test.ts tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts tests/unit/agent-tools/mcp/application-agent-tool-mcp-session-scope.test.ts tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts tests/unit/application-backend-api-gateway/application-backend-api-gateway-service.test.ts tests/unit/application-backend-api-gateway/application-backend-websocket-session-service.test.ts tests/unit/application-engine/application-engine-controller.test.ts tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts tests/unit/application-orchestration/services/application-published-artifact-delivery-service.test.ts tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts tests/unit/application-packages/application-package-command-service.test.ts tests/unit/application-platform/application-platform-lifecycle.test.ts tests/unit/application-platform/application-platform-runtime-isolation.test.ts tests/unit/application-platform/application-run-services.test.ts tests/unit/application-platform/application-run-shutdown-coordinator.test.ts tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts (14 tests) 894ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  498ms
+(node:88051) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-w4tUze/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-swNezb/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-nWXCEg/app-data
+
+ ✓ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests) 555ms
+(node:88056) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests) 248ms
+(node:88060) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests) 176ms
+(node:88063) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests) 157ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests) 159ms
+(node:88071) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test) 93ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests) 72ms
+ ✓ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (6 tests) 61ms
+ ✓ tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts (2 tests) 57ms
+ ✓ tests/unit/application-orchestration/services/application-published-artifact-delivery-service.test.ts (2 tests) 55ms
+ ✓ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests) 54ms
+ ✓ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test) 47ms
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts > PublishedArtifactPublicationService > serves revision text from the snapshot after the outside source file is deleted
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+AgentRunManager initialized.
+
+ ✓ tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts (15 tests) 62ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex create to a runtime-managed run factory
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex create to a runtime-managed run factory
+[AgentRunMemoryRecorder] skipping run 'run-codex' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex create to a runtime-managed run factory
+Successfully created codex_app_server agent run 'run-codex'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex restore to a runtime-managed run factory
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Codex restore to a runtime-managed run factory
+Successfully restored codex_app_server agent run 'run-codex'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > removes stale inactive registry entries before restoring a run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > removes stale inactive registry entries before restoring a run
+Successfully created codex_app_server agent run 'run-codex'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > removes stale inactive registry entries before restoring a run
+Successfully restored codex_app_server agent run 'run-codex'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude create to a runtime-managed run factory
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude create to a runtime-managed run factory
+Successfully created claude_agent_sdk agent run 'run-claude'.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude create to a runtime-managed run factory
+[AgentRunMemoryRecorder] skipping run 'run-claude' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude restore to a runtime-managed run factory
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > delegates Claude restore to a runtime-managed run factory
+Successfully restored claude_agent_sdk agent run 'run-claude'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > creates native AgentRun instances and keeps them in the unified active-run registry
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > creates native AgentRun instances and keeps them in the unified active-run registry
+Successfully created autobyteus agent run 'run-native'.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > creates native AgentRun instances and keeps them in the unified active-run registry
+[AgentRunMemoryRecorder] skipping run 'run-native' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > rejects duplicate active creation without replacing the original run or sidecars
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > rejects duplicate active creation without replacing the original run or sidecars
+Successfully created codex_app_server agent run 'run-duplicate'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > attaches and detaches always-on sidecars with the active run lifecycle
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > attaches and detaches always-on sidecars with the active run lifecycle
+Successfully created codex_app_server agent run 'run-codex'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run
+AgentRunManager initialized.
+
+stderr | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run
+[AgentRunMemoryRecorder] skipping run 'run-with-mcp' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > revokes run-scoped Agent Tools MCP sessions when accepted manager termination unregisters the run
+Successfully created codex_app_server agent run 'run-with-mcp'.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > stop-all consumes exact registry removals after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager > continues stop-all after inactive pruning and later termination/removal failures
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (11 tests) 16ms
+(node:88399) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts (1 test) 10ms
+ ✓ tests/unit/application-backend-api-gateway/application-backend-websocket-session-service.test.ts (4 tests) 8ms
+ ✓ tests/unit/application-backend-api-gateway/application-backend-api-gateway-service.test.ts (6 tests) 7ms
+ ✓ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests) 7ms
+stdout | tests/unit/application-platform/application-run-services.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-run-services.test.ts > application run services > shares one runtime-local real allocator across agent and team launch services
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+ ✓ tests/unit/application-platform/application-run-services.test.ts (1 test) 7ms
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > describes one-item artifact arrays and workspace-relative or absolute paths
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Overwriting existing tool definition for name: 'publish_artifacts'
+Invalid arguments for tool 'publish_artifacts': Required parameter 'artifacts' is missing.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+ ✓ tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts (7 tests) 6ms
+ ✓ tests/unit/application-packages/application-package-command-service.test.ts (3 tests) 7ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts > AgentToolsMcpRuntime > revokes an application scope without revoking the general process scope, then clears both at process close
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts (1 test) 6ms
+ ✓ tests/unit/application-orchestration/application-availability-service.test.ts (8 tests) 6ms
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-execution/runtime/active-agent-run-registry.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent-execution/agent-run-resource-manager.test.ts (3 tests) 4ms
+ ✓ tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent-tools/mcp/application-agent-tool-mcp-session-scope.test.ts (2 tests) 3ms
+ ✓ tests/unit/application-platform/application-run-shutdown-coordinator.test.ts (2 tests) 3ms
+ ✓ tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts (1 test) 2ms
+
+ Test Files  32 passed (32)
+      Tests  130 passed (130)
+   Start at  15:24:54
+   Duration  21.16s (transform 4.25s, setup 113ms, import 14.98s, tests 2.80s, environment 2ms)
+
+command_2_result=PASS
+
+FINAL=PASS

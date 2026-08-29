@@ -126,13 +126,13 @@ describe("FileApplicationBundleProvider", () => {
       path.join(bundleRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "4",
+          manifestVersion: "5",
           id: localApplicationId,
           name: "Sample App",
           description: "Sample description",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "5",
+            frontendSdkContractVersion: "6",
           },
           backend: {
             bundleManifest: "backend/bundle.json",
@@ -176,8 +176,8 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "5",
-            frontendSdkContractVersion: "5",
+            backendDefinitionContractVersion: "7",
+            frontendSdkContractVersion: "6",
           },
           supportedExposures: {
             queries: true,
@@ -197,7 +197,7 @@ describe("FileApplicationBundleProvider", () => {
     );
     await writeFile(
       path.join(bundleRoot, "backend", "dist", "entry.mjs"),
-      "export default { definitionContractVersion: '5' }\n",
+      "export default { definitionContractVersion: '7' }\n",
     );
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
@@ -407,7 +407,7 @@ describe("FileApplicationBundleProvider", () => {
     expect(snapshot.applications).toHaveLength(0);
     expect(snapshot.diagnostics).toHaveLength(1);
     expect(snapshot.diagnostics[0]?.message).toContain(
-      `declares ui.frontendSdkContractVersion '${retiredFrontendSdkVersion}', but '5' is required`,
+      `Unsupported ui.frontendSdkContractVersion '${retiredFrontendSdkVersion}'.`,
     );
   });
 
@@ -424,7 +424,7 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "5",
+            backendDefinitionContractVersion: "7",
             frontendSdkContractVersion: retiredFrontendSdkVersion,
           },
           supportedExposures: {
@@ -447,7 +447,7 @@ describe("FileApplicationBundleProvider", () => {
     expect(snapshot.applications).toHaveLength(0);
     expect(snapshot.diagnostics).toHaveLength(1);
     expect(snapshot.diagnostics[0]?.message).toContain(
-      `declares sdkCompatibility.frontendSdkContractVersion '${retiredFrontendSdkVersion}', but '5' is required`,
+      `Unsupported frontendSdkContractVersion '${retiredFrontendSdkVersion}'.`,
     );
   });
 
@@ -469,7 +469,7 @@ describe("FileApplicationBundleProvider", () => {
     expect(snapshot.applications).toHaveLength(0);
     expect(snapshot.diagnostics).toHaveLength(1);
     expect(snapshot.diagnostics[0]?.message).toContain(
-      "declares sdkCompatibility.backendDefinitionContractVersion '3', but '5' is required",
+      "Unsupported backendDefinitionContractVersion '3'.",
     );
   });
 
@@ -479,12 +479,12 @@ describe("FileApplicationBundleProvider", () => {
       path.join(builtInRoot, "applications", "broken-app", "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "4",
+          manifestVersion: "5",
           id: "broken-app",
           name: "Broken App",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "5",
+            frontendSdkContractVersion: "6",
           },
           backend: {
             bundleManifest: "backend/bundle.json",
@@ -730,12 +730,12 @@ describe("FileApplicationBundleProvider", () => {
       path.join(nestedMirrorRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "4",
+          manifestVersion: "5",
           id: "sample-app",
           name: "Nested Mirror",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "5",
+            frontendSdkContractVersion: "6",
           },
           backend: {
             bundleManifest: "backend/bundle.json",

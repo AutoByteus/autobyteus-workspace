@@ -1,0 +1,1480 @@
+BASE acb8985930ccce49b632cdca22b92f5b237e35bf
+PERSONAL origin/personal
+FEATURE origin/codex/universal-application-framework-proposal-analysis
+
+# Historical cumulative inventory implemented through SR-008/DR-009.
+# The current SR-009 v1.4.58 delta is separately authoritative in
+# evidence/solution/latest-base-refresh-round-5-path-inventory.txt and
+# latest-base-refresh-round-5-design-analysis.md (13 content conflicts,
+# 30 generated-output modify/delete conflicts, 50 changed-both paths).
+
+# Counts below are historical target dispositions derived from earlier branch evidence.
+# Feature-only paths explicitly rejected by the target are omitted.
+
+[ADD_OR_ADAPT_CANONICAL] 109
+applications/brief-studio/.gitignore
+applications/brief-studio/autobyteus-app.config.mjs
+applications/brief-studio/frontend-src/icon.svg
+applications/socratic-math-teacher/.gitignore
+applications/socratic-math-teacher/autobyteus-app.config.mjs
+applications/socratic-math-teacher/frontend-src/icon.svg
+autobyteus-application-devkit/src/commands/start.ts
+autobyteus-application-devkit/src/development/application-development-project-state.ts
+autobyteus-application-devkit/src/development/application-project-watch.ts
+autobyteus-application-devkit/src/development/atomic-application-pack.ts
+autobyteus-application-devkit/src/development/development-browser-session.ts
+autobyteus-application-devkit/src/development/development-process-lifetime.ts
+autobyteus-application-devkit/src/development/standalone-development-session.ts
+autobyteus-application-devkit/src/development/studio-application-client.ts
+autobyteus-application-devkit/src/development/studio-development-session.ts
+autobyteus-application-frontend-sdk/src/application-startup/application-bootstrap-provider.ts
+autobyteus-application-frontend-sdk/src/application-startup/application-startup-coordinator.ts
+autobyteus-application-frontend-sdk/src/application-startup/application-startup-types.ts
+autobyteus-application-frontend-sdk/src/application-startup/default-application-startup-screen.ts
+autobyteus-application-frontend-sdk/src/application-startup/resolve-application-bootstrap-provider.ts
+autobyteus-application-frontend-sdk/src/application-startup/standalone-same-origin-bootstrap-provider.ts
+autobyteus-application-frontend-sdk/src/application-startup/studio-iframe-bootstrap-provider.ts
+autobyteus-application-frontend-sdk/tests/application-startup.test.mjs
+autobyteus-application-frontend-sdk/tests/application-startup.type-test.ts
+autobyteus-application-sdk-contracts/src/application-runtime-bootstrap.ts
+autobyteus-application-sdk-contracts/src/standalone-application-bootstrap.ts
+autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts
+autobyteus-server-ts/src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts
+autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts
+autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts
+autobyteus-server-ts/src/api/rest/application-backend-route-handlers.ts
+autobyteus-server-ts/src/application-engine/services/application-engine-context-capability-handler.ts
+autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts
+autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts
+autobyteus-server-ts/src/application-engine/services/application-engine-state-registry.ts
+autobyteus-server-ts/src/application-engine/services/application-engine-storage-health.ts
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-queue.ts
+autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-delivery-queue.ts
+autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-delivery-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-reentry-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-runtime-input-normalizer.ts
+autobyteus-server-ts/src/application-orchestration/stores/application-launch-override-store.ts
+autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts
+autobyteus-server-ts/src/application-packages/services/application-package-command-service.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-diagnostics.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-override-normalizer.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-override-overlay.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-resource-baseline-builder.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-portable-launch-config-policy.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-portable-launch-config-schemas.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts
+autobyteus-server-ts/src/application-platform/runtime/application-availability-state-registry.ts
+autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts
+autobyteus-server-ts/src/application-platform/runtime/application-definition-runtime-readiness.ts
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle-contracts.ts
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts
+autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts
+autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime.ts
+autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-coordinator.ts
+autobyteus-server-ts/src/application-platform/runtime/application-runtime-definition-validator.ts
+autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-definition-services.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+autobyteus-server-ts/src/compositions/build-standalone-application-server.ts
+autobyteus-server-ts/src/compositions/build-studio-server.ts
+autobyteus-server-ts/src/services/published-artifacts/published-artifact-publisher.ts
+autobyteus-server-ts/src/standalone-application-host/api/register-standalone-application-rest.ts
+autobyteus-server-ts/src/standalone-application-host/api/register-standalone-application-websockets.ts
+autobyteus-server-ts/src/standalone-application-host/api/standalone-application-static-routes.ts
+autobyteus-server-ts/src/standalone-application-host/api/standalone-browser-websocket-origin.ts
+autobyteus-server-ts/src/standalone-application-host/config/standalone-application-host-config.ts
+autobyteus-server-ts/src/standalone-application-host/config/standalone-host-config-materializer.ts
+autobyteus-server-ts/src/standalone-application-host/domain/standalone-application-selection.ts
+autobyteus-server-ts/src/standalone-application-host/services/standalone-application-bootstrap-service.ts
+autobyteus-server-ts/src/standalone-application-host/services/standalone-application-selection-service.ts
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-engine-test-runtime.ts
+autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/mcp/application-agent-tool-mcp-session-scope.test.ts
+autobyteus-server-ts/tests/unit/application-backend/brief-artifact-startup-catchup.test.ts
+autobyteus-server-ts/tests/unit/application-engine/application-engine-controller.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/services/application-published-artifact-delivery-service.test.ts
+autobyteus-server-ts/tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts
+autobyteus-server-ts/tests/unit/application-packages/application-package-command-service.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-platform-lifecycle.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-portable-launch-config-policy.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-run-shutdown-coordinator.test.ts
+autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts
+autobyteus-web/composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+autobyteus-web/composables/useApplicationLaunchSelectionPreviews.ts
+autobyteus-web/composables/useApplicationLaunchSetupPresentation.ts
+autobyteus-web/docs/application-bundle-iframe-contract.md
+
+[MODIFY_BOTH_CANONICAL] 75
+applications/brief-studio/api/graphql/schema.graphql
+applications/brief-studio/application.json
+applications/brief-studio/backend-src/services/brief-artifact-paths.ts
+applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts
+applications/brief-studio/backend-src/services/brief-run-launch-service.ts
+applications/brief-studio/scripts/build-package.mjs
+applications/socratic-math-teacher/application.json
+applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
+applications/socratic-math-teacher/scripts/build-package.mjs
+autobyteus-application-backend-sdk/src/launch-profile.ts
+autobyteus-application-devkit/src/package/backend-bundle-manifest-writer.ts
+autobyteus-application-devkit/src/validation/application-root-validator.ts
+autobyteus-application-devkit/src/validation/backend-manifest-validator.ts
+autobyteus-application-sdk-contracts/README.md
+autobyteus-application-sdk-contracts/src/execution-resources.ts
+autobyteus-application-sdk-contracts/src/index.ts
+autobyteus-application-sdk-contracts/src/manifests.ts
+autobyteus-server-ts/docs/ARCHITECTURE.md
+autobyteus-server-ts/package.json
+autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts
+autobyteus-server-ts/src/api/websocket/application-agent-communication.ts
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts
+autobyteus-server-ts/src/application-bundles/utils/application-backend-manifest.ts
+autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts
+autobyteus-server-ts/src/application-engine/worker/application-backend-definition-loader.ts
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-recovery-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-run-observer-service.ts
+autobyteus-server-ts/src/server-runtime.ts
+autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts
+autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+autobyteus-web/components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+autobyteus-web/components/applications/setup/ApplicationTeamLaunchProfileEditor.vue
+autobyteus-web/components/applications/setup/ApplicationTeamMemberOverrideItem.vue
+autobyteus-web/components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+autobyteus-web/localization/messages/en/applications.ts
+autobyteus-web/localization/messages/zh-CN/applications.ts
+autobyteus-web/utils/application/applicationLaunchProfile.ts
+autobyteus-web/utils/teamLaunchReadinessCore.ts
+pnpm-lock.yaml
+
+[REMOVE_LEGACY_CANONICAL] 17
+applications/brief-studio/scripts/build-package.mjs
+applications/socratic-math-teacher/scripts/build-package.mjs
+autobyteus-application-devkit/src/dev-server/dev-bootstrap-server.ts
+autobyteus-application-devkit/src/dev-server/dev-host-page.ts
+autobyteus-application-devkit/src/dev-server/mock-backend-routes.ts
+autobyteus-application-frontend-sdk/src/default-startup-screen.ts
+autobyteus-application-frontend-sdk/src/hosted-application-startup.ts
+autobyteus-application-frontend-sdk/tests/hosted-application-startup.test.mjs
+autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-resource-configuration-store.ts
+autobyteus-server-ts/src/application-packages/services/application-package-service.ts
+autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-stale-state.test.ts
+autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts
+
+[REGENERATE_OR_REMOVE_DERIVED] 656
+applications/brief-studio/backend/bundle.json
+applications/brief-studio/backend/dist/domain/artifact-model.js
+applications/brief-studio/backend/dist/domain/brief-execution-model.js
+applications/brief-studio/backend/dist/domain/brief-model.js
+applications/brief-studio/backend/dist/domain/review-note-model.js
+applications/brief-studio/backend/dist/entry.mjs
+applications/brief-studio/backend/dist/event-handlers/on-artifact.js
+applications/brief-studio/backend/dist/event-handlers/on-run-failed.js
+applications/brief-studio/backend/dist/event-handlers/on-run-orphaned.js
+applications/brief-studio/backend/dist/event-handlers/on-run-started.js
+applications/brief-studio/backend/dist/event-handlers/on-run-terminated.js
+applications/brief-studio/backend/dist/graphql/index.js
+applications/brief-studio/backend/dist/repositories/app-database.js
+applications/brief-studio/backend/dist/repositories/artifact-repository.js
+applications/brief-studio/backend/dist/repositories/brief-artifact-revision-repository.js
+applications/brief-studio/backend/dist/repositories/brief-binding-repository.js
+applications/brief-studio/backend/dist/repositories/brief-repository.js
+applications/brief-studio/backend/dist/repositories/pending-launch-request-repository.js
+applications/brief-studio/backend/dist/repositories/processed-event-repository.js
+applications/brief-studio/backend/dist/repositories/review-note-repository.js
+applications/brief-studio/backend/dist/services/brief-artifact-paths.js
+applications/brief-studio/backend/dist/services/brief-artifact-reconciliation-service.js
+applications/brief-studio/backend/dist/services/brief-projection-service.js
+applications/brief-studio/backend/dist/services/brief-read-service.js
+applications/brief-studio/backend/dist/services/brief-review-service.js
+applications/brief-studio/backend/dist/services/brief-run-launch-service.js
+applications/brief-studio/backend/dist/services/run-binding-correlation-service.js
+applications/brief-studio/backend/dist/vendor/application-agent-target-address.js
+applications/brief-studio/backend/dist/vendor/application-agent-target-address.js.map
+applications/brief-studio/backend/dist/vendor/application-backend-sdk.js
+applications/brief-studio/backend/dist/vendor/index.js
+applications/brief-studio/backend/dist/vendor/index.js.map
+applications/brief-studio/backend/dist/vendor/launch-profile.js
+applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+applications/brief-studio/backend/migrations/001_create_brief_tables.sql
+applications/brief-studio/backend/migrations/002_artifact_publication_model.sql
+applications/brief-studio/backend/migrations/003_application_owned_orchestration.sql
+applications/brief-studio/backend/migrations/004_pending_launch_requests.sql
+applications/brief-studio/backend/migrations/005_published_artifact_reconciliation.sql
+applications/brief-studio/dist/importable-package/README.md
+applications/brief-studio/dist/importable-package/applications/brief-studio/README.md
+applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json
+applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json
+applications/brief-studio/dist/importable-package/applications/brief-studio/api/graphql/schema.graphql
+applications/brief-studio/dist/importable-package/applications/brief-studio/application.json
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/domain/artifact-model.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/domain/brief-execution-model.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/domain/brief-model.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/domain/review-note-model.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/event-handlers/on-artifact.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/event-handlers/on-run-failed.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/event-handlers/on-run-orphaned.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/event-handlers/on-run-started.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/event-handlers/on-run-terminated.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/graphql/index.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/index.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/migrations/001_create_brief_tables.sql
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/migrations/002_artifact_publication_model.sql
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/migrations/003_application_owned_orchestration.sql
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/migrations/004_pending_launch_requests.sql
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/migrations/005_published_artifact_reconciliation.sql
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/app-database.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/artifact-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/brief-artifact-revision-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/brief-binding-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/brief-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/pending-launch-request-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/processed-event-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/repositories/review-note-repository.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/brief-artifact-paths.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/brief-projection-service.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/brief-read-service.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/brief-review-service.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/brief-run-launch-service.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend-src/services/run-binding-correlation-service.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/domain/artifact-model.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/domain/brief-execution-model.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/domain/brief-model.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/domain/review-note-model.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/event-handlers/on-artifact.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/event-handlers/on-run-failed.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/event-handlers/on-run-orphaned.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/event-handlers/on-run-started.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/event-handlers/on-run-terminated.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/graphql/index.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/app-database.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/artifact-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/brief-artifact-revision-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/brief-binding-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/brief-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/pending-launch-request-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/processed-event-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/repositories/review-note-repository.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/brief-artifact-paths.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/brief-artifact-reconciliation-service.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/brief-projection-service.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/brief-read-service.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/brief-review-service.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/brief-run-launch-service.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/services/run-binding-correlation-service.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/application-agent-target-address.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/application-agent-target-address.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/application-backend-sdk.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/index.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/index.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/frontend-src/app.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/frontend-src/brief-studio-renderer.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/frontend-src/brief-studio-runtime.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/frontend-src/generated/graphql-client.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/frontend-src/index.html
+applications/brief-studio/dist/importable-package/applications/brief-studio/frontend-src/styles.css
+applications/brief-studio/dist/importable-package/applications/brief-studio/package.json
+applications/brief-studio/dist/importable-package/applications/brief-studio/scripts/build-package.mjs
+applications/brief-studio/dist/importable-package/applications/brief-studio/tsconfig.backend.json
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-runtime.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection-transport.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection-transport.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection-transport.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection-transport.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-connection.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-event-validator.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-event-validator.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-event-validator.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-event-validator.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-server-frame-parser.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-server-frame-parser.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-server-frame-parser.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-agent-server-frame-parser.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-connection.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-connection.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-connection.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-connection.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-transport.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-transport.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-transport.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-backend-websocket-transport.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client-transport.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client-transport.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client-transport.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client-transport.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-client.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-frontend-sdk.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-websocket-url.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-websocket-url.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-websocket-url.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-websocket-url.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/create-application-backend-mount-transport.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/create-application-backend-mount-transport.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/create-application-backend-mount-transport.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/create-application-backend-mount-transport.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/default-startup-screen.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/default-startup-screen.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/default-startup-screen.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/default-startup-screen.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/hosted-application-startup.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/hosted-application-startup.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/hosted-application-startup.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/hosted-application-startup.js.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/index.d.ts
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/index.d.ts.map
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/index.js
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/index.js.map
+applications/brief-studio/ui/app.js
+applications/brief-studio/ui/brief-studio-renderer.js
+applications/brief-studio/ui/brief-studio-runtime.js
+applications/brief-studio/ui/generated/graphql-client.js
+applications/brief-studio/ui/index.html
+applications/brief-studio/ui/styles.css
+applications/brief-studio/ui/vendor/application-agent-connection-transport.d.ts
+applications/brief-studio/ui/vendor/application-agent-connection-transport.d.ts.map
+applications/brief-studio/ui/vendor/application-agent-connection-transport.js
+applications/brief-studio/ui/vendor/application-agent-connection-transport.js.map
+applications/brief-studio/ui/vendor/application-agent-connection.d.ts
+applications/brief-studio/ui/vendor/application-agent-connection.d.ts.map
+applications/brief-studio/ui/vendor/application-agent-connection.js
+applications/brief-studio/ui/vendor/application-agent-connection.js.map
+applications/brief-studio/ui/vendor/application-agent-event-validator.d.ts
+applications/brief-studio/ui/vendor/application-agent-event-validator.d.ts.map
+applications/brief-studio/ui/vendor/application-agent-event-validator.js
+applications/brief-studio/ui/vendor/application-agent-event-validator.js.map
+applications/brief-studio/ui/vendor/application-agent-server-frame-parser.d.ts
+applications/brief-studio/ui/vendor/application-agent-server-frame-parser.d.ts.map
+applications/brief-studio/ui/vendor/application-agent-server-frame-parser.js
+applications/brief-studio/ui/vendor/application-agent-server-frame-parser.js.map
+applications/brief-studio/ui/vendor/application-backend-websocket-connection.d.ts
+applications/brief-studio/ui/vendor/application-backend-websocket-connection.d.ts.map
+applications/brief-studio/ui/vendor/application-backend-websocket-connection.js
+applications/brief-studio/ui/vendor/application-backend-websocket-connection.js.map
+applications/brief-studio/ui/vendor/application-backend-websocket-transport.d.ts
+applications/brief-studio/ui/vendor/application-backend-websocket-transport.d.ts.map
+applications/brief-studio/ui/vendor/application-backend-websocket-transport.js
+applications/brief-studio/ui/vendor/application-backend-websocket-transport.js.map
+applications/brief-studio/ui/vendor/application-client-transport.d.ts
+applications/brief-studio/ui/vendor/application-client-transport.d.ts.map
+applications/brief-studio/ui/vendor/application-client-transport.js
+applications/brief-studio/ui/vendor/application-client-transport.js.map
+applications/brief-studio/ui/vendor/application-client.d.ts
+applications/brief-studio/ui/vendor/application-client.d.ts.map
+applications/brief-studio/ui/vendor/application-client.js
+applications/brief-studio/ui/vendor/application-client.js.map
+applications/brief-studio/ui/vendor/application-frontend-sdk.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-bindings.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-communication.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-events.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-agent-target-path.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-iframe-contract.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/application-websockets.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/index.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/index.js.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.d.ts
+applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.d.ts.map
+applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.js
+applications/brief-studio/ui/vendor/application-sdk-contracts/manifests.js.map
+applications/brief-studio/ui/vendor/application-websocket-url.d.ts
+applications/brief-studio/ui/vendor/application-websocket-url.d.ts.map
+applications/brief-studio/ui/vendor/application-websocket-url.js
+applications/brief-studio/ui/vendor/application-websocket-url.js.map
+applications/brief-studio/ui/vendor/create-application-backend-mount-transport.d.ts
+applications/brief-studio/ui/vendor/create-application-backend-mount-transport.d.ts.map
+applications/brief-studio/ui/vendor/create-application-backend-mount-transport.js
+applications/brief-studio/ui/vendor/create-application-backend-mount-transport.js.map
+applications/brief-studio/ui/vendor/default-startup-screen.d.ts
+applications/brief-studio/ui/vendor/default-startup-screen.d.ts.map
+applications/brief-studio/ui/vendor/default-startup-screen.js
+applications/brief-studio/ui/vendor/default-startup-screen.js.map
+applications/brief-studio/ui/vendor/hosted-application-startup.d.ts
+applications/brief-studio/ui/vendor/hosted-application-startup.d.ts.map
+applications/brief-studio/ui/vendor/hosted-application-startup.js
+applications/brief-studio/ui/vendor/hosted-application-startup.js.map
+applications/brief-studio/ui/vendor/index.d.ts
+applications/brief-studio/ui/vendor/index.d.ts.map
+applications/brief-studio/ui/vendor/index.js
+applications/brief-studio/ui/vendor/index.js.map
+applications/socratic-math-teacher/backend/bundle.json
+applications/socratic-math-teacher/backend/dist/domain/lesson-message-model.js
+applications/socratic-math-teacher/backend/dist/domain/lesson-model.js
+applications/socratic-math-teacher/backend/dist/entry.mjs
+applications/socratic-math-teacher/backend/dist/event-handlers/on-artifact.js
+applications/socratic-math-teacher/backend/dist/event-handlers/on-run-failed.js
+applications/socratic-math-teacher/backend/dist/event-handlers/on-run-orphaned.js
+applications/socratic-math-teacher/backend/dist/event-handlers/on-run-started.js
+applications/socratic-math-teacher/backend/dist/event-handlers/on-run-terminated.js
+applications/socratic-math-teacher/backend/dist/graphql/index.js
+applications/socratic-math-teacher/backend/dist/repositories/app-database.js
+applications/socratic-math-teacher/backend/dist/repositories/lesson-message-repository.js
+applications/socratic-math-teacher/backend/dist/repositories/lesson-repository.js
+applications/socratic-math-teacher/backend/dist/repositories/pending-launch-request-repository.js
+applications/socratic-math-teacher/backend/dist/repositories/processed-event-repository.js
+applications/socratic-math-teacher/backend/dist/services/lesson-artifact-paths.js
+applications/socratic-math-teacher/backend/dist/services/lesson-artifact-reconciliation-service.js
+applications/socratic-math-teacher/backend/dist/services/lesson-projection-service.js
+applications/socratic-math-teacher/backend/dist/services/lesson-read-service.js
+applications/socratic-math-teacher/backend/dist/services/lesson-runtime-service.js
+applications/socratic-math-teacher/backend/dist/services/run-binding-correlation-service.js
+applications/socratic-math-teacher/backend/dist/vendor/application-agent-target-address.js
+applications/socratic-math-teacher/backend/dist/vendor/application-agent-target-address.js.map
+applications/socratic-math-teacher/backend/dist/vendor/application-backend-sdk.js
+applications/socratic-math-teacher/backend/dist/vendor/index.js
+applications/socratic-math-teacher/backend/dist/vendor/index.js.map
+applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+applications/socratic-math-teacher/backend/migrations/001_create_lessons.sql
+applications/socratic-math-teacher/backend/migrations/002_pending_launch_requests.sql
+applications/socratic-math-teacher/backend/migrations/003_published_artifact_reconciliation.sql
+applications/socratic-math-teacher/dist/importable-package/README.md
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/README.md
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/api/graphql/schema.graphql
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/application.json
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/domain/lesson-message-model.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/domain/lesson-model.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/event-handlers/on-artifact.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/event-handlers/on-run-failed.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/event-handlers/on-run-orphaned.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/event-handlers/on-run-started.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/event-handlers/on-run-terminated.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/graphql/index.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/index.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/migrations/001_create_lessons.sql
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/migrations/002_pending_launch_requests.sql
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/migrations/003_published_artifact_reconciliation.sql
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/repositories/app-database.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/repositories/lesson-message-repository.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/repositories/lesson-repository.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/repositories/pending-launch-request-repository.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/repositories/processed-event-repository.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/services/lesson-artifact-paths.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/services/lesson-projection-service.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/services/lesson-read-service.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/domain/lesson-message-model.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/domain/lesson-model.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/entry.mjs
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/event-handlers/on-artifact.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/event-handlers/on-run-failed.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/event-handlers/on-run-orphaned.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/event-handlers/on-run-started.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/event-handlers/on-run-terminated.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/graphql/index.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/repositories/app-database.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/repositories/lesson-message-repository.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/repositories/lesson-repository.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/repositories/pending-launch-request-repository.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/repositories/processed-event-repository.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/services/lesson-artifact-paths.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/services/lesson-artifact-reconciliation-service.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/services/lesson-projection-service.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/services/lesson-read-service.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/services/lesson-runtime-service.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/services/run-binding-correlation-service.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/application-agent-target-address.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/application-agent-target-address.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/application-backend-sdk.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/index.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/index.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/app.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/generated/graphql-client.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/index.html
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/socratic-renderer.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/socratic-runtime.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/socratic-tutor-session.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/frontend-src/styles.css
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/package.json
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/scripts/build-package.mjs
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/tsconfig.backend.json
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/app.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/socratic-renderer.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/socratic-runtime.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-connection.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client-transport.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client-transport.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client-transport.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client-transport.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-client.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-frontend-sdk.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-websocket-url.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-websocket-url.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-websocket-url.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-websocket-url.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/default-startup-screen.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/default-startup-screen.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/default-startup-screen.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/default-startup-screen.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/hosted-application-startup.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/hosted-application-startup.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/hosted-application-startup.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/hosted-application-startup.js.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/index.d.ts
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/index.d.ts.map
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/index.js
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/index.js.map
+applications/socratic-math-teacher/ui/app.js
+applications/socratic-math-teacher/ui/generated/graphql-client.js
+applications/socratic-math-teacher/ui/index.html
+applications/socratic-math-teacher/ui/socratic-renderer.js
+applications/socratic-math-teacher/ui/socratic-runtime.js
+applications/socratic-math-teacher/ui/socratic-tutor-session.js
+applications/socratic-math-teacher/ui/styles.css
+applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.d.ts
+applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.js
+applications/socratic-math-teacher/ui/vendor/application-agent-connection-transport.js.map
+applications/socratic-math-teacher/ui/vendor/application-agent-connection.d.ts
+applications/socratic-math-teacher/ui/vendor/application-agent-connection.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-agent-connection.js
+applications/socratic-math-teacher/ui/vendor/application-agent-connection.js.map
+applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.d.ts
+applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.js
+applications/socratic-math-teacher/ui/vendor/application-agent-event-validator.js.map
+applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.d.ts
+applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.js
+applications/socratic-math-teacher/ui/vendor/application-agent-server-frame-parser.js.map
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.d.ts
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.js
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-connection.js.map
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.d.ts
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.js
+applications/socratic-math-teacher/ui/vendor/application-backend-websocket-transport.js.map
+applications/socratic-math-teacher/ui/vendor/application-client-transport.d.ts
+applications/socratic-math-teacher/ui/vendor/application-client-transport.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-client-transport.js
+applications/socratic-math-teacher/ui/vendor/application-client-transport.js.map
+applications/socratic-math-teacher/ui/vendor/application-client.d.ts
+applications/socratic-math-teacher/ui/vendor/application-client.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-client.js
+applications/socratic-math-teacher/ui/vendor/application-client.js.map
+applications/socratic-math-teacher/ui/vendor/application-frontend-sdk.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-bindings.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-communication.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-events.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-agent-target-path.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-iframe-contract.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/application-websockets.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.js.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.d.ts
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.js
+applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/manifests.js.map
+applications/socratic-math-teacher/ui/vendor/application-websocket-url.d.ts
+applications/socratic-math-teacher/ui/vendor/application-websocket-url.d.ts.map
+applications/socratic-math-teacher/ui/vendor/application-websocket-url.js
+applications/socratic-math-teacher/ui/vendor/application-websocket-url.js.map
+applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.d.ts
+applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.d.ts.map
+applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.js
+applications/socratic-math-teacher/ui/vendor/create-application-backend-mount-transport.js.map
+applications/socratic-math-teacher/ui/vendor/default-startup-screen.d.ts
+applications/socratic-math-teacher/ui/vendor/default-startup-screen.d.ts.map
+applications/socratic-math-teacher/ui/vendor/default-startup-screen.js
+applications/socratic-math-teacher/ui/vendor/default-startup-screen.js.map
+applications/socratic-math-teacher/ui/vendor/hosted-application-startup.d.ts
+applications/socratic-math-teacher/ui/vendor/hosted-application-startup.d.ts.map
+applications/socratic-math-teacher/ui/vendor/hosted-application-startup.js
+applications/socratic-math-teacher/ui/vendor/hosted-application-startup.js.map
+applications/socratic-math-teacher/ui/vendor/index.d.ts
+applications/socratic-math-teacher/ui/vendor/index.d.ts.map
+applications/socratic-math-teacher/ui/vendor/index.js
+applications/socratic-math-teacher/ui/vendor/index.js.map
+autobyteus-application-backend-sdk/dist/index.d.ts
+autobyteus-application-backend-sdk/dist/index.d.ts.map
+autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+autobyteus-application-backend-sdk/dist/launch-profile.js
+autobyteus-application-backend-sdk/dist/launch-profile.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js
+autobyteus-application-frontend-sdk/dist/application-startup/application-bootstrap-provider.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-coordinator.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js
+autobyteus-application-frontend-sdk/dist/application-startup/application-startup-types.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js
+autobyteus-application-frontend-sdk/dist/application-startup/default-application-startup-screen.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js
+autobyteus-application-frontend-sdk/dist/application-startup/resolve-application-bootstrap-provider.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js
+autobyteus-application-frontend-sdk/dist/application-startup/standalone-same-origin-bootstrap-provider.js.map
+autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts
+autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.d.ts.map
+autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js
+autobyteus-application-frontend-sdk/dist/application-startup/studio-iframe-bootstrap-provider.js.map
+autobyteus-application-frontend-sdk/dist/default-startup-screen.d.ts
+autobyteus-application-frontend-sdk/dist/default-startup-screen.d.ts.map
+autobyteus-application-frontend-sdk/dist/default-startup-screen.js
+autobyteus-application-frontend-sdk/dist/default-startup-screen.js.map
+autobyteus-application-frontend-sdk/dist/hosted-application-startup.d.ts
+autobyteus-application-frontend-sdk/dist/hosted-application-startup.d.ts.map
+autobyteus-application-frontend-sdk/dist/hosted-application-startup.js
+autobyteus-application-frontend-sdk/dist/hosted-application-startup.js.map
+autobyteus-application-frontend-sdk/dist/index.d.ts
+autobyteus-application-frontend-sdk/dist/index.d.ts.map
+autobyteus-application-frontend-sdk/dist/index.js
+autobyteus-application-frontend-sdk/dist/index.js.map
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.js
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+autobyteus-application-sdk-contracts/dist/index.d.ts
+autobyteus-application-sdk-contracts/dist/index.d.ts.map
+autobyteus-application-sdk-contracts/dist/index.js
+autobyteus-application-sdk-contracts/dist/index.js.map
+autobyteus-application-sdk-contracts/dist/manifests.d.ts
+autobyteus-application-sdk-contracts/dist/manifests.d.ts.map
+autobyteus-application-sdk-contracts/dist/manifests.js
+autobyteus-application-sdk-contracts/dist/manifests.js.map
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map
+
+[TARGET_PERSONAL_ONLY_MODIFY] 12
+autobyteus-server-ts/src/agent-execution/services/agent-run-activation-candidate.ts
+autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-activation-service.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts
+autobyteus-server-ts/src/startup/token-usage-current-schema-readiness.ts
+autobyteus-server-ts/src/token-usage/providers/token-usage-migration-readiness.ts
+autobyteus-server-ts/src/run-history/services/team-run-v1-package-catalog.ts
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+
+[TARGET_INTEGRATION_ONLY_MODIFY] 9
+autobyteus-server-ts/src/agent-tools/search/register-search-tool.ts
+autobyteus-server-ts/src/startup/agent-tool-loader.ts
+autobyteus-server-ts/src/startup/background-runner.ts
+autobyteus-server-ts/src/startup/index.ts
+autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts
+autobyteus-ts/src/agent/factory/agent-factory.ts
+autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts
+
+[TARGET_EXPLICIT_RETAIN_DEPENDENCY] 2
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+autobyteus-ts/src/tools/register-tools.ts
+
+[TARGET_EXPLICIT_DO_NOT_ADD] 3
+autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
+
+=== SR-004 NEWEST-PERSONAL REFRESH DELTA ===
+Protected checkpoint: 663f44d31deb05bf47f0eda780de4d754187a51b
+Prior integrated Personal base: d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+Newest Personal ref: 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+Measured delta: 32 commits; unchanged 11 conflicts; 13 production changed-both paths; newest commit adds two unrelated delivery-document modifications
+Normative semantic map: latest-base-refresh-design-analysis.md
+
+ADD
+----
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts
+autobyteus-server-ts/tests/unit/application-platform/application-current-model-selection-policy.test.ts
+
+MODIFY / SEMANTICALLY RESOLVE
+-----------------------------
+autobyteus-application-sdk-contracts/src/execution-resources.ts
+autobyteus-application-sdk-contracts/README.md
+autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts
+autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+
+KEEP REMOVED / RESOLVE AS DELETION
+----------------------------------
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+
+MARKER-FREE OVERLAP AUDIT
+-------------------------
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts: remove auto-merged import of deleted helper; use explicit current-model policy; validate all team pairs before allocation.
+autobyteus-application-sdk-contracts/README.md: retain current SDK content and add original-safe-message/message-only ERROR wording.
+
+LATEST PERSONAL CLEAN AUTHORITY
+-------------------------------
+Accept the remaining non-overlapping provider catalog/model/pricing/missing-key/error extraction/redaction/native transport/client changes from d7d4eace..1629441a3, subject to their retained suites and the strict application projection proof. Also accept the two unrelated completed-ticket delivery-document edits in 1629441a3..7edfb1625. No broad whole-tree replacement is authorized.
+
+=== SR-005 NEWEST-PERSONAL NESTED PHYSICAL-SCOPE REFRESH DELTA ===
+Protected checkpoint: a23849f165879050e2c9b676a2e9652d8a593c93
+Prior integrated Personal base: 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+Newest Personal ref: a00f0d07d00450785c424b6ab79d2ca8fe828869
+Measured delta: 5 commits; 3 content conflicts; 6 changed-both paths
+Normative semantic map: latest-base-refresh-round-2-design-analysis.md
+
+CONFLICT / SEMANTICALLY RESOLVE
+-------------------------------
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+
+MARKER-FREE CHANGED-BOTH / RETAIN AUDITED COMBINATION
+-----------------------------------------------------
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+
+ADD / ACCEPT NEW PERSONAL OWNERS
+--------------------------------
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-physical-scope.ts
+autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-physical-scope.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts
+autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+
+ACCEPT CLEAN NEW PERSONAL SOURCE GROUPS
+---------------------------------------
+autobyteus-server-ts/src/agent-memory/domain/agent-memory-location.ts
+autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-team-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts
+autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts
+autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+
+RETAIN/AUDIT NEW PERSONAL COVERAGE AND DOCS
+-------------------------------------------
+autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/*
+autobyteus-server-ts/tests/unit/agent-team-execution/*
+autobyteus-web/components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+autobyteus-web/services/teamExecution/__tests__/*
+autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts
+autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+autobyteus-server-ts/README.md
+autobyteus-server-ts/docs/design/production_data_migration_conventions.md
+autobyteus-server-ts/docs/features/memory_sync.md
+autobyteus-server-ts/docs/modules/agent_team_execution.md
+autobyteus-web/docs/agent_execution_architecture.md
+autobyteus-web/docs/memory.md
+
+EXPLICIT DO NOT ADD
+-------------------
+second app-data migration runner/coordinator
+runtime old/new Team Agent memory path fallback or directory alias
+application path global run/session/memory service fallback
+maintained test-only nested application package
+compatibility wrapper for root-only nested memory coordinates
+
+=======================================================================
+SR-006 CURRENT PERSONAL v1.4.56 REFRESH TARGET DISPOSITIONS
+=======================================================================
+
+Exact Personal delta inventory (2,194 paths; authoritative raw status list):
+tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-3-path-inventory.txt
+
+CONTENT CONFLICTS / SEMANTIC COMBINATION REQUIRED
+-------------------------------------------------
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+
+MARKER-FREE CHANGED-BOTH / EXPLICIT AUDIT
+------------------------------------------
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+
+APPLICATION SEMANTIC ADAPTATIONS
+--------------------------------
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-guard.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+
+ADD / MODIFY FOCUSED APPLICATION PROOF
+--------------------------------------
+autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-current-model-selection-policy.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-host-capability-validator.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+
+ACCEPT CURRENT PERSONAL PROVIDER OWNERS (REPRESENTATIVE; FULL LIST IN RAW INVENTORY)
+---------------------------------------------------------------------------------
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/available-llm-construction.ts
+autobyteus-server-ts/src/llm-management/services/dynamic-model-source-lifecycle.ts
+autobyteus-server-ts/src/llm-management/services/model-availability-service.ts
+autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts
+autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts
+autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts
+autobyteus-web/stores/llmProviderCatalogPublication.ts
+autobyteus-web/stores/llmProviderConfig.ts
+autobyteus-web/stores/llmProviderConfigSupport.ts
+autobyteus-ts/src/llm/discovery-endpoint-identity.ts
+autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts
+autobyteus-ts/src/multimedia/model-identifier.ts
+
+KEEP DELETED / DO NOT RESTORE
+-----------------------------
+autobyteus-server-ts/src/llm-management/providers/autobyteus-llm-model-provider.ts
+autobyteus-server-ts/src/llm-management/providers/cached-autobyteus-llm-model-provider.ts
+autobyteus-server-ts/src/llm-management/services/autobyteus-model-catalog.ts
+autobyteus-server-ts/src/multimedia-management/providers/audio-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/cached-audio-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/cached-image-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/cached-video-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/providers/image-model-provider.ts
+autobyteus-server-ts/src/multimedia-management/services/audio-model-service.ts
+autobyteus-server-ts/src/multimedia-management/services/image-model-service.ts
+autobyteus-server-ts/src/multimedia-management/services/video-model-service.ts
+aggregate provider GraphQL/store aliases or compatibility wrappers
+application-local provider/model catalog or dynamic source lifecycle
+eager all-provider discovery in Studio or standalone process readiness
+
+=======================================================================
+SR-007 ARCH-REV-006 PROVIDER CONTRACT CORRECTIONS
+=======================================================================
+
+MODIFY EXISTING APPLICATION SEAMS (NO NEW PRODUCTION OWNER)
+-----------------------------------------------------------
+autobyteus-server-ts/src/application-platform/launch-configuration/application-current-model-selection-policy.ts
+  selected canonical dynamic identifier delegates to Personal provider-granularity availability; no endpoint-local lifecycle claim
+autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-host-capability-validator.ts
+  remove modelsByRuntime; fresh listLlmModels + exact ModelInfo after every leaf policy/ensure; cache credentials only by adapter authority key
+autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+  add explicit credential-authority union/resolution and stable equivalence keys; retain network-free/native checks
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+  wire the same explicit policy/catalog/credential authority inputs; no default getter or new service
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+  re-read rows/source status after Promise.allSettled; normal provider failure comes from ERROR/STALE_ERROR snapshots; aggregate catch is defensive
+
+MODIFY / RETAIN DURABLE PROOF
+-----------------------------
+autobyteus-server-ts/tests/unit/llm-management/services/model-availability-service.test.ts
+  identifier-to-provider invocation plus exact endpoint post-check; no endpoint-local discovery expectation
+autobyteus-server-ts/tests/unit/application-platform/application-current-model-selection-policy.test.ts
+  selected-provider invocation and typed unavailable/static behavior
+autobyteus-server-ts/tests/unit/application-platform/application-launch-host-capability-validator.test.ts
+  two leaves/two dynamic providers; ensure A/fresh read A then ensure B/fresh read B; exact ModelInfo and credential authority keys; no runtime cache
+autobyteus-server-ts/tests/unit/application-platform/application-provider-credential-readiness-adapter.test.ts
+  provider/Codex-workspace/Claude-process/no-credential/unsupported authority mapping, key equivalence and no discovery
+autobyteus-server-ts/tests/unit/application-platform/application-launch-configuration-service.test.ts
+  two-leaf leaf-B unavailable remains pre-upsert
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+  two-leaf leaf-B unavailable remains pre-allocation
+autobyteus-web/tests/stores/llmProviderConfigStore.test.ts
+  missing-provider per-call rejection settles aggregate and retains ERROR/STALE_ERROR snapshot rows/status
+autobyteus-web/composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+  inherited/null, immediate rows, settled re-read/status retention, defensive aggregate rejection
+
+EXPLICIT DO NOT ADD / RETAIN
+----------------------------
+endpoint-local application discovery or lifecycle
+runtime-only model list/ModelInfo cache across application leaves
+application model resolver/catalog/coordinator service
+credential cache key derived independently in the validator from runtimeKind/provider_id/workspace concatenation
+normal provider-failure diagnostics owned by composable catch
+all-provider startup/readiness discovery
+
+CURRENT POST-3AB ISOLATED PERSONAL CONTENT
+-----------------------------------------
+ui-prototypes/autobyteus-web-prototype/**
+  accept all 1,934 files byte-for-byte from Personal; keep outside root pnpm-workspace.yaml; no application-platform/production import or semantic merge edit
+tickets/in-progress/initial-prototype-baseline/{requirements-doc.md,investigation-notes.md,requirements-revision-record.md}
+  accept as independent prototype-task records; no application-framework adaptation
+tickets/done/api-key-management-panel-performance/{delivery-revision-record.md,docs-sync-report.md,handoff-summary.md,release-deployment-report.md,validation-evidence/delivery-server-docker-zh-dr008.log}
+  accept as latest-Personal delivery evidence; no production/runtime effect
+
+=======================================================================
+SR-011 CANONICAL HOST DEFINITION / PUBLIC RUN AUTHORITY CORRECTION
+=======================================================================
+Current source base: v1.4.58 merge and IR-011 implementation at CRR-020 reviewer HEAD a5a6131531658e8a8a323989b1863b7202464f11
+Trigger: CRR-020 / CR-011 / APIE2E-F005
+Normative contract: design-spec.md DS-024; integration-runtime-contracts.md section 9
+
+RENAME / MOVE (CLEAN REPLACEMENT; NO ALIAS)
+--------------------------------------------
+autobyteus-server-ts/src/application-platform/runtime/create-application-definition-services.ts
+  -> autobyteus-server-ts/src/application-platform/definitions/create-bundle-backed-definition-services.ts
+  own concrete file-provider/persistence-provider/Agent/Team service-pair wiring for exactly host binding and transient standalone package validation
+
+ADD HOST RUNTIME BINDING OWNER
+------------------------------
+autobyteus-server-ts/src/compositions/host-definition-services.ts
+  create one bundle-backed pair for executable-host use; fail-closed Agent then Team process binding, partial unwind, idempotent reverse release
+
+MODIFY HOST / SERVICE LIFECYCLE
+-------------------------------
+autobyteus-server-ts/src/agent-definition/services/agent-definition-service.ts
+  add bindProcessInstance/releaseProcessInstance; getInstance returns exact bound service
+autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts
+  add bindProcessInstance/releaseProcessInstance; Team binds over exact Agent and releases first
+autobyteus-server-ts/src/compositions/build-studio-server.ts
+  package/bundle -> host definitions -> Agent Tools -> explicit general services -> application runtime -> configured public APIs; exact unwind/close
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+  validated bundle/process migrations -> host definitions -> Agent Tools -> explicit general services -> selected application runtime; exact unwind/close
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+  accept exact definitions/app config/session manager; construct/bind exact general Agent/Team run services and dependencies; reverse release
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+  add exact named process AgentRunService bind/release; no lazy default during composed host startup
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+  add exact named process TeamRunService bind/release; no lazy default during composed host startup
+
+MODIFY TRANSIENT PACKAGE VALIDATION
+-----------------------------------
+autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts
+  use the bundle-backed constructor for a short-lived read-only, unbound pair; never initialize process getters or expose validation caches to runtime
+autobyteus-server-ts/src/startup/cache-preloader.ts
+  remove Agent/Team definition imports and preload blocks because awaited application definition readiness already refreshes the exact bound pair; retain MCP/model preloads
+
+MODIFY PUBLIC STUDIO API BOUNDARY
+---------------------------------
+autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts
+  configure exact Agent/Team definition plus general Agent/Team run services; return identity-checked idempotent close handle
+autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+  consume getStudioAgentRunService; remove direct ambient getAgentRunService import
+autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts
+  consume getStudioTeamRunService; remove direct ambient getTeamRunService import
+
+MODIFY PRE-HOST MIGRATION LOOKUPS
+---------------------------------
+autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts
+  replace dynamic AgentDefinitionService.getInstance with migration-local non-caching persistence lookup; retain ID fallback
+autobyteus-server-ts/src/app-data-migrations/migrations/team-run-history-index-v2-migration.ts
+  replace dynamic AgentTeamDefinitionService.getInstance with migration-local non-caching persistence lookup; retain warning/ID fallback
+
+VERIFY / NO PRODUCTION BEHAVIOR CHANGE
+--------------------------------------
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+  exact same definition identities; separate application managers/session/publication remain unchanged
+autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts
+  same Agent then Team cache refresh identities
+autobyteus-server-ts/src/api/graphql/types/agent-definition.ts
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts
+  configured canonical definition CRUD behavior unchanged
+all definition file formats, package roots, GraphQL/SDK wire shapes, launch defaults/overrides, Team V2 and migration data
+  Directly Usable — No Migration
+
+ADD / MODIFY DURABLE PROOF (EXACT TARGET AREA)
+----------------------------------------------
+autobyteus-server-ts/tests/unit/agent-definition/**
+autobyteus-server-ts/tests/unit/agent-team-definition/**
+  fail-closed bind, identity release, Team-over-Agent construction, partial unwind fixtures
+autobyteus-server-ts/tests/unit/application-platform/application-standalone-package-validator.test.ts
+  complete package validation through the transient pair; process definition getters remain uninitialized and no runtime catalog is published
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor.test.ts (add or current exact equivalent)
+  explicit nested dependencies, service binding, stop/release/second-build, no application-state reuse
+autobyteus-server-ts/tests/unit/application-platform/application-framework-boundaries.test.ts
+  exact host factory occurrence/order, forbidden old factory/ambient resolver imports, omission/null/undefined fixtures, all definition-getter occurrence classification, no background Agent/Team preload, same definitions/different managers/sessions
+  governed getter categories: migration removed; validation direct; composition-critical explicit; invocation-time post-bind; external-channel host-scoped; memory compactor named general-process exception
+autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
+  selected standalone same-definition construction and retained no-GraphQL/no-external-gateway behavior
+autobyteus-server-ts/tests/integration/application-backend/studio-application-server.integration.test.ts (add or current exact built-server integration owner)
+  configured service identity, close/unwind/second-build
+autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+  public Agent/Team create/list -> launch; update -> next launch; delete -> absent/later launch fail; restart -> visible/launchable
+autobyteus-server-ts/tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+  optional name persistence lookup and ID fallback without process singleton initialization
+
+EXPLICIT DO NOT ADD
+-------------------
+cache synchronization or mirrored definition service
+fallback definition read across service families
+application use of general Agent/Team run managers or MCP sessions
+general use of application managers/sessions/publication
+service locator, generic DI container, generic definition facade, mode-switched server builder
+compatibility alias at create-application-definition-services.ts
+definition data migration, copy, rewrite, seed, or package mutation
+production dependent-migration cascade or V1 current reader for APIE2E-F006
+
+
+================================================================================
+SR-012 MEMBER/SESSION-BOUND TASK-DELEGATION DELTA (CURRENT IMPLEMENTATION TARGET)
+================================================================================
+
+STATUS
+------
+ARCH-REV-011 accepted SR-011 and returned AR-007. This addendum is the exact
+current delta. All earlier merge/inventory entries remain historical/preserved.
+No merge, package, schema, route, public wire, provider, workspace, Team V2,
+migration, or native Codex/Claude file-tool change is authorized here.
+
+ADD
+---
+autobyteus-server-ts/src/agent-team-execution/task-delegation/member-task-root-resolver.ts
+  one root-specific resolveActiveRoot() capability; no caller selector, manager/service lookup, restore, mode switch, or default
+
+MODIFY — ROOT/MEMBER CONSTRUCTION
+---------------------------------
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  create the exact local-root resolver beside current message/platform callbacks; reject before bind/after inactive
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+  propagate the same exact resolver through root/subteam/configured/restored/task Agent construction
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+  require and freeze the resolver beside the one member identity; no optional/default field
+
+MODIFY — SESSION/TRANSPORT PROJECTION
+-------------------------------------
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+  tight ordinary-Agent versus Team-member capability union; exact owner/member identity validation; preserve exact resolver and publisher/session/token/revocation behavior
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+  pass only tight composition-scoped base publisher capability; issuing session service derives final variant; preserve revoke-only null service and exact general/application publisher identity
+autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+  require authenticated Team-member capability and consume its exact task context only
+
+MODIFY — SHARED TASK AND AUTOBYTEUS TOOL PATH
+---------------------------------------------
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts
+  carry the exact resolver; remove getTeamRunService(), root-ID lookup, restore language, and ambient scope fallback
+autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/submit-task-result.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/review-task-result.ts
+autobyteus-server-ts/src/agent-tools/task-delegation/register-task-delegation-tools.ts
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts
+  register definitions only; create all three executable task tools with required exact per-member ToolConfig
+
+REMOVE CLEANLY
+--------------
+autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts
+  obsolete identity-only custom-data parser; no alias, fallback, or compatibility wrapper
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts
+  replace with bound tool/config proof in current resolver/backend/task-tool tests
+
+MODIFY / ADD DURABLE PROOF
+--------------------------
+autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts
+autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+  exact context propagation, capability variants/identity checks, no scope omission/default, and bound AutoByteus tools
+autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+  real application/general root isolation, configured/restored/nested/task-member coverage, authentication/revocation, root lifecycle/fail-stop, no getTeamRunService import/omission, one route/catalog/task system
+
+EXPLICIT NO PRODUCTION CHANGE
+-----------------------------
+autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+  remain exact task lifecycle/mutation/persistence/event owners
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-catalog.ts
+autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.ts
+  retain one authenticated internal route/catalog/dispatcher
+Studio external /mcp/gateway; native Codex/Claude file tools; application packages/UI/SDK/GraphQL/database/migrations
+  unchanged and outside SR-012
+
+FORBIDDEN
+---------
+getTeamRunService() or manager singleton on task tool execution path
+application-ID/root-ID manager router or process/application mode switch
+application session use of general root/manager/session or converse
+nullable task fields on a broad capability bag
+inactive-root restore, cache mirror, global fallback, service locator, generic DI/event bus/deferred container
+duplicate route/catalog/manifest/task service/persistence owner/manager
+compatibility alias or identity-only AutoByteus fallback
+
+VERIFICATION
+------------
+configured/restored/nested/task Agent and task Team resolver identity
+application task command changes only application root; live general root unchanged
+general task command changes only general root; live application root unchanged
+MCP and AutoByteus parity for delegate/submit/review
+pre-bind/missing/mismatch/inactive/fail-stop/revoked failures before task store/event mutation
+architecture occurrence/omission/import guards
+retained full source/API-E2E/durable-test/dual-host/package/provider/workspace/Team V2/migration/Electron gates
+
+
+================================================================================
+SR-013 EXACT GENERAL / DEFAULT / FIXTURE PROPAGATION CLOSURE (CURRENT TARGET)
+================================================================================
+
+STATUS
+------
+ARCH-REV-012 accepted SR-012's RootTeamRun-local authority, member/session/native
+propagation, stateless task dispatch, lifecycle, removals, and no-migration design.
+This addendum supersedes only SR-012's incomplete construction/test inventory. It
+adds no owner, route, manager, schema, migration, host mode, or product behavior.
+
+MODIFY — COMPLETE PRODUCTION CONSTRUCTION
+-----------------------------------------
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+  add taskRootResolver to MixedTeamRunCallbacks; remove noopCallbacks; make callbacks
+  required for createBackend/restoreBackend; preserve required createBackendForNode;
+  built-in MixedTeamManager forwards input.callbacks.taskRootResolver; retain optional
+  custom createTeamManager and callback-free buildTeamRunContext only
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  remain the sole real MixedTeamRunCallbacks producer; create one root-local resolver
+  in materializeRoot and pass the complete object on fresh and restore paths
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+  forward callbacks.taskRootResolver into the custom general MixedTeamManager while
+  preserving exact process manager/session/definition/service lifecycle
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+  forward callbacks.taskRootResolver into the custom application MixedTeamManager
+  while preserving non-identical graph-local managers/sessions/publication/memory
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+  require and forward taskRootResolver through configured/restored/task Agent handles;
+  no optional/default resolver or process getter
+autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts
+  builder build input and immutable context require the exact resolver; builder remains
+  the only production direct MemberTeamContext constructor
+
+MODIFY — DIRECT MIXED MANAGER / FACTORY / CALLBACK PROOF
+--------------------------------------------------------
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts
+  supply an explicit resolver at every direct MixedTeamManager construction; configured
+  overlap forwards the callback resolver through its custom factory
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts
+  supply complete callbacks to every executable create/restore invocation; add omission,
+  null, undefined, fresh/restore, and exact-reference cases
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+  extend the typed fake/captured MixedTeamRunCallbacks and expectations with the exact
+  root resolver for fresh and restore paths
+
+VERIFY — EXACT CONTEXT-ONLY FACTORY EXCEPTION
+---------------------------------------------
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts
+  retain exactly two no-option MixedTeamRunBackendFactory constructors only because both
+  call buildTeamRunContext; architecture guard fails if either calls create/restore/node
+
+MODIFY — BUILDER / DIRECT CONTEXT FIXTURES
+------------------------------------------
+autobyteus-server-ts/tests/fixtures/current-team-run-fixtures.ts
+  add one clearly named explicit testMemberTaskRootResolver fixture and require/use it in
+  testMemberTeamContext; it returns an explicitly supplied root or throws test-only
+  unavailable and never becomes a production default
+autobyteus-server-ts/tests/unit/agent-team-execution/member-team-context-builder.test.ts
+  pass resolver in all four build calls and prove frozen reference identity plus omission
+autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+  pass explicit test resolver to the one direct builder call; retain prompt/no-global proof
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts
+  every direct MemberTeamContext receives the explicit test resolver; no null/default or
+  as-never escape
+
+MODIFY — EXECUTABLE ARCHITECTURE GUARD
+--------------------------------------
+autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+  assert current occurrence counts and categories:
+    production/test MixedTeamManager = 3/3
+    production/test direct MixedTeamRunBackendFactory = 3/8
+    production/test MemberTeamContextBuilder.build = 1/5
+    production/test direct MemberTeamContext = 1/4
+    one real callback producer plus one typed manager-test capture
+  require built-in/general/application manager resolver forwarding; require executable
+  callbacks and member resolver non-null; add omission/null/undefined fixtures; forbid
+  noopCallbacks and any unclassified occurrence; retain only the two named context-only
+  factory constructors
+
+PRESERVE SR-012 SESSION / TASK / AUTOBYTEUS DELTA
+-------------------------------------------------
+all SR-012 session capability, MCP adapter, task context/service/router, AutoByteus bound
+tool, removal, route/lifecycle, dual-scope, and E2E rows above remain required unchanged
+
+EXPLICIT DO NOT ADD
+-------------------
+default/no-op taskRootResolver or callbacks
+optional/nullable resolver on MixedTeamManager, member builder/context, or Team session
+generic recursive constructor policy beyond the exact governed occurrences
+ApplicationExecutionScope, manager map/router/unification, service locator, generic DI,
+generic event bus, deferred container, singleton fallback, compatibility wrapper/alias
+
+VERIFICATION
+------------
+exact current-tree occurrence/category guard
+built-in/general/application resolver identity
+fresh/restore/configured/nested/task Agent/task Team propagation
+context-only factory exception remains non-executable
+omission/null/undefined and noopCallbacks absence
+real general/application MCP and AutoByteus root isolation and failure-before-mutation
+retained full source/API-E2E/durable-test/dual-host/package/provider/workspace/Team V2/
+migration/recovery/cleanup/Electron gates

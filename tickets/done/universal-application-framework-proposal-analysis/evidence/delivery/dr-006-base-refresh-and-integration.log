@@ -1,0 +1,309 @@
+# DR-006 latest-base refresh and integration
+Started UTC: 2026-07-31T13:23:04Z
+Branch: codex/universal-application-framework-proposal-analysis
+Reviewed handoff anchor: 5071b429672e0bf3108f45c30d6747a2ae6331b6
+Safety checkpoint: 981a9a393f643e35d77daa0ca7e1a864edb54f66
+Remote base before fetch: ea6d6b011035d71dc9594d61ad035470985fca8e
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Remote base after fetch: ea6d6b011035d71dc9594d61ad035470985fca8e
+Pre-merge divergence HEAD...origin/personal: 97/6
+Base commits absent from checkpoint:
+544cc980d fix(llm): harden media request recovery boundaries
+12ec509f5 Merge daily-assistant-luna-image-error
+1ae4a4d32 chore(release): bump workspace release version to 1.4.33
+05c6382c4 docs(delivery): record v1.4.33 finalization
+44d0e3de0 docs(delivery): retain archived release evidence paths
+ea6d6b011 docs(delivery): sync post-merge validation records
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |    10 +-
+ autobyteus-message-gateway/package.json            |     2 +-
+ .../src/api/graphql/types/llm-provider.ts          |    28 +-
+ .../model-metadata-provisioning-service.ts         |    78 +-
+ .../messaging-gateway/release-manifest.json        |    10 +-
+ autobyteus-ts/docs/agent_memory_design.md          |    17 +
+ autobyteus-ts/docs/agent_memory_design_nodejs.md   |    17 +
+ .../docs/agent_runtime_loop_and_interrupt.md       |    13 +
+ autobyteus-ts/docs/llm_module_design.md            |    47 +-
+ autobyteus-ts/docs/llm_module_design_nodejs.md     |    42 +-
+ autobyteus-ts/docs/provider_model_catalogs.md      |    10 +-
+ autobyteus-ts/src/agent/llm-request-assembler.ts   |    46 +-
+ autobyteus-ts/src/agent/loop/llm-phase.ts          |    36 +-
+ autobyteus-ts/src/llm/index.ts                     |     3 +
+ autobyteus-ts/src/llm/llm-factory.ts               |    21 +-
+ .../metadata/anthropic-model-metadata-provider.ts  |     2 +-
+ .../src/llm/metadata/curated-model-metadata.ts     |   230 -
+ ...gemini-developer-api-model-metadata-provider.ts |     2 +-
+ .../llm/metadata/kimi-model-metadata-provider.ts   |     2 +-
+ .../metadata/mistral-model-metadata-provider.ts    |     2 +-
+ .../src/llm/metadata/model-metadata-resolver.ts    |   180 +-
+ autobyteus-ts/src/llm/models.ts                    |    16 +-
+ autobyteus-ts/src/llm/multimodal-capabilities.ts   |    21 +
+ .../llm/prompt-renderers/openai-chat-renderer.ts   |     4 +
+ .../prompt-renderers/openai-responses-renderer.ts  |     4 +
+ .../src/llm/supported-model-definition.ts          |    20 +-
+ .../src/llm/supported-model-definitions.ts         |    57 +-
+ .../src/llm/supported-model-static-metadata.ts     |    35 +
+ .../src/llm/utils/media-input-sanitizer.ts         |   140 +
+ .../src/llm/utils/media-payload-formatter.ts       |    37 +-
+ autobyteus-ts/src/memory/llm-request-recovery.ts   |   102 +
+ autobyteus-ts/src/memory/memory-manager.ts         |    17 +-
+ .../src/tools/multimedia/media-reader-tool.ts      |    22 +-
+ .../agent/gemini-read-media-file-m4a-live.test.ts  |     2 +-
+ .../integration/agent/memory-llm-flow.test.ts      |     2 +-
+ .../agent/memory-tool-call-flow.test.ts            |     4 +-
+ .../read-media-file-continuation-flow.test.ts      |    19 +-
+ .../tests/integration/llm/api/deepseek-llm.test.ts |     2 +-
+ .../llm/utils/media-payload-formatter.test.ts      |     4 +-
+ .../tests/unit/agent/llm-request-assembler.test.ts |    13 +-
+ .../loop/llm-phase-tool-protocol-recovery.test.ts  |   105 +
+ .../llm/metadata/model-metadata-resolver.test.ts   |   231 +-
+ .../openai-responses-renderer.test.ts              |    46 +
+ .../unit/llm/supported-model-definitions.test.ts   |    25 +-
+ .../unit/llm/utils/media-payload-formatter.test.ts |    13 +
+ .../tests/unit/memory/llm-request-recovery.test.ts |    62 +
+ .../memory/pending-compaction-executor.test.ts     |     4 +-
+ .../tools/multimedia/media-reader-tool.test.ts     |    35 +
+ autobyteus-web/docs/browser_sessions.md            |    11 +
+ .../browser-screenshot-artifact-writer.spec.ts     |    12 +
+ .../__tests__/browser-tab-page-operations.spec.ts  |    52 +
+ .../browser/browser-screenshot-artifact-writer.ts  |     3 +
+ .../browser/browser-tab-page-operations.ts         |     9 +-
+ .../electron/browser/browser-tab-types.ts          |     1 +
+ autobyteus-web/package.json                        |     2 +-
+ .../api-e2e-cleanup-final.log                      |     9 +
+ .../api-e2e-coverage-investigation.md              |   286 +
+ .../api-e2e-diff-check.log                         |     2 +
+ .../api-e2e-electron-focused.log                   |    23 +
+ .../api-e2e-execution-coverage-report.md           |   249 +
+ .../api-e2e-final-diff-check.log                   |     0
+ .../api-e2e-frontend-build.log                     |   223 +
+ .../api-e2e-frontend-dev-correct.log               |   112 +
+ .../api-e2e-frontend-dev.log                       |    34 +
+ .../api-e2e-frontend-focused-tests.log             |    54 +
+ .../api-e2e-frontend-gemini-settings-browser.log   |     8 +
+ .../api-e2e-frontend-server-sanitized.log          |   226 +
+ .../api-e2e-frontend-server.log                    |   180 +
+ .../api-e2e-frontend-settings-browser-final.log    |     9 +
+ .../api-e2e-frontend-settings-browser-retry.log    |    30 +
+ .../api-e2e-frontend-settings-browser.log          |    14 +
+ .../api-e2e-frontend-workspace-probe.log           |    14 +
+ .../api-e2e-live-agent.log                         |   498 +
+ .../api-e2e-live-build.log                         |    63 +
+ .../api-e2e-live-import-actual-success.log         |   173 +
+ .../api-e2e-live-import-actual-tty.log             |    63 +
+ .../api-e2e-live-import-actual.log                 |    63 +
+ .../api-e2e-live-import-dry-run.log                |    79 +
+ .../api-e2e-live-import-verified.log               |    79 +
+ .../api-e2e-revision-record.md                     |    51 +
+ .../api-e2e-server-graphql-contract.log            |   145 +
+ .../api-e2e-test-review-report.md                  |   132 +
+ .../api-e2e-ts-focused.log                         |    64 +
+ .../api-e2e-ts-full-typecheck.log                  |   311 +
+ .../api-e2e-ts-typecheck.log                       |     2 +
+ .../architecture-review-revision-record.md         |    78 +
+ .../code-review-report.md                          |   304 +
+ .../code-review-revision-record.md                 |    75 +
+ .../delivery-diff-check.log                        |     3 +
+ .../delivery-initial-base-refresh.log              |    12 +
+ .../delivery-revision-record.md                    |    85 +
+ .../design-review-report.md                        |   291 +
+ .../design-spec.md                                 |   719 +
+ .../docs-sync-report.md                            |    81 +
+ .../electron-artifact-inventory.log                |    14 +
+ .../electron-main-personal-build.log               |   Bin 0 -> 101554 bytes
+ .../electron-main-personal-runtime.log             |     8 +
+ .../electron-packaged-terminal-runtime.log         |    10 +
+ .../electron-test-build-report.md                  |    82 +
+ .../electron-test-build.log                        |   Bin 0 -> 102985 bytes
+ .../frontend-gemini-settings-browser.png           |   Bin 0 -> 108707 bytes
+ .../frontend-settings-browser-final.png            |   Bin 0 -> 86351 bytes
+ .../frontend-settings-browser.png                  |   Bin 0 -> 5851 bytes
+ .../frontend-workspace-debug-correct.png           |   Bin 0 -> 58083 bytes
+ .../frontend-workspace-debug.png                   |   Bin 0 -> 86395 bytes
+ .../desktop-1180x800.png                           |   Bin 0 -> 35413 bytes
+ .../desktop-1280x800.png                           |   Bin 0 -> 33336 bytes
+ .../gap-700x700.png                                |   Bin 0 -> 20937 bytes
+ .../gap-767x700.png                                |   Bin 0 -> 21179 bytes
+ .../md-768x700.png                                 |   Bin 0 -> 33057 bytes
+ .../mobile-route-390x844.png                       |   Bin 0 -> 45929 bytes
+ .../narrow-500x700.png                             |   Bin 0 -> 20211 bytes
+ .../narrow-short-500x420.png                       |   Bin 0 -> 18623 bytes
+ .../phone-390x844.png                              |   Bin 0 -> 20094 bytes
+ .../phone-short-390x640.png                        |   Bin 0 -> 19031 bytes
+ .../small-desktop-1024x768.png                     |   Bin 0 -> 34788 bytes
+ .../small-desktop-short-1024x480.png               |   Bin 0 -> 31029 bytes
+ .../tablet-800x700.png                             |   Bin 0 -> 33156 bytes
+ .../tablet-900x700.png                             |   Bin 0 -> 33258 bytes
+ .../tablet-short-800x420.png                       |   Bin 0 -> 28325 bytes
+ .../terminal-299x700.png                           |   Bin 0 -> 19414 bytes
+ .../threshold-639x700.png                          |   Bin 0 -> 20418 bytes
+ .../threshold-640x700.png                          |   Bin 0 -> 20441 bytes
+ .../wide-1440x900.png                              |   Bin 0 -> 58279 bytes
+ .../workspace-responsive-probe-results.json        | 16191 +++++++++++++++++++
+ .../workspace-responsive-probe-summary.json        |   700 +
+ .../desktop-1180x800.png                           |   Bin 0 -> 35413 bytes
+ .../desktop-1280x800.png                           |   Bin 0 -> 33336 bytes
+ .../frontend-workspace-probe-final/gap-700x700.png |   Bin 0 -> 20937 bytes
+ .../frontend-workspace-probe-final/gap-767x700.png |   Bin 0 -> 21179 bytes
+ .../frontend-workspace-probe-final/md-768x700.png  |   Bin 0 -> 33050 bytes
+ .../mobile-route-390x844.png                       |   Bin 0 -> 45929 bytes
+ .../narrow-500x700.png                             |   Bin 0 -> 20211 bytes
+ .../narrow-short-500x420.png                       |   Bin 0 -> 18623 bytes
+ .../phone-390x844.png                              |   Bin 0 -> 20094 bytes
+ .../phone-short-390x640.png                        |   Bin 0 -> 19031 bytes
+ .../small-desktop-1024x768.png                     |   Bin 0 -> 32384 bytes
+ .../small-desktop-short-1024x480.png               |   Bin 0 -> 31029 bytes
+ .../tablet-800x700.png                             |   Bin 0 -> 33156 bytes
+ .../tablet-900x700.png                             |   Bin 0 -> 33258 bytes
+ .../tablet-short-800x420.png                       |   Bin 0 -> 28325 bytes
+ .../terminal-299x700.png                           |   Bin 0 -> 19414 bytes
+ .../threshold-639x700.png                          |   Bin 0 -> 20418 bytes
+ .../threshold-640x700.png                          |   Bin 0 -> 20441 bytes
+ .../wide-1440x900.png                              |   Bin 0 -> 58279 bytes
+ .../workspace-responsive-probe-results.json        | 16191 +++++++++++++++++++
+ .../workspace-responsive-probe-summary.json        |   700 +
+ .../handoff-summary.md                             |   140 +
+ .../implementation-handoff.md                      |   180 +
+ .../implementation-revision-record.md              |   104 +
+ .../investigation-notes.md                         |   290 +
+ .../provider-media-recovery-analysis.md            |   192 +
+ .../release-deployment-report.md                   |   110 +
+ .../release-notes.md                               |    10 +
+ .../release-v1.4.33.log                            |    35 +
+ .../release-workflow-status-final.log              |     5 +
+ .../release-workflow-status.log                    |     5 +
+ .../requirements.md                                |   199 +
+ .../runtime-probe-evidence.md                      |    78 +
+ .../solution-revision-record.md                    |   101 +
+ 160 files changed, 41564 insertions(+), 555 deletions(-)
+ delete mode 100644 autobyteus-ts/src/llm/metadata/curated-model-metadata.ts
+ create mode 100644 autobyteus-ts/src/llm/multimodal-capabilities.ts
+ create mode 100644 autobyteus-ts/src/llm/supported-model-static-metadata.ts
+ create mode 100644 autobyteus-ts/src/llm/utils/media-input-sanitizer.ts
+ create mode 100644 autobyteus-ts/src/memory/llm-request-recovery.ts
+ create mode 100644 autobyteus-ts/tests/unit/memory/llm-request-recovery.test.ts
+ create mode 100644 autobyteus-web/electron/browser/__tests__/browser-tab-page-operations.spec.ts
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-cleanup-final.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-diff-check.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-electron-focused.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-final-diff-check.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-build.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-dev-correct.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-dev.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-focused-tests.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-gemini-settings-browser.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-server-sanitized.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-server.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-settings-browser-final.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-settings-browser-retry.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-settings-browser.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-frontend-workspace-probe.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-agent.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-build.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-import-actual-success.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-import-actual-tty.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-import-actual.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-import-dry-run.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-live-import-verified.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-revision-record.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-server-graphql-contract.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-ts-focused.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-ts-full-typecheck.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/api-e2e-ts-typecheck.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/architecture-review-revision-record.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/code-review-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/code-review-revision-record.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/delivery-diff-check.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/delivery-initial-base-refresh.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/delivery-revision-record.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/design-review-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/design-spec.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/docs-sync-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/electron-artifact-inventory.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/electron-main-personal-build.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/electron-main-personal-runtime.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/electron-packaged-terminal-runtime.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/electron-test-build.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-gemini-settings-browser.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-settings-browser-final.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-settings-browser.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-debug-correct.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-debug.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/desktop-1180x800.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/desktop-1280x800.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/gap-700x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/gap-767x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/md-768x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/mobile-route-390x844.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/narrow-500x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/narrow-short-500x420.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/phone-390x844.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/phone-short-390x640.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/small-desktop-1024x768.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/small-desktop-short-1024x480.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/tablet-800x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/tablet-900x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/tablet-short-800x420.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/terminal-299x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/threshold-639x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/threshold-640x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/wide-1440x900.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/workspace-responsive-probe-results.json
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-correct/workspace-responsive-probe-summary.json
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/desktop-1180x800.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/desktop-1280x800.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/gap-700x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/gap-767x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/md-768x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/mobile-route-390x844.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/narrow-500x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/narrow-short-500x420.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/phone-390x844.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/phone-short-390x640.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/small-desktop-1024x768.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/small-desktop-short-1024x480.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/tablet-800x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/tablet-900x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/tablet-short-800x420.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/terminal-299x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/threshold-639x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/threshold-640x700.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/wide-1440x900.png
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/workspace-responsive-probe-results.json
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/frontend-workspace-probe-final/workspace-responsive-probe-summary.json
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/handoff-summary.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/implementation-handoff.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/implementation-revision-record.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/investigation-notes.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/provider-media-recovery-analysis.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/release-deployment-report.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/release-notes.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/release-v1.4.33.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/release-workflow-status-final.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/release-workflow-status.log
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/requirements.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/runtime-probe-evidence.md
+ create mode 100644 tickets/done/daily-assistant-luna-image-error/solution-revision-record.md
+Integrated candidate: fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2
+Post-merge divergence HEAD...origin/personal: 98/0
+Merge parents:
+fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2
+981a9a393f643e35d77daa0ca7e1a864edb54f66 ea6d6b011035d71dc9594d61ad035470985fca8e
+Merge remote-tracking branch 'origin/personal' into codex/universal-application-framework-proposal-analysis
+Completed UTC: 2026-07-31T13:23:07Z
+FINAL: PASS
+
+## Pre-handoff remote ref confirmation
+timestamp_utc=2026-07-31T13:38:14Z
+remote_base_before=ea6d6b011035d71dc9594d61ad035470985fca8e
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+remote_base_after=ea6d6b011035d71dc9594d61ad035470985fca8e
+candidate=fe7147cb7abd764ed5781cbf0febdb1b0e1af5a2
+ahead_behind=98/0
+FINAL_PRE_HANDOFF_REF=PASS_UNCHANGED

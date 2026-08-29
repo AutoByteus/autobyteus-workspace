@@ -1,0 +1,179 @@
+utc=2026-08-25T23:07:30Z
+--- listeners before active shutdown ---
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    50032 normy   28u  IPv4 0x58e693eb8b0f991a      0t0  TCP 127.0.0.1:43360 (LISTEN)
+--- isolated-root processes before active shutdown ---
+49726 77532 /bin/bash -lc env -u DATABASE_URL -u DATABASE_URL_TEST AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:43360 node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 43360 --data-dir /private/tmp/api-rev-001-scope-boundary/studio 2>&1 | tee tickets/in-progress/application-execution-scope-boundary-hardening/evidence/api-e2e/api-rev-001-studio-server.log
+50032 49726 node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 43360 --data-dir /private/tmp/api-rev-001-scope-boundary/studio
+--- live run directories ---
+agent_teams
+brief_studio_team_cd4756fda586465bbd2e8cd0900f1ba0
+nested_classroom_test_team_965d4285a93443f0813191542c75185c
+socratic_math_team_050dfe5c416f4769ac37ed2f30b45b5b
+nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1
+
+utc_after=2026-08-25T23:07:44Z
+--- listener after SIGINT ---
+--- isolated-root processes after SIGINT ---
+--- DB openers after SIGINT ---
+--- server shutdown tail ---
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T22:50:08.002Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T22:50:08.014Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T22:50:13.420Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T22:50:13.427Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+Creating new workspace for rootPath: /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime.
+Created and registered workspace ID: agent_ws_c97ccdb3e696c07d328948beab62bc8e1034c29f8cb515ac1046c240efc9260d
+Creating new workspace for rootPath: /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime.
+Reusing registered workspace ID: agent_ws_c97ccdb3e696c07d328948beab62bc8e1034c29f8cb515ac1046c240efc9260d
+Published codex_app_server agent run 'brief_studio_researcher_a6b001d49b174a988d21913075c305e0'.
+Creating new workspace for rootPath: /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime.
+Reusing registered workspace ID: agent_ws_c97ccdb3e696c07d328948beab62bc8e1034c29f8cb515ac1046c240efc9260d
+Published codex_app_server agent run 'brief_studio_writer_67e6263018834469a564dfbf26ca1d6f'.
+Creating new workspace for rootPath: /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__socratic-math-teacher__a7295fca7c5585d43cd6a4348e6afc2bd25ccd5df72d9122a7eafd5626c9aace/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__socratic-math-teacher__a7295fca7c5585d43cd6a4348e6afc2bd25ccd5df72d9122a7eafd5626c9aace/runtime.
+Created and registered workspace ID: agent_ws_e3dd4f308e201c6427df059e802c1cd5f22a043bd6feeb7f3845697e10b6c79d
+Creating new workspace for rootPath: /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__socratic-math-teacher__a7295fca7c5585d43cd6a4348e6afc2bd25ccd5df72d9122a7eafd5626c9aace/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__socratic-math-teacher__a7295fca7c5585d43cd6a4348e6afc2bd25ccd5df72d9122a7eafd5626c9aace/runtime.
+Reusing registered workspace ID: agent_ws_e3dd4f308e201c6427df059e802c1cd5f22a043bd6feeb7f3845697e10b6c79d
+Published codex_app_server agent run 'socratic_math_tutor_9a1b1aa513d64c44afa046a5569bc9e2'.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+Discovering LM Studio models from host: http://127.0.0.1:1234
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+FileSystemWatcher initialized for '/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Started filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ad66ecce-8e00-45c7-9749-53a266a1abac for workspace temp_ws_default
+Created file explorer session ad66ecce-8e00-45c7-9749-53a266a1abac for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: ad66ecce-8e00-45c7-9749-53a266a1abac for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+FileExplorerSession closed: ad66ecce-8e00-45c7-9749-53a266a1abac
+Closed file explorer session ad66ecce-8e00-45c7-9749-53a266a1abac. Active sessions: 0
+File explorer WebSocket disconnected: ad66ecce-8e00-45c7-9749-53a266a1abac
+FileSystemWatcher initialized for '/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: a667e359-9d46-47b6-a3c9-193ff8a3e248 for workspace temp_ws_default
+Created file explorer session a667e359-9d46-47b6-a3c9-193ff8a3e248 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: a667e359-9d46-47b6-a3c9-193ff8a3e248 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+FileExplorerSession closed: a667e359-9d46-47b6-a3c9-193ff8a3e248
+Closed file explorer session a667e359-9d46-47b6-a3c9-193ff8a3e248. Active sessions: 0
+File explorer WebSocket disconnected: a667e359-9d46-47b6-a3c9-193ff8a3e248
+FileSystemWatcher initialized for '/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 3e675fa6-e56b-407d-9431-4d173fc2e01d for workspace temp_ws_default
+Created file explorer session 3e675fa6-e56b-407d-9431-4d173fc2e01d for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 3e675fa6-e56b-407d-9431-4d173fc2e01d for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+FileExplorerSession closed: 3e675fa6-e56b-407d-9431-4d173fc2e01d
+Closed file explorer session 3e675fa6-e56b-407d-9431-4d173fc2e01d. Active sessions: 0
+File explorer WebSocket disconnected: 3e675fa6-e56b-407d-9431-4d173fc2e01d
+FileSystemWatcher initialized for '/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 23574988-e7d4-418f-9e87-5136cd885906 for workspace temp_ws_default
+Created file explorer session 23574988-e7d4-418f-9e87-5136cd885906 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 23574988-e7d4-418f-9e87-5136cd885906 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+FileExplorerSession closed: 23574988-e7d4-418f-9e87-5136cd885906
+Closed file explorer session 23574988-e7d4-418f-9e87-5136cd885906. Active sessions: 0
+File explorer WebSocket disconnected: 23574988-e7d4-418f-9e87-5136cd885906
+FileSystemWatcher initialized for '/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5ce88ae8-bdce-4d75-a4cd-b9542f6b4d20 for workspace temp_ws_default
+Created file explorer session 5ce88ae8-bdce-4d75-a4cd-b9542f6b4d20 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 5ce88ae8-bdce-4d75-a4cd-b9542f6b4d20 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_965d4285a93443f0813191542c75185c/test_teacher_b3a991d91c2046ecb8a334204e6fdc39/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_965d4285a93443f0813191542c75185c/student_study_group_9343df6289664fd78593ad45e1482a84/student_one_ba075c4ce06e45438b89986b6fec2805/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_965d4285a93443f0813191542c75185c/student_study_group_9343df6289664fd78593ad45e1482a84/student_two_f9d7936381624703a0468cee3cb3c1df/raw_traces_active.jsonl
+Released file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+FileExplorerSession closed: 5ce88ae8-bdce-4d75-a4cd-b9542f6b4d20
+Closed file explorer session 5ce88ae8-bdce-4d75-a4cd-b9542f6b4d20. Active sessions: 0
+File explorer WebSocket disconnected: 5ce88ae8-bdce-4d75-a4cd-b9542f6b4d20
+Created terminal session c7b6c012-fa4b-43a0-9537-205c1ae79593 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c7b6c012-fa4b-43a0-9537-205c1ae79593
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session c7b6c012-fa4b-43a0-9537-205c1ae79593
+Terminal WebSocket disconnected: c7b6c012-fa4b-43a0-9537-205c1ae79593
+FileSystemWatcher initialized for '/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+Acquired file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f9435264-1f52-47d2-b8a5-a80e39004559 for workspace temp_ws_default
+Created file explorer session f9435264-1f52-47d2-b8a5-a80e39004559 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: f9435264-1f52-47d2-b8a5-a80e39004559 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1/test_teacher_8a6da062670f41319ae8e4e876316cf1/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1/student_study_group_b2c13165be9d427480497704f408a63a/student_one_d88c03d06ee141efaf538ac24f951fe1/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1/student_study_group_b2c13165be9d427480497704f408a63a/student_two_57b8540d60ff4d1fb1c2a9c5a6bb8f88/raw_traces_active.jsonl
+Released file watcher lease for /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-001-scope-boundary/studio/temp_workspace
+FileExplorerSession closed: f9435264-1f52-47d2-b8a5-a80e39004559
+Closed file explorer session f9435264-1f52-47d2-b8a5-a80e39004559. Active sessions: 0
+File explorer WebSocket disconnected: f9435264-1f52-47d2-b8a5-a80e39004559
+Agent team websocket attached for team run nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1
+Created agent session 9f9f773d-292b-45ca-a918-7ec55b3fc047 for run nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1
+Agent Team WebSocket connected: session=9f9f773d-292b-45ca-a918-7ec55b3fc047, run=nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_965d4285a93443f0813191542c75185c/test_teacher_b3a991d91c2046ecb8a334204e6fdc39/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_965d4285a93443f0813191542c75185c/student_study_group_9343df6289664fd78593ad45e1482a84/student_one_ba075c4ce06e45438b89986b6fec2805/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-001-scope-boundary/studio/memory/agent_teams/nested_classroom_test_team_965d4285a93443f0813191542c75185c/student_study_group_9343df6289664fd78593ad45e1482a84/student_two_f9d7936381624703a0468cee3cb3c1df/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_965d4285a93443f0813191542c75185c
+Created agent session 30757996-51cb-4bde-a5df-f60e18d23005 for run nested_classroom_test_team_965d4285a93443f0813191542c75185c
+Agent Team WebSocket connected: session=30757996-51cb-4bde-a5df-f60e18d23005, run=nested_classroom_test_team_965d4285a93443f0813191542c75185c
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'test_teacher_8a6da062670f41319ae8e4e876316cf1'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'student_one_d88c03d06ee141efaf538ac24f951fe1'.
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'student_one_07dee472d62c42ec9102443eaffcfa35'.
+Closed agent session 30757996-51cb-4bde-a5df-f60e18d23005
+Closed agent session 9f9f773d-292b-45ca-a918-7ec55b3fc047
+Populating agent definition cache for the first time...
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T23:05:12.348Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T23:05:12.348Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T23:05:12.368Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+[2026-08-25T23:05:12.368Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.

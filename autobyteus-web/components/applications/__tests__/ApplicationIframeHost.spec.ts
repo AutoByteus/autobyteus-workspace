@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import {
-  createApplicationHostBootstrapEnvelopeV4,
-  createApplicationUiReadyEnvelopeV4,
+  createApplicationHostBootstrapEnvelope,
+  createApplicationUiReadyEnvelope,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationIframeHost from '../ApplicationIframeHost.vue'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
@@ -77,7 +77,7 @@ describe('ApplicationIframeHost', () => {
       },
     ]])
 
-    const wrongIframeLaunchEvent = createApplicationUiReadyEnvelopeV4({
+    const wrongIframeLaunchEvent = createApplicationUiReadyEnvelope({
       applicationId: descriptor.applicationId,
       iframeLaunchId: 'stale-iframe-launch',
     })
@@ -95,7 +95,7 @@ describe('ApplicationIframeHost', () => {
     expect(wrapper.emitted('ready')).toBeUndefined()
     expect(contentWindowMock.postMessage).not.toHaveBeenCalled()
 
-    const readyEvent = createApplicationUiReadyEnvelopeV4({
+    const readyEvent = createApplicationUiReadyEnvelope({
       applicationId: descriptor.applicationId,
       iframeLaunchId: descriptor.iframeLaunchId,
     })
@@ -119,7 +119,7 @@ describe('ApplicationIframeHost', () => {
     ]])
     expect(contentWindowMock.postMessage).not.toHaveBeenCalled()
 
-    const bootstrapEnvelope = createApplicationHostBootstrapEnvelopeV4({
+    const bootstrapEnvelope = createApplicationHostBootstrapEnvelope({
       host: {
         origin: descriptor.normalizedHostOrigin,
       },
@@ -181,7 +181,7 @@ describe('ApplicationIframeHost', () => {
     })
 
     await wrapper.setProps({
-      bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV4({
+      bootstrapEnvelope: createApplicationHostBootstrapEnvelope({
         host: {
           origin: descriptor.normalizedHostOrigin,
         },

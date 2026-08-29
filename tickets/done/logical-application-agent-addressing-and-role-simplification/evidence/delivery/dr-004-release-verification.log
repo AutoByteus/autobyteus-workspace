@@ -1,0 +1,52 @@
+DR-004 v1.4.59 release/publication verification
+UTC: 2026-08-27T03:43:31Z
+
+== Repository/tag ==
+personal_head=65bc75473beca7f5cbab8a10ff52b4274bec1807
+origin_personal=65bc75473beca7f5cbab8a10ff52b4274bec1807
+tag_commit=65bc75473beca7f5cbab8a10ff52b4274bec1807
+origin_annotated_tag_commit=65bc75473beca7f5cbab8a10ff52b4274bec1807
+PASS repository/tag identity
+
+== Version synchronization ==
+PASS autobyteus-web/package.json=1.4.59
+PASS autobyteus-message-gateway/package.json=1.4.59
+PASS managed messaging release manifest references v1.4.59
+
+== Tag-triggered workflow results ==
+33000224310	Android APK Release	completed	success	2026-08-26T18:38:34Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33000224310
+33000224316	Desktop Release	completed	success	2026-08-26T18:53:56Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33000224316
+33000224297	Release Messaging Gateway	completed	success	2026-08-26T18:36:34Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33000224297
+33000224390	Server Docker Release	completed	success	2026-08-26T19:01:43Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33000224390
+33000224301	iOS App Store Connect Release	completed	success	2026-08-26T18:44:57Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33000224301
+PASS all five tag-triggered release workflows completed successfully
+
+== GitHub Release ==
+{
+  "name": "v1.4.59",
+  "tagName": "v1.4.59",
+  "isDraft": false,
+  "isPrerelease": false,
+  "publishedAt": "2026-08-26T18:36:31Z",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.59",
+  "assetCount": 21
+}
+PASS release asset AutoByteus_personal_macos-arm64-1.4.59.dmg
+PASS release asset AutoByteus_personal_macos-x64-1.4.59.dmg
+PASS release asset AutoByteus_personal_linux-x64-1.4.59.AppImage
+PASS release asset AutoByteus_personal_linux-arm64-1.4.59.AppImage
+PASS release asset AutoByteus_personal_windows-1.4.59.exe
+PASS release asset AutoByteus_personal_android-1.4.59-release.apk
+PASS release asset autobyteus-message-gateway-1.4.59-node-generic.tar.gz
+PASS release asset release-manifest.json
+PASS release asset latest-mac.yml
+PASS release asset latest-linux.yml
+PASS release asset latest-linux-arm64.yml
+PASS release asset latest.yml
+PASS curated release notes are published
+
+== Docker Hub multi-architecture publication ==
+PASS Docker tag 1.4.59 includes linux/amd64 and linux/arm64
+PASS Docker tag latest includes linux/amd64 and linux/arm64
+
+RESULT: PASS — v1.4.59 repository, workflows, GitHub Release, assets, notes, iOS upload workflow, and Docker publication verified.

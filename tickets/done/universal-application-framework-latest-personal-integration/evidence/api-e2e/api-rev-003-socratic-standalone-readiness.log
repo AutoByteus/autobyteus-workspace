@@ -1,0 +1,25 @@
+# API-REV-003 Socratic standalone readiness
+UTC 2026-08-22T10:29:34Z
+DATA_ROOT=/private/tmp/api-rev003-socratic-standalone.ei7zvL
+
+$ curl -sS -D - http://127.0.0.1:43141/ -o /dev/null
+HTTP/1.1 200 OK
+content-type: text/html
+Date: Sat, 22 Aug 2026 10:29:34 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+Transfer-Encoding: chunked
+
+
+$ find <data>/applications -maxdepth 3 -type d
+/private/tmp/api-rev003-socratic-standalone.ei7zvL/applications
+/private/tmp/api-rev003-socratic-standalone.ei7zvL/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572
+/private/tmp/api-rev003-socratic-standalone.ei7zvL/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572/runtime
+
+$ test canonical runtime directory exists
+runtimeDir=/private/tmp/api-rev003-socratic-standalone.ei7zvL/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572/runtime
+runtimeDirExists=yes
+
+$ lsof -nP -iTCP:43141 -sTCP:LISTEN
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    34301 normy   24u  IPv4 0x1cfa07dd1c0023f2      0t0  TCP 127.0.0.1:43141 (LISTEN)

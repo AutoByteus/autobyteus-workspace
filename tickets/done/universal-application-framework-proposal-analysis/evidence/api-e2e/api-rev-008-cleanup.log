@@ -1,0 +1,19 @@
+# API-REV-008 cleanup
+2026-07-30T08:16:55.139272+00:00
+## listeners
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+## data
+absent applications/brief-studio/.autobyteus
+absent .autobyteus
+## temporary scripts
+## task-owned processes
+none
+## diff check
+pass
+## json evidence parse
+pass
+## retained-secret scan
+pass

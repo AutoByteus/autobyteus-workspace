@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "scenario": "APIE2E-RECOVERY-008",
+  "recoveredAnswer": true,
+  "recoveredPrompt": true,
+  "detail": "Solve 9x - 8 = 28 step by step and verify the answer. lessonId lesson-f6418026-6a7d-4a2e-97eb-2d2afbfbd4ea Active Created 24.8.2026, 10:30:58 Updated 24.8.2026, 10:31:26 LESSON RECORD lesson-f6418026-6a7d-4a2e-97eb-2d2afbfbd4ea Status active CONVERSATION 2 messages Closed — NEXT STEP Ask a follow-up question or request a hint to continue this lesson. Request hint Close lesson LIVE TUTOR Tutor connected Live text appears here while the tutor responds. Completed turns remain in the transcript below. Transcript The lesson keeps the tutoring conversation and student follow-ups together in one record. student Prompt 24.8.2026, 10:30:58 Solve 9x - 8 = 28 step by step and verify the answer. tutor Lesson_response 24.8.2026, 10:31:26 # Solving \\(9x - 8 = 28\\) 1. **Undo the subtraction of 8** by adding 8 to both sides: \\[ 9x - 8 + 8 = 28 + 8 \\] \\[ 9x = 36 \\] 2. **Undo the multiplication by 9** by dividing both sides by 9: \\[ \\frac{9x}{9} = \\frac{36}{9} \\] \\[ x = 4 \\] ### Verification Substitute \\(x=4\\) into the original equation: \\[ 9(4)-8 = 36-8 = 28 \\] The result is 28, so the answer is **\\(x=4\\)**. Send follow-up Send one follow-up or request one hint. The next action becomes available after the tutor response is saved. Advanced runtime details"
+}

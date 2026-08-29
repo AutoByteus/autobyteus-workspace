@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { MixedTaskAgentExecutionRegistry } from "../../../src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.js";
 import { MixedAgentMemberContext, MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
@@ -12,9 +13,11 @@ import {
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import {
   testAgentNode,
   testAgentTeamNode,
+  testMemberTeamContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -38,11 +41,12 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
       coordinatorAddress: "/lead",
       children: [testAgentNode("/lead"), reviewTeam],
     });
+    const physicalScope = createChildTeamRunPhysicalScope(
+      createRootTeamRunPhysicalScope("owning-team-run"),
+      reviewTeam.teamRunId,
+    );
     const teamContext = new TeamRunContext({
-      physicalScope: createChildTeamRunPhysicalScope(
-        createRootTeamRunPhysicalScope("owning-team-run"),
-        reviewTeam.teamRunId,
-      ),
+      physicalScope,
       teamRunId: reviewTeam.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode: reviewTeam,
@@ -87,14 +91,33 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
         abort: async () => ({ kind: "aborted" as const }),
       };
     });
+    const memoryLocationService = new AgentMemoryLocationService({
+      memoryDir: appConfigProvider.config.getMemoryDir(),
+      locationService: createStoredTeamRunExecutionTreeLocationService(
+        appConfigProvider.config.getMemoryDir(),
+      ),
+    });
+    const getTeamAgentRunLocation = vi.spyOn(
+      memoryLocationService,
+      "getTeamAgentRunLocation",
+    );
+    const taskAgentRunId = "worker_00000000000000000000000000000001";
     const registry = new MixedTaskAgentExecutionRegistry({
       teamContext,
       agentRunManager: { prepareNewAgentRun } as never,
+      memoryLocationService,
+      activityInspector: { inspect: vi.fn(() => ({ kind: "none" })) } as never,
+      memberTeamContextBuilder: {
+        build: vi.fn(async () => testMemberTeamContext({
+          rootTeamRunId: config.rootTeam.teamRunId,
+          memberAddress: workerNode.address,
+          agentRunId: taskAgentRunId,
+        })),
+      } as never,
       publish: vi.fn(),
       deliverInterAgentMessage: vi.fn(),
       acceptPlatformBinding: vi.fn(async () => undefined),
     });
-    const taskAgentRunId = "worker_00000000000000000000000000000001";
     const message = new AgentInputUserMessage("start task", SenderType.USER);
 
     const prepared = await registry.prepare({
@@ -110,6 +133,11 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
       address: "/review/worker",
       agentRunId: taskAgentRunId,
     });
+    expect(prepared.stagedPlatformBindings).toEqual([
+      expect.objectContaining({
+        platformAgentRunId: `platform-${taskAgentRunId}`,
+      }),
+    ]);
     expect(registry.get(taskAgentRunId)).toBeNull();
     expect(postedMessages).toEqual([]);
     prepared.sealForCommit();
@@ -130,6 +158,11 @@ describe("MixedTaskAgentExecutionRegistry task-agent memory", () => {
         }),
       }),
     );
+    expect(getTeamAgentRunLocation).toHaveBeenCalledWith({
+      ...physicalScope,
+      agentRunId: taskAgentRunId,
+    });
     expect((createdConfigs[0] as { memoryDir?: string }).memoryDir).not.toBe("/tmp/template-member-memory-dir");
+    registry.dispose();
   });
 });

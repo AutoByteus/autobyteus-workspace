@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import {
   buildTeamLocalAgentDefinitionId,
   buildTeamLocalTeamDefinitionId,
@@ -10,6 +10,7 @@ import {
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -18,9 +19,11 @@ function uniqueId(prefix: string): string {
 describe("Agent definitions GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let closeStudioServices: (() => void) | null = null;
   const cleanupPaths = new Set<string>();
 
   beforeAll(async () => {
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -28,6 +31,8 @@ describe("Agent definitions GraphQL e2e", () => {
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
+
+  afterAll(() => closeStudioServices?.());
 
   afterEach(async () => {
     for (const filePath of cleanupPaths) {

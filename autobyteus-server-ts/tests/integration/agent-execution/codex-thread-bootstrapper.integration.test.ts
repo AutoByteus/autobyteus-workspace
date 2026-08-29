@@ -17,6 +17,7 @@ import { WorkspaceSkillMaterializer } from "../../../src/agent-execution/backend
 import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backends/codex/codex-workspace-resolver.js";
 import type { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../src/skills/services/skill-service.js";
+import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -224,7 +225,7 @@ const createBootstrapper = (input: {
     getAgentDefinitionById: async () => ({
       name: "Live Codex bootstrapper fixture",
       skillNames: input.configuredSkills.map((skill) => skill.name),
-      toolNames: [],
+      toolNames: ["send_message_to"],
       instructions: null,
       description: null,
     }),
@@ -233,7 +234,21 @@ const createBootstrapper = (input: {
     resolveConfiguredSkillBindingsForAgent: () =>
       input.configuredSkills.map((skill) => ({ kind: "resolved" as const, skill })),
   } as unknown as SkillService;
+  const agentToolMcpRunSessions = {
+    activateForRun: (issueInput) => ({
+      kind: "active" as const,
+      sessionId: "codex-bootstrapper-integration",
+      owner: issueInput.owner,
+      descriptor: {
+        name: "autobyteus_agent_tools",
+        transport: "streamable_http",
+        serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/codex-bootstrapper-integration",
+        enabledTools: ["send_message_to"],
+      },
+    }),
+  } as AgentToolMcpRunSessionActivator;
   return new CodexThreadBootstrapper(
+    agentToolMcpRunSessions,
     input.materializer,
     workspaceResolver,
     agentDefinitionService,
@@ -312,6 +327,15 @@ describeCodexBootstrapperIntegration(
         const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
 
         expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
+          mcp_servers: {
+            autobyteus_agent_tools: {
+              url: "http://127.0.0.1:3000/mcp/agent-tools/codex-bootstrapper-integration",
+              enabled_tools: ["send_message_to"],
+              startup_timeout_sec: 5,
+            },
+          },
+        });
         const workspaceSkillEntries = await fs.readdir(
           path.join(workspaceRoot, ".codex", "skills"),
         );

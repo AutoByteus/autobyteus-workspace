@@ -1,0 +1,15 @@
+{
+  "result": "FAIL",
+  "assertions": {
+    "AC-032_researcher_context_first_once_business_prompt_artifact_publication_handoff": true,
+    "AC-033_writer_context_first_once_handoff_only_artifact_publication": true,
+    "AC-034_exact_identity_join_no_secret": true,
+    "AC-035_supported_browser_same_brief_in_review_two_one_final": true,
+    "AC-036_context_read_only_publication_reconciliation_causes_change": true,
+    "AC-037_exact_codex_luna_business_prompts_no_named_foundation": true,
+    "AC-038_complete_handoff_verbatim_use_relative_publication": true,
+    "AC-039_zero_shell_and_no_ordinary_registry_file_calls": false
+  },
+  "researchWords": 300,
+  "writerWords": 336
+}

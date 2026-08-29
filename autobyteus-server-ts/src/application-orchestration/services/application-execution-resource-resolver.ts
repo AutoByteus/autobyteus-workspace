@@ -3,9 +3,9 @@ import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
 } from "@autobyteus/application-sdk-contracts";
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 
 export type ResolvedApplicationExecutionResource = ApplicationExecutionResourceSummary;
 
@@ -20,22 +20,22 @@ const normalizeFriendlyName = (
 export class ApplicationExecutionResourceResolver {
   constructor(
     private readonly dependencies: {
-      applicationBundleService?: ApplicationBundleService;
-      agentDefinitionService?: AgentDefinitionService;
-      agentTeamDefinitionService?: AgentTeamDefinitionService;
-    } = {},
+      applicationBundleService: ApplicationBundleService;
+      agentDefinitionService: AgentDefinitionService;
+      agentTeamDefinitionService: AgentTeamDefinitionService;
+    },
   ) {}
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService;
   }
 
   private get agentDefinitionService(): AgentDefinitionService {
-    return this.dependencies.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    return this.dependencies.agentDefinitionService;
   }
 
   private get agentTeamDefinitionService(): AgentTeamDefinitionService {
-    return this.dependencies.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
+    return this.dependencies.agentTeamDefinitionService;
   }
 
   async listAvailableExecutionResources(

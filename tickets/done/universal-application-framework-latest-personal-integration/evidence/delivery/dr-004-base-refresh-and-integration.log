@@ -1,0 +1,214 @@
+DR-004 latest origin/personal refresh and integration evidence
+timestamp_before_fetch=2026-08-23T04:14:08Z
+branch=codex/universal-application-framework-latest-personal-integration
+checkpoint_head=663f44d31deb05bf47f0eda780de4d754187a51b
+previous_integrated_base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+tracking_before_fetch=1629441a30dfce91d75b9bf7dcdd508b0f371bc5
+$ git fetch origin personal --prune
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+timestamp_after_fetch=2026-08-23T04:14:10Z
+tracking_after_fetch=1629441a30dfce91d75b9bf7dcdd508b0f371bc5
+merge_base_before_integration=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+divergence_before_integration=140	31
+new_base_commit_count_since_previous=31
+--- commits since previous integrated base ---
+1629441a3 (origin/personal, origin/HEAD, personal) chore(delivery): record release cleanup completion
+a175b2b09 (tag: v1.4.55) chore(release): bump workspace release version to 1.4.55
+80ab35035 chore(delivery): record finalization post-merge checks
+ad111178e chore(delivery): archive provider catalog pricing error messaging
+e796ac550 chore(delivery): record Electron test build
+819462869 chore(delivery): record final API E2E handoff
+7cb011903 chore(delivery): record post-integration focused checks
+333816483 chore(delivery): checkpoint API E2E residual review closure
+ec6c49fc7 chore(delivery): hold for API E2E quality re-review
+8021ed50d chore(delivery): checkpoint API E2E quality probe rework
+45408c762 chore(delivery): checkpoint API E2E support re-review
+2df2dd4bb chore(delivery): hold for API E2E support re-review
+3f9ac980d chore(delivery): checkpoint API E2E stale support repair
+4c7b598e1 chore(delivery): record API E2E execution hold
+e71354165 chore(delivery): checkpoint API E2E proportional review
+7e267cf9e chore(delivery): block handoff for API E2E re-review
+e6ba62846 chore(delivery): checkpoint API E2E round 7 rework
+0e42b0e36 chore(delivery): record downstream review closure
+3e74b005d chore(delivery): normalize local verification checkpoint status
+b7c64fbd6 chore(delivery): finalize verification checkpoint metadata
+025a7ee56 chore(delivery): record handoff checkpoint
+d7ae16ca5 chore(delivery): sync provider pricing and error docs
+e336a9744 chore(delivery): checkpoint integrated API E2E review package
+4aaca0e85 fix: preserve message-only application errors
+115dcd7d0 feat: update provider catalog and error transport
+--- changed paths since previous integrated base ---
+M	.github/release-notes/release-notes.md
+A	api-e2e-coverage-investigation.md
+A	api-e2e-execution-coverage-report.md
+A	api-e2e-revision-record.md
+A	api-e2e-test-review-report.md
+A	architecture-review-revision-record.md
+M	autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+M	autobyteus-application-sdk-contracts/README.md
+M	autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+M	autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+M	autobyteus-application-sdk-contracts/src/execution-resources.ts
+M	autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+M	autobyteus-message-gateway/package.json
+M	autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+M	autobyteus-server-ts/docs/modules/application_communication_model.md
+M	autobyteus-server-ts/docs/modules/llm_management.md
+M	autobyteus-server-ts/docs/modules/token_usage.md
+M	autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts
+M	autobyteus-server-ts/src/agent-team-execution/services/team-agent-event-adapter.ts
+M	autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-event-projector.ts
+M	autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+M	autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+M	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+M	autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+M	autobyteus-server-ts/src/secret-management/resolution/secret-management-provider-api-key-resolver.ts
+M	autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts
+M	autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts
+M	autobyteus-server-ts/src/token-usage/pricing/token-price-config-provider.ts
+M	autobyteus-server-ts/src/token-usage/pricing/token-pricing-policy.ts
+M	autobyteus-server-ts/tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+M	autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+M	autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+M	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+M	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-event-projector.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+M	autobyteus-server-ts/tests/unit/secret-management/secret-management-provider-api-key-resolver.test.ts
+M	autobyteus-server-ts/tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+M	autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts
+M	autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map
+M	autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js
+M	autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map
+M	autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts
+M	autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+M	autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts
+M	autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts
+M	autobyteus-ts/src/agent/events/notifiers.ts
+M	autobyteus-ts/src/agent/loop/agent-turn-runner.ts
+M	autobyteus-ts/src/agent/loop/llm-phase.ts
+M	autobyteus-ts/src/agent/loop/tool-phase.ts
+M	autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts
+M	autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts
+M	autobyteus-ts/src/llm/api/gemini-llm.ts
+M	autobyteus-ts/src/llm/api/glm-llm.ts
+M	autobyteus-ts/src/llm/api/grok-llm.ts
+D	autobyteus-ts/src/llm/api/kimi-k2-7-code-policy.ts
+M	autobyteus-ts/src/llm/api/kimi-llm.ts
+M	autobyteus-ts/src/llm/api/openai-compatible-llm.ts
+A	autobyteus-ts/src/llm/current-model-selection-error.ts
+A	autobyteus-ts/src/llm/errors/provider-error.ts
+M	autobyteus-ts/src/llm/index.ts
+M	autobyteus-ts/src/llm/llm-factory.ts
+A	autobyteus-ts/src/llm/model-pricing-types.ts
+M	autobyteus-ts/src/llm/supported-model-definitions.ts
+M	autobyteus-ts/src/llm/utils/llm-config.ts
+A	autobyteus-ts/src/llm/utils/token-pricing-schedule.ts
+M	autobyteus-ts/src/secrets/index.ts
+A	autobyteus-ts/src/secrets/provider-api-key-error.ts
+M	autobyteus-ts/src/utils/gemini-model-mapping.ts
+M	autobyteus-ts/tests/unit/agent/events/notifiers.test.ts
+M	autobyteus-ts/tests/unit/agent/streaming/events/stream-event-payloads.test.ts
+M	autobyteus-ts/tests/unit/agent/streaming/streams/agent-event-stream.test.ts
+M	autobyteus-ts/tests/unit/llm/api/glm-llm.test.ts
+M	autobyteus-ts/tests/unit/llm/api/grok-llm.test.ts
+M	autobyteus-ts/tests/unit/llm/api/kimi-llm.test.ts
+A	autobyteus-ts/tests/unit/llm/errors/provider-error.test.ts
+M	autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts
+M	autobyteus-web/docs/agent_integration_minimal_bridge.md
+M	autobyteus-web/package.json
+M	autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+M	autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+M	autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+M	autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts
+M	autobyteus-web/services/agentStreaming/protocol/messageParser.ts
+M	autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+M	autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
+M	autobyteus-web/services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+M	autobyteus-web/services/runSubmission/__tests__/localUserSubmission.spec.ts
+M	autobyteus-web/services/runSubmission/localUserSubmission.ts
+M	autobyteus-web/types/segments.ts
+A	code-review-report.md
+A	code-review-revision-record.md
+A	design-review-report.md
+A	design-spec.md
+A	implementation-handoff.md
+A	implementation-revision-record.md
+A	investigation-notes.md
+A	provider-error-and-pricing-contract.md
+A	requirements.md
+A	solution-revision-record.md
+M	test-support/live-e2e/live-e2e-harness.ts
+M	test-support/live-e2e/live-e2e-scenarios.mjs
+M	tickets/done/application-agent-streaming/application-agent-communication-contract.md
+A	tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/electron-build-enterprise-macos-arm64.log
+A	tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/finalization-post-merge-check.log
+A	tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check-round2.log
+A	tickets/done/provider-catalog-pricing-error-messaging/delivery-evidence/post-integration-focused-check.log
+A	tickets/done/provider-catalog-pricing-error-messaging/delivery-revision-record.md
+A	tickets/done/provider-catalog-pricing-error-messaging/docs-sync-report.md
+A	tickets/done/provider-catalog-pricing-error-messaging/handoff-summary.md
+A	tickets/done/provider-catalog-pricing-error-messaging/release-deployment-report.md
+A	tickets/done/provider-catalog-pricing-error-messaging/release-notes.md
+--- merge-tree preview ---
+9a548b23667c8bb9fcdab27602ba2f8acb1fffe4
+100644 d0f423575d3967def0baa9f077d400fb0cb7a442 1	autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+100644 4e4ef72c8acaf36d69241b17d75f59399c8a7529 2	autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+100644 97f7df98aed05a1ccfe6b129d2fdb193f0ee428f 3	autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+100644 f7bc0febd7e3800cc0e87aec04d14f493ba1f1b1 1	autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+100644 8c70ab35a4c8f0c3875c7a6e1b4d8c254cf13a32 3	autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+100644 b74c78037a746f36ee5c2d7b538b77676c134075 1	autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+100644 64f7b5990a77d9672503ad8a8dcd41593ea4a143 3	autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+100644 7dd0ae58381bfac42e31ef219ad33adcef6586d5 1	autobyteus-application-sdk-contracts/src/execution-resources.ts
+100644 869f78048acd25cf0f43d3371c65e3fbf1c6846c 2	autobyteus-application-sdk-contracts/src/execution-resources.ts
+100644 2c35f20928c97421982b894f467499bbcb7664f3 3	autobyteus-application-sdk-contracts/src/execution-resources.ts
+100644 cc15e7e7c8414039c6d054392eb874266efcddda 1	autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+100644 5d3ac87f5d16b5fa0897bf693e504e9088b92830 2	autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+100644 2bf58b17387425edd7bf21bb7fe1d9cf171380de 3	autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+100644 a1be0756a742f0d638421dba561cdfa56d9e1226 1	autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+100644 b29326e01e8a7f3b9b2dfe0f73ae38f6e571f82d 3	autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+100644 8694bcc23dc644c2616add56806ca9b48345abed 1	autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+100644 61c0e7dce3887772b2c834b390725e9749fd6152 3	autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+100644 e42beb413b5443b14039211f9fbbe3eb913ac01b 1	autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+100644 4c5d7c3886dcbe39a39509504208b77c16715d8c 2	autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+100644 5fe763e1b3a88b5d411c7fb833ab394e10513fc1 3	autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+100644 3f71b8185e0a8e59c2ed6e3ddb84423a6cbb3978 1	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+100644 4cc49eb6c1cd92e5fa4c3e7e660e43acd7e3eb93 2	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+100644 2fb34d13f2a7998783ff44e166e53f99202738ac 3	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+100644 a609b70cd3e2bbcf38e49ece2e3281a695143486 1	autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+100644 b6cb89e301f0443519b855cb6d5fa2bdb2239a3b 3	autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+100644 60114c2853ff85f858504483271cc231a28933c8 1	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+100644 ff1fca1f18ff0b46ff3da7bc9b20fe3acee8ba25 2	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+100644 6fe140cabc7297c99f5a6a4683f1eac896de4d9c 3	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+
+Auto-merging autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+CONFLICT (content): Merge conflict in autobyteus-application-frontend-sdk/tests/application-connections.test.mjs
+Auto-merging autobyteus-application-sdk-contracts/README.md
+CONFLICT (modify/delete): autobyteus-application-sdk-contracts/dist/execution-resources.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-sdk-contracts/dist/execution-resources.d.ts left in tree.
+CONFLICT (modify/delete): autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map left in tree.
+Auto-merging autobyteus-application-sdk-contracts/src/execution-resources.ts
+CONFLICT (content): Merge conflict in autobyteus-application-sdk-contracts/src/execution-resources.ts
+Auto-merging autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+CONFLICT (content): Merge conflict in autobyteus-application-sdk-contracts/tests/application-iframe-contract.test.mjs
+CONFLICT (modify/delete): autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts left in tree.
+Auto-merging autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+Auto-merging autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+merge_tree_exit_code=1
+--- delivery disposition ---
+classification=Design Impact
+conflict_path_count=11
+actual_merge_started=no
+electron_rebuild_started=no
+route=/solution_designer
+head_after_preview=663f44d31deb05bf47f0eda780de4d754187a51b
+unmerged_path_count=0
+FINAL=BLOCKED_DESIGN_IMPACT

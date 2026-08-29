@@ -65,6 +65,7 @@ const {
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
     markTeamAsInactive: vi.fn(),
+    refreshTeamResumeConfig: vi.fn().mockResolvedValue(undefined),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
     applyRunNavigationEffect: vi.fn(),
   },
@@ -421,6 +422,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
     expect(worker.submissionPending).toBe(false)
     expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate')
+    expect(runHistoryStoreMock.refreshTeamResumeConfig).not.toHaveBeenCalled()
   })
 
   it('does not mutate local lifecycle when backend termination rejects', async () => {
@@ -509,6 +511,59 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(coordinator.contextFilePaths).toEqual([])
     expect(coordinator.submissionPending).toBe(false)
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
+  })
+
+  it('finalizes a nested Agent upload with its containing TeamRun while preserving root send scope', async () => {
+    const team = nestedHydratedTeam()
+    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+    setActiveTeam(team)
+    const draftImage: ContextAttachment = {
+      kind: 'uploaded', id: 'nested-image', locator: '/rest/drafts/nested-image.png',
+      storedFilename: 'ctx_nested__image.png', displayName: 'image.png', phase: 'draft', type: 'Image',
+    }
+    const finalImage: ContextAttachment = {
+      ...draftImage, locator: '/rest/team-runs/build-run/members/review-run/context-files/ctx_nested__image.png',
+      phase: 'final',
+    }
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockResolvedValueOnce([finalImage])
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect nested image', [draftImage])
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
+      draftOwner: {
+        kind: 'team_member_draft',
+        teamDraftId: 'team-nested-live',
+        memberAddress: '/BuildSquad/review_lead',
+      },
+      finalOwner: {
+        kind: 'team_member_final',
+        teamRunId: 'build-run',
+        memberAddress: '/BuildSquad/review_lead',
+      },
+      attachments: [draftImage],
+    })
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'inspect nested image',
+      'review-run',
+      [],
+      [finalImage.locator],
+      expect.objectContaining({ dedupeKey: expect.stringContaining('team-nested-live') }),
+    )
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-nested-live')
+  })
+
+  it('rejects a focused Agent with no canonical execution location before admission or dispatch', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-location-missing', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+    vi.spyOn(team.view, 'getAgentExecutionLocation').mockReturnValue(null)
+    const worker = team.view.getAgentContext('team-location-missing-worker-run')!
+
+    await expect(useAgentTeamRunStore().sendMessageToFocusedMember('do not dispatch', []))
+      .rejects.toThrow("Focused Team AgentRun 'team-location-missing-worker-run' has no exact execution location.")
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).not.toHaveBeenCalled()
+    expect(mockSendMessage).not.toHaveBeenCalled()
+    expect(worker.state.conversation.messages).toEqual([])
   })
 
   it('preserves the real associated Team draft when restore fails before local admission', async () => {

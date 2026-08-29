@@ -1,0 +1,150 @@
+timestamp_utc=2026-08-26T17:42:28Z
+head=0a55b013ad6250b5ffe02609aa43cfc7e465463d
+rationale=origin/personal already ancestor; focused delivery rerun adds direct integrated-state confirmation without reopening the reviewed scorecard
+command=pnpm -C autobyteus-server-ts exec vitest run <six focused files>
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 5639ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  453ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  824ms
+     ✓ guards the exact SR-011 host definition and public/general run authority  379ms
+     ✓ guards the exact SR-013 root-bound task construction inventory  3532ms
+ ✓ tests/unit/application-engine/application-engine-control-request.test.ts (4 tests) 6ms
+ ❯ tests/unit/application-engine/application-engine-client.test.ts (0 test)
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts (3 tests) 5ms
+ ❯ tests/unit/application-engine/application-worker-host-bridge-client.test.ts (0 test)
+ ❯ tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts [ tests/integration/application-backend/application-worker-completion-coupling.integration.test.ts ]
+ FAIL  tests/unit/application-engine/application-engine-client.test.ts [ tests/unit/application-engine/application-engine-client.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts:7:58
+  3  |  } from "./protocol.js";
+  4  |  import { JsonLineFrameWriter } from "./json-line-frame-writer.js";
+  5  |  import { ApplicationAgentEventStreamSubscribeError } from "@autobyteus/application-sdk-contracts";
+     |                                                             ^
+  6  |  export class ApplicationEngineResponseAfterWrite {
+  7  |    constructor(result, afterWrite) {
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/application-engine/application-worker-host-bridge-client.test.ts [ tests/unit/application-engine/application-worker-host-bridge-client.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts:10:7
+  5  |  import {
+  6  |    ApplicationAgentEventStreamSubscribeError
+  7  |  } from "@autobyteus/application-sdk-contracts";
+     |          ^
+  8  |  export class ApplicationWorkerHostBridgeClient {
+  9  |    constructor(writeFrame) {
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  3 failed | 3 passed (6)
+      Tests  27 passed (27)
+   Start at  19:42:28
+   Duration  7.02s (transform 186ms, setup 33ms, import 453ms, tests 5.65s, environment 0ms)

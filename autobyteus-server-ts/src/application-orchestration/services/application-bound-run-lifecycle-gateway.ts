@@ -1,22 +1,24 @@
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
-import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type {
+  ApplicationAgentExecution,
+  ApplicationTeamExecution,
+} from "../../application-platform/execution/application-execution-scope-contracts.js";
 import type { BoundRunRuntimeDescriptor } from "../domain/models.js";
 
 export class ApplicationBoundRunLifecycleGateway {
   constructor(
     private readonly dependencies: {
-      agentRunService?: AgentRunService;
-      teamRunService?: TeamRunService;
-    } = {},
+      agentExecution: ApplicationAgentExecution;
+      teamExecution: ApplicationTeamExecution;
+    },
   ) {}
 
-  private get agentRunService(): AgentRunService {
-    return this.dependencies.agentRunService ?? getAgentRunService();
+  private get agentExecution(): ApplicationAgentExecution {
+    return this.dependencies.agentExecution;
   }
 
-  private get teamRunService(): TeamRunService {
-    return this.dependencies.teamRunService ?? getTeamRunService();
+  private get teamExecution(): ApplicationTeamExecution {
+    return this.dependencies.teamExecution;
   }
 
   async observeBoundRun(
@@ -24,8 +26,8 @@ export class ApplicationBoundRunLifecycleGateway {
     listener: (event: ObservedRunLifecycleEvent) => void,
   ): Promise<(() => void) | null> {
     if (bindingRuntime.runtimeSubject === "AGENT_RUN") {
-      return this.agentRunService.observeAgentRunLifecycle(bindingRuntime.agentRunId, listener);
+      return this.agentExecution.observeAgentRunLifecycle(bindingRuntime.agentRunId, listener);
     }
-    return this.teamRunService.observeTeamRunLifecycle(bindingRuntime.teamRunId, listener);
+    return this.teamExecution.observeTeamRunLifecycle(bindingRuntime.teamRunId, listener);
   }
 }

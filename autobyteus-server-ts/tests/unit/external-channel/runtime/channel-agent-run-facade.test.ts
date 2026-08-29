@@ -110,7 +110,7 @@ const createActiveRun = (options: {
     }
     return result;
   });
-  return new AgentRun({
+  return new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     context: { runId: options.runId ?? "agent-1", config: { runtimeKind: options.runtimeKind ?? "codex_app_server" }, runtimeContext: null } as any,
     backend: {
       runId: options.runId ?? "agent-1",
@@ -154,6 +154,7 @@ const buildFacade = (options: {
   const recordRunActivity = vi.fn().mockResolvedValue(undefined);
   const agentRunService = {
     getAgentRun: vi.fn().mockReturnValue(options.activeRun),
+    resolveCommandReadyAgentRun: vi.fn().mockResolvedValue(options.activeRun),
     getRunMetadata: vi.fn(),
     restoreAgentRun: vi.fn(),
     activatePreparedRun: vi.fn(),

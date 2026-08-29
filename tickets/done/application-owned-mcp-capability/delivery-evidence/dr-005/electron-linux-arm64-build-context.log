@@ -1,0 +1,11 @@
+DR-005 Electron build context
+UTC start: 2026-08-28T12:42:57Z
+HEAD: 7ab0a996834830a0d8f2c74e406bc1b9bd4926cb
+origin/personal: 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+origin-only / ticket-only: 0	10
+platform: Linux 96cdeed0e952 6.12.54-linuxkit #1 SMP Tue Nov  4 21:21:47 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+node: v22.23.1
+pnpm: 10.28.1
+command: pnpm build:electron:linux
+UTC end: 2026-08-28T12:48:32Z
+exit status: 0

@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
-  RunEditableFieldFlags,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
   TeamRunResumeConfigPayload,
@@ -45,15 +44,9 @@ import {
   refreshRunNavigationTopologyForStore,
 } from './runHistoryNavigationStoreActions';
 import { createDraftRunForHistoryStore } from './runHistoryDraftActions';
-
-const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
-  llmModelIdentifier: false,
-  llmConfig: false,
-  autoExecuteTools: false,
-  skillAccessMode: false,
-  workspaceRootPath: false,
-  runtimeKind: false,
-};
+import { getApolloClient } from '~/utils/apolloClient';
+import { GetAgentRunResumeConfig, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
+import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts';
 
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
@@ -79,28 +72,19 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return state.resumeConfigByRunId[runId] || null;
     },
 
-    getEditableFields: (state) => (runId: string): RunEditableFieldFlags | null => {
-      return state.resumeConfigByRunId[runId]?.editableFields || null;
-    },
+    getModelConfigEditability: (state) => (runId: string) =>
+      state.resumeConfigByRunId[runId]?.modelConfigEditability ?? null,
 
     isRunActive: (state) => (runId: string): boolean => {
       return Boolean(state.resumeConfigByRunId[runId]?.isActive);
     },
 
     isWorkspaceLockedForRun: (state) => (runId: string): boolean => {
-      const editable = state.resumeConfigByRunId[runId]?.editableFields;
-      if (!editable) {
-        return false;
-      }
-      return !editable.workspaceRootPath;
+      return Boolean(state.resumeConfigByRunId[runId]);
     },
 
     isRuntimeLockedForRun: (state) => (runId: string): boolean => {
-      const editable = state.resumeConfigByRunId[runId]?.editableFields;
-      if (!editable) {
-        return false;
-      }
-      return !editable.runtimeKind;
+      return Boolean(state.resumeConfigByRunId[runId]);
     },
   },
 
@@ -144,7 +128,11 @@ export const useRunHistoryStore = defineStore('runHistory', {
         this.resumeConfigByRunId[runId] = {
           ...resumeConfig,
           isActive: true,
-          editableFields: { ...FALSE_EDITABLE_FIELDS },
+          modelConfigEditability: {
+            ...resumeConfig.modelConfigEditability,
+            editable: false,
+            reason: 'RUN_ACTIVE',
+          },
         };
       }
 
@@ -172,13 +160,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
         this.resumeConfigByRunId[runId] = {
           ...resumeConfig,
           isActive: false,
-          editableFields: {
-            llmModelIdentifier: true,
-            llmConfig: true,
-            autoExecuteTools: true,
-            skillAccessMode: true,
-            workspaceRootPath: false,
-            runtimeKind: false,
+          modelConfigEditability: {
+            ...resumeConfig.modelConfigEditability,
+            editable: false,
+            reason: 'REFRESH_REQUIRED',
           },
         };
       }
@@ -211,6 +196,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
         nextResumeConfigs[runId] = {
           ...resumeConfig,
           isActive: activeSet.has(runId),
+          modelConfigEditability: activeSet.has(runId)
+            ? { ...resumeConfig.modelConfigEditability, editable: false, reason: 'RUN_ACTIVE' }
+            : resumeConfig.modelConfigEditability,
         };
       }
       this.resumeConfigByRunId = nextResumeConfigs;
@@ -252,6 +240,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
         this.teamResumeConfigByTeamRunId[teamRunId] = {
           ...existing,
           isActive: true,
+          modelConfigEditability: { ...existing.modelConfigEditability, editable: false, reason: 'RUN_ACTIVE' },
         };
       }
       this.refreshRunNavigationTopology('team-active');
@@ -281,6 +270,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
         this.teamResumeConfigByTeamRunId[teamRunId] = {
           ...existing,
           isActive: false,
+          modelConfigEditability: { ...existing.modelConfigEditability, editable: false, reason: 'REFRESH_REQUIRED' },
         };
       }
       this.refreshRunNavigationTopology('team-inactive');
@@ -296,6 +286,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
         nextTeamResumeConfigs[teamRunId] = {
           ...resumeConfig,
           isActive: activeSet.has(teamRunId),
+          modelConfigEditability: activeSet.has(teamRunId)
+            ? { ...resumeConfig.modelConfigEditability, editable: false, reason: 'RUN_ACTIVE' }
+            : resumeConfig.modelConfigEditability,
         };
       }
       this.teamResumeConfigByTeamRunId = nextTeamResumeConfigs;
@@ -318,6 +311,43 @@ export const useRunHistoryStore = defineStore('runHistory', {
         })),
       }));
       this.refreshRunNavigationTopology('team-reconcile');
+    },
+
+    async refreshAgentResumeConfig(runId: string): Promise<RunResumeConfigPayload> {
+      const response = await getApolloClient().query<{ getAgentRunResumeConfig: RunResumeConfigPayload }>({
+        query: GetAgentRunResumeConfig,
+        variables: { runId },
+        fetchPolicy: 'network-only',
+      });
+      if (response.errors?.length) throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
+      const payload = response.data?.getAgentRunResumeConfig;
+      if (!payload) throw new Error(`Run resume config payload missing for '${runId}'.`);
+      this.resumeConfigByRunId[runId] = payload;
+      return payload;
+    },
+
+    async refreshTeamResumeConfig(teamRunId: string): Promise<TeamRunResumeConfigPayload> {
+      const response = await getApolloClient().query<{ getTeamRunResumeConfig: {
+        teamRunId: string;
+        isActive: boolean;
+        executionTree: unknown;
+        modelConfigEditability: TeamRunResumeConfigPayload['modelConfigEditability'];
+      } }>({
+        query: GetTeamRunResumeConfig,
+        variables: { teamRunId },
+        fetchPolicy: 'network-only',
+      });
+      if (response.errors?.length) throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '));
+      const raw = response.data?.getTeamRunResumeConfig;
+      if (!raw) throw new Error(`Team resume config payload missing for '${teamRunId}'.`);
+      const payload: TeamRunResumeConfigPayload = {
+        teamRunId: raw.teamRunId,
+        isActive: raw.isActive,
+        executionTree: teamRunExecutionTreeDtoSchema.parse(raw.executionTree),
+        modelConfigEditability: raw.modelConfigEditability,
+      };
+      this.teamResumeConfigByTeamRunId[teamRunId] = payload;
+      return payload;
     },
 
     async deleteRun(runId: string): Promise<boolean> {

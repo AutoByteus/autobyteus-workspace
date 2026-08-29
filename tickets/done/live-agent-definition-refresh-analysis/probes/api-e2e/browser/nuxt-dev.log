@@ -1,0 +1,46 @@
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 33849
+
+│
+▲  Changing NODE_ENV from production to development, to avoid unintended behavior.
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+ 
+              █▀▀▀▀▀▀▀██▀▀▀████▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀▀ ▄▄█▀ █ █▀▀▀█ █
+              █ █   █ █ █ ▄▀▄ ███ █   █ █
+              █ ▀▀▀▀▀ █▀▄ █▀▄▀█▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█ ▀█ ▀▄▄▄███▀▀████
+              █▄ ▀ ▀▀▀ ▄▀▄▀▀▀█ ▄▄▀▀  ▄ ▀█
+              █▄ ████▀▄█▀ ▄██ ▀█▀▀▄█▄██ █
+              █ ██▄█▄▀▄▄▄ █▄▄▄ █▀█▀█▀█ ▀█
+              █ █  ▄▀▀▄▄█▄█ ▀▄▄▀▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█ ▀ █▀▀▄█ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄█▀ ▀▀█▀ ▀▀▀ ▀▀█▄█
+              █ █   █ ██ ▀█▄▄█▄█▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █ █ ▄▀█   █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:33849/
+  ➜ Network:  http://172.17.0.5:33849/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 52ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 896ms
+[nitro] ✔ Nuxt Nitro server built in 1062ms
+ℹ Vite client warmed up in 2ms
+
+ ERROR  http proxy error: /rest/health
+Error: connect ECONNREFUSED 127.0.0.1:9
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+
+ ELIFECYCLE  Command failed.

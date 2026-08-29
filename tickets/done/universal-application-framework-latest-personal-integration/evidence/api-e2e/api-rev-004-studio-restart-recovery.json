@@ -1,0 +1,22 @@
+{
+  "scenarioId": "APIE2E-STUDIO-RESTART-RECOVERY-004",
+  "at": "2026-08-22T12:24:06.102Z",
+  "apps": {
+    "socratic": {
+      "cardCount": 2,
+      "iframeCount": 1,
+      "prompt": true,
+      "twoMessages": true,
+      "connected": true
+    },
+    "brief": {
+      "cardCount": 1,
+      "iframeCount": 1,
+      "title": true,
+      "inReview": true,
+      "research": true,
+      "final": true
+    }
+  },
+  "result": "PASS"
+}

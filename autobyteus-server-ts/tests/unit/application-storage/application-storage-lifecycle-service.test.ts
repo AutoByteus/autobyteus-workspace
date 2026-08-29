@@ -74,6 +74,23 @@ describe("ApplicationStorageLifecycleService", () => {
     await fs.rm(tempRoot, { recursive: true, force: true });
   });
 
+  it("prepares only the declared runtime directory for fresh-root provider readiness", async () => {
+    const service = new ApplicationStorageLifecycleService({
+      appConfig: createMockAppConfig(tempRoot) as never,
+      applicationBundleService: {
+        getApplicationById: async () => createBundle(applicationRootPath, migrationsDirPath),
+      } as never,
+    });
+
+    const layout = await service.ensureRuntimeDirectoryPrepared(
+      "built-in:applications__ticketing-app",
+    );
+
+    expect((await fs.stat(layout.runtimeDir)).isDirectory()).toBe(true);
+    await expect(fs.access(layout.platformDatabasePath)).rejects.toThrow();
+    await expect(fs.access(layout.appDatabasePath)).rejects.toThrow();
+  });
+
   it("creates app.sqlite and hidden platform.sqlite, then applies allowed app migrations", async () => {
     await fs.writeFile(
       path.join(migrationsDirPath, "001_create_tickets.sql"),

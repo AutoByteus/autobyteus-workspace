@@ -1,0 +1,27 @@
+CRR-023 / API-REV-012 zero durable-test delta audit
+Date: 2026-08-25
+Integrated execution HEAD: 226dcfd1dda71f6507b507a9c8b68145bf4d4bbf
+
+--- tracked working-tree changes ---
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+M	tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+
+--- staged changes ---
+
+--- modified/untracked paths matching durable-test naming/location ---
+NONE
+
+--- non-ticket tracked source delta ---
+NONE
+
+--- canonical API statements ---
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md:310:- Coverage decision: temporary executable live probe only. The exact package is a private external fixture and must not become a repository-resident test dependency. Existing repository coverage remains valid; API-REV-012 added, updated and removed zero durable tests.
+tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md:1007:- Durable coverage decision: unchanged. **No repository-resident durable test was added, updated or removed in API-REV-012.** The temporary live probe is appropriate because the exact fixture is private/external; current repository tests remain the durable owners of nested topology, routing, task lifecycle, V2 persistence and recovery.
+
+Reviewer conclusion: NOT APPLICABLE. API-REV-012 changed no repository-resident durable test. The private external package was exercised only through temporary live probes, which correctly remain execution evidence rather than repository coverage.

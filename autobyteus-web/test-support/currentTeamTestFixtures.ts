@@ -17,7 +17,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { Conversation } from '~/types/conversation';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
-import { collectExecutionAgents } from '~/services/teamExecution/teamExecutionTreeSelectors';
+import { collectAgentExecutionLocations } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import {
   createTeamAgentContext,
   createTeamConfigurationView,
@@ -311,17 +311,17 @@ export const buildTestTeamContext = (input: {
     tree,
     workspaceMetadataByAddress: configurationMetadata,
   });
-  const contexts = collectExecutionAgents(tree).map((agent) => {
+  const contexts = collectAgentExecutionLocations(tree).map((agent) => {
     const explicit = input.contexts?.find((entry) => entry.agentRunId === agent.agentRunId)?.context;
     const context = explicit ?? createTeamAgentContext({
-      tree, agentRunId: agent.agentRunId, address: agent.address, workspaceMetadata,
+      tree, agentRunId: agent.agentRunId, address: agent.memberAddress, workspaceMetadata,
     });
     if (!context) throw new Error(`No test Agent context for '${agent.agentRunId}'.`);
     const configuredStatus = input.rootChildren
       .flatMap((node): TestAgentNode[] => node.kind === 'agent' ? [node] : [])
       .find((node) => node.agentRunId === agent.agentRunId)?.currentStatus;
     if (configuredStatus) context.state.currentStatus = configuredStatus;
-    return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address, agentContext: context });
+    return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.memberAddress, agentContext: context });
   });
   const focusedAgentRunId = input.focusedAgentRunId
     ?? contexts.find((entry) => entry.memberAddress === coordinatorAddress)?.agentRunId

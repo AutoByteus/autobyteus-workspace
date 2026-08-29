@@ -1,0 +1,35 @@
+after_stop=2026-08-23T05:58:39Z
+PORT_FREE
+33601
+33906
+/private/tmp/api-rev007-socratic-standalone/applications/bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572/runtime/engine-status.json
+{
+  "applicationId": "bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572",
+  "state": "ready",
+  "ready": true,
+  "startedAt": "2026-08-23T05:55:27.720Z",
+  "lastFailure": null,
+  "exposures": {
+    "supportedExposures": {
+      "queries": false,
+      "commands": false,
+      "routes": false,
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": true,
+      "webSockets": false
+    },
+    "queries": [],
+    "commands": [],
+    "routes": [],
+    "webSocketRoutes": [],
+    "graphql": true,
+    "notifications": true,
+    "eventHandlers": [
+      "RUN_STARTED",
+      "RUN_TERMINATED",
+      "RUN_FAILED",
+      "RUN_ORPHANED"
+    ]
+  }
+}

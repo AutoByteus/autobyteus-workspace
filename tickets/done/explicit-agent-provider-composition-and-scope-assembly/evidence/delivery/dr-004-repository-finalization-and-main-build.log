@@ -1,0 +1,26 @@
+timestamp_utc=2026-08-26T14:31:10Z
+personal_merge_head=4efc0ffd6b254ff1d508cf09c5e447524998d1b1
+origin_personal=4efc0ffd6b254ff1d508cf09c5e447524998d1b1
+ticket_final_commit=dd7eba5ce8bb9dbe3be3a70ba07f496ff800ef20
+origin_ticket=dd7eba5ce8bb9dbe3be3a70ba07f496ff800ef20
+ticket_merged_into_personal=yes
+ticket_worktree_exists_before=yes
+=== ticket status before removal ===
+## codex/explicit-agent-provider-composition-and-scope-assembly...origin/codex/explicit-agent-provider-composition-and-scope-assembly
+ticket_worktree_exists_after=no
+Deleted branch codex/explicit-agent-provider-composition-and-scope-assembly (was dd7eba5ce).
+local_ticket_branch_exists_after=no
+remote_ticket_branch=dd7eba5ce8bb9dbe3be3a70ba07f496ff800ef20
+remote_ticket_branch_cleanup=retained as finalized remote branch; deletion not requested
+main_electron_build=pass
+main_electron_isolation=pass
+release_version_tag_deployment=not_applicable
+main_dmg=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg
+main_dmg_sha256=42545e65d787c400811baf81a889f9036e8b899a1e4c33fc8c97e0cc5ae699ac
+main_dmg_size=467116362
+main_zip=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip
+main_zip_sha256=db05cb1c545a4751a761df708a99a7747aa26ee30b573330d707bcb1142fff37
+main_zip_size=461784986
+main_unrelated_article_work_preserved=yes
+ordinary_listener_after=AutoByteu 53536 normy   26u  IPv4 0x54e6a393de65d0b0      0t0  TCP *:29695 (LISTEN)
+completed_utc=2026-08-26T14:33:46Z

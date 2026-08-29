@@ -1,0 +1,108 @@
+{
+  "scenarioId": "APIE2E-BRIEF-STANDALONE-003",
+  "assertions": {
+    "researcherPublication": true,
+    "recipientAddressHandoff": true,
+    "writerPublication": true,
+    "failedWriterTypoContainedThenRecovered": true
+  },
+  "executions": [
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_62380dbe51604e0fa49572d2ab547c18/brief_studio_researcher_ad5c64526c4748a4a6c47ce8e7d328f8/raw_traces_active.jsonl",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the standalone API REV 003 brief."
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_ad5c64526c4748a4a6c47ce8e7d328f8:/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_ad5c64526c4748a4a6c47ce8e7d328f8",
+            "path": "/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the standalone API REV 003 brief.",
+            "revisionId": "9b243a70-8275-4528-87b1-5b5a3879de17",
+            "createdAt": "2026-08-22T10:48:14.378Z",
+            "updatedAt": "2026-08-22T10:48:14.378Z"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_62380dbe51604e0fa49572d2ab547c18/brief_studio_researcher_ad5c64526c4748a4a6c47ce8e7d328f8/raw_traces_active.jsonl",
+      "toolName": "send_message_to",
+      "arguments": {
+        "recipient_address": "/writer",
+        "message_type": "research_handoff",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: the brief must be standalone and self-contained; REV 003 should expose change rationale and validation status; the API surface, audience, compatibility expectations, and acceptance criteria are currently unspecified. Please review the file before drafting and label assumptions/open questions explicitly.",
+        "reference_files": [
+          "/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /writer.",
+        "result": null
+      },
+      "error": null
+    },
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_62380dbe51604e0fa49572d2ab547c18/brief_studio_writer_88a71b2d4d314a828848a3844c5505a4/raw_traces_active.jsonl",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e6c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_FAILED",
+      "result": null,
+      "error": "Published artifact path '/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e6c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md' does not resolve to a readable regular file."
+    },
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_62380dbe51604e0fa49572d2ab547c18/brief_studio_writer_88a71b2d4d314a828848a3844c5505a4/raw_traces_active.jsonl",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_88a71b2d4d314a828848a3844c5505a4:/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_88a71b2d4d314a828848a3844c5505a4",
+            "path": "/private/tmp/api-rev003-brief-standalone.7tKt0O/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": null,
+            "revisionId": "874eb9c8-a28b-4f45-83fc-81ac2ac1df03",
+            "createdAt": "2026-08-22T10:49:02.486Z",
+            "updatedAt": "2026-08-22T10:49:02.486Z"
+          }
+        ]
+      },
+      "error": null
+    }
+  ]
+}

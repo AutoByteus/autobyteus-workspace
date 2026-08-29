@@ -1,4 +1,4 @@
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import {
   buildApplicationsCapability,
   type ApplicationsCapability,
@@ -11,32 +11,17 @@ type ApplicationsSettingsAccess = Pick<
 >;
 
 type ApplicationCapabilityDependencies = {
-  applicationBundleService?: Pick<ApplicationBundleService, "hasDiscoverableApplications">;
+  applicationBundleService: Pick<ApplicationBundleService, "hasDiscoverableApplications">;
   serverSettingsService?: ApplicationsSettingsAccess;
 };
 
 export class ApplicationCapabilityService {
-  private static instance: ApplicationCapabilityService | null = null;
-
-  static getInstance(
-    dependencies: ApplicationCapabilityDependencies = {},
-  ): ApplicationCapabilityService {
-    if (!ApplicationCapabilityService.instance) {
-      ApplicationCapabilityService.instance = new ApplicationCapabilityService(dependencies);
-    }
-    return ApplicationCapabilityService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationCapabilityService.instance = null;
-  }
-
   private initializePromise: Promise<ApplicationsCapability> | null = null;
 
-  constructor(private readonly dependencies: ApplicationCapabilityDependencies = {}) {}
+  constructor(private readonly dependencies: ApplicationCapabilityDependencies) {}
 
   private get applicationBundleService(): Pick<ApplicationBundleService, "hasDiscoverableApplications"> {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService;
   }
 
   private get serverSettingsService(): ApplicationsSettingsAccess {

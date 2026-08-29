@@ -1,0 +1,9 @@
+=== API-REV-002 isolated environment 2026-08-26T17:21:39Z ===
+root=/private/tmp/api-rev-002-logical-addressing ports=44951,44952,44960,32960
+-- importing supported credentials into socratic-standalone --
+(node:83448) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+LOCAL_SECRET_IMPORT_FAILED IMPORT_CONFIRMATION_REQUIRED
+interactive_import_socratic=PASS configured=9 values_logged=false
+interactive_import_brief=PASS configured=9 values_logged=false
+interactive_import_studio=PASS configured=9 values_logged=false

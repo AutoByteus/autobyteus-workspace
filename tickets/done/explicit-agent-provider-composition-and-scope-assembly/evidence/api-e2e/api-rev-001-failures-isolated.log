@@ -1,0 +1,448 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts (12 tests | 12 failed) 13ms
+     × creates and registers an active autobyteus run through the matching backend factory 7ms
+     × creates and registers an active codex_app_server run through the matching backend factory 1ms
+     × creates and registers an active claude_agent_sdk run through the matching backend factory 1ms
+     × restores a autobyteus run through the matching backend factory 0ms
+     × restores a codex_app_server run through the matching backend factory 0ms
+     × restores a claude_agent_sdk run through the matching backend factory 0ms
+     × restores Claude platform state with auto approval separate from provider permission mode 1ms
+     × evicts inactive runs when queried or listed 0ms
+     × terminates and unregisters active runs on accepted termination 1ms
+     × returns false for missing runs and for unaccepted termination without unregistering 0ms
+     × wraps termination failures in AgentTerminationError 0ms
+     × rejects unsupported runtime kinds for create and restore 0ms
+stdout | tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts (4 tests | 4 failed) 12ms
+     × forwards an authorized exact-member address as the bound agentRunId 8ms
+     × resolves initial targetMemberAddress through the binding before exact root dispatch 1ms
+     × rejects an unknown initial targetMemberAddress before root lookup 1ms
+     × rejects an addressed agentRunId outside the bound team before root lookup 1ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > propagates the exact execution issuer into every created and restored session
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (8 tests | 5 failed) 12ms
+     × propagates the exact execution issuer into every created and restored session 6ms
+     × creates a run session with a reserved provider UUID and no local-id placeholder 1ms
+     × restores a run session with the exact persisted provider UUID ready for resume 1ms
+     ✓ uses the provided session id directly when fetching session messages 1ms
+     ✓ falls back to cached messages when the SDK returns no history 0ms
+     ✓ merges normalized SDK history with cached messages when both are available 0ms
+     × terminates a run session, emits SESSION_TERMINATED, and removes the run session 0ms
+     × settles an active turn through the session-owned interrupt sequence before termination cleanup 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:89:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:139:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:168:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:190:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:214:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:243:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:267:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new RunFileChangeService src/services/run-file-changes/run-file-change-service.ts:46:51
+ ❯ getRunFileChangeService src/services/run-file-changes/run-file-change-service.ts:167:99
+ ❯ new AgentRunManager src/agent-execution/services/agent-run-manager.ts:103:63
+ ❯ tests/integration/agent-execution/agent-run-manager.integration.test.ts:284:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:150:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > resolves initial targetMemberAddress through the binding before exact root dispatch
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:166:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown initial targetMemberAddress before root lookup
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:189:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an addressed agentRunId outside the bound team before root lookup
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:73:13
+     71|   static getInstance(): AgentRunManager {
+     72|     if (!AgentRunManager.instance) {
+     73|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     74|     }
+     75|     return AgentRunManager.instance;
+ ❯ new AgentRunIdentityAllocator src/agent-execution/services/agent-run-identity-allocator.ts:55:71
+ ❯ Function.getInstance src/agent-execution/services/agent-run-identity-allocator.ts:38:44
+ ❯ new TaskDelegationService src/agent-team-execution/task-delegation/task-delegation-service.ts:84:84
+ ❯ new RootTeamRun src/agent-team-execution/domain/root-team-run.ts:101:27
+ ❯ buildRootTeamRuntime tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:56:16
+ ❯ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:214:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > propagates the exact execution issuer into every created and restored session
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:83:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > creates a run session with a reserved provider UUID and no local-id placeholder
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:105:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > restores a run session with the exact persisted provider UUID ready for resume
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.restoreRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:90:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:124:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > terminates a run session, emits SESSION_TERMINATED, and removes the run session
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:209:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > settles an active turn through the session-owned interrupt sequence before termination cleanup
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:54:13
+     52|   static getInstance(): AgentTeamRunManager {
+     53|     if (!AgentTeamRunManager.instance) {
+     54|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     55|     }
+     56|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:9:34
+ ❯ new ContextFileLocalPathResolver src/context-files/services/context-file-local-path-resolver.ts:35:95
+ ❯ new ClaudeSession src/agent-execution/backends/claude/session/claude-session.ts:61:58
+ ❯ ClaudeSessionManager.createRunSession src/agent-execution/backends/claude/session/claude-session-manager.ts:72:21
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts:235:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  21 failed | 3 passed (24)
+   Start at  10:26:25
+   Duration  8.85s (transform 4.00s, setup 30ms, import 7.84s, tests 37ms, environment 0ms)
+

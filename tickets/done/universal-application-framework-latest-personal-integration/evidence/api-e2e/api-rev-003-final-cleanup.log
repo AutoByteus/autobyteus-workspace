@@ -1,0 +1,35 @@
+utc=2026-08-22T11:13:47Z
+== ports ==
+8014 FREE
+3014 FREE
+43141 FREE
+43142 FREE
+43143 FREE
+43144 FREE
+== scratch ==
+applications/brief-studio/.autobyteus
+applications/socratic-math-teacher/.autobyteus
+== owned process patterns ==
+== git diff check ==
+== status ==
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/

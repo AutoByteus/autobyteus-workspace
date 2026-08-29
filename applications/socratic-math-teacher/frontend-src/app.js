@@ -1,16 +1,18 @@
-import { startHostedApplication } from "./vendor/application-frontend-sdk.js";
+import { startApplication } from "@autobyteus/application-frontend-sdk";
 import { createSocraticMathGraphqlClient } from "./generated/graphql-client.js";
 import { mountSocraticMathTeacher } from "./socratic-runtime.js";
 
-startHostedApplication({
+const startupHandle = startApplication({
   rootElement: document.getElementById("app-root"),
-  onBootstrapped: ({ bootstrap, applicationClient, rootElement }) => {
+  onBootstrapped: ({ runtimeBootstrap, applicationClient, rootElement }) => {
     mountSocraticMathTeacher({
       applicationClient,
-      bootstrap,
+      runtimeBootstrap,
       browserWindow: window,
       createSocraticMathGraphqlClient,
       rootElement,
     });
   },
 });
+
+window.addEventListener("pagehide", () => startupHandle.dispose(), { once: true });

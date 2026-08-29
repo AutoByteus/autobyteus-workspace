@@ -62,22 +62,22 @@ test('canonical WebSocket URL composition appends ordered business query values'
   assert.equal(
     composeApplicationWebSocketUrl({
       baseUrl: 'wss://node/base',
-      pathSegments: ['binding/one', 'targets', 'agent-run'],
+      pathSegments: ['binding/one', 'targets', 'root'],
       query: { room: ['one', 'two'] },
     }),
-    'wss://node/base/binding%2Fone/targets/agent-run?room=one&room=two',
+    'wss://node/base/binding%2Fone/targets/root?room=one&room=two',
   );
 });
 
 test('standard agent connection derives the fixed target URL, opens on exact READY, and correlates input', async () => {
   const socket = createSocket();
   let openedUrl = '';
-  const address = { bindingId: 'binding/one', target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: 'reviewer two' } };
+  const address = { bindingId: 'binding/one', memberAddress: '/research/reviewer two' };
   const connection = createTransport({
     agentCommunicationWebSocketFactory: (url) => { openedUrl = url; return socket; },
   }).connectAgentCommunication(address);
   assert.equal(connection.state, 'connecting');
-  assert.equal(openedUrl, 'ws://node/ws/applications/app/agent-communication/binding%2Fone/targets/agent-team-member/reviewer%20two');
+  assert.equal(openedUrl, 'ws://node/ws/applications/app/agent-communication/binding%2Fone/targets/member/%2Fresearch%2Freviewer%20two');
   socket.emit('message', { data: JSON.stringify({ protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL, type: 'READY', address }) });
   await connection.ready;
   assert.equal(connection.state, 'open');
@@ -90,7 +90,7 @@ test('standard agent connection derives the fixed target URL, opens on exact REA
 
 test('standard establishment failure settles ready, error, and close once', async () => {
   const socket = createSocket();
-  const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
+  const address = { bindingId: 'binding-1', memberAddress: null };
   const connection = createTransport({ agentCommunicationWebSocketFactory: () => socket }).connectAgentCommunication(address);
   const observed = [];
   connection.onError((error) => observed.push(`error:${error.code}`));
@@ -113,7 +113,7 @@ test('standard establishment failure settles ready, error, and close once', asyn
 
 test('standard connection accepts exact events and rejects malformed nested payloads', async () => {
   const socket = createSocket();
-  const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
+  const address = { bindingId: 'binding-1', memberAddress: null };
   const connection = createTransport({ agentCommunicationWebSocketFactory: () => socket }).connectAgentCommunication(address);
   const observedEvents = [];
   const observedErrors = [];
@@ -130,7 +130,6 @@ test('standard connection accepts exact events and rejects malformed nested payl
     producer: {
       agentRunId: 'run-1',
       displayName: null,
-      runtimeKind: 'AGENT',
     },
     event: publicEvent,
   });
@@ -163,11 +162,10 @@ test('standard connection accepts exact events and rejects malformed nested payl
 });
 
 test('standard connection rejects removed event shapes, nullable producers, and extra fields', async () => {
-  const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
+  const address = { bindingId: 'binding-1', memberAddress: null };
   const producer = {
     agentRunId: 'run-1',
     displayName: null,
-    runtimeKind: 'AGENT',
   };
   const envelope = (event, overrides = {}) => ({
     sequence: 1,
@@ -223,7 +221,7 @@ test('standard connection rejects removed event shapes, nullable producers, and 
 
 test('standard connection rejects unsupported frames and unserializable or oversized input safely', async () => {
   const malformedSocket = createSocket();
-  const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
+  const address = { bindingId: 'binding-1', memberAddress: null };
   const malformedConnection = createTransport({ agentCommunicationWebSocketFactory: () => malformedSocket })
     .connectAgentCommunication(address);
   malformedSocket.emit('message', { data: JSON.stringify({

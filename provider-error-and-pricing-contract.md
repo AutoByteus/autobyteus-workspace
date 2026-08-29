@@ -2,7 +2,7 @@
 
 ## Status
 
-**Design supplement — aligned to the user-approved requirements basis.** This file is intended behavior and implementation evidence for REQ-001–REQ-012 and AC-001–AC-018. It must remain aligned with `requirements.md`; it does not authorize broader provider coverage or historical pricing.
+**Design supplement — aligned to the user-approved requirements basis.** This file is intended behavior and implementation evidence for REQ-001–REQ-012 and AC-001–AC-012. It must remain aligned with `requirements.md`; it does not authorize broader provider coverage, remote catalog refresh, or retroactive repricing.
 
 ## 1. Latest-only catalog contract
 
@@ -54,67 +54,17 @@ The model selection identity is the effective pair `{ runtimeKind, llmModelIdent
 
 No runtime receives an old AutoByteus alias or fallback. This is ownership scoping, not a new generic request-parameter rejection mechanism.
 
-## 3. DeepSeek latest pricing contract
+## 3. DeepSeek effective-dated pricing contract
 
-Only one current DeepSeek V4 schedule is configured. The schedule is selected by UTC time-of-day, not by the calendar date of a usage event.
+DeepSeek V4 pricing is represented as an effective-dated `pricing_schedule_history`: an unbounded prior flat version, the daily UTC-window version effective `2026-08-16T16:00:00Z`, and the weekday-only version effective `2026-08-22T16:00:00Z`. The resolver selects the latest eligible version using the observation instant, never process time. Peak windows are half-open `[01:00,04:00)` and `[06:00,10:00)` in the configured window timezone; peak weekdays are explicit ISO days evaluated independently in the configured calendar timezone. Invalid timestamps fail closed with `pricing_schedule_time_invalid`.
 
-Effective provenance: `2026-08-16T16:00:00Z` (00:00 Beijing on 17 August 2026).
+Prior to the first cutover, Flash uses cache/input/output `$0.0028/$0.14/$0.28` and Pro uses `$0.003625/$0.435/$0.87`. From the first cutover, Flash off-peak/peak input-output-cache triples are `$0.22/$0.66/$0.007` and `$0.44/$1.32/$0.014`; Pro triples are `$0.66/$1.98/$0.022` and `$1.32/$3.96/$0.044`.
 
-Peak windows:
-
-- `[01:00, 04:00)` UTC
-- `[06:00, 10:00)` UTC
-
-All other UTC times are off-peak.
-
-Prices are USD per million tokens:
-
-| Model | Period | Cache hit | Cache miss / standard input | Output |
-| --- | --- | ---: | ---: | ---: |
-| V4 Flash | Off-peak | 0.007 | 0.22 | 0.66 |
-| V4 Flash | Peak | 0.014 | 0.44 | 1.32 |
-| V4 Pro | Off-peak | 0.022 | 0.66 | 1.98 |
-| V4 Pro | Peak | 0.044 | 1.32 | 3.96 |
-
-The selected period identifier and current schedule provenance are recorded in the usage pricing snapshot. No retired schedule, historical lookup, date-based price selection, or old-record repricing is implemented. Existing snapshots remain immutable recorded results.
+The selected period supplies prices and trusted dimensions. New snapshots record the selected schedule/period, effective instant, window timezone, peak days, and peak-days timezone; policy keys distinguish schedule and period. Existing stored snapshots and totals are immutable and are not repriced. Remote catalog freshness remains outside this contract and requires a separate refresh capability.
 
 ## 4. Pricing resolver shape
 
-The catalog pricing model gains one current schedule representation (not a historical collection):
-
-```ts
-type TokenPricingSchedulePeriod = {
-  periodId: "peak" | "off_peak";
-  inputTokenPricing: number;
-  outputTokenPricing: number;
-  cachedInputReadTokenPricing: number;
-  cachedInputWriteTokenPricing?: number;
-  trustedDimensions: {
-    input: boolean;
-    output: boolean;
-    cachedInputRead: boolean;
-    cachedInputWrite: boolean;
-    cachedInputWrite5m: boolean;
-    cachedInputWrite1h: boolean;
-  };
-};
-
-type TokenPricingSchedule = {
-  scheduleId: "deepseek-v4-2026-08-17";
-  timezone: "UTC";
-  effectiveFrom: "2026-08-16T16:00:00Z";
-  peakWindows: readonly [
-    { periodId: "peak"; startMinuteUtc: 60; endMinuteUtc: 240 },
-    { periodId: "peak"; startMinuteUtc: 360; endMinuteUtc: 600 },
-  ];
-  defaultPeriodId: "off_peak";
-  periods: readonly [TokenPricingSchedulePeriod, TokenPricingSchedulePeriod];
-};
-```
-
-`TokenPricingConfig` serializes this as `pricing_schedule`; its existing flat fields remain the trusted latest default (`off_peak`) for the current catalog status path. `LLMFactory.ModelPricingInfo` exposes `pricing_schedule` alongside those existing fields. `TokenPriceConfigProvider.resolvePolicy(payload)` consumes the schedule, maps the selected period's camel-case trusted dimensions to the existing `TokenPriceTrustedDimensions` snake-case shape, and returns `ResolvedTokenPricingPolicy` plus `pricing_schedule_id`, `pricing_schedule_period_id`, `pricing_schedule_effective_from`, and `pricing_schedule_timezone`.
-
-Selection is deterministic: parse `observed_at` as an ISO instant, convert to UTC minute-of-day, match the half-open peak windows, and otherwise choose `off_peak`. The selected period supplies the existing input/output/cache dimensions and its trusted dimensions are copied into the resolved policy. Existing `TokenCostCalculator.selectTier` then applies current input-size tier behavior; DeepSeek V4 currently has no extra tiers. Invalid or absent scheduled timestamps return `pricing_status=missing` and `missing_reason=pricing_schedule_time_invalid`; no guess, old-price fallback, historical table, or date-based selector is introduced. The selected policy, schedule ID, period, and provenance are written to the new `pricing_snapshot_json`; existing snapshots are not rewritten.
+`TokenPricingConfig` serializes the history as `pricing_schedule_history`; `LLMFactory.ModelPricingInfo` exposes the same history. `TokenPriceConfigProvider.resolvePolicy(payload)` delegates selection to the provider-owned pure schedule selector, maps the selected period's trusted dimensions, and returns selected schedule/period identity and explicit window/calendar provenance. When history is present, selection failure never falls back to current flat fields.
 
 ## 5. Provider endpoint and metadata verification
 

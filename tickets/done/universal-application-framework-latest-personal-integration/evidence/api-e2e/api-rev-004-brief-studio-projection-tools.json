@@ -1,0 +1,158 @@
+{
+  "scenarioId": "APIE2E-BRIEF-STUDIO-004",
+  "result": "PASS",
+  "briefs": [
+    {
+      "brief_id": "brief-638a6b63-880d-4d3d-a8a7-fec1de8f273f",
+      "title": "API REV 004 Studio exact identity brief",
+      "status": "in_review",
+      "latest_binding_id": "c048d150-abd5-4827-881e-8ff21667f9e3",
+      "latest_run_id": "brief_studio_team_4f4a2a03ea094345bf53080b0f896c33",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "cb0be036-c6b4-4a78-a096-ed12fc8b1042",
+      "path": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md",
+      "producer_member_address": "/researcher"
+    },
+    {
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "28f39da2-3405-41b5-9cca-58d2d3e85b7f",
+      "path": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/final-brief.md",
+      "producer_member_address": "/writer"
+    }
+  ],
+  "revisions": [
+    {
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "cb0be036-c6b4-4a78-a096-ed12fc8b1042",
+      "run_id": "brief_studio_researcher_2e4dea9da23f4317b7ee7431762d68fb",
+      "producer_member_address": "/researcher",
+      "published_at": "2026-08-22T12:21:48.330Z",
+      "projected_at": "2026-08-22T12:21:48.342Z"
+    },
+    {
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "28f39da2-3405-41b5-9cca-58d2d3e85b7f",
+      "run_id": "brief_studio_writer_1f9281dd636d4bac8d40531d992fc665",
+      "producer_member_address": "/writer",
+      "published_at": "2026-08-22T12:22:35.313Z",
+      "projected_at": "2026-08-22T12:22:35.325Z"
+    }
+  ],
+  "researcherTools": [
+    {
+      "seq": 3,
+      "tool_name": "run_bash",
+      "tool_args": {
+        "command": "/bin/bash -lc \"find . -maxdepth 3 -type f -not -path './.git/*' -print | sort | head -100\"",
+        "cwd": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime"
+      }
+    },
+    {
+      "seq": 6,
+      "tool_name": "run_bash",
+      "tool_args": {
+        "command": "/bin/bash -lc \"pwd; ls -la; mkdir -p brief-studio; cat > brief-studio/research.md <<'EOF'\n# API REV 004 Studio exact identity brief — research checkpoint\n\n## Key findings\n- The brief title is the only supplied source context; the central requirement is exact identity, not a broad brand exploration.\n- “API REV 004 Studio” should be treated as the canonical name, preserving capitalization, spacing, and the three-part structure exactly.\n- “exact identity” implies a reviewable identity spec: approved name treatment, concise positioning, voice, visual direction, and explicit exclusions.\n- The checkpoint should distinguish confirmed facts (the title) from proposed identity decisions so reviewers can approve or revise them cleanly.\n- A compact brief is preferable: one central promise, a small set of identity principles, and concrete acceptance criteria.\n\n## Risks or open questions\n- No product description, audience, market, geography, or existing visual references were provided.\n- “API REV 004” could be a project/version code or an outward-facing brand element; its public display role needs confirmation.\n- Exact logo, color, typography, and usage rules cannot be finalized without stakeholder/source validation.\n\n## Recommendations or next steps\n- Draft the identity around precision, technical fluency, and studio craft while labeling these as working hypotheses.\n- Make the canonical lockup “API REV 004 Studio” and define any shortened form only as a secondary usage.\n- Include a reviewer checklist covering naming, audience, promise, tone, visual system, and prohibited variants.\nEOF\nrealpath brief-studio/research.md\"",
+        "cwd": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime"
+      }
+    },
+    {
+      "seq": 9,
+      "tool_name": "publish_artifacts",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the exact identity brief."
+          }
+        ]
+      }
+    },
+    {
+      "seq": 12,
+      "tool_name": "send_message_to",
+      "tool_args": {
+        "recipient_address": "/writer",
+        "message_type": "handoff",
+        "content": "Research is ready at /private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md. Key findings: treat “API REV 004 Studio” as the canonical exact name; build a compact, reviewable identity spec covering positioning, voice, visual direction, and exclusions; label precision/technical fluency/studio craft as working hypotheses because no audience, product, or visual references were supplied. Risks include whether “API REV 004” is public-facing and lack of validated logo/color/type rules.",
+        "reference_files": [
+          "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md"
+        ]
+      }
+    },
+    {
+      "seq": 15,
+      "tool_name": "get_handoff_rules",
+      "tool_args": {}
+    }
+  ],
+  "writerTools": [
+    {
+      "seq": 3,
+      "tool_name": "run_bash",
+      "tool_args": {
+        "command": "/bin/bash -lc 'cat /private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md'",
+        "cwd": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime"
+      }
+    },
+    {
+      "seq": 6,
+      "tool_name": "run_bash",
+      "tool_args": {
+        "command": "/bin/bash -lc \"cat > '/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/final-brief.md' <<'EOF'\n# API REV 004 Studio — Identity Brief\n\n**Recommendation summary**\n\nAdopt **“API REV 004 Studio”** as the canonical identity treatment, preserving its capitalization, spacing, and three-part structure exactly. Build a compact identity around a clear, exacting, technically fluent studio character. The following positioning, voice, and visual direction are working hypotheses—not validated brand decisions—because no audience, product description, market context, or visual references were supplied.\n\n**Key evidence**\n\n- **Confirmed naming:** The supplied title is the only firm source context; therefore, the exact name treatment is the strongest approved direction.\n- **Positioning hypothesis:** A precision-led studio that turns complex systems, revisions, or technical work into clear, crafted outcomes.\n- **Voice:** Direct, calm, specific, and confident. Prefer plain language, useful detail, and deliberate restraint over hype, jargon, or exaggerated claims.\n- **Visual direction:** Structured and editorial; use disciplined spacing, modular layouts, strong hierarchy, and a restrained technical sensibility. Let craft and clarity lead rather than decorative futurism.\n- **Identity principle:** Every touchpoint should feel intentional, legible, and revision-aware—precise enough for technical audiences, but accessible to non-specialists.\n- **Exclusions:** Do not introduce unapproved shortened names, alternate capitalization, generic “AI/tech” visual clichés, noisy gradients, gratuitous code imagery, or claims that imply a defined product or audience.\n\n**Risks or cautions**\n\n- “API REV 004” may be an internal project/version code rather than a public-facing brand element; confirm its display role before finalizing.\n- Logo construction, color palette, typography, spacing, and accessibility rules remain undefined and require stakeholder/source validation.\n- Precision, technical fluency, and studio craft are hypotheses inferred from the name and brief—not evidence-based audience insights.\n- Avoid presenting this checkpoint as a final brand system until the audience, offer, and competitive context are known.\n\n**Next actions**\n\n- Confirm whether **“API REV 004 Studio”** is the public-facing canonical name and whether a secondary short form is permitted.\n- Validate the intended audience, offer, market context, and any existing visual references.\n- Approve or revise the positioning and voice hypotheses.\n- Develop two or three visual routes, then select and document the logo, color, type, layout, and usage rules.\n- Run a reviewer checklist for name fidelity, promise, tone, visual coherence, accessibility, and prohibited variants.\nEOF\nprintf '%s\\\\n' '/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/final-brief.md'\"",
+        "cwd": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime"
+      }
+    },
+    {
+      "seq": 9,
+      "tool_name": "publish_artifacts",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/final-brief.md",
+            "description": "Concise reviewable identity brief for API REV 004 Studio."
+          }
+        ]
+      }
+    },
+    {
+      "seq": 12,
+      "tool_name": "get_handoff_rules",
+      "tool_args": {}
+    }
+  ],
+  "teamMessages": {
+    "schemaVersion": 1,
+    "rootTeamRunId": "brief_studio_team_4f4a2a03ea094345bf53080b0f896c33",
+    "messages": [
+      {
+        "messageId": "teammsg_C4kzvxPQt9vgKmYHDVUsdab2WCL59_w_",
+        "senderAgentRunId": "brief_studio_researcher_2e4dea9da23f4317b7ee7431762d68fb",
+        "receiverAgentRunId": "brief_studio_writer_1f9281dd636d4bac8d40531d992fc665",
+        "content": "Research is ready at /private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md. Key findings: treat “API REV 004 Studio” as the canonical exact name; build a compact, reviewable identity spec covering positioning, voice, visual direction, and exclusions; label precision/technical fluency/studio craft as working hypotheses because no audience, product, or visual references were supplied. Risks include whether “API REV 004” is public-facing and lack of validated logo/color/type rules.",
+        "messageType": "handoff",
+        "referenceFiles": [
+          "/private/tmp/api-rev004-studio.xkprY3/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime/brief-studio/research.md"
+        ],
+        "createdAt": "2026-08-22T12:21:55.182Z"
+      }
+    ]
+  },
+  "proof": {
+    "researcherPublishHandoff": true,
+    "writerPublish": true,
+    "namedRecipientDelivered": true,
+    "twoProjectedArtifacts": true,
+    "inReview": true,
+    "noLastError": true
+  }
+}

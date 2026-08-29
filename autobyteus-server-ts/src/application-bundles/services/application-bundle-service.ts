@@ -5,43 +5,43 @@ import type {
   ApplicationCatalogDiagnostic,
   ApplicationCatalogSnapshot,
 } from "../domain/application-catalog-snapshot.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import { FileApplicationBundleProvider } from "../providers/file-application-bundle-provider.js";
 import type { ApplicationPackageRegistrySnapshot } from "../../application-packages/domain/application-package-registry-snapshot.js";
 import { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
-import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
+import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
+import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
+import { BuiltInApplicationPackageMaterializer } from "../../application-packages/services/built-in-application-package-materializer.js";
 
 const APPLICATION_ASSET_ROUTE_PREFIX = "/application-bundles";
 
 type ApplicationBundleProvider = {
   getCatalogSnapshot: (registrySnapshot: ApplicationPackageRegistrySnapshot) => Promise<ApplicationCatalogSnapshot>;
-  validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
   buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
   buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
 };
 
-type LegacyApplicationBundleProvider = {
-  listBundles: () => Promise<ApplicationBundle[]>;
-  validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
-  buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
-  buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
-};
+export type ApplicationBundleCatalogCandidate = Readonly<{
+  owner: ApplicationBundleService;
+  scope:
+    | Readonly<{ kind: "package"; packageId: string }>
+    | Readonly<{ kind: "application"; applicationId: string; packageId: string }>;
+  applications: readonly ApplicationBundle[];
+  diagnostics: readonly ApplicationCatalogDiagnostic[];
+  refreshedAt: string;
+}>;
+
+export type PreparedApplicationBundleCatalogSlice = Readonly<{
+  owner: ApplicationBundleService;
+  candidate: ApplicationBundleCatalogCandidate;
+  removedApplicationIds: ReadonlySet<string>;
+  nextSnapshot: ApplicationCatalogSnapshot;
+  nextBundleById: Map<string, ApplicationBundle>;
+  nextAgentSources: Map<string, ApplicationOwnedDefinitionSource>;
+  nextTeamSources: Map<string, ApplicationOwnedDefinitionSource>;
+}>;
 
 export class ApplicationBundleService {
-  private static instance: ApplicationBundleService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationBundleService>[0] = {},
-  ): ApplicationBundleService {
-    if (!ApplicationBundleService.instance) {
-      ApplicationBundleService.instance = new ApplicationBundleService(dependencies);
-    }
-    return ApplicationBundleService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationBundleService.instance = null;
-  }
-
   private cachePopulated = false;
   private populatePromise: Promise<void> | null = null;
   private snapshot: ApplicationCatalogSnapshot = {
@@ -55,48 +55,17 @@ export class ApplicationBundleService {
 
   constructor(
     private readonly dependencies: {
-      provider?: ApplicationBundleProvider | LegacyApplicationBundleProvider;
-      packageRegistryService?: Pick<ApplicationPackageRegistryService, "getRegistrySnapshot">;
-      rootSettingsStore?: unknown;
-      registryStore?: unknown;
-      builtInMaterializer?: unknown;
-    } = {},
+      provider: ApplicationBundleProvider;
+      packageRegistryService: Pick<ApplicationPackageRegistryService, "getRegistrySnapshot">;
+    },
   ) {}
 
   private get provider(): ApplicationBundleProvider {
-    const provider = this.dependencies.provider ?? new FileApplicationBundleProvider();
-    if ("getCatalogSnapshot" in provider) {
-      return provider;
-    }
-
-    return {
-      getCatalogSnapshot: async () => ({
-        applications: await provider.listBundles(),
-        diagnostics: [],
-        refreshedAt: new Date().toISOString(),
-      }),
-      validatePackageRoot: provider.validatePackageRoot,
-      buildApplicationOwnedAgentSources: provider.buildApplicationOwnedAgentSources,
-      buildApplicationOwnedTeamSources: provider.buildApplicationOwnedTeamSources,
-    };
+    return this.dependencies.provider;
   }
 
   private get packageRegistryService(): Pick<ApplicationPackageRegistryService, "getRegistrySnapshot"> {
-    if (this.dependencies.packageRegistryService) {
-      return this.dependencies.packageRegistryService;
-    }
-    if (
-      this.dependencies.rootSettingsStore
-      || this.dependencies.registryStore
-      || this.dependencies.builtInMaterializer
-    ) {
-      return new ApplicationPackageRegistryService({
-        rootSettingsStore: this.dependencies.rootSettingsStore as never,
-        registryStore: this.dependencies.registryStore as never,
-        builtInMaterializer: this.dependencies.builtInMaterializer as never,
-      });
-    }
-    return ApplicationPackageRegistryService.getInstance();
+    return this.dependencies.packageRegistryService;
   }
 
   private assetPath(applicationId: string, relativePath: string): string {
@@ -198,9 +167,139 @@ export class ApplicationBundleService {
     return this.snapshot.diagnostics.find((diagnostic) => diagnostic.applicationId === applicationId) ?? null;
   }
 
-  async reloadApplication(applicationId: string): Promise<ApplicationBundle | null> {
-    await this.refresh();
-    return this.getApplicationById(applicationId);
+  async stagePackageCatalog(packageId: string): Promise<ApplicationBundleCatalogCandidate> {
+    await this.ensureCache();
+    const normalizedPackageId = packageId.trim();
+    if (!normalizedPackageId) throw new Error("packageId is required.");
+    const staged = await this.provider.getCatalogSnapshot(
+      await this.packageRegistryService.getRegistrySnapshot(),
+    );
+    return Object.freeze({
+      owner: this,
+      scope: Object.freeze({ kind: "package" as const, packageId: normalizedPackageId }),
+      applications: Object.freeze(staged.applications
+        .filter((application) => application.packageId === normalizedPackageId)
+        .map((application) => this.withAssetPaths(application))),
+      diagnostics: Object.freeze(staged.diagnostics
+        .filter((diagnostic) => diagnostic.packageId === normalizedPackageId)),
+      refreshedAt: staged.refreshedAt,
+    });
+  }
+
+  async stageApplicationCatalog(
+    applicationId: string,
+  ): Promise<ApplicationBundleCatalogCandidate> {
+    await this.ensureCache();
+    const normalizedApplicationId = applicationId.trim();
+    const current = this.bundleById.get(normalizedApplicationId);
+    const currentDiagnostic = this.snapshot.diagnostics.find(
+      (diagnostic) => diagnostic.applicationId === normalizedApplicationId,
+    );
+    const packageId = current?.packageId ?? currentDiagnostic?.packageId;
+    if (!packageId) {
+      throw new Error(`Application '${normalizedApplicationId}' is absent from the live catalog.`);
+    }
+    const packageCandidate = await this.stagePackageCatalog(packageId);
+    return Object.freeze({
+      owner: this,
+      scope: Object.freeze({
+        kind: "application" as const,
+        applicationId: normalizedApplicationId,
+        packageId,
+      }),
+      applications: Object.freeze(packageCandidate.applications.filter(
+        (application) => application.id === normalizedApplicationId,
+      )),
+      diagnostics: Object.freeze(packageCandidate.diagnostics.filter(
+        (diagnostic) => diagnostic.applicationId === normalizedApplicationId,
+      )),
+      refreshedAt: packageCandidate.refreshedAt,
+    });
+  }
+
+  prepareCatalogSlice(
+    candidate: ApplicationBundleCatalogCandidate,
+  ): PreparedApplicationBundleCatalogSlice {
+    this.assertOwnedCandidate(candidate);
+    const oldApplicationIds = candidate.scope.kind === "package"
+      ? this.snapshot.applications
+          .filter((application) => application.packageId === candidate.scope.packageId)
+          .map((application) => application.id)
+      : [candidate.scope.applicationId];
+    const nextApplicationIds = new Set(candidate.applications.map((application) => application.id));
+    const removedApplicationIds = new Set(oldApplicationIds.filter(
+      (applicationId) => !nextApplicationIds.has(applicationId),
+    ));
+    const isTargetApplication = (application: ApplicationBundle): boolean =>
+      candidate.scope.kind === "package"
+        ? application.packageId === candidate.scope.packageId
+        : application.id === candidate.scope.applicationId;
+    const isTargetDiagnostic = (diagnostic: ApplicationCatalogDiagnostic): boolean =>
+      candidate.scope.kind === "package"
+        ? diagnostic.packageId === candidate.scope.packageId
+        : diagnostic.applicationId === candidate.scope.applicationId;
+    const nextSnapshot: ApplicationCatalogSnapshot = {
+      applications: [
+        ...this.snapshot.applications.filter((application) => !isTargetApplication(application)),
+        ...candidate.applications,
+      ],
+      diagnostics: [
+        ...this.snapshot.diagnostics.filter((diagnostic) => !isTargetDiagnostic(diagnostic)),
+        ...candidate.diagnostics,
+      ],
+      refreshedAt: candidate.refreshedAt,
+    };
+    const nextBundleById = new Map(this.bundleById);
+    const nextAgentSources = new Map(this.applicationOwnedAgentSourceById);
+    const nextTeamSources = new Map(this.applicationOwnedTeamSourceById);
+    const targetIds = new Set([
+      ...removedApplicationIds,
+      ...candidate.applications.map((application) => application.id),
+    ]);
+    for (const applicationId of targetIds) nextBundleById.delete(applicationId);
+    for (const [definitionId, source] of nextAgentSources) {
+      if (targetIds.has(source.applicationId)) nextAgentSources.delete(definitionId);
+    }
+    for (const [definitionId, source] of nextTeamSources) {
+      if (targetIds.has(source.applicationId)) nextTeamSources.delete(definitionId);
+    }
+    for (const application of candidate.applications) {
+      nextBundleById.set(application.id, application);
+      for (const source of this.provider.buildApplicationOwnedAgentSources(application)) {
+        nextAgentSources.set(source.definitionId, source);
+      }
+      for (const source of this.provider.buildApplicationOwnedTeamSources(application)) {
+        nextTeamSources.set(source.definitionId, source);
+      }
+    }
+    return Object.freeze({
+      owner: this,
+      candidate,
+      removedApplicationIds,
+      nextSnapshot,
+      nextBundleById,
+      nextAgentSources,
+      nextTeamSources,
+    });
+  }
+
+  commitPreparedCatalogSlice(plan: PreparedApplicationBundleCatalogSlice): void {
+    if (plan.owner !== this) {
+      throw new Error("Application bundle catalog plan belongs to another service.");
+    }
+    this.assertOwnedCandidate(plan.candidate);
+    this.snapshot = plan.nextSnapshot;
+    this.bundleById = plan.nextBundleById;
+    this.applicationOwnedAgentSourceById = plan.nextAgentSources;
+    this.applicationOwnedTeamSourceById = plan.nextTeamSources;
+    this.cachePopulated = true;
+    this.populatePromise = null;
+  }
+
+  private assertOwnedCandidate(candidate: ApplicationBundleCatalogCandidate): void {
+    if (candidate.owner !== this) {
+      throw new Error("Application bundle catalog candidate belongs to another service.");
+    }
   }
 
   async resolveUiAsset(
@@ -260,20 +359,22 @@ export class ApplicationBundleService {
     return Array.from(this.applicationOwnedTeamSourceById.values());
   }
 
-  async validatePackageRoot(packageRootPath: string, packageId?: string): Promise<void> {
-    const resolvedRootPath = path.resolve(packageRootPath);
-    await this.provider.validatePackageRoot(
-      resolvedRootPath,
-      packageId ?? buildLocalApplicationPackageId(resolvedRootPath),
-    );
-  }
-
-  async refresh(): Promise<void> {
-    this.cachePopulated = false;
-    this.populatePromise = null;
-    this.bundleById.clear();
-    this.applicationOwnedAgentSourceById.clear();
-    this.applicationOwnedTeamSourceById.clear();
-    await this.ensureCache();
-  }
 }
+
+let generalProcessApplicationBundleService: ApplicationBundleService | null = null;
+
+export const getGeneralProcessApplicationBundleService =
+(): ApplicationBundleService => {
+  if (!generalProcessApplicationBundleService) {
+    const appConfig = appConfigProvider.config;
+    generalProcessApplicationBundleService = new ApplicationBundleService({
+      provider: new FileApplicationBundleProvider(),
+      packageRegistryService: new ApplicationPackageRegistryService({
+        rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
+        registryStore: new ApplicationPackageRegistryStore(appConfig),
+        builtInMaterializer: new BuiltInApplicationPackageMaterializer(appConfig),
+      }),
+    });
+  }
+  return generalProcessApplicationBundleService;
+};

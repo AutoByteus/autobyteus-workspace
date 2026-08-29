@@ -1,0 +1,319 @@
+Application-Owned MCP Capability — Delivery Integration Evidence
+Date: 2026-08-27 UTC
+
+Recorded bootstrap context
+- Ticket branch: codex/application-owned-mcp-capability
+- Bootstrap/finalization base: origin/personal -> personal
+- Bootstrap base revision: fd9b33e20ace3e7c221f931dbbcd5f4acf1df65f
+- Pre-fetch origin/personal: bf396dd5ed541cf6ef2179b305132b079aadd7ab
+
+Initial delivery refresh
+$ git fetch origin personal
+Result: PASS
+- Latest tracked origin/personal: bf396dd5ed541cf6ef2179b305132b079aadd7ab
+- Bootstrap base is an ancestor of latest tracked base: yes
+- New base commits since bootstrap: 23
+
+Candidate protection and integration
+$ git diff --check
+Result: PASS
+$ git add -A && git commit -m "chore(delivery): checkpoint reviewed application-owned MCP capability"
+Result: PASS
+- Safety checkpoint: 598ee2c2f89ef47a2035ed7ecff5a45dce06157a
+$ git merge --no-ff origin/personal -m "Merge latest personal base into application-owned MCP ticket"
+Result: PASS; no conflicts
+- Integrated ticket HEAD: 61d9c3b39c7955289cae7c1bef31f51aca275a9b
+- Merge parents: 598ee2c2f89ef47a2035ed7ecff5a45dce06157a bf396dd5ed541cf6ef2179b305132b079aadd7ab
+- Divergence from origin/personal after merge: 0 behind / 3 ahead
+
+Post-integration executable check — initial attempt
+$ corepack pnpm --filter @autobyteus-example/brief-studio-authoring build
+Result: ENVIRONMENT/PREPARATION FAILURE
+- @autobyteus/application-devkit/dist/cli.js was absent because generated shared package output had been cleaned after the API/E2E round.
+$ corepack pnpm --filter autobyteus-server-ts test --run tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts --no-watch
+Result: PRECONDITION FAILURE
+- The test correctly reported the missing applications/brief-studio/dist/importable-package precondition.
+- Neither failure identified a merged source behavior regression; the documented package-build prerequisites had not yet run.
+
+Post-integration executable check — corrected prerequisite order
+$ corepack pnpm --filter @autobyteus/application-devkit --filter @autobyteus/application-frontend-sdk build
+Result: PASS
+$ corepack pnpm --filter @autobyteus-example/brief-studio-authoring build
+Result: PASS
+- Generated the maintained Brief Studio importable package from current manifest v5/backend v7 source.
+$ corepack pnpm --filter autobyteus-server-ts test --run tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts --no-watch
+Result: PASS
+- Test files: 1 passed / 1
+- Tests: 1 passed / 1
+- Proven path: shipped Brief Studio package -> authenticated Agent Tools MCP -> exact Team binding -> application gateway -> real child worker -> SQLite.
+
+Generated-output cleanup
+$ git clean -fd -- applications/brief-studio/dist autobyteus-application-backend-sdk/dist autobyteus-application-devkit/dist autobyteus-application-frontend-sdk/dist autobyteus-application-sdk-contracts/dist
+Result: PASS
+- Reproducible untracked build/package output removed; no maintained source removed.
+
+Integrated-state docs verification
+$ git diff --check
+Result: PASS
+$ rg <stale manifest-v4/backend-v6/ApplicationCatalogRefreshCoordinator patterns> --glob '*.md' --glob '!tickets/**' --glob '!**/tickets/**'
+Result: PASS; no stale durable Markdown reference remains.
+$ python <relative Markdown link target check over the 10 updated long-lived docs>
+Result: PASS; all relative link targets resolve.
+
+Current delivery gate
+- Integrated source and docs: PASS
+- Explicit user completion/verification: not yet received
+- Ticket archival, final delivery commit, push, target merge/push, release, deployment, and cleanup: not performed
+
+Delivery supersession / pause
+- Trigger: /code_reviewer reported a subsequent user-required real Agent -> correlated logs -> workflow -> UI proof not covered by API-REV-001.
+- Gap artifact: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/api-e2e-agent-ui-proof-gap.md
+- Classification: Requirement Gap; Design Impact if direct application/UI mutation is intended.
+- Prior integration/check evidence remains factual for the previously approved direct-MCP scope but no longer authorizes final handoff.
+- Ten provisional long-lived documentation edits were reset to integrated HEAD so upstream rework is not documented as final.
+- Ticket archival, delivery commit/push, target merge/push, release, deployment, and cleanup remain prohibited.
+
+Delivery resume after renewed downstream cycle (DR-003)
+- Trigger: /code_reviewer CRR-009 proportional durable test-code review Pass after SR-008, ARCH-REV-008, IR-005, CRR-008, and API-REV-004.
+- Current upstream results: API-REV-004 Pass / 97.6% for AC-032–AC-039; API-REV-001 Pass / 97.2% remains valid for AC-001–AC-031.
+$ git fetch origin personal
+Result: PASS
+- Latest tracked origin/personal before and after fetch: bf396dd5ed541cf6ef2179b305132b079aadd7ab
+- Ticket branch committed HEAD: 61d9c3b39c7955289cae7c1bef31f51aca275a9b
+- Divergence from origin/personal: 0 behind / 3 ahead
+- origin/personal is an ancestor of the ticket HEAD: yes
+- New base commits since the DR-001 integration refresh: none
+- Integration method: already current; no second checkpoint or merge was needed.
+- Executable rerun after this refresh: not run. The delivery rule requires a renewed executable check only when new base commits are integrated. This refresh integrated zero commits, while API-REV-004 and CRR-009 already validate the current reviewed working state. Rebuilding or rerunning the paid live provider/browser journey would not add integrated-base evidence.
+
+DR-003 integrated-state documentation sync
+- Eleven long-lived Markdown documents were updated against the already-current base and the reviewed API-REV-004 working state.
+- Promoted subjects: current manifest v5/backend definition v7; declaration/handler authoring; application-only route selection and collision policy; common authorization/schema/worker/result gateway; staged catalog transition and call drain; Brief Studio read-only Agent-to-UI workflow; Codex apply_patch -> native fileChange -> normalized edit_file layer separation.
+- Final documentation and repository-integrity checks are recorded in docs-sync-report.md and the DR-003 section of delivery-revision-record.md.
+
+DR-003 documentation and repository-integrity checks
+$ git diff --check
+Result: PASS
+$ rg <stale manifest-v4/backend-v6/ApplicationCatalogRefreshCoordinator patterns> --glob '*.md' --glob '!tickets/**' --glob '!**/tickets/**'
+Result: PASS; no stale durable Markdown reference remains.
+$ check source contract constants in autobyteus-application-sdk-contracts/src
+Result: PASS; manifest version is 5 and backend definition contract version is 7.
+$ python3 <relative Markdown link validation over the 11 updated long-lived docs>
+Result: PASS; every relative link target resolves.
+$ check DR-003 delivery artifacts for superseded DR-002 current-state wording
+Result: PASS.
+$ check git status for delivery-generated dist/package output
+Result: PASS; no generated delivery output remains.
+
+Current DR-003 gate
+- Integrated base state: PASS / already current
+- Upstream feature and durable test-code reviews: PASS
+- Docs sync: PASS
+- Explicit user completion/verification: not yet received
+- Ticket archival, final delivery commit, push, target merge/push, release, deployment, and cleanup: not performed
+
+Post-acknowledgement latest-base refresh (DR-004)
+Date: 2026-08-28 UTC
+- Trigger: user acknowledged the DR-003 handoff, reported that `personal` advanced, and requested latest-base alignment plus an Electron build.
+- Pre-fetch origin/personal: bf396dd5ed541cf6ef2179b305132b079aadd7ab
+$ git fetch origin personal
+Result: PASS
+- Post-fetch origin/personal: ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+- New base commits: 4 (`7f6d2d4cb`, `754a945a4`, merge `2afd4bfc6`, release bump `ebef77eb3`)
+- New-base subject: finalized `agent-tools-mcp-session-resume`, replacing bearer sessions/main-listener callback routing with deterministic tokenless run-session activation on a dedicated loopback listener and new exact-run deactivation/restore ownership.
+
+Candidate protection
+$ git diff --check
+Result: PASS
+$ git add -u && git add <current untracked durable test and ticket artifacts>
+$ git commit -m "chore(delivery): checkpoint verified application-owned MCP handoff"
+Result: PASS
+- Checkpoint: aaf7e076ed66c5daaf142f896230ad63085330c7
+- Excluded as reproducible/runtime output: `.autobyteus/`, Brief Studio `dist/`, application SDK/devkit `dist/` roots.
+
+Latest-base integration attempt
+$ git merge --no-ff origin/personal -m "Merge latest personal base into application-owned MCP ticket"
+Result: BLOCKED — 12 content conflicts
+- Conflicted docs: Agent Tools MCP server, application backend gateway, engine, orchestration, and sessions.
+- Conflicted production: provider factory builder, Agent Tools MCP session service/session/host, and application execution-scope kernel builder.
+- Conflicted durable coverage: exact live Codex backend integration and Agent Tools MCP host unit test.
+- The overlap is security/identity/lifecycle architecture, not formatting-only documentation.
+$ git merge --abort
+Result: PASS
+- Branch restored to checkpoint aaf7e076ed66c5daaf142f896230ad63085330c7.
+- Current divergence from origin/personal: 4 ahead / 4 behind.
+
+Electron build disposition
+- Not run: there is no valid latest-base integrated source tree. Building the pre-integration checkpoint would not satisfy the user's request; building a conflicted index is invalid.
+- Canonical blocker: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/tickets/in-progress/application-owned-mcp-capability/delivery-latest-base-conflict-report.md
+
+Current DR-004 gate
+- Classification: Design Impact
+- Recommended recipient: /solution_designer
+- Latest-base integration: BLOCKED
+- Electron build: BLOCKED / not run
+- Prior DR-003 API/E2E and docs evidence: retained for the pre-new-base checkpoint only
+- Renewed downstream validation and user verification: required after design reconciliation
+- Archival, final push/merge, release, deployment, and cleanup: prohibited
+
+Delivery resume after reconciled latest-base cycle (DR-005)
+Date: 2026-08-28 UTC
+- Trigger: /code_reviewer CRR-014 proportional durable-test review Pass after API-REV-006 Pass / 98.4% under SR-010 / ARCH-REV-010; CRR-013 remains the IR-008 source-review Pass.
+- DR-004 conflict resolution: SR-009/ARCH-REV-009/IR-006–IR-007 reconciled application routes/capabilities with the deterministic tokenless dedicated-listener run-session lifecycle. SR-010/ARCH-REV-010/IR-008 corrected the proof oracle without a production delta.
+- Pre-fetch ticket HEAD: 4994980aa7db1d56c1fd5fe31c32d0052329642e
+- Pre-fetch origin/personal: ebef77eb32bbeaefd4fccdb6998240264c82a3c1
+$ git fetch origin personal
+Result: PASS
+- Post-fetch origin/personal: 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+- New base commits: a7c4495c4 (record v1.4.61 rollout) and 64cb4e952 (release cleanup)
+
+Reviewed-state protection
+$ git diff --check
+Result: PASS
+$ git add <three reviewed durable tests and current API/E2E/code-review evidence> && git commit -m "chore(delivery): checkpoint reviewed current-oracle API evidence"
+Result: PASS
+- Checkpoint: f430b9103d6ac7ced3a97a81a31dc80dedee2df8
+
+Latest-base integration
+$ git merge --no-ff origin/personal -m "Merge latest personal base into application-owned MCP ticket"
+Result: PASS; no conflicts
+- Integrated ticket HEAD: 7ab0a996834830a0d8f2c74e406bc1b9bd4926cb
+- Latest tracked base: 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+- Divergence immediately after merge: 0 behind / 10 ahead
+- Working tree after merge: clean
+
+Post-integration Electron build
+Platform: Linux aarch64; Node v22.23.1; pnpm 10.28.1
+$ pnpm build:electron:linux
+Result: PASS; exit status 0
+- Started: 2026-08-28T12:42:57Z
+- Completed: 2026-08-28T12:48:32Z
+- Output: autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage
+- Size: 646839531 bytes
+- Mode/type: executable 755; ELF 64-bit ARM aarch64
+- SHA-256: f26c67915011af6e326e3e3b31e686b23081bf95169b63d4934589c2973a5f83
+- Full log/context/hash evidence: tickets/in-progress/application-owned-mcp-capability/delivery-evidence/dr-005/
+- Non-fatal dependency, Browserslist, chunk-size, and default Linux category warnings are retained in the full log.
+- No tag, signing, release upload, publication, or deployment was performed.
+
+Generated-output disposition
+- Removed reproducible untracked autobyteus-application-backend-sdk/dist and autobyteus-application-sdk-contracts/dist outputs created during preparation.
+- Retained the ignored Electron AppImage for user verification.
+- Added only compact delivery build logs and artifact-integrity metadata under the ticket evidence directory.
+
+DR-005 integrated-state documentation sync
+- Updated applications/brief-studio/README.md to remove the superseded provider-operation prescription and zero-shell fallback rule.
+- Updated docs/custom-application-development.md to replace stale authenticated-session wording with the deterministic tokenless dedicated-listener/live-authority contract, distinguish application-lane drain from exact-run session deactivation, and make the Brief example operation-neutral.
+- Preserved exact context/artifact/publication/handoff/read-only/UI contracts while documenting operation-neutral foundation behavior, including shell.
+- Reviewed the remaining current v5/v7 SDK/application docs and combined tokenless Agent Tools MCP/engine/orchestration/gateway/session/Codex docs; no further durable changes were required.
+
+DR-005 final integrity checks
+$ git diff --check
+Result: PASS
+$ check current source constants
+Result: PASS; manifest version 5 and backend definition contract version 7
+$ scan durable Markdown outside tickets for v4/v6, removed catalog coordinator, bearer/authenticated Agent Tools wording
+Result: PASS; no stale reference found after updating the external custom-application guide
+$ scan maintained Brief role prompts for provider/foundation operation names
+Result: PASS; prompts remain operation-neutral
+$ validate relative Markdown links across changed durable and delivery docs
+Result: PASS; all targets resolve
+$ scan DR-005 delivery evidence for secret-shaped values
+Result: PASS
+$ reverify AppImage SHA-256 and executable presence
+Result: PASS
+$ git merge-base --is-ancestor origin/personal HEAD
+Result: PASS; origin/personal 64cb4e952 is an ancestor of integrated HEAD 7ab0a9968
+- Only the two durable docs, delivery reports/records, and compact DR-005 evidence are uncommitted/tracked for the verification handoff.
+- Final delivery gate: ready for renewed explicit user verification. No archival, push, target merge, tag, release, deployment, or cleanup performed.
+
+Pre-handoff remote freshness confirmation
+$ git fetch origin personal
+Result: PASS; origin/personal remained 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+- Divergence remained 0 origin-only / 10 ticket-only.
+- Latest tracked origin/personal remains an ancestor of integrated HEAD 7ab0a996834830a0d8f2c74e406bc1b9bd4926cb.
+
+README-directed Electron rebuild for user testing (DR-006)
+Date: 2026-08-28 UTC
+- Trigger: user asked delivery to read the README and build Electron so they could test it.
+$ sed -n '238,307p' autobyteus-web/README.md
+Result: README selects pnpm build:electron:linux for the native Linux host architecture, includes the integrated backend in the standard command, and writes artifacts under electron-dist.
+- Host: Linux aarch64
+- Source HEAD: 7ab0a996834830a0d8f2c74e406bc1b9bd4926cb
+- Tracked base before build: origin/personal 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b; 0 origin-only / 10 ticket-only
+$ pnpm build:electron:linux
+Result: PASS; exit status 0
+- Started: 2026-08-28T12:56:44Z
+- Completed: 2026-08-28T13:01:55Z
+- Output: autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage
+- Size: 646843699 bytes
+- Mode/type: executable 755; ELF 64-bit ARM aarch64
+- SHA-256: 597f8f8fac3cfaa8d8ab68d940bf30421b4654a9d20e2dcdc3c83392f22e544f
+- Complete evidence: tickets/in-progress/application-owned-mcp-capability/delivery-evidence/dr-006/
+- Reproducible untracked SDK contract dist outputs were removed; the ignored AppImage was retained for user testing.
+- No source delta, signing, push, merge, archive, release, publication, or deployment occurred.
+$ git fetch origin personal
+Result: PASS; origin/personal remained 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b after the build and remained an ancestor of HEAD.
+DR-006 final artifact/evidence verification
+- git diff --check: PASS
+- current AppImage SHA-256 check: PASS
+- DR-006 evidence secret-shaped-value scan: PASS
+- origin/personal ancestry/currentness after rebuild: PASS
+- untracked output outside ticket delivery evidence: none; ignored AppImage intentionally retained
+- Current gate: user-test artifact ready; repository finalization awaits explicit post-test acceptance.
+
+Interactive Electron launch for user testing (DR-007)
+Date: 2026-08-28 UTC
+- Trigger: user asked delivery to open the DR-006 AppImage.
+- Graphical session: X11 :99, vncuser (uid 1000).
+- Initial extract-and-run attempt exposed a container-only missing unversioned libz.so prerequisite; host libz.so.1 is installed.
+- Delivery created /tmp/autobyteus-dr007-libs/libz.so as a temporary symlink to /lib/aarch64-linux-gnu/libz.so.1 and used launch-local LD_LIBRARY_PATH plus APPIMAGE_EXTRACT_AND_RUN=1. Repository and AppImage bytes were unchanged.
+- A background child launched from a short command was reaped after shell completion, so the successful user-test run is deliberately retained in unified execution session 83476.
+- Visible X11 window: id 48234500, name autobyteus, 1200x800 at 160,100; window focus attempted successfully.
+- Packaged server: migrations completed; server health check succeeded; Electron runtime status is running.
+- Live processes: Electron main/renderer/GPU/network plus packaged server under vncuser.
+- Screenshot: tickets/in-progress/application-owned-mcp-capability/delivery-evidence/dr-007/appimage-open-screen.png.
+- Test profile: /home/vncuser/.config/autobyteus and /home/vncuser/.autobyteus; retained while the user tests.
+- Current gate: interactive test in progress; no repository finalization, release, deployment, or cleanup.
+
+Post-test acceptance and finalization preflight (DR-008)
+Date: 2026-08-28 UTC
+- User signal: "now the task is done. lets finalize and release a new verison."
+- DR-007 Electron window closed gracefully; packaged server received SIGTERM; no matching window or retained AppImage process remains.
+- Verbose APPIMAGE_EXTRACT_AND_RUN file-listing log compacted into runtime summary; screenshot, launch context, readiness, close verification, and checksums retained.
+$ git fetch origin personal --tags
+Result: PASS; origin/personal remained 64cb4e952a6053fb267fdc43859fb30ae8bcdf6b.
+- Ticket HEAD before final commit: 7ab0a996834830a0d8f2c74e406bc1b9bd4926cb.
+- Divergence: 0 origin-only / 10 ticket-only; tracked base remains an ancestor.
+- Renewed verification: not required; target did not advance and accepted executable state did not change.
+- Ticket archived to tickets/done/application-owned-mcp-capability before final ticket commit.
+- Version preflight: web/gateway 1.4.61; v1.4.62 absent locally and remotely; next patch selected as 1.4.62.
+- Release method: pnpm release 1.4.62 -- --release-notes tickets/done/application-owned-mcp-capability/release-notes.md after ticket merge/push.
+
+Repository finalization and v1.4.62 rollout (DR-009)
+Date: 2026-08-28 UTC
+- Final ticket commit/push: 744fcc2c1ec1b1af774c39aa420be17b03832c05 on origin/codex/application-owned-mcp-capability.
+- Local personal fast-forwarded to origin/personal 64cb4e952; target remained unchanged after acceptance.
+- Merge commit/push: 29bee41a21215089e89eadc7ffe8deaf187ef24e to origin/personal.
+- Merge hygiene: removed one trailing space in application-agent-tool-payload-validator.ts; non-ticket source/docs diff check and repository artifact hygiene passed. Raw ticket capture/diff evidence retained original whitespace.
+$ pnpm release 1.4.62 -- --release-notes tickets/done/application-owned-mcp-capability/release-notes.md
+Result: PASS
+- Release commit/tag target: 027da92cbececb7d944c5a593157cfb59e54efe0 / v1.4.62.
+- Web/gateway versions and managed messaging manifest: 1.4.62 / v1.4.62.
+- Fresh tag push was the only trigger; no manual-dispatch duplicate.
+- Tag workflows: 5/5 success (Android 33177833046; Desktop 33177832996; iOS 33177832991; Messaging Gateway 33177833007; Server Docker 33177833021).
+- GitHub release: public, non-draft, non-prerelease, 21/21 assets uploaded.
+- URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.62
+- Durable evidence: tickets/done/application-owned-mcp-capability/delivery-evidence/dr-009/
+- Cleanup held until this rollout record is committed and pushed.
+
+Post-finalization cleanup (DR-010)
+Date: 2026-08-28 UTC
+- Prerequisite rollout record df50148581d933eaace2149b8980e871fee049ef was pushed to origin/personal.
+- Ticket branch 744fcc2c1ec1b1af774c39aa420be17b03832c05 was verified as an ancestor of personal.
+- Ticket worktree tracked state was clean; dedicated ignored build/dependency outputs were enumerated.
+- Removed dedicated ticket worktree /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability.
+- Deleted local and remote codex/application-owned-mcp-capability branches.
+- Pruned worktree metadata and removed the DR-007 temporary zlib shim.
+- Preserved all unrelated worktrees and /home/vncuser test-profile state.
+- Result: PASS; durable evidence at tickets/done/application-owned-mcp-capability/delivery-evidence/dr-010/.

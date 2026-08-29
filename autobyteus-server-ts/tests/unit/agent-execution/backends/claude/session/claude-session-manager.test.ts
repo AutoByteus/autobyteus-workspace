@@ -13,6 +13,14 @@ import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-managemen
 
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
+const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn() }) =>
+  new ClaudeSessionManager(
+    activator as never,
+    {} as never,
+    sdkClient as never,
+    { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) } as never,
+  );
+
 const waitFor = async (predicate: () => boolean, label: string): Promise<void> => {
   const deadline = Date.now() + 1_000;
   while (Date.now() < deadline) {
@@ -65,11 +73,33 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
   });
 
 describe("ClaudeSessionManager", () => {
-  it("creates a run session with a reserved provider UUID and no local-id placeholder", async () => {
-    const manager = new ClaudeSessionManager({} as never, {
+  it("propagates the exact run-session activator into every created and restored session", async () => {
+    const activator = { activateForRun: vi.fn() };
+    const manager = createManager({
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
-    } as never);
+    }, activator);
+
+    const created = await manager.createRunSession(
+      createRunContext({ runId: "run-create-activator" }) as never,
+    );
+    const restored = await manager.restoreRunSession(
+      createRunContext({ runId: "run-restore-activator" }) as never,
+      RESTORED_SESSION_ID,
+    );
+
+    for (const session of [created, restored]) {
+      expect((session as unknown as {
+        dependencies: { agentToolMcpRunSessions: unknown };
+      }).dependencies.agentToolMcpRunSessions).toBe(activator);
+    }
+  });
+
+  it("creates a run session with a reserved provider UUID and no local-id placeholder", async () => {
+    const manager = createManager({
+      getSessionMessages: vi.fn(async () => []),
+      listModels: vi.fn(async () => []),
+    });
     const runContext = createRunContext({ runId: "run-create" });
 
     const session = await manager.createRunSession(runContext as never);
@@ -85,10 +115,10 @@ describe("ClaudeSessionManager", () => {
   });
 
   it("restores a run session with the exact persisted provider UUID ready for resume", async () => {
-    const manager = new ClaudeSessionManager({} as never, {
+    const manager = createManager({
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
-    } as never);
+    });
     const runContext = createRunContext({ runId: "run-restore" });
 
     const session = await manager.restoreRunSession(runContext as never, RESTORED_SESSION_ID);
@@ -105,7 +135,7 @@ describe("ClaudeSessionManager", () => {
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
     } as const;
-    const manager = new ClaudeSessionManager({} as never, sdkClient as never);
+    const manager = createManager(sdkClient);
 
     await manager.getSessionMessages("session-123");
 
@@ -117,7 +147,7 @@ describe("ClaudeSessionManager", () => {
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
     } as const;
-    const manager = new ClaudeSessionManager({} as never, sdkClient as never);
+    const manager = createManager(sdkClient);
     const cache = (manager as any).sessionMessageCache;
     cache.appendMessage("claude-session-1", {
       role: "user",
@@ -147,7 +177,7 @@ describe("ClaudeSessionManager", () => {
       ]),
       listModels: vi.fn(async () => []),
     } as const;
-    const manager = new ClaudeSessionManager({} as never, sdkClient as never);
+    const manager = createManager(sdkClient);
     const cache = (manager as any).sessionMessageCache;
     cache.appendMessage("claude-session-2", {
       role: "user",
@@ -172,10 +202,10 @@ describe("ClaudeSessionManager", () => {
   });
 
   it("terminates a run session, emits SESSION_TERMINATED, and removes the run session", async () => {
-    const manager = new ClaudeSessionManager({} as never, {
+    const manager = createManager({
       getSessionMessages: vi.fn(async () => []),
       listModels: vi.fn(async () => []),
-    } as never);
+    });
     const session = await manager.createRunSession(
       createRunContext({ runId: "run-terminate" }) as never,
     );
@@ -201,7 +231,7 @@ describe("ClaudeSessionManager", () => {
       startQueryTurn: vi.fn(async () => controlledQuery.query),
       closeQuery,
     };
-    const manager = new ClaudeSessionManager({} as never, sdkClient as never);
+    const manager = createManager(sdkClient);
     const session = await manager.createRunSession(
       createRunContext({ runId: "run-active-terminate" }) as never,
     );

@@ -1,0 +1,50 @@
+# API-REV-002 environment/build 2026-08-26T11:02:26Z
+$ pnpm install --frozen-lockfile
+Scope: all 12 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Done in 1.6s using pnpm v10.28.2
+$ pnpm -C autobyteus-server-ts prepare:shared
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+$ pnpm -C autobyteus-application-devkit build
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+$ pnpm install --frozen-lockfile  # relink workspace bin after devkit build
+Scope: all 12 workspace projects
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+Done in 1.3s using pnpm v10.28.2
+$ pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+$ pnpm -C autobyteus-server-ts build:full
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

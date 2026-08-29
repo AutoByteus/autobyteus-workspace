@@ -1,0 +1,59 @@
+head=16a6772a04ef8a0f75f0a11044f9fca8192a4df8
+implementation_ancestor=0
+status:
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/architecture-review-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/design-review-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/design-spec.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-path-inventory.txt
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-runtime-contracts.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/integration-strategy-analysis.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/investigation-notes.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-design-analysis.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/requirements.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/solution-revision-record.md
+?? applications/brief-studio/dist/
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-devkit/dist/
+?? autobyteus-application-frontend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-affected-server.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-application-migration-e2e.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-artifact-check.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-cleanup.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-definition-run-authority-failure.json
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-failing-e2e-isolated.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-nested-history-failure-detail.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-source-correlation.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-system-build.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-010-topology.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-011-initial-state.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-010-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-conflict-inventory.txt
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-merge-preview.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-overlap-inventory.txt
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/solution/latest-base-refresh-round-5-path-inventory.txt
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-conflict-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-5-design-analysis.md
+preexisting-generated:
+PRESENT autobyteus-ts/dist
+PRESENT autobyteus-application-sdk-contracts/dist
+PRESENT autobyteus-application-backend-sdk/dist
+PRESENT autobyteus-application-frontend-sdk/dist
+PRESENT autobyteus-application-devkit/dist
+PRESENT autobyteus-server-ts/dist
+PRESENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+PRESENT autobyteus-web/.nuxt
+critical files:
+bc4fda79a1de7551793c8c6ca3edc952799004f00cd6556ec34f4da2475b2712  autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+1ecb8352f5d8a2be38eb966dcd934a80f1a791c671432f2f34d2ec4b2fbf9cd0  autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+e8229f8dcdd4d4109310653c20851ac9b293d42190efc9a7a949779a0c752fc4  autobyteus-server-ts/dist/app.js
+50295b875d9beab86f23482529f4abcb376bfe99b1dd4951c19a2808cced8d01  applications/brief-studio/dist/importable-package/README.md

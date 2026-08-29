@@ -9,8 +9,14 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
-import { getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
+import {
+  getStudioAgentRunService,
+  getStudioRunModelConfigService,
+} from "../studio-application-api-services.js";
+import {
+  RunModelConfigEditabilityObject,
+  RunModelConfigFieldErrorObject,
+} from "./run-model-config.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -113,6 +119,39 @@ export class CancelPreparedAgentRunResult {
 }
 
 @InputType()
+export class UpdateStoppedAgentRunModelConfigInput {
+  @Field(() => String)
+  agentRunId!: string;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig!: Record<string, unknown> | null;
+}
+
+@ObjectType()
+export class UpdateStoppedAgentRunModelConfigResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  outcome!: string;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => RunModelConfigEditabilityObject)
+  editability!: RunModelConfigEditabilityObject;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  canonicalLlmConfig?: Record<string, unknown> | null;
+
+  @Field(() => [RunModelConfigFieldErrorObject])
+  fieldErrors!: RunModelConfigFieldErrorObject[];
+}
+
+@InputType()
 export class ApproveToolInvocationInput {
   @Field(() => String)
   agentRunId!: string;
@@ -138,10 +177,8 @@ export class ApproveToolInvocationResult {
 
 @Resolver()
 export class AgentRunResolver {
-  private agentRunService = getAgentRunService();
-  private get agentRunManager() {
-    return AgentRunManager.getInstance();
-  }
+  private readonly agentRunService = getStudioAgentRunService();
+  private readonly runModelConfigService = getStudioRunModelConfigService();
 
   @Mutation(() => TerminateAgentRunResult)
   async terminateAgentRun(
@@ -261,6 +298,42 @@ export class AgentRunResolver {
     }
   }
 
+  @Mutation(() => UpdateStoppedAgentRunModelConfigResult)
+  async updateStoppedAgentRunModelConfig(
+    @Arg("input", () => UpdateStoppedAgentRunModelConfigInput)
+    input: UpdateStoppedAgentRunModelConfigInput,
+  ): Promise<UpdateStoppedAgentRunModelConfigResult> {
+    try {
+      if (!Object.hasOwn(input, "llmConfig")) {
+        throw new Error("llmConfig must be present and may be null.");
+      }
+      const result = await this.runModelConfigService.updateStoppedAgentRunModelConfig({
+        agentRunId: input.agentRunId,
+        llmConfig: input.llmConfig,
+      });
+      return {
+        success: result.success,
+        outcome: result.outcome,
+        message: result.message,
+        isActive: result.isActive,
+        editability: result.editability,
+        canonicalLlmConfig: result.canonical?.llmConfig ?? null,
+        fieldErrors: [...result.fieldErrors],
+      };
+    } catch (error) {
+      logger.error("Stopped Agent model-config update failed unexpectedly.", error);
+      return {
+        success: false,
+        outcome: "INTERNAL_ERROR",
+        message: "Model settings could not be updated.",
+        isActive: false,
+        editability: { editable: false, reason: "INTERNAL_ERROR" },
+        canonicalLlmConfig: null,
+        fieldErrors: [],
+      };
+    }
+  }
+
   @Mutation(() => ApproveToolInvocationResult)
   async approveToolInvocation(
     @Arg("input", () => ApproveToolInvocationInput) input: ApproveToolInvocationInput,
@@ -270,7 +343,7 @@ export class AgentRunResolver {
         `Received tool invocation approval request for agent run '${input.agentRunId}', invocation '${input.invocationId}', approved: ${input.isApproved}`,
       );
 
-      const activeRun = this.agentRunManager.getActiveRun(input.agentRunId);
+      const activeRun = this.agentRunService.getAgentRun(input.agentRunId);
       if (!activeRun) {
         logger.warn(`approveToolInvocation: Agent run with ID '${input.agentRunId}' not found.`);
         return {

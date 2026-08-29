@@ -1,129 +1,141 @@
-import { getInternalServerBaseUrlOrThrow } from "../../config/server-runtime-endpoints.js";
 import {
   AGENT_TOOLS_MCP_SERVER_NAME,
   AGENT_TOOLS_MCP_TRANSPORT,
-  redactAgentToolMcpDescriptor,
-  type AgentToolMcpCreateSessionInput,
+  cloneAgentToolMcpSessionOwnerIdentity,
   type AgentToolMcpDescriptor,
   type AgentToolMcpSession,
-  type AgentToolMcpSessionOwnerIdentity,
-  type RedactedAgentToolMcpDescriptor,
+  type AgentToolMcpSessionBaseExecutionCapabilities,
+  type AgentToolMcpSessionExecutionCapabilities,
 } from "./agent-tool-mcp-session.js";
-import {
-  AgentToolMcpCatalog,
-  getAgentToolMcpCatalog,
-} from "./agent-tool-mcp-catalog.js";
-import {
-  AgentToolMcpSessionRegistry,
-  getAgentToolMcpSessionRegistry,
-} from "./agent-tool-mcp-session-registry.js";
-
-export type CreateAgentToolMcpSessionResult = {
-  session: AgentToolMcpSession;
-  descriptor: AgentToolMcpDescriptor;
-  redactedDescriptor: RedactedAgentToolMcpDescriptor;
-};
+import type {
+  ActiveAgentToolMcpRunSession,
+  AgentToolMcpRunSessionActivationInput,
+  AgentToolMcpRunSessionActivationResult,
+} from "./agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpCatalog } from "./agent-tool-mcp-catalog.js";
+import type { AgentToolMcpSessionRegistry } from "./agent-tool-mcp-session-registry.js";
 
 type AgentToolMcpSessionServiceDeps = {
-  registry?: AgentToolMcpSessionRegistry;
-  catalog?: AgentToolMcpCatalog;
-  getInternalBaseUrl?: () => string;
+  registry: AgentToolMcpSessionRegistry;
+  catalog: AgentToolMcpCatalog;
+  getLocalBaseUrl: () => string;
+  executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities;
 };
 
 export class AgentToolMcpSessionService {
-  private static instance: AgentToolMcpSessionService | null = null;
   private readonly registry: AgentToolMcpSessionRegistry;
   private readonly catalog: AgentToolMcpCatalog;
-  private readonly getInternalBaseUrl: () => string;
+  private readonly getLocalBaseUrl: () => string;
+  private readonly executionCapabilities: AgentToolMcpSessionBaseExecutionCapabilities;
 
-  static getInstance(): AgentToolMcpSessionService {
-    if (!AgentToolMcpSessionService.instance) {
-      AgentToolMcpSessionService.instance = new AgentToolMcpSessionService();
+  constructor(deps: AgentToolMcpSessionServiceDeps) {
+    if (!deps?.registry || !deps.catalog) {
+      throw new Error("Agent Tools MCP session registry and catalog are required.");
     }
-    return AgentToolMcpSessionService.instance;
+    if (typeof deps.getLocalBaseUrl !== "function") {
+      throw new Error("Agent Tools MCP local base URL reader is required.");
+    }
+    if (!deps.executionCapabilities?.publishedArtifactPublisher) {
+      throw new Error("Agent Tools MCP execution capabilities are required.");
+    }
+    if (!("applicationAgentTools" in deps.executionCapabilities)) {
+      throw new Error("Agent Tools MCP application capability disposition is required.");
+    }
+    this.registry = deps.registry;
+    this.catalog = deps.catalog;
+    this.getLocalBaseUrl = deps.getLocalBaseUrl;
+    this.executionCapabilities = Object.freeze({
+      publishedArtifactPublisher:
+        deps.executionCapabilities.publishedArtifactPublisher,
+      applicationAgentTools: deps.executionCapabilities.applicationAgentTools,
+    });
   }
 
-  static resetInstance(): void {
-    AgentToolMcpSessionService.instance = null;
-  }
-
-  constructor(deps: AgentToolMcpSessionServiceDeps = {}) {
-    this.registry = deps.registry ?? getAgentToolMcpSessionRegistry();
-    this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
-    this.getInternalBaseUrl = deps.getInternalBaseUrl ?? getInternalServerBaseUrlOrThrow;
-  }
-
-  createAgentToolMcpSession(
-    input: Omit<AgentToolMcpCreateSessionInput, "enabledTools" | "toolRoutes" | "configuredMcpToolSources">,
-  ): CreateAgentToolMcpSessionResult {
+  activateForRun(
+    input: AgentToolMcpRunSessionActivationInput,
+  ): AgentToolMcpRunSessionActivationResult {
+    const executionCapabilities = this.buildExecutionCapabilities(input);
     const exposure = this.catalog.resolveRuntimeSessionToolExposure({
       runtimeExposure: input.runtimeExposure,
       sender: input.sender,
       executionContext: input.executionContext ?? {},
+      applicationAgentTools: executionCapabilities.applicationAgentTools,
     });
-    const { session, capabilityToken } = this.registry.createSession({
+    if (exposure.enabledTools.length === 0) {
+      return Object.freeze({ kind: "not_exposed" as const });
+    }
+    const localBaseUrl = this.getLocalBaseUrl();
+    const session = this.registry.activateSession({
       ...input,
+      executionCapabilities,
       enabledTools: exposure.enabledTools,
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
     });
-    const descriptor = this.buildDescriptor(session, capabilityToken);
-    return {
-      session,
-      descriptor,
-      redactedDescriptor: redactAgentToolMcpDescriptor(descriptor),
-    };
+    return this.buildActivation(session, localBaseUrl);
   }
 
-  revokeAgentToolMcpSession(sessionId: string): boolean {
-    return this.registry.revokeSession(sessionId);
-  }
-
-  revokeAgentToolMcpSessionsForRun(runId: string): number {
-    const normalizedRunId = runId.trim();
-    if (!normalizedRunId) {
-      return 0;
+  private buildExecutionCapabilities(
+    input: AgentToolMcpRunSessionActivationInput,
+  ): AgentToolMcpSessionExecutionCapabilities {
+    const member = input.sender.memberTeamContext;
+    const ownerTeamIdentity = input.owner.teamIdentity ?? null;
+    if (!member) {
+      if (ownerTeamIdentity) {
+        throw new Error(
+          "Agent Tools MCP Team owner identity requires a Team-member sender context.",
+        );
+      }
+      return Object.freeze({
+        kind: "agent",
+        publishedArtifactPublisher:
+          this.executionCapabilities.publishedArtifactPublisher,
+        applicationAgentTools: this.executionCapabilities.applicationAgentTools,
+      });
     }
-    return this.registry.revokeSessionsForOwner({ runId: normalizedRunId });
-  }
 
-  revokeAgentToolMcpSessionsForAgentRun(agentRunId: string): number {
-    const normalizedAgentRunId = agentRunId.trim();
-    if (!normalizedAgentRunId) {
-      return 0;
+    const memberIdentity = member.identity;
+    if (
+      input.owner.runId !== memberIdentity.agentRunId
+      || !ownerTeamIdentity
+      || ownerTeamIdentity.rootTeamRunId !== memberIdentity.rootTeamRunId
+      || ownerTeamIdentity.memberAddress !== memberIdentity.memberAddress
+      || ownerTeamIdentity.agentRunId !== memberIdentity.agentRunId
+    ) {
+      throw new Error(
+        "Agent Tools MCP Team owner identity does not match the Team-member sender context.",
+      );
     }
-    return this.registry.revokeSessionsForOwner({ runId: normalizedAgentRunId });
+    return Object.freeze({
+      kind: "team_member",
+      publishedArtifactPublisher:
+        this.executionCapabilities.publishedArtifactPublisher,
+      applicationAgentTools: this.executionCapabilities.applicationAgentTools,
+      taskDelegation: Object.freeze({
+        identity: { ...memberIdentity },
+        rootResolver: member.taskRootResolver,
+      }),
+    });
   }
 
-  revokeAgentToolMcpSessionsForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {
-    return this.registry.revokeSessionsForOwner(owner);
-  }
-
-  redactAgentToolMcpDescriptor(
-    descriptor: AgentToolMcpDescriptor,
-  ): RedactedAgentToolMcpDescriptor {
-    return redactAgentToolMcpDescriptor(descriptor);
-  }
-
-  private buildDescriptor(
+  private buildActivation(
     session: AgentToolMcpSession,
-    capabilityToken: string,
-  ): AgentToolMcpDescriptor {
-    return {
+    localBaseUrl: string,
+  ): ActiveAgentToolMcpRunSession {
+    const descriptor = Object.freeze<AgentToolMcpDescriptor>({
       name: AGENT_TOOLS_MCP_SERVER_NAME,
       transport: AGENT_TOOLS_MCP_TRANSPORT,
-      serverUrl: `${this.getInternalBaseUrl()}/mcp/agent-tools/${encodeURIComponent(session.sessionId)}`,
-      headers: {
-        Authorization: `Bearer ${capabilityToken}`,
-      },
-      enabledTools: [...session.enabledTools],
-    };
+      serverUrl: `${localBaseUrl}/mcp/agent-tools/${session.sessionId}`,
+      enabledTools: Object.freeze([...session.enabledTools]) as string[],
+    });
+    const owner = cloneAgentToolMcpSessionOwnerIdentity(session.owner);
+    if (owner.teamIdentity) Object.freeze(owner.teamIdentity);
+    Object.freeze(owner);
+    return Object.freeze({
+      kind: "active" as const,
+      sessionId: session.sessionId,
+      owner,
+      descriptor,
+    });
   }
 }
-
-export const getAgentToolMcpSessionService = (): AgentToolMcpSessionService =>
-  AgentToolMcpSessionService.getInstance();
-
-export const resetAgentToolMcpSessionServiceForTests = (): void => {
-  AgentToolMcpSessionService.resetInstance();
-};

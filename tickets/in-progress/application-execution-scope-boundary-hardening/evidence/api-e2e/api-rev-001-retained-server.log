@@ -1,0 +1,181 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests) 135ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (6 tests) 536ms
+(node:33911) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests) 178ms
+ ✓ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts (2 tests) 6402ms
+     ✓ moves released flat configured/task memory before public reads and remains canonical after process restart  4657ms
+     ✓ keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action  1744ms
+ ✓ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts (7 tests) 13776ms
+     ✓ persists root, nested-Team, and exact-Agent configurations and restores them after process restart  3325ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  1762ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  1736ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  1722ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  1743ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  1737ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  1750ms
+(node:34020) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests) 227ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests) 61ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:37:55.005Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-25T22:37:55.005Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-25T22:37:55.006Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:37:55.009Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-25T22:37:55.009Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+[2026-08-25T22:37:55.010Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ✓ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test) 18ms
+ ✓ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests) 8ms
+(node:34027) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test) 93ms
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:37:56.566Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+[2026-08-25T22:37:56.566Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+[2026-08-25T22:37:56.567Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ✓ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts (9 tests) 155ms
+
+ Test Files  11 passed (11)
+      Tests  48 passed (48)
+   Start at  00:37:24
+   Duration  32.45s (transform 3.28s, setup 50ms, import 9.42s, tests 21.59s, environment 1ms)
+

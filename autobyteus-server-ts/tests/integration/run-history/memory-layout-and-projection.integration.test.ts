@@ -6,11 +6,13 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { AgentRunActivationCandidate } from "../../../src/agent-execution/services/agent-run-activation-candidate.js";
 
 const tempDirs = new Set<string>();
 
@@ -58,14 +60,21 @@ describe("memory layout and projection integration", () => {
       const workspaceRootPath = `/tmp/${runtimeKind}-workspace`;
       const allocatedRunId = `projection_agent_${runtimeKind}_${"1".repeat(32)}`;
       const agentRunManager = {
-        createAgentRun: vi.fn().mockImplementation((config: AgentRunConfig, requestedRunId: string) =>
-          Promise.resolve(createActiveRun({
-            runId: requestedRunId,
+        prepareNewAgentRun: vi.fn().mockImplementation(({ config, runId }: {
+          config: AgentRunConfig;
+          runId: string;
+        }) => Promise.resolve(new AgentRunActivationCandidate({
+          runId,
+          runtimeKind,
+          platformAgentRunId,
+          publish: () => createActiveRun({
+            runId,
             runtimeKind,
             platformAgentRunId,
             memoryDir: config.memoryDir,
-          })),
-        ),
+          }) as never,
+          abort: async () => ({ kind: "aborted" }),
+        }))),
         getActiveRun: vi.fn().mockReturnValue(null),
         restoreAgentRun: vi.fn(),
         hasActiveRun: vi.fn().mockReturnValue(false),
@@ -81,19 +90,34 @@ describe("memory layout and projection integration", () => {
           listActiveRuns: vi.fn().mockReturnValue([]),
         } as never,
       });
+      const workspaceManager = {
+        ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
+          workspaceId: "workspace-1",
+          getBasePath: () => workspaceRootPath,
+        }),
+        getWorkspaceById: vi.fn().mockReturnValue({
+          getBasePath: () => workspaceRootPath,
+        }),
+      } as never;
+      const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
+        agentRunManager: agentRunManager as never,
+        metadataService,
+        historyCatalogService,
+        workspaceManager,
+        tokenUsageReadiness: {
+          assertCurrentSchemaReady: vi.fn(),
+          assertExistingRunRestoreReady: vi.fn(),
+        },
+        modelConfigValidator: {
+          validate: async ({ llmConfig }) => ({ kind: "valid", config: llmConfig as Readonly<Record<string, unknown>> | null }),
+        },
+      });
       const service = new AgentRunService(memoryDir, {
         agentRunManager: agentRunManager as never,
         metadataService,
         historyCatalogService,
-        workspaceManager: {
-          ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-            workspaceId: "workspace-1",
-            getBasePath: () => workspaceRootPath,
-          }),
-          getWorkspaceById: vi.fn().mockReturnValue({
-            getBasePath: () => workspaceRootPath,
-          }),
-        } as never,
+        workspaceManager,
+        lifecycleService,
         agentDefinitionService: {
           getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
             name: "Projection Agent",

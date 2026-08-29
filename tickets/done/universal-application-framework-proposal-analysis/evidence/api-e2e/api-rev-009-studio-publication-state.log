@@ -1,0 +1,25 @@
+# API-REV-009 Studio real publication state
+UTC=2026-07-30T09:08:01Z
+HEAD=ffbdb5959a26a24a40ce3ee4dbb8614fd7132be3
+appdb=.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/db/app.sqlite
+title=API REV 009 studio publication 1785402356
+briefs:
+[{"brief_id":"brief-1bc0588f-f5b4-4737-98db-2713e9525cac","title":"API REV 009 studio publication 1785402356","status":"in_review","latest_run_id":"brief_studio_team_e2dbad65371f4af58994ca09a42a03e9","latest_binding_status":"ATTACHED","last_error_message":null}]
+artifacts:
+[{"artifact_kind":"researcher","publication_kind":"research","revision_id":"a3720014-0d1d-47e0-b062-6537f8848e72","body_bytes":1477,"path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md","producer_member_route_key":"researcher"},
+{"artifact_kind":"writer","publication_kind":"final","revision_id":"0acba806-cb25-47b8-a01a-368771461fff","body_bytes":2187,"path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md","producer_member_route_key":"writer"}]
+revisions:
+[{"revision_id":"a3720014-0d1d-47e0-b062-6537f8848e72","run_id":"brief_studio_researcher_82a4cc9f0e784bf5b819ceb8980daa81","artifact_kind":"researcher","publication_kind":"research","producer_member_route_key":"researcher","published_at":"2026-07-30T09:06:42.272Z","projected_at":"2026-07-30T09:06:42.282Z"},
+{"revision_id":"0acba806-cb25-47b8-a01a-368771461fff","run_id":"brief_studio_writer_93873827c6174077bbc32c177347c142","artifact_kind":"writer","publication_kind":"final","producer_member_route_key":"writer","published_at":"2026-07-30T09:07:22.947Z","projected_at":"2026-07-30T09:07:22.958Z"}]
+token_usage_by_run:
+[{"root_team_run_id":"brief_studio_team_e2dbad65371f4af58994ca09a42a03e9","event_count":19}]
+runtime_files:
+.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/db/../runtime/brief-studio/final-brief.md
+    2197 .autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/db/../runtime/brief-studio/final-brief.md
+.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/db/../runtime/brief-studio/research.md
+    1479 .autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/db/../runtime/brief-studio/research.md
+ports:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    97941 normy   25u  IPv4 0xa911f2a47988bd18      0t0  TCP 127.0.0.1:8000 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    98004 normy   12u  IPv4 0x91c53e33a631168d      0t0  TCP 127.0.0.1:3000 (LISTEN)

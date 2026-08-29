@@ -1,0 +1,179 @@
+# Latest-base refresh round 5 — non-mutating merge preview
+timestamp=2026-08-25T10:57:04Z
+branch=codex/universal-application-framework-latest-personal-integration
+head_before=c6d74710ad30b680f853fba0e90a68255f112955
+origin_personal_before=fb1335867a4223b2499e4513f58c609b6ac33ab4
+--- fetch ---
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=fb1335867a4223b2499e4513f58c609b6ac33ab4
+merge_base=8a4c3868c7c54a46991f45be22a68151076412b1
+divergence_personal_ticket=38/160
+--- merge-tree ---
+beb05c1dad9c21a4005a7d05962b18ac62bd6b42
+100644 262aa7fd6cab8adb07480cf1e31a4394c3d84d46 1	applications/brief-studio/backend/dist/vendor/launch-profile.js
+100644 847f58825c19560b58681cd756e24a8015039d9a 3	applications/brief-studio/backend/dist/vendor/launch-profile.js
+100644 c39aba04d70ea6055e7431033cc5f85feffb8051 1	applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+100644 4b22ae7fcdd3802ada2e30c366a05e81e2e1675d 3	applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+100644 262aa7fd6cab8adb07480cf1e31a4394c3d84d46 1	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js
+100644 847f58825c19560b58681cd756e24a8015039d9a 3	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js
+100644 c39aba04d70ea6055e7431033cc5f85feffb8051 1	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+100644 4b22ae7fcdd3802ada2e30c366a05e81e2e1675d 3	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+100644 f7bc0febd7e3800cc0e87aec04d14f493ba1f1b1 1	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 8c70ab35a4c8f0c3875c7a6e1b4d8c254cf13a32 3	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 b74c78037a746f36ee5c2d7b538b77676c134075 1	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 64f7b5990a77d9672503ad8a8dcd41593ea4a143 3	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 3ac3df895a4053c75b7a513a73c77768baa7aac9 1	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+100644 f9b9e1c007ba9171df1f5978e0187163adb7218e 3	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+100644 4111bf4add6699c12a7334244b4b6554a526cfc4 1	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 bfc1f2019fdcdfbc9ba81ceeeabb69e1447a5d3a 3	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 f7bc0febd7e3800cc0e87aec04d14f493ba1f1b1 1	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 8c70ab35a4c8f0c3875c7a6e1b4d8c254cf13a32 3	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 b74c78037a746f36ee5c2d7b538b77676c134075 1	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 64f7b5990a77d9672503ad8a8dcd41593ea4a143 3	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 3ac3df895a4053c75b7a513a73c77768baa7aac9 1	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+100644 f9b9e1c007ba9171df1f5978e0187163adb7218e 3	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+100644 4111bf4add6699c12a7334244b4b6554a526cfc4 1	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 bfc1f2019fdcdfbc9ba81ceeeabb69e1447a5d3a 3	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 262aa7fd6cab8adb07480cf1e31a4394c3d84d46 1	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+100644 847f58825c19560b58681cd756e24a8015039d9a 3	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+100644 c39aba04d70ea6055e7431033cc5f85feffb8051 1	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+100644 4b22ae7fcdd3802ada2e30c366a05e81e2e1675d 3	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+100644 262aa7fd6cab8adb07480cf1e31a4394c3d84d46 1	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+100644 847f58825c19560b58681cd756e24a8015039d9a 3	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+100644 c39aba04d70ea6055e7431033cc5f85feffb8051 1	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+100644 4b22ae7fcdd3802ada2e30c366a05e81e2e1675d 3	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+100644 f7bc0febd7e3800cc0e87aec04d14f493ba1f1b1 1	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 8c70ab35a4c8f0c3875c7a6e1b4d8c254cf13a32 3	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 b74c78037a746f36ee5c2d7b538b77676c134075 1	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 64f7b5990a77d9672503ad8a8dcd41593ea4a143 3	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 3ac3df895a4053c75b7a513a73c77768baa7aac9 1	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+100644 f9b9e1c007ba9171df1f5978e0187163adb7218e 3	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+100644 4111bf4add6699c12a7334244b4b6554a526cfc4 1	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 bfc1f2019fdcdfbc9ba81ceeeabb69e1447a5d3a 3	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 f7bc0febd7e3800cc0e87aec04d14f493ba1f1b1 1	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 8c70ab35a4c8f0c3875c7a6e1b4d8c254cf13a32 3	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+100644 b74c78037a746f36ee5c2d7b538b77676c134075 1	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 64f7b5990a77d9672503ad8a8dcd41593ea4a143 3	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+100644 3ac3df895a4053c75b7a513a73c77768baa7aac9 1	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+100644 f9b9e1c007ba9171df1f5978e0187163adb7218e 3	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+100644 4111bf4add6699c12a7334244b4b6554a526cfc4 1	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 bfc1f2019fdcdfbc9ba81ceeeabb69e1447a5d3a 3	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+100644 d27d7fbea7ac0f9b0e29a13c70f8adc46d9ce9cf 1	autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+100644 727a2a3fe6aa58f41d0ba8bf8ab0ea690f707c79 3	autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+100644 42f8172b7c7f1799c9bf46390f3bdf5b26a50172 1	autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+100644 7b9c4fae0bf375f4b0971f3110e0cdcf169a286c 3	autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+100644 262aa7fd6cab8adb07480cf1e31a4394c3d84d46 1	autobyteus-application-backend-sdk/dist/launch-profile.js
+100644 847f58825c19560b58681cd756e24a8015039d9a 3	autobyteus-application-backend-sdk/dist/launch-profile.js
+100644 c39aba04d70ea6055e7431033cc5f85feffb8051 1	autobyteus-application-backend-sdk/dist/launch-profile.js.map
+100644 4b22ae7fcdd3802ada2e30c366a05e81e2e1675d 3	autobyteus-application-backend-sdk/dist/launch-profile.js.map
+100644 373012d9ceeb9b649372e7ed82152ee58cef8a4e 1	autobyteus-application-backend-sdk/src/launch-profile.ts
+100644 5786dffb2bd60b0dab1dac5441e630a82df6ee49 2	autobyteus-application-backend-sdk/src/launch-profile.ts
+100644 f92f8cfac9c2e9eccf03ce11143952768bc314f2 3	autobyteus-application-backend-sdk/src/launch-profile.ts
+100644 aa8446d3106dec2c38515cab62fdd8d2e9cf339a 1	autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+100644 3848d1dec3ffaf39691940f7b6146ac23366c56e 2	autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+100644 8507c568cab643100113585c4521409e85e0dc4a 3	autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+100644 3ac3df895a4053c75b7a513a73c77768baa7aac9 1	autobyteus-application-sdk-contracts/dist/index.d.ts
+100644 f9b9e1c007ba9171df1f5978e0187163adb7218e 3	autobyteus-application-sdk-contracts/dist/index.d.ts
+100644 4111bf4add6699c12a7334244b4b6554a526cfc4 1	autobyteus-application-sdk-contracts/dist/index.d.ts.map
+100644 bfc1f2019fdcdfbc9ba81ceeeabb69e1447a5d3a 3	autobyteus-application-sdk-contracts/dist/index.d.ts.map
+100644 b24ff854d4ab4f7acf17ad162c2471163acd4f2a 1	autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+100644 dbf0d494d01d028f626bb95b6d3741615f56434e 2	autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+100644 f8e6685d85d663c8487630f8d0671aa25431d1f9 3	autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+100644 ac2d5674f278262e7071f216199acf3032eea216 1	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+100644 398d0e953df35188c7a514f27a2005a4b71ca706 2	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+100644 91bde3c4eade8e96c551effdedc21574b8f21199 3	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+100644 dab122d41651531efd4218fe3a54b09c214ac214 1	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+100644 06e31e5d553dc40c96bd4cf87ce80066310d747d 2	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+100644 6c013b6643be983570c7b253fc4829aeb5fa3741 3	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+100644 aa6c328532d590086c46dd9b58bb99fb90222ec8 1	autobyteus-server-ts/src/server-runtime.ts
+100644 0c59302de4c1efcca0a37a362c7b626f8215e5be 2	autobyteus-server-ts/src/server-runtime.ts
+100644 5669b5a64d3cb4d11ea149278c154774660d032c 3	autobyteus-server-ts/src/server-runtime.ts
+100644 417b175794ad9e23f994b039669e57477b352242 1	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+100644 1712c09d42de1aa1e3077fd0ff08692a5637aa2e 2	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+100644 8597f9a213c461de878139f8daf6b8023a1eb682 3	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+100644 6fe140cabc7297c99f5a6a4683f1eac896de4d9c 1	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+100644 f3a7cf8f8a8a550f86baf683cf0146f58c519400 2	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+100644 957c9d8b1072752a56293707502f1865e684b4c5 3	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+100644 3e00354530efb4e500642f188ebeea36e80be77d 1	autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+100644 1ad58a6056669f3fbb877f42232b978f20debda4 2	autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+100644 e63e5dd123cbf9731dd4d90a9c9802bcf79dbea4 3	autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+100644 833ef45ff61d4c616b634ed135bf087ae938e6e6 1	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+100644 b18171accbc789095863320a97bf0a4f84419fae 2	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+100644 9bba7320dbb4d731c70fa0dfe690fdd6c3ae8e41 3	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+100644 c26ebff529f03822fa8f5567c62e0b7c3de735b6 1	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 04fa44933172530ec45595f21c158ad06c4844fe 2	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 26437811a1825352b61af8333e8bddd9a026f919 3	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 7be72e5179e8bf5cab1347eeba1f945323ad43fc 1	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+100644 56195120528305640833c64c57768e9d97be8092 2	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+100644 a05f26736b1b5c70410bb816836214247378abec 3	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+100644 2edbab5870242833e12d3bad67f4df76fdf80465 1	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 2823b874f365b71f5d760e7ae45061bc0f1fd218 2	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 d5e067e5e3c368652d5d294f473c1e21fe75954d 3	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+CONFLICT (modify/delete): applications/brief-studio/backend/dist/vendor/launch-profile.js deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/backend/dist/vendor/launch-profile.js left in tree.
+CONFLICT (modify/delete): applications/brief-studio/backend/dist/vendor/launch-profile.js.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/backend/dist/vendor/launch-profile.js.map left in tree.
+CONFLICT (modify/delete): applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js left in tree.
+CONFLICT (modify/delete): applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map left in tree.
+CONFLICT (modify/delete): applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts left in tree.
+CONFLICT (modify/delete): applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts left in tree.
+CONFLICT (modify/delete): applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts left in tree.
+CONFLICT (modify/delete): applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts left in tree.
+CONFLICT (modify/delete): applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts left in tree.
+CONFLICT (modify/delete): applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map left in tree.
+CONFLICT (modify/delete): autobyteus-application-backend-sdk/dist/launch-profile.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-backend-sdk/dist/launch-profile.d.ts left in tree.
+CONFLICT (modify/delete): autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map left in tree.
+CONFLICT (modify/delete): autobyteus-application-backend-sdk/dist/launch-profile.js deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-backend-sdk/dist/launch-profile.js left in tree.
+CONFLICT (modify/delete): autobyteus-application-backend-sdk/dist/launch-profile.js.map deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-backend-sdk/dist/launch-profile.js.map left in tree.
+Auto-merging autobyteus-application-backend-sdk/src/launch-profile.ts
+CONFLICT (content): Merge conflict in autobyteus-application-backend-sdk/src/launch-profile.ts
+Auto-merging autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+CONFLICT (content): Merge conflict in autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+Auto-merging autobyteus-application-devkit/tests/application-devkit.test.mjs
+Auto-merging autobyteus-application-sdk-contracts/README.md
+CONFLICT (modify/delete): autobyteus-application-sdk-contracts/dist/index.d.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-sdk-contracts/dist/index.d.ts left in tree.
+CONFLICT (modify/delete): autobyteus-application-sdk-contracts/dist/index.d.ts.map deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-application-sdk-contracts/dist/index.d.ts.map left in tree.
+Auto-merging autobyteus-application-sdk-contracts/src/index.ts
+Auto-merging autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+Auto-merging autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+Auto-merging autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+Auto-merging autobyteus-server-ts/src/server-runtime.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/server-runtime.ts
+Auto-merging autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+Auto-merging autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+Auto-merging autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+Auto-merging autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Auto-merging autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Auto-merging autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+--- postcondition ---
+merge_tree_exit=1
+head_after=c6d74710ad30b680f853fba0e90a68255f112955
+unmerged_path_count=0

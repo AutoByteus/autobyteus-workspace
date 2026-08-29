@@ -5,9 +5,11 @@ import TeamMemberConfigTree from '../TeamMemberConfigTree.vue'
 import TeamScopeConfigEditor from '../TeamScopeConfigEditor.vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { TeamRunFormModel } from '~/types/agent/TeamRunFormModel'
 import type { EditableRuntimeCatalogOperationState } from '~/types/agent/EditableTeamRunFormModel'
 import { projectEditableTeamRunFormModel } from '~/utils/editableTeamRunFormModel'
-import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
+import { projectExistingTeamRunFormModel } from '~/services/runConfigEditing/existingTeamRunFormModel'
+import { createExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures'
 
 vi.mock('~/composables/useLocalization', () => ({
@@ -77,7 +79,8 @@ const editableModel = (input: {
   runtimeCatalogStateFor: () => idleCatalog,
   forceReadOnly: input.forceReadOnly,
 })
-const storedModel = () => projectStoredTeamRunFormModel(buildTestTeamContext({
+const existingModel = () => {
+  const tree = buildTestTeamContext({
   teamRunId: 'stored-root-run',
   teamDefinitionId: 'classroom-def',
   teamDefinitionName: 'Nested Classroom',
@@ -97,10 +100,19 @@ const storedModel = () => projectStoredTeamRunFormModel(buildTestTeamContext({
     ], { teamDefinitionId: 'study-def', displayName: 'StudentStudyGroup' }),
   ],
   workspaceRootPath: '/workspace/root',
-}).view.getConfigurationView())
-const mountForm = (model = editableModel()) => shallowMount(TeamRunConfigForm, { props: { model } })
+  }).view.getExecutionTree()
+  return projectExistingTeamRunFormModel({
+    tree,
+    planner: createExistingTeamModelConfigDraft(tree),
+    isActive: false,
+    modelConfigEditable: true,
+    modelConfigReason: null,
+    saving: false,
+  })
+}
+const mountForm = (model: TeamRunFormModel = editableModel()) => shallowMount(TeamRunConfigForm, { props: { model } })
 
-describe('TeamRunConfigForm shared editable/stored presentation', () => {
+describe('TeamRunConfigForm launch and existing-run presentation', () => {
   it('preserves the personal-baseline root order and projects inherited nested Team/Agent values', () => {
     const wrapper = mountForm()
     const root = wrapper.findComponent(TeamScopeConfigEditor)
@@ -194,17 +206,17 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
     expect(wrapper.text()).toContain('configuration_locked_because_execution_has_start')
   })
 
-  it('renders an immutable stored snapshot through the same form with exact values and no commands', async () => {
-    const model = storedModel()
+  it('keeps fixed Team facts locked while emitting only existing-run model-config edits', async () => {
+    const model = existingModel()
     const wrapper = mountForm(model)
     const root = wrapper.findComponent(TeamScopeConfigEditor)
     const tree = wrapper.findComponent(TeamMemberConfigTree)
 
-    expect(wrapper.attributes('data-mode')).toBe('stored')
+    expect(wrapper.attributes('data-mode')).toBe('existing')
     expect(root.props()).toEqual(expect.objectContaining({
-      disabled: true,
+      disabled: false,
       scope: expect.objectContaining({
-        mode: 'stored',
+        mode: 'existing',
         effectiveConfig: expect.objectContaining({
           runtimeKind: 'codex_app_server', llmModelIdentifier: 'historical-root-model',
           llmConfig: { reasoning_effort: 'high' }, workspaceRootPath: '/workspace/root',
@@ -214,14 +226,14 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
     const members = tree.props('memberNodes') as any[]
     expect(members.map((node) => node.address)).toEqual(['/teacher', '/StudentStudyGroup'])
     expect(members[1].children[0]).toEqual(expect.objectContaining({
-      mode: 'stored', address: '/StudentStudyGroup/student_one',
+      mode: 'existing', address: '/StudentStudyGroup/student_one',
       effectiveConfig: expect.objectContaining({
         runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'historical-student-model',
         llmConfig: { temperature: 0.2 }, workspaceRootPath: '/workspace/student',
       }),
     }))
-    expect(tree.props()).toEqual(expect.objectContaining({ disabled: true }))
-    expect(wrapper.text()).toContain('selected_team_run_configuration_read_only')
+    expect(tree.props()).toEqual(expect.objectContaining({ disabled: false }))
+    expect(wrapper.text()).toContain('workspace.runModelConfig.teamStopped')
     expect(wrapper.text()).not.toContain('Stored root Team defaults')
     expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
     const disclosure = wrapper.get('button[aria-controls="team-member-overrides-panel"]')
@@ -236,10 +248,12 @@ describe('TeamRunConfigForm shared editable/stored presentation', () => {
     tree.vm.$emit('reset-team', '/StudentStudyGroup')
     tree.vm.$emit('update-agent', '/teacher', { autoExecuteTools: true })
     tree.vm.$emit('retry-runtime-catalog', 'codex_app_server')
+    root.vm.$emit('update-existing-model-config', '/', { reasoning_effort: 'low' })
     await wrapper.vm.$nextTick()
 
     expect(wrapper.emitted('edit-config')).toBeUndefined()
     expect(wrapper.emitted('update:workspaceSelection')).toBeUndefined()
     expect(wrapper.emitted('retry-runtime-catalog')).toBeUndefined()
+    expect(wrapper.emitted('update-existing-model-config')).toEqual([["/", { reasoning_effort: 'low' }]])
   })
 })

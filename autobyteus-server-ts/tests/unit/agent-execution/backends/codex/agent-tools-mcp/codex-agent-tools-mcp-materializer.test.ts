@@ -11,9 +11,6 @@ const descriptor: AgentToolMcpDescriptor = {
   name: "autobyteus_agent_tools",
   transport: "streamable_http",
   serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-materializer",
-  headers: {
-    Authorization: "Bearer unit-test-token",
-  },
   enabledTools: ["send_message_to", "generate_image", "db_query"],
 };
 
@@ -25,15 +22,13 @@ describe("codex-agent-tools-mcp-materializer", () => {
       mcp_servers: {
         autobyteus_agent_tools: {
           url: "http://127.0.0.1:3000/mcp/agent-tools/session-materializer",
-          http_headers: {
-            Authorization: "Bearer unit-test-token",
-          },
           enabled_tools: ["send_message_to", "generate_image", "db_query"],
           startup_timeout_sec: 5,
         },
       },
     });
     expect(result.mcp_servers.autobyteus_agent_tools).not.toHaveProperty("headers");
+    expect(result.mcp_servers.autobyteus_agent_tools).not.toHaveProperty("http_headers");
     expect(result.mcp_servers.autobyteus_agent_tools).not.toHaveProperty("enabledTools");
   });
 

@@ -1,0 +1,97 @@
+{
+  "errors": null,
+  "matchedCount": 4,
+  "allOffline": true,
+  "matched": [
+    {
+      "teamRunId": "socratic_math_team_0e964e809f184c509079e83fe0ebac4f",
+      "summary": "",
+      "createdAt": "2026-08-26T11:45:11.363Z",
+      "terminatedAt": null,
+      "isActive": false,
+      "members": [
+        {
+          "memberAddress": "/tutor",
+          "agentRunId": "socratic_math_tutor_24d190278a254456ae8066a8a4234417",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    },
+    {
+      "teamRunId": "brief_studio_team_8496a29ea9fe42dbb368ec2cdf273b79",
+      "summary": "",
+      "createdAt": "2026-08-26T11:30:59.508Z",
+      "terminatedAt": null,
+      "isActive": false,
+      "members": [
+        {
+          "memberAddress": "/researcher",
+          "agentRunId": "brief_studio_researcher_0def58fb2931484494852171e7d7ddb7",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/writer",
+          "agentRunId": "brief_studio_writer_a609602cf99b42c5bdcc3675a595a58f",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    },
+    {
+      "teamRunId": "nested_classroom_test_team_051cdced90f544a8a002caa7abffb77a",
+      "summary": "Read the attached context file. Respond with only the exact marker stored inside it, with no expl...",
+      "createdAt": "2026-08-26T11:48:24.446Z",
+      "terminatedAt": null,
+      "isActive": false,
+      "members": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_831d0b7983e94dc8a96b054eaa41ea16",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_a1fc2f5a2285462a8cfad2fa33c4fc8c",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_8b486ffe9f2b46feb7ea5afd461e00ee",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    },
+    {
+      "teamRunId": "nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de",
+      "summary": "Please execute all three Nested Classroom routes exactly. First send an ordinary message to /Stud...",
+      "createdAt": "2026-08-26T11:43:36.275Z",
+      "terminatedAt": null,
+      "isActive": false,
+      "members": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+          "status": "offline",
+          "runtimeKind": "autobyteus"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_62c0c6aecb4d4d398614d0bf1170bd6a",
+          "status": "offline",
+          "runtimeKind": "autobyteus"
+        }
+      ]
+    }
+  ]
+}

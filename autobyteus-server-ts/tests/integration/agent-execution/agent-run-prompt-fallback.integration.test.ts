@@ -1,17 +1,26 @@
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import {
   parseAgentMd,
   serializeAgentMd,
 } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 describe("AgentRunService fresh definition runtime integration", () => {
   const cleanupPaths = new Set<string>();
@@ -28,6 +37,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
     onCreateAgent: (config: AgentConfig) => void,
   ) => {
     const workspaceById = new Map<string, { workspaceId: string; getBasePath: () => string }>();
+    const activeAgents = new Map<string, any>();
     const workspaceManager = {
       ensureWorkspaceByRootPath: async (workspaceRootPath: string) => {
         const workspace = {
@@ -47,40 +57,50 @@ describe("AgentRunService fresh definition runtime integration", () => {
     };
     const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService,
-      llmFactory: {
-        createLLM: async () => ({}) as any,
-      } as any,
+      createLLM: async () => ({}) as any,
       agentFactory: {
         createAgentWithId: (agentId: string, config: AgentConfig) => {
           onCreateAgent(config);
-          return {
+          const agent = {
             agentId,
             currentStatus: "IDLE",
             context: {
               config,
-              state: { activeTurnId: null },
+              state: {
+                activeTurnId: null,
+                takePendingSystemInstructionCapture: () => null,
+              },
             },
             start: () => undefined,
             postUserMessage: async () => undefined,
             postToolExecutionApproval: async () => undefined,
             stop: async () => undefined,
           };
+          activeAgents.set(agentId, agent);
+          return agent;
         },
-        restoreAgent: (agentId: string, config: AgentConfig) => ({
-          agentId,
-          currentStatus: "IDLE",
-          context: {
-            config,
-            state: { activeTurnId: null },
-          },
-          start: () => undefined,
-          postUserMessage: async () => undefined,
-          postToolExecutionApproval: async () => undefined,
-          stop: async () => undefined,
-        }),
-        getAgent: () => null,
-        listActiveAgentIds: () => [],
-        removeAgent: async () => true,
+        restoreAgent: (agentId: string, config: AgentConfig) => {
+          const agent = {
+            agentId,
+            currentStatus: "IDLE",
+            context: {
+              config,
+              state: {
+                activeTurnId: null,
+                takePendingSystemInstructionCapture: () => null,
+              },
+            },
+            start: () => undefined,
+            postUserMessage: async () => undefined,
+            postToolExecutionApproval: async () => undefined,
+            stop: async () => undefined,
+          };
+          activeAgents.set(agentId, agent);
+          return agent;
+        },
+        getAgent: (agentId: string) => activeAgents.get(agentId) ?? null,
+        listActiveAgentIds: () => Array.from(activeAgents.keys()),
+        removeAgent: async (agentId: string) => activeAgents.delete(agentId),
       } as any,
       workspaceManager: workspaceManager as any,
       skillService: {
@@ -115,13 +135,35 @@ describe("AgentRunService fresh definition runtime integration", () => {
       waitForIdle: async () => undefined,
     });
 
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionDeactivator: deactivator,
+    });
     const manager = new AgentRunManager({
       autoByteusBackendFactory,
+      codexBackendFactory: unavailableBackendFactory,
+      claudeBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
-    return new AgentRunService(appConfigProvider.config.getMemoryDir(), {
+    const memoryDir = appConfigProvider.config.getMemoryDir();
+    const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
       agentRunManager: manager,
       workspaceManager: workspaceManager as never,
-      agentDefinitionService,
+      modelConfigValidator: {
+        validate: async ({ llmConfig }) => ({ kind: "valid", config: llmConfig as Readonly<Record<string, unknown>> | null }),
+      },
+    });
+    return new AgentRunService(memoryDir, {
+      agentRunManager: manager,
+      workspaceManager: workspaceManager as never,
+      lifecycleService,
+      agentRunIdentityAllocator: {
+        allocateForAgentDefinition: async (agentDefinitionId: string) =>
+          `${agentDefinitionId}-run`,
+      },
     });
   };
 
@@ -181,7 +223,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       llmConfig: null,
     });
 
-    expect(capturedConfig?.systemPrompt).toBe(updatedInstructions);
+    expect(capturedConfig?.systemPrompt).toContain(updatedInstructions);
   });
 
   it("falls back to description when fresh definition instructions are blank", async () => {
@@ -235,6 +277,6 @@ describe("AgentRunService fresh definition runtime integration", () => {
       llmConfig: null,
     });
 
-    expect(capturedConfig?.systemPrompt).toBe(description);
+    expect(capturedConfig?.systemPrompt).toContain(description);
   });
 });

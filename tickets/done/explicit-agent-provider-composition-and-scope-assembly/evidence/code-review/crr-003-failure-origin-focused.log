@@ -1,0 +1,625 @@
+### Reviewed state
+3806ca36e46495ba28d5957a330a502eb22bd973
+codex/explicit-agent-provider-composition-and-scope-assembly
+
+### API/E2E authoritative failure
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:19:- Current API/E2E Revision ID: `API-REV-001`
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:30:- Reroute required during execution: `Yes`, `APIE2E-F001` to `/code_reviewer`.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:47:| `APIE2E-REPO-AFFECTED-001` | REQ-004–008; AC-004/006–012 | direct provider/session/manager/application fixtures | 28-file affected Vitest selection | Durable | **Fail — 8 files / 60 tests** | `evidence/api-e2e/api-rev-001-affected-server.log` |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:48:| `APIE2E-F001` | same | fail-closed manager/default dependency chain | isolated 3-file rerun | Durable | **Fail — 21/24 fail** | `evidence/api-e2e/api-rev-001-failures-isolated.log`, source correlation |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:140:| **Fail** | `APIE2E-REPO-AFFECTED-001`, `APIE2E-F001` | eight changed/governed files fail through newly fail-closed manager defaults |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:152:## Preliminary Classification
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:154:`APIE2E-F001` is **Unclear with mixed signals**:
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md:163:`/code_reviewer` for focused failure-origin review of `APIE2E-F001`. After correction, API/E2E must rerun the exact eight files first and then the full retained/live matrix.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md:7:| `API-REV-001` | `/code_reviewer`; `CRR-002`; round 1 | `SR-001`–`SR-005`, `ARCH-REV-005`, `IR-001`–`IR-002`, `CRR-002` | N/A | **Fail / 63%** |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md:11:### API-REV-001 — Initial provider-composition execution baseline exposes unreconciled fail-closed defaults
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md:14:- Triggering scenario/failure IDs: `APIE2E-REPO-FOCUSED-001`, `APIE2E-REPO-AFFECTED-001`, `APIE2E-F001`.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md:28:- New failure: `APIE2E-F001` — eight changed/governed files fail before intended assertions through newly fail-closed process-manager default chains; isolated subset is 21 failures / 3 passes.
+
+### Approved separation and supported triggers
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:9:Make provider construction and Agent Tools MCP capability issuance explicit at the two supported execution roots. Preserve the passed `ApplicationExecutionScope` and separate `GeneralProcessRunSupervisor`, while removing mixed-level provider dependencies, positional default/global selection, duplicated construction policy, and the scope's partial tuple-based kernel assembly.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:16:| BEH-002 | General and application roots independently construct AutoByteus, Codex, and Claude factories, including positional `undefined` values that select defaults. | Both roots call one immutable, named provider-factory builder with an exact definition service and execution-local session issuer. | General/application managers, sessions, task roots, cleanup, and mutable state remain non-identical. | REQ-003, REQ-004; AC-004, AC-005 |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:48:Adopt the clean-cut Host -> scoped Authority -> narrow Issuer -> issued descriptor boundary and one explicit provider-factory builder. Replace, rather than wrap, the old mixed-level manager/runtime shapes. Use a private scope-kernel builder for construction/unwind.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:58:- UC-001: Studio boot constructs one process MCP host, one general execution family, and one application scope.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:59:- UC-002: standalone boot constructs the same ownership pattern for the selected application.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:60:- UC-003: AutoByteus/Codex/Claude Agent create or restore receives the exact execution-local MCP issuer.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:61:- UC-004: post-issuance provider preparation failure immediately revokes the claimed run's sessions.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:69:- Repository-wide removal of provider-local defaults used by unrelated low-level/test construction. Supported server roots are governed instead.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:73:BEH-001–BEH-006 are fixed. In particular, general and application execution remain separate, RootTeamRun-local delegation stays unchanged, application/public definitions remain canonical, and all passed Studio/standalone execution, publication, streaming, recovery, reentry, nested-Team, and shutdown behavior remains valid.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:86:- **REQ-004:** Each builder call shall create fresh backend factories and execution-local provider session state while explicitly reusing only named process-owned immutable dependencies. The two execution families shall remain non-identical.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:97:- **AC-004:** Both roots receive the same provider builder identity; two builder calls return non-identical backend factories and bind them to the exact supplied issuer and definition service.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:111:- The exact RootTeamRun-local task-capability spine must not change.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:138:| REQ-001–REQ-004 | UC-001, UC-002, UC-003 |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:139:| REQ-005 | UC-003 |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:140:| REQ-006 | UC-004 |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/requirements.md:142:| REQ-008 | UC-001–UC-006 |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md:28:| BEH-002 | General/application Agent or Team create/restore | Provider construction remains exact; required root callbacks bind complete non-identical general/application Agent, memory, activity, context, workspace, callback, and releaser identities. | Confirmed | None. |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md:195:| Mixed Team application-graph preservation | Pass | Pass | Pass — configured, delegated, child, and task Team paths reuse the application family and prohibit process fallback. |
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md:237:### MP-ARCH-004-001 — A supported application Team materializes configured or task Agent members
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md:259:SR-005 closes AR-004 without weakening the accepted clean cut. `MixedTeamRunBackendFactory` requires the execution-family releaser and a typed production manager-construction capability, supplies its own releaser and recursive per-Team inputs, and has no default manager path. General and application roots bind complete, explicit, non-identical dependency families; configured Agents, delegated task Agents, child Teams, and task Teams reuse the same callback. The ambient releaser/cache/default-manager removal and lookup-only process manager remain intact.
+tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md:277:- General and application Authorities, managers, provider factories, and session ledgers must remain non-identical while sharing the one process Host and selected process infrastructure identities.
+
+### Both supported hosts construct general before application
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:24:import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:42:  createGeneralProcessRunSupervisor,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:252:      createGeneralProcessRunSupervisor({
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:261:    const applicationRuntime = buildApplicationPlatformRuntime({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:27:import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
+autobyteus-server-ts/src/compositions/build-studio-server.ts:43:  createGeneralProcessRunSupervisor,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:142:  const applicationRuntime = buildApplicationPlatformRuntime({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:214:    generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
+
+### Application scope creates exact graph-local allocators but RootTeamRun does not receive them
+   205	) => {
+   206	  const metadataService = new AgentRunMetadataService(input.memoryDir);
+   207	  const historyCatalogService = new AgentRunHistoryCatalogService(
+   208	    input.memoryDir,
+   209	    {
+   210	      agentDefinitionService: input.agentDefinitionService,
+   211	      agentRunManager: kernel.agentRunManager,
+   212	    },
+   213	  );
+   214	  const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
+   215	    agentDefinitionService: input.agentDefinitionService,
+   216	    agentRunManager: kernel.agentRunManager,
+   217	    agentRunMetadataService: metadataService,
+   218	    teamRunExecutionTreeLocationService:
+   219	      new TeamRunExecutionTreeLocationService({
+   220	        memoryDir: input.memoryDir,
+   221	        manager: kernel.teamRunManager,
+   222	      }),
+   223	    memoryDir: input.memoryDir,
+   224	  });
+   225	  const tokenUsageReadiness = new TokenUsageMigrationReadiness();
+   226	  const provisioningService = new AgentRunProvisioningService(
+   227	    input.memoryDir,
+   228	    {
+   229	      agentRunManager: kernel.agentRunManager,
+   230	      metadataService,
+   231	      historyCatalogService,
+   232	      workspaceManager: input.workspaceManager,
+   233	      agentRunIdentityAllocator,
+   234	    },
+   235	  );
+   236	  const activationService = new StandaloneAgentRunActivationService(
+   237	    input.memoryDir,
+   238	    {
+   239	      agentRunManager: kernel.agentRunManager,
+   240	      metadataService,
+   241	      historyCatalogService,
+   242	      workspaceManager: input.workspaceManager,
+   243	      tokenUsageReadiness,
+   244	    },
+   245	  );
+   246	  const agentRunService = new AgentRunService(input.memoryDir, {
+   247	    agentRunManager: kernel.agentRunManager,
+   248	    metadataService,
+   249	    historyCatalogService,
+   250	    workspaceManager: input.workspaceManager,
+   251	    agentRunIdentityAllocator,
+   252	    provisioningService,
+   253	    activationService,
+   254	  });
+   255	  const teamRunService = new TeamRunService({
+   256	    agentTeamRunManager: kernel.teamRunManager,
+   257	    teamDefinitionService: input.agentTeamDefinitionService,
+   258	    agentRunIdentityAllocator,
+   259	    teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
+   260	    teamRunHistoryCatalogService: new TeamRunHistoryCatalogService(
+   261	      input.memoryDir,
+   262	      { teamRunManager: kernel.teamRunManager },
+   263	    ),
+   264	    workspaceManager: input.workspaceManager,
+   265	    memoryDir: input.memoryDir,
+   266	    memoryLocationService: kernel.memoryLocationService,
+   267	    tokenUsageReadiness,
+   268	  });
+   269	  return { agentRunService, teamRunService, metadataService };
+   270	};
+   270	    };
+   271	    const backend = input.mode === "fresh"
+   272	      ? await this.factory.createBackend(input.config, input.tree.rootTeam.teamRunId, callbacks)
+   273	      : await this.factory.restoreBackend(input.config, input.tree.rootTeam.teamRunId, callbacks);
+   274	    const rootRun = new TeamRun(backend.getTeamRunContext(), backend);
+   275	    const persistence = new TeamRunPersistenceCoordinator({
+   276	      rootTeamRunId: input.tree.rootTeam.teamRunId,
+   277	      teamMemoryDir: input.teamMemoryDir,
+   278	      executionTreeStore: this.executionTreeStore,
+   279	      taskRecordsStore: this.taskRecordsStore,
+   280	      communicationStore: this.communicationStore,
+   281	      enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
+   282	    });
+   283	    root = new RootTeamRun({
+   284	      rootRun,
+   285	      config: input.config,
+   286	      tree: input.tree,
+   287	      tasks: input.tasks,
+   288	      messages: input.messages,
+   289	      persistence,
+   290	      publisher,
+   291	      onTerminated: () => {
+   292	        if (root) this.unregister(input.tree.rootTeam.teamRunId, root);
+   293	      },
+   294	    });
+   295	    return root;
+   296	  }
+   297
+   298	  private register(root: RootTeamRun): void {
+   299	    if (!root.isActive() || this.managedRoots.has(root.teamRunId)) {
+   300	      throw new Error(`Cannot register RootTeamRun '${root.teamRunId}'.`);
+   301	    }
+   302	    this.managedRoots.set(root.teamRunId, root);
+   303	    this.notify({ teamRunId: root.teamRunId, isActive: true });
+   304	  }
+   305
+    82	    tasks: TaskDelegationRecordsSnapshot;
+    83	    messages: TeamCommunicationMessagesSnapshot;
+    84	    persistence: TeamRunPersistenceCoordinator;
+    85	    publisher: TeamRunEventPublisher<TeamRunEvent>;
+    86	    disposeRootSubjects?(): void;
+    87	    onTerminated?(): void;
+    88	  }) {
+    89	    this.tree = options.tree;
+    90	    this.tasks = options.tasks;
+    91	    this.messages = options.messages;
+    92	    this.index = new TeamExecutionIndex(options.tree);
+    93	    this.materializationGate = new RootTeamRunMaterializationGate({
+    94	      rootTeamRunId: this.teamRunId,
+    95	      canEnter: () => this.isAdmitting(),
+    96	    });
+    97	    this.teamRunResolver = new TeamRunResolver({
+    98	      rootTeamRun: options.rootRun,
+    99	      getIndex: () => this.index,
+   100	    });
+   101	    this.taskDelegation = new TaskDelegationService({
+   102	      rootTeamRunId: this.teamRunId,
+   103	      config: options.config,
+   104	      initialTasks: options.tasks,
+   105	      getTree: () => this.tree,
+   106	      getIndex: () => this.index,
+   107	      isRootOpen: () => this.isAdmitting(),
+   108	      authorize: (identity) => this.authorizeIdentity(identity),
+   109	      requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
+   110	      teamRunResolver: this.teamRunResolver,
+   111	      commitTaskMutation: (command) => options.persistence.commitTaskMutation(command),
+   112	      commitTaskSettlement: (command) => options.persistence.commitTaskSettlement(command),
+   113	      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
+   114	      replaceState: (state) => this.replaceTaskState(state),
+   115	      publish: (event) => options.publisher.publish(event),
+   116	      deliverSystemMessage: (agentRunId, message) => this.deliverSystemMessage(agentRunId, message),
+   117	    });
+   118	    this.communication = new TeamCommunicationService({
+   119	      rootTeamRunId: this.teamRunId,
+   120	      initial: options.messages,
+   121	      isCurrentAgent: (identity) => this.isCurrentAgent(identity),
+   122	      requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
+   123	      commit: (plan) => options.persistence.commitReservedMessageAppend(plan),
+   124	      publish: (event) => options.publisher.publish(event),
+   125	      replaceSnapshot: (messages) => this.replaceMessages(messages),
+   126	    });
+   127	    this.unsubscribeTaskSettlementEvents = options.publisher.subscribe(({ event }) => {
+   128	      this.taskDelegation.onRootEvent(event);
+   129	    });
+   130	    this.assertRootCorrelation();
+    72	export class TaskDelegationService {
+    73	  private readonly queue = new TaskDelegationCommandQueue();
+    74	  private currentTasks: TaskDelegationRecordsSnapshot;
+    75	  private accepting = true;
+    76	  private rootFailStopped = false;
+    77	  private settlementSweepScheduled = false;
+    78	  private readonly agentIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+    79	  private readonly taskTeams: TaskTeamRunIdentityFactory;
+    80	  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+    81
+    82	  constructor(private readonly options: TaskDelegationServiceOptions) {
+    83	    this.currentTasks = validateTaskDelegationRecordsV1Payload(options.initialTasks, options.rootTeamRunId);
+    84	    this.agentIds = options.agentRunIdentityAllocator ?? AgentRunIdentityAllocator.getInstance();
+    85	    this.taskTeams = options.taskTeamRunIdentityFactory ?? new TaskTeamRunIdentityFactory(this.agentIds);
+    86	    this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
+    87	  }
+    88
+    89	  getSnapshot(): TaskDelegationRecordsSnapshot { return this.currentTasks; }
+    90	  hasOpenWork(): boolean { return this.currentTasks.records.some((record) => record.status !== "accepted" && record.status !== "interrupted"); }
+    91	  closeExternalAdmission(): void { this.accepting = false; this.queue.closeExternalAdmission(); }
+    92	  enterRootFailStop(): void {
+
+### Application Claude provider construction omits context-owner capability and falls into process Team lookup
+   145	    createForExecution: (input: Readonly<{
+   146	      agentDefinitionService: AgentDefinitionService;
+   147	      agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer;
+   148	    }>): AgentProviderFactorySet => {
+   149	      requireRecord(input, "execution input");
+   150	      requireLeaf(input.agentDefinitionService, "agentDefinitionService");
+   151	      requireLeaf(input.agentToolMcpSessionIssuer, "agentToolMcpSessionIssuer");
+   152
+   153	      const codexBootstrapper = new CodexThreadBootstrapper(
+   154	        process.codex.workspaceSkillMaterializer,
+   155	        process.codex.workspaceResolver,
+   156	        input.agentDefinitionService,
+   157	        process.skillService,
+   158	        process.codex.clientManager,
+   159	        input.agentToolMcpSessionIssuer,
+   160	      );
+   161	      const claudeSessionManager = new ClaudeSessionManager(
+   162	        process.workspaceManager,
+   163	        process.claude.sdkClient,
+   164	        input.agentToolMcpSessionIssuer,
+   165	        process.claude.workspaceSkillMaterializer,
+   166	      );
+   167	      return Object.freeze({
+   168	        autoByteus: new AutoByteusAgentRunBackendFactory({
+   169	          agentFactory: process.autoByteus.agentFactory,
+   170	          agentDefinitionService: input.agentDefinitionService,
+   171	          createLLM: process.autoByteus.createLlm,
+   172	          workspaceManager: process.workspaceManager,
+   173	          skillService: process.skillService,
+   174	          registries: process.autoByteus.processorRegistries,
+   175	          waitForIdle: process.autoByteus.waitForIdle,
+   176	          compactionAgentRunnerFactory:
+   177	            process.autoByteus.compactionAgentRunnerFactory,
+   178	        }),
+   179	        codex: new CodexAgentRunBackendFactory(
+   180	          process.codex.threadManager,
+    52	    agentToolMcpSessionIssuer: AgentToolMcpSessionIssuer = getAgentToolMcpSessionIssuer(),
+    53	    workspaceSkillMaterializer: WorkspaceSkillMaterializer =
+    54	      getClaudeWorkspaceSkillMaterializer(),
+    55	  ) {
+    56	    this.workspaceManager = workspaceManager;
+    57	    this.sdkClient = sdkClient;
+    58	    this.agentToolMcpSessionIssuer = agentToolMcpSessionIssuer;
+    59	    this.sessionCleanup = new ClaudeSessionCleanup(
+    60	      this.toolingCoordinator,
+    61	      workspaceSkillMaterializer,
+    62	    );
+    63	  }
+    64
+    65	  async createRunSession(
+    66	    runContext: ClaudeRunContext,
+    67	  ): Promise<ClaudeSession> {
+    68	    await this.closeRunSession(runContext.runId);
+    69	    runContext.runtimeContext.hasCompletedTurn = false;
+    70	    runContext.runtimeContext.activeTurnId = null;
+    71	    const providerSessionLifecycle = ClaudeProviderSessionLifecycle.reserveNew();
+    72	    const session = new ClaudeSession({
+    73	      runContext,
+    74	      providerSessionLifecycle,
+    75	      dependencies: this.buildSessionDependencies(runContext.runId),
+    76	    });
+    77	    this.sessions.set(runContext.runId, session);
+    78	    this.sessionMessageCache.ensureSession(session.sessionId);
+    79	    return session;
+    80	  }
+    81
+    82	  async restoreRunSession(
+    83	    runContext: ClaudeRunContext,
+    84	    sessionId: string,
+    85	  ): Promise<ClaudeSession> {
+    86	    await this.closeRunSession(runContext.runId);
+    87	    const providerSessionLifecycle = ClaudeProviderSessionLifecycle.restore(sessionId, runContext.runId);
+    88	    runContext.runtimeContext.hasCompletedTurn = false;
+    89	    runContext.runtimeContext.activeTurnId = null;
+    90	    const session = new ClaudeSession({
+    91	      runContext,
+    92	      providerSessionLifecycle,
+    93	      dependencies: this.buildSessionDependencies(runContext.runId),
+    94	    });
+    95	    this.sessions.set(runContext.runId, session);
+    96	    this.sessionMessageCache.ensureSession(providerSessionLifecycle.sessionId);
+    97	    return session;
+    98	  }
+    99
+   100	  hasRunSession(runId: string): boolean {
+   101	    return this.sessions.has(runId);
+   102	  }
+   103
+   104	  async terminateRun(runId: string): Promise<void> {
+   105	    const state = this.sessions.get(runId);
+    52	    this.runContext = input.runContext;
+    53	    this.providerSessionLifecycle = input.providerSessionLifecycle;
+    54	    this.dependencies = input.dependencies;
+    55	    this.listeners = input.listeners ?? new Set();
+    56	    this.activeAbortController = input.activeAbortController ?? null;
+    57	    this.runContext.runtimeContext.activeTurnId =
+    58	      input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
+    59	    this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
+    60	    this.contextFileLocalPathResolver =
+    61	      input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
+    62	    this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
+    63	      input.dependencies.agentToolMcpSessionIssuer,
+    64	    );
+    65	  }
+    66
+    67	  get runId(): string {
+    27	  } catch {
+    28	    return value;
+    29	  }
+    30	};
+    31
+    32	export class ContextFileLocalPathResolver {
+    33	  constructor(
+    34	    private readonly layout: ContextFileLayout = new ContextFileLayout(),
+    35	    private readonly ownerResolver: Pick<ContextFileOwnerResolver, "resolveFinalOwnerSync"> = new ContextFileOwnerResolver(),
+    36	  ) {}
+    37
+    38	  resolve(locator: string): string | null {
+    39	    const normalizedLocator = locator.trim();
+    40	    if (!normalizedLocator) {
+     1	import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+     2	import type {
+     3	  ContextFileFinalOwnerDescriptor,
+     4	  ContextFileResolvedFinalOwnerDescriptor,
+     5	} from "../domain/context-file-owner-types.js";
+     6
+     7	export class ContextFileOwnerResolver {
+     8	  constructor(
+     9	    private readonly locations = new TeamRunExecutionTreeLocationService(),
+    10	  ) {}
+    11
+    12	  async resolveFinalOwner(
+    13	    owner: ContextFileFinalOwnerDescriptor,
+    14	  ): Promise<ContextFileResolvedFinalOwnerDescriptor> {
+    15	    if (owner.kind === "agent_final") return owner;
+    16	    const location = await this.locations.findAgent({
+    35	export class TeamRunExecutionTreeLocationService {
+    36	  private readonly memoryDir: string;
+    37	  private readonly layout: AgentMemoryLayout;
+    38	  private readonly manager: Manager;
+    39	  private readonly store: TeamRunExecutionTreeStore;
+    40	  private readonly packageCatalog: TeamRunPackageCatalog;
+    41
+    42	  constructor(input: {
+    43	    memoryDir?: string;
+    44	    manager?: Manager;
+    45	    store?: TeamRunExecutionTreeStore;
+    46	  } = {}) {
+    47	    this.memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    48	    this.layout = new AgentMemoryLayout(this.memoryDir);
+    49	    this.manager = input.manager ?? DefaultManager.getInstance();
+    50	    this.store = input.store ?? new TeamRunExecutionTreeStore();
+    51	    this.packageCatalog = new TeamRunPackageCatalog(this.memoryDir);
+    52	  }
+    53
+    54	  async findAgent(input: {
+    55	    agentRunId?: string | null;
+
+### Corresponding Codex supported input mapper uses the same ambient resolver chain
+    76	  collectContextFileReferencePaths([contextFile], contextFileReferenceOptions)
+    77	    .length > 0;
+    78
+    79	export const toCodexUserInput = (
+    80	  message: AgentInputUserMessage,
+    81	): Array<JsonObject> => {
+    82	  const contextFileLocalPathResolver = new ContextFileLocalPathResolver();
+    83	  const contextFileReferenceOptions = createContextFileReferenceOptions(
+    84	    contextFileLocalPathResolver,
+    85	  );
+    86	  const baseText = message.content.trim();
+    87	  const textLines: string[] = [];
+    88	  if (baseText) {
+    89	    textLines.push(baseText);
+    90	  }
+
+### Direct AgentRunManager fixture-only default chain and production-root disambiguation
+    87	    if (AgentRunManager.instance === instance) AgentRunManager.instance = null;
+    88	  }
+    89
+    90	  constructor(options: AgentRunManagerOptions) {
+    91	    if (!options?.agentToolMcpRunSessionReleaser) {
+    92	      throw new Error("AgentRunManager requires an Agent Tools MCP run-session releaser.");
+    93	    }
+    94	    this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
+    95	    this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+    96	    this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
+    97	    this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    98	    this.agentToolMcpRunSessionReleaser =
+    99	      options.agentToolMcpRunSessionReleaser;
+   100	    this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
+   101	      new AgentRunResourceManager({
+   102	        runSessions: this.agentToolMcpRunSessionReleaser,
+   103	        runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
+   104	        publishedArtifactRelayService: options.publishedArtifactRelayService
+   105	          ?? createGeneralProcessPublishedArtifactRelayService(),
+   106	        memoryRecorder: this.memoryRecorder,
+   107	      }),
+   108	    );
+   109	    logger.info("AgentRunManager initialized.");
+   110	  }
+   111
+   112	  prepareNewAgentRun(input: {
+   113	    runId: string;
+   114	    config: AgentRunConfig;
+   115	  }): Promise<AgentRunActivationCandidate> {
+   116	    const runId = normalizeRequiredRunId(input.runId);
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:111:    const agentRunManager = new AgentRunManager({
+
+### Governed failing test files and isolated stacks
+### Current reviewed state
+3806ca36e46495ba28d5957a330a502eb22bd973
+codex/explicit-agent-provider-composition-and-scope-assembly
+### Failing durable paths intersect ticket diff
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts: CHANGED
+### Accepted lookup-only manager change
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+index ea107b1c3..582a932d7 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+@@ -5,7 +5,7 @@ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-exec
+ import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
+ import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+ import { AgentTeamTerminationError } from "../errors.js";
+-import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
++import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+ import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
+ import { RootTeamRun } from "../domain/root-team-run.js";
+ import { TeamRun } from "../domain/team-run.js";
+@@ -28,9 +28,9 @@ const required = (value: string, field: string): string => {
+   return normalized;
+ };
+
+-type AgentTeamRunManagerOptions = Readonly<{
++export type AgentTeamRunManagerOptions = Readonly<{
+   memoryDir?: string;
+-  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
++  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+   executionTreeStore?: TeamRunExecutionTreeStore;
+   taskRecordsStore?: TaskDelegationRecordsV1Store;
+   communicationStore?: TeamCommunicationV1Store;
+@@ -49,8 +49,11 @@ export class AgentTeamRunManager {
+   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
+   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
+
+-  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
+-    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
++  static getInstance(): AgentTeamRunManager {
++    if (!AgentTeamRunManager.instance) {
++      throw new Error("The process AgentTeamRunManager is not initialized.");
++    }
++    return AgentTeamRunManager.instance;
+   }
+
+   static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+@@ -65,11 +68,14 @@ export class AgentTeamRunManager {
+     if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
+   }
+
+-  constructor(options: AgentTeamRunManagerOptions = {}) {
++  constructor(options: AgentTeamRunManagerOptions) {
++    if (!options?.mixedTeamRunBackendFactory) {
++      throw new Error("mixedTeamRunBackendFactory is required.");
++    }
+     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+     this.memoryLayout = new AgentMemoryLayout(memoryDir);
+     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
+-    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
++    this.factory = options.mixedTeamRunBackendFactory;
+     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
+     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
+     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
+### Direct default chains reached by failures
+      throw new Error("AgentRunManager requires an Agent Tools MCP run-session releaser.");
+    }
+    this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
+    this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+    this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
+    this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    this.agentToolMcpRunSessionReleaser =
+      options.agentToolMcpRunSessionReleaser;
+    this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
+      new AgentRunResourceManager({
+        runSessions: this.agentToolMcpRunSessionReleaser,
+        runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
+        publishedArtifactRelayService: options.publishedArtifactRelayService
+          ?? createGeneralProcessPublishedArtifactRelayService(),
+        memoryRecorder: this.memoryRecorder,
+      }),
+    );
+    logger.info("AgentRunManager initialized.");
+  }
+    this.runContext = input.runContext;
+    this.providerSessionLifecycle = input.providerSessionLifecycle;
+    this.dependencies = input.dependencies;
+    this.listeners = input.listeners ?? new Set();
+    this.activeAbortController = input.activeAbortController ?? null;
+    this.runContext.runtimeContext.activeTurnId =
+      input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
+    this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
+    this.contextFileLocalPathResolver =
+      input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
+    this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
+      input.dependencies.agentToolMcpSessionIssuer,
+    );
+  }
+
+  private readonly agentIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+  private readonly taskTeams: TaskTeamRunIdentityFactory;
+  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+
+  constructor(private readonly options: TaskDelegationServiceOptions) {
+    this.currentTasks = validateTaskDelegationRecordsV1Payload(options.initialTasks, options.rootTeamRunId);
+    this.agentIds = options.agentRunIdentityAllocator ?? AgentRunIdentityAllocator.getInstance();
+    this.taskTeams = options.taskTeamRunIdentityFactory ?? new TaskTeamRunIdentityFactory(this.agentIds);
+    this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
+  }
+
+  getSnapshot(): TaskDelegationRecordsSnapshot { return this.currentTasks; }
+  hasOpenWork(): boolean { return this.currentTasks.records.some((record) => record.status !== "accepted" && record.status !== "interrupted"); }
+### Transition inventory explicitly governs the failing files
+89:| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts` | issuer propagation into every new/restored session |
+90:| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts` | required issuer in session state while non-MCP behavior remains unchanged |
+91:| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts` | lazy issue once, descriptor reuse on retry, and lifecycle-owned revocation |
+105:| `autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts` | pass a fresh recording releaser to every direct manager; preserve provider routing, create/restore, inactive eviction, accepted/unaccepted termination, and error behavior while asserting exact-run revocation where cleanup occurs |
+106:| `autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts` | pass the explicit no-op releaser; preserve real create/restore memory layout and avoid ambient MCP authority |
+107:| `autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts` | pass the explicit no-op releaser; preserve fresh-definition instruction and description-fallback behavior |
+202:autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts
+203:autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+204:autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+419: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+420: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+421: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+438: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+439: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+440: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+457: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+474: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+491: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+508: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+525: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+542: FAIL  tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore
+559: FAIL  tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+576: FAIL  tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+588: FAIL  tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+606: FAIL  tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+624: FAIL  tests/integration/agent-execution/claude-session-manager.integration.test.ts > ClaudeSessionManager explicit Agent Tools issuer > materializes an issued provider-neutral descriptor into the Claude query config
+642: FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > forwards an authorized exact-member address as the bound agentRunId
+660: FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > resolves initial targetMemberAddress through the binding before exact root dispatch
+678: FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an unknown initial targetMemberAddress before root lookup
+696: FAIL  tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts > application team input RootTeamRun dispatch > rejects an addressed agentRunId outside the bound team before root lookup
+714: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > propagates the exact execution issuer into every created and restored session
+732: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > creates a run session with a reserved provider UUID and no local-id placeholder
+750: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > restores a run session with the exact persisted provider UUID ready for resume
+768: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > terminates a run session, emits SESSION_TERMINATED, and removes the run session
+786: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > settles an active turn through the session-owned interrupt sequence before termination cleanup
+804: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > preserves configured-only standalone exposure without team defaults
+822: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables team collaboration defaults and only configured browser tools
+840: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > automatically enables team collaboration tools for exact-run-only contexts
+858: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > creates an Agent Tools MCP session with member sender context when send_message_to is configured
+876: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > creates an Agent Tools MCP session with standalone sender context when no team context exists
+894: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh
+912: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables publish_artifacts only when toolNames explicitly allow it
+930: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables media tools and their autobyteus_agent_tools MCP names only when configured
+948: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > combines intrinsic Team tools with configured task-result tools
+966: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > creates Agent Tools MCP tooling for configured MCP-only Claude tools
+984: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > does not enable artifact publication for old singular-only Claude configs
+1002: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts > ClaudeSession browser/send_message_to/publish_artifacts gating > enables only plural artifact tooling for mixed old/new Claude configs
+1020: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > captures and publishes the exact SDK systemPrompt after a usable query is returned
+1038: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > closes the usable query without iteration when post-handoff persistence fails
+1056: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > defensively rejects an impossible explicit start while another turn is active
+1074: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > does not clear an identified active turn for missing or mismatched completion identity
+1092: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > caches and sends local context file reference paths in user content
+1110: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > applies idle status before emitting normal turn completion
+1128: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode
+1146: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > keeps manual mode gated for a safe outside-scratch permission request until approval resolves
+1164: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+1182: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+1200: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED
+1218: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > keeps manager-owned closure cleanup idempotent without an active turn execution
+1236: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+1254: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > delegates terminate to the session manager dependency
+1272: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > exposes the caller-reserved provider UUID before the first query
+1290: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its immutable reserved provider UUID
+1308: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt
+1326: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > uses SDK sessionId for the first turn and resume for every completed follow-up
+1344: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume restored Claude runs with the restored provider session id
+1362: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a turn when Claude reports a conflicting provider UUID
+1380: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a successful-looking turn that never confirms the provider UUID
+1398: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > emits provider-derived text segment ids and preserves text-tool-text order
+1416: FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > coalesces partial stream_event text deltas by message and content block
+1435: Test Files  8 failed | 17 passed | 3 skipped (28)
+1436:      Tests  60 failed | 111 passed | 29 skipped (200)

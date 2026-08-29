@@ -1,0 +1,43 @@
+CRR-009 affected implementation-source review — IR-006 / CR-007
+Date (UTC): 2026-08-22
+Reviewed implementation HEAD: b3ddefe1a079e1bc52eb36688595462861b7415a
+Prior focused review: CRR-008 at c8c4a98bfda0
+
+Reviewed production delta:
+- application-orchestration-host-service.ts (+13/-11; 426 effective non-empty lines)
+- application-runtime-input-normalizer.ts (+1/-1; 63 effective non-empty lines)
+
+CR-007 resolution trace:
+1. The supported Socratic user path remains Start lesson -> persisted ATTACHED team binding -> READY exact tutor connection -> immediate addressed input.
+2. ApplicationAgentTargetAuthorizationService continues validating the public AGENT_TEAM_MEMBER target against the binding-owned agentRunId.
+3. ApplicationOrchestrationHostService now forwards that exact agentRunId directly to RootTeamRun.postMessage instead of converting it back to memberAddress.
+4. RootTeamRun.postMessage therefore indexes and dispatches with the identity its contract requires; coordinator targeting remains null and resolves through RootTeamRun's current coordinator owner.
+5. Public ApplicationRuntimeInput.targetMemberAddress remains a rooted logical address. The host validates it, resolves it once through binding.runtime.members, and forwards the selected member's exact agentRunId.
+6. An initial address or addressed agentRunId absent from the binding is rejected before resolveActiveTeamRun, so neither invalid input can fall through to the coordinator or another run.
+7. The prior misleading buildApplicationRuntimeInputTargetSelector symbol is removed without an alias; the replacement name identifies the logical address it actually returns.
+
+Boundary/architecture assessment:
+- Binding-owned member projection remains the application orchestration authority for translating public logical address to exact runtime identity.
+- RootTeamRun remains the execution-tree lookup and command-dispatch authority; the caller supplies its existing exact agentRunId contract rather than bypassing its index.
+- No retry, delay, coordinator fallback, global manager, duplicate run map, legacy identity, compatibility branch, schema change, or provider behavior change was added.
+- The new real-root test exercises RootTeamRun and TeamExecutionIndex rather than protecting only a mock call argument. It covers both valid targeting forms and both invalid target forms.
+- CR-001 through CR-006 are outside this bounded source delta and remain resolved on the retained API-REV-003 and CRR-007 evidence.
+
+Reviewer validation:
+- prerequisite shared package build: Pass.
+- exact identity selection: 3 files / 12 tests Pass.
+- application-framework architecture suite: 1 file / 15 tests Pass.
+- server build-config TypeScript no-emit: Pass.
+- implementation full production build/sanitized bootstrap Pass retained from IR-006 handoff.
+- scoped diff check and retired selector scan: Pass.
+- both changed implementation-source files are below 500 effective lines and both deltas are below 220 lines.
+- reviewer-generated application contracts/backend SDK build outputs removed after validation; API/E2E-owned dirty coverage/reports/evidence preserved.
+
+Material-premise result:
+- CR-PREM-007 remains Reachable, but the corrected production path preserves the authorized exact agentRunId through RootTeamRun dispatch and removes the prior RUN_NOT_FOUND consequence.
+- No new or reclassified material premise.
+
+Decision:
+- CR-007 resolved.
+- CR-001 through CR-006 remain resolved.
+- No open implementation-source finding.

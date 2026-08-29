@@ -1,0 +1,247 @@
+HEAD
+8704f2653b664c6ae7b5ecb24f2dd3885a79aad9
+DIFF STAT 64327760e..HEAD
+ .../user-input-context-building-processor.ts       |  10 -
+ .../autobyteus-agent-run-backend-factory.ts        |  24 +-
+ .../claude-agent-tools-mcp-materializer.ts         |   4 +-
+ .../claude-agent-tools-mcp-session-state.ts        |  30 +-
+ .../claude/session/claude-session-manager.ts       |  27 +-
+ .../claude/session/claude-session-state-input.ts   |   8 +-
+ .../backends/claude/session/claude-session.ts      |  12 +-
+ .../codex-agent-tools-mcp-materializer.ts          |   4 +-
+ .../codex/backend/codex-thread-bootstrapper.ts     |  14 +-
+ .../codex/thread/codex-user-input-mapper.ts        |  27 +-
+ .../src/agent-execution/domain/agent-run.ts        |  25 +-
+ .../input/agent-run-provider-input-normalizer.ts   |  55 ++
+ .../providers/agent-provider-factory-builder.ts    | 196 +++++
+ .../runtime/general-process-run-supervisor.ts      | 216 +++---
+ .../agent-execution/services/agent-run-manager.ts  | 154 ++--
+ .../services/agent-run-resource-manager.ts         |   8 +-
+ .../mixed/members/mixed-agent-member-handle.ts     |  10 +-
+ .../members/mixed-configured-member-registry.ts    |   9 +-
+ .../members/mixed-task-agent-execution-registry.ts |   9 +-
+ .../backends/mixed/mixed-team-manager.ts           |  10 +-
+ .../mixed/mixed-team-run-backend-factory.ts        |  66 +-
+ .../agent-team-execution/domain/root-team-run.ts   |   8 +
+ .../services/agent-team-run-manager.ts             |  35 +-
+ .../task-delegation-service-contract.ts            |   6 +-
+ .../task-delegation/task-delegation-service.ts     |  15 +-
+ .../task-execution-identity-capabilities.ts        |  19 +
+ .../task-team-run-identity-factory.ts              |   9 +-
+ .../mcp/agent-tool-mcp-session-authority.ts        |  61 ++
+ .../mcp/agent-tool-mcp-session-service.ts          |  63 +-
+ .../src/agent-tools/mcp/agent-tools-mcp-host.ts    |  66 ++
+ .../src/agent-tools/mcp/agent-tools-mcp-runtime.ts | 147 ----
+ .../application-agent-tool-mcp-session-scope.ts    | 122 ---
+ .../mcp/scoped-agent-tool-mcp-session-authority.ts | 248 ++++++
+ .../mcp/scoped-agent-tool-mcp-session-manager.ts   |  80 --
+ autobyteus-server-ts/src/api/rest/context-files.ts |  21 +-
+ .../application-execution-scope-contracts.ts       |   8 +-
+ .../application-execution-scope-kernel-builder.ts  | 327 ++++++++
+ .../execution/application-execution-scope.ts       | 324 +-------
+ .../runtime/build-application-platform-runtime.ts  |  12 +-
+ .../src/compositions/build-studio-server.ts        |  90 ++-
+ ...reate-process-agent-provider-factory-builder.ts |  64 ++
+ .../domain/context-file-path-environment.ts        |  28 +
+ .../services/context-file-finalization-service.ts  |   9 +-
+ .../services/context-file-local-path-resolver.ts   |  35 +-
+ .../services/context-file-owner-resolver.ts        |  22 +-
+ .../services/context-file-read-service.ts          |   9 +-
+ .../src/context-files/store/context-file-layout.ts |  11 +-
+ .../team-run-execution-tree-location-service.ts    |  11 +-
+ .../start-standalone-application-host.ts           |  67 +-
+ .../agent-provider-composition-boundaries.test.ts  | 828 +++++++++++++++++++++
+ .../application-framework-boundaries.test.ts       | 148 +---
+ .../agent-command-correlated-status.e2e.test.ts    |   2 +-
+ .../codex-live-memory-persistence.e2e.test.ts      |  31 +-
+ ...de-agent-websocket-interrupt-resume.e2e.test.ts |   2 +-
+ .../context-file-storage-runtime.e2e.test.ts       |  30 +-
+ .../agent-run-manager-infrastructure-fixtures.ts   |  23 +
+ ...agent-tool-mcp-run-session-releaser-fixtures.ts |  38 +
+ .../agent-run-manager.integration.test.ts          | 105 ++-
+ ...-manager.memory-layout.real.integration.test.ts |  23 +-
+ .../agent-run-prompt-fallback.integration.test.ts  |  78 +-
+ ...un-backend-factory.lmstudio.integration.test.ts |  24 +-
+ ...e-agent-run-backend-factory.integration.test.ts | 151 ++--
+ .../claude-session-manager.integration.test.ts     | 102 ++-
+ ...x-agent-run-backend-factory.integration.test.ts |  89 ++-
+ .../codex-thread-bootstrapper.integration.test.ts  |  28 +-
+ ...rsive-memory-compactor-leaf.integration.test.ts |   2 +-
+ .../agent-team-run-manager.integration.test.ts     |  36 +-
+ ...ed-team-run-backend-factory.integration.test.ts |  55 +-
+ ...k-delegation-tool-lifecycle.integration.test.ts |   6 +
+ ...eam-agent-segment-admission.integration.test.ts |   2 +-
+ .../mcp/agent-tools-mcp-routes.integration.test.ts |   6 +-
+ .../agent-status-websocket.integration.test.ts     |  10 +-
+ .../brief-package-team-prompt.integration.test.ts  |  12 +-
+ ...andalone-application-server.integration.test.ts |  22 +-
+ .../agent-provider-factory-builder.test.ts         | 197 +++++
+ .../unit/agent-execution/agent-run-manager.test.ts | 221 ++++--
+ .../agent-run-resource-manager.test.ts             |   6 +-
+ .../tests/unit/agent-execution/agent-run.test.ts   |  42 +-
+ .../claude/session/claude-session-manager.test.ts  |  50 +-
+ .../session/claude-session-tool-gating.test.ts     |  50 +-
+ .../backends/claude/session/claude-session.test.ts |  17 +-
+ .../backend/codex-thread-bootstrapper.test.ts      |  55 +-
+ .../codex/thread/codex-user-input-mapper.test.ts   |  46 +-
+ ...eneral-process-run-supervisor-ownership.test.ts | 180 ++++-
+ .../agent-run-provider-input-normalizer.test.ts    | 175 +++++
+ .../agent-memory/agent-run-memory-recorder.test.ts |   2 +-
+ .../agent-team-run-manager-lifecycle.test.ts       |  37 +-
+ ...t-message-router-claude-input-admission.test.ts |  20 +-
+ ...t-member-handle-agent-tools-mcp-cleanup.test.ts |  23 +-
+ ...ed-agent-member-handle-memory-invariant.test.ts |  18 +-
+ ...d-agent-member-handle-native-activation.test.ts |  32 +-
+ ...ber-handle-task-notification-projection.test.ts |  15 +-
+ .../mixed-agent-member-handle-termination.test.ts  |  22 +-
+ .../mixed-sub-team-run-factory.test.ts             |  13 +-
+ .../mixed-team-manager.test.ts                     |   2 +
+ ...-team-member-registry-task-agent-memory.test.ts |  11 +-
+ .../mixed-team-run-backend-factory.test.ts         |  65 +-
+ .../root-team-run-termination.test.ts              |   4 +
+ .../task-delegation-current-invariants.test.ts     |  36 +-
+ .../task-execution-identity-capabilities.test.ts   |  45 ++
+ .../team-manager-member-interrupt.test.ts          |  24 +-
+ .../team-run-resolver-configured-overlap.test.ts   |  32 +-
+ .../mcp/agent-tool-mcp-session-service.test.ts     |  78 +-
+ .../agent-tools/mcp/agent-tools-mcp-host.test.ts   |  60 ++
+ .../mcp/agent-tools-mcp-runtime.test.ts            | 178 -----
+ ...pplication-agent-tool-mcp-session-scope.test.ts |  52 --
+ ...scoped-agent-tool-mcp-session-authority.test.ts | 159 ++++
+ .../application-team-input-root-dispatch.test.ts   |   4 +
+ ...lication-execution-scope-kernel-builder.test.ts | 304 ++++++++
+ .../application-execution-scope.test.ts            | 361 +++------
+ .../application-platform-runtime-isolation.test.ts |  97 ++-
+ .../unit/context-files/context-file-layout.test.ts |   5 +-
+ .../context-file-local-path-resolver.test.ts       |  16 +-
+ .../context-file-owner-resolver.test.ts            | 293 ++------
+ .../context-file-path-environment.test.ts          |  42 ++
+ .../runtime/channel-agent-run-facade.test.ts       |   3 +-
+ .../agent-streaming/agent-stream-handler.test.ts   |   2 +-
+ .../standalone-application-host-lifecycle.test.ts  |  61 +-
+ .../design-spec.md                                 | 403 +++++++---
+ .../implementation-handoff.md                      | 124 +++
+ .../implementation-revision-record.md              |  68 ++
+ .../investigation-notes.md                         |  49 +-
+ ...mposition-and-agent-tools-authority-contract.md | 327 +++++---
+ .../provider-composition-transition-inventory.md   | 473 +++++++-----
+ .../requirements.md                                |  45 +-
+ .../solution-revision-record.md                    |  57 ++
+ 126 files changed, 6494 insertions(+), 2895 deletions(-)
+IR003 CHANGED PRODUCTION
+autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts
+autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service-contract.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-run-identity-factory.ts
+autobyteus-server-ts/src/api/rest/context-files.ts
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+autobyteus-server-ts/src/compositions/build-studio-server.ts
+autobyteus-server-ts/src/context-files/domain/context-file-path-environment.ts
+autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts
+autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts
+autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts
+autobyteus-server-ts/src/context-files/services/context-file-read-service.ts
+autobyteus-server-ts/src/context-files/store/context-file-layout.ts
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+IR003 SOURCE SIZES
+ 500 autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+ 491 autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+ 491 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+ 477 autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ 407 autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ 358 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+ 329 autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+ 322 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+ 306 autobyteus-server-ts/src/compositions/build-studio-server.ts
+ 280 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ 239 autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+ 220 autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+ 179 autobyteus-server-ts/src/api/rest/context-files.ts
+ 160 autobyteus-server-ts/src/agent-customization/processors/prompt/user-input-context-building-processor.ts
+ 148 autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts
+ 113 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts
+ 111 autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts
+  86 autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts
+  68 autobyteus-server-ts/src/context-files/store/context-file-layout.ts
+  65 autobyteus-server-ts/src/context-files/services/context-file-read-service.ts
+  64 autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts
+  59 autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service-contract.ts
+  51 autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts
+  36 autobyteus-server-ts/src/agent-team-execution/task-delegation/task-team-run-identity-factory.ts
+  29 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+  26 autobyteus-server-ts/src/context-files/domain/context-file-path-environment.ts
+  17 autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts
+FULL TICKET CHANGED SOURCE >220
+ 500 autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+ 496 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ 491 autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts
+ 491 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+ 484 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ 477 autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ 407 autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+ 405 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ 378 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ 358 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+ 329 autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+ 322 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+ 306 autobyteus-server-ts/src/compositions/build-studio-server.ts
+ 280 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ 239 autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+ 226 autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts
+DIFF CHECK
+GOVERNED AMBIENT SELECTOR SCAN
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:102:      const contextFileOwnerResolver = new ContextFileOwnerResolver({
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:106:        new ContextFileLocalPathResolver({
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:72:    const contextFileOwnerResolver = new ContextFileOwnerResolver({
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:76:      new ContextFileLocalPathResolver({
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-projection-service.ts:1:import { appConfigProvider } from "../../config/app-config-provider.js";
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-projection-service.ts:99:    this.layout = new AgentMemoryLayout(options.memoryDir ?? appConfigProvider.config.getMemoryDir());
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-projection-service.ts:129:    const managed = (this.options.manager ?? AgentTeamRunManager.getInstance()).getManagedTeamRun(rootTeamRunId);
+autobyteus-server-ts/src/agent-execution/backends/codex/codex-workspace-resolver.ts:1:import { appConfigProvider } from "../../../config/app-config-provider.js";
+autobyteus-server-ts/src/agent-execution/backends/codex/codex-workspace-resolver.ts:34:      return appConfigProvider.config.getTempWorkspaceDir();
+autobyteus-server-ts/src/agent-execution/backends/claude/claude-workspace-resolver.ts:1:import { appConfigProvider } from "../../../config/app-config-provider.js";
+autobyteus-server-ts/src/agent-execution/backends/claude/claude-workspace-resolver.ts:35:      return appConfigProvider.config.getTempWorkspaceDir();
+ROOT-OWNED FACTORY OCCURRENCES
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:16:import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:26:import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:71:      createStoredTeamRunExecutionTreeLocationService(input.memoryDir);
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:150:    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
+autobyteus-server-ts/src/compositions/build-studio-server.ts:61:  createContextFilePathEnvironment,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:207:    const contextFilePathEnvironment = createContextFilePathEnvironment({
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts:231:export const createStoredTeamRunExecutionTreeLocationService = (
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:46:import { createContextFilePathEnvironment } from "../context-files/domain/context-file-path-environment.js";
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:239:    const contextFilePathEnvironment = createContextFilePathEnvironment({
+autobyteus-server-ts/src/context-files/domain/context-file-path-environment.ts:12:export const createContextFilePathEnvironment = (input: {
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-identity-capabilities.ts:9:export const createTaskExecutionIdentityCapabilities = (
+autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts:6:import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts:78:      locationService: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:27:import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:37:import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:89:    const storedTeamLocations = createStoredTeamRunExecutionTreeLocationService(memoryDir);
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:151:      const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
+autobyteus-server-ts/src/api/rest/context-files.ts:14:import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+autobyteus-server-ts/src/api/rest/context-files.ts:29:    locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+RETIRED PROVIDER-LOCAL RESOLVER SCAN
+STATUS
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/

@@ -1,8 +1,10 @@
 import type {
   ApplicationAgentBinding,
+  ApplicationAgentMemberAddress,
   ApplicationAgentTargetAddress,
   ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
+import { parseApplicationAgentMemberAddress } from "@autobyteus/application-sdk-contracts";
 
 type StructuralBinding = {
   bindingId?: unknown;
@@ -20,63 +22,48 @@ const requireBindingId = (binding: StructuralBinding | null | undefined): string
   return bindingId;
 };
 
-const requireRuntimeSubject = (
-  binding: StructuralBinding,
-  expectedSubject: "AGENT_RUN" | "TEAM_RUN",
-): void => {
-  if (binding.runtime?.subject === expectedSubject) return;
-  if (expectedSubject === "AGENT_RUN") {
-    throw new Error("Application agent target address requires an AGENT_RUN binding.");
-  }
+const requireRootRuntimeSubject = (binding: StructuralBinding): void => {
+  if (binding.runtime?.subject === "AGENT_RUN" || binding.runtime?.subject === "TEAM_RUN") return;
+  throw new Error("Application agent target address requires an AGENT_RUN or TEAM_RUN binding.");
+};
+
+const requireTeamRuntimeSubject = (binding: StructuralBinding): void => {
+  if (binding.runtime?.subject === "TEAM_RUN") return;
   throw new Error("Application agent-team target address requires a TEAM_RUN binding.");
 };
 
 export const createApplicationAgentTargetAddress = (
-  binding: ApplicationAgentBinding,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationAgentTargetAddress => {
   const bindingId = requireBindingId(binding);
-  requireRuntimeSubject(binding, "AGENT_RUN");
+  requireRootRuntimeSubject(binding);
   return {
     bindingId,
-    target: { kind: "AGENT_RUN" },
-  };
-};
-
-export const createApplicationAgentTeamTargetAddress = (
-  binding: ApplicationAgentTeamBinding,
-): ApplicationAgentTargetAddress => {
-  const bindingId = requireBindingId(binding);
-  requireRuntimeSubject(binding, "TEAM_RUN");
-  return {
-    bindingId,
-    target: { kind: "AGENT_TEAM_RUN" },
+    memberAddress: null,
   };
 };
 
 export const createApplicationAgentTeamMemberTargetAddress = (
   binding: ApplicationAgentTeamBinding,
-  agentRunId: string,
+  memberAddress: ApplicationAgentMemberAddress,
 ): ApplicationAgentTargetAddress => {
   const bindingId = requireBindingId(binding);
-  requireRuntimeSubject(binding, "TEAM_RUN");
+  requireTeamRuntimeSubject(binding);
 
-  const normalizedAgentRunId = typeof agentRunId === "string" ? agentRunId.trim() : "";
-  if (!normalizedAgentRunId) {
-    throw new Error("Application agent-team member target requires agentRunId.");
+  const normalizedMemberAddress = parseApplicationAgentMemberAddress(memberAddress);
+  if (!normalizedMemberAddress) {
+    throw new Error("Application agent-team member target requires a canonical memberAddress.");
   }
 
   const members = Array.isArray(binding.runtime.members) ? binding.runtime.members : [];
-  if (!members.some((member) => member?.agentRunId === normalizedAgentRunId)) {
+  if (!members.some((member) => member?.memberAddress === normalizedMemberAddress)) {
     throw new Error(
-      `Application agent-team binding '${bindingId}' does not contain agentRunId '${normalizedAgentRunId}'.`,
+      `Application agent-team binding '${bindingId}' does not contain memberAddress '${normalizedMemberAddress}'.`,
     );
   }
 
   return {
     bindingId,
-    target: {
-      kind: "AGENT_TEAM_MEMBER",
-      agentRunId: normalizedAgentRunId,
-    },
+    memberAddress: normalizedMemberAddress,
   };
 };

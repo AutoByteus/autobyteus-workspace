@@ -1,0 +1,16 @@
+Scenario: APIE2E-DUALHOST-001 / standalone Socratic Math Teacher
+Observed browser boundary before restart:
+- direct standalone URL: http://127.0.0.1:43551/
+- prompt submitted: Solve 7x - 5 = 44; explain and verify
+- conversation reached 2 messages
+- tutor response contained x = 7
+- lesson.response_received notification was rendered with binding/revision/run identifiers
+
+The original temporary script's final boolean was false only because it retained the obsolete literal readiness check “Tutor connected”; current UI text is “Socratic Math Teacher is ready.” That harness literal was not a product acceptance condition. The same-data corrected browser verifier after graceful restart asserted conversation >= 2 and x = 7 and passed.
+
+Authoritative corrected result: PASS.
+Supporting evidence:
+- api-rev-002-standalone-browser.log
+- api-rev-002-standalone-complete.png
+- api-rev-002-restart-browser-recovery.log
+- api-rev-002-standalone-restart-recovered.png

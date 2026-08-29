@@ -1,0 +1,8 @@
+DR-007 live handoff verification
+UTC: 2026-08-28T13:10:45Z
+visible_window_ids=48234500
+24490 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus
+37542:[2026-08-28T13:07:31.374Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+106461:[2026-08-28T13:08:29.215Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+screenshot=tickets/in-progress/application-owned-mcp-capability/delivery-evidence/dr-007/appimage-open-screen.png size=161659
+result=PASS; app remains open for user testing

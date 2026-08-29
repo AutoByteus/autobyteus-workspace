@@ -3,41 +3,34 @@ import type { RootTeamRun } from "../../../../src/agent-team-execution/domain/ro
 import type { TaskDelegationToolContext } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { TaskDelegationToolRunRouter } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-run-router.js";
 
-const buildContext = (rootTeamRunId = "root-team-run"): TaskDelegationToolContext => ({
+const buildContext = (
+  resolveActiveRoot: () => Promise<RootTeamRun>,
+  rootTeamRunId = "root-team-run",
+): TaskDelegationToolContext => ({
   identity: {
     rootTeamRunId,
     memberAddress: "/coordinator",
     agentRunId: "coordinator-run",
   },
+  rootResolver: Object.freeze({ resolveActiveRoot }),
 });
 
 describe("TaskDelegationToolRunRouter", () => {
-  it("resolves the one exact active/restorable RootTeamRun", async () => {
+  it("resolves the one exact active RootTeamRun from the bound capability", async () => {
     const root = { teamRunId: "root-team-run" } as RootTeamRun;
-    const resolveTeamRun = vi.fn(async () => root);
-    const router = new TaskDelegationToolRunRouter({ resolveTeamRun } as never);
+    const resolveActiveRoot = vi.fn(async () => root);
+    const router = new TaskDelegationToolRunRouter();
 
-    await expect(router.resolveRoot(buildContext())).resolves.toBe(root);
-    expect(resolveTeamRun).toHaveBeenCalledWith("root-team-run");
+    await expect(router.resolveRoot(buildContext(resolveActiveRoot))).resolves.toBe(root);
+    expect(resolveActiveRoot).toHaveBeenCalledWith();
   });
 
-  it("rejects a missing root without a child-directory or per-Team fallback", async () => {
-    const router = new TaskDelegationToolRunRouter({
-      resolveTeamRun: vi.fn(async () => null),
-    } as never);
+  it("propagates the bound resolver failure without lookup or restoration", async () => {
+    const router = new TaskDelegationToolRunRouter();
+    const failure = Object.assign(new Error("inactive"), { code: "TEAM_RUN_NOT_ACTIVE" });
 
-    await expect(router.resolveRoot(buildContext())).rejects.toMatchObject({
-      code: "TEAM_RUN_NOT_FOUND",
-    });
-  });
-
-  it("rejects a contradictory resolved root identity", async () => {
-    const router = new TaskDelegationToolRunRouter({
-      resolveTeamRun: vi.fn(async () => ({ teamRunId: "other-root" })),
-    } as never);
-
-    await expect(router.resolveRoot(buildContext())).rejects.toMatchObject({
-      code: "TEAM_RUN_NOT_FOUND",
+    await expect(router.resolveRoot(buildContext(async () => { throw failure; }))).rejects.toMatchObject({
+      code: "TEAM_RUN_NOT_ACTIVE",
     });
   });
 });

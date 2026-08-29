@@ -26,6 +26,11 @@ export type LocatedTeamAgentExecution = Readonly<{
 
 type Manager = Pick<AgentTeamRunManager, "getManagedTeamRun" | "listManagedTeamRunIds">;
 
+const STORED_TEAM_RUNS_ONLY: Manager = Object.freeze({
+  getManagedTeamRun: () => null,
+  listManagedTeamRunIds: () => [],
+});
+
 /** Derives physical/history context from the exact current V2 tree without another identity model. */
 export class TeamRunExecutionTreeLocationService {
   private readonly memoryDir: string;
@@ -222,3 +227,14 @@ export class TeamRunExecutionTreeLocationService {
     }
   }
 }
+
+export const createStoredTeamRunExecutionTreeLocationService = (
+  memoryDir: string,
+): TeamRunExecutionTreeLocationService => {
+  const normalizedMemoryDir = memoryDir?.trim();
+  if (!normalizedMemoryDir) throw new Error("memoryDir is required.");
+  return new TeamRunExecutionTreeLocationService({
+    memoryDir: normalizedMemoryDir,
+    manager: STORED_TEAM_RUNS_ONLY,
+  });
+};

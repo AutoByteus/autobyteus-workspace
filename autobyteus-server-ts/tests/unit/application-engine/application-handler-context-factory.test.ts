@@ -3,7 +3,7 @@ import { ApplicationAgentEventStreamSubscribeError } from "@autobyteus/applicati
 import { ApplicationHandlerContextFactory } from "../../../src/application-engine/worker/application-handler-context-factory.js";
 import { ApplicationAgentStreamObserverRegistry } from "../../../src/application-engine/worker/application-agent-stream-observer-registry.js";
 
-const address = { bindingId: "binding-1", target: { kind: "AGENT_RUN" as const } };
+const address = { bindingId: "binding-1", memberAddress: null };
 const storage = {
   rootPath: "/tmp/app",
   runtimePath: "/tmp/app/runtime",

@@ -1,0 +1,355 @@
+{
+  "scenario": "APIE2E-PUBLICATION-007",
+  "rootTeam": {
+    "schemaVersion": 1,
+    "createdAt": "2026-08-23T06:00:04.672Z",
+    "archivedAt": null,
+    "applicationBinding": {
+      "applicationId": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+      "bindingId": "4cdef414-d269-47c5-b870-57cb60c593c2"
+    },
+    "handoffs": [],
+    "rootTeam": {
+      "teamDefinitionId": "bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "teamDefinitionName": "Brief Studio Team",
+      "teamRunId": "brief_studio_team_823db96f1ce94c8f807fd6adb034ecd5",
+      "coordinatorAddress": "/researcher",
+      "members": [
+        {
+          "address": "/researcher",
+          "agentDefinitionId": "team-local-agent:bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+          "role": null,
+          "description": null,
+          "agentRunId": "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee",
+          "platformAgentRunId": "01a02d34-69d3-7012-b854-25df485a7a82",
+          "launchConfiguration": {
+            "runtimeKind": "CODEX",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        },
+        {
+          "address": "/writer",
+          "agentDefinitionId": "team-local-agent:bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+          "role": null,
+          "description": null,
+          "agentRunId": "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05",
+          "platformAgentRunId": "01a02d35-7659-7510-9d72-ab2202a46ed5",
+          "launchConfiguration": {
+            "runtimeKind": "CODEX",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "agents": {
+    "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05": {
+      "events": [
+        {
+          "seq": 3,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-d242eb3c-661f-48f1-9b11-3c3fb7c78c73",
+          "tool_error": null,
+          "tool_args": {
+            "command": "/bin/bash -lc 'cat brief-studio/research.md'",
+            "cwd": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        },
+        {
+          "seq": 4,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-d242eb3c-661f-48f1-9b11-3c3fb7c78c73",
+          "tool_error": null,
+          "success": true
+        },
+        {
+          "seq": 6,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-84fdb5aa-024b-4f48-b1d6-86dddc0f55a3",
+          "tool_error": null,
+          "tool_args": {
+            "command": "/bin/bash -lc \"cat > /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md <<'EOF'\n# API-REV-007 \u2014 Internal Personal API Launch Brief\n\n**Recommendation:** Proceed only with a small, allowlisted private pilot. Treat API-REV-007 as an internal personal API launch identifier, not as a confirmed product specification: scope, audience, data access, ownership, and readiness evidence remain assumptions until recorded. Publish a reviewable contract and operational guardrails first, then use pilot evidence to decide whether to expand access. **As of:** 2026-08-23. **Owner:** TBD. **Source of truth:** TBD; link the canonical repository/spec before launch.\n\n## Key evidence\n- The launch brief should make purpose/value, primary users, supported endpoints or capabilities, access model, rollout stages, and success measures explicit.\n- \u201cCurrent\u201d status requires a visible as-of date, owner, version/status, and canonical technical links so reviewers can distinguish intent from readiness.\n- Minimum trust controls are authentication, secure secret handling, least-privilege permissions, rate limits, structured logging, rollback capability, and usable documentation.\n- A staged path\u2014private validation, limited beta, then broader availability\u2014reduces blast radius and creates evidence-based go/no-go checkpoints.\n- Suggested first-release measures: activation/use by intended users, successful-call rate, latency and error-budget performance, support burden, and a 24\u201372 hour post-launch review.\n\n## Risks or cautions\n- REV-007\u2019s changes and backward-compatibility obligations are unconfirmed; do not imply compatibility until prior behavior and contract tests are documented.\n- Audience, data scope, environments/regions, launch date, dependencies, and baseline metrics are missing.\n- Security/privacy review and incident-response ownership are not confirmed; wider exposure should wait for named accountable owners.\n- Avoid treating assumptions as commitments or exposing sensitive data/secrets during pilot validation.\n\n## Next actions\n- Name the owner and incident/security contacts; set the as-of date, version/status, and canonical source-of-truth links.\n- Add a one-sentence value proposition plus explicit in-scope/out-of-scope users, data, environments, endpoints, and dependencies.\n- Define launch gates: contract/backward-compatibility tests, auth and permission checks, rate-limit behavior, logging/alerts, backup and rollback rehearsal, and documentation review.\n- Run an allowlisted private pilot, capture usage and operational evidence, hold a go/no-go review, and expand only if the gates and metrics are met.\nEOF\nrealpath /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md\"",
+            "cwd": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        },
+        {
+          "seq": 7,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-84fdb5aa-024b-4f48-b1d6-86dddc0f55a3",
+          "tool_error": null,
+          "success": true
+        },
+        {
+          "seq": 9,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "publish_artifacts",
+          "tool_call_id": "exec-be515635-ba4f-4f3f-87b1-5bc25680f00c",
+          "tool_error": null,
+          "tool_args": {
+            "artifacts": [
+              {
+                "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+                "description": "Concise writer checkpoint for the API-REV-007 internal personal API launch."
+              }
+            ]
+          }
+        },
+        {
+          "seq": 10,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "publish_artifacts",
+          "tool_call_id": "exec-be515635-ba4f-4f3f-87b1-5bc25680f00c",
+          "tool_error": null,
+          "success": true,
+          "resultSummary": {
+            "success": true
+          }
+        }
+      ],
+      "publishedArtifacts": {
+        "version": 1,
+        "summaries": [
+          {
+            "id": "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05:/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05",
+            "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise writer checkpoint for the API-REV-007 internal personal API launch.",
+            "revisionId": "a24265d3-0f0f-4df8-9258-b6087e5b34a5",
+            "createdAt": "2026-08-23T06:01:53.627Z",
+            "updatedAt": "2026-08-23T06:01:53.627Z"
+          }
+        ],
+        "revisions": [
+          {
+            "revisionId": "a24265d3-0f0f-4df8-9258-b6087e5b34a5",
+            "artifactId": "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05:/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05",
+            "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "description": "Concise writer checkpoint for the API-REV-007 internal personal API launch.",
+            "createdAt": "2026-08-23T06:01:53.627Z",
+            "snapshotRelativePath": "published_artifacts/revisions/a24265d3-0f0f-4df8-9258-b6087e5b34a5/final-brief.md",
+            "sourceFileName": "final-brief.md"
+          }
+        ]
+      }
+    },
+    "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee": {
+      "events": [
+        {
+          "seq": 6,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-d9c61c50-8af4-45ec-b710-7a6743d4f25c",
+          "tool_error": null,
+          "tool_args": {
+            "command": "/bin/bash -lc pwd",
+            "cwd": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        },
+        {
+          "seq": 7,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-d9c61c50-8af4-45ec-b710-7a6743d4f25c",
+          "tool_error": null,
+          "success": true
+        },
+        {
+          "seq": 9,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-9c1bc787-3869-4473-b410-26438025ff26",
+          "tool_error": null,
+          "tool_args": {
+            "command": "/bin/bash -lc \"mkdir -p brief-studio && cat > brief-studio/research.md <<'EOF'\n# Current Personal API-REV-007 launch brief \u2014 research checkpoint\n\n## Key findings\n- API-REV-007 is treated as an internal launch identifier for a personal API release; no authoritative product specification or audience definition was supplied, so this checkpoint separates confirmed scope from assumptions.\n- The brief should center on a small, reviewable launch: purpose, target users, supported endpoints/capabilities, access model, rollout milestones, and success measures.\n- \u201cCurrent\u201d requires a visible as-of date, owner, version/status, and links to the source of truth; otherwise reviewers cannot distinguish launch readiness from intent.\n- Personal API launches carry outsized trust requirements: authentication, secret handling, least-privilege access, rate limits, logging, rollback, and documentation should be explicit before exposure.\n- A staged release (private validation \u2192 limited beta \u2192 broader availability) reduces blast radius and creates checkpoints for feedback and operational evidence.\n\n## Risks or open questions\n- What does REV-007 change, and which prior behavior must remain backward compatible?\n- Who is the primary user, what data is accessed, and what environments/regions are in scope?\n- No launch date, owner, readiness evidence, dependency list, or baseline success metrics were provided.\n- Security/privacy review and incident-response ownership are not yet confirmed.\n\n## Recommendations or next steps\n- Add a one-sentence value proposition, explicit in/out-of-scope list, owner, as-of date, and canonical technical links.\n- Define launch gates: contract tests, auth/permission checks, observability, rate-limit behavior, backup/rollback rehearsal, and documentation review.\n- Set measurable first-release targets (activation, successful-call rate, latency/error budget, support burden) and a 24\u201372 hour post-launch review.\n- Start with a private or allowlisted pilot and record go/no-go evidence before expanding access.\nEOF\nprintf '%s\\\\n' \\\"\"'$(pwd)/brief-studio/research.md\"'",
+            "cwd": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        },
+        {
+          "seq": 10,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-9c1bc787-3869-4473-b410-26438025ff26",
+          "tool_error": null,
+          "success": true
+        },
+        {
+          "seq": 12,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "publish_artifacts",
+          "tool_call_id": "exec-d5a13d65-e05c-4c3b-a853-6a8d5daec93f",
+          "tool_error": null,
+          "tool_args": {
+            "artifacts": [
+              {
+                "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__6272696562d73747564696f/runtime/brief-studio/research.md",
+                "description": "Concise research checkpoint for the API-REV-007 launch brief."
+              }
+            ]
+          }
+        },
+        {
+          "seq": 13,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_FAILED",
+          "tool_name": "publish_artifacts",
+          "tool_call_id": "exec-d5a13d65-e05c-4c3b-a853-6a8d5daec93f",
+          "tool_error": "Published artifact path '/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__6272696562d73747564696f/runtime/brief-studio/research.md' does not resolve to a readable regular file.",
+          "success": false
+        },
+        {
+          "seq": 15,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-031fed57-0d55-4598-b3c6-b72729b86cf6",
+          "tool_error": null,
+          "tool_args": {
+            "command": "/bin/bash -lc \"realpath brief-studio/research.md; printf '%s\\\\n' \\\"\"'$PWD\"; ls -l brief-studio/research.md'",
+            "cwd": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime"
+          }
+        },
+        {
+          "seq": 16,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_bash",
+          "tool_call_id": "exec-031fed57-0d55-4598-b3c6-b72729b86cf6",
+          "tool_error": null,
+          "success": true
+        },
+        {
+          "seq": 18,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "publish_artifacts",
+          "tool_call_id": "exec-9ac3168f-7de9-4aaa-a1b3-f414e3b99cbd",
+          "tool_error": null,
+          "tool_args": {
+            "artifacts": [
+              {
+                "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+                "description": "Concise research checkpoint for the API-REV-007 launch brief."
+              }
+            ]
+          }
+        },
+        {
+          "seq": 19,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "publish_artifacts",
+          "tool_call_id": "exec-9ac3168f-7de9-4aaa-a1b3-f414e3b99cbd",
+          "tool_error": null,
+          "success": true,
+          "resultSummary": {
+            "success": true
+          }
+        },
+        {
+          "seq": 21,
+          "trace_type": "tool_call",
+          "source_event": "TOOL_EXECUTION_STARTED",
+          "tool_name": "send_message_to",
+          "tool_call_id": "exec-9d83ea80-9e3a-4044-862a-99b73dd1de27",
+          "tool_error": null,
+          "tool_args": {
+            "recipient_address": "/writer",
+            "message_type": "research_handoff",
+            "content": "Research checkpoint is ready at /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: treat API-REV-007 as an internal personal API launch with scope assumptions clearly labeled; include purpose, users, capabilities, access model, rollout, and metrics; make the as-of date/owner/source of truth visible; require auth, secret handling, least privilege, rate limits, logging, rollback, and docs; use a staged private pilot before wider release. Open questions cover change/backward compatibility, audience/data scope, missing launch evidence and metrics, and unconfirmed security/incident ownership.",
+            "reference_files": [
+              "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+            ]
+          }
+        },
+        {
+          "seq": 22,
+          "trace_type": "tool_result",
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "send_message_to",
+          "tool_call_id": "exec-9d83ea80-9e3a-4044-862a-99b73dd1de27",
+          "tool_error": null,
+          "success": true,
+          "resultSummary": {
+            "accepted": true,
+            "code": "DELIVERED",
+            "message": "Delivered message to /writer."
+          }
+        }
+      ],
+      "publishedArtifacts": {
+        "version": 1,
+        "summaries": [
+          {
+            "id": "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee:/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee",
+            "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the API-REV-007 launch brief.",
+            "revisionId": "649ef12f-0188-426c-a0e6-2bdad59bd7e1",
+            "createdAt": "2026-08-23T06:01:06.433Z",
+            "updatedAt": "2026-08-23T06:01:06.433Z"
+          }
+        ],
+        "revisions": [
+          {
+            "revisionId": "649ef12f-0188-426c-a0e6-2bdad59bd7e1",
+            "artifactId": "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee:/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee",
+            "path": "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "type": "file",
+            "description": "Concise research checkpoint for the API-REV-007 launch brief.",
+            "createdAt": "2026-08-23T06:01:06.433Z",
+            "snapshotRelativePath": "published_artifacts/revisions/649ef12f-0188-426c-a0e6-2bdad59bd7e1/research.md",
+            "sourceFileName": "research.md"
+          }
+        ]
+      }
+    }
+  },
+  "teamMessages": {
+    "schemaVersion": 1,
+    "rootTeamRunId": "brief_studio_team_823db96f1ce94c8f807fd6adb034ecd5",
+    "messages": [
+      {
+        "messageId": "teammsg_HsAwTWECBawqwL79kvNGxit4_GIxyPKM",
+        "senderAgentRunId": "brief_studio_researcher_99aa5980a1d644d18d5394fce026a1ee",
+        "receiverAgentRunId": "brief_studio_writer_225e5d9a39d740f3810f9729a9f12d05",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: treat API-REV-007 as an internal personal API launch with scope assumptions clearly labeled; include purpose, users, capabilities, access model, rollout, and metrics; make the as-of date/owner/source of truth visible; require auth, secret handling, least privilege, rate limits, logging, rollback, and docs; use a staged private pilot before wider release. Open questions cover change/backward compatibility, audience/data scope, missing launch evidence and metrics, and unconfirmed security/incident ownership.",
+        "messageType": "research_handoff",
+        "referenceFiles": [
+          "/private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+        ],
+        "createdAt": "2026-08-23T06:01:13.541Z"
+      }
+    ]
+  }
+}

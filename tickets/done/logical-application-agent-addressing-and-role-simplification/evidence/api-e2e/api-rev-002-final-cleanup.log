@@ -1,0 +1,13 @@
+--- git status ---
+?? autobyteus-application-devkit/.tmp-tests/
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-coverage-investigation.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/api-e2e-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/api-e2e/
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/
+--- maintained apps diff ---
+--- secret-pattern evidence scan ---

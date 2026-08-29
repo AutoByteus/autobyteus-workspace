@@ -294,7 +294,7 @@ const createClaudeAgentRun = async (input: {
   const session = await sessionManager.createRunSession(runContext);
   const backend = new ClaudeAgentRunBackend(runContext, session);
   return {
-    agentRun: new AgentRun({
+    agentRun: new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       context: runContext,
       backend,
     }),

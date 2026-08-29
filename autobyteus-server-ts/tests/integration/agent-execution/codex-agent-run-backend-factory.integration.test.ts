@@ -1,3 +1,5 @@
+import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
+import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
@@ -7,18 +9,15 @@ import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
-import type { CodexThreadBootstrapStrategy } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
-import { createCodexDynamicToolTextResult } from "../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
 import {
   BROWSER_BRIDGE_BASE_URL_ENV,
@@ -27,6 +26,13 @@ import {
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
+import { createAgentToolsMcpHost, type AgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
+import type {
+  AgentToolMcpRunSessionActivator,
+  ScopedAgentToolMcpSessionAuthority,
+} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import { PublishedArtifactPublicationService } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
 import {
   BrowserBridgeLiveTestServer,
   buildOpenBrowserToolPrompt,
@@ -43,6 +49,18 @@ const describeCodexBackendIntegration =
 const FLOW_TEST_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_FLOW_TIMEOUT_MS || 120_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_EVENT_TIMEOUT_MS || 90_000);
 const BACKEND_EVENT_LOG_DIR = process.env.CODEX_BACKEND_EVENT_LOG_DIR?.trim() || null;
+const activeAgentToolsMcpHosts: AgentToolsMcpHost[] = [];
+const activeAgentToolsMcpAuthorities: ScopedAgentToolMcpSessionAuthority[] = [];
+const testLoggingConfig = {
+  pinoLogLevel: "silent" as const,
+  httpAccessLogMode: "off" as const,
+  includeNoisyHttpAccessRoutes: false,
+  scopedLogLevelOverrides: [],
+};
+const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+});
 
 const createWorkspace = async (label: string): Promise<string> =>
   fsPromises.mkdtemp(path.join(os.tmpdir(), `${label}-`));
@@ -155,11 +173,20 @@ const writeBackendEventLog = async (
 const fetchCodexModelIdentifier = async (
   clientManager: CodexAppServerClientManager,
   cwd: string,
+  requiredModelIdentifier?: string,
 ): Promise<string> => {
   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
   const availableModelIdentifiers = models
     .map((model) => model.model_identifier)
     .filter((identifier): identifier is string => identifier.length > 0);
+  if (requiredModelIdentifier) {
+    if (!availableModelIdentifiers.includes(requiredModelIdentifier)) {
+      throw new Error(
+        `Codex model catalog did not return required model ${requiredModelIdentifier}. Available models: ${availableModelIdentifiers.join(", ")}`,
+      );
+    }
+    return requiredModelIdentifier;
+  }
   const preferredOrder = [
     process.env.CODEX_BACKEND_MODEL?.trim(),
     "gpt-5.3-codex",
@@ -178,40 +205,84 @@ const fetchCodexModelIdentifier = async (
   return preferredIdentifier;
 };
 
-const createFactory = (input: {
+const createFactory = async (input: {
   clientManager: CodexAppServerClientManager;
   threadManager: CodexThreadManager;
   workspaceRoot: string;
   runId: string;
   instructions?: string;
   toolNames?: string[];
-  defaultBootstrapStrategy?: CodexThreadBootstrapStrategy;
 }) => {
-  const threadBootstrapper = new CodexThreadBootstrapper(
-    undefined,
-    {
-      resolveWorkingDirectory: async () => input.workspaceRoot,
-    } as any,
-    {
+  const inert = Object.freeze({}) as never;
+  let agentToolMcpRunSessions: AgentToolMcpRunSessionActivator = {
+    activateForRun: () => ({ kind: "not_exposed" as const }),
+  };
+  if (input.toolNames?.length) {
+    const host = createAgentToolsMcpHost({ loggingConfig: testLoggingConfig });
+    const authority = host.sessionAuthorities.begin({
+      scopeIdentity: `codex-live:${input.runId}`,
+    }).complete({
+      executionCapabilities: {
+        publishedArtifactPublisher: new PublishedArtifactPublicationService(),
+        applicationAgentTools: null,
+      },
+      assertExecutionCapabilitiesReady: () => undefined,
+    });
+    await host.listen();
+    activeAgentToolsMcpHosts.push(host);
+    activeAgentToolsMcpAuthorities.push(authority);
+    agentToolMcpRunSessions = authority.runSessions;
+  }
+
+  const builder = createAgentProviderFactoryBuilder({
+    workspaceManager: getWorkspaceManager(),
+    skillService: {
+      resolveConfiguredSkillBindingsForAgent: () => [],
+    } as never,
+    autoByteus: {
+      agentFactory: inert,
+      createLlm: inert,
+      processorRegistries: {
+        input: inert,
+        llmResponse: inert,
+        toolExecutionResult: inert,
+        toolInvocationPreprocessor: inert,
+        lifecycle: inert,
+      },
+      waitForIdle: inert,
+      compactionAgentRunnerFactory: inert,
+    },
+    codex: {
+      workspaceSkillMaterializer: {
+        materializeConfiguredWorkspaceSkills: async () => [],
+        cleanupMaterializedWorkspaceSkills: async () => undefined,
+      } as never,
+      workspaceResolver: {
+        resolveWorkingDirectory: async () => input.workspaceRoot,
+      } as never,
+      clientManager: input.clientManager,
+      threadManager: input.threadManager,
+      threadCleanup: new CodexThreadCleanup(undefined, input.clientManager),
+    },
+    claude: {
+      workspaceResolver: inert,
+      workspaceSkillMaterializer: inert,
+      sdkClient: inert,
+    },
+  });
+  return builder.createForExecution({
+    agentDefinitionService: {
       getAgentDefinitionById: async () => ({
+        name: "Live Codex integration agent",
         instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
         toolNames: input.toolNames ?? [],
       }),
-    } as any,
-    {
-      resolveConfiguredSkillBindingsForAgent: () => [],
-    } as any,
-    input.defaultBootstrapStrategy,
-  );
-
-  return new CodexAgentRunBackendFactory(
-    input.threadManager,
-    threadBootstrapper,
-    new CodexThreadCleanup(undefined, input.clientManager),
-    () => input.runId,
-  );
+    } as never,
+    agentToolMcpRunSessions,
+    applicationAgentTools: null,
+  }).codex;
 };
 
 describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live transport)", () => {
@@ -242,6 +313,12 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     if (browserBridgeServer) {
       await browserBridgeServer.stop();
       browserBridgeServer = null;
+    }
+    for (const authority of activeAgentToolsMcpAuthorities.splice(0)) {
+      authority.close();
+    }
+    for (const host of activeAgentToolsMcpHosts.splice(0)) {
+      await host.close();
     }
     if (typeof originalBrowserBridgeBaseUrl === "string") {
       process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
@@ -277,7 +354,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-events";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -291,8 +368,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
         workspaceId: "workspace-codex-live-events",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -301,19 +380,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await waitForStartupReady(thread!.startup.waitForReady);
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           "Without using tools, reason carefully about whether 29 multiplied by 31 is greater than 850, then answer with only YES or NO.",
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       await waitForEvent(
         events,
@@ -379,7 +457,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-approve";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -393,8 +471,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
         workspaceId: "workspace-codex-approve",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -408,19 +488,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await fsPromises.writeFile(sourcePath, `${expectedToken}\n`, "utf8");
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           `Your next action must be a single terminal tool invocation that requests approval.\nRun this exact command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not answer in natural language before requesting approval. Do not simulate execution. If approval is denied, briefly acknowledge the denial and stop.`,
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       const approvalRequested = await waitForEvent(
         events,
@@ -490,7 +569,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-fail";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -504,8 +583,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-fail",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -515,19 +596,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
 
     const missingPath = path.join(workspaceRoot, `missing-${randomUUID()}.txt`);
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           `Your next action must be a single terminal tool invocation.\nRun this exact command once:\ncat '${escapeForSingleQuotedShell(missingPath)}'\nDo not ask for approval. Do not answer in natural language before executing the command. Do not simulate failure. If the command fails, briefly report the failure and stop.`,
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       const started = await waitForEvent(
         events,
@@ -577,7 +657,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-deny";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -591,8 +671,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
         workspaceId: "workspace-codex-deny",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -605,19 +687,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await fsPromises.writeFile(sourcePath, `CODEX_BACKEND_DENY_${randomUUID()}\n`, "utf8");
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       const approvalRequested = await waitForEvent(
         events,
@@ -674,7 +755,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-auto-exec";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -688,8 +769,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-auto-exec",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -703,19 +786,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await fsPromises.writeFile(sourcePath, `${expectedToken}\n`, "utf8");
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not ask for approval.`,
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       await waitForEvent(
         events,
@@ -742,367 +824,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("converts a custom dynamic tool call into lifecycle events, tool_call segments, and tool output logs", async () => {
-    const workspaceRoot = await createWorkspace("codex-backend-dynamic-tool");
-    clientManager = new CodexAppServerClientManager({
-      createClient: (cwd) =>
-        new CodexAppServerClient({
-          command: "codex",
-          args: ["app-server"],
-          cwd,
-          requestTimeoutMs: 45_000,
-        }),
-    });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
-    );
-    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
-    const runId = "run-codex-backend-dynamic-tool";
-    const observedToolCalls: Array<Record<string, unknown>> = [];
-    const factory = createFactory({
-      clientManager,
-      threadManager,
-      workspaceRoot,
-      runId,
-      toolNames: ["echo_dynamic"],
-      defaultBootstrapStrategy: {
-        appliesTo: () => true,
-        prepare: ({ agentInstruction }) => ({
-          baseInstructions: agentInstruction ? `## Agent Instruction\n${agentInstruction}` : null,
-          developerInstructions:
-            "If the user instructs you to call echo_dynamic with explicit JSON arguments, you must call echo_dynamic exactly once with those exact arguments, do not call any other tool, and then reply with DONE only.",
-          dynamicToolRegistrations: [
-            {
-              spec: {
-                name: "echo_dynamic",
-                description: "Echo the provided value back to Codex.",
-                inputSchema: {
-                  type: "object",
-                  properties: {
-                    value: {
-                      type: "string",
-                    },
-                  },
-                  required: ["value"],
-                  additionalProperties: false,
-                },
-              },
-              handler: async (input) => {
-                observedToolCalls.push(input);
-                const echoedValue =
-                  typeof input.arguments.value === "string" ? input.arguments.value : "";
-                return createCodexDynamicToolTextResult(echoedValue || "NO_VALUE", true);
-              },
-            },
-          ],
-        }),
-      },
-    });
-
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
-        agentDefinitionId: "agent-def-codex-live",
-        llmModelIdentifier: modelIdentifier,
-        autoExecuteTools: true,
-        workspaceId: "workspace-codex-dynamic-tool",
-        llmConfig: { reasoning_effort: "high" },
-      }),
-    );
-    createdRunIds.add(backend.runId);
-
-    const thread = threadManager.getThread(backend.runId);
-    expect(thread).toBeTruthy();
-    await waitForStartupReady(thread!.startup.waitForReady);
-
-    const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
-    });
-
-    try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
-          'You must call the echo_dynamic tool exactly once in this turn. Do not call any other tool. Use exactly these arguments: {"value":"HELLO_DYNAMIC"}. After the tool call succeeds, reply with DONE only.',
-        ),
-      );
-      expect(sendResult.accepted).toBe(true);
-
-      await waitFor(() => observedToolCalls.length === 1);
-      expect(observedToolCalls[0]).toMatchObject({
-        toolName: "echo_dynamic",
-        arguments: {
-          value: "HELLO_DYNAMIC",
-        },
-      });
-
-      const segmentStart = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.SEGMENT_START &&
-          event.payload.segment_type === "tool_call" &&
-          event.payload.metadata &&
-          typeof event.payload.metadata === "object" &&
-          !Array.isArray(event.payload.metadata) &&
-          (event.payload.metadata as Record<string, unknown>).tool_name === "echo_dynamic",
-      );
-      const segmentId = segmentStart.payload.id;
-      expect(typeof segmentId).toBe("string");
-      expect(
-        (segmentStart.payload.metadata as Record<string, unknown>).arguments,
-      ).toMatchObject({
-        value: "HELLO_DYNAMIC",
-      });
-
-      const lifecycleStart = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
-          event.payload.tool_name === "echo_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      expect(lifecycleStart.payload.arguments).toMatchObject({
-        value: "HELLO_DYNAMIC",
-      });
-
-      const lifecycleSuccess = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-          event.payload.tool_name === "echo_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      expect(lifecycleSuccess.payload.result).toBe("HELLO_DYNAMIC");
-
-      await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.SEGMENT_END &&
-          event.payload.id === segmentId,
-      );
-
-      const toolLog = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_LOG &&
-          resolveInvocationId(event.payload) === segmentId,
-      );
-      expect(toolLog.payload.log_entry).toBe("HELLO_DYNAMIC");
-
-      await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.status === "idle",
-      );
-
-      const dynamicToolStartedEvents = events.filter(
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
-          event.payload.tool_name === "echo_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      const dynamicToolSucceededEvents = events.filter(
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-          event.payload.tool_name === "echo_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      const dynamicToolFailedEvents = events.filter(
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
-          event.payload.tool_name === "echo_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      expect(dynamicToolStartedEvents).toHaveLength(1);
-      expect(dynamicToolSucceededEvents).toHaveLength(1);
-      expect(dynamicToolFailedEvents).toHaveLength(0);
-    } finally {
-      unsubscribe();
-      await writeBackendEventLog("codex-backend-dynamic-tool", events);
-    }
-  }, FLOW_TEST_TIMEOUT_MS);
-
-  it("converts a false-returning custom dynamic tool call into lifecycle failure and error payload", async () => {
-    const workspaceRoot = await createWorkspace("codex-backend-dynamic-tool-failure");
-    clientManager = new CodexAppServerClientManager({
-      createClient: (cwd) =>
-        new CodexAppServerClient({
-          command: "codex",
-          args: ["app-server"],
-          cwd,
-          requestTimeoutMs: 45_000,
-        }),
-    });
-    threadManager = new CodexThreadManager(
-      clientManager,
-      undefined,
-      new CodexClientThreadRouter(),
-    );
-    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
-    const runId = "run-codex-backend-dynamic-tool-failure";
-    const observedToolCalls: Array<Record<string, unknown>> = [];
-    const expectedError = `DYNAMIC_FAILURE_${randomUUID()}`;
-    const factory = createFactory({
-      clientManager,
-      threadManager,
-      workspaceRoot,
-      runId,
-      toolNames: ["fail_dynamic"],
-      defaultBootstrapStrategy: {
-        appliesTo: () => true,
-        prepare: ({ agentInstruction }) => ({
-          baseInstructions: agentInstruction ? `## Agent Instruction\n${agentInstruction}` : null,
-          developerInstructions:
-            "If the user instructs you to call fail_dynamic with explicit JSON arguments, you must call fail_dynamic exactly once with those exact arguments, do not call any other tool, and then reply DONE only.",
-          dynamicToolRegistrations: [
-            {
-              spec: {
-                name: "fail_dynamic",
-                description: "Always returns a failed dynamic tool result with diagnostic text.",
-                inputSchema: {
-                  type: "object",
-                  properties: {
-                    value: {
-                      type: "string",
-                    },
-                  },
-                  required: ["value"],
-                  additionalProperties: false,
-                },
-              },
-              handler: async (input) => {
-                observedToolCalls.push(input);
-                return createCodexDynamicToolTextResult(expectedError, false);
-              },
-            },
-          ],
-        }),
-      },
-    });
-
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
-        agentDefinitionId: "agent-def-codex-live",
-        llmModelIdentifier: modelIdentifier,
-        autoExecuteTools: true,
-        workspaceId: "workspace-codex-dynamic-tool-failure",
-        llmConfig: { reasoning_effort: "high" },
-      }),
-    );
-    createdRunIds.add(backend.runId);
-
-    const thread = threadManager.getThread(backend.runId);
-    expect(thread).toBeTruthy();
-    await waitForStartupReady(thread!.startup.waitForReady);
-
-    const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
-    });
-
-    try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
-          'You must call the fail_dynamic tool exactly once in this turn. Do not call any other tool. Use exactly these arguments: {"value":"HELLO_FAILURE"}. After the tool call returns, reply with DONE only.',
-        ),
-      );
-      expect(sendResult.accepted).toBe(true);
-
-      await waitFor(() => observedToolCalls.length === 1);
-      expect(observedToolCalls[0]).toMatchObject({
-        toolName: "fail_dynamic",
-        arguments: {
-          value: "HELLO_FAILURE",
-        },
-      });
-
-      const segmentStart = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.SEGMENT_START &&
-          event.payload.segment_type === "tool_call" &&
-          event.payload.metadata &&
-          typeof event.payload.metadata === "object" &&
-          !Array.isArray(event.payload.metadata) &&
-          (event.payload.metadata as Record<string, unknown>).tool_name === "fail_dynamic",
-      );
-      const segmentId = segmentStart.payload.id;
-      expect(typeof segmentId).toBe("string");
-      expect(
-        (segmentStart.payload.metadata as Record<string, unknown>).arguments,
-      ).toMatchObject({
-        value: "HELLO_FAILURE",
-      });
-
-      const lifecycleStart = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
-          event.payload.tool_name === "fail_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      expect(lifecycleStart.payload.arguments).toMatchObject({
-        value: "HELLO_FAILURE",
-      });
-
-      const lifecycleFailure = await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
-          event.payload.tool_name === "fail_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      expect(lifecycleFailure.payload.error).toBe(expectedError);
-
-      await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.SEGMENT_END &&
-          event.payload.id === segmentId,
-      );
-
-      await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.status === "idle",
-      );
-
-      const dynamicToolStartedEvents = events.filter(
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
-          event.payload.tool_name === "fail_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      const dynamicToolSucceededEvents = events.filter(
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-          event.payload.tool_name === "fail_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      const dynamicToolFailedEvents = events.filter(
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
-          event.payload.tool_name === "fail_dynamic" &&
-          event.payload.invocation_id === segmentId,
-      );
-      expect(dynamicToolStartedEvents).toHaveLength(1);
-      expect(dynamicToolSucceededEvents).toHaveLength(0);
-      expect(dynamicToolFailedEvents).toHaveLength(1);
-    } finally {
-      unsubscribe();
-      await writeBackendEventLog("codex-backend-dynamic-tool-failure", events);
-    }
-  }, FLOW_TEST_TIMEOUT_MS);
-
   it("emits multiple reasoning segment ids when one turn reasons again between two tool calls", async () => {
     const workspaceRoot = await createWorkspace("codex-backend-multi-reasoning");
     clientManager = new CodexAppServerClientManager({
@@ -1125,7 +846,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       "gpt-5.4",
     );
     const runId = "run-codex-backend-multi-reasoning";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -1139,8 +860,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-multi-reasoning",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "xhigh" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -1154,19 +877,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const secondToken = `SECOND_${randomUUID().replace(/-/g, "_")}`;
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           `Think carefully before the first tool call. Then use the terminal tool exactly twice and do not combine the commands. Do not use edit_file. Do not ask for approval. Do not simulate execution. First, think carefully about step 1 and then run exactly this command once: printf '${firstToken}\\n' > '${escapeForSingleQuotedShell(firstPath)}'. After that command completes, think carefully again about step 2 as a separate decision and then run exactly this second command once: printf '${secondToken}\\n' > '${escapeForSingleQuotedShell(secondPath)}'. Do not decide both commands in a single planning step. Only after both commands finish, reply DONE.`,
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       await waitFor(
         () =>
@@ -1231,9 +953,13 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(
+      clientManager,
+      workspaceRoot,
+      "gpt-5.6-luna",
+    );
     const runId = "run-codex-backend-edit-file";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -1247,8 +973,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-edit-file",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -1260,19 +988,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const targetPath = path.join(workspaceRoot, fileName);
 
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
-          `Use the edit_file tool and do not use run_bash. Create a Python file named ${fileName} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`,
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
+          `Do not use run_bash or any shell command. Create a Python file named ${fileName} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`,
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       const editSegmentStart = await waitForEvent(
         events,
@@ -1294,13 +1021,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
-          resolveInvocationId(event.payload) === invocationId &&
-          event.payload.tool_name === "edit_file",
-      );
-      await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.TOOL_LOG &&
           resolveInvocationId(event.payload) === invocationId &&
           event.payload.tool_name === "edit_file",
       );
@@ -1354,7 +1074,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-browser-tool";
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -1371,8 +1091,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-browser-live",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -1383,22 +1105,21 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
     const browserTitle = `Browser ${randomUUID()}`;
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           buildOpenBrowserToolPrompt({
             url: browserUrl,
             title: browserTitle,
           }),
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       const browserSuccessEvent = await waitForEvent(
         events,
@@ -1460,7 +1181,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = `run-codex-backend-publish-artifacts-${randomUUID()}`;
-    const factory = createFactory({
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
@@ -1470,16 +1191,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call publish_artifacts with a JSON argument object, call publish_artifacts exactly once with those exact arguments and do not call any other tool.",
     });
 
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+    const infrastructure = createAgentRunManagerInfrastructureFixture({
+      agentToolMcpRunSessionDeactivator: deactivator,
+    });
     const runManager = new AgentRunManager({
-      autoByteusBackendFactory: {} as any,
+      autoByteusBackendFactory: unavailableBackendFactory,
       codexBackendFactory: factory,
-      claudeBackendFactory: {} as any,
-      runFileChangeService: {
-        attachToRun: () => () => undefined,
-      } as any,
-      publishedArtifactRelayService: {
-        attachToRun: () => () => undefined,
-      } as any,
+      claudeBackendFactory: unavailableBackendFactory,
+      activationRegistry: infrastructure.activationRegistry,
+      memoryRecorder: infrastructure.memoryRecorder,
+      providerInputNormalizer: infrastructure.providerInputNormalizer,
+      agentToolMcpRunSessionDeactivator: deactivator,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;
@@ -1623,11 +1346,12 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     await browserBridgeServer.start();
     Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
 
-    const factory = createFactory({
+    const runId = `run-codex-browser-surface-${randomUUID()}`;
+    const factory = await createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
-      runId: `run-codex-browser-surface-${randomUUID()}`,
+      runId,
       toolNames: [
         "open_tab",
         "navigate_to",
@@ -1650,8 +1374,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: "workspace-codex-browser-surface-live",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
+      runId,
     );
     createdRunIds.add(backend.runId);
 
@@ -1663,23 +1389,22 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
     const browserTitle = `Browser ${randomUUID()}`;
     const events: AgentRunEvent[] = [];
-    const unsubscribe = backend.subscribeToEvents((event) => {
-      if (event && typeof event === "object") {
-        events.push(event as AgentRunEvent);
-      }
+    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
+      events.push(...batch);
     });
 
     try {
-      const sendResult = await backend.postUserMessage(
-        new AgentInputUserMessage(
+      const sendResult = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(
           buildBrowserToolSurfacePrompt({
             openUrl,
             navigateUrl,
             title: browserTitle,
           }),
         ),
-      );
-      expect(sendResult.accepted).toBe(true);
+      });
+      expect(sendResult.forwarded).toBe(true);
 
       await waitForEvent(
         events,

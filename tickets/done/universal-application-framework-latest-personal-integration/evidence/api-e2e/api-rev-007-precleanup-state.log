@@ -1,0 +1,12 @@
+utc=2026-08-23T06:28:17Z
+owned_ports:
+43271 free
+43272 free
+8027 free
+3027 free
+owned_process_patterns:
+ordinary_app:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 80842 normy   26u  IPv4 0xc1d98e516b7f538c      0t0  TCP *:29695 (LISTEN)
+health=200
+{"status":"ok","message":"Server is running"}

@@ -1,11 +1,11 @@
-import { appConfigProvider } from "../../config/app-config-provider.js";
+import { isDeepStrictEqual } from "node:util";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
 import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentTeamTerminationError } from "../errors.js";
-import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
 import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
 import { TeamRun } from "../domain/team-run.js";
@@ -19,6 +19,20 @@ import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-de
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
+import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
+import {
+  runModelConfigEditability,
+  type RunModelConfigUpdateResult,
+} from "../../run-history/domain/run-model-config.js";
+import {
+  applyTeamRunModelConfigPatches,
+  resolveTeamRunModelConfigTargets,
+  type TeamRunModelConfigPatch,
+} from "./team-run-model-config-mutator.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
+import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
+import type { MemberTaskRootResolver } from "../task-delegation/member-task-root-resolver.js";
+import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -26,12 +40,14 @@ const required = (value: string, field: string): string => {
   return normalized;
 };
 
-type AgentTeamRunManagerOptions = Readonly<{
-  memoryDir?: string;
-  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
+export type AgentTeamRunManagerOptions = Readonly<{
+  memoryDir: string;
+  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore?: TeamRunExecutionTreeStore;
   taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
+  modelConfigValidator: RunModelConfigValidator;
 }>;
 
 /** Process-wide catalog and lifecycle owner for root executions only. */
@@ -43,22 +59,53 @@ export class AgentTeamRunManager {
   private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
+  private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
+  private readonly modelConfigValidator: RunModelConfigValidator;
   private readonly managedRoots = new Map<string, RootTeamRun>();
   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
 
-  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
-    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
+  static getInstance(): AgentTeamRunManager {
+    if (!AgentTeamRunManager.instance) {
+      throw new Error("The process AgentTeamRunManager is not initialized.");
+    }
+    return AgentTeamRunManager.instance;
   }
 
-  constructor(options: AgentTeamRunManagerOptions = {}) {
-    const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+  static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+    if (AgentTeamRunManager.instance) {
+      throw new Error("The process AgentTeamRunManager is already initialized.");
+    }
+    AgentTeamRunManager.instance = new AgentTeamRunManager(options);
+    return AgentTeamRunManager.instance;
+  }
+
+  static releaseProcessInstance(instance: AgentTeamRunManager): void {
+    if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
+  }
+
+  constructor(options: AgentTeamRunManagerOptions) {
+    if (!options?.mixedTeamRunBackendFactory) {
+      throw new Error("mixedTeamRunBackendFactory is required.");
+    }
+    if (!options.taskExecutionIdentity ||
+        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
+        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
+      throw new Error("taskExecutionIdentity is required.");
+    }
+    if (!options.modelConfigValidator ||
+        typeof options.modelConfigValidator.validate !== "function") {
+      throw new Error("modelConfigValidator is required.");
+    }
+    const memoryDir = required(options.memoryDir, "memoryDir");
     this.memoryLayout = new AgentMemoryLayout(memoryDir);
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
-    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
+    this.factory = options.mixedTeamRunBackendFactory;
+    this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
+    this.modelConfigValidator = options.modelConfigValidator;
   }
 
   async createTeamRun(input: {
@@ -159,6 +206,111 @@ export class AgentTeamRunManager {
     });
   }
 
+  async updateStoppedModelConfigs(input: {
+    teamRunId: string;
+    patches: readonly TeamRunModelConfigPatch[];
+  }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
+    const teamRunId = required(input.teamRunId, "teamRunId");
+    return this.withRootTransition(teamRunId, async () => {
+      const tree = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
+      if (!tree) return this.modelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false);
+      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(teamRunId)) {
+        return this.modelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false);
+      }
+      if (this.hasManagedTeamRun(teamRunId)) {
+        return this.modelConfigUpdateResult(
+          "RUN_ACTIVE",
+          "This team became active through another connected workflow. Stop it, reopen Settings, and try again.",
+          tree,
+          true,
+        );
+      }
+      if (tree.archivedAt) {
+        return this.modelConfigUpdateResult("RUN_ARCHIVED", "Archived Team runs cannot be edited.", tree, false, true);
+      }
+      let targets;
+      try {
+        targets = resolveTeamRunModelConfigTargets(tree, input.patches);
+      } catch (error) {
+        return this.modelConfigUpdateResult(
+          "VALIDATION_FAILED",
+          "Team model-setting targets are invalid.",
+          tree,
+          false,
+          false,
+          [{ path: "patches", message: error instanceof Error ? error.message : String(error) }],
+        );
+      }
+      const validations = await Promise.all(targets.map(async (target) => ({
+        target,
+        result: await this.modelConfigValidator.validate({
+          runtimeKind: target.launchConfiguration.runtimeKind,
+          llmModelIdentifier: target.launchConfiguration.llmModelIdentifier,
+          llmConfig: target.patch.llmConfig,
+        }),
+      })));
+      const unavailable = validations.find(({ result }) =>
+        result.kind === "model_unavailable" || result.kind === "schema_unavailable");
+      if (unavailable) {
+        const outcome = unavailable.result.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE";
+        return this.modelConfigUpdateResult(
+          outcome,
+          `Current model options for '${unavailable.target.patch.scopeAddress}' are unavailable; saved settings were not changed.`,
+          tree,
+          false,
+        );
+      }
+      const invalid = validations.filter((entry) => entry.result.kind === "invalid");
+      if (invalid.length) {
+        return this.modelConfigUpdateResult(
+          "VALIDATION_FAILED",
+          "One or more Team model settings are invalid.",
+          tree,
+          false,
+          false,
+          invalid.flatMap(({ target, result }) => result.kind === "invalid"
+            ? result.errors.map((error) => ({
+                path: `patches[${target.patch.scopeAddress}].${error.path}`,
+                message: error.message,
+              }))
+            : []),
+        );
+      }
+      const normalizedTargets = targets.map((target, index) => ({
+        ...target,
+        patch: {
+          ...target.patch,
+          llmConfig: validations[index]!.result.kind === "valid"
+            ? validations[index]!.result.config
+            : target.patch.llmConfig,
+        },
+      }));
+      const nextTree = applyTeamRunModelConfigPatches(tree, normalizedTargets);
+      if (isDeepStrictEqual(nextTree, tree)) {
+        return this.modelConfigUpdateResult("UNCHANGED", "Team model settings are already up to date.", tree, false);
+      }
+      const write = await this.executionTreeStore.write(this.teamMemoryDir(teamRunId), nextTree);
+      const canonical = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
+      if (write.outcome === "renamed_finalization_indeterminate") {
+        return this.modelConfigUpdateResult(
+          "PERSISTENCE_INDETERMINATE",
+          "Update outcome is being verified. Refresh the Team configuration before saving again.",
+          canonical ?? tree,
+          false,
+        );
+      }
+      if (write.outcome !== "committed" || !canonical || !isDeepStrictEqual(canonical, nextTree)) {
+        return this.modelConfigUpdateResult("PERSISTENCE_FAILED", "Team model settings were not saved.", canonical ?? tree, false);
+      }
+      return this.modelConfigUpdateResult(
+        "UPDATED",
+        "Team model settings updated. They will be used when this team resumes.",
+        canonical,
+        false,
+      );
+    });
+  }
+
   getLifecycleSnapshot(rootTeamRunId: string): TeamRunLifecycleSnapshot {
     const teamRunId = required(rootTeamRunId, "rootTeamRunId");
     return { teamRunId, isActive: this.hasManagedTeamRun(teamRunId) };
@@ -192,6 +344,23 @@ export class AgentTeamRunManager {
     }
   }
 
+  async stopAllTeamRuns(): Promise<void> {
+    const errors: unknown[] = [];
+    for (const teamRunId of this.listManagedTeamRunIds()) {
+      try {
+        const stopped = await this.terminateTeamRun(teamRunId);
+        if (!stopped && this.hasManagedTeamRun(teamRunId)) {
+          errors.push(new Error(`Team run '${teamRunId}' did not accept termination.`));
+        }
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    if (errors.length > 0) {
+      throw new AggregateError(errors, "Failed to stop all team runs.");
+    }
+  }
+
   private async materializeRoot(input: {
     config: TeamRunConfig;
     tree: import("../domain/team-run-execution-tree.js").TeamRunExecutionTreeSnapshot;
@@ -202,7 +371,25 @@ export class AgentTeamRunManager {
   }): Promise<RootTeamRun> {
     const publisher = new TeamRunEventPublisher<TeamRunEvent>();
     let root: RootTeamRun | null = null;
+    const taskRootResolver: MemberTaskRootResolver = Object.freeze({
+      resolveActiveRoot: async () => {
+        if (!root) {
+          throw new TaskDelegationError(
+            "TEAM_ROOT_NOT_BOUND",
+            "RootTeamRun construction is incomplete.",
+          );
+        }
+        if (!root.isActive()) {
+          throw new TaskDelegationError(
+            "TEAM_RUN_NOT_ACTIVE",
+            `RootTeamRun '${root.teamRunId}' is not active.`,
+          );
+        }
+        return root;
+      },
+    });
     const callbacks = {
+      taskRootResolver,
       publish: (event: TeamRunEvent) => publisher.publish(event),
       deliverInterAgentMessage: (intent: import("../domain/inter-agent-message-delivery.js").InterAgentMessageDeliveryIntent) => {
         if (!root) return Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." });
@@ -233,11 +420,35 @@ export class AgentTeamRunManager {
       messages: input.messages,
       persistence,
       publisher,
+      taskExecutionIdentity: this.taskExecutionIdentity,
       onTerminated: () => {
         if (root) this.unregister(input.tree.rootTeam.teamRunId, root);
       },
     });
     return root;
+  }
+
+  private modelConfigUpdateResult(
+    outcome: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["outcome"],
+    message: string,
+    tree: TeamRunExecutionTreeSnapshot | null,
+    isActive: boolean,
+    archived = false,
+    fieldErrors: RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>["fieldErrors"] = [],
+  ): RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null> {
+    return Object.freeze({
+      success: outcome === "UPDATED" || outcome === "UNCHANGED",
+      outcome,
+      message,
+      isActive,
+      editability: runModelConfigEditability({
+        isActive,
+        archived,
+        available: outcome !== "NOT_FOUND",
+      }),
+      canonical: tree,
+      fieldErrors: Object.freeze([...fieldErrors]),
+    });
   }
 
   private register(root: RootTeamRun): void {

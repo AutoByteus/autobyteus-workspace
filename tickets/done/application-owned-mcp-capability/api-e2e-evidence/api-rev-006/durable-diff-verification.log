@@ -1,0 +1,10 @@
+Current durable diff stat:
+ .../agent-package-private-skills.e2e.test.ts       |  21 +-
+ ...x-agent-run-backend-factory.integration.test.ts | 245 +++++++++++++--------
+ ...brief-studio-agent-tool-mcp.integration.test.ts |   2 +-
+ 3 files changed, 157 insertions(+), 111 deletions(-)
+
+API-REV-005 durable diff sha256:
+b6b0f95c538bec361a0fe512c477d4d94fb6a89ee84d8d4c80e950e7b0807438  tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/durable-test-change.diff
+API-REV-006 durable diff sha256:
+b6b0f95c538bec361a0fe512c477d4d94fb6a89ee84d8d4c80e950e7b0807438  tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-006/durable-test-change.diff

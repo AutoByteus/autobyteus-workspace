@@ -7,12 +7,14 @@
         </span>
         <select
           :value="normalizedStoredRuntimeKind"
-          :disabled="disabled"
+          :disabled="disabled || preserveInvalidSavedOverride"
           class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
-          @change="updateDefaults({ runtimeKind: ($event.target as HTMLSelectElement).value, llmModelIdentifier: '' })"
+          @change="updateDefaults({ runtimeKind: ($event.target as HTMLSelectElement).value, llmModelIdentifier: '' }, true)"
         >
           <option value="">
-            {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime') }}
+            {{ hasMixedInheritedRuntimes
+              ? $t('applications.components.applications.ApplicationLaunchSetupPanel.mixedInheritedRuntime')
+              : $t('applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime') }}
           </option>
           <option
             v-for="option in runtimeOptions"
@@ -35,10 +37,12 @@
         <SearchableGroupedSelect
           :model-value="draft.defaults.llmModelIdentifier"
           :options="groupedModelOptions"
-          :disabled="disabled || !availableProviderGroups.length"
-          :placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
+          :disabled="disabled || preserveInvalidSavedOverride || !canSelectTeamModel || !availableProviderGroups.length"
+          :placeholder="hasMixedInheritedRuntimes && !draft.defaults.runtimeKind
+            ? $t('applications.components.applications.ApplicationLaunchSetupPanel.mixedInheritedRuntime')
+            : $t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
           search-placeholder="Search models..."
-          @update:model-value="updateDefaults({ llmModelIdentifier: $event })"
+          @update:model-value="updateDefaults({ llmModelIdentifier: $event }, true)"
         />
         <p class="mt-1 text-xs text-slate-500">
           {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') }}
@@ -52,7 +56,7 @@
       </label>
       <ApplicationWorkspaceRootSelector
         :model-value="draft.defaults.workspaceRootPath"
-        :disabled="disabled"
+        :disabled="disabled || preserveInvalidSavedOverride"
         @update:model-value="updateDefaults({ workspaceRootPath: $event })"
       />
       <p class="mt-1 text-xs text-slate-500">
@@ -60,8 +64,21 @@
       </p>
     </div>
 
-    <div v-if="teamDefinitionError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-      {{ teamDefinitionError }}
+    <div
+      v-if="preserveInvalidSavedOverride"
+      data-testid="application-stale-team-override-lock"
+      class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+    >
+      <p>{{ $t('applications.components.applications.ApplicationTeamLaunchProfileEditor.staleOverrideLocked') }}</p>
+      <button
+        type="button"
+        data-testid="application-replace-stale-team-topology"
+        class="mt-3 inline-flex items-center rounded-md border border-amber-300 bg-white px-3 py-2 text-xs font-semibold text-amber-900 transition-colors hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+        :disabled="disabled || !resolvedMembers.length"
+        @click="replaceWithCurrentTopology"
+      >
+        {{ $t('applications.components.applications.ApplicationTeamLaunchProfileEditor.replaceStaleTopology') }}
+      </button>
     </div>
 
     <div v-else-if="!resolvedMembers.length" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
@@ -86,9 +103,11 @@
         :member="member"
         :global-runtime-kind="draft.defaults.runtimeKind"
         :global-llm-model-identifier="draft.defaults.llmModelIdentifier"
+        :inherited-runtime-kind="inheritedProfileForMember(member)?.runtimeKind ?? inheritedTeamRuntimeKind"
+        :inherited-llm-model-identifier="inheritedProfileForMember(member)?.llmModelIdentifier ?? ''"
         :allow-runtime-override="supportsMemberRuntimeOverride"
         :allow-model-override="supportsMemberModelOverride"
-        :disabled="disabled"
+        :disabled="disabled || preserveInvalidSavedOverride"
         @update:member="updateMember"
       />
     </div>
@@ -103,11 +122,11 @@ import ApplicationWorkspaceRootSelector from '~/components/applications/setup/Ap
 import { useLocalization } from '~/composables/useLocalization'
 import {
   loadRuntimeProviderGroupsForSelection,
-  normalizeScopedRuntimeKind,
   useRuntimeScopedModelSelection,
 } from '~/composables/useRuntimeScopedModelSelection'
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
-import type { ApplicationExecutionResourceSummary } from '@autobyteus/application-sdk-contracts'
+import type {
+  ApplicationResolvedLaunchBaselineLeaf,
+} from '@autobyteus/application-sdk-contracts'
 import type {
   ApplicationSlotEditorReadiness,
   ApplicationTeamLaunchProfileDraft,
@@ -117,14 +136,16 @@ import {
   evaluateTeamLaunchProfileReadiness,
   type TeamLaunchProfileRuntimeModelCatalogs,
 } from '~/utils/teamLaunchReadinessCore'
-import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 
 const props = withDefaults(defineProps<{
   slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
-  selectedResource: ApplicationExecutionResourceSummary | null
   draft: ApplicationTeamLaunchProfileDraft
+  inheritedProfiles?: ApplicationResolvedLaunchBaselineLeaf[]
+  preserveInvalidSavedOverride?: boolean
   disabled?: boolean
 }>(), {
+  inheritedProfiles: () => [],
+  preserveInvalidSavedOverride: false,
   disabled: false,
 })
 
@@ -134,17 +155,35 @@ const emit = defineEmits<{
 }>()
 
 const { t: $t } = useLocalization()
-const teamDefinitionStore = useAgentTeamDefinitionStore()
-const teamDefinitionError = ref<string | null>(null)
-const resolvedMembers = ref<Array<{ displayName: string; address: string; agentDefinitionId: string }>>([])
 const runtimeModelCatalogs = ref<TeamLaunchProfileRuntimeModelCatalogs>({})
 
 const supportsRuntimeKind = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.runtimeKind === true)
 const supportsModelIdentifier = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.llmModelIdentifier === true)
+const supportsLlmConfig = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.llmConfig === true)
 const supportsWorkspaceRootPath = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.workspaceRootPath === true)
 const supportsMemberRuntimeOverride = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.runtimeKind === true)
 const supportsMemberModelOverride = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.llmModelIdentifier === true)
+const supportsMemberLlmConfig = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.llmConfig === true)
 const requiresModelCatalogs = computed(() => supportsModelIdentifier.value || supportsMemberModelOverride.value)
+const resolvedMembers = computed(() => props.inheritedProfiles.map((profile) => ({
+  displayName: profile.displayName,
+  address: profile.memberAddress ?? '/',
+  agentDefinitionId: profile.agentDefinitionId,
+})))
+const inheritedRuntimeKinds = computed(() => new Set(
+  props.inheritedProfiles.map((profile) => profile.runtimeKind?.trim() ?? ''),
+))
+const inheritedTeamRuntimeKind = computed(() => {
+  return inheritedRuntimeKinds.value.size === 1
+    ? [...inheritedRuntimeKinds.value][0] ?? ''
+    : ''
+})
+const hasMixedInheritedRuntimes = computed(() => (
+  inheritedRuntimeKinds.value.size > 1
+))
+const canSelectTeamModel = computed(() => Boolean(
+  props.draft.defaults.runtimeKind.trim() || inheritedTeamRuntimeKind.value,
+))
 
 const {
   availableProviderGroups,
@@ -153,8 +192,19 @@ const {
   runtimeOptions,
 } = useRuntimeScopedModelSelection({
   runtimeKind: computed(() => props.draft.defaults.runtimeKind),
+  inheritedRuntimeKind: inheritedTeamRuntimeKind,
   allowBlankRuntime: true,
+  useDefaultRuntimeFallback: false,
 })
+
+const inheritedProfileForMember = (
+  member: ApplicationTeamMemberProfileDraft,
+): ApplicationResolvedLaunchBaselineLeaf | null => (
+  props.inheritedProfiles.find((profile) => (
+    profile.memberAddress === member.memberAddress
+    && profile.agentDefinitionId === member.agentDefinitionId
+  )) ?? null
+)
 
 const repairMemberProfiles = (
   currentMembers: Array<{ displayName: string; address: string; agentDefinitionId: string }>,
@@ -170,38 +220,21 @@ const repairMemberProfiles = (
     agentDefinitionId: currentMember.agentDefinitionId,
     runtimeKind: exactMatch?.runtimeKind ?? '',
     llmModelIdentifier: exactMatch?.llmModelIdentifier ?? '',
+    ...(exactMatch && Object.prototype.hasOwnProperty.call(exactMatch, 'llmConfig')
+      ? { llmConfig: exactMatch.llmConfig ? structuredClone(exactMatch.llmConfig) : null }
+      : {}),
   }
 })
 
-const resolveCurrentMembers = async () => {
-  teamDefinitionError.value = null
-  const definitionId = props.selectedResource?.definitionId?.trim() || ''
-  if (!definitionId) {
-    resolvedMembers.value = []
-    return
-  }
-
-  try {
-    await teamDefinitionStore.fetchAllAgentTeamDefinitions()
-    const teamDefinition = teamDefinitionStore.getAgentTeamDefinitionById(definitionId)
-    if (!teamDefinition) {
-      throw new Error(`Team definition '${definitionId}' was not found.`)
-    }
-    resolvedMembers.value = resolveLeafTeamMembers(teamDefinition, {
-      getTeamDefinitionById: (id) => teamDefinitionStore.getAgentTeamDefinitionById(id),
-    })
-  } catch (error) {
-    resolvedMembers.value = []
-    teamDefinitionError.value = error instanceof Error ? error.message : String(error)
-  }
-}
-
 const catalogRuntimeKinds = computed(() => Array.from(new Set([
-  normalizeScopedRuntimeKind(props.draft.defaults.runtimeKind, false),
-  ...props.draft.memberProfiles.map((memberProfile) => normalizeScopedRuntimeKind(
-    memberProfile.runtimeKind || props.draft.defaults.runtimeKind,
-    false,
-  )),
+  ...props.draft.memberProfiles
+    .map((memberProfile) => (
+      memberProfile.runtimeKind
+        || props.draft.defaults.runtimeKind
+        || inheritedProfileForMember(memberProfile)?.runtimeKind
+        || ''
+    ).trim())
+    .filter(Boolean),
 ])))
 
 const memberProfilesAlignedToCurrentMembers = computed(() => (
@@ -217,12 +250,17 @@ watch(
   () => [
     supportsRuntimeKind.value,
     supportsModelIdentifier.value,
+    supportsLlmConfig.value,
     supportsWorkspaceRootPath.value,
     supportsMemberRuntimeOverride.value,
     supportsMemberModelOverride.value,
+    supportsMemberLlmConfig.value,
     props.draft,
   ] as const,
   () => {
+    if (props.preserveInvalidSavedOverride) {
+      return
+    }
     const sanitizedDraft: ApplicationTeamLaunchProfileDraft = {
       ...props.draft,
       defaults: {
@@ -236,6 +274,14 @@ watch(
         llmModelIdentifier: supportsMemberModelOverride.value ? memberProfile.llmModelIdentifier : '',
       })),
     }
+    if (!supportsLlmConfig.value) {
+      delete sanitizedDraft.defaults.llmConfig
+    }
+    if (!supportsMemberLlmConfig.value) {
+      sanitizedDraft.memberProfiles.forEach((memberProfile) => {
+        delete memberProfile.llmConfig
+      })
+    }
     if (JSON.stringify(sanitizedDraft) !== JSON.stringify(props.draft)) {
       emit('update:draft', sanitizedDraft)
     }
@@ -244,17 +290,9 @@ watch(
 )
 
 watch(
-  () => props.selectedResource?.definitionId,
-  () => {
-    void resolveCurrentMembers()
-  },
-  { immediate: true },
-)
-
-watch(
   () => [resolvedMembers.value, props.draft.memberProfiles] as const,
   ([currentMembers]) => {
-    if (!currentMembers.length) {
+    if (props.preserveInvalidSavedOverride || !currentMembers.length) {
       return
     }
     const repairedProfiles = repairMemberProfiles(currentMembers, props.draft.memberProfiles)
@@ -298,14 +336,15 @@ watch(
     resolvedMembers.value,
     memberProfilesAlignedToCurrentMembers.value,
     runtimeModelCatalogs.value,
-    teamDefinitionError.value,
     requiresModelCatalogs.value,
+    props.preserveInvalidSavedOverride,
+    props.inheritedProfiles,
   ] as const,
   () => {
-    if (teamDefinitionError.value) {
+    if (props.preserveInvalidSavedOverride) {
       emit('readiness-change', {
         isReady: false,
-        blockingReason: teamDefinitionError.value,
+        blockingReason: $t('applications.components.applications.ApplicationTeamLaunchProfileEditor.staleOverrideLocked'),
         hasEffectiveResource: true,
       })
       return
@@ -323,7 +362,12 @@ watch(
     const readiness = evaluateTeamLaunchProfileReadiness({
       defaultRuntimeKind: props.draft.defaults.runtimeKind,
       defaultLlmModelIdentifier: props.draft.defaults.llmModelIdentifier,
-      memberProfiles: props.draft.memberProfiles,
+      memberProfiles: props.draft.memberProfiles.map((memberProfile) => ({
+        ...memberProfile,
+        inheritedRuntimeKind: inheritedProfileForMember(memberProfile)?.runtimeKind,
+        inheritedLlmModelIdentifier:
+          inheritedProfileForMember(memberProfile)?.llmModelIdentifier,
+      })),
       runtimeModelCatalogs: runtimeModelCatalogs.value,
       requireModel: requiresModelCatalogs.value,
     })
@@ -337,13 +381,20 @@ watch(
   { deep: true, immediate: true },
 )
 
-const updateDefaults = (patch: Partial<ApplicationTeamLaunchProfileDraft['defaults']>) => {
+const updateDefaults = (
+  patch: Partial<ApplicationTeamLaunchProfileDraft['defaults']>,
+  invalidatesLlmConfig = false,
+) => {
+  const defaults = {
+    ...props.draft.defaults,
+    ...patch,
+  }
+  if (invalidatesLlmConfig) {
+    delete defaults.llmConfig
+  }
   emit('update:draft', {
     ...props.draft,
-    defaults: {
-      ...props.draft.defaults,
-      ...patch,
-    },
+    defaults,
   })
 }
 
@@ -353,6 +404,16 @@ const updateMember = (member: ApplicationTeamMemberProfileDraft) => {
     memberProfiles: props.draft.memberProfiles.map((memberProfile) => (
       memberProfile.memberAddress === member.memberAddress ? member : memberProfile
     )),
+  })
+}
+
+const replaceWithCurrentTopology = () => {
+  if (!resolvedMembers.value.length) {
+    return
+  }
+  emit('update:draft', {
+    ...props.draft,
+    memberProfiles: repairMemberProfiles(resolvedMembers.value, props.draft.memberProfiles),
   })
 }
 </script>

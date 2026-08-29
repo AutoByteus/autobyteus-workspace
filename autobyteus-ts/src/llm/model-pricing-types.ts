@@ -1,4 +1,4 @@
-import type { TokenPricingSchedule } from './utils/token-pricing-schedule.js';
+import type { TokenPricingScheduleHistory } from './utils/token-pricing-schedule.js';
 
 export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
 
@@ -37,7 +37,7 @@ export type ModelPricingInfo = {
   cached_input_write_5m_price_per_million: number | null;
   cached_input_write_1h_price_per_million: number | null;
   input_price_tiers: ModelPricingTierInfo[];
-  pricing_schedule: TokenPricingSchedule | null;
+  pricing_schedule_history: TokenPricingScheduleHistory | null;
   trusted_dimensions: {
     input: boolean;
     output: boolean;

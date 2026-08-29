@@ -1,0 +1,50 @@
+# DR-004 final audit
+timestamp_utc=2026-08-26T14:34:16Z
+branch=personal
+head_before_records_commit=4efc0ffd6b254ff1d508cf09c5e447524998d1b1
+origin_personal=4efc0ffd6b254ff1d508cf09c5e447524998d1b1
+--- ticket/main ancestry ---
+ticket_final_commit_is_ancestor=yes
+--- unmerged paths ---
+unmerged_paths=none
+--- delivery artifact existence ---
+artifact_existence=Pass
+--- build artifact hash verification ---
+autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg: OK
+autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip: OK
+build_artifact_hashes=Pass
+--- isolation scenarios ---
+isolation_scenarios=Pass (5/5)
+isolation_failures=none
+--- worktree/branch cleanup ---
+ticket_worktree_removed=yes
+local_ticket_branch_removed=yes
+remote_ticket_branch=dd7eba5ce8bb9dbe3be3a70ba07f496ff800ef20
+--- generated untracked SDK outputs ---
+generated_sdk_dist_cleanup=Pass
+--- artifact hygiene ---
+Repository artifact hygiene check passed.
+Tracked files scanned: 25587
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+--- secret-marker scan on new textual delivery artifacts ---
+secret_marker_scan=Pass
+--- diff check ---
+diff_check=Pass
+--- ordinary listener ---
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 53536 normy   26u  IPv4 0x54e6a393de65d0b0      0t0  TCP *:29695 (LISTEN)
+ordinary_listener_preserved=Pass
+--- status ---
+ M tickets/done/explicit-agent-provider-composition-and-scope-assembly/delivery-revision-record.md
+ M tickets/done/explicit-agent-provider-composition-and-scope-assembly/handoff-summary.md
+ M tickets/done/explicit-agent-provider-composition-and-scope-assembly/release-deployment-report.md
+?? .article-work/
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-004-final-audit.log
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-004-main-personal-electron-isolation.log
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-004-main-personal-electron-isolation/
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-004-main-personal-electron-macos-arm64-build.log
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-004-main-personal-electron-macos-arm64-verification.log
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/dr-004-repository-finalization-and-main-build.log
+?? tickets/done/explicit-agent-provider-composition-and-scope-assembly/main-personal-electron-build-report.md
+result=Pass

@@ -1,0 +1,63 @@
+HEAD=63000f7bc1d07f3b9b3164594c60fadb8ed6a8b8
+UTC=2026-08-22T11:14:40Z
+
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/
+
+ .../mcp/agent-tools-mcp-routes.integration.test.ts |   4 +-
+ .../team-lifecycle-websocket.integration.test.ts   | 517 ---------------------
+ ...tion-agent-communication-ws.integration.test.ts |  70 +--
+ ...on-backend-custom-websocket.integration.test.ts |   6 +-
+ ...ckend-mount-route-transport.integration.test.ts |  10 +-
+ ...application-backend-rest-ws.integration.test.ts |   6 +-
+ ...cation-context-capabilities.integration.test.ts |  60 +--
+ .../brief-package-team-prompt.integration.test.ts  |  76 +--
+ ...ief-studio-imported-package.integration.test.ts |  10 +-
+ .../application-agent-runtime-source.test.ts       |  58 ++-
+ .../app-owned-launch-request-correlation.test.ts   | 350 +++++++-------
+ ...lished-artifact-semantic-path-resolvers.test.ts |  20 +-
+ .../socratic-lesson-target-projection.test.ts      |  19 +-
+ .../file-application-bundle-provider.test.ts       |  20 +-
+ ...tion-agent-target-authorization-service.test.ts |  13 +-
+ ...lication-orchestration-recovery-service.test.ts |  64 ++-
+ .../application-run-binding-launch-service.test.ts |  19 +-
+ 17 files changed, 408 insertions(+), 914 deletions(-)
+
+
+changed test paths:
+M	autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+D	autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+M	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+M	autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+M	autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+M	autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+M	autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "summaries": [
+    {
+      "id": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f:/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+      "runId": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f",
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+      "type": "file",
+      "status": "available",
+      "description": null,
+      "revisionId": "034f9046-aa1a-453f-b208-fd68c13c9bf8",
+      "createdAt": "2026-08-28T11:54:25.734Z",
+      "updatedAt": "2026-08-28T11:54:25.734Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revisionId": "034f9046-aa1a-453f-b208-fd68c13c9bf8",
+      "artifactId": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f:/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+      "runId": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f",
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+      "type": "file",
+      "description": null,
+      "createdAt": "2026-08-28T11:54:25.734Z",
+      "snapshotRelativePath": "published_artifacts/revisions/034f9046-aa1a-453f-b208-fd68c13c9bf8/research.md",
+      "sourceFileName": "research.md"
+    }
+  ]
+}

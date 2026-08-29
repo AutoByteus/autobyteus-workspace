@@ -2,6 +2,7 @@ import type {
   ApplicationAgentEvent,
   ApplicationAgentTargetAddress,
 } from "@autobyteus/application-sdk-contracts";
+import { isApplicationAgentMemberAddress } from "@autobyteus/application-sdk-contracts";
 
 type RecordValue = Record<string, unknown>;
 type ValueValidator = (value: unknown) => boolean;
@@ -21,22 +22,16 @@ const exact = (value: unknown, shape: Record<string, ValueValidator>): boolean =
 };
 
 export const isApplicationAgentTargetAddress = (value: unknown): value is ApplicationAgentTargetAddress => {
-  if (!isRecord(value) || !exact(value, { bindingId: isString, target: isRecord })) return false;
-  const bindingId = value.bindingId;
-  const target = value.target;
-  if (typeof bindingId !== "string" || !bindingId.trim() || !isRecord(target) || typeof target.kind !== "string") return false;
-  if (target.kind === "AGENT_RUN") return exact(target, { kind: isOneOf("AGENT_RUN") });
-  if (target.kind === "AGENT_TEAM_RUN") return exact(target, { kind: isOneOf("AGENT_TEAM_RUN") });
-  return target.kind === "AGENT_TEAM_MEMBER" && exact(target, {
-    kind: isOneOf("AGENT_TEAM_MEMBER"),
-    agentRunId: isNonEmptyString,
+  return exact(value, {
+    bindingId: isNonEmptyString,
+    memberAddress: (memberAddress) =>
+      memberAddress === null || isApplicationAgentMemberAddress(memberAddress),
   });
 };
 
 const isProducer: ValueValidator = (value) => exact(value, {
   agentRunId: isNonEmptyString,
   displayName: isNullableString,
-  runtimeKind: isOneOf("AGENT", "AGENT_TEAM_MEMBER"),
 });
 
 const isStreamEvent: ValueValidator = (value) => {
@@ -72,6 +67,5 @@ export const isApplicationAgentEvent = (value: unknown): value is ApplicationAge
     event: isStreamEvent,
   })) return false;
   const address = value.address as ApplicationAgentTargetAddress;
-  const expectedRuntimeSubject = address.target.kind === "AGENT_RUN" ? "AGENT_RUN" : "TEAM_RUN";
-  return value.runtimeSubject === expectedRuntimeSubject;
+  return address.memberAddress === null || value.runtimeSubject === "TEAM_RUN";
 };

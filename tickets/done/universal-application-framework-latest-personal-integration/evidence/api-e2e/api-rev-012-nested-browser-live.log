@@ -1,0 +1,18 @@
+{
+  "slug": "nested-codex",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "rootTeamRunId": null,
+  "termination": null,
+  "fatalError": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-run-runtime-kind')\u001b[22m\n\nlocator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#team-run-runtime-kind')\u001b[22m\n\n    at /private/tmp/api-rev-012-nested-browser.mjs:171:48"
+}
+{
+  "slug": "nested-codex",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "passed": false,
+  "rootTeamRunId": "nested_classroom_test_team_75591cc06d0545f3be9ab4cff2de9a0c",
+  "termination": null,
+  "fatalError": "Error: GRAPHQL_FAILED:200:[{\"message\":\"Cannot query field \\\"receiverTargetKind\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":21}]},{\"message\":\"Cannot query field \\\"content\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":40}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":5,\"column\":7}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"recipientAddress\\\"?\",\"locations\":[{\"line\":6,\"column\":7}]},{\"message\":\"Cannot query field \\\"taskRun\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"taskId\\\"?\",\"locations\":[{\"line\":8,\"column\":7}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":14,\"column\":9}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":15,\"column\":9}]}]\nError: GRAPHQL_FAILED:200:[{\"message\":\"Cannot query field \\\"receiverTargetKind\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":21}]},{\"message\":\"Cannot query field \\\"content\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":4,\"column\":40}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationRecordObject\\\".\",\"locations\":[{\"line\":5,\"column\":7}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"recipientAddress\\\"?\",\"locations\":[{\"line\":6,\"column\":7}]},{\"message\":\"Cannot query field \\\"taskRun\\\" on type \\\"TaskDelegationRecordObject\\\". Did you mean \\\"taskId\\\"?\",\"locations\":[{\"line\":8,\"column\":7}]},{\"message\":\"Cannot query field \\\"senderAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":14,\"column\":9}]},{\"message\":\"Cannot query field \\\"receiverAddress\\\" on type \\\"TaskDelegationUpdateObject\\\".\",\"locations\":[{\"line\":15,\"column\":9}]}]\n    at gql (file:///private/tmp/api-rev-012-nested-browser.mjs:76:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///private/tmp/api-rev-012-nested-browser.mjs:249:22"
+}

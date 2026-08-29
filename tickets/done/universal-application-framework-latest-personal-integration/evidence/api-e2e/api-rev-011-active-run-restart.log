@@ -1,0 +1,123 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /private/tmp/api-rev011-studio-20260825
+AppConfig instance created.
+Config file path: /private/tmp/api-rev011-studio-20260825/.env
+Loading environment from: /private/tmp/api-rev011-studio-20260825/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../private/tmp/api-rev011-studio-20260825/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8051
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8051
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev011-studio-20260825
+DB DIRECTORY: /private/tmp/api-rev011-studio-20260825/db
+LOGS DIRECTORY: /private/tmp/api-rev011-studio-20260825/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev011-studio-20260825/download
+MEMORY DIRECTORY: /private/tmp/api-rev011-studio-20260825/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev011-studio-20260825/db/production.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:93687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T18:21:54.095Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev011-studio-20260825/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev011-studio-20260825/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev011-studio-20260825/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-08-25T18:21:54.238Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Agent definition cache populated with 49 items.
+[2026-08-25T18:21:54.258Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+{"level":30,"time":1787682114896,"pid":93687,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:8051"}
+[2026-08-25T18:21:54.896Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8051
+[2026-08-25T18:21:54.897Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8051
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.

@@ -2,10 +2,11 @@ import "reflect-metadata";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 function slugify(value: string, fallback: string): string {
   const normalized = value
@@ -53,9 +54,11 @@ function buildTeamMd(input: {
 describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let closeStudioServices: (() => void) | null = null;
   const cleanupPaths = new Set<string>();
 
   beforeAll(async () => {
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -63,6 +66,8 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
+
+  afterAll(() => closeStudioServices?.());
 
   afterEach(async () => {
     for (const filePath of cleanupPaths) {

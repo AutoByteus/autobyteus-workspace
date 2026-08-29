@@ -1,0 +1,86 @@
+# DR-003 delivery audit
+
+Recorded UTC: 2026-07-30T19:11:29Z
+
+## Integrated state
+HEAD: 669273f900950113ff0a8e60f9eca8142a3224bc
+origin/personal: dfc0468b137cd231b79ff8096fa46750611b06e2
+divergence: 71 0
+base commits missing: 0
+PASS: latest tracked base is integrated
+
+## Integration and delivery diff checks
+PASS: post-checkpoint base merge diff check
+PASS: DR-003 canonical artifact and evidence diff check
+
+## Current role/path existence
+PASS autobyteus-server-ts/src/compositions/build-studio-server.ts
+PASS autobyteus-server-ts/src/compositions/build-standalone-application-server.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+PASS autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts
+PASS autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts
+PASS autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-coordinator.ts
+PASS autobyteus-server-ts/src/services/published-artifacts/published-artifact-publisher.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/bind-once-published-artifact-publisher.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/bind-once-application-engine-event-handler.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+PASS autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+PASS autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts
+
+## Retired role/path absence
+PASS absent autobyteus-server-ts/src/compositions/build-studio-server-composition.ts
+PASS absent autobyteus-server-ts/src/compositions/build-standalone-application-server-composition.ts
+PASS absent autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-graph.ts
+PASS absent autobyteus-server-ts/src/application-platform/runtime/create-application-platform-runtime-graph.ts
+PASS absent autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-process-authority.ts
+PASS absent autobyteus-server-ts/src/agent-tools/mcp/application-agent-tools-session-authority.ts
+PASS absent autobyteus-server-ts/src/agent-execution/runtime/general-process-run-authority.ts
+PASS absent autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-authority.ts
+PASS absent autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-port.ts
+
+## Long-lived documentation vocabulary audit
+autobyteus-application-devkit/README.md
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+autobyteus-server-ts/docs/modules/application_engine.md
+autobyteus-server-ts/docs/modules/application_sessions.md
+autobyteus-server-ts/docs/modules/applications.md
+autobyteus-web/docs/applications.md
+docs/custom-application-development.md
+PASS: affected long-lived docs contain current vocabulary and no retired central identifier
+
+## Integrated executable evidence
+64:Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+440: Test Files  11 passed (11)
+441:      Tests  34 passed (34)
+446:FINAL: PASS
+PASS: integrated build and exact boundary selection recorded
+
+## Canonical delivery state
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+PASS non-empty tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md
+tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+PASS: DR-003 candidate and verification hold recorded
+
+## Preservation state
+## codex/universal-application-framework-proposal-analysis...origin/personal [ahead 71]
+ M tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md
+?? autobyteus-application-devkit/dist/
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-003-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-003-delivery-audit.log
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-003-post-integration-check.log
+PASS: only DR-003 delivery artifacts/evidence plus the documented pre-existing devkit dist remain uncommitted/untracked
+
+FINAL: PASS

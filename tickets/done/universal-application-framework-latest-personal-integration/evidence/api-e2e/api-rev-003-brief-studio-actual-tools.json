@@ -1,0 +1,93 @@
+{
+  "scenarioId": "APIE2E-BRIEF-STUDIO-003",
+  "assertions": {
+    "researcherPublication": true,
+    "recipientAddressHandoff": true,
+    "writerPublication": true
+  },
+  "executions": [
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_656f615ad8c74e86b030940734fbe3b4/brief_studio_researcher_cabdba6ae6c9477a8abe896fa90a8a6f/raw_traces_active.jsonl",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md",
+            "description": "Research checkpoint for API REV 003 studio 1787396324892"
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_cabdba6ae6c9477a8abe896fa90a8a6f:/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_cabdba6ae6c9477a8abe896fa90a8a6f",
+            "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Research checkpoint for API REV 003 studio 1787396324892",
+            "revisionId": "7d4ab649-6ff2-466d-a183-b292ced3af9d",
+            "createdAt": "2026-08-22T11:00:08.365Z",
+            "updatedAt": "2026-08-22T11:00:08.365Z"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_656f615ad8c74e86b030940734fbe3b4/brief_studio_researcher_cabdba6ae6c9477a8abe896fa90a8a6f/raw_traces_active.jsonl",
+      "toolName": "send_message_to",
+      "arguments": {
+        "recipient_address": "/writer",
+        "message_type": "handoff",
+        "content": "Research is ready at /private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md. Key findings: the request lacks API domain/spec/source materials, so frame API REV 003 as a revision-planning brief with explicit assumptions; cover contract changes, compatibility, consumer impact, validation, rollout/rollback, and review ownership. Main risks are unknown baseline, meaning of \u201c003,\u201d success metrics, and security/privacy/performance constraints.",
+        "reference_files": [
+          "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/research.md"
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /writer.",
+        "result": null
+      },
+      "error": null
+    },
+    {
+      "traceFile": "memory/agent_teams/brief_studio_team_656f615ad8c74e86b030940734fbe3b4/brief_studio_writer_6b21fd76c42546c08f5c57fa039a5133/raw_traces_active.jsonl",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/final-brief.md",
+            "description": "Concise API REV 003 revision-planning brief"
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_6b21fd76c42546c08f5c57fa039a5133:/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_6b21fd76c42546c08f5c57fa039a5133",
+            "path": "/private/tmp/api-rev003-studio.6FKLyw/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise API REV 003 revision-planning brief",
+            "revisionId": "913bbf53-7857-4406-9025-d90bd6148956",
+            "createdAt": "2026-08-22T11:00:45.077Z",
+            "updatedAt": "2026-08-22T11:00:45.077Z"
+          }
+        ]
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+CRR-002 affected source re-review
+UTC: 2026-08-26T15:47:51Z
+HEAD: 159dd376906374d2caa50251f98d4456f2584328
+Expected HEAD: 159dd376906374d2caa50251f98d4456f2584328
+
+== Exact fix diff ==
+ .../application-agent-stream-subscription.ts       |  2 +-
+ ...application-agent-addressing-boundaries.test.ts |  2 ++
+ .../application-agent-stream-subscription.test.ts  | 28 +++++++++++++++++++---
+ .../implementation-handoff.md                      | 19 +++++++++------
+ .../implementation-revision-record.md              | 22 +++++++++++++++++
+ 5 files changed, 62 insertions(+), 11 deletions(-)
+PASS: exact fix diff is whitespace-clean
+
+== CR-001 authority path ==
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:60:        this.input.address,
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:69:      const releaseSource = this.input.runtimeSource.attach(lease.descriptor.runtime, (event) => this.onSourceEvent(event));
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:147:        address: structuredClone(this.descriptor.address),
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:148:        runtimeSubject: this.descriptor.runtime.subject,
+autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts:73:    expect(sendInputMethod).toContain("postAuthorizedRunInputInternal(descriptor.runtime, input.input)");
+autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts:81:    expect(subscription).toContain("descriptor.runtime,");
+autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts:82:    expect(subscription).toContain("address: structuredClone(this.descriptor.address)");
+autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts:83:    expect(subscription).not.toContain("address: structuredClone(this.input.address)");
+PASS: event envelopes use descriptor.address; scope streaming receives descriptor.runtime; the raw address is used only to request authorization.
+
+== Exact fix file set ==
+M	autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts
+M	autobyteus-server-ts/tests/architecture/application-agent-addressing-boundaries.test.ts
+M	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-stream-subscription.test.ts
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/implementation-handoff.md
+M	tickets/in-progress/logical-application-agent-addressing-and-role-simplification/implementation-revision-record.md
+
+== Build-output baseline before reviewer commands ==
+ABSENT autobyteus-application-sdk-contracts/dist
+ABSENT autobyteus-application-backend-sdk/dist
+PRESENT autobyteus-server-ts/dist
+
+== Worktree status before reviewer commands ==
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/code-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/

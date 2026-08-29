@@ -1,0 +1,88 @@
+{
+  "scenarioId": "APIE2E-STANDALONE-BUSINESS-015",
+  "assertions": {
+    "actualPublishArtifactsSucceeded": true,
+    "actualRecipientNameHandoffSucceeded": true,
+    "writerPublishedArtifact": true
+  },
+  "toolExecutions": [
+    {
+      "memberRunId": "brief_studio_researcher_ebc699e81c424412b556a9e341fc185c",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the standalone API revision brief."
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_ebc699e81c424412b556a9e341fc185c:/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_ebc699e81c424412b556a9e341fc185c",
+            "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the standalone API revision brief.",
+            "revisionId": "43d0d083-a0d9-4619-9352-f911f24d0c57",
+            "createdAt": "2026-08-13T11:20:20.292Z",
+            "updatedAt": "2026-08-13T11:20:20.292Z"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "memberRunId": "brief_studio_researcher_ebc699e81c424412b556a9e341fc185c",
+      "toolName": "send_message_to",
+      "arguments": {
+        "recipient_name": "writer",
+        "message_type": "handoff",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: the title is the only substantive input; treat the brief as a self-contained API revision checkpoint anchored to an unspecified current baseline; preserve identifier 1786619985168 exactly; avoid inventing technical details; surface assumptions and validation needs. Open questions include baseline meaning, revision delta, affected consumers, compatibility expectations, owner, and approval criteria. Please review this file before drafting and publish the writer checkpoint when complete.",
+        "reference_files": [
+          "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": "Delivered message to writer.",
+      "error": null
+    },
+    {
+      "memberRunId": "brief_studio_writer_8c11c09a18824623b3ee7566c26ae062",
+      "toolName": "publish_artifacts",
+      "arguments": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "description": "Writer checkpoint for API REV 015 standalone current-base 1786619985168"
+          }
+        ]
+      },
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "resultEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_8c11c09a18824623b3ee7566c26ae062:/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_8c11c09a18824623b3ee7566c26ae062",
+            "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Writer checkpoint for API REV 015 standalone current-base 1786619985168",
+            "revisionId": "1bf85b77-8dc1-483a-9c48-6a466a54c7ce",
+            "createdAt": "2026-08-13T11:20:58.010Z",
+            "updatedAt": "2026-08-13T11:20:58.010Z"
+          }
+        ]
+      },
+      "error": null
+    }
+  ]
+}

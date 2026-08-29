@@ -1,0 +1,59 @@
+{
+  "scenario": "APIE2E-DUALHOST-003-STANDALONE",
+  "startedAt": "2026-08-26T13:40:35.052Z",
+  "url": "http://127.0.0.1:43651",
+  "assertions": [
+    {
+      "id": "STANDALONE-SOCRATIC-REAL-CODEX",
+      "pass": true,
+      "details": {
+        "tail": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nSolve 13x - 8 = 57. State the exact value of x.\nActive\nLesson lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\nUpdated 26.8.2026, 15:41:00\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nSolve 13x - 8 = 57. State the exact value of x.\n\nlessonId lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\n\nActive\nCreated 26.8.2026, 15:40:36\nUpdated 26.8.2026, 15:41:00\nLESSON RECORD\nlesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\nStatus active\nCONVERSATION\n2 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor response saved\n\nThe authoritative tutor response is shown in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n26.8.2026, 15:40:36\n\nSolve 13x - 8 = 57. State the exact value of x.\n\ntutor\nLesson_response\n26.8.2026, 15:41:00\n\nAdd 8 to both sides:\n\n13x = 65\n\nNow divide by 13:\n\n**x = 5**\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nlesson.response_received\n26.8.2026, 15:41:00\n{\n  \"lessonId\": \"lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\",\n  \"bindingId\": \"cde0efce-4aae-4088-be3f-f956949a9b64\",\n  \"revisionId\": \"031d9f6e-bdd9-49e7-bd89-06ae62ec58d6\",\n  \"runId\": \"socratic_math_tutor_f1cada753c7d473f9c4f6625f236dbac\"\n}\nlesson.started\n26.8.2026, 15:40:36\n{\n  \"lessonId\": \"lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\",\n  \"bindingId\": \"cde0efce-4aae-4088-be3f-f956949a9b64\",\n  \"runId\": \"socratic_math_team_fceddbbd2e614525b646b522503d0392\",\n  \"createdAt\": \"2026-08-26T13:40:36.277Z\"\n}"
+      }
+    },
+    {
+      "id": "STANDALONE-DURABLE-TRANSCRIPT",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "STANDALONE-BROWSER-SURFACE",
+      "pass": true,
+      "details": {
+        "url": "http://127.0.0.1:43651/"
+      }
+    },
+    {
+      "id": "STANDALONE-REAL-WEBSOCKET",
+      "pass": false,
+      "details": {}
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "pageErrors": [],
+  "webSockets": [
+    {
+      "url": "ws://127.0.0.1:43651/_autobyteus/backend/notifications",
+      "sent": 0,
+      "received": 3
+    },
+    {
+      "url": "ws://127.0.0.1:43651/_autobyteus/agent/cde0efce-4aae-4088-be3f-f956949a9b64/targets/agent-team-member/socratic_math_tutor_f1cada753c7d473f9c4f6625f236dbac",
+      "sent": 1,
+      "received": 29
+    }
+  ],
+  "failures": [
+    {
+      "message": "Error: STANDALONE-REAL-WEBSOCKET: {}",
+      "stack": "Error: STANDALONE-REAL-WEBSOCKET: {}\n    at a (file:///private/tmp/api-rev-003-socratic-live.mjs:2:440)\n    at file:///private/tmp/api-rev-003-socratic-live.mjs:2:1770"
+    }
+  ],
+  "body": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nSolve 13x - 8 = 57. State the exact value of x.\nActive\nLesson lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\nUpdated 26.8.2026, 15:41:00\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nSolve 13x - 8 = 57. State the exact value of x.\n\nlessonId lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\n\nActive\nCreated 26.8.2026, 15:40:36\nUpdated 26.8.2026, 15:41:00\nLESSON RECORD\nlesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\nStatus active\nCONVERSATION\n2 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor response saved\n\nThe authoritative tutor response is shown in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n26.8.2026, 15:40:36\n\nSolve 13x - 8 = 57. State the exact value of x.\n\ntutor\nLesson_response\n26.8.2026, 15:41:00\n\nAdd 8 to both sides:\n\n13x = 65\n\nNow divide by 13:\n\n**x = 5**\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nlesson.response_received\n26.8.2026, 15:41:00\n{\n  \"lessonId\": \"lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\",\n  \"bindingId\": \"cde0efce-4aae-4088-be3f-f956949a9b64\",\n  \"revisionId\": \"031d9f6e-bdd9-49e7-bd89-06ae62ec58d6\",\n  \"runId\": \"socratic_math_tutor_f1cada753c7d473f9c4f6625f236dbac\"\n}\nlesson.started\n26.8.2026, 15:40:36\n{\n  \"lessonId\": \"lesson-0ea7ea41-0ee6-4aee-b12f-c33fe3e49ef1\",\n  \"bindingId\": \"cde0efce-4aae-4088-be3f-f956949a9b64\",\n  \"runId\": \"socratic_math_team_fceddbbd2e614525b646b522503d0392\",\n  \"createdAt\": \"2026-08-26T13:40:36.277Z\"\n}",
+  "result": "FAIL",
+  "completedAt": "2026-08-26T13:41:04.459Z"
+}

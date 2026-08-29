@@ -3,9 +3,6 @@
   "skillNames": [],
   "defaultLaunchConfig": {
     "runtimeKind": "codex_app_server",
-    "llmModelIdentifier": "gpt-5.6-sol",
-    "llmConfig": {
-      "reasoning_effort": "high"
-    }
+    "llmModelIdentifier": "gpt-5.6-luna"
   }
 }

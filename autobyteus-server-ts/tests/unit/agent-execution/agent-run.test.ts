@@ -36,6 +36,8 @@ const createHarness = (options: {
   snapshot?: AgentRuntimeLifecycleSnapshot;
   append?: "supported" | "unsupported";
   dispatchUserInput?: ReturnType<typeof vi.fn>;
+  providerInputNormalizer?: { normalizeForProvider(dispatch: AgentRunBackendInputDispatch): AgentRunBackendInputDispatch };
+  commandObserver?: { onUserMessageForwarded: ReturnType<typeof vi.fn> };
   interrupt?: ReturnType<typeof vi.fn>;
   terminate?: ReturnType<typeof vi.fn>;
 } = {}) => {
@@ -83,7 +85,15 @@ const createHarness = (options: {
     interrupt: options.interrupt ?? vi.fn().mockResolvedValue({ accepted: true }),
     terminate: options.terminate ?? vi.fn().mockResolvedValue({ accepted: true }),
   };
-  const run = new AgentRun({ context, backend: backend as never });
+  const providerInputNormalizer = options.providerInputNormalizer ?? {
+    normalizeForProvider: (dispatch: AgentRunBackendInputDispatch) => dispatch,
+  };
+  const run = new AgentRun({
+    providerInputNormalizer,
+    context,
+    backend: backend as never,
+    commandObservers: options.commandObserver ? [options.commandObserver] : [],
+  });
   return {
     backend,
     run,
@@ -93,6 +103,36 @@ const createHarness = (options: {
 };
 
 describe("AgentRun input admission", () => {
+  it("normalizes only the private provider dispatch while observers retain the admitted message", async () => {
+    const admittedMessage = new AgentInputUserMessage("logical input");
+    const normalizedMessage = new AgentInputUserMessage("provider input");
+    const normalizeForProvider = vi.fn((dispatch: AgentRunBackendInputDispatch) => ({
+      ...dispatch,
+      message: normalizedMessage,
+    }));
+    const onUserMessageForwarded = vi.fn();
+    const harness = createHarness({
+      providerInputNormalizer: { normalizeForProvider },
+      commandObserver: { onUserMessageForwarded },
+    });
+
+    await harness.run.postUserMessage(admittedMessage);
+
+    await vi.waitFor(() => expect(harness.backend.dispatchUserInput).toHaveBeenCalledOnce());
+    expect(normalizeForProvider).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: admittedMessage,
+    });
+    expect(harness.backend.dispatchUserInput).toHaveBeenCalledWith({
+      kind: "start_turn",
+      message: normalizedMessage,
+    });
+    await vi.waitFor(() => expect(onUserMessageForwarded).toHaveBeenCalledOnce());
+    expect(onUserMessageForwarded.mock.calls[0]?.[0]).toMatchObject({
+      message: admittedMessage,
+    });
+  });
+
   it("returns admission before an idle start dispatch settles and records forwarding once", async () => {
     const deferred = createDeferred<AgentRunBackendInputDispatchResult>();
     const harness = createHarness({

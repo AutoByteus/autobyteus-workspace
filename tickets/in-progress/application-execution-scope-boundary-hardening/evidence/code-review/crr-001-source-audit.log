@@ -1,0 +1,34 @@
+HEAD=54eaac53a604c42f55d7901170baf66bd1d51047
+PARENT=1cc544e854e8d6df9eeb7577dbc0a3384b88235d
+== git diff --check implementation ==
+== retired paths ==
+removed create-application-run-services.ts
+removed old shutdown coordinator path
+== forbidden application selectors ==
+none
+== ambient selectors below host roots ==
+none
+== live aggregate operations in governed application areas ==
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts:267:    const run = await this.agentRunService.resolveAgentRun(runId);
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts:269:    return mapInputDisposition(await run.postUserMessage(message));
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts:277:    const run = await this.teamRunService.resolveActiveTeamRun(teamRunId);
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts:279:    return mapInputDisposition(await run.postMessage(message, targetAgentRunId));
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts:298:    visit(run.getExecutionTreeSnapshot().rootTeam.members);
+== changed source sizes (physical/effective) ==
+     477   431 autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts
+     445   427 autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts
+     340   333 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+     293   278 autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+     272   264 autobyteus-server-ts/src/compositions/build-studio-server.ts
+     271   258 autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts
+     269   259 autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+     248   246 autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+     236   233 autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+     206   191 autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts
+     159   142 autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-relay-service.ts
+     128   121 autobyteus-server-ts/src/application-agent-streaming/services/application-agent-streaming-service.ts
+     123   109 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts
+      64    59 autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts
+      63    61 autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle-contracts.ts
+      41    36 autobyteus-server-ts/src/application-platform/execution/application-execution-shutdown-coordinator.ts
+      33    29 autobyteus-server-ts/src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts

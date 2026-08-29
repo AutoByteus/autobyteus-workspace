@@ -1,0 +1,10 @@
+UTC=2026-07-30T18:36:43Z
+## internal no bearer expected 401
+STATUS=401
+{"error":"unauthorized","message":"Unauthorized"}
+## internal invalid bearer expected 404 session_unavailable
+STATUS=404
+{"error":"session_unavailable","message":"Agent tool MCP session is unavailable."}
+## external gateway must be absent from standalone
+STATUS=404
+{"message":"Route POST:/mcp/gateway not found","error":"Not Found","statusCode":404}

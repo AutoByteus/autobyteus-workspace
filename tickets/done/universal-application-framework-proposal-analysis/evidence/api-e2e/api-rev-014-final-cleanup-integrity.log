@@ -1,0 +1,17 @@
+API-REV-014 final cleanup and integrity audit
+checked_at=2026-08-13T10:38:44Z
+HEAD=7e8e43340b5d83547e74395c9c03ba28ee8248a2
+unmerged_entries=0
+git_diff_check=pass
+exact_conflict_marker_count=0
+prelive_path_count=73
+postlive_path_count=73
+package_authoring_hashes=identical_73_of_73
+port_43128_listeners=0
+port_8012_listeners=0
+port_3012_listeners=0
+owned_node_processes=0
+package_scratch_entries=0
+owned_temp_entries=0
+controlled_browser_instances=closed
+other_roles_dirty_artifacts=preserved

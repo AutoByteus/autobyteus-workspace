@@ -1,0 +1,263 @@
+{
+  "scenario": "APIE2E-SHUTDOWN-001",
+  "after_same_data_restart": true,
+  "runs": [
+    {
+      "workspaceRootPath": "/private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__socratic-math-teacher__a7295fca7c5585d43cd6a4348e6afc2bd25ccd5df72d9122a7eafd5626c9aace/runtime",
+      "teamDefinitionName": "Socratic Math Team",
+      "teamRunId": "socratic_math_team_050dfe5c416f4769ac37ed2f30b45b5b",
+      "isActive": false,
+      "terminatedAt": null,
+      "coordinatorAddress": "/tutor",
+      "members": [
+        {
+          "memberAddress": "/tutor",
+          "agentRunId": "socratic_math_tutor_9a1b1aa513d64c44afa046a5569bc9e2",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    },
+    {
+      "workspaceRootPath": "/private/tmp/api-rev-001-scope-boundary/studio/applications/bundle-app__brief-studio__dcb6248eb098fab0aa5fd8485b8853d517b42df7e1c9f2141d4fc6111db011b1/runtime",
+      "teamDefinitionName": "Brief Studio Team",
+      "teamRunId": "brief_studio_team_cd4756fda586465bbd2e8cd0900f1ba0",
+      "isActive": false,
+      "terminatedAt": null,
+      "coordinatorAddress": "/researcher",
+      "members": [
+        {
+          "memberAddress": "/researcher",
+          "agentRunId": "brief_studio_researcher_a6b001d49b174a988d21913075c305e0",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/writer",
+          "agentRunId": "brief_studio_writer_67e6263018834469a564dfbf26ca1d6f",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    },
+    {
+      "workspaceRootPath": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace",
+      "teamDefinitionName": "Nested Classroom Test Team",
+      "teamRunId": "nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1",
+      "isActive": false,
+      "terminatedAt": null,
+      "coordinatorAddress": "/Teacher",
+      "members": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_8a6da062670f41319ae8e4e876316cf1",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_d88c03d06ee141efaf538ac24f951fe1",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_57b8540d60ff4d1fb1c2a9c5a6bb8f88",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    },
+    {
+      "workspaceRootPath": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace",
+      "teamDefinitionName": "Nested Classroom Test Team",
+      "teamRunId": "nested_classroom_test_team_965d4285a93443f0813191542c75185c",
+      "isActive": false,
+      "terminatedAt": null,
+      "coordinatorAddress": "/Teacher",
+      "members": [
+        {
+          "memberAddress": "/Teacher",
+          "agentRunId": "test_teacher_b3a991d91c2046ecb8a334204e6fdc39",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentRunId": "student_one_ba075c4ce06e45438b89986b6fec2805",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_f9d7936381624703a0468cee3cb3c1df",
+          "status": "offline",
+          "runtimeKind": "codex_app_server"
+        }
+      ]
+    }
+  ],
+  "all_runs_inactive": true,
+  "all_members_offline": true,
+  "nested_resume": {
+    "teamRunId": "nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1",
+    "isActive": false,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-25T23:01:13.052Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+          ]
+        },
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_two",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "nested-classroom-test",
+        "team_definition_name": "Nested Classroom Test Team",
+        "team_run_id": "nested_classroom_test_team_1b1718c995ed4bbb835a689c0e543fd1",
+        "coordinator_address": "/Teacher",
+        "default_launch_configuration": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.6-luna",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/Teacher",
+            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+            "role": null,
+            "description": null,
+            "agent_run_id": "test_teacher_8a6da062670f41319ae8e4e876316cf1",
+            "platform_agent_run_id": "01a03b28-2a90-7881-996a-19125c6b1242",
+            "launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_team",
+            "address": "/StudentStudyGroup",
+            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+            "role": null,
+            "description": null,
+            "team_run_id": "student_study_group_b2c13165be9d427480497704f408a63a",
+            "coordinator_address": "/StudentStudyGroup/student_one",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_one_d88c03d06ee141efaf538ac24f951fe1",
+                "platform_agent_run_id": "01a03b28-54b4-72a0-984e-91bcb8e3817e",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_two_57b8540d60ff4d1fb1c2a9c5a6bb8f88",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/private/tmp/api-rev-001-scope-boundary/studio/temp_workspace"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        ],
+        "task_executions": [
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_4c410f129a6c4baa8308373964d01cc9",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_07dee472d62c42ec9102443eaffcfa35",
+                "platform_agent_run_id": "01a03b28-7434-7e03-aafc-b16cdf870482"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_7b78939bc718429094c6db1f11a402cd",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T23:01:41.999Z",
+            "settled_at": "2026-08-25T23:02:02.432Z"
+          }
+        ]
+      }
+    }
+  }
+}

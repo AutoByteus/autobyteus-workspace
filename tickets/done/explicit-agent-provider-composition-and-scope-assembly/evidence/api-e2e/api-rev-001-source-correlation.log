@@ -1,0 +1,127 @@
+### Current reviewed state
+3806ca36e46495ba28d5957a330a502eb22bd973
+codex/explicit-agent-provider-composition-and-scope-assembly
+### Failing durable paths intersect ticket diff
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts: CHANGED
+autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts: CHANGED
+### Accepted lookup-only manager change
+diff --git a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+index ea107b1c3..582a932d7 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+@@ -5,7 +5,7 @@ import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-exec
+ import { TeamRunStatePackageLoader } from "../../run-history/services/team-run-state-package-loader.js";
+ import { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
+ import { AgentTeamTerminationError } from "../errors.js";
+-import { getMixedTeamRunBackendFactory, type MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
++import type { MixedTeamRunBackendFactory } from "../backends/mixed/mixed-team-run-backend-factory.js";
+ import type { MixedConfiguredMemberActivationMode } from "../backends/mixed/mixed-team-run-context.js";
+ import { RootTeamRun } from "../domain/root-team-run.js";
+ import { TeamRun } from "../domain/team-run.js";
+@@ -28,9 +28,9 @@ const required = (value: string, field: string): string => {
+   return normalized;
+ };
+ 
+-type AgentTeamRunManagerOptions = Readonly<{
++export type AgentTeamRunManagerOptions = Readonly<{
+   memoryDir?: string;
+-  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
++  mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
+   executionTreeStore?: TeamRunExecutionTreeStore;
+   taskRecordsStore?: TaskDelegationRecordsV1Store;
+   communicationStore?: TeamCommunicationV1Store;
+@@ -49,8 +49,11 @@ export class AgentTeamRunManager {
+   private readonly rootTransitionLanes = new Map<string, Promise<void>>();
+   private readonly lifecycleListeners = new Map<string, Set<TeamRunLifecycleListener>>();
+ 
+-  static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
+-    return AgentTeamRunManager.instance ??= new AgentTeamRunManager(options);
++  static getInstance(): AgentTeamRunManager {
++    if (!AgentTeamRunManager.instance) {
++      throw new Error("The process AgentTeamRunManager is not initialized.");
++    }
++    return AgentTeamRunManager.instance;
+   }
+ 
+   static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+@@ -65,11 +68,14 @@ export class AgentTeamRunManager {
+     if (AgentTeamRunManager.instance === instance) AgentTeamRunManager.instance = null;
+   }
+ 
+-  constructor(options: AgentTeamRunManagerOptions = {}) {
++  constructor(options: AgentTeamRunManagerOptions) {
++    if (!options?.mixedTeamRunBackendFactory) {
++      throw new Error("mixedTeamRunBackendFactory is required.");
++    }
+     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+     this.memoryLayout = new AgentMemoryLayout(memoryDir);
+     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
+-    this.factory = options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
++    this.factory = options.mixedTeamRunBackendFactory;
+     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
+     this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
+     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
+### Direct default chains reached by failures
+      throw new Error("AgentRunManager requires an Agent Tools MCP run-session releaser.");
+    }
+    this.autoByteusBackendFactory = options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
+    this.codexBackendFactory = options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+    this.claudeBackendFactory = options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
+    this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    this.agentToolMcpRunSessionReleaser =
+      options.agentToolMcpRunSessionReleaser;
+    this.activationRegistry = options.activationRegistry ?? new AgentRunActivationRegistry(
+      new AgentRunResourceManager({
+        runSessions: this.agentToolMcpRunSessionReleaser,
+        runFileChangeService: options.runFileChangeService ?? getRunFileChangeService(),
+        publishedArtifactRelayService: options.publishedArtifactRelayService
+          ?? createGeneralProcessPublishedArtifactRelayService(),
+        memoryRecorder: this.memoryRecorder,
+      }),
+    );
+    logger.info("AgentRunManager initialized.");
+  }
+    this.runContext = input.runContext;
+    this.providerSessionLifecycle = input.providerSessionLifecycle;
+    this.dependencies = input.dependencies;
+    this.listeners = input.listeners ?? new Set();
+    this.activeAbortController = input.activeAbortController ?? null;
+    this.runContext.runtimeContext.activeTurnId =
+      input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
+    this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
+    this.contextFileLocalPathResolver =
+      input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
+    this.agentToolsMcpSessionState = new ClaudeAgentToolsMcpSessionState(
+      input.dependencies.agentToolMcpSessionIssuer,
+    );
+  }
+
+  private readonly agentIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
+  private readonly taskTeams: TaskTeamRunIdentityFactory;
+  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+
+  constructor(private readonly options: TaskDelegationServiceOptions) {
+    this.currentTasks = validateTaskDelegationRecordsV1Payload(options.initialTasks, options.rootTeamRunId);
+    this.agentIds = options.agentRunIdentityAllocator ?? AgentRunIdentityAllocator.getInstance();
+    this.taskTeams = options.taskTeamRunIdentityFactory ?? new TaskTeamRunIdentityFactory(this.agentIds);
+    this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
+  }
+
+  getSnapshot(): TaskDelegationRecordsSnapshot { return this.currentTasks; }
+  hasOpenWork(): boolean { return this.currentTasks.records.some((record) => record.status !== "accepted" && record.status !== "interrupted"); }
+### Transition inventory explicitly governs the failing files
+89:| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts` | issuer propagation into every new/restored session |
+90:| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts` | required issuer in session state while non-MCP behavior remains unchanged |
+91:| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts` | lazy issue once, descriptor reuse on retry, and lifecycle-owned revocation |
+105:| `autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts` | pass a fresh recording releaser to every direct manager; preserve provider routing, create/restore, inactive eviction, accepted/unaccepted termination, and error behavior while asserting exact-run revocation where cleanup occurs |
+106:| `autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts` | pass the explicit no-op releaser; preserve real create/restore memory layout and avoid ambient MCP authority |
+107:| `autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts` | pass the explicit no-op releaser; preserve fresh-definition instruction and description-fallback behavior |
+202:autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.integration.test.ts
+203:autobyteus-server-ts/tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+204:autobyteus-server-ts/tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts

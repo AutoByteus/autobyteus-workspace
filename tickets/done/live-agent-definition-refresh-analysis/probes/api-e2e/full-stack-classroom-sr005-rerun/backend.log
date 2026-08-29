@@ -1,0 +1,255 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data
+AppConfig instance created.
+Config file path: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/.env
+Loading environment from: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../.autobyteus/development/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:38123
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:38123
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data
+DB DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/db
+LOGS DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/download
+MEMORY DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/db/development.db"
+
+SQLite database development.db created at file:/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/db/development.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:17269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-26T05:02:22.977Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-08-26T05:02:23.264Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T05:02:23.265Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1787720543317,"pid":17269,"hostname":"3e7bbbf5705a","msg":"Server listening at http://127.0.0.1:38123"}
+[2026-08-26T05:02:23.318Z] [INFO] [server.runtime] Server listening on 127.0.0.1:38123
+[2026-08-26T05:02:23.321Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:38123
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 9 items.
+[2026-08-26T05:02:53.558Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-26T05:02:53.587Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 18 items.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+Discovering LM Studio models from host: http://localhost:1234
+FileSystemWatcher initialized for '/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Started filesystem watcher for workspace /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace
+Acquired file watcher lease for /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 9fce19bf-653c-4f6a-9434-cf63971ffb1b for workspace temp_ws_default
+Created file explorer session 9fce19bf-653c-4f6a-9434-cf63971ffb1b for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 9fce19bf-653c-4f6a-9434-cf63971ffb1b for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+[CodexAppServerClient] stderr: 2026-08-26T05:02:59.025860Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda/professor_c3cd19abdff34c6da4d56ab16330de4d/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda/student_e1052e067b33487b9593e6d736b28ce5/raw_traces_active.jsonl
+Released file watcher lease for /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace
+FileExplorerSession closed: 9fce19bf-653c-4f6a-9434-cf63971ffb1b
+Closed file explorer session 9fce19bf-653c-4f6a-9434-cf63971ffb1b. Active sessions: 0
+File explorer WebSocket disconnected: 9fce19bf-653c-4f6a-9434-cf63971ffb1b
+[CodexAppServerClient] stderr: 2026-08-26T05:03:01.497977Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda/professor_c3cd19abdff34c6da4d56ab16330de4d/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda/student_e1052e067b33487b9593e6d736b28ce5/raw_traces_active.jsonl
+Agent team websocket attached for team run classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda
+Created agent session ac958203-d3fa-4d10-a9c5-671bbb49d820 for run classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda
+Agent Team WebSocket connected: session=ac958203-d3fa-4d10-a9c5-671bbb49d820, run=classroom_simulation_team_1c7a5d8577fb4d79903e1ada6b889fda
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: 2026-08-26T05:03:02.145390Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Published codex_app_server agent run 'professor_c3cd19abdff34c6da4d56ab16330de4d'.
+Closed agent session ac958203-d3fa-4d10-a9c5-671bbb49d820
+FileSystemWatcher initialized for '/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace
+Acquired file watcher lease for /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 8f5e7c89-2155-4ee4-879d-0d8b8ccdd9f8 for workspace temp_ws_default
+Created file explorer session 8f5e7c89-2155-4ee4-879d-0d8b8ccdd9f8 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 8f5e7c89-2155-4ee4-879d-0d8b8ccdd9f8 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+[CodexAppServerClient] stderr: 2026-08-26T05:03:39.592796Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3/professor_06bd625955ee406c876a03f07fcb8043/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3/student_e032871202c54a7a819c96ba53bcd49e/raw_traces_active.jsonl
+Released file watcher lease for /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace
+FileExplorerSession closed: 8f5e7c89-2155-4ee4-879d-0d8b8ccdd9f8
+Closed file explorer session 8f5e7c89-2155-4ee4-879d-0d8b8ccdd9f8. Active sessions: 0
+File explorer WebSocket disconnected: 8f5e7c89-2155-4ee4-879d-0d8b8ccdd9f8
+[CodexAppServerClient] stderr: 2026-08-26T05:03:41.646231Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3/professor_06bd625955ee406c876a03f07fcb8043/raw_traces_active.jsonl
+Memory file missing: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3/student_e032871202c54a7a819c96ba53bcd49e/raw_traces_active.jsonl
+Agent team websocket attached for team run classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3
+Created agent session e5b90fa6-b11f-46fb-b0ee-d0723eec3413 for run classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3
+Agent Team WebSocket connected: session=e5b90fa6-b11f-46fb-b0ee-d0723eec3413, run=classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: 2026-08-26T05:03:42.300144Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+Published codex_app_server agent run 'professor_06bd625955ee406c876a03f07fcb8043'.
+Closed agent session e5b90fa6-b11f-46fb-b0ee-d0723eec3413

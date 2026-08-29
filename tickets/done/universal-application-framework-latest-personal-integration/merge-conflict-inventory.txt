@@ -1,0 +1,63 @@
+TOTAL_CONFLICTS 177
+
+BY_STATUS
+DU 3
+UD 132
+UU 42
+
+BY_TOP_LEVEL
+applications 133
+autobyteus-application-backend-sdk 4
+autobyteus-application-devkit 3
+autobyteus-application-sdk-contracts 9
+autobyteus-server-ts 24
+autobyteus-web 4
+
+BY_SEMANTIC_CATEGORY
+application_canonical_source_or_config 3
+application_sdk_devkit_source 7
+generated_or_derived 137
+obsolete_custom_builder 2
+server_source 18
+tests 6
+web_source 4
+
+NON_GENERATED_CONFLICTS
+UU applications/brief-studio/backend-src/services/brief-artifact-paths.ts
+UD applications/brief-studio/backend/migrations/001_create_brief_tables.sql
+UD applications/brief-studio/backend/migrations/005_published_artifact_reconciliation.sql
+UU autobyteus-application-backend-sdk/src/launch-profile.ts
+UU autobyteus-application-devkit/src/package/backend-bundle-manifest-writer.ts
+UU autobyteus-application-devkit/src/validation/application-root-validator.ts
+UU autobyteus-application-devkit/src/validation/backend-manifest-validator.ts
+UU autobyteus-application-sdk-contracts/README.md
+UU autobyteus-application-sdk-contracts/src/execution-resources.ts
+UU autobyteus-application-sdk-contracts/src/index.ts
+UU autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+UU autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+DU autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-persistent-member-registry.ts
+DU autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-instance-registry.ts
+UU autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+UU autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+UU autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+UU autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+UU autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts
+UU autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts
+UU autobyteus-server-ts/src/application-bundles/utils/application-backend-manifest.ts
+UU autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts
+UU autobyteus-server-ts/src/application-engine/worker/application-backend-definition-loader.ts
+UU autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts
+UD autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+UU autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts
+UU autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+UU autobyteus-server-ts/src/server-runtime.ts
+DU autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+UU autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+UU autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+UD autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+UU autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+UU autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+UU autobyteus-web/components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+UU autobyteus-web/components/applications/setup/ApplicationTeamLaunchProfileEditor.vue
+UU autobyteus-web/components/applications/setup/ApplicationTeamMemberOverrideItem.vue
+UU autobyteus-web/components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts

@@ -1,0 +1,158 @@
+BROWSER_CONSOLE_ERROR Failed to load resource: the server responded with a status of 404 (Not Found)
+INPUTS [{"tag":"INPUT","type":"text","placeholder":"Solve 3x + 5 = 20","aria":null}]
+CLICKED_START
+POLL 0 conversation 1 ready false answer false
+POLL 1 conversation 1 ready false answer false
+POLL 2 conversation 1 ready false answer false
+POLL 3 conversation 1 ready false answer false
+POLL 4 conversation 2 ready false answer false
+POLL 5 conversation 2 ready false answer true
+POLL 6 conversation 2 ready false answer true
+POLL 7 conversation 2 ready false answer true
+POLL 8 conversation 2 ready false answer true
+POLL 9 conversation 2 ready false answer true
+POLL 10 conversation 2 ready false answer true
+POLL 11 conversation 2 ready false answer true
+POLL 12 conversation 2 ready false answer true
+POLL 13 conversation 2 ready false answer true
+POLL 14 conversation 2 ready false answer true
+POLL 15 conversation 2 ready false answer true
+POLL 16 conversation 2 ready false answer true
+POLL 17 conversation 2 ready false answer true
+POLL 18 conversation 2 ready false answer true
+POLL 19 conversation 2 ready false answer true
+POLL 20 conversation 2 ready false answer true
+POLL 21 conversation 2 ready false answer true
+POLL 22 conversation 2 ready false answer true
+POLL 23 conversation 2 ready false answer true
+POLL 24 conversation 2 ready false answer true
+POLL 25 conversation 2 ready false answer true
+POLL 26 conversation 2 ready false answer true
+POLL 27 conversation 2 ready false answer true
+POLL 28 conversation 2 ready false answer true
+POLL 29 conversation 2 ready false answer true
+POLL 30 conversation 2 ready false answer true
+POLL 31 conversation 2 ready false answer true
+POLL 32 conversation 2 ready false answer true
+POLL 33 conversation 2 ready false answer true
+POLL 34 conversation 2 ready false answer true
+POLL 35 conversation 2 ready false answer true
+POLL 36 conversation 2 ready false answer true
+POLL 37 conversation 2 ready false answer true
+POLL 38 conversation 2 ready false answer true
+POLL 39 conversation 2 ready false answer true
+POLL 40 conversation 2 ready false answer true
+POLL 41 conversation 2 ready false answer true
+POLL 42 conversation 2 ready false answer true
+POLL 43 conversation 2 ready false answer true
+POLL 44 conversation 2 ready false answer true
+POLL 45 conversation 2 ready false answer true
+POLL 46 conversation 2 ready false answer true
+POLL 47 conversation 2 ready false answer true
+FINAL_URL http://127.0.0.1:43551/
+PASSED false
+FINAL_BODY BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 7x - 5 = 44. Explain each algebra step and verify the answer.
+Active
+Lesson lesson-f67b9167-8e3a-4b7d-99c9-2593a47f9bec
+Updated 26.8.2026, 13:26:10
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 7x - 5 = 44. Explain each algebra step and verify the answer.
+
+lessonId lesson-f67b9167-8e3a-4b7d-99c9-2593a47f9bec
+
+Active
+Created 26.8.2026, 13:25:47
+Updated 26.8.2026, 13:26:10
+LESSON RECORD
+lesson-f67b9167-8e3a-4b7d-99c9-2593a47f9bec
+Status active
+CONVERSATION
+2 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor response saved
+
+The authoritative tutor response is shown in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 13:25:47
+
+Solve 7x - 5 = 44. Explain each algebra step and verify the answer.
+
+tutor
+Lesson_response
+26.8.2026, 13:26:10
+
+# Solving 7x - 5 = 44
+
+We want to isolate x.
+
+1. **Add 5 to both sides** to undo the subtraction of 5:
+   7x - 5 + 5 = 44 + 5
+   7x = 49
+
+2. **Divide both sides by 7** to undo multiplication by 7:
+   7x / 7 = 49 / 7
+   x = 7
+
+**Verification:** Substitute x = 7 into the original equation:
+   7(7) - 5 = 49 - 5 = 44
+
+This matches the right-hand side, so the answer is **x = 7**.
+
+Send follow-up
+
+Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 13:26:10
+{
+  "lessonId": "lesson-f67b9167-8e3a-4b7d-99c9-2593a47f9bec",
+  "bindingId": "ead445db-d3fe-446e-9ea5-1860fdcf6144",
+  "revisionId": "97717554-386a-4033-9dee-53160e780942",
+  "runId": "socratic_math_tutor_832c4eac1c3e47a5a7fd097d1e5d3bbe"
+}
+lesson.started
+26.8.2026, 13:25:47
+{
+  "lessonId": "lesson-f67b9167-8e3a-4b7d-99c9-2593a47f9bec",
+  "bindingId": "ead445db-d3fe-446e-9ea5-1860fdcf6144",
+  "runId": "socratic_math_team_0c72e73acba545508658361dc7d6d4e2",
+  "createdAt": "2026-08-26T11:25:47.543Z"
+}

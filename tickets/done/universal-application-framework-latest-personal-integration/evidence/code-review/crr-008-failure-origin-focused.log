@@ -1,0 +1,45 @@
+CRR-008 focused failure-origin evidence
+Reviewed repository HEAD: 63000f7bc1d07f3b9b3164594c60fadb8ed6a8b8
+Trigger: API-REV-003 / APIE2E-SOCRATIC-002 / APIE2E-F004
+Review entry point: API/E2E Failure-Origin Review
+
+INDEPENDENT PRODUCT REACHABILITY
+- requirements.md: BEH-002, BEH-003, BEH-006; REQ-003 through REQ-005 and REQ-007; AC-003, AC-005, AC-007, AC-008, AC-011.
+- applications/socratic-math-teacher/README.md:3 identifies the maintained application; lines 11-13 establish one long-lived binding, agentCommunication.connect to the bound tutor, and READY-before-input.
+- User trigger: in Studio, enter the maintained Socratic application, type a math problem, and select the visible Start lesson action.
+- Forward production path: socratic-runtime.js:256-281 -> lesson-runtime-service.ts:77-154 -> exact target projection -> socratic-tutor-session.js:188-289 -> application agent WebSocket session -> addressed input translation -> root team agentRunId lookup -> RUN_NOT_FOUND for the incorrectly forwarded /tutor address.
+- Reachability verdict: Reachable. The failing browser harness reproduces an independently supported product action; it does not establish the action by itself.
+
+SOURCE TRACE
+1. lesson-runtime-service.ts:111-117 starts the team without initialInput; 119-154 persists the attached binding, publishes lesson.started, and returns the lesson.
+2. application-run-binding-launch-service.ts:101-131 creates a root team and exact member identities but does not materialize the member AgentRun.
+3. application-agent-communication-session.ts:66-168 establishes the exact stream, forwards the exact address, and converts the later thrown dispatch error to generic INPUT_REJECTED.
+4. socratic-tutor-session.js:260-274 immediately sends one input after READY, as the maintained contract requires.
+5. application-orchestration-host-service.ts:437-468 validates the exact agentRunId, then replaces it with targetMember.memberAddress and calls run.postMessage(message, "/tutor"). Its application-runtime initial-input path at 410-435 also forwards targetMemberAddress directly to the same callee.
+6. root-team-run.ts:246-248 defines the second postMessage argument as agentRunId; executeAgentCommand at 337-348 looks it up as an agentRunId and returns RUN_NOT_FOUND before materialization for "/tutor".
+7. application-orchestration-host-service.test.ts:370-408 mocks postMessage and explicitly expects "/Researcher", protecting the wrong caller/callee contract.
+8. lesson-runtime-service.ts:178-216 sends follow-up through AGENT_TEAM_RUN, so root dispatch receives null, resolves the coordinator's actual agentRunId, and reaches the same /tutor member successfully.
+
+FOCUSED REVIEWER EXECUTION
+- Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-orchestration/application-orchestration-host-service.test.ts --no-watch
+- Result: Pass, 1 file / 6 tests.
+- Significance: the test passes while asserting postMessage(..., "/Researcher"), confirming that its mock protects the wrong caller argument and never exercises RootTeamRun's agentRunId lookup.
+- Raw log: evidence/code-review/crr-008-focused-host-service-test.log
+
+RUNTIME CORRELATION
+- api-rev-003-socratic-studio-business.json: first fresh lesson reports Application agent input was rejected, Tutor connection failed, one student message.
+- api-rev-003-socratic-studio-fresh-repro.json: second independent fresh lesson reports the same outcome.
+- api-rev-003-socratic-failure-correlation.json: both bindings are ATTACHED and contain the exact /tutor agentRunId; globalRunLookups is empty.
+- api-rev-003-studio-backend-restart.log: no Socratic AgentRun is published on the broken exact-member call; the later team-run/coordinator follow-up publishes socratic_math_tutor_07cba4f593bd4260a67209f122bdbedc.
+- api-rev-003-socratic-studio-retry.json: reopening the exact member stream and sending a supported follow-up through the team-run input route succeeds, streams a real response, and persists a three-message transcript. This is disambiguation, not Pass evidence for the failed first turn.
+
+CLASSIFICATION
+- Origin: implementation/source identity handoff mismatch at both ApplicationOrchestrationHostService team-input call sites -> RootTeamRun.postMessage.
+- Finding: CR-007, Major.
+- Classification: Local Fix to /implementation_engineer.
+- Not attributed to IR-005 specifically: IR-005 enabled the journey to reach this later boundary and F003 remains resolved.
+- Deterministic internal result: RootTeamRun interprets "/tutor" as an agentRunId and returns RUN_NOT_FOUND; communication exposes only generic INPUT_REJECTED on the wire.
+- Prohibited false fixes: frontend delay/retry, coordinator/global fallback, identity weakening, duplicate manager/global singleton path, or treating the later team-run follow-up as success for exact-member input.
+
+WORKTREE OWNERSHIP
+- API/E2E-owned modified/removed durable tests, reports, and evidence were inspected only as failure evidence and were not edited or staged by code review.

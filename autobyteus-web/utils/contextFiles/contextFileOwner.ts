@@ -34,11 +34,11 @@ export const buildAgentFinalContextFileOwner = (runId: string): FinalContextFile
 });
 
 export const buildTeamMemberFinalContextFileOwner = (
-  teamRunId: string,
+  containingTeamRunId: string,
   memberAddress: string,
 ): FinalContextFileOwnerDescriptor => ({
   kind: 'team_member_final',
-  teamRunId: normalizeRequiredString(teamRunId, 'teamRunId'),
+  teamRunId: normalizeRequiredString(containingTeamRunId, 'teamRunId'),
   memberAddress: normalizeRequiredString(memberAddress, 'memberAddress'),
 });
 

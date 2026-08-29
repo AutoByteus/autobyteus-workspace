@@ -12,8 +12,6 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { ClaudeAgentRunBackendFactory } from "../../../src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.js";
-import { ClaudeSessionBootstrapper } from "../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -26,6 +24,10 @@ import {
   buildOpenBrowserToolPrompt,
   buildBrowserToolSurfacePrompt,
 } from "./browser-bridge-live-test-server.js";
+import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
+import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -157,47 +159,64 @@ const buildExactWriteToolPrompt = (input: {
 
 const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u, "");
 
-const buildBootstrapper = (
-  workspaceRoot: string,
-  instructions = "Reply briefly.",
-  toolNames: string[] = [],
-) =>
-  new ClaudeSessionBootstrapper(
-    {
-      resolveWorkingDirectory: async () => workspaceRoot,
-    } as any,
-    {
-      materializeConfiguredWorkspaceSkills: async () => [],
-    } as any,
-    {
-      getAgentDefinitionById: async () => ({
-        instructions,
-        description: "Fallback Claude backend integration instructions.",
-        skillNames: [],
-        toolNames,
-      }),
-    } as any,
-    {
-      resolveConfiguredSkillBindingsForAgent: () => [],
-    } as any,
-  );
-
 const createFactory = (input: {
-  sessionManager: ClaudeSessionManager;
   workspaceRoot: string;
   runId: string;
   instructions?: string;
   toolNames?: string[];
-}) =>
-  new ClaudeAgentRunBackendFactory(
-    input.sessionManager,
-    buildBootstrapper(
-      input.workspaceRoot,
-      input.instructions,
-      input.toolNames ?? [],
-    ),
-    () => input.runId,
-  );
+}) => {
+  const inert = Object.freeze({}) as never;
+  const workspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer();
+  const builder = createAgentProviderFactoryBuilder({
+    workspaceManager: getWorkspaceManager(),
+    skillService: {
+      resolveConfiguredSkillBindingsForAgent: () => [],
+    } as never,
+    autoByteus: {
+      agentFactory: inert,
+      createLlm: inert,
+      processorRegistries: {
+        input: inert,
+        llmResponse: inert,
+        toolExecutionResult: inert,
+        toolInvocationPreprocessor: inert,
+        lifecycle: inert,
+      },
+      waitForIdle: inert,
+      compactionAgentRunnerFactory: inert,
+    },
+    codex: {
+      workspaceSkillMaterializer: inert,
+      workspaceResolver: inert,
+      clientManager: inert,
+      threadManager: inert,
+      threadCleanup: inert,
+    },
+    claude: {
+      workspaceResolver: {
+        resolveWorkingDirectory: async () => input.workspaceRoot,
+      } as never,
+      workspaceSkillMaterializer,
+      sdkClient: getClaudeSdkClient(),
+    },
+  });
+  const factory = builder.createForExecution({
+    agentDefinitionService: {
+      getAgentDefinitionById: async () => ({
+        instructions: input.instructions ?? "Reply briefly.",
+        description: "Fallback Claude backend integration instructions.",
+        skillNames: [],
+        toolNames: input.toolNames ?? [],
+      }),
+    } as never,
+    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
+    applicationAgentTools: null,
+  }).claude;
+  const sessionManager = (factory as unknown as {
+    sessionManager: ClaudeSessionManager;
+  }).sessionManager;
+  return { factory, sessionManager };
+};
 
 const writeBackendEventLog = async (testName: string, events: AgentRunEvent[]): Promise<void> => {
   if (!CLAUDE_BACKEND_EVENT_LOG_DIR) {
@@ -261,15 +280,14 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-normal");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-normal-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
@@ -351,15 +369,14 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-approved-tool");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-approved-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
@@ -450,15 +467,14 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-denied-tool");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-denied-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
@@ -528,15 +544,14 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-autoexec");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-autoexec-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
@@ -601,15 +616,14 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-interrupt");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-interrupt-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
@@ -676,15 +690,14 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRoot = await createWorkspace("claude-backend-restore");
       createdWorkspaces.add(workspaceRoot);
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-restore-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const original = await factory.createBackend(
         new AgentRunConfig({
@@ -783,18 +796,17 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       browserBridgeServer = new BrowserBridgeLiveTestServer();
       await browserBridgeServer.start();
       Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-browser-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
         toolNames: ["open_tab"],
         instructions:
           "If the user explicitly instructs you to call open_tab with a JSON argument object, call open_tab exactly once with those exact arguments and do not call any other tool.",
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
@@ -870,12 +882,9 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       browserBridgeServer = new BrowserBridgeLiveTestServer();
       await browserBridgeServer.start();
       Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
-      sessionManager = new ClaudeSessionManager();
-
       const runId = `run-claude-backend-browser-surface-${randomUUID()}`;
       createdRunIds.add(runId);
-      const factory = createFactory({
-        sessionManager,
+      const built = createFactory({
         workspaceRoot,
         runId,
         toolNames: [
@@ -892,6 +901,8 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         instructions:
           "If the user explicitly instructs you to call browser tools with exact JSON arguments in an exact order, call exactly those browser tools in that order and do not call any other tool.",
       });
+      sessionManager = built.sessionManager;
+      const factory = built.factory;
 
       const backend = await factory.createBackend(
         new AgentRunConfig({

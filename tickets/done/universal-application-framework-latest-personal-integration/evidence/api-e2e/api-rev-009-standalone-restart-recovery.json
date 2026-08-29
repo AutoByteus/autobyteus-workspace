@@ -1,0 +1,12 @@
+{
+  "scenario": "API-REV-009-STANDALONE-WATCH-RESTART-RECOVERY",
+  "at": "2026-08-24T11:29:51.899Z",
+  "httpStatus": 200,
+  "ready": true,
+  "retainedRecord": true,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "followupHttpErrors": [],
+  "console404Characterization": "Transient console-only resource message; immediate response-level follow-up observed zero HTTP >=400 and app state remained ready/readable."
+}

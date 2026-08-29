@@ -242,6 +242,28 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
+  it("forwards typed thinking and effort options to the pinned Claude SDK", async () => {
+    const client = new ClaudeSdkClient();
+    const queryFn = vi.fn(async () => createMockQuery());
+    client.setCachedModuleForTesting({ query: queryFn });
+
+    await client.startQueryTurn({
+      prompt: "Think carefully.",
+      sessionBinding: createSessionBinding(),
+      model: "opus",
+      workingDirectory: "/tmp/claude-client-reasoning",
+      thinking: { type: "adaptive" },
+      effort: "high",
+    });
+
+    expect(queryFn).toHaveBeenCalledWith(expect.objectContaining({
+      options: expect.objectContaining({
+        thinking: { type: "adaptive" },
+        effort: "high",
+      }),
+    }));
+  });
+
   it("forwards an AbortController to Claude SDK query options when provided", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();

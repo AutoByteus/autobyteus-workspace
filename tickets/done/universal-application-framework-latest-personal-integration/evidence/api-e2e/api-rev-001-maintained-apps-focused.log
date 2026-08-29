@@ -1,0 +1,40 @@
+
+$ pnpm -C applications/brief-studio validate
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:95538) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:19:26.718Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:19:26.719Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-22T09:19:26.720Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist/importable-package
+
+$ pnpm -C applications/brief-studio typecheck:backend
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+$ pnpm -C applications/socratic-math-teacher validate
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:95830) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:19:30.842Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:19:30.843Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-22T09:19:30.844Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher/dist/importable-package
+
+$ pnpm -C applications/socratic-math-teacher typecheck:backend
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+

@@ -1,0 +1,31 @@
+2026-07-31T09:25:02Z
+--- owned processes before stop ---
+84973 96773    01:32:33 codex app-server
+97114 96773    04:19:47 codex app-server
+32462 97114       06:00 /bin/bash -lc set -o pipefail; pnpm -C applications/brief-studio start -- --port 43126 --data-dir /tmp/api-rev012-standalone-data 2>&1 | tee tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-012-standalone-host.log
+32765 32462       06:00 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C applications/brief-studio start -- --port 43126 --data-dir /tmp/api-rev012-standalone-data
+32782 32765       05:59 node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/node_modules/.bin/../@autobyteus/application-devkit/dist/cli.js start -- --port 43126 --data-dir /tmp/api-rev012-standalone-data
+34886 32782       05:09 codex app-server
+39731 35065       04:00 /Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node --experimental-vm-modules /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/.tmptTCHqn/kernel.js --session-id b5bdf0bd23e1427fb6076759cfe7b3e1 --working-dir /private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime
+39934 32782       03:48 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+--- run bindings before stop ---
+binding_id                            status    run_id                                              created_at                updated_at                terminated_at  last_error_message
+------------------------------------  --------  --------------------------------------------------  ------------------------  ------------------------  -------------  ------------------
+2bd76077-ac2d-42ba-8569-0042cd9d7514  ATTACHED  brief_studio_team_1487ab0c74944eb7877e84028c263447  2026-07-31T09:19:54.669Z  2026-07-31T09:19:54.669Z                                   
+4b7527cc-4338-44ee-85c0-b527111ed84f  ATTACHED  brief_studio_team_157100ee9e824586a27b9a8d39cd40f4  2026-07-31T09:24:40.609Z  2026-07-31T09:24:40.609Z                                   
+7a4c855d-80d9-4e7d-9d00-4b36e27d2b2b  ATTACHED  brief_studio_team_57067c7c27b0437993f52d580f3d4ba0  2026-07-31T09:24:40.641Z  2026-07-31T09:24:40.641Z                                   
+--- members before stop ---
+binding_id                            member_route_key  run_id                                                    runtime_kind     
+------------------------------------  ----------------  --------------------------------------------------------  -----------------
+2bd76077-ac2d-42ba-8569-0042cd9d7514  researcher        brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17  AGENT_TEAM_MEMBER
+2bd76077-ac2d-42ba-8569-0042cd9d7514  writer            brief_studio_writer_c3653de605b8469b81b6325c0ddb2685      AGENT_TEAM_MEMBER
+4b7527cc-4338-44ee-85c0-b527111ed84f  researcher        brief_studio_researcher_ed7b2c81f46740c08aa7036a47c43dbc  AGENT_TEAM_MEMBER
+4b7527cc-4338-44ee-85c0-b527111ed84f  writer            brief_studio_writer_ea8870f045f847298843b3f12fad8ad8      AGENT_TEAM_MEMBER
+7a4c855d-80d9-4e7d-9d00-4b36e27d2b2b  researcher        brief_studio_researcher_8daa33a86bad45a5890eafaa350b9f01  AGENT_TEAM_MEMBER
+7a4c855d-80d9-4e7d-9d00-4b36e27d2b2b  writer            brief_studio_writer_78ef1ab9c8874960832da33fe9615c77      AGENT_TEAM_MEMBER
+--- current app briefs ---
+brief_id                                    title                                                       status       latest_binding_status  latest_run_id                                     
+------------------------------------------  ----------------------------------------------------------  -----------  ---------------------  --------------------------------------------------
+brief-8061558c-f896-477b-8da0-5163cac371bb  API REV 012 worker exit publication recovery 1785489587234  in_review    ATTACHED               brief_studio_team_1487ab0c74944eb7877e84028c263447
+brief-c8c95034-1a8e-4b5c-a365-4fdfbab34a80  API REV 012 active shutdown A 1785489878491                 not_started  ATTACHED               brief_studio_team_157100ee9e824586a27b9a8d39cd40f4
+brief-23579585-bb7c-4e44-ba9c-6516635e39ef  API REV 012 active shutdown B 1785489878492                 not_started  ATTACHED               brief_studio_team_57067c7c27b0437993f52d580f3d4ba0

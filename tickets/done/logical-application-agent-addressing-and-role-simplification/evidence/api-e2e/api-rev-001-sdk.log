@@ -1,0 +1,164 @@
+=== API-REV-001 SDK contract/backend/frontend suites ===
+$ pnpm --filter @autobyteus/application-sdk-contracts test
+
+> @autobyteus/application-sdk-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-sdk-contracts
+> pnpm build && node --test tests/application-iframe-contract.test.mjs
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: application agent target URL codec round-trips logical root and nested member identities
+ok 1 - application agent target URL codec round-trips logical root and nested member identities
+  ---
+  duration_ms: 0.746
+  type: 'test'
+  ...
+# Subtest: application agent target URL decoder rejects non-canonical and incomplete paths
+ok 2 - application agent target URL decoder rejects non-canonical and incomplete paths
+  ---
+  duration_ms: 0.13675
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint query string
+ok 3 - readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint query string
+  ---
+  duration_ms: 0.163042
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+ok 4 - readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+  ---
+  duration_ms: 0.093542
+  type: 'test'
+  ...
+# Subtest: packaged host-origin normalization preserves the file/null equivalence rule
+ok 5 - packaged host-origin normalization preserves the file/null equivalence rule
+  ---
+  duration_ms: 0.134416
+  type: 'test'
+  ...
+# Subtest: ready and bootstrap validators accept tight v4 envelopes and reject malformed variants
+ok 6 - ready and bootstrap validators accept tight v4 envelopes and reject malformed variants
+  ---
+  duration_ms: 0.192458
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 54.712875
+$ pnpm --filter @autobyteus/application-backend-sdk test
+
+> @autobyteus/application-backend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-backend-sdk
+> vitest run --no-watch
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-backend-sdk
+
+ ✓ tests/launch-profile.test.ts (4 tests) 4ms
+ ✓ tests/application-agent-target-address.test.ts (6 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  17:54:35
+   Duration  167ms (transform 94ms, setup 0ms, import 120ms, tests 7ms, environment 0ms)
+
+$ pnpm --filter @autobyteus/application-frontend-sdk test
+
+> @autobyteus/application-frontend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-frontend-sdk
+> pnpm build && node --test tests/application-startup.test.mjs tests/application-connections.test.mjs && tsc -p tsconfig.type-tests.json --noEmit
+
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: application client exposes the exact capability groups and notification sibling
+ok 1 - application client exposes the exact capability groups and notification sibling
+  ---
+  duration_ms: 0.893959
+  type: 'test'
+  ...
+# Subtest: canonical WebSocket URL composition appends ordered business query values
+ok 2 - canonical WebSocket URL composition appends ordered business query values
+  ---
+  duration_ms: 0.180583
+  type: 'test'
+  ...
+# Subtest: standard agent connection derives the fixed target URL, opens on exact READY, and correlates input
+ok 3 - standard agent connection derives the fixed target URL, opens on exact READY, and correlates input
+  ---
+  duration_ms: 1.761208
+  type: 'test'
+  ...
+# Subtest: standard establishment failure settles ready, error, and close once
+ok 4 - standard establishment failure settles ready, error, and close once
+  ---
+  duration_ms: 3.065667
+  type: 'test'
+  ...
+# Subtest: standard connection accepts exact events and rejects malformed nested payloads
+ok 5 - standard connection accepts exact events and rejects malformed nested payloads
+  ---
+  duration_ms: 2.522208
+  type: 'test'
+  ...
+# Subtest: standard connection rejects removed event shapes, nullable producers, and extra fields
+ok 6 - standard connection rejects removed event shapes, nullable producers, and extra fields
+  ---
+  duration_ms: 12.222417
+  type: 'test'
+  ...
+# Subtest: standard connection rejects unsupported frames and unserializable or oversized input safely
+ok 7 - standard connection rejects unsupported frames and unserializable or oversized input safely
+  ---
+  duration_ms: 3.791667
+  type: 'test'
+  ...
+# Subtest: custom backend WebSocket hides readiness
+ok 8 - custom backend WebSocket hides readiness
+  ---
+  duration_ms: 2.033791
+  type: 'test'
+  ...
+# Subtest: startup coordinator acquires one runtime bootstrap and hands off once
+ok 9 - startup coordinator acquires one runtime bootstrap and hands off once
+  ---
+  duration_ms: 2.594834
+  type: 'test'
+  ...
+# Subtest: startup coordinator contains business mount failures
+ok 10 - startup coordinator contains business mount failures
+  ---
+  duration_ms: 1.852167
+  type: 'test'
+  ...
+# Subtest: startup disposal aborts provider work and is idempotent
+ok 11 - startup disposal aborts provider work and is idempotent
+  ---
+  duration_ms: 0.150209
+  type: 'test'
+  ...
+# Subtest: standalone bootstrap normalization resolves visible same-origin HTTP and WebSocket URLs
+ok 12 - standalone bootstrap normalization resolves visible same-origin HTTP and WebSocket URLs
+  ---
+  duration_ms: 0.27025
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 82.145125
+RESULT=PASS
