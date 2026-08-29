@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-08-29T20:06:45.544Z",
+  "startedAt": "2026-08-29T19:39:24.674Z",
   "platform": "linux-arm64",
   "node": "v22.23.1",
   "browserExecutable": "/usr/bin/chromium",
@@ -52,9 +52,11 @@
     "TS-E2E-002-truth-matrix-and-gaps": {
       "positiveCache": "36.7%",
       "completeCostPoints": 19,
-      "gapPoints": 2,
-      "gapPaths": 2,
-      "partialApiError": null,
+      "gapPoints": null,
+      "gapPaths": null,
+      "partialApiError": [
+        "TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"
+      ],
       "cacheStates": {
         "Zero Cache E2E": "0%",
         "No Cache Report E2E": "Not reported",
@@ -119,7 +121,7 @@
       },
       "focus": {
         "active": true,
-        "boxShadow": "rgba(255, 255, 255, 0.03) 0px 0px 0px 0.0659px, rgba(59, 130, 246, 0.03) 0px 0px 0px 0.1318px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px"
+        "boxShadow": "rgba(255, 255, 255, 0.03) 0px 0px 0px 0.0653454px, rgba(59, 130, 246, 0.03) 0px 0px 0px 0.130691px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px"
       },
       "tableOverflow": {
         "clientWidth": 340,
@@ -142,8 +144,8 @@
         "variables": {
           "runtimeKind": "autobyteus"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:07.295Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:40.899Z"
       },
       {
         "label": "desktop-en",
@@ -151,8 +153,8 @@
         "variables": {
           "runtimeKind": "autobyteus"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:07.295Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:40.899Z"
       },
       {
         "label": "desktop-en",
@@ -167,8 +169,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:07.295Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:40.899Z"
       },
       {
         "label": "desktop-en",
@@ -183,8 +185,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:07.887Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:41.394Z"
       },
       {
         "label": "desktop-en",
@@ -199,8 +201,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:07.987Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:41.492Z"
       },
       {
         "label": "desktop-en",
@@ -215,8 +217,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:08.167Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:41.641Z"
       },
       {
         "label": "desktop-en",
@@ -231,8 +233,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:08.267Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:41.742Z"
       },
       {
         "label": "desktop-en",
@@ -247,8 +249,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:08.387Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:41.859Z"
       },
       {
         "label": "desktop-en",
@@ -263,8 +265,24 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:08.617Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:42.093Z"
+      },
+      {
+        "label": "desktop-en",
+        "operationName": "GetTokenUsageAnalytics",
+        "variables": {
+          "input": {
+            "rangePreset": "THIS_MONTH",
+            "startTime": "2026-08-01T00:00:00.000Z",
+            "endTimeExclusive": "2026-08-30T00:00:00.000Z",
+            "runtimeKind": null,
+            "providerKey": null,
+            "modelKey": null
+          }
+        },
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:42.225Z"
       },
       {
         "label": "desktop-en",
@@ -279,8 +297,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:08.887Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:42.341Z"
       },
       {
         "label": "desktop-en",
@@ -295,8 +313,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:09.069Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:42.526Z"
       },
       {
         "label": "desktop-en",
@@ -311,8 +329,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:09.251Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:42.712Z"
       },
       {
         "label": "desktop-en",
@@ -327,8 +345,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:09.435Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:42.895Z"
       },
       {
         "label": "desktop-en",
@@ -343,8 +361,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:09.568Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:43.026Z"
       },
       {
         "label": "desktop-en",
@@ -359,8 +377,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:09.919Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:43.342Z"
       },
       {
         "label": "desktop-en",
@@ -375,8 +393,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:10.766Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.178Z"
       },
       {
         "label": "desktop-en",
@@ -391,8 +409,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:10.867Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.276Z"
       },
       {
         "label": "desktop-en",
@@ -401,8 +419,8 @@
           "startTime": "2026-08-22",
           "endTime": "2026-08-29"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:10.955Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.346Z"
       },
       {
         "label": "desktop-en",
@@ -411,8 +429,8 @@
           "startTime": "2026-08-22",
           "endTime": "2026-08-29"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:10.955Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.346Z"
       },
       {
         "label": "desktop-en",
@@ -421,8 +439,8 @@
           "startTime": "2026-08-27",
           "endTime": "2026-08-29"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:11.252Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.575Z"
       },
       {
         "label": "desktop-en",
@@ -431,8 +449,8 @@
           "startTime": "2026-08-27",
           "endTime": "2026-08-29"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:11.252Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.575Z"
       },
       {
         "label": "desktop-en",
@@ -441,8 +459,8 @@
           "startTime": "2026-08-22",
           "endTime": "2026-08-29"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:11.369Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.675Z"
       },
       {
         "label": "desktop-en",
@@ -451,8 +469,8 @@
           "startTime": "2026-08-22",
           "endTime": "2026-08-29"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:11.369Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:44.675Z"
       },
       {
         "label": "narrow-en",
@@ -460,8 +478,8 @@
         "variables": {
           "runtimeKind": "autobyteus"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:12.679Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:45.648Z"
       },
       {
         "label": "narrow-en",
@@ -469,8 +487,8 @@
         "variables": {
           "runtimeKind": "autobyteus"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:12.679Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:45.648Z"
       },
       {
         "label": "narrow-en",
@@ -485,8 +503,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:12.679Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:45.648Z"
       },
       {
         "label": "narrow-zh-CN",
@@ -494,8 +512,8 @@
         "variables": {
           "runtimeKind": "autobyteus"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:13.820Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:46.544Z"
       },
       {
         "label": "narrow-zh-CN",
@@ -503,8 +521,8 @@
         "variables": {
           "runtimeKind": "autobyteus"
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:13.820Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:46.544Z"
       },
       {
         "label": "narrow-zh-CN",
@@ -519,8 +537,8 @@
             "modelKey": null
           }
         },
-        "url": "http://127.0.0.1:44593/graphql",
-        "at": "2026-08-29T20:07:13.820Z"
+        "url": "http://127.0.0.1:46743/graphql",
+        "at": "2026-08-29T19:39:46.544Z"
       }
     ],
     "responses": [
@@ -22286,6 +22304,15 @@
         "label": "desktop-en",
         "operationName": "GetTokenUsageAnalytics",
         "status": 200,
+        "errors": [
+          "TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"
+        ],
+        "data": null
+      },
+      {
+        "label": "desktop-en",
+        "operationName": "GetTokenUsageAnalytics",
+        "status": 200,
         "errors": [],
         "data": {
           "tokenUsageAnalytics": {
@@ -22313,59 +22340,71 @@
             },
             "appliedFilters": {
               "runtimeKind": null,
-              "providerKey": "v1:e29be8eda5a900f988e4c150255ffa74e3c9a3e943a8264889e41bef68301a6b",
+              "providerKey": null,
               "modelKey": null,
               "__typename": "TokenUsageAnalyticsAppliedFiltersGraphql"
             },
             "selectedAggregate": {
-              "grossInputTokens": 1500,
-              "standardInputTokens": 1500,
-              "cacheMissInputTokens": 1500,
-              "cacheReadInputTokens": 0,
+              "grossInputTokens": 24410,
+              "standardInputTokens": 16810,
+              "cacheMissInputTokens": 16810,
+              "cacheReadInputTokens": 7600,
               "cacheCreationInputTokens": 0,
               "cacheCreation5mInputTokens": 0,
               "cacheCreation1hInputTokens": 0,
-              "outputTokens": 300,
-              "reasoningOutputTokens": 0,
-              "billableOutputTokens": 300,
-              "totalTokens": 1800,
-              "cacheReadInputTokenRate": 0,
-              "standardInputTokenRate": 1,
+              "outputTokens": 5661,
+              "reasoningOutputTokens": 950,
+              "billableOutputTokens": 5661,
+              "totalTokens": 30071,
+              "cacheReadInputTokenRate": 0.311347808275297,
+              "standardInputTokenRate": 0.688652191724703,
               "cacheCreationInputTokenRate": 0,
-              "cacheState": "not_reported",
-              "estimatedApiInputCost": 0.02,
-              "estimatedApiStandardInputCost": 0.02,
-              "estimatedApiCacheReadInputCost": 0,
-              "estimatedApiCacheCreationInputCost": 0,
-              "estimatedApiCacheCreation5mInputCost": 0,
-              "estimatedApiCacheCreation1hInputCost": 0,
-              "estimatedApiOutputCost": 0.04,
-              "estimatedApiReasoningOutputCost": 0,
-              "estimatedApiTotalCost": 0.06,
-              "currency": "USD",
+              "cacheState": "positive",
+              "estimatedApiInputCost": null,
+              "estimatedApiStandardInputCost": null,
+              "estimatedApiCacheReadInputCost": null,
+              "estimatedApiCacheCreationInputCost": null,
+              "estimatedApiCacheCreation5mInputCost": null,
+              "estimatedApiCacheCreation1hInputCost": null,
+              "estimatedApiOutputCost": null,
+              "estimatedApiReasoningOutputCost": null,
+              "estimatedApiTotalCost": null,
+              "currency": null,
               "apiCostStatus": "mixed",
               "missingPriceDimensions": [
                 "output",
                 "standard_input"
               ],
-              "pricingPolicyKey": "e2e-usd-policy",
+              "pricingPolicyKey": null,
               "selectedPricingTierId": null,
-              "usageReportCount": 3,
-              "updatedAt": "2026-08-14T12:00:00.000Z",
+              "usageReportCount": 27,
+              "updatedAt": "2026-08-29T12:00:00.000Z",
               "observedRuntimeKinds": [
-                "claude_agent_sdk"
+                "autobyteus",
+                "claude_agent_sdk",
+                "custom_runtime",
+                "ollama"
               ],
               "observedModelIdentifiers": [
-                "claude-e2e-partial"
+                "claude-e2e-partial",
+                "custom-e2e-unknown-cache",
+                "gpt-e2e-complete",
+                "gpt-e2e-eur",
+                "gpt-e2e-no-cache-report",
+                "gpt-e2e-zero-cache",
+                "local-e2e"
               ],
               "observedModelProviders": [
-                "ANTHROPIC"
+                "ANTHROPIC",
+                "CUSTOM",
+                "OLLAMA",
+                "OPENAI"
               ],
               "__typename": "TokenUsageCostSummaryAggregateGraphql"
             },
             "selectedCostQuality": {
-              "kind": "PARTIAL",
-              "currency": "USD",
+              "kind": "MIXED_CURRENCY",
+              "currency": null,
               "missingPriceDimensions": [
                 "output",
                 "standard_input"
@@ -22415,7 +22454,7 @@
               "missingPriceDimensions": [],
               "__typename": "TokenUsageAnalyticsCostQualityGraphql"
             },
-            "activeDayCount": 3,
+            "activeDayCount": 19,
             "trendBuckets": [
               {
                 "bucketStart": "2026-08-01T00:00:00.000Z",
@@ -22901,69 +22940,21 @@
                 "bucketStart": "2026-08-11T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-12T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1000,
+                  "standardInputTokens": 600,
+                  "cacheMissInputTokens": 600,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
-                  "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
-                  "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
-                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
-                },
-                "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
-                  "missingPriceDimensions": [],
-                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
-                },
-                "__typename": "TokenUsageAnalyticsBucketGraphql"
-              },
-              {
-                "bucketStart": "2026-08-12T00:00:00.000Z",
-                "bucketEndExclusive": "2026-08-13T00:00:00.000Z",
-                "aggregate": {
-                  "grossInputTokens": 500,
-                  "standardInputTokens": 500,
-                  "cacheMissInputTokens": 500,
-                  "cacheReadInputTokens": 0,
-                  "cacheCreationInputTokens": 0,
-                  "cacheCreation5mInputTokens": 0,
-                  "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 100,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 100,
-                  "totalTokens": 600,
-                  "cacheReadInputTokenRate": 0,
-                  "standardInputTokenRate": 1,
+                  "outputTokens": 250,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 250,
+                  "totalTokens": 1250,
+                  "cacheReadInputTokenRate": 0.4,
+                  "standardInputTokenRate": 0.6,
                   "cacheCreationInputTokenRate": 0,
-                  "cacheState": "not_reported",
+                  "cacheState": "positive",
                   "estimatedApiInputCost": 0.01,
                   "estimatedApiStandardInputCost": 0.01,
                   "estimatedApiCacheReadInputCost": 0,
@@ -22979,15 +22970,72 @@
                   "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
                   "usageReportCount": 1,
+                  "updatedAt": "2026-08-11T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "COMPLETE",
+                  "currency": "USD",
+                  "missingPriceDimensions": [],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBucketGraphql"
+              },
+              {
+                "bucketStart": "2026-08-12T00:00:00.000Z",
+                "bucketEndExclusive": "2026-08-13T00:00:00.000Z",
+                "aggregate": {
+                  "grossInputTokens": 1510,
+                  "standardInputTokens": 1110,
+                  "cacheMissInputTokens": 1110,
+                  "cacheReadInputTokens": 400,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 351,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 351,
+                  "totalTokens": 1861,
+                  "cacheReadInputTokenRate": 0.26490066225165565,
+                  "standardInputTokenRate": 0.7350993377483444,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.020999999999999998,
+                  "estimatedApiStandardInputCost": 0.020999999999999998,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.04,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.061,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
+                  "missingPriceDimensions": [],
+                  "pricingPolicyKey": "e2e-usd-policy",
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 2,
                   "updatedAt": "2026-08-12T12:00:00.000Z",
                   "observedRuntimeKinds": [
+                    "autobyteus",
                     "claude_agent_sdk"
                   ],
                   "observedModelIdentifiers": [
-                    "claude-e2e-partial"
+                    "claude-e2e-partial",
+                    "gpt-e2e-complete"
                   ],
                   "observedModelProviders": [
-                    "ANTHROPIC"
+                    "ANTHROPIC",
+                    "OPENAI"
                   ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
@@ -23003,54 +23051,57 @@
                 "bucketStart": "2026-08-13T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-14T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 500,
-                  "standardInputTokens": 500,
-                  "cacheMissInputTokens": 500,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1520,
+                  "standardInputTokens": 1120,
+                  "cacheMissInputTokens": 1120,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 100,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 100,
-                  "totalTokens": 600,
-                  "cacheReadInputTokenRate": 0,
-                  "standardInputTokenRate": 1,
+                  "outputTokens": 352,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 352,
+                  "totalTokens": 1872,
+                  "cacheReadInputTokenRate": 0.2631578947368421,
+                  "standardInputTokenRate": 0.7368421052631579,
                   "cacheCreationInputTokenRate": 0,
-                  "cacheState": "not_reported",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.012,
+                  "estimatedApiStandardInputCost": 0.012,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.032,
+                  "currency": "USD",
+                  "apiCostStatus": "mixed",
                   "missingPriceDimensions": [
                     "output",
                     "standard_input"
                   ],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 1,
+                  "usageReportCount": 2,
                   "updatedAt": "2026-08-13T12:00:00.000Z",
                   "observedRuntimeKinds": [
+                    "autobyteus",
                     "claude_agent_sdk"
                   ],
                   "observedModelIdentifiers": [
-                    "claude-e2e-partial"
+                    "claude-e2e-partial",
+                    "gpt-e2e-complete"
                   ],
                   "observedModelProviders": [
-                    "ANTHROPIC"
+                    "ANTHROPIC",
+                    "OPENAI"
                   ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "MISSING",
-                  "currency": null,
+                  "kind": "PARTIAL",
+                  "currency": "USD",
                   "missingPriceDimensions": [
                     "output",
                     "standard_input"
@@ -23063,45 +23114,48 @@
                 "bucketStart": "2026-08-14T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-15T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 500,
-                  "standardInputTokens": 500,
-                  "cacheMissInputTokens": 500,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1530,
+                  "standardInputTokens": 1130,
+                  "cacheMissInputTokens": 1130,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 100,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 100,
-                  "totalTokens": 600,
-                  "cacheReadInputTokenRate": 0,
-                  "standardInputTokenRate": 1,
+                  "outputTokens": 353,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 353,
+                  "totalTokens": 1883,
+                  "cacheReadInputTokenRate": 0.26143790849673204,
+                  "standardInputTokenRate": 0.738562091503268,
                   "cacheCreationInputTokenRate": 0,
-                  "cacheState": "not_reported",
-                  "estimatedApiInputCost": 0.01,
-                  "estimatedApiStandardInputCost": 0.01,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.023,
+                  "estimatedApiStandardInputCost": 0.023,
                   "estimatedApiCacheReadInputCost": 0,
                   "estimatedApiCacheCreationInputCost": 0,
                   "estimatedApiCacheCreation5mInputCost": 0,
                   "estimatedApiCacheCreation1hInputCost": 0,
-                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiOutputCost": 0.04,
                   "estimatedApiReasoningOutputCost": 0,
-                  "estimatedApiTotalCost": 0.03,
+                  "estimatedApiTotalCost": 0.063,
                   "currency": "USD",
                   "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
                   "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 1,
+                  "usageReportCount": 2,
                   "updatedAt": "2026-08-14T12:00:00.000Z",
                   "observedRuntimeKinds": [
+                    "autobyteus",
                     "claude_agent_sdk"
                   ],
                   "observedModelIdentifiers": [
-                    "claude-e2e-partial"
+                    "claude-e2e-partial",
+                    "gpt-e2e-complete"
                   ],
                   "observedModelProviders": [
-                    "ANTHROPIC"
+                    "ANTHROPIC",
+                    "OPENAI"
                   ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
@@ -23117,21 +23171,21 @@
                 "bucketStart": "2026-08-15T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-16T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 3240,
+                  "standardInputTokens": 2840,
+                  "cacheMissInputTokens": 2840,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
+                  "outputTokens": 694,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 694,
+                  "totalTokens": 3934,
+                  "cacheReadInputTokenRate": 0.12345679012345678,
+                  "standardInputTokenRate": 0.8765432098765432,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
                   "estimatedApiInputCost": null,
                   "estimatedApiStandardInputCost": null,
                   "estimatedApiCacheReadInputCost": null,
@@ -23142,21 +23196,42 @@
                   "estimatedApiReasoningOutputCost": null,
                   "estimatedApiTotalCost": null,
                   "currency": null,
-                  "apiCostStatus": "price_missing",
-                  "missingPriceDimensions": [],
+                  "apiCostStatus": "mixed",
+                  "missingPriceDimensions": [
+                    "output",
+                    "standard_input"
+                  ],
                   "pricingPolicyKey": null,
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 6,
+                  "updatedAt": "2026-08-15T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus",
+                    "custom_runtime",
+                    "ollama"
+                  ],
+                  "observedModelIdentifiers": [
+                    "custom-e2e-unknown-cache",
+                    "gpt-e2e-complete",
+                    "gpt-e2e-eur",
+                    "gpt-e2e-no-cache-report",
+                    "gpt-e2e-zero-cache",
+                    "local-e2e"
+                  ],
+                  "observedModelProviders": [
+                    "CUSTOM",
+                    "OLLAMA",
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
+                  "kind": "MIXED_CURRENCY",
                   "currency": null,
-                  "missingPriceDimensions": [],
+                  "missingPriceDimensions": [
+                    "output",
+                    "standard_input"
+                  ],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
                 "__typename": "TokenUsageAnalyticsBucketGraphql"
@@ -23165,45 +23240,51 @@
                 "bucketStart": "2026-08-16T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-17T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1050,
+                  "standardInputTokens": 650,
+                  "cacheMissInputTokens": 650,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 255,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 255,
+                  "totalTokens": 1305,
+                  "cacheReadInputTokenRate": 0.38095238095238093,
+                  "standardInputTokenRate": 0.6190476190476191,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.015,
+                  "estimatedApiStandardInputCost": 0.015,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.035,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-16T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23213,45 +23294,51 @@
                 "bucketStart": "2026-08-17T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-18T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1060,
+                  "standardInputTokens": 660,
+                  "cacheMissInputTokens": 660,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 256,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 256,
+                  "totalTokens": 1316,
+                  "cacheReadInputTokenRate": 0.37735849056603776,
+                  "standardInputTokenRate": 0.6226415094339622,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.016,
+                  "estimatedApiStandardInputCost": 0.016,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.036,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-17T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23261,45 +23348,51 @@
                 "bucketStart": "2026-08-18T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-19T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1070,
+                  "standardInputTokens": 670,
+                  "cacheMissInputTokens": 670,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 257,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 257,
+                  "totalTokens": 1327,
+                  "cacheReadInputTokenRate": 0.37383177570093457,
+                  "standardInputTokenRate": 0.6261682242990654,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.017,
+                  "estimatedApiStandardInputCost": 0.017,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.037,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-18T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23309,45 +23402,51 @@
                 "bucketStart": "2026-08-19T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-20T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1080,
+                  "standardInputTokens": 680,
+                  "cacheMissInputTokens": 680,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 258,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 258,
+                  "totalTokens": 1338,
+                  "cacheReadInputTokenRate": 0.37037037037037035,
+                  "standardInputTokenRate": 0.6296296296296297,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.018,
+                  "estimatedApiStandardInputCost": 0.018,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.038,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-19T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23357,45 +23456,51 @@
                 "bucketStart": "2026-08-20T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-21T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1090,
+                  "standardInputTokens": 690,
+                  "cacheMissInputTokens": 690,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 259,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 259,
+                  "totalTokens": 1349,
+                  "cacheReadInputTokenRate": 0.3669724770642202,
+                  "standardInputTokenRate": 0.6330275229357798,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.019,
+                  "estimatedApiStandardInputCost": 0.019,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.039,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-20T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23405,45 +23510,51 @@
                 "bucketStart": "2026-08-21T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-22T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1100,
+                  "standardInputTokens": 700,
+                  "cacheMissInputTokens": 700,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 260,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 260,
+                  "totalTokens": 1360,
+                  "cacheReadInputTokenRate": 0.36363636363636365,
+                  "standardInputTokenRate": 0.6363636363636364,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.02,
+                  "estimatedApiStandardInputCost": 0.02,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.04,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-21T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23453,45 +23564,51 @@
                 "bucketStart": "2026-08-22T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-23T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1110,
+                  "standardInputTokens": 710,
+                  "cacheMissInputTokens": 710,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 261,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 261,
+                  "totalTokens": 1371,
+                  "cacheReadInputTokenRate": 0.36036036036036034,
+                  "standardInputTokenRate": 0.6396396396396397,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.021,
+                  "estimatedApiStandardInputCost": 0.021,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.04099999999999999,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-22T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23501,45 +23618,51 @@
                 "bucketStart": "2026-08-23T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-24T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1120,
+                  "standardInputTokens": 720,
+                  "cacheMissInputTokens": 720,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 262,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 262,
+                  "totalTokens": 1382,
+                  "cacheReadInputTokenRate": 0.35714285714285715,
+                  "standardInputTokenRate": 0.6428571428571429,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.022,
+                  "estimatedApiStandardInputCost": 0.022,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.042,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-23T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23549,45 +23672,51 @@
                 "bucketStart": "2026-08-24T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-25T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1130,
+                  "standardInputTokens": 730,
+                  "cacheMissInputTokens": 730,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 263,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 263,
+                  "totalTokens": 1393,
+                  "cacheReadInputTokenRate": 0.35398230088495575,
+                  "standardInputTokenRate": 0.6460176991150443,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.023,
+                  "estimatedApiStandardInputCost": 0.023,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.043,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-24T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23597,45 +23726,51 @@
                 "bucketStart": "2026-08-25T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-26T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1140,
+                  "standardInputTokens": 740,
+                  "cacheMissInputTokens": 740,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 264,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 264,
+                  "totalTokens": 1404,
+                  "cacheReadInputTokenRate": 0.3508771929824561,
+                  "standardInputTokenRate": 0.6491228070175439,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.024,
+                  "estimatedApiStandardInputCost": 0.024,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.044,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-25T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23645,45 +23780,51 @@
                 "bucketStart": "2026-08-26T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-27T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1150,
+                  "standardInputTokens": 750,
+                  "cacheMissInputTokens": 750,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 265,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 265,
+                  "totalTokens": 1415,
+                  "cacheReadInputTokenRate": 0.34782608695652173,
+                  "standardInputTokenRate": 0.6521739130434783,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.025,
+                  "estimatedApiStandardInputCost": 0.025,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.045,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-26T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23693,45 +23834,51 @@
                 "bucketStart": "2026-08-27T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-28T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1160,
+                  "standardInputTokens": 760,
+                  "cacheMissInputTokens": 760,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 266,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 266,
+                  "totalTokens": 1426,
+                  "cacheReadInputTokenRate": 0.3448275862068966,
+                  "standardInputTokenRate": 0.6551724137931034,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.026,
+                  "estimatedApiStandardInputCost": 0.026,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.046,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-27T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23741,45 +23888,51 @@
                 "bucketStart": "2026-08-28T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-29T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1170,
+                  "standardInputTokens": 770,
+                  "cacheMissInputTokens": 770,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 267,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 267,
+                  "totalTokens": 1437,
+                  "cacheReadInputTokenRate": 0.3418803418803419,
+                  "standardInputTokenRate": 0.6581196581196581,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.027,
+                  "estimatedApiStandardInputCost": 0.027,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.047,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-28T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -23789,45 +23942,51 @@
                 "bucketStart": "2026-08-29T00:00:00.000Z",
                 "bucketEndExclusive": "2026-08-30T00:00:00.000Z",
                 "aggregate": {
-                  "grossInputTokens": 0,
-                  "standardInputTokens": 0,
-                  "cacheMissInputTokens": 0,
-                  "cacheReadInputTokens": 0,
+                  "grossInputTokens": 1180,
+                  "standardInputTokens": 780,
+                  "cacheMissInputTokens": 780,
+                  "cacheReadInputTokens": 400,
                   "cacheCreationInputTokens": 0,
                   "cacheCreation5mInputTokens": 0,
                   "cacheCreation1hInputTokens": 0,
-                  "outputTokens": 0,
-                  "reasoningOutputTokens": 0,
-                  "billableOutputTokens": 0,
-                  "totalTokens": 0,
-                  "cacheReadInputTokenRate": null,
-                  "standardInputTokenRate": null,
-                  "cacheCreationInputTokenRate": null,
-                  "cacheState": "unknown",
-                  "estimatedApiInputCost": null,
-                  "estimatedApiStandardInputCost": null,
-                  "estimatedApiCacheReadInputCost": null,
-                  "estimatedApiCacheCreationInputCost": null,
-                  "estimatedApiCacheCreation5mInputCost": null,
-                  "estimatedApiCacheCreation1hInputCost": null,
-                  "estimatedApiOutputCost": null,
-                  "estimatedApiReasoningOutputCost": null,
-                  "estimatedApiTotalCost": null,
-                  "currency": null,
-                  "apiCostStatus": "price_missing",
+                  "outputTokens": 268,
+                  "reasoningOutputTokens": 50,
+                  "billableOutputTokens": 268,
+                  "totalTokens": 1448,
+                  "cacheReadInputTokenRate": 0.3389830508474576,
+                  "standardInputTokenRate": 0.6610169491525424,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.028,
+                  "estimatedApiStandardInputCost": 0.028,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.02,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.048,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
                   "missingPriceDimensions": [],
-                  "pricingPolicyKey": null,
+                  "pricingPolicyKey": "e2e-usd-policy",
                   "selectedPricingTierId": null,
-                  "usageReportCount": 0,
-                  "updatedAt": null,
-                  "observedRuntimeKinds": [],
-                  "observedModelIdentifiers": [],
-                  "observedModelProviders": [],
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-29T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
                 "costQuality": {
-                  "kind": "NO_USAGE",
-                  "currency": null,
+                  "kind": "COMPLETE",
+                  "currency": "USD",
                   "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
@@ -25230,6 +25389,69 @@
             ],
             "breakdownRows": [
               {
+                "rowKey": "v1:11421b083b4a42ba7a02c0be480a188ca50b1ac31abc88930da6785a3ee698aa:CURRENCY:USD",
+                "identityKey": "v1:11421b083b4a42ba7a02c0be480a188ca50b1ac31abc88930da6785a3ee698aa",
+                "providerKey": "v1:497b4e645d845cbe753ca2309bdb781b9773b7e190753cc320a0ef9c32a05ced",
+                "modelKey": "v1:18d52e97cff410b86dea0445025a94eb4053daeb093571cd4f64cae5d869a098",
+                "runtimeKind": "autobyteus",
+                "modelProvider": "OPENAI",
+                "providerName": "OpenAI E2E",
+                "providerDisplayName": "OpenAI E2E",
+                "modelIdentifier": "gpt-e2e-complete",
+                "modelValue": null,
+                "modelDisplayName": "OpenAI E2E:gpt-e2e-complete",
+                "aggregate": {
+                  "grossInputTokens": 20710,
+                  "standardInputTokens": 13110,
+                  "cacheMissInputTokens": 13110,
+                  "cacheReadInputTokens": 7600,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 4921,
+                  "reasoningOutputTokens": 950,
+                  "billableOutputTokens": 4921,
+                  "totalTokens": 25631,
+                  "cacheReadInputTokenRate": 0.3669724770642202,
+                  "standardInputTokenRate": 0.6330275229357798,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "positive",
+                  "estimatedApiInputCost": 0.36100000000000004,
+                  "estimatedApiStandardInputCost": 0.36100000000000004,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.38000000000000006,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.7410000000000001,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
+                  "missingPriceDimensions": [],
+                  "pricingPolicyKey": "e2e-usd-policy",
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 19,
+                  "updatedAt": "2026-08-29T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-complete"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "COMPLETE",
+                  "currency": "USD",
+                  "missingPriceDimensions": [],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
+              },
+              {
                 "rowKey": "v1:f3e3709a83e10ed588cc6d0a44620cba8a32990b12ec96997356d0c05575fe5b:CURRENCY:USD",
                 "identityKey": "v1:f3e3709a83e10ed588cc6d0a44620cba8a32990b12ec96997356d0c05575fe5b",
                 "providerKey": "v1:e29be8eda5a900f988e4c150255ffa74e3c9a3e943a8264889e41bef68301a6b",
@@ -25281,6 +25503,201 @@
                   ],
                   "observedModelProviders": [
                     "ANTHROPIC"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "COMPLETE",
+                  "currency": "USD",
+                  "missingPriceDimensions": [],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
+              },
+              {
+                "rowKey": "v1:0ee6c9cea6e0b039b4bdd6cf81b933d247a8937ab3189bb49311155b877a5347:UNPRICED",
+                "identityKey": "v1:0ee6c9cea6e0b039b4bdd6cf81b933d247a8937ab3189bb49311155b877a5347",
+                "providerKey": "v1:9b36bd5eb9eaa82c3c7cc80dbfd39986a587fab84cc8cd73e270f1e6b53df68d",
+                "modelKey": "v1:617b394766d55afa17065f71098754ae0df6f9de6ef923928ad87a4a56a1ac61",
+                "runtimeKind": "custom_runtime",
+                "modelProvider": "CUSTOM",
+                "providerName": "Unknown Cache E2E",
+                "providerDisplayName": "Unknown Cache E2E",
+                "modelIdentifier": "custom-e2e-unknown-cache",
+                "modelValue": null,
+                "modelDisplayName": "custom-e2e-unknown-cache",
+                "aggregate": {
+                  "grossInputTokens": 500,
+                  "standardInputTokens": 500,
+                  "cacheMissInputTokens": 500,
+                  "cacheReadInputTokens": 0,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 100,
+                  "reasoningOutputTokens": 0,
+                  "billableOutputTokens": 100,
+                  "totalTokens": 600,
+                  "cacheReadInputTokenRate": 0,
+                  "standardInputTokenRate": 1,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "unknown",
+                  "estimatedApiInputCost": null,
+                  "estimatedApiStandardInputCost": null,
+                  "estimatedApiCacheReadInputCost": null,
+                  "estimatedApiCacheCreationInputCost": null,
+                  "estimatedApiCacheCreation5mInputCost": null,
+                  "estimatedApiCacheCreation1hInputCost": null,
+                  "estimatedApiOutputCost": null,
+                  "estimatedApiReasoningOutputCost": null,
+                  "estimatedApiTotalCost": null,
+                  "currency": null,
+                  "apiCostStatus": "price_missing",
+                  "missingPriceDimensions": [
+                    "output",
+                    "standard_input"
+                  ],
+                  "pricingPolicyKey": null,
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-15T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "custom_runtime"
+                  ],
+                  "observedModelIdentifiers": [
+                    "custom-e2e-unknown-cache"
+                  ],
+                  "observedModelProviders": [
+                    "CUSTOM"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "MISSING",
+                  "currency": null,
+                  "missingPriceDimensions": [
+                    "output",
+                    "standard_input"
+                  ],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
+              },
+              {
+                "rowKey": "v1:5efcebc8a8c661940546cd3a223d3962f55ef833a3235de61c452972f10cef80:CURRENCY:USD",
+                "identityKey": "v1:5efcebc8a8c661940546cd3a223d3962f55ef833a3235de61c452972f10cef80",
+                "providerKey": "v1:e6c11ae3a5efe172f199cc2453db7aca20c453f13918d565d44f3f8d54213f96",
+                "modelKey": "v1:d5579ec4e56bac07fa6476275f4f5d994cf41a0130a5998296f697659bb86814",
+                "runtimeKind": "autobyteus",
+                "modelProvider": "OPENAI",
+                "providerName": "Zero Cache E2E",
+                "providerDisplayName": "Zero Cache E2E",
+                "modelIdentifier": "gpt-e2e-zero-cache",
+                "modelValue": null,
+                "modelDisplayName": "Zero Cache E2E:gpt-e2e-zero-cache",
+                "aggregate": {
+                  "grossInputTokens": 500,
+                  "standardInputTokens": 500,
+                  "cacheMissInputTokens": 500,
+                  "cacheReadInputTokens": 0,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 100,
+                  "reasoningOutputTokens": 0,
+                  "billableOutputTokens": 100,
+                  "totalTokens": 600,
+                  "cacheReadInputTokenRate": 0,
+                  "standardInputTokenRate": 1,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "zero_reported",
+                  "estimatedApiInputCost": 0.01,
+                  "estimatedApiStandardInputCost": 0.01,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.01,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.02,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
+                  "missingPriceDimensions": [],
+                  "pricingPolicyKey": "e2e-usd-policy",
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-15T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-zero-cache"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "COMPLETE",
+                  "currency": "USD",
+                  "missingPriceDimensions": [],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
+              },
+              {
+                "rowKey": "v1:72835751044cc098678b618f10db37a8270a954430bbd0a6d33f854fd44b2273:CURRENCY:USD",
+                "identityKey": "v1:72835751044cc098678b618f10db37a8270a954430bbd0a6d33f854fd44b2273",
+                "providerKey": "v1:66dfcc3d26ca52f4d7392199ab59964e88bd239254e7fa8bba284799e8cbf0f0",
+                "modelKey": "v1:aafdb44b460b62312a2b183febabf64374e3f16d745222ccd05bcc13676a7800",
+                "runtimeKind": "autobyteus",
+                "modelProvider": "OPENAI",
+                "providerName": "No Cache Report E2E",
+                "providerDisplayName": "No Cache Report E2E",
+                "modelIdentifier": "gpt-e2e-no-cache-report",
+                "modelValue": null,
+                "modelDisplayName": "No Cache Report E2E:gpt-e2e-no-cache-report",
+                "aggregate": {
+                  "grossInputTokens": 500,
+                  "standardInputTokens": 500,
+                  "cacheMissInputTokens": 500,
+                  "cacheReadInputTokens": 0,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 100,
+                  "reasoningOutputTokens": 0,
+                  "billableOutputTokens": 100,
+                  "totalTokens": 600,
+                  "cacheReadInputTokenRate": 0,
+                  "standardInputTokenRate": 1,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "not_reported",
+                  "estimatedApiInputCost": 0.01,
+                  "estimatedApiStandardInputCost": 0.01,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.01,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.02,
+                  "currency": "USD",
+                  "apiCostStatus": "estimated",
+                  "missingPriceDimensions": [],
+                  "pricingPolicyKey": "e2e-usd-policy",
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-15T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-no-cache-report"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
                   ],
                   "__typename": "TokenUsageCostSummaryAggregateGraphql"
                 },
@@ -25357,6 +25774,132 @@
                     "output",
                     "standard_input"
                   ],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
+              },
+              {
+                "rowKey": "v1:85b833a29ba2d1d51ea0c95182afa815ce28a6a298e9949b001e641ec72bb464:LOCAL",
+                "identityKey": "v1:85b833a29ba2d1d51ea0c95182afa815ce28a6a298e9949b001e641ec72bb464",
+                "providerKey": "v1:ed4a7da6fa37627a4ab3d564294d101e41edd9b5a33d85acbc25429b4734f3a3",
+                "modelKey": "v1:f868353e4b6a5a0f2e95f0c0730f456b073c05a2874d3b2d9d63e1b283efcc69",
+                "runtimeKind": "ollama",
+                "modelProvider": "OLLAMA",
+                "providerName": "Local E2E",
+                "providerDisplayName": "Local E2E",
+                "modelIdentifier": "local-e2e",
+                "modelValue": null,
+                "modelDisplayName": "local-e2e",
+                "aggregate": {
+                  "grossInputTokens": 400,
+                  "standardInputTokens": 400,
+                  "cacheMissInputTokens": 400,
+                  "cacheReadInputTokens": 0,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 80,
+                  "reasoningOutputTokens": 0,
+                  "billableOutputTokens": 80,
+                  "totalTokens": 480,
+                  "cacheReadInputTokenRate": 0,
+                  "standardInputTokenRate": 1,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "unsupported_or_local",
+                  "estimatedApiInputCost": 0,
+                  "estimatedApiStandardInputCost": 0,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0,
+                  "currency": null,
+                  "apiCostStatus": "local_no_api_bill",
+                  "missingPriceDimensions": [],
+                  "pricingPolicyKey": null,
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-15T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "ollama"
+                  ],
+                  "observedModelIdentifiers": [
+                    "local-e2e"
+                  ],
+                  "observedModelProviders": [
+                    "OLLAMA"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "LOCAL",
+                  "currency": null,
+                  "missingPriceDimensions": [],
+                  "__typename": "TokenUsageAnalyticsCostQualityGraphql"
+                },
+                "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
+              },
+              {
+                "rowKey": "v1:b52c23f8d19fe03109430e0f18bd3cae28ba706c2a6dfd56bba5d5d64dae2030:CURRENCY:EUR",
+                "identityKey": "v1:b52c23f8d19fe03109430e0f18bd3cae28ba706c2a6dfd56bba5d5d64dae2030",
+                "providerKey": "v1:ad30a38e17e235db1bce886c437f719eff0552f2bd9a360289c4d52d5a29c714",
+                "modelKey": "v1:146abf943c486d9a4145975f4b1119091e240fbaa61384e7da3867af51a23ad1",
+                "runtimeKind": "autobyteus",
+                "modelProvider": "OPENAI",
+                "providerName": "Euro E2E",
+                "providerDisplayName": "Euro E2E",
+                "modelIdentifier": "gpt-e2e-eur",
+                "modelValue": null,
+                "modelDisplayName": "Euro E2E:gpt-e2e-eur",
+                "aggregate": {
+                  "grossInputTokens": 300,
+                  "standardInputTokens": 300,
+                  "cacheMissInputTokens": 300,
+                  "cacheReadInputTokens": 0,
+                  "cacheCreationInputTokens": 0,
+                  "cacheCreation5mInputTokens": 0,
+                  "cacheCreation1hInputTokens": 0,
+                  "outputTokens": 60,
+                  "reasoningOutputTokens": 0,
+                  "billableOutputTokens": 60,
+                  "totalTokens": 360,
+                  "cacheReadInputTokenRate": 0,
+                  "standardInputTokenRate": 1,
+                  "cacheCreationInputTokenRate": 0,
+                  "cacheState": "not_reported",
+                  "estimatedApiInputCost": 0.02,
+                  "estimatedApiStandardInputCost": 0.02,
+                  "estimatedApiCacheReadInputCost": 0,
+                  "estimatedApiCacheCreationInputCost": 0,
+                  "estimatedApiCacheCreation5mInputCost": 0,
+                  "estimatedApiCacheCreation1hInputCost": 0,
+                  "estimatedApiOutputCost": 0.01,
+                  "estimatedApiReasoningOutputCost": 0,
+                  "estimatedApiTotalCost": 0.03,
+                  "currency": "EUR",
+                  "apiCostStatus": "estimated",
+                  "missingPriceDimensions": [],
+                  "pricingPolicyKey": "e2e-eur-policy",
+                  "selectedPricingTierId": null,
+                  "usageReportCount": 1,
+                  "updatedAt": "2026-08-15T12:00:00.000Z",
+                  "observedRuntimeKinds": [
+                    "autobyteus"
+                  ],
+                  "observedModelIdentifiers": [
+                    "gpt-e2e-eur"
+                  ],
+                  "observedModelProviders": [
+                    "OPENAI"
+                  ],
+                  "__typename": "TokenUsageCostSummaryAggregateGraphql"
+                },
+                "costQuality": {
+                  "kind": "COMPLETE",
+                  "currency": "EUR",
+                  "missingPriceDimensions": [],
                   "__typename": "TokenUsageAnalyticsCostQualityGraphql"
                 },
                 "__typename": "TokenUsageAnalyticsBreakdownRowGraphql"
@@ -60170,22 +60713,37 @@
   "cleanup": {
     "frontend": {
       "status": "terminated",
-      "pid": 18598,
+      "pid": 12633,
       "exitCode": null,
       "signalCode": "SIGTERM"
     },
     "backend": {
       "status": "terminated",
-      "pid": 18518,
+      "pid": 12557,
       "exitCode": 0,
       "signalCode": null
     },
     "ownedRoot": {
       "status": "removed",
-      "path": "/tmp/autobyteus-token-statistics-e2e-AstqNK"
+      "path": "/tmp/autobyteus-token-statistics-e2e-0Mvrj9"
     }
   },
-  "failures": [],
-  "completedAt": "2026-08-29T20:07:14.204Z",
-  "result": "Pass"
+  "failures": [
+    {
+      "scenarioId": "TS-E2E-002",
+      "acceptanceCriteria": [
+        "AC-004",
+        "AC-009",
+        "AC-011",
+        "AC-016"
+      ],
+      "message": "Real partial-pricing daily data is rejected before the UI can render truthful monetary gaps.",
+      "expected": "A coherent PARTIAL result with the unpriced daily bucket represented as a cost-chart gap and exact price_missing evidence.",
+      "observed": [
+        "TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"
+      ]
+    }
+  ],
+  "completedAt": "2026-08-29T19:39:46.878Z",
+  "result": "Fail"
 }

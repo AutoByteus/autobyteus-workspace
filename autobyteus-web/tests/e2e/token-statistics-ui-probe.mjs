@@ -434,8 +434,13 @@ try {
       gapPoints = await page.locator('[data-point-marker]').count();
       gapPaths = await page.locator('path[data-series="daily"]').count();
       assert(gapPoints === 2 && gapPaths === 2, 'Missing monetary bucket must create truthful separated cost points/paths', { gapPoints, gapPaths });
-      const exactText = await page.locator('details').innerText();
+      const exactDisclosure = page.locator('details').filter({
+        has: page.locator('summary', { hasText: 'Exact bucket data' }),
+      }).first();
+      await exactDisclosure.locator('summary').click();
+      const exactText = await exactDisclosure.innerText();
       assert(exactText.includes('Unpriced') && exactText.includes('price_missing'), 'Exact bucket evidence does not expose missing price truth', exactText);
+      await page.screenshot({ path: path.join(outputDir, 'analytics-partial-cost.png'), fullPage: true });
     }
 
     const cacheStates = {};
