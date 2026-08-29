@@ -10,28 +10,28 @@
 - Base or reference revision: Explicitly reset to `origin/personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Success. `personal` and `origin/personal` resolved to the same commit when the worktree was created; after the user clarification, the task branch was explicitly hard-reset to `origin/personal` and verified clean.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-007`
-- Investigation status: RV-006 reviewed; canonical axis/stem clarification and prior RV-005 hierarchy decisions incorporated; input terminology and Detailed-usage placement remain pending
+- Current requirements revision ID: `RER-009`
+- Investigation status: RV-007 focused direction is user-confirmed; DEC-001–DEC-009 are resolved, including the later explicit CSV-export removal; exact Final Prototype handoff is ready
 
 ## Initial Request And Clarifications
 
 - Original request: “the current token statistics page looks so ugly. its very unprofessional. here we need better ui” with two current-state screenshots.
-- Clarifications received: The user confirmed `origin/personal` as the required source baseline; selected a point-marked line instead of daily bars; required explicit labeled chart axes and removal of confusing short vertical point stems; removed all visible prior-period comparison messaging, the standalone contributor presentation, and all visible `driver` terminology; prioritized monthly/daily Tokens/Cost and cache-aware token composition; and retained exact identity evidence only as secondary `Detailed usage`.
+- Clarifications received: The user confirmed `origin/personal`; selected focused Analytics and light Run-details unification; selected six equal summary columns (Total tokens, Uncached input, Cached input, Output, Estimated API cost, Cache hit rate); removed Input/Output ratio, prior comparison, contributor/driver presentation, point stems/top chart ceiling, and Export CSV; selected the open-top point-marked line with explicit axes/one midpoint guide; kept `Detailed usage` visibly present with visible grouping; and requested final UI/UX plus final screenshots.
 - User-supplied facts and constraints: The current visible result is unacceptable on visual/professional-quality grounds. Cache rate is especially important to the price-sensitive use case. No proposed UI fact may be invented outside the current source-pin data contracts.
-- Initial ambiguity: The remaining material choices are the precise standard-input label, whether `Detailed usage` and Runtime/Provider/Model grouping stay always visible or move behind deeper disclosure, filter disclosure, and Run-details restyle extent.
+- Initial ambiguity: No behavior-defining decision remains. Final Prototype artifacts, validation, and final user confirmation remain process gates.
 
 ## Product And Domain Understanding
 
 - Product area: AutoByteus web/Electron Settings > Token Statistics.
 - Affected actors or systems: Token-usage viewers, evidence-oriented users, run investigators, frontend presentation, localization/accessibility behavior.
-- Existing user or operational purpose: Explain monthly/daily observed token use or estimated spend, expose cache-aware token composition and exact evidence/CSV, and retain a distinct creation-time/lifetime Run-details investigation workflow. Runtime/model identity is secondary; visible contributor/driver and prior-period comparison presentation is removed.
+- Existing user or operational purpose: Explain monthly/daily observed token use or estimated spend, expose cache-aware token composition and exact on-page evidence, and retain a distinct creation-time/lifetime Run-details investigation workflow. Runtime/model identity is secondary; visible contributor/driver, prior-period comparison, Input/Output ratio, and CSV export are removed.
 - Relevant terminology:
   - **Analytics:** Observation-time calendar-period projection and comparison.
   - **Run details:** Runs selected by creation time (or established fallback), displaying lifetime totals.
   - **Coverage:** Whether analytical tracking fully or partially covers the selected UTC period.
   - **Cost quality:** Complete, partial, missing, local/no-bill, or mixed-currency evidence.
   - **Primary exact facts:** Total tokens/spend, total input, standard input, cached-read input, cache hit rate/state, output, cost/coverage quality, and daily buckets.
-  - **Standard input:** Current `standardInputTokens` component charged at the standard/cache-miss rate; excludes cached reads and cache-write components. Final visible label remains a user decision.
+  - **Uncached input:** User-selected visible label for current `standardInputTokens`, the component charged at the standard/cache-miss rate; excludes cached reads and cache-write components.
 
 ## Source Log
 
@@ -57,6 +57,8 @@
 | 2026-08-29 | Code / Contract | `token-usage-component-basis.ts`; `token-usage-cost-summary-aggregate.ts`; generated analytics fields; current cost-breakdown UI | Define cache/input terms without invention | `standardInputTokens` is the standard/cache-miss-rate component; gross input includes standard, cache-read, and applicable cache-write components; cache hit rate is cache-read/gross input; cache states distinguish positive/zero/not-reported/unsupported/unknown | Recommend precise `Standard input` label and truthful cache-state text |
 | 2026-08-29 | Product RV-005 / exact user decisions | `requirements-visualization-review.md`; `requirement-impact.md`; RV-005 commits `fc6bace6…` and `25a7d5c…`; `validation/browser-validation.json` | Reconcile RI-001 and verify the revised presentation | Both directions remove all prior/comparison callouts, standalone contributor presentation, and visible `driver` terms; exact identity remains secondary under `Detailed usage`; 18/18 Chromium checks pass, including 29-point-line and forbidden-term checks | Canonically resolve DEC-005/006; ask only DEC-007/008 before the next focused Product revision |
 | 2026-08-29 | Product RV-006 / user chart feedback | `requirements-visualization-review.md`; RV-006 commits `0e4a0778…` and `3bd5300a…`; `validation/browser-validation.json` | Make the daily line's scale obvious and remove confusing dotted-looking marks | Both directions add explicit X/Y axis lines, a Tokens/Cost (USD) Y title, three Y labels, and five aligned UTC ticks while preserving 29 points/one line; all short vertical point stems are removed; 18/18 checks pass | Incorporate axis/unit/no-stem behavior into REQ-015/AC-015; no new contract or RI conflict |
+| 2026-08-29 | Product RV-007 / explicit user confirmation | `requirements-visualization-review.md`; RV-007 commits `726f414a…` and `578efc4e…`; focused `VIS-001/003/004/005/007/008`; validation | Close the clarification loop and determine Final Prototype readiness | User selects Uncached input, six equal summary columns, no Input/Output ratio, visible Detailed usage/grouping, open-top plot with one midpoint guide, focused filters, light Run-details unification; 18/18 passes; user calls the complete page final and requests final UI/UX/screenshots | Resolve DEC-001–DEC-008 and classify `Prototype Needed` |
+| 2026-08-29 | User | “I actually also want to delete this export to CSV functionality as well.” | Resolve whether the previously preserved local export remains | Remove the visible Export CSV control and its local CSV preparation/download functionality; do not add a replacement workflow | Record DEC-009; require Final Prototype to differ from RV-007 by omitting export |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -67,7 +69,7 @@
 | BEH-003 | User | Inspect populated Analytics | Result renders coverage, summaries, trend, pace, ranked breakdown, and exact rows | Charts complement rather than replace exact data; unsafe cost values omitted | Components/tests/prior contract | High |
 | BEH-004 | System | Loading/error/coverage/pricing/result state changes | `TokenUsageAnalyticsView` and Coverage branch on store/result states | Truthful distinct states with retry/empty guidance | Code/tests | High |
 | BEH-005 | User | Switch to Run details | Existing Run-details store query; local Task/Model selection; table components render result | Creation-time selection and lifetime totals remain intentionally different from Analytics | Code/tests/docs | High |
-| BEH-006 | Contract | Format and export result values | `Intl` formatters for visual surfaces; exact rows and CSV serialize result fields | Compact visual values and exact evidence coexist; cost quality prevents fake zero | Code/tests/data contract | High; active-locale linkage needs downstream confirmation |
+| BEH-006 | Contract | Format and expose exact result values | `Intl` formatters for visual surfaces; exact rows and the current CSV serializer expose result fields | Compact visual values and exact evidence coexist; cost quality prevents fake zero; user now removes the CSV path | Code/tests/data contract/user DEC-009 | High; active-locale linkage needs downstream confirmation |
 
 ## Relevant Codebase And Technical Facts
 
@@ -75,25 +77,25 @@
 | --- | --- | --- | --- |
 | `autobyteus-web/pages/settings.vue` | Resizable Settings navigation and content host | Redesign must tolerate variable content width and not change navigation policy | None at visualization stage |
 | `components/settings/TokenUsageStatistics.vue` | Analytics/Run-details shell and view tabs | Cohesive shell can be redesigned without changing view meaning | Whether approved polish should use a local/shared presentation primitive is downstream-owned |
-| `analytics/TokenUsageAnalyticsControls.vue` | Range/filter/metric/context/export | Control hierarchy may change; behaviors must not | Downstream owns component structure after prototype approval |
+| `analytics/TokenUsageAnalyticsControls.vue` | Range/filter/metric/context/export | Adopt focused range/filter/metric/context controls and remove Export CSV behavior | Downstream owns component structure after prototype approval |
 | `analytics/TokenUsageAnalyticsView.vue` | Result-state composition | Allows presentation recomposition while preserving result branches | Downstream validates state ownership and focus/live behavior |
 | Summary/Trend/Pace/Breakdown components | Purpose-specific rendering from one result | Visual composition/chart/table changes appear feasible within existing contract | Chart/table reuse or refactor is downstream-owned |
 | `stores/tokenUsageAnalytics.ts` | Selection, fetch sequencing, stale-result prevention | No data contract change required; preserve fetch triggers | Confirm presentation-only state does not cause new requests |
-| `TokenUsageRunDetailsView.vue` and tables | Secondary lifetime evidence workflow | Visual unification is possible but functional scope must stay bounded | Exact refactor extent depends on approved DEC-004 |
+| `TokenUsageRunDetailsView.vue` and tables | Secondary lifetime evidence workflow | Apply user-selected light shell/control/table unification while preserving all behavior | Downstream owns implementation structure |
 | Localization catalog and formatter utilities | Labels and number/cost formatting | Professional formatting and locale checks are in scope | Active-locale integration details are downstream-owned |
 
 ## Structural And Payload Surface Inventory
 
 ### Payload Or Content Surfaces
 
-- Files, records, documents, catalogs, fixtures, or generated payloads: Translation catalogs; analytics GraphQL result fields; component fixtures; CSV output; user screenshots; prior UI/UX/data-contract artifacts.
-- Existing readers, writers, or contracts that consume them: Analytics store/components; Run-details store/components; CSV serializer; localization runtime; component/E2E tests.
+- Files, records, documents, catalogs, fixtures, or generated payloads: Translation catalogs; analytics GraphQL result fields; component fixtures; current CSV output/serializer slated for removal from the user flow; user screenshots; prior UI/UX/data-contract artifacts.
+- Existing readers, writers, or contracts that consume them: Analytics store/components; Run-details store/components; current CSV serializer/tests; localization runtime; component/E2E tests.
 - Evidence paths: Requirements document Supplemental Artifacts and Codebase Facts tables.
 
 ### Structural Surfaces
 
 - Runtime modules, shared interfaces, routes, APIs, persistence boundaries, security/concurrency controls, deployment configuration, or ownership boundaries: Existing Settings page shell, Token Statistics component boundary, purpose-owned analytics components, local Pinia store, generated GraphQL type/query, Chart.js rendering, localization runtime. No backend/persistence/security/deployment surface is currently authorized to change.
-- Existing structural surfaces that can support the approved behavior: Current page already separates shell, controls, state composition, summaries, charts, breakdown, exact table, Run details, store, types, and CSV.
+- Existing structural surfaces that can support the approved behavior: Current page already separates shell, controls, state composition, summaries, charts, breakdown, exact table, Run details, store, types, and CSV logic; the final experience removes the CSV control/behavior without changing the server contract.
 - Evidence paths: `autobyteus-web/components/settings/token-usage/**`, `stores/tokenUsageAnalytics.ts`, `types/tokenUsageAnalytics.ts`, current tests.
 
 ### Potential Architecture-Design Triggers
@@ -102,7 +104,7 @@
 - Persistence schema or invariant change: Currently absent.
 - Security or privacy boundary change: Currently absent.
 - Concurrency or lifecycle change: Currently absent; fetch sequencing must be preserved.
-- Deployment, migration, ownership-boundary, architectural-pattern, or structural-refactoring change: Unknown until the approved prototype fixes the extent of shared presentation/Run-details work. No such change is required by the Draft requirements themselves.
+- Deployment, migration, ownership-boundary, architectural-pattern, or structural-refactoring change: No such change is required by the approved direction; final frontend structure still requires post-prototype routing assessment.
 - Confirmed absent, present, or unknown: `Unknown for final routing`; likely presentation-local, but assessment is not permitted until approval.
 
 ## Runtime, Probe, Or Reproduction Findings
@@ -119,7 +121,7 @@ No live product server was launched in this requirements round. The user supplie
 
 | Source / Actor | Need, Problem, Or Constraint | Evidence Strength | Requirement Implication | Open Question |
 | --- | --- | --- | --- | --- |
-| User | Current Token Statistics looks ugly and unprofessional; needs better UI | Direct, decisive | Visual hierarchy/polish is the primary outcome, not optional cleanup | Which design direction feels right? |
+| User | Current Token Statistics looks ugly/unprofessional; RV-007 focused direction is satisfying/final; Export CSV should also be deleted | Direct, decisive | Produce the final user-confirmed focused experience with the explicit post-RV-007 export removal | Final prototype confirmation only |
 | User | Bootstrap from `origin/personal` | Direct, explicit | Product bootstrap must use the pinned ref | None |
 | Prior user approvals | No redundant page title; Settings navigation resizing remains manual; analytics semantics truthful | Explicit archived approval | Preserve unless explicitly superseded | Confirm during final approval |
 | Existing tests/docs | Current actions/states/data meanings are supported contracts | Strong implementation/product evidence | Redesign must preserve behavior and update regression coverage | None material |
@@ -128,7 +130,7 @@ No live product server was launched in this requirements round. The user supplie
 
 | Contract / Dependency | Version / Authority | Relevant Behavior Or Constraint | Evidence | Unknown / Risk |
 | --- | --- | --- | --- | --- |
-| Token analytics GraphQL/data contract | Repository baseline at pinned revision; prior approved artifact | One coherent result, UTC ranges, coverage/pricing truthfulness, exact breakdown/export | Generated type/store/docs/data contract | No change authorized |
+| Token analytics GraphQL/data contract | Repository baseline at pinned revision; prior approved artifact | One coherent result, UTC ranges, coverage/pricing truthfulness, exact on-page breakdown; returned comparison may be unused | Generated type/store/docs/data contract | No server-contract change authorized; CSV is client-side removal |
 | Run-details behavior contract | Repository tests/docs | Creation-time selected runs with lifetime totals and hierarchy/cost evidence | Run-details tests/docs | Visual restyle must not blur semantics |
 | WCAG 2.1 AA | Requirements quality target | Contrast, keyboard, names, focus, non-color cues | Prior UI/UX accessibility requirements | Manual/automated verification mix downstream |
 | Chart.js | Current package | Trend, pace, and ranked visuals | Component imports/configs | Canvas accessibility relies on text/table equivalents |
@@ -139,37 +141,37 @@ No live product server was launched in this requirements round. The user supplie
 - Affected stored or external subject: No stored data change is authorized.
 - Location and representative shape: Existing run records and daily analytical projection, accessed through current backend/GraphQL contracts.
 - Approximate volume: User capture shows hundreds of millions of tokens; exact row count in representative capture is small. Requirements must remain safe for more categories/rows supported by current contract.
-- Current readers and writers: Existing token accounting backend, analytics query/store/components, Run-details query/store/components, and CSV serializer.
+- Current readers and writers: Existing token accounting backend, analytics query/store/components, Run-details query/store/components, plus current client CSV serializer/tests slated for removal or deactivation from the supported UI path.
 - Current unknown/extra-field behavior: Not relevant to presentation scope.
 - Required semantics or data that must be preserved: Exact values; coverage; cost quality/currency/status; identity; selected/comparison ranges; filter options; task hierarchy/lifetime semantics.
 - Acceptable loss, reset, rebuild, or regeneration: No data loss/reset; only transient presentational state may reset as today.
 - Privacy, retention, compliance, downtime, or operational constraints: No new upload/telemetry/share/persistence.
-- Remaining evidence gap: None for visualization; final routing depends on approved visual/interaction scope.
+- Remaining evidence gap: Final Product-owned prototype/specification/screenshots must demonstrate the approved RV-007 direction plus DEC-009 and every retained state; routing follows their user confirmation.
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — RV-006 resolves the axis/stem feedback while preserving RV-005 removals; focused terminology/detail decisions remain before the next visualization revision; likely Final Prototype afterward`
-- Decision rationale: RV-006 proves a readable explicit scale without short point stems while retaining the clean no-comparison/no-driver hierarchy and secondary exact identity. Requirements Engineering can incorporate those decisions now, but Product cannot safely finalize cache composition or Detailed-usage placement until the user resolves `DEC-007` and `DEC-008`.
-- Requirement / behavior IDs involved: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-016`; `DEC-002`, `DEC-004`, `DEC-007`, `DEC-008`.
-- Product decisions or uncertainties to resolve: `Standard input` versus `Uncached input`; always-visible secondary `Detailed usage` versus collapsed/deeper disclosure with Runtime/Provider/Model grouping; compact filter interaction; extent of Run-details restyle.
-- Critical journey and states: Open populated current month; inspect monthly token/spend total; switch Tokens/Cost and read the daily point trend; understand total/standard/cached input, cache state/rate, and output; open secondary identity detail; inspect truthful cache-unavailable states; switch to Run details; narrow the viewport/content. No prior-period presentation appears in comparable or non-comparable fixtures.
-- Known constraints and non-goals: Preserve analytics/Run-details contracts, truthfulness, accessibility, CSV, no redundant page title, manual Settings navigation; no backend/new-feature work.
+- Prototype needed: `Yes — Final Prototype`
+- Decision rationale: The user confirmed RV-007's focused Analytics and light Run-details treatment as the final direction, resolved every visualization choice, requested the final UI/UX specification and screenshots, and then explicitly removed CSV export. A production-oriented runnable final package is now required to make those decisions normative and exercise the retained state/interaction contract.
+- Requirement / behavior IDs involved: `BEH-001`–`BEH-006`; `REQ-001`–`REQ-016`; `AC-001`–`AC-016`; resolved `DEC-001`–`DEC-009`.
+- Product decisions or uncertainties to resolve: None. Product must implement/specify the approved decisions without reopening them; any infeasible or conflicting finding returns as Requirement Impact.
+- Critical journey and states: Open focused populated current month; read six equal summary columns; use focused filters; switch Tokens/Cost on the open-top daily line; inspect cache truth states; use visible Detailed usage grouping/row evidence; verify absence of ratio/comparison/driver/export; switch to lightly unified Run details and exercise Task/Model; check loading/empty/error/local/mixed/partial/full coverage and narrow widths.
+- Known constraints and non-goals: Preserve analytics/Run-details server contracts, truthfulness, accessibility, no redundant page title, manual Settings navigation; remove CSV UI/functionality; no backend/new-feature/replacement-export work.
 - Alternative evidence path / next action when no prototype is used: Not recommended; static prose would not resolve the user's visual-quality judgment.
-- Prototype request artifact / message reference: Requirements Visualization handoff delivered to Product Design; current visualizer `RV-006` at content commit `0e4a0778ee499e9dc9ea6cb13b33b7f3bb987e9e` and review metadata commit `3bd5300a3e0bee3efed331e02ed2218c74a7e30e`; `RI-001` at `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md`; Product ticket remains blocked pending the focused terminology/detail decisions.
+- Prototype request artifact / message reference: RV-007 user-confirmed review at content commit `726f414a4f1acf2e32e859c7b6e8a90584d1b6d6`, metadata commit `578efc4e3d4929fcce55e1c130f1c6092fda7f44`, plus explicit post-review `DEC-009`. Requirements Engineering outcome: `Prototype Needed`, Mode `Final Prototype`.
 - Established separate prototype repository/root and ticket reference, when applicable: Canonical repository `/home/autobyteus/workspace/autobyteus-web-prototype`; Product worktree `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001`; ticket `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md`; ticket branch `prototype/reqpkg-tsui-001`.
 
 ## Prototype Findings
 
 - Prototype package path: `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001`
 - Approved UI/UX specification path: `N/A — exploratory Requirements Visualization mode; no final ui-ux-spec.md`
-- Review URL: Direction A `http://127.0.0.1:3262/?direction=focus`; Direction B `http://127.0.0.1:3262/?direction=dense`; deterministic scenes may append `&scene=comparable`, `filters`, `evidence`, `runs`, or `narrow`.
-- Explicit user-confirmation reference: Daily point-marked trend, explicit axis/unit, zero point stems, and the no-prior/no-contributor/no-driver hierarchy are recorded; no overall approval. RV-006 is exploratory only.
-- Journeys and scenarios validated: Partial/no-comparison-data and full/comparable fixtures with no visible comparison messaging, filters, exact evidence, Run details, constrained desktop, actual 390×844 narrow viewport, export feedback, and keyboard navigation/resizing.
+- Review URL: User-selected Direction A `http://127.0.0.1:3262/?direction=focus`; dense Direction B is rejected historical comparison; deterministic scenes may append `&scene=comparable`, `filters`, `evidence`, `runs`, or `narrow`.
+- Explicit user-confirmation reference: On 2026-08-29 the user stated they were satisfied with Analytics and Run details, called focused RV-007 the final direction to implement, requested final UI/UX plus final screenshots, then explicitly removed Export CSV. Final Prototype itself is not yet approved because it does not yet exist.
+- Journeys and scenarios validated: RV-007 validates partial/full, comparable/no-comparison presentation, filters, exact evidence, Run details, constrained desktop, actual 390×844, historical export feedback, and keyboard navigation/resizing. Final Prototype must add a negative CSV/export assertion and broader retained-state evidence.
 - Final visual-reference paths: `N/A — VIS-001–VIS-008 are exploratory only`; directory `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references`.
-- Product decisions supported by evidence: RV-003 proves current-contract feasibility; RV-004 resolves the daily point-marked line; RV-005 validates the removal of visible prior/comparison and contributor/driver presentation while retaining exact identity only as secondary `Detailed usage`; RV-006 adds explicit axes/unit/ticks and removes confusing point stems. RI-001 proves the preferred monthly/daily/cache-composition facts exist without backend changes.
-- Alternatives rejected or still open: RV-001 review chrome, unsupported `Runs` count, daily bars/fill, unlabeled/floating Y values, short vertical point stems, every visible prior-period comparison message, standalone contributor presentation, and all visible `driver` terms are rejected. Input label, Detailed-usage placement/grouping, filters, and Run-details extent remain open.
-- Mocked boundaries and production gaps: Synthetic local totals, costs, coverage/pricing, filters, drivers, runs, CSV feedback, and navigation width; no backend, persistence, production services/data, or file-writing export. Loading/error/empty/local/mixed/localization permutations remain protected by the accepted baseline rather than duplicated.
-- Requirements sections affected: Problem/success, BEH-003, use cases, REQ-002/004–006/012/016, AC-001/003–006/011/016, scenarios, UI/Experience, open decisions, readiness, and revision history.
+- Product decisions supported by evidence: RV-003 proves current-contract feasibility; RV-004 selects the daily point-marked line; RV-005 removes comparison/contributor/driver presentation; RV-006 adds conventional axes and removes stems; RV-007 selects six equal cache-aware columns, `Uncached input`, no ratio/top ceiling, visible Detailed usage/grouping, focused filters, and light Run-details unification. DEC-009 then removes CSV.
+- Alternatives rejected or still open: Rejected: RV-001 review chrome, dense Direction B, unsupported `Runs` count, bars/fill, floating Y labels, stems/top ceiling, prior comparison, contributor/driver terms, Input/Output ratio, oversized Total column, collapsed Detailed usage, full Run-details restructuring, and Export CSV/replacement workflow. No product choice remains open.
+- Mocked boundaries and production gaps: Synthetic totals, costs, coverage/pricing, filters, detailed rows, runs, CSV feedback, and navigation width; no backend, persistence, production services/data, or file-writing export. Final Prototype must replace exploratory coverage with normative UI/UX, final screenshots, retained-state validation, and explicit CSV absence.
+- Requirements sections affected: Entire UI approval basis; BEH-002/003/005/006; REQ-002/003/006/008/012/013/015/016; AC-001/002/005/006/008/010–012/015/016; scenarios; decisions; readiness; revision history.
 
 ## Supplemental Artifact Inventory
 
@@ -178,28 +180,29 @@ No live product server was launched in this requirements round. The user supplie
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/requirements_engineering_team_a245406e04604ce28e52af265218b458/requirements_engineer_9dd659bd74f940469dd4932c55ebf19d/context_files/ctx_7a228aa2bc49__image.png` | User | Current populated Analytics evidence | Rejected top/mid layout | REQ-001–REQ-005, AC-001–AC-004 | Current-state evidence | Not a desired-state approval |
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_71b4437ade9940c4912d2d7a39ea7186/requirements_engineering_team_a245406e04604ce28e52af265218b458/requirements_engineer_9dd659bd74f940469dd4932c55ebf19d/context_files/ctx_38f329cd9412__image.png` | User | Current breakdown/table evidence | Rejected data-density layout | REQ-006–REQ-009, AC-005–AC-008 | Current-state evidence | Not a desired-state approval |
 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/ui-ux-spec.md` | Prior project | Preserve behavior semantics and document current visual baseline | Analytics | REQ-002–REQ-012 | Visual treatment superseded | Semantics remain approved |
-| `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Prior project | Truthful field/source contract | Analytics evidence | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Preserved | Previously approved |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md` | Product Design & Prototyping | Ticket, repository lineage, revisions, and review/impact state | RV-006 / RI-001 | REQ-001–REQ-016 | Blocked pending focused Requirements decisions | External Product artifact; not overall requirements approval |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | Product Design & Prototyping | Review URLs, state coverage, feasibility/trend/axis validation, user-directed removals, limitations, and impact state | RV-006 / RI-001 | REQ-001–REQ-016; DEC-001–DEC-008 | Awaiting focused user decision | REQ-015 and DEC-005/006 clarified; exploratory only |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/validation/browser-validation.json` | Product Design & Prototyping | Deterministic browser checks including axes/unit/ticks, daily-line/point/stem, and forbidden-term assertions | RV-006 | REQ-004–REQ-006, REQ-009, REQ-011, REQ-015 | PASS 18/18 | Supporting evidence; not final approval |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Product Design & Prototyping | Direction/state visual evidence including explicit daily axes, zero stems, and user-directed removals | VIS-001–VIS-008 / RV-006 | REQ-001–REQ-016 | Retained exploratory evidence | Non-normative until remaining decisions/final prototype |
+| `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/done/token-statistics-analytics/token-usage-analytics-data-contract.md` | Prior project | Truthful field/source contract | Analytics evidence | REQ-005, REQ-006, REQ-008, REQ-010, REQ-012 | Partially superseded | Data meanings preserved; CSV presentation/export superseded by DEC-009 |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/prototype-ticket.md` | Product Design & Prototyping | Ticket, repository lineage, revisions, user confirmation, and Final Prototype request state | RV-007 / Prototype Needed | REQ-001–REQ-016 | In Progress | External Product artifact; final package pending |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirements-visualization-review.md` | Product Design & Prototyping | User-confirmed focused direction, state coverage, validation, limitations, and Final Prototype request | RV-007 | REQ-001–REQ-016; DEC-001–DEC-008 | User Confirmed — Final Prototype Requested | Exploratory direction evidence; DEC-009 added afterward |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/validation/browser-validation.json` | Product Design & Prototyping | Equal-column, cache-coherence, open-top-line, responsive, Run-details, and forbidden-term assertions | RV-007 | REQ-002–REQ-016 | PASS 18/18 | Supporting direction evidence; no DEC-009 assertion yet |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/visual-references` | Product Design & Prototyping | Focused and historical dense direction/state evidence | VIS-001–VIS-008 / RV-007 | REQ-001–REQ-016 | Focus user-confirmed; retained exploratory evidence | Non-normative until Final Prototype; DEC-009 delta required |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/implementation-feasibility-audit.md` | Product Design & Prototyping | Map every remaining proposed fact/action to current contracts and record unsupported-field correction | FA-001 / RV-003 | REQ-002–REQ-013 | PASS | Supporting evidence; not a final implementation design |
 | `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/validation/contract-feasibility-audit.txt` | Product Design & Prototyping | Machine-readable source-pin contract checks | RV-003 | REQ-002–REQ-013 | PASS | Supporting evidence |
-| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md` | Product Design & Prototyping | RI-001 user-priority conflict, RV-005 removal record, and feasible cache-composition mapping | RI-001 / RV-005 | REQ-002, REQ-004–REQ-006, REQ-012, REQ-016 | Canonical removals resolved; terminology/detail pending | Blocks final direction until DEC-007/008 resolve |
+| `/home/autobyteus/workspace/autobyteus-web-prototype-worktrees/REQPKG-TSUI-001/tickets/in-progress/REQPKG-TSUI-001/requirement-impact.md` | Product Design & Prototyping | RI-001 conflict and feasible cache-composition mapping | RI-001 / RV-005–RV-007 | REQ-002, REQ-004–REQ-006, REQ-012, REQ-016 | Resolved | Retained traceability evidence |
 
 ## Assumptions, Unknowns, And Risks
 
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| ASM-001 | Assumption | Scope includes visual coherence for Run details, with Analytics primary. | Avoids a split-quality page but affects size. | Visualization review / user | Open |
-| ASM-002 | Assumption | Functional/data semantics remain unchanged. | Prevents UI complaint from becoming an unapproved analytics feature expansion. | Requirements approval / user | Strongly supported, open |
-| UNK-001 | Unknown | Preferred filter disclosure, Detailed-usage placement, and Run-details restyle among credible alternatives. | Determines the final interaction density and package scope. | Product visualizer + user | Open |
+| ASM-001 | Assumption | Scope includes light visual coherence for Run details, with Analytics primary. | Avoids a split-quality page but affects size. | Visualization review / user | Confirmed — RV-007 |
+| ASM-002 | Assumption | Functional/data semantics remain unchanged except explicit visible/CSV removals. | Prevents UI work from becoming an unapproved analytics feature expansion. | Requirements approval / user | Confirmed — RV-007 and DEC-009 |
+| UNK-001 | Unknown | Preferred filter disclosure, Detailed-usage placement, and Run-details restyle among credible alternatives. | Determines the final interaction density and package scope. | Product visualizer + user | Resolved — focused RV-007 |
 | RSK-001 | Risk | Over-simplification could hide coverage/pricing evidence. | Trustworthiness is the existing feature's main invariant. | Requirements/Product/validation | Active |
-| RSK-002 | Risk | A polished primary view could leave Run details visibly legacy or expand scope excessively. | Requires explicit DEC-004 choice. | User | Active |
+| RSK-002 | Risk | A polished primary view could leave Run details visibly legacy or expand scope excessively. | Light unification must remain visual and preserve behavior. | Final Prototype validation | Mitigated by DEC-004; verify |
 | RSK-003 | Risk | Formatter cleanup could round an exact evidence surface or mismatch active locale. | Could reduce trust while improving appearance. | Downstream verification | Active |
 | RSK-004 | Risk | A responsive exact table may reintroduce inaccessible hidden data. | Exact evidence must remain exhaustive and keyboard/touch reachable. | Product Design/downstream validation | Active |
-| UNK-002 | Unknown | Final standard-input label and whether `Detailed usage` with Runtime/Provider/Model grouping stays visible or moves behind deeper disclosure. | Determines the next focused revision and prevents Product from inventing misleading terminology/hierarchy. | User / Requirements Engineering | Open — DEC-007/DEC-008 |
-| RSK-005 | Risk | Labeling `standardInputTokens` simply `Uncached input` may imply it includes cache-write tokens, which it does not. | Price-sensitive composition must reconcile truthfully. | User decision DEC-007; helper definition mandatory | Active |
+| UNK-002 | Unknown | Final standard-input label and Detailed-usage placement. | Prevents misleading terminology/hierarchy. | User / Requirements Engineering | Resolved — DEC-007/DEC-008 |
+| RSK-005 | Risk | `Uncached input` may imply inclusion of cache-write tokens, which `standardInputTokens` excludes. | Price-sensitive composition must reconcile truthfully. | Mandatory supporting definition and contract fixtures | Active verification risk |
+| RSK-006 | Risk | Removing the visible Export button without removing its supported behavior/tests—or removing shared analytics behavior accidentally—would leave an inconsistent contract. | DEC-009 requires complete client-path removal with no backend/query regression. | Final Prototype/downstream validation | Active |
 
 ## Requirement Implications
 
@@ -208,13 +211,14 @@ No live product server was launched in this requirements round. The user supplie
 - Absence states are currently truthful but visually over-weighted; future treatment must preserve text while reducing dead space.
 - The exact table is both an accessibility/evidence surface and a visual-density problem. The redesign may prioritize or disclose secondary columns, but cannot delete their information.
 - Prior user decisions about the page title and manual Settings navigation remain constraints.
-- Interactive product evidence is required before the requirements package can be approved.
+- User-confirmed exploratory evidence is complete; a separate final normative prototype/specification/screenshot package is now required before the requirements package can be approved.
 - Monthly/daily Tokens/Cost and cache-aware composition replace contributor ranking as the primary hierarchy. Exact identity remains secondary under `Detailed usage`; returned comparison data is not rendered.
+- CSV export is no longer a preserved capability; exact evidence remains available on-page.
 
 ## Notes For Downstream Architecture Design Or Direct Implementation
 
 - Current evidence suggests the approved change may fit existing frontend ownership: page shell, purpose-owned analytics components, store, localization, chart rendering, and existing tests. This is not a final routing assessment.
-- Preserve one-result coherence, fetch sequencing, cost/coverage decisions, exact data, and CSV. Do not solve visual layout by splitting the result across independently timed queries.
+- Preserve one-result coherence, fetch sequencing, cost/coverage decisions, and exact on-page data. Remove CSV without splitting the result across independently timed queries or affecting analytics selection behavior.
 - Confirm any presentation-state interactions (metric, grouping, disclosure, view changes) do not create unapproved network calls or reset selections.
-- Verify locale-aware formatter ownership before changing behavior; exact tables/export and compact summaries have intentionally different precision requirements.
+- Verify locale-aware formatter ownership before changing behavior; exact on-page evidence and compact summaries have intentionally different precision requirements.
 - The final route will be assessed after visualization, any final prototype, and explicit user approval. Do not infer a direct route from the Draft package.
