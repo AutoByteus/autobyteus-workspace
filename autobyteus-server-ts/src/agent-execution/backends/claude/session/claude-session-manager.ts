@@ -17,10 +17,15 @@ import {
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
+import type {
+  AgentToolMcpRunSessionActivator,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
-  getAgentToolMcpSessionService,
-  type AgentToolMcpSessionService,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+  getClaudeWorkspaceSkillMaterializer,
+} from "../claude-workspace-skill-materializer.js";
+import type {
+  WorkspaceSkillMaterializer,
+} from "../../shared/workspace-skill-materializer.js";
 export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
 
@@ -30,7 +35,7 @@ export class ClaudeSessionManager {
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
   private readonly activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
   private readonly sdkClient: ClaudeSdkClient;
-  private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
+  private readonly agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
   private readonly toolingCoordinator = new ClaudeSessionToolUseCoordinator(
     new Map(),
     new Map(),
@@ -39,14 +44,22 @@ export class ClaudeSessionManager {
   private readonly sessionCleanup: ClaudeSessionCleanup;
 
   constructor(
+    agentToolMcpRunSessions: AgentToolMcpRunSessionActivator,
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
+    workspaceSkillMaterializer: WorkspaceSkillMaterializer =
+      getClaudeWorkspaceSkillMaterializer(),
   ) {
+    if (!agentToolMcpRunSessions) {
+      throw new Error("Claude Agent Tools MCP run-session activator is required.");
+    }
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
-    this.agentToolMcpSessionService = agentToolMcpSessionService;
-    this.sessionCleanup = new ClaudeSessionCleanup(this.toolingCoordinator);
+    this.agentToolMcpRunSessions = agentToolMcpRunSessions;
+    this.sessionCleanup = new ClaudeSessionCleanup(
+      this.toolingCoordinator,
+      workspaceSkillMaterializer,
+    );
   }
 
   async createRunSession(
@@ -159,18 +172,9 @@ export class ClaudeSessionManager {
       sdkClient: this.sdkClient,
       activeQueriesByRunId: this.activeQueriesByRunId,
       toolingCoordinator: this.toolingCoordinator,
-      agentToolMcpSessionService: this.agentToolMcpSessionService,
+      agentToolMcpRunSessions: this.agentToolMcpRunSessions,
       isRunSessionActive: () => this.sessions.has(runId),
       terminateRunSession: () => this.terminateRun(runId),
     };
   }
 }
-
-let cachedClaudeSessionManager: ClaudeSessionManager | null = null;
-
-export const getClaudeSessionManager = (): ClaudeSessionManager => {
-  if (!cachedClaudeSessionManager) {
-    cachedClaudeSessionManager = new ClaudeSessionManager();
-  }
-  return cachedClaudeSessionManager;
-};

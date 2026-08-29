@@ -1,0 +1,44 @@
+DR-009 v1.4.62 rollout validation
+checked_at=2026-08-28T14:33:10Z
+ticket_final_commit=744fcc2c1ec1b1af774c39aa420be17b03832c05
+personal_merge_commit=29bee41a21215089e89eadc7ffe8deaf187ef24e
+release_commit=027da92cbececb7d944c5a593157cfb59e54efe0
+origin_personal=027da92cbececb7d944c5a593157cfb59e54efe0
+tag=v1.4.62
+web_version=1.4.62
+gateway_version=1.4.62
+manifest_release_tag=v1.4.62
+github_release_url=https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.62
+github_release_draft=false
+github_release_prerelease=false
+github_release_target=027da92cbececb7d944c5a593157cfb59e54efe0
+asset_count=21
+uploaded_asset_count=21
+workflow_results:
+  Android APK Release: completed/success, run 33177833046, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33177833046
+  Desktop Release: completed/success, run 33177832996, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33177832996
+  Release Messaging Gateway: completed/success, run 33177833007, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33177833007
+  Server Docker Release: completed/success, run 33177833021, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33177833021
+  iOS App Store Connect Release: completed/success, run 33177832991, https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33177832991
+asset_names:
+  autobyteus-message-gateway-1.4.62-node-generic.tar.gz
+  autobyteus-message-gateway-1.4.62-node-generic.tar.gz.json
+  autobyteus-message-gateway-1.4.62-node-generic.tar.gz.sha256
+  AutoByteus_personal_android-1.4.62-release.apk
+  AutoByteus_personal_android-1.4.62-release.apk.sha256
+  AutoByteus_personal_linux-arm64-1.4.62.AppImage
+  AutoByteus_personal_linux-x64-1.4.62.AppImage
+  AutoByteus_personal_macos-arm64-1.4.62.dmg
+  AutoByteus_personal_macos-arm64-1.4.62.dmg.blockmap
+  AutoByteus_personal_macos-arm64-1.4.62.zip
+  AutoByteus_personal_macos-arm64-1.4.62.zip.blockmap
+  AutoByteus_personal_macos-x64-1.4.62.dmg
+  AutoByteus_personal_macos-x64-1.4.62.dmg.blockmap
+  AutoByteus_personal_macos-x64-1.4.62.zip
+  AutoByteus_personal_macos-x64-1.4.62.zip.blockmap
+  AutoByteus_personal_windows-1.4.62.exe
+  latest-linux-arm64.yml
+  latest-linux.yml
+  latest-mac.yml
+  latest.yml
+  release-manifest.json

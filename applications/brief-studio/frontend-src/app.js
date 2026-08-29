@@ -1,16 +1,18 @@
-import { startHostedApplication } from "./vendor/application-frontend-sdk.js";
+import { startApplication } from "@autobyteus/application-frontend-sdk";
 import { createBriefStudioGraphqlClient } from "./generated/graphql-client.js";
 import { mountBriefStudio } from "./brief-studio-runtime.js";
 
-startHostedApplication({
+const startupHandle = startApplication({
   rootElement: document.getElementById("app-root"),
-  onBootstrapped: ({ bootstrap, applicationClient, rootElement }) => {
+  onBootstrapped: ({ runtimeBootstrap, applicationClient, rootElement }) => {
     mountBriefStudio({
       applicationClient,
-      bootstrap,
+      runtimeBootstrap,
       browserWindow: window,
       createBriefStudioGraphqlClient,
       rootElement,
     });
   },
 });
+
+window.addEventListener("pagehide", () => startupHandle.dispose(), { once: true });

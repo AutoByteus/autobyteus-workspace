@@ -1,0 +1,144 @@
+# CRR-003 affected source and structure audit
+HEAD aa3d787b8eea47ddaf24713a568340616b1cbd79
+
+$ git diff --stat 68b845712..HEAD
+ .../application-execution-event-journal-store.ts   |  24 +-
+ ...cation-execution-event-journal-recovery.test.ts | 274 +++++++++++++++++++++
+ .../implementation-handoff.md                      |  22 +-
+ .../implementation-revision-record.md              |  21 ++
+ 4 files changed, 332 insertions(+), 9 deletions(-)
+
+$ git diff --numstat 68b845712..HEAD -- autobyteus-server-ts/src
+22	2	autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts
+
+$ rg -n ".withExistingDatabase\\(" autobyteus-server-ts/src
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:168:    const result = await this.platformStateStore.withExistingDatabase(
+autobyteus-server-ts/src/application-orchestration/stores/application-launch-override-store.ts:85:    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+autobyteus-server-ts/src/application-orchestration/stores/application-launch-override-store.ts:101:    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+
+$ rg -n "ensureTables|hasInitializedJournalState|readNextPendingRecord|getNextPendingRecordIfPresent" journal-store
+12:const ensureTables = (db: DatabaseSync): void => {
+46:const hasInitializedJournalState = (db: DatabaseSync): boolean => {
+119:    ensureTables(db);
+164:    return this.platformStateStore.withDatabase(applicationId, (db) => this.readNextPendingRecord(db, applicationId));
+167:  async getNextPendingRecordIfPresent(applicationId: string): Promise<ApplicationExecutionEventJournalRecord | null> {
+170:      (db) => this.readNextPendingRecord(db, applicationId),
+182:      ensureTables(db);
+197:      ensureTables(db);
+225:      ensureTables(db);
+251:  private readNextPendingRecord(
+255:    if (!hasInitializedJournalState(db)) {
+
+$ sed -n 105,135p;155,178p;245,295p journal-store
+            applicationIds.add(row.application_id.trim());
+          }
+        }
+      } finally {
+        db.close();
+      }
+    }
+    return Array.from(applicationIds).sort((left, right) => left.localeCompare(right));
+  }
+
+  appendEvent(
+    db: DatabaseSync,
+    event: Omit<ApplicationExecutionEventJournalEvent, "journalSequence">,
+  ): ApplicationExecutionEventJournalRecord {
+    ensureTables(db);
+    const result = db.prepare(
+      `INSERT INTO __autobyteus_execution_event_journal (
+         event_id,
+         application_id,
+         launch_request_id,
+         family,
+         published_at,
+         binding_json,
+         producer_json,
+         payload_json
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).run(
+      event.eventId,
+      event.applicationId,
+      event.binding.launchRequestId,
+      event.family,
+
+  async appendEventAwaitable(
+    applicationId: string,
+    event: Omit<ApplicationExecutionEventJournalEvent, "journalSequence">,
+  ): Promise<ApplicationExecutionEventJournalRecord> {
+    return this.platformStateStore.withTransaction(applicationId, (db) => this.appendEvent(db, event));
+  }
+
+  async getNextPendingRecord(applicationId: string): Promise<ApplicationExecutionEventJournalRecord | null> {
+    return this.platformStateStore.withDatabase(applicationId, (db) => this.readNextPendingRecord(db, applicationId));
+  }
+
+  async getNextPendingRecordIfPresent(applicationId: string): Promise<ApplicationExecutionEventJournalRecord | null> {
+    const result = await this.platformStateStore.withExistingDatabase(
+      applicationId,
+      (db) => this.readNextPendingRecord(db, applicationId),
+    );
+    return result ?? null;
+  }
+
+  async recordDispatchAttempt(
+    applicationId: string,
+    journalSequence: number,
+    attemptNumber: number,
+        attemptNumber,
+        dispatchedAt,
+      },
+    };
+  }
+
+  private readNextPendingRecord(
+    db: DatabaseSync,
+    applicationId: string,
+  ): ApplicationExecutionEventJournalRecord | null {
+    if (!hasInitializedJournalState(db)) {
+      return null;
+    }
+    const cursorRow = db
+      .prepare(
+        `SELECT last_acked_journal_sequence
+           FROM __autobyteus_execution_event_dispatch_cursor
+          WHERE singleton_id = 1`,
+      )
+      .get() as { last_acked_journal_sequence: number } | undefined;
+    if (!cursorRow) {
+      return null;
+    }
+    const lastAckedJournalSequence = cursorRow.last_acked_journal_sequence;
+    const row = db
+      .prepare(
+        `SELECT journal_sequence,
+                event_id,
+                application_id,
+                launch_request_id,
+                family,
+                published_at,
+                binding_json,
+                producer_json,
+                payload_json,
+                acked_at,
+                last_dispatch_attempt_number,
+                last_dispatched_at,
+                last_error_kind,
+                last_error_message,
+                next_attempt_after
+           FROM __autobyteus_execution_event_journal
+          WHERE application_id = ?
+            AND journal_sequence > ?
+          ORDER BY journal_sequence ASC
+          LIMIT 1`,
+      )
+      .get(applicationId, lastAckedJournalSequence) as Record<string, unknown> | undefined;
+    return row ? hydrateJournalRecord(row) : null;
+  }
+}
+
+$ effective source line count
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts: physical=295 effective_nonempty_noncomment=279
+
+$ git diff --check 68b845712..HEAD
+PASS

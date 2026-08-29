@@ -1,0 +1,23 @@
+APIE2E-STUDIO-ROUTES-003
+2026-08-22T11:05:05Z
+
+== internal Agent Tools route without session: expect 401 unauthorized ==
+HTTP/1.1 401 Unauthorized
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 49
+Date: Sat, 22 Aug 2026 11:05:05 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"unauthorized","message":"Unauthorized"}
+== Studio-only external gateway initialize: expect protocol response, not 404 ==
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 193
+Date: Sat, 22 Aug 2026 11:05:05 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{"listChanged":false},"resources":{}},"serverInfo":{"name":"autobyteus_mcp_gateway","version":"0.1.0"}}}

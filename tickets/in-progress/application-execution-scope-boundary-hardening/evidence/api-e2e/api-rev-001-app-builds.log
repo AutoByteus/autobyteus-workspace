@@ -1,0 +1,64 @@
+### Brief build
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:33086) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:29.121Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:29.122Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T22:36:29.122Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/brief-studio/dist/importable-package/applications/brief-studio
+### Brief validate
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:33114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:30.263Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:30.264Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T22:36:30.264Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/brief-studio/dist/importable-package
+### Brief backend typecheck
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+### Socratic build
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/socratic-math-teacher
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:33162) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:32.742Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:32.742Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T22:36:32.743Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/socratic-math-teacher/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher
+### Socratic validate
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:33189) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:33.862Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-25T22:36:33.862Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-25T22:36:33.863Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/socratic-math-teacher/dist/importable-package
+### Socratic backend typecheck
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-scope-boundary-hardening/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+

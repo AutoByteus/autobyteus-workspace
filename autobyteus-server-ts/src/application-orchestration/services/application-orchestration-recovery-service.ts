@@ -1,15 +1,12 @@
 import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import type { ApplicationCatalogSnapshot } from "../../application-bundles/domain/application-catalog-snapshot.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
-import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
-import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
-import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
-import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
-import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
-import {
-  ApplicationRunBindingTerminalTransitionService,
-  getApplicationRunBindingTerminalTransitionService,
-} from "./application-run-binding-terminal-transition-service.js";
+import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
+import type { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
+import type { ApplicationRunObserverService } from "./application-run-observer-service.js";
+import type { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
+import type { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+import type { ApplicationRunBindingTerminalTransitionService } from "./application-run-binding-terminal-transition-service.js";
 
 export type ApplicationRecoveryOutcomeStatus = "RECOVERED" | "QUARANTINED" | "NO_PERSISTED_STATE";
 
@@ -28,68 +25,44 @@ const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] 
   );
 
 export class ApplicationOrchestrationRecoveryService {
-  private static instance: ApplicationOrchestrationRecoveryService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationOrchestrationRecoveryService>[0] = {},
-  ): ApplicationOrchestrationRecoveryService {
-    if (!ApplicationOrchestrationRecoveryService.instance) {
-      ApplicationOrchestrationRecoveryService.instance = new ApplicationOrchestrationRecoveryService(dependencies);
-    }
-    return ApplicationOrchestrationRecoveryService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationOrchestrationRecoveryService.instance = null;
-    cachedApplicationOrchestrationRecoveryService = null;
-  }
-
   constructor(
     private readonly dependencies: {
-      applicationBundleService?: ApplicationBundleService;
-      platformStateStore?: ApplicationPlatformStateStore;
-      bindingStore?: ApplicationRunBindingStore;
-      lookupStore?: ApplicationRunLookupStore;
-      runObserverService?: ApplicationRunObserverService;
-      ingressService?: ApplicationExecutionEventIngressService;
-      terminalTransitionService?: ApplicationRunBindingTerminalTransitionService;
-    } = {},
+      applicationBundleService: ApplicationBundleService;
+      platformStateStore: ApplicationPlatformStateStore;
+      bindingStore: ApplicationRunBindingStore;
+      lookupStore: ApplicationRunLookupStore;
+      runObserverService: ApplicationRunObserverService;
+      ingressService: ApplicationExecutionEventIngressService;
+      terminalTransitionService: ApplicationRunBindingTerminalTransitionService;
+    },
   ) {}
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService;
   }
 
   private get platformStateStore(): ApplicationPlatformStateStore {
-    return this.dependencies.platformStateStore ?? new ApplicationPlatformStateStore();
+    return this.dependencies.platformStateStore;
   }
 
   private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+    return this.dependencies.bindingStore;
   }
 
   private get lookupStore(): ApplicationRunLookupStore {
-    return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
+    return this.dependencies.lookupStore;
   }
 
   private get runObserverService(): ApplicationRunObserverService {
-    return this.dependencies.runObserverService ?? getApplicationRunObserverService();
+    return this.dependencies.runObserverService;
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
-    return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
+    return this.dependencies.ingressService;
   }
 
   private get terminalTransitionService(): ApplicationRunBindingTerminalTransitionService {
-    if (this.dependencies.terminalTransitionService) return this.dependencies.terminalTransitionService;
-    if (this.dependencies.bindingStore || this.dependencies.lookupStore || this.dependencies.ingressService) {
-      return new ApplicationRunBindingTerminalTransitionService({
-        bindingStore: this.bindingStore,
-        lookupStore: this.lookupStore,
-        ingressService: this.ingressService,
-      });
-    }
-    return getApplicationRunBindingTerminalTransitionService();
+    return this.dependencies.terminalTransitionService;
   }
 
   async resumeBindings(
@@ -176,12 +149,3 @@ export class ApplicationOrchestrationRecoveryService {
     }
   }
 }
-
-let cachedApplicationOrchestrationRecoveryService: ApplicationOrchestrationRecoveryService | null = null;
-
-export const getApplicationOrchestrationRecoveryService = (): ApplicationOrchestrationRecoveryService => {
-  if (!cachedApplicationOrchestrationRecoveryService) {
-    cachedApplicationOrchestrationRecoveryService = ApplicationOrchestrationRecoveryService.getInstance();
-  }
-  return cachedApplicationOrchestrationRecoveryService;
-};

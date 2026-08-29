@@ -1,0 +1,17 @@
+# API-REV-007 cleanup
+UTC 2026-07-30T05:48:02Z
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+absent applications/brief-studio/.autobyteus
+absent autobyteus-application-devkit/dist
+absent autobyteus-application-devkit/.tmp-api-rev-007-start.mjs
+absent autobyteus-application-devkit/.tmp-api-rev-007-capture.mjs
+task-processes
+## Final artifact checks
+UTC 2026-07-30T05:52:47Z
+git_diff_check PASS
+json_parse_check PASS
+canonical_trailing_whitespace_check PASS
+secret_pattern_check PASS

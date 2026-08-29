@@ -1,0 +1,395 @@
+API-REV-004 cumulative durable test delta
+HEAD=e2c9e2e4c89875c61aad57dea5a40d45832e6884
+--- name-status ---
+M	autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+D	autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+M	autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+M	autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+M	autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+M	autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+M	autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+--- stat ---
+ .../mcp/agent-tools-mcp-routes.integration.test.ts |   4 +-
+ .../team-lifecycle-websocket.integration.test.ts   | 517 ---------------------
+ ...tion-agent-communication-ws.integration.test.ts |  70 +--
+ ...on-backend-custom-websocket.integration.test.ts |   6 +-
+ ...ckend-mount-route-transport.integration.test.ts |  10 +-
+ ...application-backend-rest-ws.integration.test.ts |   6 +-
+ ...cation-context-capabilities.integration.test.ts |  64 ++-
+ .../brief-package-team-prompt.integration.test.ts  |  76 +--
+ ...ief-studio-imported-package.integration.test.ts |  10 +-
+ .../application-agent-runtime-source.test.ts       |  58 ++-
+ .../app-owned-launch-request-correlation.test.ts   | 350 +++++++-------
+ ...lished-artifact-semantic-path-resolvers.test.ts |  20 +-
+ .../socratic-lesson-target-projection.test.ts      |  19 +-
+ .../file-application-bundle-provider.test.ts       |  20 +-
+ ...tion-agent-target-authorization-service.test.ts |  13 +-
+ ...lication-orchestration-recovery-service.test.ts |  64 ++-
+ .../application-run-binding-launch-service.test.ts |  19 +-
+ 17 files changed, 410 insertions(+), 916 deletions(-)
+--- diff check ---
+durable_test_diff_check=PASS
+--- round-four exact identity hunks ---
+diff --git a/autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts b/autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+index 7dfe27273..4c5d7c388 100644
+--- a/autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+@@ -8,11 +8,9 @@ import type {
+ import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+ import {
+   TeamRunEventSourceType,
+   type TeamRunEvent,
+-  type TeamRunEventListener,
+ } from "../../../src/agent-team-execution/domain/team-run-event.js";
+-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
+ import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
+ import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
+ import { ApplicationAgentStreamRuntimeSource } from "../../../src/application-agent-streaming/services/application-agent-stream-runtime-source.js";
+@@ -60,18 +58,11 @@ const agentBinding: ApplicationAgentBindingRecord = {
+   status: "ATTACHED",
+   executionResourceRef: { source: "bundle", kind: "AGENT", localId: "agent" },
+   runtime: {
+     subject: "AGENT_RUN",
+-    runId: "agent-run",
++    agentRunId: "agent-run",
+     definitionId: "agent-definition",
+-    members: [{
+-      memberName: "agent",
+-      memberRouteKey: "agent",
+-      displayName: "Agent",
+-      teamPath: [],
+-      runId: "agent-run",
+-      runtimeKind: "AGENT",
+-    }],
++    members: [],
+   },
+   createdAt: NOW,
+   updatedAt: NOW,
+   terminatedAt: null,
+@@ -85,25 +76,21 @@ const teamBinding: ApplicationAgentBindingRecord = {
+   status: "ATTACHED",
+   executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team" },
+   runtime: {
+     subject: "TEAM_RUN",
+-    runId: "team-run",
++    teamRunId: "team-run",
+     definitionId: "team-definition",
+     members: [
+       {
+-        memberName: "researcher",
+-        memberRouteKey: "researcher",
++        memberAddress: "/researcher",
+         displayName: "Researcher",
+-        teamPath: ["researcher"],
+-        runId: "researcher-run",
++        agentRunId: "researcher-run",
+         runtimeKind: "AGENT_TEAM_MEMBER",
+       },
+       {
+-        memberName: "writer",
+-        memberRouteKey: "writer",
++        memberAddress: "/writer",
+         displayName: "Writer",
+-        teamPath: ["writer"],
+-        runId: "writer-run",
++        agentRunId: "writer-run",
+         runtimeKind: "AGENT_TEAM_MEMBER",
+       },
+     ],
+   },
+@@ -128,9 +115,9 @@ describe("Application agent communication WebSocket integration", () => {
+   let app: FastifyInstance;
+   let baseUrl: string;
+   let lifecycleHub: ApplicationRunBindingLifecycleHub;
+   let agentListeners: Set<(event: AgentRunEvent) => void>;
+-  let teamListeners: Set<TeamRunEventListener>;
++  let teamListeners: Set<(input: { event: TeamRunEvent }) => void>;
+   let agentPostUserMessage: ReturnType<typeof vi.fn>;
+   let teamPostMessage: ReturnType<typeof vi.fn>;
+   const connections: ApplicationAgentConnection[] = [];
+ 
+@@ -183,9 +170,9 @@ describe("Application agent communication WebSocket integration", () => {
+         } : null,
+       } as never,
+       teamRunManager: {
+         getActiveTeamRun: (runId: string) => runId === "team-run" ? {
+-          subscribeToEvents: (listener: TeamRunEventListener) => {
++          subscribeToEvents: (listener: (input: { event: TeamRunEvent }) => void) => {
+             teamListeners.add(listener);
+             return () => teamListeners.delete(listener);
+           },
+         } : null,
+@@ -236,9 +223,9 @@ describe("Application agent communication WebSocket integration", () => {
+       target: { kind: "AGENT_TEAM_RUN" },
+     } as const satisfies ApplicationAgentTargetAddress;
+     const memberAddress = {
+       bindingId: teamBinding.bindingId,
+-      target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
++      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-run" },
+     } as const satisfies ApplicationAgentTargetAddress;
+ 
+     const agentConnection = client.agentCommunication.connect(agentAddress);
+     const teamConnection = client.agentCommunication.connect(teamAddress);
+@@ -268,9 +255,9 @@ describe("Application agent communication WebSocket integration", () => {
+     );
+     expect(teamPostMessage).toHaveBeenNthCalledWith(
+       2,
+       expect.objectContaining({ content: "member input" }),
+-      { kind: "route_key", memberRouteKey: "researcher" },
++      "researcher-run",
+     );
+ 
+     for (const listener of agentListeners) listener({
+       eventType: AgentRunEventType.SEGMENT_CONTENT,
+@@ -284,36 +271,29 @@ describe("Application agent communication WebSocket integration", () => {
+         providerSecret: "must-not-cross",
+       },
+     });
+     const emitTeam = (event: TeamRunEvent): void => {
+-      for (const listener of teamListeners) listener(event);
++      for (const listener of teamListeners) listener({ event });
+     };
+     emitTeam({
+-      eventSourceType: TeamRunEventSourceType.TEAM,
+-      teamRunId: "team-run",
+-      sourcePath: [],
+-      data: { status: "idle" } as never,
++      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
++      payload: { messageId: "non-agent-event" } as never,
+     });
+     for (const [memberRouteKey, memberName, memberRunId, turnId] of [
+       ["writer", "writer", "writer-run", "turn-writer"],
+       ["researcher", "researcher", "researcher-run", "turn-researcher"],
+     ] as const) {
+       emitTeam({
+         eventSourceType: TeamRunEventSourceType.AGENT,
+-        teamRunId: "team-run",
+-        sourcePath: [memberRouteKey],
+-        data: {
+-          runtimeKind: RuntimeKind.AUTOBYTEUS,
+-          memberName,
+-          memberRunId,
+-          memberPath: [memberRouteKey],
+-          memberRouteKey,
+-          agentEvent: {
+-            eventType: AgentRunEventType.TURN_STARTED,
+-            runId: memberRunId,
+-            statusHint: null,
+-            payload: { turnId, providerSecret: "must-not-cross" },
+-          },
++        execution: {
++          rootTeamRunId: "team-run",
++          memberAddress: `/${memberRouteKey}`,
++          agentRunId: memberRunId,
++        },
++        payload: {
++          eventType: AgentRunEventType.TURN_STARTED,
++          statusHint: null,
++          details: { turnId, providerSecret: "must-not-cross" },
+         },
+       });
+     }
+ 
+@@ -325,9 +305,9 @@ describe("Application agent communication WebSocket integration", () => {
+       sequence: 1,
+       applicationId: APPLICATION_ID,
+       address: agentAddress,
+       runtimeSubject: "AGENT_RUN",
+-      producer: { runId: "agent-run", runtimeKind: "AGENT" },
++      producer: { agentRunId: "agent-run", runtimeKind: "AGENT" },
+       event: { type: "TEXT_DELTA", delta: "hello" },
+     });
+     expect(JSON.stringify(agentEvents[0])).not.toContain("providerSecret");
+     expect(teamEvents.map((event) => event.sequence)).toEqual([1, 2]);
+@@ -337,9 +317,9 @@ describe("Application agent communication WebSocket integration", () => {
+     ]);
+     expect(memberEvents[0]).toMatchObject({
+       sequence: 1,
+       address: memberAddress,
+-      producer: { memberRouteKey: "researcher", runId: "researcher-run" },
++      producer: { agentRunId: "researcher-run", displayName: "Researcher" },
+       event: { type: "TURN_STARTED" },
+     });
+ 
+     const closePromise = waitForClose(agentConnection);
+diff --git a/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts b/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+index 6cf49d182..57201c768 100644
+--- a/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+@@ -105,10 +105,10 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
+     moduleFormat: "esm",
+     distribution: "self-contained",
+     targetRuntime: { engine: "node", semver: ">=22 <23" },
+     sdkCompatibility: {
+-      backendDefinitionContractVersion: "5",
+-      frontendSdkContractVersion: "5",
++      backendDefinitionContractVersion: "6",
++      frontendSdkContractVersion: "6",
+     },
+     supportedExposures: {
+       queries: false,
+       commands: true,
+@@ -133,9 +133,9 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
+     path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
+     `import { DatabaseSync } from 'node:sqlite'
+ 
+ export default {
+-  definitionContractVersion: '5',
++  definitionContractVersion: '6',
+   commands: {
+     'capabilities.exercise': async (_input, context) => {
+       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
+       const configured = await context.agentResources.requireRunnable('primaryAgent')
+@@ -177,9 +177,9 @@ export default {
+       })
+ 
+       const teamAddress = {
+         bindingId: team.bindingId,
+-        target: { kind: 'AGENT_TEAM_MEMBER', memberAddress: '/researcher' },
++        target: { kind: 'AGENT_TEAM_MEMBER', agentRunId: team.runtime.members[0].agentRunId },
+       }
+       const sent = await context.agentExecution.sendInput({
+         address: teamAddress,
+         input: {
+@@ -410,24 +410,22 @@ describe("Application context capability integration", () => {
+         memberConfigs: Array<{ memberAddress: string }>;
+       }) => {
+         teamRunCount += 1;
+         return {
+-        teamRunId,
+-        config: {
+-          rootTeam: {
+-            kind: "agent_team",
+-            address: "/",
+-            teamRunId,
+-            teamDefinitionId: "team-def-1",
+-            coordinatorAddress: "/researcher",
+-            children: memberConfigs.map((memberConfig) => ({
+-              kind: "agent",
+-              address: memberConfig.memberAddress,
+-              agentRunId: `${teamRunId}::researcher`,
+-            })),
+-          },
+-        },
+-      }; }),
++          teamRunId,
++          getExecutionTreeSnapshot: () => ({
++            rootTeam: {
++              kind: "configured_team",
++              address: "/",
++              members: memberConfigs.map((memberConfig) => ({
++                kind: "configured_agent",
++                address: memberConfig.memberAddress,
++                agentRunId: `${teamRunId}::researcher`,
++              })),
++            },
++          }),
++        };
++      }),
+       resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run-1" ? { postMessage: teamPostMessage } : null),
+       terminateTeamRun: vi.fn(async () => undefined),
+     };
+     const runBindingLaunchService = new ApplicationRunBindingLaunchService({
+@@ -564,9 +562,9 @@ describe("Application context capability integration", () => {
+       agentStreamingService: {
+         subscribe: vi.fn(async (input: {
+           applicationId: string;
+           subscriptionId: string;
+-          address: { bindingId: string; target: { kind: string; memberAddress?: string } };
++          address: { bindingId: string; target: { kind: string; agentRunId?: string } };
+           emitter: { emitEvent: (event: unknown) => Promise<void> };
+         }) => {
+           await input.emitter.emitEvent({
+             sequence: 1,
+@@ -574,14 +572,9 @@ describe("Application context capability integration", () => {
+             applicationId: input.applicationId,
+             address: input.address,
+             runtimeSubject: "TEAM_RUN",
+             producer: {
+-              executionAddress: {
+-                rootTeamRunId: "team-run-1",
+-                taskTeamRunIds: [],
+-                memberAddress: "/researcher",
+-                taskAgentRunId: null,
+-              },
++              agentRunId: "team-run-1::researcher",
+               runtimeKind: "AGENT_TEAM_MEMBER",
+               displayName: "researcher",
+             },
+             event: { type: "TURN_STARTED" },
+@@ -607,9 +600,9 @@ describe("Application context capability integration", () => {
+       sent: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+       observedEvents: Array<{
+         sequence: number;
+         applicationId: string;
+-        address: { bindingId: string; target: { kind: string; memberAddress?: string } };
++        address: { bindingId: string; target: { kind: string; agentRunId?: string } };
+         runtimeSubject: string;
+         producer: unknown;
+         event: { type: string };
+       }>;
+@@ -661,18 +654,13 @@ describe("Application context capability integration", () => {
+       observedAt: "2026-07-21T10:00:00.000Z",
+       applicationId: APPLICATION_ID,
+       address: {
+         bindingId: result.team.bindingId,
+-        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/researcher" },
++        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "team-run-1::researcher" },
+       },
+       runtimeSubject: "TEAM_RUN",
+       producer: {
+-        executionAddress: {
+-          rootTeamRunId: "team-run-1",
+-          taskTeamRunIds: [],
+-          memberAddress: "/researcher",
+-          taskAgentRunId: null,
+-        },
++        agentRunId: "team-run-1::researcher",
+         runtimeKind: "AGENT_TEAM_MEMBER",
+         displayName: "researcher",
+       },
+       event: { type: "TURN_STARTED" },
+@@ -703,9 +691,9 @@ describe("Application context capability integration", () => {
+ 
+     expect(agentRunService.createAgentRun).toHaveBeenCalledWith(expect.objectContaining({
+       agentDefinitionId: "agent-def-1",
+       llmModelIdentifier: "gpt-test",
+-      applicationExecutionContext: expect.objectContaining({ applicationId: APPLICATION_ID }),
++      applicationBinding: expect.objectContaining({ applicationId: APPLICATION_ID }),
+     }));
+     expect(teamRunService.createTeamRun).toHaveBeenCalledTimes(2);
+     expect(agentPostUserMessage).toHaveBeenCalledWith(expect.objectContaining({
+       content: "agent initial input",
+@@ -713,9 +701,9 @@ describe("Application context capability integration", () => {
+     }));
+     expect(teamPostMessage).toHaveBeenNthCalledWith(
+       1,
+       expect.objectContaining({ content: "team initial input", metadata: { phase: "initial-team" } }),
+-      "/researcher",
++      "team-run-1::researcher",
+     );
+     expect(teamPostMessage).toHaveBeenNthCalledWith(
+       2,
+       expect.objectContaining({
+@@ -727,9 +715,9 @@ describe("Application context capability integration", () => {
+           metadata: { source: "fixture" },
+         })],
+         metadata: { phase: "follow-up" },
+       }),
+-      "/researcher",
++      "team-run-1::researcher",
+     );
+     expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("agent-run-1");
+     expect(teamRunService.terminateTeamRun).toHaveBeenCalledWith("team-run-1");
+     expect(publishedArtifactProjectionService.getRunPublishedArtifacts).toHaveBeenCalledWith("agent-run-1");

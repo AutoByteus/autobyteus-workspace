@@ -1,0 +1,104 @@
+=== HEAD ===
+2625f2b7d053e1b8e8009d21f5583b32fc55ba34
+=== git status --short ===
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/delivery-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/docs-sync-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-app-commands.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-browser-inspect.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-cleanup.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-context-web.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-crr006-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-crr006-web.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-environment-build.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-existing-run-browser.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-existing-run-browser/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-final-post-close-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-final-pre-close-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-final-repository-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-initial-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-live-environment-setup.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-nested-config-inspect.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-nested-live-retry.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-nested-live-retry2.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-nested-live.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-nested-live/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-nuxt.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-package-parity.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-post-shutdown-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-postlive-app-hashes.txt
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-pre-shutdown-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-prelive-app-hashes.txt
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-restart-readiness.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-restart-recovery.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-restart-recovery/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-retained-server-postpackage.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-retained-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-route-separation.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-secret-scan.json
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-socratic-inspect.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-standalone-corrected-verifier.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-standalone-live.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-standalone-live/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-standalone-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-stopped-run-recovery.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-app-inspect.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-brief.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-brief/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-secret-import.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-socratic-inspect.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-socratic-live.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-socratic-live/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-socratic-verify.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-studio-socratic-verify/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-web-build.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-build-config-typecheck.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-focused-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-focused-web.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-frontend-render-review.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-merge-source-audit.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/handoff-summary.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-base-integration-conflict-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/release-deployment-report.md
+=== diff check ===
+PASS
+=== changed durable test paths relative HEAD ===
+=== API/E2E canonical artifact status ===
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md
+=== generated-state ===
+PRESENT autobyteus-server-ts/dist
+PRESENT autobyteus-application-backend-sdk/dist
+PRESENT autobyteus-application-sdk-contracts/dist
+PRESENT autobyteus-web/.nuxt
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+ABSENT autobyteus-web/.output
+ABSENT autobyteus-application-devkit/.tmp-tests
+=== owned ports ===
+FREE 43651
+FREE 43660
+FREE 31660
+=== isolated data root ===
+ABSENT
+=== secret scan ===
+{
+  "scope": "secret-like credential values only; non-secret environment configuration excluded",
+  "secretValuesChecked": 12,
+  "filesScanned": 197,
+  "matches": [],
+  "pass": true
+}

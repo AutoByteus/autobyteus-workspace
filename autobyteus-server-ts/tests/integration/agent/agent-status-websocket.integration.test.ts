@@ -224,7 +224,7 @@ describe("Agent status WebSocket contract integration", () => {
     "projects only %s status transitions to a real standalone socket while preserving canonical companions",
     async (runtimeKind) => {
       const backend = new ScriptedAgentRunBackend(`run-${runtimeKind}`, runtimeKind);
-      const run = new AgentRun({ context: backend.context, backend });
+      const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
       const canonicalEvents: AgentRunEvent[] = [];
       const unsubscribe = run.subscribeToEvents((runEvent) => canonicalEvents.push(runEvent));
       const harness = await openAgentApp(run);
@@ -314,7 +314,7 @@ describe("Agent status WebSocket contract integration", () => {
       RuntimeKind.AUTOBYTEUS,
       runningSnapshot("turn-rate"),
     );
-    const run = new AgentRun({ context: backend.context, backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
     let internalContentEvents = 0;
     const unsubscribe = run.subscribeToEvents((runEvent) => {
       if (runEvent.eventType === AgentRunEventType.SEGMENT_CONTENT) {
@@ -376,7 +376,7 @@ describe("Agent status WebSocket contract integration", () => {
       RuntimeKind.CODEX_APP_SERVER,
       runningSnapshot("turn-live-setting"),
     );
-    const run = new AgentRun({ context: backend.context, backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
     const harness = await openAgentApp(run);
     const connection = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
 
@@ -432,7 +432,7 @@ describe("Agent status WebSocket contract integration", () => {
       "run-retired-turn-ordering",
       RuntimeKind.CODEX_APP_SERVER,
     );
-    const run = new AgentRun({ context: backend.context, backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
     const harness = await openAgentApp(run);
     const primary = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
 
@@ -528,7 +528,7 @@ describe("Agent status WebSocket contract integration", () => {
 
   it("keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination", async () => {
     const backend = new ScriptedAgentRunBackend("run-error-contract", RuntimeKind.CLAUDE_AGENT_SDK);
-    const run = new AgentRun({ context: backend.context, backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.context, backend });
     const harness = await openAgentApp(run);
     const connection = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
 

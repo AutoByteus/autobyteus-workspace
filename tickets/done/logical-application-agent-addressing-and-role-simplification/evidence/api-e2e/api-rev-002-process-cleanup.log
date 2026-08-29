@@ -1,0 +1,13 @@
+=== process cleanup 2026-08-26T17:36:44Z ===
+port_44951=clear
+port_44952=clear
+port_44960=clear
+port_32960=clear
+owned_process_leak=false
+codex application run ids in logs:
+Published codex_app_server agent run 'brief_studio_researcher_0c6a5a43729b4397b6d92ad3fb96f89e'.
+Published codex_app_server agent run 'brief_studio_researcher_dbed230e305f41338309757496a3657e'.
+Published codex_app_server agent run 'brief_studio_writer_6377d168693b4d03a97056058163ee0f'.
+Published codex_app_server agent run 'brief_studio_writer_d225a80fdab14f1ab6a12874719809a6'.
+Published codex_app_server agent run 'socratic_math_tutor_750d92c8bb8542638aa8454a604ea8fd'.
+Published codex_app_server agent run 'socratic_math_tutor_a29075e3ecc9465b855843e7a695d603'.

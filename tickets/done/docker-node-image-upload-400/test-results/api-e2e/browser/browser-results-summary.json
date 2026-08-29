@@ -1,0 +1,116 @@
+{
+  "token": "API-E2E-docker-node-image-upload-400-1787811270548",
+  "passed": true,
+  "backend": {
+    "status": 200,
+    "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+  },
+  "frontendBaseUrl": "http://127.0.0.1:49929",
+  "definition": {
+    "id": "nested-classroom-test",
+    "name": "Nested Classroom Test Team"
+  },
+  "testRun": {
+    "teamRunId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+    "rootTeamRunId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+    "childTeamRunId": "student_study_group_112a5f70ab0e4c448c455580261c671a",
+    "teacherAgentRunId": "test_teacher_e9c6115f259245b9ab557eb3197f7839",
+    "studentOneAgentRunId": "student_one_262a5fbf59d84a6c9c1113474232b723",
+    "studentTwoAgentRunId": "student_two_1f56a7b873fc48c8ae13570a8e156088"
+  },
+  "nestedImage": {
+    "finalOwner": {
+      "kind": "team_member_final",
+      "teamRunId": "student_study_group_112a5f70ab0e4c448c455580261c671a",
+      "memberAddress": "/StudentStudyGroup/student_one"
+    },
+    "draftOwner": {
+      "kind": "team_member_draft",
+      "teamDraftId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+      "memberAddress": "/StudentStudyGroup/student_one"
+    },
+    "finalizeStatus": 200,
+    "read": {
+      "status": 200,
+      "sha256": "6f7ffeeb88929a8a2e34ea973c871f069be70cbaf1459fff345db59453934435",
+      "byteLength": 132
+    },
+    "path": [
+      "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_one_262a5fbf59d84a6c9c1113474232b723/context_files/ctx_b657e0555d24__API-E2E-docker-node-image-upload-400-1787811270548-nested-image.png"
+    ],
+    "framePayload": "{\"type\":\"SEND_MESSAGE\",\"payload\":{\"content\":\"API-E2E-docker-node-image-upload-400-1787811270548 nested image upload-finalize-read-dispatch proof. Reply only RECEIVED.\",\"context_file_paths\":[],\"image_urls\":[\"/rest/team-runs/student_study_group_112a5f70ab0e4c448c455580261c671a/members/%2FStudentStudyGroup%2Fstudent_one/context-files/ctx_b657e0555d24__API-E2E-docker-node-image-upload-400-1787811270548-nested-image.png\"],\"agent_run_id\":\"student_one_262a5fbf59d84a6c9c1113474232b723\",\"message_id\":\"client_36b8693a-8ef7-44e9-837b-76e9891438b8\",\"dedupe_key\":\"member_input:nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189:student_one_262a5fbf59d84a6c9c1113474232b723:client_36b8693a-8ef7-44e9-837b-76e9891438b8\"}}",
+    "dom": true
+  },
+  "nestedText": {
+    "finalizeBefore": 0,
+    "finalizeAfter": 0,
+    "agentRunId": "student_two_1f56a7b873fc48c8ae13570a8e156088",
+    "memberAddress": "/StudentStudyGroup/student_two",
+    "containingTeamRunId": "student_study_group_112a5f70ab0e4c448c455580261c671a",
+    "framePayload": "{\"type\":\"SEND_MESSAGE\",\"payload\":{\"content\":\"API-E2E-docker-node-image-upload-400-1787811270548 nested text-only dispatch proof. Reply only TEXT_OK.\",\"context_file_paths\":[],\"image_urls\":[],\"agent_run_id\":\"student_two_1f56a7b873fc48c8ae13570a8e156088\",\"message_id\":\"client_2fc22ec3-dcba-4952-8664-69908df3334b\",\"dedupe_key\":\"member_input:nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189:student_two_1f56a7b873fc48c8ae13570a8e156088:client_2fc22ec3-dcba-4952-8664-69908df3334b\"}}",
+    "dom": true
+  },
+  "directRootImage": {
+    "finalOwner": {
+      "kind": "team_member_final",
+      "teamRunId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+      "memberAddress": "/Teacher"
+    },
+    "draftOwner": {
+      "kind": "team_member_draft",
+      "teamDraftId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+      "memberAddress": "/Teacher"
+    },
+    "finalizeStatus": 200,
+    "read": {
+      "status": 200,
+      "sha256": "6f7ffeeb88929a8a2e34ea973c871f069be70cbaf1459fff345db59453934435",
+      "byteLength": 132
+    },
+    "path": [
+      "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/test_teacher_e9c6115f259245b9ab557eb3197f7839/context_files/ctx_97f5ea850967__API-E2E-docker-node-image-upload-400-1787811270548-direct-root-image.png"
+    ],
+    "framePayload": "{\"type\":\"SEND_MESSAGE\",\"payload\":{\"content\":\"API-E2E-docker-node-image-upload-400-1787811270548 direct-root image upload-finalize-read-dispatch proof. Reply only ROOT_OK.\",\"context_file_paths\":[],\"image_urls\":[\"/rest/team-runs/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/members/%2FTeacher/context-files/ctx_97f5ea850967__API-E2E-docker-node-image-upload-400-1787811270548-direct-root-image.png\"],\"agent_run_id\":\"test_teacher_e9c6115f259245b9ab557eb3197f7839\",\"message_id\":\"client_5741b019-60dc-4b63-bb99-87d19794c3e6\",\"dedupe_key\":\"member_input:nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189:test_teacher_e9c6115f259245b9ab557eb3197f7839:client_5741b019-60dc-4b63-bb99-87d19794c3e6\"}}",
+    "dom": true
+  },
+  "mismatch": {
+    "uploadStatus": 200,
+    "request": {
+      "draftOwner": {
+        "kind": "team_member_draft",
+        "teamDraftId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+        "memberAddress": "/StudentStudyGroup/student_one"
+      },
+      "finalOwner": {
+        "kind": "team_member_final",
+        "teamRunId": "nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189",
+        "memberAddress": "/StudentStudyGroup/student_one"
+      },
+      "attachments": [
+        {
+          "storedFilename": "ctx_bdca8939767e__API-E2E-docker-node-image-upload-400-1787811270548-mismatch.png",
+          "displayName": "API-E2E-docker-node-image-upload-400-1787811270548-mismatch.png"
+        }
+      ]
+    },
+    "status": 400,
+    "body": {
+      "detail": "Unable to resolve context-file owner member '/StudentStudyGroup/student_one' for TeamRun 'nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189'."
+    },
+    "websocketFrameDelta": 0
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "frontendStopped": true,
+    "teamTerminated": true,
+    "teamDeleted": true,
+    "failedDraftDeleted": true,
+    "testRunAbsent": true,
+    "testRunDirectoryAbsent": true
+  },
+  "preexistingRunBefore": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+  "preexistingRunAfter": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failure": null
+}

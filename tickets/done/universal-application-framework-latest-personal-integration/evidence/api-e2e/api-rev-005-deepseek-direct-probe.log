@@ -1,0 +1,10 @@
+{
+  "model": "deepseek-v4-flash",
+  "credentialPresent": true,
+  "httpStatus": 402,
+  "providerError": {
+    "type": "unknown_error",
+    "code": "invalid_request_error",
+    "message": "Insufficient Balance"
+  }
+}

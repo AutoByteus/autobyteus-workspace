@@ -1,0 +1,14 @@
+autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+autobyteus-server-ts/src/compositions/build-studio-server.ts
+autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts

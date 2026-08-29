@@ -1,0 +1,47 @@
+# Current Electron backend run evidence
+# source: /Users/normy/.autobyteus/server-data/logs/server.log
+# root TeamRun: nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+# child TeamRun: student_study_group_112a5f70ab0e4c448c455580261c671a
+
+2846154-Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+2846155-Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+2846156:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/test_teacher_e9c6115f259245b9ab557eb3197f7839/raw_traces_active.jsonl
+2846157:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_one_262a5fbf59d84a6c9c1113474232b723/raw_traces_active.jsonl
+2846158:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_two_1f56a7b873fc48c8ae13570a8e156088/raw_traces_active.jsonl
+2846159:Agent team websocket attached for team run nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846160:Created agent session 705f611b-ca5c-4efb-b3c7-c3f8e50bce9e for run nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846161:Agent Team WebSocket connected: session=705f611b-ca5c-4efb-b3c7-c3f8e50bce9e, run=nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846162-Created terminal session df21a207-5da5-4101-9509-2678742a3fb4 using backend IsolatedPtySession for target /Users/normy
+2846163-Terminal WebSocket connected: df21a207-5da5-4101-9509-2678742a3fb4
+--
+2846215-Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+2846216-Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+2846217:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/test_teacher_e9c6115f259245b9ab557eb3197f7839/raw_traces_active.jsonl
+2846218:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_one_262a5fbf59d84a6c9c1113474232b723/raw_traces_active.jsonl
+2846219:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_two_1f56a7b873fc48c8ae13570a8e156088/raw_traces_active.jsonl
+2846220:Agent team websocket attached for team run nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846221:Created agent session cc16c338-0e13-41e2-8b48-531c48db54be for run nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846222:Agent Team WebSocket connected: session=cc16c338-0e13-41e2-8b48-531c48db54be, run=nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846223-Created terminal session 32c933b2-32ab-4c86-bc81-5ae2121b6e2c using backend IsolatedPtySession for target /Users/normy
+2846224-Terminal WebSocket connected: 32c933b2-32ab-4c86-bc81-5ae2121b6e2c
+--
+2846293-Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+2846294-Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+2846295:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/test_teacher_e9c6115f259245b9ab557eb3197f7839/raw_traces_active.jsonl
+2846296:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_one_262a5fbf59d84a6c9c1113474232b723/raw_traces_active.jsonl
+2846297:Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189/student_study_group_112a5f70ab0e4c448c455580261c671a/student_two_1f56a7b873fc48c8ae13570a8e156088/raw_traces_active.jsonl
+2846298:Agent team websocket attached for team run nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846299:Created agent session cfdbc126-7489-460a-bb9d-61fa8cc3e310 for run nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846300:Agent Team WebSocket connected: session=cfdbc126-7489-460a-bb9d-61fa8cc3e310, run=nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189
+2846301-Created terminal session 8a8b52cf-37f7-463e-ae85-9df6769d605a using backend IsolatedPtySession for target /Users/normy
+2846302-Terminal WebSocket connected: 8a8b52cf-37f7-463e-ae85-9df6769d605a
+--
+2846346-Closed PTY session 8a8b52cf-37f7-463e-ae85-9df6769d605a
+2846347-Terminal WebSocket disconnected: 8a8b52cf-37f7-463e-ae85-9df6769d605a
+2846348:Failed to finalize context files: Error: Unable to resolve context-file owner member '/StudentStudyGroup/student_one' for TeamRun 'nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189'.
+2846349-{"level":40,"time":1787811297830,"pid":52480,"hostname":"MacBookPro","reqId":"req-2w3","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":92.5682921409607,"msg":"http request completed"}
+2846350-[CodexClientThreadRouter] app-server message was not routed {
+--
+2846379-AgentRuntime for 'test_teacher_e9c6115f259245b9ab557eb3197f7839': Context unregistered.
+2846380-AgentRuntime for 'test_teacher_e9c6115f259245b9ab557eb3197f7839' stop() method completed.
+2846381:{"level":30,"time":1787811301604,"pid":52480,"hostname":"MacBookPro","reqId":"req-2w8","err":{"type":"GraphQLError","message":"Team run execution tree not found for 'nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189'.","stack":"Error: Team run execution tree not found for 'nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189'.\n    at TeamRunHistoryService.getTeamRunResumeConfig (file:///Applications/AutoByteus.app/Contents/Resources/server/dist/run-history/services/team-run-history-service.js:39:19)\n    at async StudioRunModelConfigService.getTeamRunResumeConfig (file:///Applications/AutoByteus.app/Contents/Resources/server/dist/run-history/services/studio-run-model-config-service.js:25:27)\n    at async TeamRunHistoryResolver.getTeamRunResumeConfig (file:///Applications/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/team-run-history.js:137:24)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getTeamRunResumeConfig"],"locations":[{"line":1,"column":28}],"extensions":{}},"msg":"Team run execution tree not found for 'nested_classroom_test_team_cc782fed97734a13bd4c3c0b106a7189'."}

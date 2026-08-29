@@ -1,0 +1,17 @@
+# DR-003 post-acceptance finalization refresh
+verified_at_utc=2026-08-26T14:22:08Z
+user_acceptance=received
+release_requested=no
+target_remote=origin
+target_branch=personal
+origin_personal=b52fe5aebdb962ce361529f9e797affeb30d719a
+main_repo_personal=b52fe5aebdb962ce361529f9e797affeb30d719a
+ticket_pre_final_commit=4fe758a5819662a180efbd1d17f299316c890b73
+merge_base=b52fe5aebdb962ce361529f9e797affeb30d719a
+divergence=0/21
+base_is_ancestor=yes
+base_advanced_after_user_verification=no
+renewed_verification_required=no
+ticket_state=tickets/done/explicit-agent-provider-composition-and-scope-assembly
+repository_artifact_hygiene=Pass
+result=Pass

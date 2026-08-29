@@ -1,0 +1,137 @@
+CRR-002 source re-review and failure correlation
+Reviewed HEAD:
+18d4021f1fb710c92d55eec591d2c0b8b291c49d
+Prior review commit: 1ef516bf56d8376cbf44bd7f76199bfa24cee11a
+
+IR-002 source diff:
+ .../stores/application-launch-override-store.ts    |  43 +--
+ .../stores/application-platform-state-store.ts     |  56 +++-
+ .../start-standalone-application-host.ts           |  99 +++++--
+ .../application-launch-override-store.test.ts      | 134 +++++++++
+ .../standalone-application-host-lifecycle.test.ts  | 317 +++++++++++++++++++++
+ .../implementation-handoff.md                      |  35 ++-
+ .../implementation-revision-record.md              |  21 ++
+ 7 files changed, 642 insertions(+), 63 deletions(-)
+
+Prior findings rechecked:
+- CR-001: standalone phases 5-10 now mirror current Studio lifecycle policy and precede pipeline/runtime construction.
+- CR-002: launch get/list use an existing read-only SQLite handle; Save owns table creation; Reset opens only existing state.
+
+New shared-contract regression correlation:
+- ApplicationPlatformStateStore.withExistingDatabase now opens DatabaseSync with readOnly:true.
+- ApplicationExecutionEventJournalStore.getNextPendingRecordIfPresent calls readNextPendingRecord.
+- readNextPendingRecord calls ensureTables, including INSERT OR IGNORE into the dispatch cursor.
+- ApplicationPlatformLifecycle.recoverAfterListen calls resumePendingEventsForApplication for every ready application.
+- That service calls getNextPendingRecordIfPresent; a supported same-data restart reaches the read-only write attempt.
+
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts-112-        }
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts-113-        for (const applicationId of this.readyApplicationIds) {
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts-114-          await this.dependencies.eventDispatchService
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts:115:            .resumePendingEventsForApplication(applicationId);
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts-116-        }
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts-117-      });
+autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts-118-      this.state = "ready";
+--
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-77-    ]);
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-78-    await Promise.all(
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-79-      Array.from(candidateApplicationIds).map((applicationId) =>
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts:80:        this.resumePendingEventsForApplication(applicationId),
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-81-      ),
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-82-    );
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-83-  }
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-84-
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts:85:  async resumePendingEventsForApplication(applicationId: string): Promise<void> {
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-86-    if (!await this.isApplicationActive(applicationId)) {
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-87-      this.suspendApplication(applicationId);
+autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts-88-      return;
+--
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-34-const readApplicationIdFromDatabase = (databasePath: string): string | null => {
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-35-  let db: DatabaseSync | null = null;
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-36-  try {
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts:37:    db = new DatabaseSync(databasePath, { readOnly: true });
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-38-    const tables = new Set(
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-39-      (db.prepare(`SELECT name FROM sqlite_master WHERE type = 'table'`).all() as Array<{ name: string }>).
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-40-        map((table) => table.name),
+--
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-156-  }
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-157-
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-158-  /** Opens only existing platform state and enforces a read-only SQLite handle. */
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts:159:  async withExistingDatabase<T>(
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-160-    applicationId: string,
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-161-    fn: (db: DatabaseSync, layout: ApplicationStorageLayout) => T,
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-162-  ): Promise<T | null> {
+--
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-165-      return null;
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-166-    }
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-167-
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts:168:    const db = new DatabaseSync(layout.platformDatabasePath, { readOnly: true });
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-169-    try {
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-170-      return fn(db, layout);
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts-171-    } finally {
+--
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-101-    db: DatabaseSync,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-102-    event: Omit<ApplicationExecutionEventJournalEvent, "journalSequence">,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-103-  ): ApplicationExecutionEventJournalRecord {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:104:    ensureTables(db);
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-105-    const result = db.prepare(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-106-      `INSERT INTO __autobyteus_execution_event_journal (
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-107-         event_id,
+--
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-146-  }
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-147-
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-148-  async getNextPendingRecord(applicationId: string): Promise<ApplicationExecutionEventJournalRecord | null> {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:149:    return this.platformStateStore.withDatabase(applicationId, (db) => this.readNextPendingRecord(db, applicationId));
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-150-  }
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-151-
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-152-  async getNextPendingRecordIfPresent(applicationId: string): Promise<ApplicationExecutionEventJournalRecord | null> {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:153:    const result = await this.platformStateStore.withExistingDatabase(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-154-      applicationId,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:155:      (db) => this.readNextPendingRecord(db, applicationId),
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-156-    );
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-157-    return result ?? null;
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-158-  }
+--
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-164-    dispatchedAt: string,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-165-  ): Promise<void> {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-166-    await this.platformStateStore.withTransaction(applicationId, (db) => {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:167:      ensureTables(db);
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-168-      db.prepare(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-169-        `UPDATE __autobyteus_execution_event_journal
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-170-            SET last_dispatch_attempt_number = ?,
+--
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-179-
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-180-  async acknowledgeRecord(applicationId: string, journalSequence: number, ackedAt: string): Promise<void> {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-181-    await this.platformStateStore.withTransaction(applicationId, (db) => {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:182:      ensureTables(db);
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-183-      db.prepare(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-184-        `UPDATE __autobyteus_execution_event_journal
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-185-            SET acked_at = ?,
+--
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-207-    },
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-208-  ): Promise<void> {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-209-    await this.platformStateStore.withTransaction(applicationId, (db) => {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:210:      ensureTables(db);
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-211-      db.prepare(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-212-        `UPDATE __autobyteus_execution_event_journal
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-213-            SET last_error_kind = ?,
+--
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-233-    };
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-234-  }
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-235-
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:236:  private readNextPendingRecord(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-237-    db: DatabaseSync,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-238-    applicationId: string,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-239-  ): ApplicationExecutionEventJournalRecord | null {
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:240:    ensureTables(db);
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-241-    const cursorRow = db
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-242-      .prepare(
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts-243-        `SELECT last_acked_journal_sequence
+
+Changed production source effective non-empty lines:
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts 302
+autobyteus-server-ts/src/application-orchestration/stores/application-launch-override-store.ts 145
+autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts 196
+
+Retired request-time launch schema repair scan:
+
+Diff check:

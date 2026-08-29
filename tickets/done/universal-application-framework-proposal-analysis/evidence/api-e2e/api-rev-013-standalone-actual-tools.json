@@ -1,0 +1,119 @@
+{
+  "source": "actual raw traces; bearer/session descriptors excluded",
+  "events": [
+    {
+      "ts": 1785502951.88,
+      "seq": 6,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-2892cef1-6bb9-46de-8fc4-a651f09bf24e",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the retained standalone API REV 013 path."
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97"
+    },
+    {
+      "ts": 1785502951.887,
+      "seq": 7,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-2892cef1-6bb9-46de-8fc4-a651f09bf24e",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97:/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97",
+            "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the retained standalone API REV 013 path.",
+            "revisionId": "50e14176-fb94-408f-bdba-a0ccaa0616ab",
+            "createdAt": "2026-07-31T13:02:31.882Z",
+            "updatedAt": "2026-07-31T13:02:31.882Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97"
+    },
+    {
+      "ts": 1785502957.728,
+      "seq": 8,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-57c7f485-5e26-4d8b-a439-e07724d0c681",
+      "tool_args": {
+        "recipient_name": "writer",
+        "message_type": "handoff",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: preserve API REV 013 as an independently reviewable standalone path; treat retention as continuity for existing consumers/contracts; separate stable contract behavior from implementation; use 1785502894364 as traceability metadata. Open questions are the exact contract/acceptance criteria and the meaning of standalone. Please review this file before drafting the concise brief and publish your writer checkpoint.",
+        "reference_files": [
+          "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97"
+    },
+    {
+      "ts": 1785502957.857,
+      "seq": 9,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-57c7f485-5e26-4d8b-a439-e07724d0c681",
+      "tool_result": "Delivered message to writer.",
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97"
+    },
+    {
+      "ts": 1785502991.647,
+      "seq": 9,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-0215cf26-de5b-4293-a284-bcf11e6385eb",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "description": "Concise writer checkpoint and final brief for API REV 013 standalone retention."
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_writer_e6099da190404152aa32ce5e01a61a79"
+    },
+    {
+      "ts": 1785502991.651,
+      "seq": 10,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-0215cf26-de5b-4293-a284-bcf11e6385eb",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_e6099da190404152aa32ce5e01a61a79:/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_e6099da190404152aa32ce5e01a61a79",
+            "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise writer checkpoint and final brief for API REV 013 standalone retention.",
+            "revisionId": "c613a073-983a-4d9a-b5d4-550b5964ac54",
+            "createdAt": "2026-07-31T13:03:11.648Z",
+            "updatedAt": "2026-07-31T13:03:11.648Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_writer_e6099da190404152aa32ce5e01a61a79"
+    }
+  ]
+}

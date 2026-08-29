@@ -1,182 +1,144 @@
 import fastify from "fastify";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../../src/api/fastify-runtime-config.js";
-import { LaunchProfileValidationError } from "../../../../src/application-orchestration/services/application-execution-resource-configuration-launch-profile.js";
+import { registerApplicationExecutionResourceRoutes } from "../../../../src/api/rest/application-execution-resources.js";
+import { ApplicationLaunchConfigurationError } from "../../../../src/application-platform/launch-configuration/application-launch-configuration-diagnostics.js";
 
-const applicationBackendApiGatewayMock = vi.hoisted(() => ({
-  getApplicationEngineStatus: vi.fn(),
-  invokeApplicationQuery: vi.fn(),
-  ensureApplicationReady: vi.fn(),
-  routeApplicationRequest: vi.fn(),
-  invokeApplicationCommand: vi.fn(),
-  executeApplicationGraphql: vi.fn(),
-}));
-
-const resourceConfigurationServiceMock = vi.hoisted(() => ({
-  listConfigurations: vi.fn(),
-  getConfiguredExecutionResource: vi.fn(),
-  upsertConfiguration: vi.fn(),
-}));
-
-const orchestrationHostMock = vi.hoisted(() => ({
+const orchestration = {
+  getApplicationLaunchConfigurationView: vi.fn(),
+  previewSelectedApplicationResource: vi.fn(),
   listAvailableExecutionResources: vi.fn(),
-}));
-
-vi.mock("../../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", () => ({
-  getApplicationBackendApiGatewayService: () => applicationBackendApiGatewayMock,
-}));
-
-vi.mock("../../../../src/application-orchestration/services/application-orchestration-host-service.js", () => ({
-  ApplicationOrchestrationHostService: {
-    getInstance: () => orchestrationHostMock,
-  },
-}));
-
-vi.mock("../../../../src/application-orchestration/services/application-execution-resource-configuration-service.js", () => ({
-  ApplicationExecutionResourceConfigurationService: class ApplicationExecutionResourceConfigurationService {
-    listConfigurations = resourceConfigurationServiceMock.listConfigurations;
-    getConfiguredExecutionResource = resourceConfigurationServiceMock.getConfiguredExecutionResource;
-    upsertConfiguration = resourceConfigurationServiceMock.upsertConfiguration;
-  },
-}));
-
-import { registerApplicationBackendRoutes } from "../../../../src/api/rest/application-backends.js";
+  upsertApplicationLaunchOverride: vi.fn(),
+  removeApplicationLaunchOverride: vi.fn(),
+};
 
 const buildRestApp = async () => {
   const app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
   await app.register(async (restApp) => {
-    await registerApplicationBackendRoutes(restApp);
+    await registerApplicationExecutionResourceRoutes(restApp, orchestration as never);
   }, { prefix: "/rest" });
   return app;
 };
 
-describe("application resource-configuration REST routes", () => {
-  afterEach(async () => {
+const runnableView = {
+  applicationId: "app-1",
+  slots: [],
+  readiness: { status: "RUNNABLE", issues: [] },
+};
+
+describe("application launch-configuration REST routes", () => {
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  beforeEach(() => {
-    resourceConfigurationServiceMock.listConfigurations.mockReset();
-    resourceConfigurationServiceMock.getConfiguredExecutionResource.mockReset();
-    resourceConfigurationServiceMock.upsertConfiguration.mockReset();
-    orchestrationHostMock.listAvailableExecutionResources.mockReset();
-  });
-
-  it("lists execution-resource configuration views through the REST boundary", async () => {
-    const responseBody = [
-      {
-        slot: {
-          slotKey: "draftingTeam",
-          name: "Drafting Team",
-          allowedExecutionResourceKinds: ["AGENT_TEAM"],
-          allowedExecutionResourceSources: ["bundle", "shared"],
-          required: true,
-          supportedLaunchConfig: null,
-          defaultExecutionResourceRef: {
-            source: "bundle",
-            kind: "AGENT_TEAM",
-            localId: "brief-studio-team",
-          },
-        },
-        status: "READY",
-        configuration: {
-          slotKey: "draftingTeam",
-          executionResourceRef: {
-            source: "bundle",
-            kind: "AGENT_TEAM",
-            localId: "brief-studio-team",
-          },
-          launchProfile: null,
-        },
-        invalidSavedConfiguration: null,
-        issue: null,
-        updatedAt: null,
-      },
-    ];
-    resourceConfigurationServiceMock.listConfigurations.mockResolvedValueOnce(responseBody);
-
+  it("returns the current four-meaning launch view through GET", async () => {
+    const responseBody = {
+      applicationId: "app-1",
+      slots: [{
+        slot: { slotKey: "draftingTeam" },
+        packageBaseline: { resourceDefinitionId: "package-team" },
+        selectedResourceBaseline: { resourceDefinitionId: "shared-team" },
+        savedOverride: { slotKey: "draftingTeam" },
+        savedOverrideState: "VALID",
+        effectiveConfiguration: { resourceDefinitionId: "shared-team" },
+        issues: [],
+        canResetToPackageDefaults: true,
+        updatedAt: "2026-07-29T12:00:00.000Z",
+      }],
+      readiness: { status: "RUNNABLE", issues: [] },
+    };
+    orchestration.getApplicationLaunchConfigurationView.mockResolvedValueOnce(responseBody);
     const app = await buildRestApp();
     try {
       const response = await app.inject({
         method: "GET",
         url: "/rest/applications/app-1/execution-resource-configurations",
       });
-
       expect(response.statusCode).toBe(200);
       expect(response.json()).toEqual(responseBody);
-      expect(resourceConfigurationServiceMock.listConfigurations).toHaveBeenCalledWith("app-1");
+      expect(orchestration.getApplicationLaunchConfigurationView).toHaveBeenCalledWith("app-1");
     } finally {
       await app.close();
     }
   });
 
-  it("lists available execution resources through the REST boundary", async () => {
-    const responseBody = [
-      {
-        source: "bundle",
-        kind: "AGENT_TEAM",
-        localId: "brief-studio-team",
-        definitionId: "bundle-team__brief-studio-team",
-        name: "Brief Studio Team",
-        applicationId: "app-1",
-      },
-      {
-        source: "shared",
-        kind: "AGENT",
-        localId: null,
-        definitionId: "shared-agent-1",
-        name: "Shared Agent",
-        applicationId: null,
-      },
-    ];
-    orchestrationHostMock.listAvailableExecutionResources.mockResolvedValueOnce(responseBody);
+  it("previews one exact selected resource without changing its request identity", async () => {
+    const executionResourceRef = {
+      source: "shared",
+      kind: "AGENT_TEAM",
+      definitionId: "shared-writing-team",
+    };
+    const responseBody = {
+      status: "RESOLVED",
+      applicationId: "app-1",
+      slotKey: "draftingTeam",
+      executionResourceRef,
+      selectedResourceBaseline: { executionResourceRef },
+      issues: [],
+    };
+    orchestration.previewSelectedApplicationResource.mockResolvedValueOnce(responseBody);
+    const app = await buildRestApp();
+    try {
+      const response = await app.inject({
+        method: "POST",
+        url: "/rest/applications/app-1/execution-resource-configurations/draftingTeam/selection-preview",
+        payload: { executionResourceRef },
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual(responseBody);
+      expect(orchestration.previewSelectedApplicationResource).toHaveBeenCalledWith(
+        "app-1",
+        "draftingTeam",
+        executionResourceRef,
+      );
+    } finally {
+      await app.close();
+    }
+  });
 
+  it("lists available execution-resource identities through the current host service", async () => {
+    const responseBody = [{
+      source: "shared",
+      kind: "AGENT_TEAM",
+      localId: null,
+      definitionId: "shared-writing-team",
+      name: "Shared Writing Team",
+      applicationId: null,
+    }];
+    orchestration.listAvailableExecutionResources.mockResolvedValueOnce(responseBody);
     const app = await buildRestApp();
     try {
       const response = await app.inject({
         method: "GET",
         url: "/rest/applications/app-1/available-execution-resources",
       });
-
       expect(response.statusCode).toBe(200);
       expect(response.json()).toEqual(responseBody);
-      expect(orchestrationHostMock.listAvailableExecutionResources).toHaveBeenCalledWith("app-1");
+      expect(orchestration.listAvailableExecutionResources).toHaveBeenCalledWith("app-1");
     } finally {
       await app.close();
     }
   });
 
-  it("saves a selected executionResourceRef and launchProfile through the REST boundary", async () => {
+  it("forwards the sparse execution-resource ref and launch override through PUT", async () => {
     const payload = {
       executionResourceRef: {
         source: "shared",
         kind: "AGENT_TEAM",
         definitionId: "shared-writing-team",
       },
-      launchProfile: null,
-    };
-    const responseBody = {
-      slot: {
-        slotKey: "draftingTeam",
-        name: "Drafting Team",
-        allowedExecutionResourceKinds: ["AGENT_TEAM"],
-        allowedExecutionResourceSources: ["bundle", "shared"],
-        required: true,
-        supportedLaunchConfig: null,
-        defaultExecutionResourceRef: null,
+      launchOverride: {
+        kind: "AGENT_TEAM",
+        defaults: null,
+        memberProfiles: [{
+          memberRouteKey: "writer",
+          memberName: "writer",
+          agentDefinitionId: "shared-writer",
+          llmModelIdentifier: "host-writer-model",
+        }],
       },
-      status: "READY",
-      configuration: {
-        slotKey: "draftingTeam",
-        executionResourceRef: payload.executionResourceRef,
-        launchProfile: null,
-      },
-      invalidSavedConfiguration: null,
-      issue: null,
-      updatedAt: "2026-05-08T12:00:00.000Z",
     };
-    resourceConfigurationServiceMock.upsertConfiguration.mockResolvedValueOnce(responseBody);
-
+    orchestration.upsertApplicationLaunchOverride.mockResolvedValueOnce(runnableView);
     const app = await buildRestApp();
     try {
       const response = await app.inject({
@@ -184,10 +146,9 @@ describe("application resource-configuration REST routes", () => {
         url: "/rest/applications/app-1/execution-resource-configurations/draftingTeam",
         payload,
       });
-
       expect(response.statusCode).toBe(200);
-      expect(response.json()).toEqual(responseBody);
-      expect(resourceConfigurationServiceMock.upsertConfiguration).toHaveBeenCalledWith(
+      expect(response.json()).toEqual(runnableView);
+      expect(orchestration.upsertApplicationLaunchOverride).toHaveBeenCalledWith(
         "app-1",
         "draftingTeam",
         payload,
@@ -197,57 +158,57 @@ describe("application resource-configuration REST routes", () => {
     }
   });
 
-  it("returns HTTP 400 for unresolved inherited-model save validation failures", async () => {
-    resourceConfigurationServiceMock.upsertConfiguration.mockRejectedValueOnce(
-      new LaunchProfileValidationError(
-        "PROFILE_MALFORMED",
-        "Application execution resource slot 'draftingTeam' requires an effective llmModelIdentifier for team member 'writer'. Add a team default or a member override before saving.",
-      ),
-    );
-
-    const payload = {
-      executionResourceRef: {
-        source: "shared",
-        kind: "AGENT_TEAM",
-        definitionId: "shared-writing-team",
-      },
-      launchProfile: {
-        kind: "AGENT_TEAM",
-        defaults: null,
-        memberProfiles: [
-          {
-            memberRouteKey: "researcher",
-            memberName: "researcher",
-            agentDefinitionId: "bundle-agent__researcher",
-            runtimeKind: "autobyteus",
-            llmModelIdentifier: "openai/gpt-5",
-          },
-          {
-            memberRouteKey: "writer",
-            memberName: "writer",
-            agentDefinitionId: "bundle-agent__writer",
-            runtimeKind: "lmstudio",
-          },
-        ],
-      },
+  it("maps PUT-time topology re-resolution failure to the structured readiness conflict", async () => {
+    const readiness = {
+      status: "HOST_REQUIREMENT_MISSING" as const,
+      issues: [{
+        severity: "blocking" as const,
+        scope: "HOST_OVERRIDE" as const,
+        code: "SAVED_MEMBER_TOPOLOGY_STALE" as const,
+        slotKey: "draftingTeam",
+        message: "Selected team topology changed after preview.",
+      }],
     };
-
+    orchestration.upsertApplicationLaunchOverride.mockRejectedValueOnce(
+      new ApplicationLaunchConfigurationError(readiness),
+    );
     const app = await buildRestApp();
     try {
       const response = await app.inject({
         method: "PUT",
         url: "/rest/applications/app-1/execution-resource-configurations/draftingTeam",
-        payload,
+        payload: {
+          executionResourceRef: {
+            source: "shared",
+            kind: "AGENT_TEAM",
+            definitionId: "shared-writing-team",
+          },
+          launchOverride: null,
+        },
       });
-
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(409);
       expect(response.json()).toEqual({
-        detail: "Application execution resource slot 'draftingTeam' requires an effective llmModelIdentifier for team member 'writer'. Add a team default or a member override before saving.",
+        detail: "Selected team topology changed after preview.",
+        readiness,
       });
-      expect(resourceConfigurationServiceMock.upsertConfiguration).toHaveBeenCalledWith(
+    } finally {
+      await app.close();
+    }
+  });
+
+  it("uses DELETE as the only package-default Reset action", async () => {
+    orchestration.removeApplicationLaunchOverride.mockResolvedValueOnce(runnableView);
+    const app = await buildRestApp();
+    try {
+      const response = await app.inject({
+        method: "DELETE",
+        url: "/rest/applications/app-1/execution-resource-configurations/draftingTeam",
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual(runnableView);
+      expect(orchestration.removeApplicationLaunchOverride).toHaveBeenCalledWith(
         "app-1",
         "draftingTeam",
-        payload,
       );
     } finally {
       await app.close();

@@ -1,0 +1,163 @@
+CRR-006 IR-004 merge/source audit
+2026-08-26T13:12:44Z
+
+HEAD and merge parents
+2625f2b7d053e1b8e8009d21f5583b32fc55ba34
+887b094170cedf2876a6238ed8d5a610d132698f
+b52fe5aebdb962ce361529f9e797affeb30d719a
+HEAD_MATCH PASS
+TICKET_PARENT_MATCH PASS
+PERSONAL_PARENT_MATCH PASS
+TICKET_ANCESTRY PASS
+PERSONAL_ANCESTRY PASS
+
+unmerged index
+UNMERGED_NONE PASS
+
+conflict markers in source/current tests
+CONFLICT_MARKERS_NONE PASS
+
+retired paths
+ABSENT PASS autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+ABSENT PASS autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts
+ABSENT PASS autobyteus-web/components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+ABSENT PASS autobyteus-web/services/teamExecution/__tests__/storedTeamRunFormModel.spec.ts
+ABSENT PASS autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+ABSENT PASS autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+
+retired symbols/imports
+RETIRED_SYMBOLS_NONE PASS
+
+application scope outward capabilities
+
+validator construction roots
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:160:      modelConfigValidator: input.modelConfigValidator,
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:268:      modelConfigValidator: input.modelConfigValidator,
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:324:    "modelConfigValidator",
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:249:    const modelConfigValidator = new ModelConfigValidationService(modelCatalogService);
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:268:        modelConfigValidator,
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:282:      modelConfigValidator,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:155:  modelConfigValidator: RunModelConfigValidator;
+autobyteus-server-ts/src/compositions/build-studio-server.ts:168:    modelConfigValidator: input.modelConfigValidator,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:227:    const modelConfigValidator = new ModelConfigValidationService(modelCatalogService);
+autobyteus-server-ts/src/compositions/build-studio-server.ts:245:      modelConfigValidator,
+autobyteus-server-ts/src/compositions/build-studio-server.ts:257:      modelConfigValidator,
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:56:  modelConfigValidator: RunModelConfigValidator;
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:76:    || !input.modelConfigValidator
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:77:    || typeof input.modelConfigValidator.validate !== "function"
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:176:        modelConfigValidator: input.modelConfigValidator,
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:213:        modelConfigValidator: input.modelConfigValidator,
+
+overlap resolution classification
+SEMANTIC autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+SEMANTIC autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+SEMANTIC autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+SEMANTIC autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+SEMANTIC autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+SEMANTIC autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+DELETED autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+SEMANTIC autobyteus-server-ts/src/compositions/build-studio-server.ts
+SEMANTIC autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+SEMANTIC autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+SEMANTIC autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+SEMANTIC autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+SEMANTIC autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+DELETED autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts
+
+changed production source size
+492 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+474 autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+472 autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts
+461 autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts
+435 autobyteus-web/stores/runHistoryStore.ts
+419 autobyteus-web/stores/existingRunModelConfigStore.ts
+410 autobyteus-web/components/workspace/config/RunConfigPanel.vue
+402 autobyteus-web/stores/agentTeamRunStore.ts
+390 autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+363 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+353 autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+335 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+330 autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+330 autobyteus-server-ts/src/compositions/build-studio-server.ts
+326 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+325 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+319 autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+309 autobyteus-web/localization/messages/en/workspace.ts
+308 autobyteus-web/localization/messages/zh-CN/workspace.ts
+303 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+298 autobyteus-web/components/workspace/config/ModelConfigSection.vue
+298 autobyteus-web/graphql/queries/runHistoryQueries.ts
+297 autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+274 autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+272 autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+268 autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+254 autobyteus-server-ts/src/api/graphql/types/run-history.ts
+253 autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+245 autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+244 autobyteus-web/utils/llmConfigSchema.ts
+229 autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts
+213 autobyteus-web/stores/runHistoryTypes.ts
+187 autobyteus-web/components/workspace/config/ModelConfigAdvanced.vue
+185 autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-model-normalizer.ts
+184 autobyteus-web/components/workspace/config/ExistingRunConfigEditor.vue
+180 autobyteus-web/stores/activeContextStore.ts
+160 autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+156 autobyteus-server-ts/src/llm-management/services/model-config-validation-service.ts
+149 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+133 autobyteus-server-ts/src/api/graphql/types/team-run-history.ts
+128 autobyteus-server-ts/src/run-history/services/studio-run-model-config-service.ts
+125 autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+125 autobyteus-server-ts/src/run-history/services/team-run-history-service.ts
+115 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts
+105 autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+97 autobyteus-server-ts/src/agent-team-execution/services/team-run-model-config-mutator.ts
+96 autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts
+96 autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts
+95 autobyteus-server-ts/src/run-history/services/agent-run-resume-config-service.ts
+87 autobyteus-web/components/workspace/config/TeamMemberConfigTree.vue
+78 autobyteus-web/utils/historicalModelConfigFields.ts
+77 autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts
+61 autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts
+52 autobyteus-web/graphql/mutations/runHistoryMutations.ts
+49 autobyteus-web/graphql/mutations/agentTeamRunMutations.ts
+49 autobyteus-web/services/runConfigEditing/existingRunModelConfigMutationClient.ts
+45 autobyteus-server-ts/src/run-history/domain/run-model-config.ts
+44 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-config.ts
+42 autobyteus-server-ts/src/run-history/services/agent-run-model-config-commit.ts
+36 autobyteus-web/types/agent/ExistingTeamRunFormModel.ts
+29 autobyteus-web/types/agent/ExistingRunModelConfigDraft.ts
+24 autobyteus-web/services/runConfigEditing/existingAgentModelConfigDraft.ts
+16 autobyteus-web/types/agent/TeamRunFormModel.ts
+15 autobyteus-server-ts/src/api/graphql/types/run-model-config.ts
+Deleted autobyteus-web/services/teamExecution/storedTeamRunFormModel.ts
+Deleted autobyteus-web/types/agent/StoredTeamRunFormModel.ts
+PRODUCTION_SOURCE_HARD_LIMIT PASS
+
+source-scoped diff check
+SOURCE_DIFF_CHECK PASS
+
+worktree status (preserved other-role artifacts expected)
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/delivery-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/docs-sync-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-build-config-typecheck.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-focused-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-focused-web.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-merge-source-audit.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/handoff-summary.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-base-integration-conflict-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/release-deployment-report.md
+
+application scope seven-capability declaration verification
+30:  readonly agentExecution: ApplicationAgentExecution;
+31:  readonly teamExecution: ApplicationTeamExecution;
+32:  readonly streaming: ApplicationExecutionStreaming;
+33:  readonly artifacts: ApplicationPublishedArtifactAccess;
+34:  readonly memory: ApplicationExecutionMemoryLookup;
+35:  readonly toolReadiness: ApplicationExecutionToolReadiness;
+36:  readonly lifecycle: ApplicationExecutionLifecycle;
+SEVEN_CAPABILITIES PASS

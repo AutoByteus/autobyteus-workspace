@@ -1,0 +1,55 @@
+CRR-006 focused failure-origin review — APIE2E-F003
+Date (UTC): 2026-08-22
+Reviewed source/review HEAD: c4d7267b611ab516320aa651f0dcf8f4eb36cb11
+Trigger: API-REV-002 Fail / 75
+
+Approved/reachable initiating basis:
+- Exposed developer surface: the maintained Socratic package command `pnpm start`, including the supported `--data-dir` option used for a normal first/fresh-root launch.
+- Requirements: AC-003 requires the built maintained package to run standalone; AC-007/AC-009 require readiness before listen without bypassing current provider behavior; AC-011 requires the integrated execution matrix.
+- This is independently product-supported. The missing runtime directory is not produced by manual tampering: a fresh data root is a normal first-launch state.
+
+Forward production trace:
+`pnpm -C applications/socratic-math-teacher start -- --data-dir <fresh-root>`
+-> devkit standalone CLI
+-> `startStandaloneApplicationHost`
+-> current migrations and process owners
+-> selected `ApplicationPlatformLifecycle.prepareBeforeListen`
+-> bundle catalog / built-in definitions
+-> `ApplicationDefinitionRuntimeReadiness.prepare`
+-> `ApplicationLaunchConfigurationService.getApplicationLaunchConfigurationView`
+-> `ApplicationLaunchHostCapabilityValidator.validate`
+-> `ApplicationProviderCredentialReadinessAdapter.getReadiness`
+-> Codex client manager `acquireClient(runtimeDir)`
+-> child-process spawn with `cwd=runtimeDir`.
+
+Source/lifecycle evidence:
+- `create-application-orchestration-services.ts:131-143` supplies `buildApplicationStorageLayout(...).runtimeDir` through a path-only resolver.
+- `application-storage-paths.ts:46-71` computes that path but does not create it.
+- `application-platform-lifecycle.ts:45-50` reaches definition runtime readiness after generic workspace/tool/catalog/bootstrap preparation, with no application-runtime-directory preparation.
+- `application-definition-runtime-readiness.ts:34-57` reads the launch view, causing required-slot host capability checks.
+- `application-provider-credential-readiness-adapter.ts:106-126` immediately acquires a Codex client with the supplied path.
+- `ApplicationStorageLifecycleService.ensurePlatformStatePrepared/ensureStoragePrepared` would materialize the layout through `ensureApplicationStorageDirectories`, but the first fresh-root readiness path has not called it.
+- `ApplicationEngineLauncher` prepares storage later, on ensure-ready, which is unreachable because standalone rejects before listen.
+
+Runtime evidence:
+- The exact configured executable exists and is executable.
+- `spawnSync` from the existing data root returns status 0.
+- The same executable from the absent application runtime cwd returns ENOENT.
+- Real maintained startup completes migrations, exclusive manager initialization, tool registration, and definition loading, then reports Codex authentication unavailable due to the spawn ENOENT and exits before listen.
+- Evidence: API-REV-002 standalone logs, cwd probe, and source-correlation log.
+
+Classification:
+- `APIE2E-F003` is an implementation defect, severity Major, finding `CR-006`.
+- Classification is Local Fix to `/implementation_engineer` rather than Design Impact: the reviewed architecture already assigns pre-listen readiness sequencing to ApplicationPlatformLifecycle and directory materialization to ApplicationStorageLifecycleService. The failure is missing ordering/wiring between existing owners; no requirement, new subsystem, or product-policy decision is needed.
+- This was reasonably detectable in source review: the path-only resolver, client spawn precondition, and absence of application runtime preparation on the fresh-root pre-listen path can be traced statically. The earlier review did not complete that fresh-root provider-readiness precondition trace.
+
+Required correction constraints:
+1. Keep normal fresh-root standalone and Studio readiness using the declared application runtime workspace.
+2. Make an explicit existing lifecycle/storage owner prepare the selected/application runtime directory before definition/provider capability readiness can acquire a client.
+3. Do not hide mutation inside the path resolver, provider adapter, Codex client, or ordinary launch-configuration read; do not use a fallback cwd, global temp workspace, readiness bypass, or test-only directory creation.
+4. Preserve IR-002 read-only launch-store semantics, exact provider credential validation, application storage identity, and Studio/standalone shared lifecycle.
+5. Add focused fresh-root lifecycle coverage proving the workspace exists before credential acquisition and failures unwind normally; API/E2E must rerun the exact maintained command first.
+
+Prior resolution state:
+- APIE2E-F001 / CR-004 remains resolved: exact Socratic target passes 3/3 after API-owned expected-diagnostic reconciliation.
+- The APIE2E-F002 / CR-005 origin remains resolved: the real fresh-root run passes exclusive process manager construction; no duplicate manager error recurs.

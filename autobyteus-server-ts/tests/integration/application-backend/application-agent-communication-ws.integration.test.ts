@@ -16,6 +16,7 @@ import { ApplicationAgentTargetAuthorizationService } from "../../../src/applica
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationAgentStreamRuntimeSource } from "../../../src/application-agent-streaming/services/application-agent-stream-runtime-source.js";
 import { ApplicationAgentStreamingService } from "../../../src/application-agent-streaming/services/application-agent-streaming-service.js";
+import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 import { ApplicationAgentCommunicationService } from "../../../src/application-agent-communication/services/application-agent-communication-service.js";
 import {
   createApplicationBackendMountTransport,
@@ -61,14 +62,7 @@ const agentBinding: ApplicationAgentBindingRecord = {
     subject: "AGENT_RUN",
     agentRunId: "agent-run",
     definitionId: "agent-definition",
-    members: [{
-      memberName: "agent",
-      memberRouteKey: "agent",
-      displayName: "Agent",
-      teamPath: [],
-      runId: "agent-run",
-      runtimeKind: "AGENT",
-    }],
+    members: [],
   },
   createdAt: NOW,
   updatedAt: NOW,
@@ -91,13 +85,11 @@ const teamBinding: ApplicationAgentBindingRecord = {
         memberAddress: "/researcher",
         displayName: "Researcher",
         agentRunId: "researcher-run",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
       {
         memberAddress: "/writer",
         displayName: "Writer",
         agentRunId: "writer-run",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },
@@ -158,15 +150,23 @@ describe("Application agent communication WebSocket integration", () => {
       availabilityService: availabilityService as never,
       bindingStore: bindingStore as never,
       agentTargetAuthorizationService: authorization,
-      agentRunService: {
-        resolveAgentRun: vi.fn(async (runId: string) => runId === "agent-run"
-          ? { postUserMessage: agentPostUserMessage }
-          : null),
+      agentExecution: {
+        postAgentInput: vi.fn(async (runId: string, message: unknown) => {
+          if (runId !== "agent-run") return { kind: "NOT_AVAILABLE" as const };
+          const result = await agentPostUserMessage(message);
+          return result.accepted
+            ? { kind: "ACCEPTED" as const }
+            : { kind: "REJECTED" as const, message: result.message ?? null };
+        }),
       } as never,
-      teamRunService: {
-        resolveActiveTeamRun: vi.fn(async (runId: string) => runId === "team-run"
-          ? { postMessage: teamPostMessage }
-          : null),
+      teamExecution: {
+        postTeamInput: vi.fn(async (runId: string, message: unknown, targetAgentRunId: string | null) => {
+          if (runId !== "team-run") return { kind: "NOT_AVAILABLE" as const };
+          const result = await teamPostMessage(message, targetAgentRunId);
+          return result.accepted
+            ? { kind: "ACCEPTED" as const }
+            : { kind: "REJECTED" as const, message: result.message ?? null };
+        }),
       } as never,
     });
     const runtimeSource = new ApplicationAgentStreamRuntimeSource({
@@ -190,6 +190,7 @@ describe("Application agent communication WebSocket integration", () => {
     const streaming = new ApplicationAgentStreamingService({
       orchestrationHostService: orchestration,
       runtimeSource,
+      mapper: new ApplicationAgentEventMapper(),
     });
     communicationState.service = new ApplicationAgentCommunicationService({
       streamingService: streaming,
@@ -198,7 +199,10 @@ describe("Application agent communication WebSocket integration", () => {
 
     app = fastify();
     await app.register(websocket);
-    await registerApplicationAgentCommunicationWebsocket(app);
+    await registerApplicationAgentCommunicationWebsocket(app, {
+      agentCommunicationService: communicationState.service,
+      lifecycle: { awaitReady: async () => undefined },
+    } as never);
     await app.listen({ host: "127.0.0.1", port: 0 });
     const address = app.server.address();
     if (!address || typeof address === "string") throw new Error("Expected an ephemeral TCP address.");
@@ -221,15 +225,15 @@ describe("Application agent communication WebSocket integration", () => {
     const client = createApplicationClient({ applicationId: APPLICATION_ID, transport });
     const agentAddress = {
       bindingId: agentBinding.bindingId,
-      target: { kind: "AGENT_RUN" },
+      memberAddress: null,
     } as const satisfies ApplicationAgentTargetAddress;
     const teamAddress = {
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_TEAM_RUN" },
+      memberAddress: null,
     } as const satisfies ApplicationAgentTargetAddress;
     const memberAddress = {
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-run" },
+      memberAddress: "/researcher",
     } as const satisfies ApplicationAgentTargetAddress;
 
     const agentConnection = client.agentCommunication.connect(agentAddress);
@@ -261,7 +265,7 @@ describe("Application agent communication WebSocket integration", () => {
     expect(teamPostMessage).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ content: "member input" }),
-      "/researcher",
+      "researcher-run",
     );
 
     for (const listener of agentListeners) listener({
@@ -280,6 +284,10 @@ describe("Application agent communication WebSocket integration", () => {
       const sequenced = { changeSequence: ++teamChangeSequence, event };
       for (const listener of teamListeners) listener(sequenced);
     };
+    emitTeam({
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      payload: { messageId: "non-agent-event" } as never,
+    });
     for (const [memberRouteKey, memberRunId, turnId] of [
       ["writer", "writer-run", "turn-writer"],
       ["researcher", "researcher-run", "turn-researcher"],
@@ -292,9 +300,9 @@ describe("Application agent communication WebSocket integration", () => {
           agentRunId: memberRunId,
         },
         payload: {
-          eventType: "TURN_STARTED",
+          eventType: AgentRunEventType.TURN_STARTED,
           statusHint: null,
-          details: { turnId },
+          details: { turnId, providerSecret: "must-not-cross" },
         },
       });
     }
@@ -308,7 +316,6 @@ describe("Application agent communication WebSocket integration", () => {
       applicationId: APPLICATION_ID,
       address: agentAddress,
       runtimeSubject: "AGENT_RUN",
-      producer: { agentRunId: "agent-run", displayName: null, runtimeKind: "AGENT" },
       event: { type: "TEXT_DELTA", delta: "hello" },
     });
     expect(JSON.stringify(agentEvents[0])).not.toContain("providerSecret");
@@ -320,7 +327,6 @@ describe("Application agent communication WebSocket integration", () => {
     expect(memberEvents[0]).toMatchObject({
       sequence: 1,
       address: memberAddress,
-      producer: { agentRunId: "researcher-run", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER" },
       event: { type: "TURN_STARTED" },
     });
 
@@ -393,7 +399,7 @@ describe("Application agent communication WebSocket integration", () => {
 
     const invalidConnection = client.agentCommunication.connect({
       bindingId: teamBinding.bindingId,
-      target: { kind: "AGENT_RUN" },
+      memberAddress: "/missing",
     });
     connections.push(invalidConnection);
     const invalidClose = waitForClose(invalidConnection);

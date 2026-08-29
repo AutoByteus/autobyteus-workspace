@@ -1,0 +1,30 @@
+# API-REV-009 post-restart real standalone state
+UTC=2026-07-30T09:02:40Z
+HEAD=ffbdb5959a26a24a40ce3ee4dbb8614fd7132be3
+listener_pid=80791
+token_usage_after_new_run=32
+token_usage_by_new_run:
+briefs:
+[{"brief_id":"brief-d78479cd-35c7-4016-95a8-e759b4c08cfe","title":"API REV 009 active lifecycle 1785401797","status":"researching","latest_run_id":"brief_studio_team_9811caab500d41deaf1ccb55d26cc203","latest_binding_status":"ATTACHED","last_error_message":null},
+{"brief_id":"brief-b4069dc3-eda2-4918-b939-2c1f84df8957","title":"API REV 009 post restart accepting 1785402027","status":"in_review","latest_run_id":"brief_studio_team_76f329e1b2954dc9a50ea9d85951b1d1","latest_binding_status":"ATTACHED","last_error_message":null}]
+bindings:
+[{"binding_id":"ae7c0135-69c9-45a8-ae78-5976e54e106d","brief_id":"brief-d78479cd-35c7-4016-95a8-e759b4c08cfe","run_id":"brief_studio_team_9811caab500d41deaf1ccb55d26cc203"},
+{"binding_id":"01e5621b-adc9-4c26-9c11-1a7ff07b96cd","brief_id":"brief-b4069dc3-eda2-4918-b939-2c1f84df8957","run_id":"brief_studio_team_76f329e1b2954dc9a50ea9d85951b1d1"}]
+artifacts:
+[{"brief_id":"brief-b4069dc3-eda2-4918-b939-2c1f84df8957","artifact_kind":"researcher","publication_kind":"research","revision_id":"53012d5a-7264-4d6e-9be9-f4cfc45b4d3a","body_bytes":1308,"producer_member_route_key":"researcher"},
+{"brief_id":"brief-b4069dc3-eda2-4918-b939-2c1f84df8957","artifact_kind":"writer","publication_kind":"final","revision_id":"87258a18-0dea-45cb-b844-135c96101a8f","body_bytes":2083,"producer_member_route_key":"writer"}]
+revisions:
+[{"revision_id":"53012d5a-7264-4d6e-9be9-f4cfc45b4d3a","run_id":"brief_studio_researcher_190e7e9e5c9b4a30b2d9827da7ade10a","artifact_kind":"researcher","publication_kind":"research","producer_member_route_key":"researcher","published_at":"2026-07-30T09:01:02.545Z","projected_at":"2026-07-30T09:01:02.555Z"},
+{"revision_id":"87258a18-0dea-45cb-b844-135c96101a8f","run_id":"brief_studio_writer_4f1696f72ff64a0bbe89885df18d47a3","artifact_kind":"writer","publication_kind":"final","producer_member_route_key":"writer","published_at":"2026-07-30T09:01:41.026Z","projected_at":"2026-07-30T09:01:41.035Z"}]
+platform_journals:
+runtime_files:
+applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/../runtime/brief-studio/final-brief.md
+    2085 applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/../runtime/brief-studio/final-brief.md
+applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/../runtime/brief-studio/research.md
+    1308 applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/../runtime/brief-studio/research.md
+process_tree:
+22343 21911    02:08:23 codex app-server
+80791 80774       07:11 node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/node_modules/.bin/../@autobyteus/application-devkit/dist/cli.js dev -- --port 43124 --no-open
+80799 80791       07:10 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping
+90786 80791       02:12 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+90828 80791       02:12 codex app-server

@@ -1,0 +1,104 @@
+BRIEF WORKFLOW
+Brief Studio
+
+Create, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.
+
+WHAT YOU CAN DO HERE
+
+Stay focused on the brief work itself.
+Create the brief record that anchors the work.
+Generate fresh drafts when the brief is ready.
+Review outputs, notes, and approval state together.
+STEP 1
+Create
+
+Start with the business brief record and keep the work anchored to one brief.
+
+STEP 2
+Generate
+
+Launch new drafting runs over time as the brief evolves and needs another pass.
+
+STEP 3
+Review
+
+Keep draft outputs, review notes, and approval decisions together on the same record.
+
+Create a brief
+
+Start the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.
+
+BRIEF TITLE
+Create brief
+GraphQL stays the primary brief API while the host supplies runtime and workspace defaults.
+Briefs
+
+Track each brief, its latest draft state, and its review outcome.
+
+Refresh
+API E2E "Native Edit" \ 2026-08-27T20:32Z
+Not_started
+Brief brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea
+Updated 8/27/2026, 8:35:17 PM
+Brief detail
+
+Review generated drafts, notes, and approval state for the selected brief.
+
+API E2E "Native Edit" \ 2026-08-27T20:32Z
+
+briefId brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea
+
+Not_started
+Created 8/27/2026, 8:33:09 PM
+Updated 8/27/2026, 8:35:17 PM
+BRIEF RECORD
+brief-bcc31249-7cd4-49e6-82a3-b6f208c7b8ea
+Status not_started
+DRAFT OUTPUTS
+0
+0 final
+REVIEW
+0 notes
+Approved — · Rejected —
+Generate draft
+Approve
+Reject
+Draft outputs
+
+Generated drafts stay attached to the same brief record for review.
+
+No draft outputs yet.
+Review notes
+
+Keep the approval conversation on the brief record itself.
+
+No review notes yet.
+Add review note
+Workflow diagnostics
+
+Optional app-author diagnostics. The main brief workflow stays focused on drafts, notes, and approval state.
+
+LATEST BINDING
+7aa49eaa-12c0-4eb8-a4ad-f18e3a804bf2
+Status ATTACHED
+LATEST RUN
+brief_studio_team_e90a16c31d294a018a1bc2f504088b25
+Last updated 8/27/2026, 8:35:17 PM
+RUNTIME NOTE
+No recorded runtime error
+Draft generation history
+
+One brief can accumulate many app-owned draft generations over time.
+
+7aa49eaa-12c0-4eb8-a4ad-f18e3a804bf2
+ATTACHED
+Run brief_studio_team_e90a16c31d294a018a1bc2f504088b25
+8/27/2026, 8:35:17 PM
+Definition bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d · Closed —
+No recorded runtime error
+e595a06b-7266-4b78-af69-b65f1c7cade5
+ATTACHED
+Run brief_studio_team_2a81aec1b08f43a7b6e22d97427d470e
+8/27/2026, 8:33:47 PM
+Definition bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d · Closed —
+No recorded runtime error

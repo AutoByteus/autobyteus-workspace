@@ -1,0 +1,52 @@
+CONSOLE debug [vite] connecting...
+CONSOLE debug [vite] connected.
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE info <Suspense> is an experimental feature and its API will likely change.
+CONSOLE log ServerLoading: Component mounted with status: running
+CONSOLE debug [vite] connecting...
+CONSOLE debug [vite] connected.
+CONSOLE log serverStore: Initializing server config
+CONSOLE log serverStore: Not in Electron environment. Skipping server initialization.
+CONSOLE info <Suspense> is an experimental feature and its API will likely change.
+CONSOLE log ServerLoading: Component mounted with status: running
+URL http://127.0.0.1:31360/applications
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Applications
+
+Browse bundled applications and open their iframe hosts. Runtime orchestration now belongs to each application.
+
+Refresh catalog
+Brief Studio
+
+External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.
+
+Open app →
+Socratic Math Teacher
+
+Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.
+
+Open app →
+BUTTONS [
+  'Agents',
+  '',
+  'Agent Teams',
+  'Applications',
+  'Skills',
+  'Memory',
+  'Nodes',
+  '',
+  'Temp Workspace',
+  'Settings',
+  'Refresh catalog',
+  'Brief StudioExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.Open app →',
+  'Socratic Math TeacherBuilt-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.Open app →'
+]

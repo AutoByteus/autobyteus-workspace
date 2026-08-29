@@ -1,0 +1,55 @@
+# Latest-base refresh round 5 — changed-both inventory
+merge_base=8a4c3868c7c54a46991f45be22a68151076412b1
+head=c6d74710ad30b680f853fba0e90a68255f112955
+origin_personal=fb1335867a4223b2499e4513f58c609b6ac33ab4
+count=50
+D	M	applications/brief-studio/backend/dist/vendor/launch-profile.js
+D	M	applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+D	M	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js
+D	M	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+D	M	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+D	M	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+D	M	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+D	M	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+D	M	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+D	M	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+D	M	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+D	M	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+D	M	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+D	M	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+D	M	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+D	M	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+D	M	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+D	M	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+D	M	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+D	M	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+D	M	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+D	M	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+D	M	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+D	M	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+D	M	autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+D	M	autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+D	M	autobyteus-application-backend-sdk/dist/launch-profile.js
+D	M	autobyteus-application-backend-sdk/dist/launch-profile.js.map
+M	M	autobyteus-application-backend-sdk/src/launch-profile.ts
+M	M	autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+M	M	autobyteus-application-devkit/templates/basic/application.json
+M	M	autobyteus-application-devkit/tests/application-devkit.test.mjs
+M	M	autobyteus-application-sdk-contracts/README.md
+D	M	autobyteus-application-sdk-contracts/dist/index.d.ts
+D	M	autobyteus-application-sdk-contracts/dist/index.d.ts.map
+M	M	autobyteus-application-sdk-contracts/src/index.ts
+M	M	autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+M	M	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+M	M	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+M	M	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+M	M	autobyteus-server-ts/src/server-runtime.ts
+M	M	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+M	M	autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+M	M	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+M	M	autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+M	M	autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+M	M	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+M	M	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+M	M	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+M	M	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts

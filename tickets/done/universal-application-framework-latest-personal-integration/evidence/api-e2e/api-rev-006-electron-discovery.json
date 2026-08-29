@@ -1,0 +1,1041 @@
+{
+  "startedAt": "2026-08-22T19:09:55.696Z",
+  "metadata": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 55888,
+    "dataRoot": "/private/tmp/api-rev006-electron-classroom-20260822210950-99567",
+    "ownsDataRoot": false,
+    "clientBaseUrl": "http://127.0.0.1:55888",
+    "healthUrl": "http://127.0.0.1:55888/rest/health"
+  },
+  "packageImport": {
+    "success": "Agent package imported.",
+    "visibleRows": [
+      "autobyteus-agents\nLocal Path | Shared Agents: 7 | Team-local Agents: 50 | Teams: 12 | Applications: 0\n/Users/normy/autobyteus_org/autobyteus-agents\nLocal folder — reload after external changes.\nLocal Path\nReload\nRemove"
+    ],
+    "classroomVisibleInRow": true
+  },
+  "runtimes": {
+    "status": 200,
+    "body": {
+      "data": {
+        "runtimeAvailabilities": [
+          {
+            "runtimeKind": "autobyteus",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "codex_app_server",
+            "enabled": true,
+            "reason": null
+          },
+          {
+            "runtimeKind": "claude_agent_sdk",
+            "enabled": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  },
+  "catalogs": {
+    "codex_app_server": {
+      "status": 200,
+      "body": {
+        "data": {
+          "availableLlmProvidersWithModels": [
+            {
+              "provider": {
+                "id": "ANTHROPIC",
+                "name": "Anthropic",
+                "providerType": "ANTHROPIC",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "AUTOBYTEUS",
+                "name": "AutoByteus",
+                "providerType": "AUTOBYTEUS",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "DEEPSEEK",
+                "name": "DeepSeek",
+                "providerType": "DEEPSEEK",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "GEMINI",
+                "name": "Gemini",
+                "providerType": "GEMINI",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "GLM",
+                "name": "GLM",
+                "providerType": "GLM",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "GROK",
+                "name": "Grok",
+                "providerType": "GROK",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "KIMI",
+                "name": "Kimi",
+                "providerType": "KIMI",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "LMSTUDIO",
+                "name": "LM Studio",
+                "providerType": "LMSTUDIO",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "MINIMAX",
+                "name": "MiniMax",
+                "providerType": "MINIMAX",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "MISTRAL",
+                "name": "Mistral",
+                "providerType": "MISTRAL",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "OLLAMA",
+                "name": "Ollama",
+                "providerType": "OLLAMA",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "OPENAI",
+                "name": "OpenAI",
+                "providerType": "OPENAI",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "gpt-5.3-codex-spark",
+                  "name": "GPT-5.3-Codex-Spark (default reasoning: high)",
+                  "value": "gpt-5.3-codex-spark",
+                  "canonicalName": "gpt-5.3-codex-spark",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.4",
+                  "name": "GPT-5.4 (default reasoning: medium)",
+                  "value": "gpt-5.4",
+                  "canonicalName": "gpt-5.4",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.4-mini",
+                  "name": "GPT-5.4-Mini (default reasoning: medium)",
+                  "value": "gpt-5.4-mini",
+                  "canonicalName": "gpt-5.4-mini",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.5",
+                  "name": "GPT-5.5 (default reasoning: medium)",
+                  "value": "gpt-5.5",
+                  "canonicalName": "gpt-5.5",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-luna",
+                  "name": "GPT-5.6-Luna (default reasoning: medium)",
+                  "value": "gpt-5.6-luna",
+                  "canonicalName": "gpt-5.6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-sol",
+                  "name": "GPT-5.6-Sol (default reasoning: low)",
+                  "value": "gpt-5.6-sol",
+                  "canonicalName": "gpt-5.6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-terra",
+                  "name": "GPT-5.6-Terra (default reasoning: medium)",
+                  "value": "gpt-5.6-terra",
+                  "canonicalName": "gpt-5.6-terra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "QWEN",
+                "name": "Qwen",
+                "providerType": "QWEN",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            }
+          ]
+        }
+      }
+    },
+    "autobyteus": {
+      "status": 200,
+      "body": {
+        "data": {
+          "availableLlmProvidersWithModels": [
+            {
+              "provider": {
+                "id": "ANTHROPIC",
+                "name": "Anthropic",
+                "providerType": "ANTHROPIC",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "claude-fable-5",
+                  "name": "claude-fable-5",
+                  "value": "claude-fable-5",
+                  "canonicalName": "claude-fable-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "claude-opus-4.7",
+                  "name": "claude-opus-4.7",
+                  "value": "claude-opus-4-7",
+                  "canonicalName": "claude-opus-4.7",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "claude-opus-4.8",
+                  "name": "claude-opus-4.8",
+                  "value": "claude-opus-4-8",
+                  "canonicalName": "claude-opus-4.8",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "claude-opus-5",
+                  "name": "claude-opus-5",
+                  "value": "claude-opus-5",
+                  "canonicalName": "claude-opus-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "claude-sonnet-4.6",
+                  "name": "claude-sonnet-4.6",
+                  "value": "claude-sonnet-4-6",
+                  "canonicalName": "claude-sonnet-4.6",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "claude-sonnet-5",
+                  "name": "claude-sonnet-5",
+                  "value": "claude-sonnet-5",
+                  "canonicalName": "claude-sonnet-5",
+                  "providerId": "ANTHROPIC",
+                  "providerName": "Anthropic",
+                  "providerType": "ANTHROPIC",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "AUTOBYTEUS",
+                "name": "AutoByteus",
+                "providerType": "AUTOBYTEUS",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "DEEPSEEK",
+                "name": "DeepSeek",
+                "providerType": "DEEPSEEK",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "deepseek-v4-flash",
+                  "name": "deepseek-v4-flash",
+                  "value": "deepseek-v4-flash",
+                  "canonicalName": "deepseek-v4-flash",
+                  "providerId": "DEEPSEEK",
+                  "providerName": "DeepSeek",
+                  "providerType": "DEEPSEEK",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "deepseek-v4-pro",
+                  "name": "deepseek-v4-pro",
+                  "value": "deepseek-v4-pro",
+                  "canonicalName": "deepseek-v4-pro",
+                  "providerId": "DEEPSEEK",
+                  "providerName": "DeepSeek",
+                  "providerType": "DEEPSEEK",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "GEMINI",
+                "name": "Gemini",
+                "providerType": "GEMINI",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "gemini-3-flash-preview",
+                  "name": "gemini-3-flash-preview",
+                  "value": "gemini-3-flash-preview",
+                  "canonicalName": "gemini-3-flash-preview",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gemini-3.1-pro-preview",
+                  "name": "gemini-3.1-pro-preview",
+                  "value": "gemini-3.1-pro-preview",
+                  "canonicalName": "gemini-3.1-pro-preview",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gemini-3.5-flash",
+                  "name": "gemini-3.5-flash",
+                  "value": "gemini-3.5-flash",
+                  "canonicalName": "gemini-3.5-flash",
+                  "providerId": "GEMINI",
+                  "providerName": "Gemini",
+                  "providerType": "GEMINI",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "GLM",
+                "name": "GLM",
+                "providerType": "GLM",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "glm-5.2",
+                  "name": "glm-5.2",
+                  "value": "glm-5.2",
+                  "canonicalName": "glm-5.2",
+                  "providerId": "GLM",
+                  "providerName": "GLM",
+                  "providerType": "GLM",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "GROK",
+                "name": "Grok",
+                "providerType": "GROK",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "grok-4.5",
+                  "name": "grok-4.5",
+                  "value": "grok-4.5",
+                  "canonicalName": "grok-4.5",
+                  "providerId": "GROK",
+                  "providerName": "Grok",
+                  "providerType": "GROK",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "KIMI",
+                "name": "Kimi",
+                "providerType": "KIMI",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "kimi-k2.6",
+                  "name": "kimi-k2.6",
+                  "value": "kimi-k2.6",
+                  "canonicalName": "kimi-k2.6",
+                  "providerId": "KIMI",
+                  "providerName": "Kimi",
+                  "providerType": "KIMI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "kimi-k2.7-code",
+                  "name": "kimi-k2.7-code",
+                  "value": "kimi-k2.7-code",
+                  "canonicalName": "kimi-k2.7-code",
+                  "providerId": "KIMI",
+                  "providerName": "Kimi",
+                  "providerType": "KIMI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "kimi-k2.7-code-highspeed",
+                  "name": "kimi-k2.7-code-highspeed",
+                  "value": "kimi-k2.7-code-highspeed",
+                  "canonicalName": "kimi-k2.7-code-highspeed",
+                  "providerId": "KIMI",
+                  "providerName": "Kimi",
+                  "providerType": "KIMI",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "LMSTUDIO",
+                "name": "LM Studio",
+                "providerType": "LMSTUDIO",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "deepseek-ocr:lmstudio@127.0.0.1:1234",
+                  "name": "deepseek-ocr",
+                  "value": "deepseek-ocr",
+                  "canonicalName": "deepseek-ocr",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+                  "name": "google/gemma-4-26b-a4b",
+                  "value": "google/gemma-4-26b-a4b",
+                  "canonicalName": "google/gemma-4-26b-a4b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "google/gemma-4-31b:lmstudio@127.0.0.1:1234",
+                  "name": "google/gemma-4-31b",
+                  "value": "google/gemma-4-31b",
+                  "canonicalName": "google/gemma-4-31b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@127.0.0.1:1234",
+                  "name": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+                  "value": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+                  "canonicalName": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@127.0.0.1:1234",
+                  "name": "qwen/qwen3.6-27b",
+                  "value": "qwen/qwen3.6-27b",
+                  "canonicalName": "qwen/qwen3.6-27b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+                  "name": "qwen/qwen3.6-35b-a3b",
+                  "value": "qwen/qwen3.6-35b-a3b",
+                  "canonicalName": "qwen/qwen3.6-35b-a3b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen/qwen3.8-27b:lmstudio@127.0.0.1:1234",
+                  "name": "qwen/qwen3.8-27b",
+                  "value": "qwen/qwen3.8-27b",
+                  "canonicalName": "qwen/qwen3.8-27b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen3.5-27b:lmstudio@127.0.0.1:1234",
+                  "name": "qwen3.5-27b",
+                  "value": "qwen3.5-27b",
+                  "canonicalName": "qwen3.5-27b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@127.0.0.1:1234",
+                  "name": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+                  "value": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+                  "canonicalName": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen3.6-27b:lmstudio@127.0.0.1:1234",
+                  "name": "qwen3.6-27b",
+                  "value": "qwen3.6-27b",
+                  "canonicalName": "qwen3.6-27b",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@127.0.0.1:1234",
+                  "name": "qwen3.6-27b-mtplx-optimized-speed",
+                  "value": "qwen3.6-27b-mtplx-optimized-speed",
+                  "canonicalName": "qwen3.6-27b-mtplx-optimized-speed",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234",
+                  "name": "qwen3.6-27b-ud-mlx",
+                  "value": "qwen3.6-27b-ud-mlx",
+                  "canonicalName": "qwen3.6-27b-ud-mlx",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234",
+                  "name": "text-embedding-nomic-embed-text-v1.5",
+                  "value": "text-embedding-nomic-embed-text-v1.5",
+                  "canonicalName": "text-embedding-nomic-embed-text-v1.5",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@127.0.0.1:1234",
+                  "name": "unsloth/gemma-4-26b-a4b-it",
+                  "value": "unsloth/gemma-4-26b-a4b-it",
+                  "canonicalName": "unsloth/gemma-4-26b-a4b-it",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                },
+                {
+                  "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@127.0.0.1:1234",
+                  "name": "unsloth/gemma-4-31b-it",
+                  "value": "unsloth/gemma-4-31b-it",
+                  "canonicalName": "unsloth/gemma-4-31b-it",
+                  "providerId": "LMSTUDIO",
+                  "providerName": "LM Studio",
+                  "providerType": "LMSTUDIO",
+                  "runtime": "lmstudio"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "MINIMAX",
+                "name": "MiniMax",
+                "providerType": "MINIMAX",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "minimax-m3",
+                  "name": "minimax-m3",
+                  "value": "MiniMax-M3",
+                  "canonicalName": "minimax-m3",
+                  "providerId": "MINIMAX",
+                  "providerName": "MiniMax",
+                  "providerType": "MINIMAX",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "MISTRAL",
+                "name": "Mistral",
+                "providerType": "MISTRAL",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "devstral-2",
+                  "name": "devstral-2",
+                  "value": "devstral-2512",
+                  "canonicalName": "devstral-2",
+                  "providerId": "MISTRAL",
+                  "providerName": "Mistral",
+                  "providerType": "MISTRAL",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "mistral-large-3",
+                  "name": "mistral-large-3",
+                  "value": "mistral-large-2512",
+                  "canonicalName": "mistral-large-3",
+                  "providerId": "MISTRAL",
+                  "providerName": "Mistral",
+                  "providerType": "MISTRAL",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "OLLAMA",
+                "name": "Ollama",
+                "providerType": "OLLAMA",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": []
+            },
+            {
+              "provider": {
+                "id": "OPENAI",
+                "name": "OpenAI",
+                "providerType": "OPENAI",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "gpt-5.4",
+                  "name": "gpt-5.4",
+                  "value": "gpt-5.4",
+                  "canonicalName": "gpt-5.4",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.4-mini",
+                  "name": "gpt-5.4-mini",
+                  "value": "gpt-5.4-mini",
+                  "canonicalName": "gpt-5.4-mini",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.5",
+                  "name": "gpt-5.5",
+                  "value": "gpt-5.5",
+                  "canonicalName": "gpt-5.5",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-luna",
+                  "name": "gpt-5.6-luna",
+                  "value": "gpt-5.6-luna",
+                  "canonicalName": "gpt-5.6-luna",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-sol",
+                  "name": "gpt-5.6-sol",
+                  "value": "gpt-5.6-sol",
+                  "canonicalName": "gpt-5.6-sol",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "gpt-5.6-terra",
+                  "name": "gpt-5.6-terra",
+                  "value": "gpt-5.6-terra",
+                  "canonicalName": "gpt-5.6-terra",
+                  "providerId": "OPENAI",
+                  "providerName": "OpenAI",
+                  "providerType": "OPENAI",
+                  "runtime": "api"
+                }
+              ]
+            },
+            {
+              "provider": {
+                "id": "QWEN",
+                "name": "Qwen",
+                "providerType": "QWEN",
+                "isCustom": false,
+                "status": "NOT_APPLICABLE",
+                "statusMessage": null
+              },
+              "models": [
+                {
+                  "modelIdentifier": "qwen:deepseek-v4-flash-0731",
+                  "name": "DeepSeek V4 Flash 0731 (Qwen)",
+                  "value": "deepseek-v4-flash-0731",
+                  "canonicalName": "deepseek-v4-flash-0731",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "qwen:deepseek-v4-pro",
+                  "name": "DeepSeek V4 Pro (Qwen)",
+                  "value": "deepseek-v4-pro",
+                  "canonicalName": "deepseek-v4-pro",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "qwen:glm-5.2",
+                  "name": "GLM-5.2 (Qwen)",
+                  "value": "glm-5.2",
+                  "canonicalName": "glm-5.2",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "qwen3-max",
+                  "name": "qwen3-max",
+                  "value": "qwen3-max",
+                  "canonicalName": "qwen3-max",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "qwen3.7-max",
+                  "name": "qwen3.7-max",
+                  "value": "qwen3.7-max",
+                  "canonicalName": "qwen3.7-max",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api"
+                },
+                {
+                  "modelIdentifier": "qwen3.8-max",
+                  "name": "qwen3.8-max",
+                  "value": "qwen3.8-max",
+                  "canonicalName": "qwen3.8-max",
+                  "providerId": "QWEN",
+                  "providerName": "Qwen",
+                  "providerType": "QWEN",
+                  "runtime": "api"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "traffic": {
+    "requests": [
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:55888/graphql"
+      }
+    ],
+    "responses": [
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      },
+      {
+        "status": 200,
+        "url": "http://127.0.0.1:55888/graphql"
+      }
+    ],
+    "failures": [],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "cleanup": {
+    "processTreeCompletion": {
+      "status": "complete",
+      "identity": "posix-process-group:99896",
+      "forced": false,
+      "gracefulError": null
+    },
+    "portObservation": {
+      "status": "available",
+      "port": 55888,
+      "detail": null
+    }
+  },
+  "completedAt": "2026-08-22T19:10:03.501Z"
+}

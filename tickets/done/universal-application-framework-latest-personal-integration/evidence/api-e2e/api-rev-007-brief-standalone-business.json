@@ -1,0 +1,206 @@
+{
+  "result": "PASS",
+  "scenario": "APIE2E-DUAL-HOST-007/APIE2E-PUBLICATION-007",
+  "state": {
+    "url": "http://127.0.0.1:43272/",
+    "title": "Brief Studio",
+    "workspaceStatus": "",
+    "detail": "Current Personal API-REV-007 launch brief briefId brief-9e2effcb-0aff-4597-96ce-73b7045fc34a in_review Created 23.8.2026, 08:00:04 Updated 23.8.2026, 08:01:53 Brief record brief-9e2effcb-0aff-4597-96ce-73b7045fc34a Status in_review Draft outputs 2 1 final Review 0 notes Approved — · Rejected — Generate draft Approve Reject Draft outputs Generated drafts stay attached to the same brief record for review. researcher research /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md Concise research checkpoint for the API-REV-007 launch brief. # Current Personal API-REV-007 launch brief — research checkpoint ## Key findings - API-REV-007 is treated as an internal launch identifier for a personal API release; no authoritative product specification or audience definition was supplied, so this checkpoint separates confirmed scope from assumptions. - The brief should center on a small, reviewable launch: purpose, target users, supported endpoints/capabilities, access model, rollout milestones, and success measures. - “Current” requires a visible as-of date, owner, version/status, and links to the source of truth; otherwise reviewers cannot distinguish launch readiness from intent. - Personal API launches carry outsized trust requirements: authentication, secret handling, least-privilege access, rate limits, logging, rollback, and documentation should be explicit before exposure. - A staged release (private validation → limited beta → broader availability) reduces blast radius and creates checkpoints for feedback and operational evidence. ## Risks or open questions - What does REV-007 change, and which prior behavior must remain backward compatible? - Who is the primary user, what data is accessed, and what environments/regions are in scope? - No launch date, owner, readiness evidence, dependency list, or baseline success metrics were provided. - Security/privacy review and incident-response ownership are not yet confirmed. ## Recommendations or next steps - Add a one-sentence value proposition, explicit in/out-of-scope list, owner, as-of date, and canonical technical links. - Define launch gates: contract tests, auth/permission checks, observability, rate-limit behavior, backup/rollback rehearsal, and documentation review. - Set measurable first-release targets (activation, successful-call rate, latency/error budget, support burden) and a 24–72 hour post-launch review. - Start with a private or allowlisted pilot and record go/no-go evidence before expanding access. writer final /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md Concise writer checkpoint for the API-REV-007 internal personal API launch. # API-REV-007 — Internal Personal API Launch Brief **Recommendation:** Proceed only with a small, allowlisted private pilot. Treat API-REV-007 as an internal personal API launch identifier, not as a confirmed product specification: scope, audience, data access, ownership, and readiness evidence remain assumptions until recorded. Publish a reviewable contract and operational guardrails first, then use pilot evidence to decide whether to expand access. **As of:** 2026-08-23. **Owner:** TBD. **Source of truth:** TBD; link the canonical repository/spec before launch. ## Key evidence - The launch brief should make purpose/value, primary users, supported endpoints or capabilities, access model, rollout stages, and success measures explicit. - “Current” status requires a visible as-of date, owner, version/status, and canonical technical links so reviewers can distinguish intent from readiness. - Minimum trust controls are authentication, secure secret handling, least-privilege permissions, rate limits, structured logging, rollback capability, and usable documentation. - A staged path—private validation, limited beta, then broader availability—reduces blast radius and creates evidence-based go/no-go checkpoints. - Suggested first-release measures: activation/use by intended users, successful-call rate, latency and error-budget performance, support burden, and a 24–72 hour post-launch review. ## Risks or cautions - REV-007’s changes and backward-compatibility obligations are unconfirmed; do not imply compatibility until prior behavior and contract tests are documented. - Audience, data scope, environments/regions, launch date, dependencies, and baseline metrics are missing. - Security/privacy review and incident-response ownership are not confirmed; wider exposure should wait for named accountable owners. - Avoid treating assumptions as commitments or exposing sensitive data/secrets during pilot validation. ## Next actions - Name the owner and incident/security contacts; set the as-of date, version/status, and canonical source-of-truth links. - Add a one-sentence value proposition plus explicit in-scope/out-of-scope users, data, environments, endpoints, and dependencies. - Define launch gates: contract/backward-compatibility tests, auth and permission checks, rate-limit behavior, logging/alerts, backup and rollback rehearsal, and documentation review. - Run an allowlisted private pilot, capture usage and operational evidence, hold a go/no-go review, and expand only if the gates and metrics are met. Review notes Keep the approval conversation on the brief record itself. No review notes yet. Add review note Workflow diagnostics Optional app-author diagnostics. The main brief workflow stays focused on drafts, notes, and approval state. Latest binding 4cdef414-d269-47c5-b870-57cb60c593c2 Status ATTACHED Latest run brief_studio_team_823db96f1ce94c8f807fd6adb034ecd5 Last updated 23.8.2026, 08:01:53 Runtime note No recorded runtime error Draft generation history One brief can accumulate many app-owned draft generations over time. 4cdef414-d269-47c5-b870-57cb60c593c2 ATTACHED Run brief_studio_team_823db96f1ce94c8f807fd6adb034ecd5 23.8.2026, 08:00:04 Definition bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d · Closed — No recorded runtime error",
+    "artifacts": [
+      "researcher research /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md Concise research checkpoint for the API-REV-007 launch brief. # Current Personal API-REV-007 launch brief — research checkpoint ## Key findings - API-REV-007 is treated as an internal launch identifier for a personal API release; no authoritative product specification or audience definition was supplied, so this checkpoint separates confirmed scope from assumptions. - The brief should center on a small, reviewable launch: purpose, target users, supported endpoints/capabilities, access model, rollout milestones, and success measures. - “Current” requires a visible as-of date, owner, version/status, and links to the source of truth; otherwise reviewers cannot distinguish launch readiness from intent. - Personal API launches carry outsized trust requirements: authentication, secret handling, least-privilege access, rate limits, logging, rollback, and documentation should be explicit before exposure. - A staged release (private validation → limited beta → broader availability) reduces blast radius and creates checkpoints for feedback and operational evidence. ## Risks or open questions - What does REV-007 change, and which prior behavior must remain backward compatible? - Who is the primary user, what data is accessed, and what environments/regions are in scope? - No launch date, owner, readiness evidence, dependency list, or baseline success metrics were provided. - Security/privacy review and incident-response ownership are not yet confirmed. ## Recommendations or next steps - Add a one-sentence value proposition, explicit in/out-of-scope list, owner, as-of date, and canonical technical links. - Define launch gates: contract tests, auth/permission checks, observability, rate-limit behavior, backup/rollback rehearsal, and documentation review. - Set measurable first-release targets (activation, successful-call rate, latency/error budget, support burden) and a 24–72 hour post-launch review. - Start with a private or allowlisted pilot and record go/no-go evidence before expanding access.",
+      "writer final /private/tmp/api-rev007-brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md Concise writer checkpoint for the API-REV-007 internal personal API launch. # API-REV-007 — Internal Personal API Launch Brief **Recommendation:** Proceed only with a small, allowlisted private pilot. Treat API-REV-007 as an internal personal API launch identifier, not as a confirmed product specification: scope, audience, data access, ownership, and readiness evidence remain assumptions until recorded. Publish a reviewable contract and operational guardrails first, then use pilot evidence to decide whether to expand access. **As of:** 2026-08-23. **Owner:** TBD. **Source of truth:** TBD; link the canonical repository/spec before launch. ## Key evidence - The launch brief should make purpose/value, primary users, supported endpoints or capabilities, access model, rollout stages, and success measures explicit. - “Current” status requires a visible as-of date, owner, version/status, and canonical technical links so reviewers can distinguish intent from readiness. - Minimum trust controls are authentication, secure secret handling, least-privilege permissions, rate limits, structured logging, rollback capability, and usable documentation. - A staged path—private validation, limited beta, then broader availability—reduces blast radius and creates evidence-based go/no-go checkpoints. - Suggested first-release measures: activation/use by intended users, successful-call rate, latency and error-budget performance, support burden, and a 24–72 hour post-launch review. ## Risks or cautions - REV-007’s changes and backward-compatibility obligations are unconfirmed; do not imply compatibility until prior behavior and contract tests are documented. - Audience, data scope, environments/regions, launch date, dependencies, and baseline metrics are missing. - Security/privacy review and incident-response ownership are not confirmed; wider exposure should wait for named accountable owners. - Avoid treating assumptions as commitments or exposing sensitive data/secrets during pilot validation. ## Next actions - Name the owner and incident/security contacts; set the as-of date, version/status, and canonical source-of-truth links. - Add a one-sentence value proposition plus explicit in-scope/out-of-scope users, data, environments, endpoints, and dependencies. - Define launch gates: contract/backward-compatibility tests, auth and permission checks, rate-limit behavior, logging/alerts, backup and rollback rehearsal, and documentation review. - Run an allowlisted private pilot, capture usage and operational evidence, hold a go/no-go review, and expand only if the gates and metrics are met."
+    ],
+    "executions": [],
+    "failed": false
+  },
+  "polls": [
+    {
+      "at": "2026-08-23T06:00:09.391Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:14.397Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:19.402Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:24.409Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:29.416Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:34.419Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:39.425Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:44.430Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:49.435Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:54.437Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:00:59.446Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:04.450Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:09.455Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:14.456Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:19.461Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:24.466Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:29.470Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:34.475Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:39.480Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:44.484Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:49.491Z",
+      "status": "",
+      "artifacts": 0,
+      "inReview": false,
+      "hasResearch": false,
+      "hasFinal": true
+    },
+    {
+      "at": "2026-08-23T06:01:54.498Z",
+      "status": "",
+      "artifacts": 2,
+      "inReview": true,
+      "hasResearch": true,
+      "hasFinal": true
+    }
+  ],
+  "consoleLines": [
+    "[error] Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "[info] [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+    "[info] [BriefStudio] notification received topic=brief.created",
+    "[info] [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+    "[info] [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+    "[info] [BriefStudio] notification received topic=brief.draft_run_started",
+    "[info] [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+    "[info] [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+    "[info] [BriefStudio] notification received topic=brief.ready_for_review",
+    "[info] [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+  ]
+}

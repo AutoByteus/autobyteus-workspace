@@ -1,0 +1,30 @@
+# API-REV-009 final cleanup and integrity comparison
+UTC=2026-07-30T09:08:37Z
+PRE_HASH_COUNT=73
+POST_HASH_COUNT=73
+HASH_COMPARISON=DIFFERENT
+--- /tmp/api-rev009-pre-hashes.txt	2026-07-30 11:08:37
++++ /tmp/api-rev009-post-hashes.txt	2026-07-30 11:08:37
+@@ -1,4 +1,4 @@
+-2c99176382965a22fdd6066e51a32cb5fa6d779c9ef694e49aca2a6c6f50c674  applications/brief-studio/dist/importable-package/README.md
++14f22964eef5654b9c467a1b060ae0ff3b705d860f749987c83c4be844bb6fd5  applications/brief-studio/dist/importable-package/README.md
+ 8357e18afc58a152c25cdb3119148883e362c8d7e26c29ce06776e0c487a57f4  applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json
+ f4bb3e4d767c63b8f02737001fe8a196e9ca95857c5d3331049e6f389d4cbfe3  applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md
+ 908788b1c0533500e980978b055b74702b8218f924aa5aeeb3330555a3a39de2  applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent-config.json
+ports_before_data_cleanup:
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+owned_processes_before_data_cleanup:
+after_data_cleanup:
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+brief_owned_data=absent
+studio_owned_data=absent
+devkit_generated=absent
+tracked_generated_readme_restored_to_head=yes
+readme_worktree_diff_after_restore=clean
+durable_regression_generated_state_cleanup=absent

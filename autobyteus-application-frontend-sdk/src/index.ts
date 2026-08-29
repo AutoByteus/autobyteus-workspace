@@ -2,8 +2,8 @@ export {
   createApplicationClient,
 } from "./application-client.js";
 export {
-  startHostedApplication,
-} from "./hosted-application-startup.js";
+  startApplication,
+} from "./application-startup/application-startup-coordinator.js";
 export {
   createApplicationBackendMountTransport,
   deriveApplicationBackendMountEndpoints,
@@ -37,14 +37,12 @@ export type {
   ApplicationBackendWebSocketConnectOptions,
 } from "./application-backend-websocket-connection.js";
 export type {
-  HostedApplicationBootstrappedContext,
-  HostedApplicationRootElement,
-  HostedApplicationStartupHandle,
-  StartHostedApplicationOptions,
-} from "./hosted-application-startup.js";
-export type {
-  HostedApplicationStartupState,
-} from "./default-startup-screen.js";
+  ApplicationBootstrappedContext,
+  ApplicationRootElement,
+  ApplicationStartupHandle,
+  ApplicationStartupState,
+  StartApplicationOptions,
+} from "./application-startup/application-startup-types.js";
 export type {
   ApplicationGraphqlRequest,
   ApplicationNotificationMessage,

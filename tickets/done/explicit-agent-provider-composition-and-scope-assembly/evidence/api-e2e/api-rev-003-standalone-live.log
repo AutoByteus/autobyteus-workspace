@@ -1,0 +1,10 @@
+{
+  "result": "FAIL",
+  "assertions": 4,
+  "failures": [
+    {
+      "message": "Error: STANDALONE-REAL-WEBSOCKET: {}",
+      "stack": "Error: STANDALONE-REAL-WEBSOCKET: {}\n    at a (file:///private/tmp/api-rev-003-socratic-live.mjs:2:440)\n    at file:///private/tmp/api-rev-003-socratic-live.mjs:2:1770"
+    }
+  ]
+}

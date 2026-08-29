@@ -1,0 +1,81 @@
+DR-011 ELECTRON MACOS ARM64 PACKAGE VERIFICATION
+timestamp_utc=2026-08-25T18:48:26Z
+head=226dcfd1dda71f6507b507a9c8b68145bf4d4bbf
+base=9d0fd7c570d58da1af2c7a40279327c8a20a8093
+app=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg
+zip=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip
+bundle_identifier=com.autobyteus.app
+bundle_version=1.4.58
+bundle_short_version=1.4.58
+minimum_system=12.0
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal_runtime=PASS
+packaged_owner=PASS:dist/compositions/build-studio-server.js
+packaged_owner=PASS:dist/compositions/build-standalone-application-server.js
+packaged_owner=PASS:dist/standalone-application-host/start-standalone-application-host.js
+packaged_owner=PASS:dist/application-platform/runtime/build-application-platform-runtime.js
+packaged_owner=PASS:dist/application-platform/runtime/application-platform-runtime-contracts.js
+packaged_owner=PASS:dist/application-platform/launch-configuration/application-launch-configuration-service.js
+packaged_owner=PASS:dist/application-platform/runtime/application-definition-runtime-readiness.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-controller.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-launcher.js
+packaged_owner=PASS:dist/application-orchestration/services/application-agent-target-authorization-service.js
+packaged_owner=PASS:dist/application-orchestration/services/application-run-binding-launch-service.js
+packaged_owner=PASS:dist/application-agent-streaming/services/application-agent-stream-event-projector.js
+packaged_owner=PASS:dist/agent-tools/published-artifacts/publish-artifacts-tool.js
+packaged_owner=PASS:dist/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js
+packaged_owner=PASS:dist/agent-team-execution/domain/team-run-physical-scope.js
+packaged_owner=PASS:dist/agent-team-execution/services/team-definition-topology-planner.js
+packaged_owner=PASS:dist/agent-team-execution/services/team-run-identity-allocator.js
+packaged_owner=PASS:dist/agent-team-execution/services/team-run-service.js
+packaged_owner=PASS:dist/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.js
+packaged_owner=PASS:dist/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js
+packaged_owner=PASS:dist/run-history/services/team-run-package-catalog.js
+packaged_owner=PASS:dist/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.js
+packaged_owner=PASS:dist/run-history/services/team-run-execution-tree-location-service.js
+packaged_owner=PASS:dist/api/graphql/types/token-usage-analytics.js
+packaged_owner=PASS:dist/token-usage/providers/token-usage-analytics-provider.js
+packaged_owner=PASS:dist/token-usage/repositories/sql/token-usage-analytics-repository.js
+packaged_owner=PASS:prisma/migrations/20260822090000_add_token_usage_analytics/migration.sql
+retired_owner_absent=PASS:dist/application-engine/services/application-engine-host-service.js
+retired_owner_absent=PASS:dist/application-orchestration/services/application-execution-resource-configuration-service.js
+retired_owner_absent=PASS:dist/application-orchestration/services/application-execution-resource-configuration-launch-profile.js
+latest_base_dependency_owner=PASS:llm/current-model-selection-error.js
+latest_base_dependency_owner=PASS:llm/errors/provider-error.js
+latest_base_dependency_owner=PASS:llm/utils/token-pricing-schedule.js
+latest_base_dependency_owner=PASS:tools/terminal/execution-cwd.js
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $12C1A579
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $7963A84E
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $33E3F964
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $83BEB40C
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $33E3F964
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $8947B6AB
+Die überprüfte CRC32-Prüfsumme ist $4ECE8766
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg" is VALID
+dmg_verify=PASS
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip.
+zip_verify=PASS
+dmg_size=465981133
+dmg_sha256=eee0ac6cf7e3e3f4f4121a3b351004842a296e38fbaf5a37650f062381e2ef2c
+zip_size=461646534
+zip_sha256=e257e3e4a2d75092b846aafd41515df406a9603e0d4bd75fe946d86aec0d711c
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign_strict_exit=1
+codesign_posture=LOCAL_UNSIGNED_EXPECTED
+new_app_running=NO_PASS
+test_dmg_mounted=NO_PASS
+FINAL=PASS

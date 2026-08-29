@@ -119,6 +119,28 @@ const extractBriefStudioSuffix = (normalizedPath: string): string | null => {
   return normalizedPath.slice(markerIndex + 1);
 };
 
+export const findBriefArtifactPathRule = (
+  memberAddress: string,
+  artifactPath: string,
+): BriefArtifactPathRule | null => {
+  const normalizedAddress = memberAddress.trim();
+  if (!normalizedAddress.startsWith('/')) {
+    return null;
+  }
+  const normalizedRouteKey = normalizedAddress.split('/').filter(Boolean).at(-1) ?? '';
+  const normalizedPath = normalizeArtifactPath(artifactPath);
+  const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
+  if (!producerRules) {
+    return null;
+  }
+
+  const suffixPath = extractBriefStudioSuffix(normalizedPath);
+  return producerRules[normalizedPath]
+    ?? (suffixPath ? producerRules[suffixPath] : undefined)
+    ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)]
+    ?? null;
+};
+
 export const resolveBriefArtifactPathRule = (
   memberAddress: string,
   artifactPath: string,
@@ -128,18 +150,12 @@ export const resolveBriefArtifactPathRule = (
     throw new Error(`Unexpected Brief Studio artifact producer '${memberAddress}'. A canonical member address is required.`);
   }
   const normalizedRouteKey = normalizedAddress.split('/').filter(Boolean).at(-1) ?? '';
-  const normalizedPath = normalizeArtifactPath(artifactPath);
-  const producerRules = RULES_BY_PRODUCER[normalizedRouteKey];
-  if (!producerRules) {
+  if (!RULES_BY_PRODUCER[normalizedRouteKey]) {
     throw new Error(
       `Unexpected Brief Studio artifact producer '${memberAddress}'. Expected '/researcher' or '/writer'.`,
     );
   }
-
-  const suffixPath = extractBriefStudioSuffix(normalizedPath);
-  const rule = producerRules[normalizedPath]
-    ?? (suffixPath ? producerRules[suffixPath] : undefined)
-    ?? BASENAME_RULES_BY_PRODUCER[normalizedRouteKey]?.[basenameOf(normalizedPath)];
+  const rule = findBriefArtifactPathRule(normalizedAddress, artifactPath);
   if (!rule) {
     throw new Error(
       `Unexpected Brief Studio artifact path '${artifactPath}' for producer '${memberAddress}'.`,

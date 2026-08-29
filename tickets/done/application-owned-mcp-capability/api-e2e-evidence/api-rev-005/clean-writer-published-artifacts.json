@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "summaries": [
+    {
+      "id": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e:/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+      "runId": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e",
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+      "type": "file",
+      "status": "available",
+      "description": null,
+      "revisionId": "5004a302-335b-407b-99a1-6b3080869629",
+      "createdAt": "2026-08-28T11:55:07.749Z",
+      "updatedAt": "2026-08-28T11:55:07.749Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revisionId": "5004a302-335b-407b-99a1-6b3080869629",
+      "artifactId": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e:/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+      "runId": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e",
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+      "type": "file",
+      "description": null,
+      "createdAt": "2026-08-28T11:55:07.749Z",
+      "snapshotRelativePath": "published_artifacts/revisions/5004a302-335b-407b-99a1-6b3080869629/final-brief.md",
+      "sourceFileName": "final-brief.md"
+    }
+  ]
+}

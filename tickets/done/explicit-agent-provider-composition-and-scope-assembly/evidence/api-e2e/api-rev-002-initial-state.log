@@ -1,0 +1,28 @@
+API-REV-002 baseline 2026-08-26T11:02:11Z
+pwd=/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly
+head=8704f2653b664c6ae7b5ecb24f2dd3885a79aad9
+v22.23.1
+10.28.2
+status:
+## codex/explicit-agent-provider-composition-and-scope-assembly
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/
+generated-output-baseline:
+autobyteus-server-ts/dist PRESENT
+autobyteus-application-devkit/dist ABSENT
+autobyteus-application-frontend-sdk/dist ABSENT
+applications/brief-studio/dist ABSENT
+applications/socratic-math-teacher/dist ABSENT
+autobyteus-web/.nuxt ABSENT
+autobyteus-web/.output ABSENT
+secret-source=available (values not read into evidence)
+secret_source_file=PRESENT
+/Users/normy/autobyteus_org/autobyteus-agents PRESENT
+/Users/normy/autobyteus_org/autobyteus-private-agents PRESENT
+/Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/nested-classroom-test PRESENT

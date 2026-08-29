@@ -1,0 +1,35 @@
+COMMAND   PID  USER   FD     TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    19660 normy  cwd      DIR               1,13      1120           361867180 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+node    19660 normy  txt      REG               1,13 112928848           255287132 /Users/normy/.hermes/node/bin/node
+node    19660 normy  txt      REG               1,13     72984           293325547 /Library/Preferences/Logging/.plist-cache.TQHe3XLT
+node    19660 normy  txt      REG               1,13   2374000 1152921500312573276 /usr/lib/dyld
+node    19660 normy  txt      REG               1,13  17251592           371120948 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+node    19660 normy    0u    unix 0x7c959ceb2b7b3c94       0t0                     ->0x7c4e333ca913aac1
+node    19660 normy    1u    unix 0xb278c56254dedc3b       0t0                     ->0xdcb03ac9048c4b8c
+node    19660 normy    2u    unix 0xafa6ea6778fda4ca       0t0                     ->0x220b9f3bdefc0f81
+node    19660 normy    3u  KQUEUE                                                  count=0, state=0x8
+node    19660 normy    4     PIPE 0x9676072337f2b492     16384                     ->0x7eb5d80fbe8f755c
+node    19660 normy    5     PIPE 0x7eb5d80fbe8f755c     16384                     ->0x9676072337f2b492
+node    19660 normy    6r     DIR               1,13       704                   2 /
+node    19660 normy    7u  KQUEUE                                                  count=0, state=0xa
+node    19660 normy    8r     DIR               1,13       704                   2 /
+node    19660 normy    9u  KQUEUE                                                  count=0, state=0xa
+node    19660 normy   10r     DIR               1,13       704                   2 /
+node    19660 normy   11r     CHR                3,2       0t0                 336 /dev/null
+node    19660 normy   12w     REG               1,13      6012           371125837 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/logs/server.log
+node    19660 normy   13u  KQUEUE                                                  count=0, state=0xa
+node    19660 normy   14u  KQUEUE                                                  count=0, state=0xa
+node    19660 normy   15u  KQUEUE                                                  count=0, state=0xa
+node    19660 normy   16u    unix 0xa4d2e420bfff3616       0t0                     ->0xf48f14dc1716821
+node    19660 normy   17u    unix  0xf48f14dc1716821       0t0                     ->0xa4d2e420bfff3616
+node    19660 normy   18u    unix 0xa4d2e420bfff3616       0t0                     ->0xf48f14dc1716821
+node    19660 normy   19u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   20u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   21u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   22u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   23u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   24u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   25u     REG               1,13    274432           371044699 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db
+node    19660 normy   26     PIPE 0xcd4358610b53f0ca     16384                     ->0x7c1d9863abb19f73
+node    19660 normy   27     PIPE 0x7c1d9863abb19f73     16384                     ->0xcd4358610b53f0ca
+node    19660 normy   28u    IPv4 0x1cfa07dd1c0023f2       0t0                 TCP 127.0.0.1:60240 (LISTEN)

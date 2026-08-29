@@ -1,0 +1,96 @@
+[
+  {
+    "tag": "INPUT",
+    "id": "lesson-prompt-input",
+    "name": null,
+    "test": null,
+    "testid": null,
+    "placeholder": "Solve 3x + 5 = 20",
+    "text": "",
+    "type": "text"
+  },
+  {
+    "tag": "BUTTON",
+    "id": "start-lesson-button",
+    "name": null,
+    "test": null,
+    "testid": null,
+    "placeholder": null,
+    "text": "Start lesson",
+    "type": "submit"
+  },
+  {
+    "tag": "BUTTON",
+    "id": "refresh-button",
+    "name": null,
+    "test": null,
+    "testid": null,
+    "placeholder": null,
+    "text": "Refresh",
+    "type": "button"
+  }
+]
+BODY_AFTER_CLICK
+BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Enter a math problem before starting a lesson.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+No lessons yet. Start one lesson to begin the tutoring conversation.
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Select a lesson to continue the tutoring conversation and review past guidance.
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+No notifications yet.
+ELEMENTS_AFTER
+[
+  {
+    "tag": "INPUT",
+    "id": "lesson-prompt-input",
+    "name": null,
+    "test": null,
+    "testid": null,
+    "placeholder": "Solve 3x + 5 = 20",
+    "text": "",
+    "type": "text"
+  },
+  {
+    "tag": "BUTTON",
+    "id": "start-lesson-button",
+    "name": null,
+    "test": null,
+    "testid": null,
+    "placeholder": null,
+    "text": "Start lesson",
+    "type": "submit"
+  },
+  {
+    "tag": "BUTTON",
+    "id": "refresh-button",
+    "name": null,
+    "test": null,
+    "testid": null,
+    "placeholder": null,
+    "text": "Refresh",
+    "type": "button"
+  }
+]

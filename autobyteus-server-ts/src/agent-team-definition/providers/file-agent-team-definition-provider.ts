@@ -4,7 +4,11 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile, writeRawFile } from "../../persistence/file/store-utils.js";
 import { AgentTeamDefinition, TeamMember } from "../domain/models.js";
 import { TeamMdParseError, parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  ApplicationBundleService,
+  getGeneralProcessApplicationBundleService,
+} from "../../application-bundles/services/application-bundle-service.js";
+import type { AppConfig } from "../../config/app-config.js";
 import {
   buildCanonicalApplicationOwnedTeamId,
   parseCanonicalApplicationOwnedTeamId,
@@ -53,10 +57,24 @@ const slugify = (value: string): string => {
 };
 
 export class FileAgentTeamDefinitionProvider {
-  private readonly applicationBundleService = ApplicationBundleService.getInstance();
+  constructor(
+    private readonly dependencies: {
+      appConfig?: AppConfig;
+      applicationBundleService?: ApplicationBundleService;
+    } = {},
+  ) {}
+
+  private get applicationBundleService(): ApplicationBundleService {
+    return this.dependencies.applicationBundleService
+      ?? getGeneralProcessApplicationBundleService();
+  }
+
+  private get appConfig(): AppConfig {
+    return this.dependencies.appConfig ?? appConfigProvider.config;
+  }
 
   private getTeamsDir(): string {
-    return appConfigProvider.config.getAgentTeamsDir();
+    return this.appConfig.getAgentTeamsDir();
   }
 
   private getTeamDir(teamId: string): string {
@@ -65,7 +83,7 @@ export class FileAgentTeamDefinitionProvider {
 
   private getReadTeamRoots(): string[] {
     const roots = [this.getTeamsDir()];
-    for (const sourceRoot of appConfigProvider.config.getAdditionalAgentPackageRoots()) {
+    for (const sourceRoot of this.appConfig.getAdditionalAgentPackageRoots()) {
       roots.push(path.join(sourceRoot, "agent-teams"));
     }
     return roots;
@@ -236,9 +254,9 @@ export class FileAgentTeamDefinitionProvider {
       },
       domainObj.instructions,
     );
-    await writeRawFile(appConfigProvider.config.getTeamMdPath(teamId), mdContent);
+    await writeRawFile(this.appConfig.getTeamMdPath(teamId), mdContent);
 
-    await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), buildTeamConfigRecord(domainObj));
+    await writeJsonFile(this.appConfig.getTeamConfigPath(teamId), buildTeamConfigRecord(domainObj));
 
     const created = await this.getById(teamId);
     if (!created) {

@@ -1,0 +1,14 @@
+UTC=2026-07-30T08:59:34Z
+devkit_pid=80791
+port43124_listener:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    80791 normy   25u  IPv4 0xff679b41f8cb3479      0t0  TCP 127.0.0.1:43124 (LISTEN)
+token_usage_before_restart=16
+brief_state_before_restart:
+[{"brief_id":"brief-d78479cd-35c7-4016-95a8-e759b4c08cfe","title":"API REV 009 active lifecycle 1785401797","status":"researching","latest_run_id":"brief_studio_team_9811caab500d41deaf1ccb55d26cc203","latest_binding_status":"ATTACHED"}]
+bindings_before_restart:
+[{"binding_id":"ae7c0135-69c9-45a8-ae78-5976e54e106d","brief_id":"brief-d78479cd-35c7-4016-95a8-e759b4c08cfe","run_id":"brief_studio_team_9811caab500d41deaf1ccb55d26cc203"}]
+active_children:
+80799 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping
+82461 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+85482 codex app-server

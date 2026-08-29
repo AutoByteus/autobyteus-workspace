@@ -1,5 +1,6 @@
 import { LLMFactory, type ModelPricingInfo } from "autobyteus-ts";
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
+import { selectTokenPricingSchedulePeriod } from "./token-pricing-schedule-selector.js";
 import {
   emptyTrustedDimensions,
   type ResolvedTokenPricingPolicy,
@@ -15,17 +16,6 @@ const policyKey = (info: Pick<ResolvedTokenPricingPolicy, "price_config_id" | "m
       : null
   );
 
-const scheduleSelection = (schedule: NonNullable<ModelPricingInfo["pricing_schedule"]>, observedAt: string) => {
-  const instant = new Date(observedAt);
-  if (Number.isNaN(instant.getTime())) return null;
-  const minuteUtc = instant.getUTCHours() * 60 + instant.getUTCMinutes();
-  const periodId = schedule.peakWindows.some((window) =>
-    minuteUtc >= window.startMinuteUtc && minuteUtc < window.endMinuteUtc)
-    ? "peak"
-    : schedule.defaultPeriodId;
-  return schedule.periods.find((period) => period.periodId === periodId) ?? null;
-};
-
 const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTokenPricingPolicy => {
   const trustedDimensions = info?.trusted_dimensions
     ? {
@@ -37,8 +27,10 @@ const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTo
         cached_input_write_1h: info.trusted_dimensions.cached_input_write_1h,
       }
     : emptyTrustedDimensions();
-  const schedule = info?.pricing_schedule ?? null;
-  const selectedPeriod = schedule ? scheduleSelection(schedule, observedAt) : null;
+  const scheduleHistory = info?.pricing_schedule_history ?? null;
+  const selected = scheduleHistory ? selectTokenPricingSchedulePeriod(scheduleHistory, observedAt) : null;
+  const schedule = selected?.schedule ?? null;
+  const selectedPeriod = selected?.period ?? null;
   const selectedDimensions = selectedPeriod
     ? {
         input: selectedPeriod.trustedDimensions.input,
@@ -48,18 +40,18 @@ const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTo
         cached_input_write_5m: selectedPeriod.trustedDimensions.cachedInputWrite5m,
         cached_input_write_1h: selectedPeriod.trustedDimensions.cachedInputWrite1h,
       }
-    : schedule ? emptyTrustedDimensions() : trustedDimensions;
-  const selectedPricingStatus = schedule && !selectedPeriod ? "missing" : info?.pricing_status ?? "missing";
-  const selectedMissingReason = schedule && !selectedPeriod
+    : scheduleHistory ? emptyTrustedDimensions() : trustedDimensions;
+  const selectedPricingStatus = scheduleHistory && !selectedPeriod ? "missing" : info?.pricing_status ?? "missing";
+  const selectedMissingReason = scheduleHistory && !selectedPeriod
     ? "pricing_schedule_time_invalid"
     : info?.missing_reason ?? (info ? null : "model_not_found");
-  const selectedInputPrice = schedule && !selectedPeriod
+  const selectedInputPrice = scheduleHistory && !selectedPeriod
     ? null
     : selectedPeriod?.inputTokenPricing ?? info?.input_price_per_million ?? null;
-  const selectedOutputPrice = schedule && !selectedPeriod
+  const selectedOutputPrice = scheduleHistory && !selectedPeriod
     ? null
     : selectedPeriod?.outputTokenPricing ?? info?.output_price_per_million ?? null;
-  const selectedCacheReadPrice = schedule && !selectedPeriod
+  const selectedCacheReadPrice = scheduleHistory && !selectedPeriod
     ? null
     : selectedPeriod?.cachedInputReadTokenPricing ?? info?.cached_input_read_price_per_million ?? null;
   const base: ResolvedTokenPricingPolicy = {
@@ -76,7 +68,7 @@ const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTo
     cached_input_write_price_per_million: info?.cached_input_write_price_per_million ?? null,
     cached_input_write_5m_price_per_million: info?.cached_input_write_5m_price_per_million ?? null,
     cached_input_write_1h_price_per_million: info?.cached_input_write_1h_price_per_million ?? null,
-    input_price_tiers: schedule && !selectedPeriod ? [] : (info?.input_price_tiers ?? []).map((tier) => ({
+    input_price_tiers: scheduleHistory && !selectedPeriod ? [] : (info?.input_price_tiers ?? []).map((tier) => ({
       tier_id: tier.tier_id,
       max_input_tokens: tier.max_input_tokens,
       input_price_per_million: tier.input_price_per_million,
@@ -104,9 +96,11 @@ const toPolicy = (info: ModelPricingInfo | null, observedAt: string): ResolvedTo
     pricing_schedule_id: schedule?.scheduleId ?? null,
     pricing_schedule_period_id: selectedPeriod?.periodId ?? null,
     pricing_schedule_effective_from: schedule?.effectiveFrom ?? null,
-    pricing_schedule_timezone: schedule?.timezone ?? null,
+    pricing_schedule_window_timezone: schedule?.kind === "time_window" ? schedule.windowTimezone : null,
+    pricing_schedule_peak_days: schedule?.kind === "time_window" ? schedule.peakDays : null,
+    pricing_schedule_peak_days_timezone: schedule?.kind === "time_window" ? schedule.peakDaysTimezone : null,
   };
-  const scheduleSuffix = schedule && selectedPeriod ? `:${schedule.scheduleId}:${selectedPeriod.periodId}` : "";
+  const scheduleSuffix = scheduleHistory && selectedPeriod ? `:${schedule?.scheduleId}:${selectedPeriod.periodId}` : "";
   return {
     ...base,
     pricing_policy_key: policyKey(base) ? `${policyKey(base)}${scheduleSuffix}` : null,
@@ -145,7 +139,9 @@ const localPolicy = (payload: Pick<TokenUsageUpdatedPayload, "model_provider" | 
   pricing_schedule_id: null,
   pricing_schedule_period_id: null,
   pricing_schedule_effective_from: null,
-  pricing_schedule_timezone: null,
+  pricing_schedule_window_timezone: null,
+  pricing_schedule_peak_days: null,
+  pricing_schedule_peak_days_timezone: null,
 });
 
 export class TokenPriceConfigProvider {

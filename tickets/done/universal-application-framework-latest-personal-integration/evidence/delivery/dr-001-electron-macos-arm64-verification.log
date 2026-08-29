@@ -1,0 +1,60 @@
+DR-001 ELECTRON MACOS ARM64 PACKAGE VERIFICATION
+timestamp_utc=2026-08-22T12:49:32Z
+head=42496b808df16f4ed24ca66bac03372c578f1f89
+app=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg
+zip=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip
+bundle_identifier=com.autobyteus.app
+bundle_version=1.4.54
+bundle_short_version=1.4.54
+minimum_system=12.0
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal_runtime=PASS
+packaged_owner=PASS:dist/compositions/build-studio-server.js
+packaged_owner=PASS:dist/compositions/build-standalone-application-server.js
+packaged_owner=PASS:dist/standalone-application-host/start-standalone-application-host.js
+packaged_owner=PASS:dist/application-platform/runtime/build-application-platform-runtime.js
+packaged_owner=PASS:dist/application-platform/runtime/application-platform-runtime-contracts.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-controller.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-launcher.js
+packaged_owner=PASS:dist/application-orchestration/services/application-agent-target-authorization-service.js
+packaged_owner=PASS:dist/application-orchestration/services/application-run-binding-launch-service.js
+packaged_owner=PASS:dist/agent-tools/published-artifacts/publish-artifacts-tool.js
+packaged_owner=PASS:dist/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js
+retired_broad_engine_host_absent=PASS
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $AA65B2E0
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F959EE50
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $E9C79DC2
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $6D976658
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $E9C79DC2
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $C96961FF
+Die überprüfte CRC32-Prüfsumme ist $5842F206
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.dmg" is VALID
+dmg_verify=PASS
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.54.zip.
+zip_verify=PASS
+dmg_size=466693593
+dmg_sha256=2894013e642ac6bd0b3249fa7bc3c73fb9ded5a29012c5d4bbea0f81174513dd
+zip_size=461339684
+zip_sha256=0744be0070fa2c10b07eeb39f2c471b6d75ef3e3a0f58d0ff1b073d6952a94b3
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign_strict_exit=1
+codesign_posture=LOCAL_UNSIGNED_EXPECTED
+new_app_running=NO_PASS
+test_dmg_mounted=NO_PASS
+FINAL=PASS

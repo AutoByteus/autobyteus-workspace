@@ -1,0 +1,98 @@
+=== post-stop UTC
+Wed Aug 26 11:50:11 UTC 2026
+=== ports
+=== owned processes
+=== team history
+[
+  {
+    "teamRunId": "nested_classroom_test_team_051cdced90f544a8a002caa7abffb77a",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/tmp/api-rev-002-provider-composition/studio/temp_workspace",
+    "summary": "Read the attached context file. Respond with only the exact marker stored inside it, with no expl...",
+    "createdAt": "2026-08-26T11:48:24.446Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "teamRunId": "socratic_math_team_0e964e809f184c509079e83fe0ebac4f",
+    "teamDefinitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572__736f6372617469632d6d6174682d7465616d",
+    "teamDefinitionName": "Socratic Math Team",
+    "workspaceRootPath": "/private/tmp/api-rev-002-provider-composition/studio/applications/bundle-app__socratic-math-teacher__0d6ceec2c9bd087ae717aff392b5d888709e7121492bb455e299326053a5ed1e/runtime",
+    "summary": "",
+    "createdAt": "2026-08-26T11:45:11.363Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "teamRunId": "nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/tmp/api-rev-002-provider-composition/studio/temp_workspace",
+    "summary": "Please execute all three Nested Classroom routes exactly. First send an ordinary message to /Stud...",
+    "createdAt": "2026-08-26T11:43:36.275Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  },
+  {
+    "teamRunId": "nested_classroom_test_team_afe35f3c351b4b36b481533d57f137e2",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/tmp/api-rev-002-provider-composition/studio/temp_workspace",
+    "summary": "Please execute all three Nested Classroom routes exactly. First send an ordinary message to /Stud...",
+    "createdAt": "2026-08-26T11:41:17.177Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-26T11:42:57.202Z"
+  },
+  {
+    "teamRunId": "nested_classroom_test_team_47eb371b4a2d4773815097a33142668d",
+    "teamDefinitionId": "nested-classroom-test",
+    "teamDefinitionName": "Nested Classroom Test Team",
+    "workspaceRootPath": "/private/tmp/api-rev-002-provider-composition/studio/temp_workspace",
+    "summary": "Please execute all three Nested Classroom routes exactly. First send an ordinary message to /Stud...",
+    "createdAt": "2026-08-26T11:38:10.465Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-26T11:40:42.285Z"
+  },
+  {
+    "teamRunId": "brief_studio_team_8496a29ea9fe42dbb368ec2cdf273b79",
+    "teamDefinitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "teamDefinitionName": "Brief Studio Team",
+    "workspaceRootPath": "/private/tmp/api-rev-002-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime",
+    "summary": "",
+    "createdAt": "2026-08-26T11:30:59.508Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]
+=== server clean tail
+Logically stopped filesystem watcher for workspace /private/tmp/api-rev-002-provider-composition/studio/temp_workspace
+FileExplorerSession closed: d58f8220-c2ff-4fa1-ab21-4bae273e7868
+Closed file explorer session d58f8220-c2ff-4fa1-ab21-4bae273e7868. Active sessions: 0
+File explorer WebSocket disconnected: d58f8220-c2ff-4fa1-ab21-4bae273e7868
+Agent team websocket attached for team run nested_classroom_test_team_051cdced90f544a8a002caa7abffb77a
+Created agent session 7d71e152-903f-44c0-be2a-ebdfb1de336a for run nested_classroom_test_team_051cdced90f544a8a002caa7abffb77a
+Agent Team WebSocket connected: session=7d71e152-903f-44c0-be2a-ebdfb1de336a, run=nested_classroom_test_team_051cdced90f544a8a002caa7abffb77a
+Memory file missing: /private/tmp/api-rev-002-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de/student_study_group_e4f8aae290bb455a9d71a62ab4820815/student_two_62c0c6aecb4d4d398614d0bf1170bd6a/raw_traces_active.jsonl
+Memory file missing: /private/tmp/api-rev-002-provider-composition/studio/memory/agent_teams/nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de/team_local_team_nested_classroom_test_student_st_cfd6fd5f68984592bd126c32fccedca4/student_two_07426573421646aeba4f232e153c962b/raw_traces_active.jsonl
+Agent team websocket attached for team run nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de
+Created agent session 8f824b3c-d14b-48a5-aed0-f7b4d4a12e78 for run nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de
+Agent Team WebSocket connected: session=8f824b3c-d14b-48a5-aed0-f7b4d4a12e78, run=nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 7d71e152-903f-44c0-be2a-ebdfb1de336a
+Closed agent session 8f824b3c-d14b-48a5-aed0-f7b4d4a12e78
+[2026-08-26T11:49:59.133Z] [INFO] [server.runtime] Received SIGINT. Shutting down server...
+AgentEventStream (ID: 2ac5b434-706f-4c14-9355-22e0982da987) for 'student_one_963b2175c5474a17a528c2bde6779f95': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'student_one_963b2175c5474a17a528c2bde6779f95'. Attempting graceful shutdown.
+Agent 'student_one_963b2175c5474a17a528c2bde6779f95' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: eb7dcec3-7377-4a69-8f5f-6b9abf97de50, AgentID: student_one_963b2175c5474a17a528c2bde6779f95) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_963b2175c5474a17a528c2bde6779f95': Stop requested.
+AgentExternalEventNotifier (NotifierID: eb7dcec3-7377-4a69-8f5f-6b9abf97de50, AgentID: student_one_963b2175c5474a17a528c2bde6779f95) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'student_one_963b2175c5474a17a528c2bde6779f95' asyncRun() loop has finished.
+AgentWorker 'student_one_963b2175c5474a17a528c2bde6779f95': Running shutdown sequence on worker loop.
+AgentWorker 'student_one_963b2175c5474a17a528c2bde6779f95': Shutdown resource cleanup completed successfully.
+AgentWorker 'student_one_963b2175c5474a17a528c2bde6779f95': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'student_one_963b2175c5474a17a528c2bde6779f95'.
+AgentRuntime for 'student_one_963b2175c5474a17a528c2bde6779f95': Context unregistered.
+AgentRuntime for 'student_one_963b2175c5474a17a528c2bde6779f95' stop() method completed.
+[2026-08-26T11:49:59.177Z] [INFO] [server.runtime] Server closed cleanly.

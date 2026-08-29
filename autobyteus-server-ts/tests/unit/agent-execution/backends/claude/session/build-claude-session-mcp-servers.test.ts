@@ -6,9 +6,6 @@ const fakeAgentToolsDescriptor: AgentToolMcpDescriptor = {
   name: "autobyteus_agent_tools",
   transport: "streamable_http",
   serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
-  headers: {
-    Authorization: "Bearer fake-token",
-  },
   enabledTools: ["send_message_to", "open_tab", "generate_image", "publish_artifacts"],
 };
 
@@ -22,9 +19,6 @@ describe("buildClaudeSessionMcpServers", () => {
       autobyteus_agent_tools: {
         type: "http",
         url: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
-        headers: {
-          Authorization: "Bearer fake-token",
-        },
         alwaysLoad: true,
       },
     });

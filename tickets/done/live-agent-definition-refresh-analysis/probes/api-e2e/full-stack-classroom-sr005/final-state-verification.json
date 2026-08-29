@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-08-26T03:38:40Z",
+  "builtBackendHealth": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "importRegistry": [
+    {
+      "packageId": "local:%2Fhome%2Fautobyteus%2Fworkspace%2Fautobyteus-agents",
+      "rootPath": "/home/autobyteus/workspace/autobyteus-agents",
+      "sourceKind": "LOCAL_PATH",
+      "source": "/home/autobyteus/workspace/autobyteus-agents",
+      "normalizedSource": "/home/autobyteus/workspace/autobyteus-agents",
+      "managedInstallPath": null,
+      "sourceMetadata": null,
+      "createdAt": "2026-08-26T03:34:47.300Z",
+      "updatedAt": "2026-08-26T03:34:47.300Z"
+    }
+  ],
+  "teamHistoryIndex": {
+    "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp_workspace",
+    "summary": "Reply only with: CLASSROOM_E2E_OK",
+    "createdAt": "2026-08-26T03:35:45.550Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-08-26T03:38:21.202Z"
+  },
+  "finalGraphql": {
+    "teamRunId": "classroom_simulation_team_9b06404930c64dad8ff1aa865e1d7e46",
+    "isActive": false,
+    "modelConfigEditability": {
+      "editable": true,
+      "reason": null
+    },
+    "teamDefinitionId": "classroom-simulation-team",
+    "teamDefinitionName": "Classroom Simulation Team",
+    "runtimeKind": "codex_app_server",
+    "llmModelIdentifier": "gpt-5.4",
+    "llmConfig": null,
+    "memberAddresses": [
+      "/professor",
+      "/student"
+    ]
+  },
+  "safeRawTraceProjection": [
+    {
+      "ts": 1787715497.212,
+      "turn_id": "01a03c25-aceb-79c3-a8fb-6ba54b13503b",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "Reply only with: CLASSROOM_E2E_OK",
+      "source_event": "AgentRun.postUserMessage"
+    },
+    {
+      "ts": 1787715500.795,
+      "turn_id": "01a03c25-aceb-79c3-a8fb-6ba54b13503b",
+      "seq": 3,
+      "trace_type": "assistant",
+      "content": "CLASSROOM_E2E_OK",
+      "source_event": "SEGMENT_END"
+    }
+  ],
+  "files": {
+    "registrySha256": "23277732e0ee0c451951a27cc0a264d1c5fef0cc1b0b8d909e1ba5fe6f85c3e1",
+    "executionTreeSha256": "c962c6a790547143d8f09fc217b5d21b1f12bf6957587bde5919273a39d8fa5a",
+    "rawTraceSha256": "37a4bd976fd9b4be63ef0a96873c8650e9c2f2c5d8481052e0a8bf53a5ad144f"
+  }
+}

@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import { testMemberTeamContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskRootResolver } from "../../../fixtures/current-team-run-fixtures.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
@@ -184,5 +185,67 @@ describe("task delegation runtime descriptions", () => {
       } as never,
       executionContext: {},
     }))).toBe(true);
+  });
+
+  it("executes MCP task tools only from the authenticated Team-member capability", async () => {
+    const delegateTask = vi.fn(async () => ({
+      task_id: "task-2",
+      status: "active" as const,
+      target_agent_run_id: "run-worker",
+    }));
+    const provider = new TaskDelegationToolsMcpAdapterProvider({ delegateTask } as never);
+    const adapter = provider.getAdapters().find(
+      (candidate) => candidate.definition.name === DELEGATE_TASK_TOOL_NAME,
+    )!;
+    const rootResolver = testMemberTaskRootResolver();
+    const taskDelegation = Object.freeze({
+      identity: memberTeamContext.identity,
+      rootResolver,
+    });
+    const publisher = { publishManyForRun: vi.fn(async () => []) };
+
+    const accepted = await adapter.execute({
+      session: {
+        executionCapabilities: {
+          kind: "team_member",
+          publishedArtifactPublisher: publisher,
+          applicationAgentTools: null,
+          taskDelegation,
+        },
+      } as never,
+      rawArguments: {
+        recipient_address: "/worker",
+        description: "Perform the bounded work.",
+      },
+    });
+    expect(accepted).toMatchObject({
+      kind: "operation_result",
+      result: { accepted: true, code: "success" },
+    });
+    expect(delegateTask).toHaveBeenCalledWith(taskDelegation, {
+      recipient_address: "/worker",
+      description: "Perform the bounded work.",
+      reference_files: [],
+    });
+
+    const rejected = await adapter.execute({
+      session: {
+        sender: { memberTeamContext },
+        executionCapabilities: {
+          kind: "agent",
+          publishedArtifactPublisher: publisher,
+          applicationAgentTools: null,
+        },
+      } as never,
+      rawArguments: {
+        recipient_address: "/worker",
+        description: "Must not execute.",
+      },
+    });
+    expect(rejected).toMatchObject({
+      kind: "operation_result",
+      result: { accepted: false, code: "task_delegation_context_required" },
+    });
+    expect(delegateTask).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,0 +1,143 @@
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Applications
+
+Browse bundled applications and open their iframe hosts. Runtime orchestration now belongs to each application.
+
+Refresh catalog
+Brief Studio
+
+External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.
+
+Open app →
+Socratic Math Teacher
+
+Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.
+
+Open app →
+[
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Agents",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Agent Teams",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Applications",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Skills",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Memory",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Nodes",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Temp Workspace",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Settings",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Refresh catalog",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Brief StudioExternal teaching sample with an app-owned GraphQL brief API, durable event projection, ",
+    "src": null,
+    "disabled": false
+  },
+  {
+    "tag": "BUTTON",
+    "id": "",
+    "test": null,
+    "testid": null,
+    "text": "Socratic Math TeacherBuilt-in teaching sample with an app-owned GraphQL lesson API, one long-lived c",
+    "src": null,
+    "disabled": false
+  }
+]

@@ -1,13 +1,13 @@
 # @autobyteus/application-frontend-sdk
 
-Frontend helper package for application bundle UIs running inside the AutoByteus iframe host.
+Frontend helper package for application UIs running in AutoByteus Studio or the standalone host.
 
 ## What it owns
 
-- `startHostedApplication(...)`
+- `startApplication(...)`
 - `createApplicationClient(...)`
 - `createApplicationBackendMountTransport(...)`
-- framework-owned hosted-application startup states for unsupported entry, waiting, local startup, and startup failure
+- provider-neutral startup states for bootstrap acquisition, application handoff, failure, and disposal
 - schema-agnostic `applicationClient.backend` helpers for GraphQL, routes, queries, commands, and optional custom WebSockets
 - sibling `applicationClient.notifications.subscribe(listener)` for backend notifications
 - standard `applicationClient.agentCommunication.connect(address)` connections for application-bound agents and teams
@@ -16,19 +16,19 @@ Frontend helper package for application bundle UIs running inside the AutoByteus
 
 ## External custom application guide
 
-For new external applications, use `@autobyteus/application-devkit` and the guide in `../docs/custom-application-development.md`. The starter template keeps app-authored startup on `startHostedApplication(...)` in both production and dev bootstrap modes.
+For new external applications, use `@autobyteus/application-devkit` and the guide in `../docs/custom-application-development.md`. The starter template keeps app-authored startup on `startApplication(...)` in both production and dev bootstrap modes.
 
 ## Usage
 
 ```ts
 import {
-  startHostedApplication,
+  startApplication,
 } from '@autobyteus/application-frontend-sdk'
 
-startHostedApplication({
+startApplication({
   rootElement: document.getElementById('app-root'),
-  onBootstrapped: async ({ bootstrap, applicationClient, rootElement }) => {
-    rootElement.textContent = `Started ${bootstrap.application.name}`
+  onBootstrapped: async ({ runtimeBootstrap, applicationClient, rootElement }) => {
+    rootElement.textContent = `Started ${runtimeBootstrap.application.name}`
 
     const result = await applicationClient.backend.graphql({
       query: 'query BriefsQuery { briefs { briefId title } }',
@@ -42,17 +42,17 @@ startHostedApplication({
 
 ## Notes
 
-- Direct/raw bundle entry without valid host launch hints is unsupported by default and stays framework-owned.
-- `startHostedApplication(...)` owns launch-hint parsing, ready/bootstrap wiring, startup-failure containment, and the handoff into business UI.
+- `startApplication(...)` resolves either the Studio iframe provider or the top-level same-origin standalone provider, then owns bootstrap acquisition, startup-failure containment, and business UI handoff.
 - Business app code should begin inside `onBootstrapped(...)` and should not own pre-bootstrap waiting/failure/direct-open UX.
-- `applicationClient` is the generic hosted backend-mount client created after bootstrap validation succeeds.
-- `bootstrap.transport` supplies the exact fixed desktop bases for backend request/response, notifications, optional custom backend WebSockets, and standard agent communication.
+- `applicationClient` is the generic backend-mount client created after bootstrap validation succeeds.
+- `runtimeBootstrap.transport` supplies absolute browser-visible bases for backend request/response, notifications, optional custom backend WebSockets, and standard agent communication.
 - GraphQL, routes, query, and command URLs derive from that base instead of becoming parallel sources of truth.
 - `applicationClient.agentCommunication.connect(address)` is the standard provider-neutral bidirectional path for a bound agent, whole team, or static team member. It does not require an application backend proxy route.
+- The public target address is exactly `{ bindingId, memberAddress }`: use `memberAddress: null` for the bound Agent or Team root and a canonical rooted value such as `/reviewer` or `/research/reviewer` for one configured Team member. Physical run IDs are not public selectors; Application Orchestration authorizes the binding and performs the sole logical-to-physical translation.
 - Standard agent events are intentionally minimal: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and safe `ERROR`. Applications may append live text locally; complete structured business output belongs in published artifacts.
 - `applicationClient.backend.connectWebSocket(path, options)` is a separate optional escape hatch for custom realtime business protocols.
-- The hosted client exposes no raw browser socket, runtime-id API, or application authentication surface.
-- `bootstrap.iframeLaunchId` is iframe-bootstrap correlation context only; `applicationClient.getApplicationInfo().requestContext` contains `{ applicationId }`.
+- The client exposes no raw browser socket, runtime-id API, or application authentication surface.
+- Studio iframe correlation remains provider-internal; application code receives only the normalized runtime identity and endpoints.
 - `applicationClient.notifications.subscribe(listener)` is optional; omit the notification transport if the app UI does not use backend notifications.
 - The SDK does not own app business schemas or generated clients. Those stay inside each application workspace.
 

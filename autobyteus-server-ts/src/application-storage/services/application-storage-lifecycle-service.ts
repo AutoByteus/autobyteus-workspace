@@ -1,9 +1,13 @@
 import { DatabaseSync } from "node:sqlite";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  ApplicationBundleService,
+  getGeneralProcessApplicationBundleService,
+} from "../../application-bundles/services/application-bundle-service.js";
 import type { ApplicationStorageLayout } from "../domain/models.js";
 import {
   buildApplicationStorageLayout,
+  ensureApplicationRuntimeDirectory,
   ensureApplicationStorageDirectories,
   type ApplicationStoragePathConfig,
 } from "../utils/application-storage-paths.js";
@@ -27,6 +31,7 @@ export class ApplicationStorageLifecycleService {
 
   private readonly platformPreparationPromiseByApplicationId = new Map<string, Promise<ApplicationStorageLayout>>();
   private readonly preparationPromiseByApplicationId = new Map<string, Promise<ApplicationStorageLayout>>();
+  private readonly runtimePreparationPromiseByApplicationId = new Map<string, Promise<ApplicationStorageLayout>>();
 
   constructor(
     private readonly dependencies: {
@@ -41,7 +46,8 @@ export class ApplicationStorageLifecycleService {
   }
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService
+      ?? getGeneralProcessApplicationBundleService();
   }
 
   private get migrationService(): ApplicationMigrationService {
@@ -57,6 +63,14 @@ export class ApplicationStorageLifecycleService {
       applicationId,
       this.platformPreparationPromiseByApplicationId,
       () => this.preparePlatformState(applicationId),
+    );
+  }
+
+  async ensureRuntimeDirectoryPrepared(applicationId: string): Promise<ApplicationStorageLayout> {
+    return this.cachePreparation(
+      applicationId,
+      this.runtimePreparationPromiseByApplicationId,
+      () => this.prepareRuntimeDirectory(applicationId),
     );
   }
 
@@ -98,6 +112,13 @@ export class ApplicationStorageLifecycleService {
       platformDb.close();
     }
 
+    return layout;
+  }
+
+  private async prepareRuntimeDirectory(applicationId: string): Promise<ApplicationStorageLayout> {
+    await this.requireApplicationBundle(applicationId);
+    const layout = this.getStorageLayout(applicationId);
+    ensureApplicationRuntimeDirectory(layout);
     return layout;
   }
 

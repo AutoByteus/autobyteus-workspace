@@ -1,0 +1,25 @@
+UTC 2026-08-26T08:21:11Z
+Darwin normys-MacBook-Pro.local 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:18:58 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T6000 arm64
+v22.23.1
+10.28.2
+## codex/explicit-agent-provider-composition-and-scope-assembly
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/
+
+HEAD 3806ca36e46495ba28d5957a330a502eb22bd973
+origin/personal 306de420ca8830478529b40bd6dfda6694b742a9
+
+Initial generated-output inventory:
+PRESENT autobyteus-server-ts/dist
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+ABSENT autobyteus-web/.output
+ABSENT autobyteus-web/.nuxt
+
+Port inventory candidate:

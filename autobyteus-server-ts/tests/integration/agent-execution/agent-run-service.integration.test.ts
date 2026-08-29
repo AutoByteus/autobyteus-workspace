@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
+import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 
@@ -106,6 +108,26 @@ const workspaceManager = (rootPath = "/tmp/project") => ({
   getWorkspaceById: vi.fn(),
 });
 
+const createLifecycleService = (
+  memoryDir: string,
+  agentRunManager: object,
+  history: ReturnType<typeof createRunHistoryHarness>,
+  workspaces: ReturnType<typeof workspaceManager>,
+) => new StandaloneAgentRunLifecycleService(memoryDir, {
+  agentRunManager: agentRunManager as never,
+  metadataService: history.metadataService as never,
+  historyCatalogService: history.historyCatalogService as never,
+  workspaceManager: workspaces as never,
+  tokenUsageReadiness: {
+    assertCurrentSchemaReady: vi.fn(),
+    assertExistingRunRestoreReady: vi.fn(),
+  },
+  modelConfigValidator: { validate: vi.fn() },
+});
+
+const unusedProvisioningService = (): AgentRunProvisioningService =>
+  Object.create(AgentRunProvisioningService.prototype) as AgentRunProvisioningService;
+
 afterEach(() => vi.clearAllMocks());
 
 describe("AgentRunService integration", () => {
@@ -135,6 +157,9 @@ describe("AgentRunService integration", () => {
         agentRunIdentityAllocator: {
           allocateForAgentDefinition: vi.fn(async () => runId),
         },
+        lifecycleService: createLifecycleService(
+          "/tmp/memory", agentRunManager, history, workspaces,
+        ),
       });
 
       history.historyCatalogService.recordRunStarted.mockImplementationOnce(async (input: AgentRunMetadata) => {
@@ -220,6 +245,10 @@ describe("AgentRunService integration", () => {
         metadataService: history.metadataService as never,
         historyCatalogService: history.historyCatalogService as never,
         workspaceManager: workspaces as never,
+        provisioningService: unusedProvisioningService(),
+        lifecycleService: createLifecycleService(
+          "/tmp/memory", agentRunManager, history, workspaces,
+        ),
       });
 
       await expect(service.restoreAgentRun(runId)).resolves.toMatchObject({
@@ -255,11 +284,17 @@ describe("AgentRunService integration", () => {
     });
     const activeRun = createActiveRun({ runId: persisted.runId, runtimeKind: persisted.runtimeKind });
     const history = createRunHistoryHarness([persisted]);
+    const agentRunManager = { getActiveRun: vi.fn(() => activeRun) };
+    const workspaces = workspaceManager();
     const service = new AgentRunService("/tmp/memory", {
-      agentRunManager: { getActiveRun: vi.fn(() => activeRun) } as never,
+      agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
-      workspaceManager: workspaceManager() as never,
+      workspaceManager: workspaces as never,
+      provisioningService: unusedProvisioningService(),
+      lifecycleService: createLifecycleService(
+        "/tmp/memory", agentRunManager, history, workspaces,
+      ),
     });
 
     await expect(service.restoreAgentRun(persisted.runId)).resolves.toEqual({
@@ -279,11 +314,16 @@ describe("AgentRunService integration", () => {
       hasActiveRun: vi.fn(() => false),
     };
     const history = createRunHistoryHarness();
+    const workspaces = workspaceManager();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
-      workspaceManager: workspaceManager() as never,
+      workspaceManager: workspaces as never,
+      provisioningService: unusedProvisioningService(),
+      lifecycleService: createLifecycleService(
+        "/tmp/memory", agentRunManager, history, workspaces,
+      ),
     });
 
     await expect(service.terminateAgentRun(nativeRun.runId)).resolves.toMatchObject({
@@ -308,11 +348,16 @@ describe("AgentRunService integration", () => {
       terminateAgentRun: vi.fn(async () => false),
       hasActiveRun: vi.fn(() => false),
     };
+    const workspaces = workspaceManager();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
-      workspaceManager: workspaceManager() as never,
+      workspaceManager: workspaces as never,
+      provisioningService: unusedProvisioningService(),
+      lifecycleService: createLifecycleService(
+        "/tmp/memory", agentRunManager, history, workspaces,
+      ),
     });
 
     await expect(service.terminateAgentRun("missing-run")).resolves.toMatchObject({
@@ -336,12 +381,16 @@ describe("AgentRunService integration", () => {
       hasActiveRun: vi.fn(() => false),
       prepareNewAgentRun: vi.fn(),
     };
+    const workspaces = workspaceManager();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: agentRunManager as never,
       metadataService: history.metadataService as never,
       historyCatalogService: history.historyCatalogService as never,
-      workspaceManager: workspaceManager() as never,
+      workspaceManager: workspaces as never,
       agentRunIdentityAllocator: { allocateForAgentDefinition },
+      lifecycleService: createLifecycleService(
+        "/tmp/memory", agentRunManager, history, workspaces,
+      ),
     });
 
     await expect(service.createAgentRun({

@@ -1,0 +1,19 @@
+DR-008 finalization authorization and preflight
+date=2026-08-28 UTC
+user_signal=now the task is done. lets finalize and release a new verison.
+ticket_branch=codex/application-owned-mcp-capability
+finalization_target=origin/personal -> local personal
+pre_refresh_ticket_head=7ab0a996834830a0d8f2c74e406bc1b9bd4926cb
+origin_personal_before=64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+command=git fetch origin personal --tags
+result=PASS
+origin_personal_after=64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+divergence_origin_only_ticket_only=0 10
+renewed_verification_required=no; target unchanged and no executable source changed after accepted DR-007 state
+ticket_archive=tickets/done/application-owned-mcp-capability before final ticket commit
+current_versions=autobyteus-web 1.4.61; autobyteus-message-gateway 1.4.61
+next_patch=1.4.62
+local_tag_v1.4.62=absent
+remote_tag_v1.4.62=absent
+release_method=pnpm release 1.4.62 -- --release-notes tickets/done/application-owned-mcp-capability/release-notes.md
+duplicate_dispatch=do not run manual dispatch after fresh tag push

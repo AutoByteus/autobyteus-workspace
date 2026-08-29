@@ -1,13 +1,7 @@
 import { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
-import {
-  getClaudeSessionManager,
-  type ClaudeSessionManager,
-} from "../session/claude-session-manager.js";
-import {
-  getClaudeSessionBootstrapper,
-  type ClaudeSessionBootstrapper,
-} from "./claude-session-bootstrapper.js";
+import type { ClaudeSessionManager } from "../session/claude-session-manager.js";
+import type { ClaudeSessionBootstrapper } from "./claude-session-bootstrapper.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import { ClaudeAgentRunBackend } from "./claude-agent-run-backend.js";
 import { ClaudeProviderSessionLifecycle } from "../session/claude-provider-session-lifecycle.js";
@@ -17,8 +11,8 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly sessionManager: ClaudeSessionManager;
   private readonly sessionBootstrapper: ClaudeSessionBootstrapper;
   constructor(
-    sessionManager: ClaudeSessionManager = getClaudeSessionManager(),
-    sessionBootstrapper: ClaudeSessionBootstrapper = getClaudeSessionBootstrapper(),
+    sessionManager: ClaudeSessionManager,
+    sessionBootstrapper: ClaudeSessionBootstrapper,
   ) {
     this.sessionManager = sessionManager;
     this.sessionBootstrapper = sessionBootstrapper;
@@ -75,12 +69,3 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
     return backend;
   }
 }
-
-let cachedClaudeAgentRunBackendFactory: ClaudeAgentRunBackendFactory | null = null;
-
-export const getClaudeAgentRunBackendFactory = (): ClaudeAgentRunBackendFactory => {
-  if (!cachedClaudeAgentRunBackendFactory) {
-    cachedClaudeAgentRunBackendFactory = new ClaudeAgentRunBackendFactory();
-  }
-  return cachedClaudeAgentRunBackendFactory;
-};

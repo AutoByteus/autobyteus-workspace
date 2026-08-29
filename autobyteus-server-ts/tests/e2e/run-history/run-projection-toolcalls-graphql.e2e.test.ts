@@ -37,6 +37,7 @@ vi.mock("../../../src/agent-execution/backends/codex/history/codex-thread-histor
 }));
 
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 const STANDALONE_RUN_ID = "run-codex-toolcalls-graphql";
 const STANDALONE_THREAD_ID = "thread-standalone-toolcalls";
@@ -158,6 +159,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   let testDataDir: string;
   let workspaceRootPath: string;
   let memoryDir: string;
+  let closeStudioServices: (() => void) | null = null;
 
   beforeAll(async () => {
     testDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "run-projection-toolcalls-gql-"));
@@ -169,6 +171,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "run-projection-workspace-"));
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     memoryDir = appConfigProvider.config.getMemoryDir();
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -202,6 +205,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    closeStudioServices?.();
     await fs.rm(workspaceRootPath, { recursive: true, force: true });
     await fs.rm(testDataDir, { recursive: true, force: true });
   });

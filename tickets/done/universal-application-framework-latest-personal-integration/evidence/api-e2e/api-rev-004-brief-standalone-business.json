@@ -1,0 +1,133 @@
+{
+  "scenarioId": "APIE2E-BRIEF-STANDALONE-004",
+  "startedAt": "2026-08-22T12:17:43.808Z",
+  "title": "API REV 004 exact identity verification brief",
+  "polls": [
+    {
+      "at": "2026-08-22T12:17:50.234Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:17:55.241Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:00.246Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:05.252Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:10.261Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:15.267Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:20.272Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:25.278Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:30.283Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:35.296Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:40.306Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:45.311Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:50.317Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:18:55.326Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:19:00.334Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:19:05.345Z",
+      "inReview": false,
+      "research": false,
+      "draft": true,
+      "failed": false
+    },
+    {
+      "at": "2026-08-22T12:19:10.352Z",
+      "inReview": true,
+      "research": true,
+      "draft": true,
+      "failed": true
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "requestFailures": [],
+  "bodyExcerpt": "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.\n\nWHAT YOU CAN DO HERE\n\nStay focused on the brief work itself.\nCreate the brief record that anchors the work.\nGenerate fresh drafts when the brief is ready.\nReview outputs, notes, and approval state together.\nSTEP 1\nCreate\n\nStart with the business brief record and keep the work anchored to one brief.\n\nSTEP 2\nGenerate\n\nLaunch new drafting runs over time as the brief evolves and needs another pass.\n\nSTEP 3\nReview\n\nKeep draft outputs, review notes, and approval decisions together on the same record.\n\nCreate a brief\n\nStart the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.\n\nBRIEF TITLE\nCreate brief\nGraphQL stays the primary brief API while the host supplies runtime and workspace defaults.\nBriefs\n\nTrack each brief, its latest draft state, and its review outcome.\n\nRefresh\nAPI REV 004 exact identity verification brief\nIn_review\nBrief brief-8ca159f0-2cec-48e9-8dff-3ae9d4f8399d\nUpdated 22.8.2026, 14:19:09\nBrief detail\n\nReview generated drafts, notes, and approval state for the selected brief.\n\nAPI REV 004 exact identity verification brief\n\nbriefId brief-8ca159f0-2cec-48e9-8dff-3ae9d4f8399d\n\nIn_review\nCreated 22.8.2026, 14:17:45\nUpdated 22.8.2026, 14:19:09\nBRIEF RECORD\nbrief-8ca159f0-2cec-48e9-8dff-3ae9d4f8399d\nStatus in_review\nDRAFT OUTPUTS\n2\n1 final\nREVIEW\n0 notes\nApproved — · Rejected —\nGenerate draft\nApprove\nReject\nDraft outputs\n\nGenerated drafts stay attached to the same brief record for review.\n\nresearcher\nResearch\n\n/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md\n\nConcise research checkpoint for API REV 004 exact identity verification.\n\n# API REV 004 exact identity verification brief — research checkpoint\n\n## Key findings\n- “Exact identity” must be defined as a deterministic match on an authoritative identifier (for example, a verified subject ID), not a fuzzy comparison of display names, emails, or profile fields.\n- Separate authentication (proving who the caller is) from authorization (proving the caller may act for the requested identity). Every protected request should bind the verified subject to the resource or operation being accessed.\n- Canonicalization must be explicit and applied consistently: Unicode normalization, case rules, whitespace handling, identifier format, and tenant/account namespace. Prefer immutable, case-sensitive IDs where available; never silently broaden matches.\n- Verification outcomes should be explicit and machine-readable—verified, mismatch, missing, malformed, expired, or insufficient assurance—with safe defaults that deny on ambiguity.\n- Log decision evidence without exposing secrets or unnecessary personal data: request/correlation ID, subject/resource IDs, verification method and assurance, policy version, result, and timestamp. Protect logs from tampering and define retention.\n\n## Risks / open questions\n- The authoritative identity source, identifier field, and tenant-boundary rules are not specified; different services could implement incompatible “exact” semantics.\n- Replay, token substitution, confused-deputy, and cross-tenant access risks remain unless token audience/issuer, freshness, and resource ownership are checked.\n- Error detail can enable account enumeration or leak personal data; the API’s privacy, redaction, and rate-limit requirements need confirmation.\n\n## Recommendations / next steps\n- Write a normative contract for API REV 004 covering inputs, canonicalization, required claims, assurance/freshness thresholds, decision codes, and fail-closed behavior.\n- Add positive, negative, boundary, replay, cross-tenant, malformed-input, and regression tests; include contract tests for every consuming service.\n- Version the policy and emit auditable verification events, while returning deliberately non-enumerating client errors.\n\nwriter\nFinal\n\n/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md\n\nWriter checkpoint: API REV 004 exact identity verification brief\n\n# API REV 004: Exact Identity Verification Contract\n\nAPI REV 004 should define exact identity as a deterministic match between the authenticated caller and an authoritative, tenant-scoped identifier—not as a fuzzy comparison of names, email addresses, or profile attributes. Authentication establishes who the caller is; authorization separately establishes whether that caller may act for the requested identity and resource. The contract should be normative, versioned, and fail closed whenever evidence is missing, ambiguous, malformed, stale, or below the required assurance level.\n\n## Key evidence\n\n- Use an immutable, authoritative subject identifier where possible, and bind it to the tenant/account namespace and requested resource.\n- Make canonicalization explicit and identical across producers and consumers: Unicode normalization, case sensitivity, whitespace, identifier format, and namespace boundaries.\n- Validate issuer, audience, token freshness, required claims, verification method, assurance level, and resource ownership before allowing the operation.\n- Return machine-readable outcomes such as `verified`, `mismatch`, `missing`, `malformed`, `expired`, and `insufficient_assurance`; deny by default on uncertainty.\n- Record auditable evidence—correlation ID, non-sensitive subject/resource references, verification method and assurance, policy version, result, and timestamp—without logging secrets or unnecessary personal data.\n- Add positive, negative, boundary, replay, malformed-input, cross-tenant, and regression tests, plus contract tests for every consuming service.\n\n## Risks or cautions\n\n- The authoritative source, identifier field, tenant-boundary rules, canonicalization policy, and assurance/freshness thresholds remain unspecified; inconsistent choices would undermine “exact” semantics.\n- Token substitution, replay, confused-deputy, and cross-tenant access remain material risks if issuer, audience, freshness, or ownership checks are omitted.\n- Detailed errors can enable account enumeration or expose personal data. Apply redaction, rate limits, protected/tamper-evident logs, and a defined retention policy.\n\n## Next actions\n\n- Name the authoritative identity source and identifier, then publish the canonicalization and tenant-binding rules.\n- Set assurance and freshness thresholds and map all failure conditions to stable decision codes.\n- Define privacy-safe error behavior and logging requirements.\n- Version the policy, implement the verification middleware, and run the complete adversarial and regression test matrix before rollout.\n\nReview notes\n\nKeep the approval conversation on the brief record itself.\n\nNo review notes yet.\nAdd review note\nWorkflow diagnostics",
+  "result": "PASS",
+  "finishedAt": "2026-08-22T12:19:10.526Z"
+}

@@ -1,0 +1,7 @@
+# Non-mutating merge-tree conflict inventory: protected ticket HEAD vs origin/personal@c5b87df4d6db15969ba70adee9dfd8394b1e7385
+# Conflict count: 5
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts

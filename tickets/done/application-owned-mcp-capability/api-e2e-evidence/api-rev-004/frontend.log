@@ -1,0 +1,23 @@
+
+> autobyteus@1.4.60 dev /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3015
+
+│
+▲  Changing NODE_ENV from production to development, to avoid unintended behavior.
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3015/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 42ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 937ms
+[nitro] ✔ Nuxt Nitro server built in 1041ms
+ℹ Vite client warmed up in 1ms

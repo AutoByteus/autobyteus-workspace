@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils'
 import TeamScopeConfigEditor from '../TeamScopeConfigEditor.vue'
 import type { ResolvedTeamRunLaunchConfig, TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import type { EditableTeamScopeFormModel } from '~/types/agent/EditableTeamRunFormModel'
 
 const translations: Record<string, string> = {
   auto_approve: 'Auto approve tools',
@@ -43,6 +44,8 @@ const RuntimeModelConfigFieldsStub = defineComponent({
     llmConfig: Object,
     disabled: Boolean,
     readOnly: Boolean,
+    modelConfigDisabled: Boolean,
+    modelConfigReadOnly: Boolean,
     runtimeSelectionLocked: Boolean,
     runtimeHelpText: String,
     modelLabel: String,
@@ -240,7 +243,7 @@ describe('TeamScopeConfigEditor presentation', () => {
 
     await wrapper.setProps({
       scope: {
-        ...wrapper.props('scope'),
+        ...(wrapper.props('scope') as EditableTeamScopeFormModel),
         effectiveConfig: inheritedConfig,
         override: null,
         isCustomized: false,
@@ -299,7 +302,7 @@ describe('TeamScopeConfigEditor presentation', () => {
 
     await wrapper.setProps({
       scope: {
-        ...wrapper.props('scope'),
+        ...(wrapper.props('scope') as EditableTeamScopeFormModel),
         runtimeCatalogState: { status: 'loading', error: null },
         workspaceOperation: { status: 'loading', error: null },
       },
@@ -313,11 +316,12 @@ describe('TeamScopeConfigEditor presentation', () => {
     const wrapper = mountEditor({
       disabled: true,
       scope: {
-        mode: 'stored',
+        mode: 'existing',
         address: '/StudentStudyGroup',
         displayName: 'StudentStudyGroup',
         effectiveConfig: { ...inheritedConfig, autoExecuteTools: true },
         isCustomized: true,
+        directlyEdited: false,
         storedWorkspace: {
           workspaceId: 'temp-workspace',
           displayName: 'Temp Workspace',
@@ -334,9 +338,11 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(wrapper.find('[data-test="reset-team-scope"]').exists()).toBe(false)
     expect(wrapper.find('[data-test="team-runtime-catalog-error"]').exists()).toBe(false)
     expect(wrapper.getComponent(RuntimeModelConfigFieldsStub).props()).toEqual(expect.objectContaining({
-      disabled: true,
-      readOnly: true,
+      disabled: false,
+      readOnly: false,
       runtimeSelectionLocked: true,
+      modelConfigDisabled: true,
+      modelConfigReadOnly: true,
     }))
     expect(wrapper.getComponent(WorkspaceSelectorStub).props('disabled')).toBe(true)
     expect(wrapper.getComponent(WorkspaceSelectorStub).props('model')).toEqual(expect.objectContaining({ mode: 'stored' }))

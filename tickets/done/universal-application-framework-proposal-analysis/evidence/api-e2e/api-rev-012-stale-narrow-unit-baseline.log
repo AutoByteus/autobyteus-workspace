@@ -1,0 +1,226 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts (8 tests | 8 failed) 8ms
+     × tracks active and quarantined applications from the catalog snapshot 3ms
+     × keeps a catalog-active app active when startup recovery reports NO_PERSISTED_STATE 0ms
+     × reconciles persisted-known applications back into quarantined ownership during live catalog refresh 0ms
+     × keeps persisted-only apps quarantined after a recovered startup reconciliation 0ms
+     × reloads, reruns recovery, and resumes dispatch before marking an app active 0ms
+     × keeps applications quarantined when reload validation still reports diagnostics 0ms
+     × stops a pre-existing ready worker before reentering a repaired application 0ms
+     × preserves REENTERING until recovery and dispatch resume both finish 1ms
+stderr | tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts > ApplicationPublishedArtifactRelayService > relays live ARTIFACT_PERSISTED events from a bound run into the app artifact handler
+ApplicationPublishedArtifactRelayService: live artifact relay failed for run 'run-1': TypeError: Cannot read properties of undefined (reading 'accept')
+
+ ❯ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests | 2 failed) 1011ms
+     × relays live ARTIFACT_PERSISTED events from a bound run into the app artifact handler 1008ms
+     × relays a published artifact directly from a team-member runtime context without a standalone run wrapper 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > tracks active and quarantined applications from the catalog snapshot
+TypeError: Cannot read properties of undefined (reading 'getAvailability')
+ ❯ ApplicationAvailabilityService.synchronizeWithCatalogSnapshot src/application-orchestration/services/application-availability-service.ts:62:43
+     60| 
+     61|     for (const application of snapshot.applications) {
+     62|       const existing = this.stateRegistry.getAvailability(application.…
+       |                                           ^
+     63|       if (existing?.state === "REENTERING") {
+     64|         nextAvailabilityByApplicationId.set(application.id, { ...exist…
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:92:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > keeps a catalog-active app active when startup recovery reports NO_PERSISTED_STATE
+TypeError: Cannot read properties of undefined (reading 'getAvailability')
+ ❯ ApplicationAvailabilityService.synchronizeWithCatalogSnapshot src/application-orchestration/services/application-availability-service.ts:62:43
+     60| 
+     61|     for (const application of snapshot.applications) {
+     62|       const existing = this.stateRegistry.getAvailability(application.…
+       |                                           ^
+     63|       if (existing?.state === "REENTERING") {
+     64|         nextAvailabilityByApplicationId.set(application.id, { ...exist…
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:111:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > reconciles persisted-known applications back into quarantined ownership during live catalog refresh
+TypeError: Cannot read properties of undefined (reading 'entries')
+ ❯ ApplicationAvailabilityService.synchronizeWithCatalogSnapshot src/application-orchestration/services/application-availability-service.ts:84:62
+     82|     }
+     83| 
+     84|     for (const [applicationId, record] of this.stateRegistry.entries()…
+       |                                                              ^
+     85|       if (nextAvailabilityByApplicationId.has(applicationId)) {
+     86|         continue;
+ ❯ ApplicationAvailabilityService.reconcileCatalogSnapshotWithKnownApplications src/application-orchestration/services/application-availability-service.ts:100:10
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:132:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > keeps persisted-only apps quarantined after a recovered startup reconciliation
+TypeError: Cannot read properties of undefined (reading 'getAvailability')
+ ❯ ApplicationAvailabilityService.applyStartupRecoveryOutcome src/application-orchestration/services/application-availability-service.ts:146:46
+    144|     outcome: ApplicationRecoveryOutcome,
+    145|   ): ApplicationAvailabilityRecord {
+    146|     const currentDetail = this.stateRegistry.getAvailability(applicati…
+       |                                              ^
+    147| 
+    148|     switch (startupPresence) {
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:152:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > reloads, reruns recovery, and resumes dispatch before marking an app active
+TypeError: Cannot read properties of undefined (reading 'getAvailability')
+ ❯ ApplicationAvailabilityService.synchronizeWithCatalogSnapshot src/application-orchestration/services/application-availability-service.ts:62:43
+     60| 
+     61|     for (const application of snapshot.applications) {
+     62|       const existing = this.stateRegistry.getAvailability(application.…
+       |                                           ^
+     63|       if (existing?.state === "REENTERING") {
+     64|         nextAvailabilityByApplicationId.set(application.id, { ...exist…
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:198:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > keeps applications quarantined when reload validation still reports diagnostics
+TypeError: service.reloadAndReenter is not a function
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:226:40
+    224|     });
+    225| 
+    226|     const availability = await service.reloadAndReenter("bundle-app__b…
+       |                                        ^
+    227| 
+    228|     expect(availability).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > stops a pre-existing ready worker before reentering a repaired application
+TypeError: Cannot read properties of undefined (reading 'getAvailability')
+ ❯ ApplicationAvailabilityService.synchronizeWithCatalogSnapshot src/application-orchestration/services/application-availability-service.ts:62:43
+     60| 
+     61|     for (const application of snapshot.applications) {
+     62|       const existing = this.stateRegistry.getAvailability(application.…
+       |                                           ^
+     63|       if (existing?.state === "REENTERING") {
+     64|         nextAvailabilityByApplicationId.set(application.id, { ...exist…
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:255:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-availability-service.test.ts > ApplicationAvailabilityService > preserves REENTERING until recovery and dispatch resume both finish
+TypeError: Cannot read properties of undefined (reading 'getAvailability')
+ ❯ ApplicationAvailabilityService.synchronizeWithCatalogSnapshot src/application-orchestration/services/application-availability-service.ts:62:43
+     60| 
+     61|     for (const application of snapshot.applications) {
+     62|       const existing = this.stateRegistry.getAvailability(application.…
+       |                                           ^
+     63|       if (existing?.state === "REENTERING") {
+     64|         nextAvailabilityByApplicationId.set(application.id, { ...exist…
+ ❯ tests/unit/application-orchestration/application-availability-service.test.ts:286:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts > ApplicationPublishedArtifactRelayService > relays live ARTIFACT_PERSISTED events from a bound run into the app artifact handler
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'app-1', { event: { …(9) } } ]
+
+Number of calls: 0
+
+ ❯ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts:92:66
+     90| 
+     91|     await vi.waitFor(() => {
+     92|       expect(engineHostService.invokeApplicationArtifactHandler).toHav…
+       |                                                                  ^
+     93|         event: {
+     94|           runId: "run-1",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts > ApplicationPublishedArtifactRelayService > relays a published artifact directly from a team-member runtime context without a standalone run wrapper
+TypeError: Cannot read properties of undefined (reading 'accept')
+ ❯ ApplicationPublishedArtifactRelayService.relayArtifactForExecutionContext src/application-orchestration/services/application-published-artifact-relay-service.ts:108:30
+    106|     );
+    107| 
+    108|     await this.deliveryQueue.accept({
+       |                              ^
+    109|       runId: input.runId,
+    110|       applicationId: binding.applicationId,
+ ❯ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts:159:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  10 failed (10)
+   Start at  11:10:45
+   Duration  1.88s (transform 51ms, setup 15ms, import 60ms, tests 1.02s, environment 0ms)
+

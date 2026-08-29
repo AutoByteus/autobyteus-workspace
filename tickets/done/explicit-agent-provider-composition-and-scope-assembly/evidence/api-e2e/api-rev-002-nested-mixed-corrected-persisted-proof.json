@@ -1,0 +1,72 @@
+{
+  "scenario": "APIE2E-NESTED-001",
+  "rootTeamRunId": "nested_classroom_test_team_70aa9d40a3a34b0b9ba13027f6cb83de",
+  "messages": [
+    {
+      "messageId": "teammsg_ZsB1VgADRcHax4MFixOTW0m9wMICmixb",
+      "senderAgentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "receiverAgentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "content": "TEAM_ROUTE_MIXED_API_REV_002. Please ask the coordinator to reply to /Teacher with TEAM_ACK_MIXED_API_REV_002.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-26T11:43:48.295Z"
+    },
+    {
+      "messageId": "teammsg_6oy-qBmAX3PidbaUh3yhKEVoNlaqkHUR",
+      "senderAgentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "receiverAgentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "content": "TEAM_ACK_MIXED_API_REV_002",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-26T11:43:50.426Z"
+    },
+    {
+      "messageId": "teammsg_bW9aqY_AGmAtYR9d01-NmApcVRFFywce",
+      "senderAgentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "receiverAgentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "content": "DIRECT_ROUTE_MIXED_API_REV_002. Please reply to /Teacher with DIRECT_ACK_MIXED_API_REV_002.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-26T11:43:51.455Z"
+    },
+    {
+      "messageId": "teammsg_QiYxBUMriUcHgVlMA3gmbN-p3aTXyDbH",
+      "senderAgentRunId": "student_one_963b2175c5474a17a528c2bde6779f95",
+      "receiverAgentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "content": "DIRECT_ACK_MIXED_API_REV_002",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-26T11:43:53.950Z"
+    }
+  ],
+  "records": [
+    {
+      "taskId": "task_d93c172264c54db087acae114bf75301",
+      "delegatorAgentRunId": "test_teacher_957a6fc2e93f45ba952b44006f17297e",
+      "recipientAddress": "/StudentStudyGroup",
+      "taskExecution": {
+        "teamRunId": "team_local_team_nested_classroom_test_student_st_cfd6fd5f68984592bd126c32fccedca4"
+      },
+      "description": "Complete one bounded nested-classroom task. Ask the students to submit exactly this token as the task result, with no substitutions: NESTED_CLASSROOM_MIXED_API_REV_002_OK. The task is complete only when that exact token is submitted.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_820d914486144dbcab87987f556981ae",
+          "message": "NESTED_CLASSROOM_MIXED_API_REV_002_OK",
+          "referenceFiles": [],
+          "createdAt": "2026-08-26T11:43:56.637Z"
+        },
+        {
+          "reviewId": "review_6982c2b0b19b44c4aa83d76f1a4024ea",
+          "reviewedSubmissionId": "submission_820d914486144dbcab87987f556981ae",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-08-26T11:44:07.788Z"
+        }
+      ],
+      "createdAt": "2026-08-26T11:43:54.500Z"
+    }
+  ]
+}

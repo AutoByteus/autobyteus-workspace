@@ -1,0 +1,154 @@
+DR-008 LATEST BASE REFRESH AND INTEGRATION
+timestamp_utc=2026-08-24T09:40:53Z
+branch=codex/universal-application-framework-latest-personal-integration
+pre_fetch_head=95c63b5a982ba90ccbb8c6345af66a9485fa5a78
+delivery_checkpoint=95c63b5a982ba90ccbb8c6345af66a9485fa5a78
+prior_integrated_base=52b4be02ea793f2071fe5a63a94664ab25196433
+pre_fetch_origin_personal=389748b0b9f0dea051aaed18641de131cf0adbbb
+command=git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+fetched_origin_personal=389748b0b9f0dea051aaed18641de131cf0adbbb
+pre_integration_divergence=4	153
+new_base_commits_since_prior=4
+new_base_log_begin
+389748b0b (tag: v1.4.57, origin/personal, origin/HEAD, personal) chore(release): bump workspace release version to 1.4.57
+0ac0f2941 (origin/codex/remote-node-new-workspace-team-run-visibility, codex/remote-node-new-workspace-team-run-visibility) chore(delivery): finalize remote workspace team launch
+2950019a3 preserve explicit workspace mode during discovery
+bfbeb0810 fix workspace selection state for team launches
+new_base_log_end
+new_base_diff_stat_begin
+ .github/release-notes/release-notes.md             |    21 +-
+ autobyteus-message-gateway/package.json            |     2 +-
+ .../messaging-gateway/release-manifest.json        |    10 +-
+ .../workspace/config/AgentRunConfigForm.vue        |    21 +-
+ .../components/workspace/config/RunConfigPanel.vue |   113 +-
+ .../workspace/config/TeamRunConfigForm.vue         |    21 +-
+ .../workspace/config/WorkspaceSelector.vue         |   182 +-
+ .../config/__tests__/AgentRunConfigForm.spec.ts    |    48 +-
+ .../config/__tests__/RunConfigPanel.spec.ts        |   296 +-
+ .../config/__tests__/TeamRunConfigForm.spec.ts     |    28 +-
+ .../config/__tests__/WorkspaceSelector.spec.ts     |   158 +-
+ .../docs/agent_execution_architecture.md           |    52 +-
+ autobyteus-web/docs/settings.md                    |    52 +-
+ autobyteus-web/package.json                        |     2 +-
+ .../types/workspace/WorkspaceSelectionState.ts     |     7 +
+ .../api-e2e-coverage-investigation.md              |   238 +
+ .../api-e2e-execution-coverage-report.md           |   226 +
+ .../api-e2e-revision-record.md                     |    33 +
+ .../api-e2e-test-review-report.md                  |    59 +
+ .../architecture-review-revision-record.md         |    30 +
+ .../code-review-report.md                          |   183 +
+ .../code-review-revision-record.md                 |    86 +
+ .../delivery-integrated-state-refresh.log          |    41 +
+ .../delivery-revision-record.md                    |    38 +
+ .../design-review-report.md                        |   233 +
+ .../design-spec.md                                 |   368 +
+ .../docs-sync-report.md                            |    64 +
+ .../docs-sync-validation.log                       |    47 +
+ .../finalization-target-refresh.log                |    40 +
+ .../handoff-summary.md                             |    79 +
+ .../implementation-handoff.md                      |   131 +
+ .../implementation-revision-record.md              |    59 +
+ .../investigation-notes.md                         |   255 +
+ .../probes/api-e2e/01-focused-config-tests.log     |   114 +
+ .../probes/api-e2e/02-adjacent-owner-tests.log     |   130 +
+ .../probes/api-e2e/03-full-nuxt-tests.log          |  4427 +++++
+ .../probes/api-e2e/04-broad-failure-recheck.log    |   674 +
+ .../probes/api-e2e/05-nuxt-build.log               |   227 +
+ .../probes/api-e2e/06-guards-and-diff.log          |    10 +
+ .../probes/api-e2e/07-nuxt-dev-server.log          |   103 +
+ .../probes/api-e2e/08-browser-inspect.log          |   399 +
+ .../probes/api-e2e/09-workspace-inspect.log        |   407 +
+ .../probes/api-e2e/10-model-inspect.log            |    91 +
+ .../probes/api-e2e/11-config-inspect-tabs.log      |    68 +
+ .../probes/api-e2e/11-config-inspect.log           |    18 +
+ .../api-e2e/12-baseline-workspaces-from-probe.json |    22 +
+ .../probes/api-e2e/12-baseline-workspaces.json     |    19 +
+ .../api-e2e/13-baseline-history-from-probe.json    |   387 +
+ .../probes/api-e2e/13-baseline-history.json        |   330 +
+ .../probes/api-e2e/14-prelaunch-exact-config.png   |   Bin 0 -> 120322 bytes
+ .../probes/api-e2e/16-history-after-launch.json    |   460 +
+ .../probes/api-e2e/17-body-after-launch.txt        |    54 +
+ .../probes/api-e2e/18-postlaunch-tree.png          |   Bin 0 -> 76813 bytes
+ .../probes/api-e2e/19-body-after-reload.txt        |    23 +
+ .../probes/api-e2e/20-history-after-reload.json    |   460 +
+ .../probes/api-e2e/21-postreload-tree.png          |   Bin 0 -> 52334 bytes
+ .../probes/api-e2e/22-control-empty-existing.png   |   Bin 0 -> 113081 bytes
+ .../probes/api-e2e/23-graphql-network.json         | 18041 +++++++++++++++++++
+ .../probes/api-e2e/24-browser-errors.json          |     1 +
+ .../probes/api-e2e/25-cleanup.json                 |    54 +
+ .../probes/api-e2e/26-post-cleanup-workspaces.json |    22 +
+ .../probes/api-e2e/27-post-cleanup-history.json    |   387 +
+ .../probes/api-e2e/28-live-browser.log             |     8 +
+ .../probes/api-e2e/29-live-browser-console.log     |     9 +
+ .../api-e2e/30-delayed-fetch-explicit-new.png      |   Bin 0 -> 74245 bytes
+ .../probes/api-e2e/31-delayed-fetch.log            |     4 +
+ .../probes/api-e2e/32-delayed-fetch-errors.json    |     1 +
+ .../probes/api-e2e/33-delayed-fetch-console.log    |     4 +
+ .../probes/api-e2e/34-server-live.log              |   154 +
+ .../probes/api-e2e/35-environment-cleanup.log      |     8 +
+ .../probes/api-e2e/36-control-order-prelaunch.png  |   Bin 0 -> 104198 bytes
+ .../probes/api-e2e/37-control-order-history.json   |   292 +
+ .../probes/api-e2e/38-control-order-postreload.png |   Bin 0 -> 52350 bytes
+ .../probes/api-e2e/39-control-order-network.json   | 11524 ++++++++++++
+ .../probes/api-e2e/40-control-order-errors.json    |     1 +
+ .../probes/api-e2e/41-control-order-cleanup.json   |    51 +
+ .../probes/api-e2e/42-control-order.log            |     2 +
+ .../probes/api-e2e/43-nuxt-dev-control.log         |    37 +
+ .../probes/api-e2e/44-control-order-console.log    |     3 +
+ .../probes/api-e2e/45-server-control-order.log     |   120 +
+ .../probes/api-e2e/config-inspect.mjs              |    30 +
+ .../probes/api-e2e/control-order-team-launch.mjs   |    43 +
+ .../api-e2e/delayed-workspace-fetch-browser.mjs    |    49 +
+ .../probes/api-e2e/inspect-agent-teams.png         |   Bin 0 -> 168830 bytes
+ .../probes/api-e2e/inspect-page.mjs                |    15 +
+ .../probes/api-e2e/inspect-workspace.mjs           |    18 +
+ .../probes/api-e2e/inspect-workspace.png           |   Bin 0 -> 92801 bytes
+ .../probes/api-e2e/live-start-utc.txt              |     1 +
+ .../probes/api-e2e/model-inspect.mjs               |    14 +
+ .../api-e2e/remote-workspace-team-launch.mjs       |   316 +
+ .../release-deployment-report.md                   |   125 +
+ .../release-notes.md                               |    17 +
+ .../requirements.md                                |   164 +
+ .../solution-revision-record.md                    |    29 +
+ .../ui-ux-spec.md                                  |   160 +
+ 95 files changed, 43104 insertions(+), 246 deletions(-)
+new_base_diff_stat_end
+merge_base=52b4be02ea793f2071fe5a63a94664ab25196433
+ticket_changed_path_count=1988
+base_changed_path_count=95
+changed_both_path_count=2
+changed_both_paths_begin
+autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+changed_both_paths_end
+command=git merge-tree --write-tree HEAD origin/personal
+merge_tree_exit=1
+merge_tree_output_lines=12
+merge_tree_output_begin
+84a9aa60ad8170282eb7613ae211a0e6cfb2b4c4
+100644 03599f30cbdb414a65c720f887f235657bd6cc35 1	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 2ed4f7264b86463a119ec881724099dbca82919e 2	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 c26ebff529f03822fa8f5567c62e0b7c3de735b6 3	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 94512fe0287f5583f183765e690326636bed0f85 1	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 72bf6a8c09c0456f49d99f52b162c713349b83d2 2	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 2edbab5870242833e12d3bad67f4df76fdf80465 3	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+Auto-merging autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Auto-merging autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+merge_tree_output_end
+delivery_disposition_begin
+classification=BLOCKED_DESIGN_IMPACT
+recommended_recipient=/solution_designer
+protected_head=95c63b5a982ba90ccbb8c6345af66a9485fa5a78
+origin_personal=389748b0b9f0dea051aaed18641de131cf0adbbb
+unmerged_path_count=0
+merge_in_progress=NO
+actual_merge_started=NO
+electron_1_4_57_build_started=NO
+canonical_conflict_report=tickets/in-progress/universal-application-framework-latest-personal-integration/latest-base-refresh-round-4-conflict-report.md
+FINAL=BLOCKED_DESIGN_IMPACT
+delivery_disposition_end

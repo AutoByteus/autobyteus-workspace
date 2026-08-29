@@ -1,114 +1,148 @@
 import { describe, expect, it } from "vitest";
-import type { ApplicationConfiguredTeamLaunchProfile } from "@autobyteus/application-sdk-contracts";
+import type {
+  ApplicationEffectiveLaunchConfiguration,
+} from "@autobyteus/application-sdk-contracts";
 import {
-  buildConfiguredTeamMemberLaunchConfigs,
-  buildConfiguredTeamRunLaunch,
+  buildEffectiveAgentRunLaunch,
+  buildEffectiveTeamRunLaunch,
 } from "../src/launch-profile.js";
 
-const memberLaunchProfile: ApplicationConfiguredTeamLaunchProfile = {
-  kind: "AGENT_TEAM",
-  defaults: {
-    runtimeKind: "saved-runtime",
-    llmModelIdentifier: "saved-model",
-    workspaceRootPath: "/saved/workspace",
-  },
-  memberProfiles: [
-    {
-      memberName: "tutor-one",
-      memberRouteKey: "tutor-one",
-      agentDefinitionId: "tutor-one-definition",
-    },
-    {
-      memberName: "tutor-two",
-      memberRouteKey: "tutor-two",
-      agentDefinitionId: "tutor-two-definition",
-    },
-  ],
+const provenance = {
+  runtimeKind: { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: "agent-1" } as const,
+  llmModelIdentifier: { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: "agent-1" } as const,
+  llmConfig: { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: "agent-1" } as const,
+  workspaceRootPath: "APPLICATION_RUNTIME" as const,
 };
 
-describe("configured team llmConfig propagation", () => {
-  it("clones optional llmConfig into a preset without changing fallback selection", () => {
+const buildAgentConfiguration = (
+  llmConfig: Record<string, unknown> | null,
+): ApplicationEffectiveLaunchConfiguration => ({
+  slotKey: "assistant",
+  executionResourceRef: { source: "bundle", kind: "AGENT", localId: "assistant" },
+  resourceDefinitionId: "agent-1",
+  resourceKind: "AGENT",
+  leaves: [{
+    memberAddress: null,
+    displayName: "Assistant",
+    agentDefinitionId: "agent-1",
+    runtimeKind: "codex_app_server",
+    llmModelIdentifier: "gpt-5.6-luna",
+    llmConfig,
+    workspaceRootPath: "/workspace/assistant",
+    provenance,
+  }],
+});
+
+const buildTeamConfiguration = (
+  llmConfig: Record<string, unknown> | null,
+): ApplicationEffectiveLaunchConfiguration => ({
+  slotKey: "team",
+  executionResourceRef: { source: "bundle", kind: "AGENT_TEAM", localId: "team" },
+  resourceDefinitionId: "team-1",
+  resourceKind: "AGENT_TEAM",
+  teamScopes: [{
+    teamAddress: "/",
+    displayName: "Team",
+    teamDefinitionId: "team-1",
+    runtimeKind: "codex_app_server",
+    llmModelIdentifier: "gpt-5.6-luna",
+    llmConfig,
+    workspaceRootPath: "/workspace/team",
+    provenance: {
+      ...provenance,
+      runtimeKind: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "team-1" },
+      llmModelIdentifier: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "team-1" },
+      llmConfig: { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: "team-1" },
+    },
+  }],
+  leaves: ["researcher", "writer"].map((memberName) => ({
+    memberAddress: `/${memberName}`,
+    displayName: memberName === "researcher" ? "Researcher" : "Writer",
+    agentDefinitionId: `${memberName}-agent`,
+    runtimeKind: "codex_app_server",
+    llmModelIdentifier: "gpt-5.6-luna",
+    llmConfig,
+    workspaceRootPath: `/workspace/${memberName}`,
+    provenance: {
+      ...provenance,
+      runtimeKind: { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: `${memberName}-agent` },
+      llmModelIdentifier: { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: `${memberName}-agent` },
+      llmConfig: { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: `${memberName}-agent` },
+    },
+  })),
+});
+
+describe("effective application launch translation", () => {
+  it("builds the exact agent launch and independently clones llmConfig", () => {
     const llmConfig = { reasoning_effort: "high", nested: { budget: 3 } };
-    const launch = buildConfiguredTeamRunLaunch({
-      launchProfile: null,
-      workspaceRootPath: "/fallback/workspace",
-      runtimeKind: "fallback-runtime",
-      llmModelIdentifier: "fallback-model",
-      llmConfig,
-    });
+    const launch = buildEffectiveAgentRunLaunch({ configuration: buildAgentConfiguration(llmConfig) });
 
     expect(launch).toEqual({
-      kind: "AGENT_TEAM",
-      mode: "preset",
-      launchPreset: {
-        workspaceRootPath: "/fallback/workspace",
-        runtimeKind: "fallback-runtime",
-        llmModelIdentifier: "fallback-model",
-        autoExecuteTools: true,
-        skillAccessMode: "PRELOADED_ONLY",
-        llmConfig,
-      },
-    });
-    if (launch.mode !== "preset") throw new Error("Expected preset launch.");
-    expect(launch.launchPreset.llmConfig).not.toBe(llmConfig);
-    expect(launch.launchPreset.llmConfig?.nested).not.toBe(llmConfig.nested);
-
-    llmConfig.nested.budget = 9;
-    expect(launch.launchPreset.llmConfig).toEqual({
-      reasoning_effort: "high",
-      nested: { budget: 3 },
-    });
-  });
-
-  it("preserves explicit null and omits an absent llmConfig", () => {
-    const withNull = buildConfiguredTeamRunLaunch({
-      launchProfile: null,
-      workspaceRootPath: "/workspace",
-      llmModelIdentifier: "model",
-      llmConfig: null,
-    });
-    const withoutConfig = buildConfiguredTeamRunLaunch({
-      launchProfile: null,
-      workspaceRootPath: "/workspace",
-      llmModelIdentifier: "model",
-    });
-
-    if (withNull.mode !== "preset" || withoutConfig.mode !== "preset") {
-      throw new Error("Expected preset launches.");
-    }
-    expect(withNull.launchPreset).toHaveProperty("llmConfig", null);
-    expect(withoutConfig.launchPreset).not.toHaveProperty("llmConfig");
-  });
-
-  it("independently clones llmConfig for every member while saved runtime and model retain priority", () => {
-    const llmConfig = { reasoning_effort: "high", nested: { budget: 3 } };
-    const memberConfigs = buildConfiguredTeamMemberLaunchConfigs({
-      launchProfile: memberLaunchProfile,
-      workspaceRootPath: "/fallback/workspace",
-      runtimeKind: "fallback-runtime",
-      llmModelIdentifier: "fallback-model",
+      kind: "AGENT",
+      workspaceRootPath: "/workspace/assistant",
+      runtimeKind: "codex_app_server",
+      llmModelIdentifier: "gpt-5.6-luna",
       llmConfig,
+      autoExecuteTools: true,
+      skillAccessMode: "PRELOADED_ONLY",
+    });
+    expect(launch.llmConfig).not.toBe(llmConfig);
+    expect(launch.llmConfig?.nested).not.toBe(llmConfig.nested);
+  });
+
+  it("omits a null llmConfig and preserves explicit skill access", () => {
+    const launch = buildEffectiveAgentRunLaunch({
+      configuration: buildAgentConfiguration(null),
+      skillAccessMode: "NONE",
     });
 
-    expect(memberConfigs).toHaveLength(2);
-    for (const memberConfig of memberConfigs) {
+    expect(launch).not.toHaveProperty("llmConfig");
+    expect(launch.skillAccessMode).toBe("NONE");
+  });
+
+  it("builds rooted member configs and independently clones every llmConfig", () => {
+    const llmConfig = { reasoning_effort: "high", nested: { budget: 3 } };
+    const launch = buildEffectiveTeamRunLaunch({ configuration: buildTeamConfiguration(llmConfig) });
+
+    expect(launch).toMatchObject({ kind: "AGENT_TEAM", mode: "memberConfigs" });
+    if (launch.mode !== "memberConfigs") throw new Error("Expected memberConfigs launch.");
+    expect(launch.teamConfigs).toEqual([{
+      teamAddress: "/",
+      workspaceRootPath: "/workspace/team",
+      runtimeKind: "codex_app_server",
+      llmModelIdentifier: "gpt-5.6-luna",
+      llmConfig,
+      autoExecuteTools: true,
+      skillAccessMode: "PRELOADED_ONLY",
+    }]);
+    expect(launch.teamConfigs[0]?.llmConfig).not.toBe(llmConfig);
+    expect(launch.teamConfigs[0]?.llmConfig?.nested).not.toBe(llmConfig.nested);
+    expect(launch.memberConfigs.map(({ memberAddress, displayName, agentDefinitionId }) => ({
+      memberAddress,
+      displayName,
+      agentDefinitionId,
+    }))).toEqual([
+      { memberAddress: "/researcher", displayName: "Researcher", agentDefinitionId: "researcher-agent" },
+      { memberAddress: "/writer", displayName: "Writer", agentDefinitionId: "writer-agent" },
+    ]);
+    for (const memberConfig of launch.memberConfigs) {
       expect(memberConfig).toMatchObject({
-        runtimeKind: "saved-runtime",
-        llmModelIdentifier: "saved-model",
-        workspaceRootPath: "/saved/workspace",
+        runtimeKind: "codex_app_server",
+        llmModelIdentifier: "gpt-5.6-luna",
         llmConfig,
       });
       expect(memberConfig.llmConfig).not.toBe(llmConfig);
       expect(memberConfig.llmConfig?.nested).not.toBe(llmConfig.nested);
     }
-    expect(memberConfigs[0]?.llmConfig).not.toBe(memberConfigs[1]?.llmConfig);
-    expect(memberConfigs[0]?.llmConfig?.nested).not.toBe(memberConfigs[1]?.llmConfig?.nested);
+    expect(launch.memberConfigs[0]?.llmConfig).not.toBe(launch.memberConfigs[1]?.llmConfig);
+  });
 
-    (memberConfigs[0]?.llmConfig?.nested as { budget: number }).budget = 7;
-    expect(memberConfigs[1]?.llmConfig).toEqual({
-      reasoning_effort: "high",
-      nested: { budget: 3 },
-    });
-    expect(llmConfig.nested.budget).toBe(3);
+  it("rejects a team leaf without a rooted member address", () => {
+    const configuration = buildTeamConfiguration(null);
+    configuration.leaves[0]!.memberAddress = null;
+
+    expect(() => buildEffectiveTeamRunLaunch({ configuration })).toThrow(
+      "memberAddress is required for an effective team leaf.",
+    );
   });
 });

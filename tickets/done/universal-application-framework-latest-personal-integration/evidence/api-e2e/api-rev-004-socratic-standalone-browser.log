@@ -1,0 +1,22 @@
+{"at":"2026-08-22T12:15:13.768Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:16.773Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:19.777Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:22.785Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:25.788Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:28.797Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:31.810Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:34.820Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:37.830Z","live":"Tutor is responding…","conversation":"1 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:40.838Z","live":"Tutor is responding…","conversation":"2 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:43.845Z","live":"Tutor is responding…","conversation":"2 messages","saved":false,"rejected":false}
+{"at":"2026-08-22T12:15:46.855Z","live":"Tutor response saved","conversation":"2 messages","saved":true,"rejected":false}
+{
+  "result": "PASS",
+  "last": {
+    "at": "2026-08-22T12:15:46.855Z",
+    "live": "Tutor response saved",
+    "conversation": "2 messages",
+    "saved": true,
+    "rejected": false
+  }
+}

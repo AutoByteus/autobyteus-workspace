@@ -1,0 +1,206 @@
+
+> autobyteus-server-ts@0.1.1 pretest /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> vitest -- --run --testTimeout=30000 tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
+
+
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts (10 tests | 10 skipped)
+(node:18272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts (14 tests) 521ms
+stdout | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool
+Memory file missing: /tmp/runtime-memory-accumulator-nj3TWI/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn
+Memory file missing: /tmp/runtime-memory-accumulator-j9Jhlp/working_context_snapshot.json
+Memory file missing: /tmp/runtime-memory-accumulator-j9Jhlp/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+Memory file missing: /tmp/runtime-memory-accumulator-ujGYEM/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+Memory file missing: /tmp/runtime-memory-accumulator-gTbGw7/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes
+Memory file missing: /tmp/runtime-memory-accumulator-R93tsC/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result
+Memory file missing: /tmp/runtime-memory-accumulator-WJsMDo/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool
+Memory file missing: /tmp/runtime-memory-accumulator-lruKsC/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result
+Memory file missing: /tmp/runtime-memory-accumulator-gF3zQv/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+Memory file missing: /tmp/runtime-memory-accumulator-8FHtdG/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates
+Memory file missing: /tmp/runtime-memory-accumulator-xiXBma/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion
+Memory file missing: /tmp/runtime-memory-accumulator-gFoDJ7/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output
+Memory file missing: /tmp/runtime-memory-accumulator-iRtefJ/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity
+Memory file missing: /tmp/runtime-memory-accumulator-abxrWg/working_context_snapshot.json
+Memory file missing: /tmp/runtime-memory-accumulator-abxrWg/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present
+Memory file missing: /tmp/runtime-memory-accumulator-6ilsIC/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids
+Memory file missing: /tmp/runtime-memory-accumulator-FuhQ1C/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity
+Memory file missing: /tmp/runtime-memory-accumulator-wBnoOJ/working_context_snapshot.json
+Memory file missing: /tmp/runtime-memory-accumulator-wBnoOJ/raw_traces_active.jsonl
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning
+Memory file missing: /tmp/runtime-memory-accumulator-SZajRf/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives
+Memory file missing: /tmp/runtime-memory-accumulator-ZjkkYb/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records
+Memory file missing: /tmp/runtime-memory-accumulator-FccYFT/working_context_snapshot.json
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists
+Memory file missing: /tmp/runtime-memory-accumulator-3sappw/working_context_snapshot.json
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests) 41ms
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:18299) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+Custom app data directory set to: /tmp/recent-run-projection-gql-5M2wSS
+Updated config file path to /tmp/recent-run-projection-gql-5M2wSS/.env
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T12:31:17.165Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests | 9 failed) 260ms
+     × hydrates native reasoning through standalone and team GraphQL projections 13ms
+     × hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 7ms
+     × omits a rotated system instruction from active hydration without reading its archive 7ms
+     × projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 69ms
+     × projects a team member from active traces only and preserves its archive bytes 15ms
+     × traverses exactly 275 standalone active events in fixed pages without opening archives 9ms
+     × traverses exactly 275 team-member active events and rejects its cursor for another subject 10ms
+     × keeps a cursor valid across append and expires it after an atomic active rewrite 10ms
+     × serializes production media and shallow tool state without multi-megabyte result or log payload 41ms
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+

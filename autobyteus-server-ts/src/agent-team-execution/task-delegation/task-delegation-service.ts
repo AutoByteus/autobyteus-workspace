@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
@@ -66,7 +66,7 @@ import type {
   TaskDelegationServiceOptions,
 } from "./task-delegation-service-contract.js";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "./task-execution-tree-projection.js";
-import { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
+import type { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
 
 /** One root-scoped task lifecycle owner and sole task command FIFO. */
 export class TaskDelegationService {
@@ -76,13 +76,18 @@ export class TaskDelegationService {
   private rootFailStopped = false;
   private settlementSweepScheduled = false;
   private readonly agentIds: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-  private readonly taskTeams: TaskTeamRunIdentityFactory;
+  private readonly taskTeams: Pick<TaskTeamRunIdentityFactory, "create">;
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
 
   constructor(private readonly options: TaskDelegationServiceOptions) {
     this.currentTasks = validateTaskDelegationRecordsV1Payload(options.initialTasks, options.rootTeamRunId);
-    this.agentIds = options.agentRunIdentityAllocator ?? AgentRunIdentityAllocator.getInstance();
-    this.taskTeams = options.taskTeamRunIdentityFactory ?? new TaskTeamRunIdentityFactory(this.agentIds);
+    if (!options?.taskExecutionIdentity ||
+        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
+        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
+      throw new Error("Task execution identity capabilities are required.");
+    }
+    this.agentIds = options.taskExecutionIdentity.agentRuns;
+    this.taskTeams = options.taskExecutionIdentity.taskTeams;
     this.tokenUsageReadiness = options.tokenUsageMigrationReadiness ?? new TokenUsageMigrationReadiness();
   }
 

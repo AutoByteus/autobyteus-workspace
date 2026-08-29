@@ -19,7 +19,10 @@
   },
   "dependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*",
-    "esbuild": "^0.27.3"
+    "autobyteus-server-ts": "workspace:*",
+    "chokidar": "^4.0.3",
+    "esbuild": "^0.27.3",
+    "playwright-core": "^1.48.0"
   },
   "devDependencies": {
     "@autobyteus/application-backend-sdk": "workspace:*",

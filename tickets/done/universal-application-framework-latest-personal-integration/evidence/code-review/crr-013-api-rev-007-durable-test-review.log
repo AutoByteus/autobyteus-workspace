@@ -1,0 +1,148 @@
+# CRR-013 API-REV-007 durable-test review evidence
+
+## Reviewer basis
+- Reviewed source HEAD: fdc18bfcb39f6de80df9b7f5d21b1ba2d00c4342
+- Entry point: successful API/E2E proportional durable-test review
+- API/E2E revision: API-REV-007 — Pass / 98%
+- Durable scope: exactly two updated test files; zero additions, removals, or production-source changes
+
+## Exact durable diff
+diff --git a/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+index fe61fcaaf..031025e9b 100644
+--- a/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+@@ -399,7 +399,11 @@ describe('Qwen configuration GraphQL lifecycle E2E', () => {
+         ]));
+       expect(firstCatalog.find(({ provider: candidate }) => candidate.id === 'GLM')?.models)
+         .toEqual(expect.arrayContaining([
+-          expect.objectContaining({ modelIdentifier: 'glm-5.2', value: 'glm-5.2' }),
++          expect.objectContaining({
++            modelIdentifier: 'glm-5.3',
++            value: 'glm-5.3',
++            maxContextTokens: 1_000_000,
++          }),
+         ]));
+
+       const restoredFailure = await obstructDurableEnvironmentCommit(
+diff --git a/autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts b/autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+index 2373a1aa9..ddf0240c8 100644
+--- a/autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
++++ b/autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+@@ -42,7 +42,7 @@ describe('ModelCatalogService', () => {
+     }
+   });
+
+-  it('surfaces Gemini 3.5 Flash through the Autobyteus runtime catalog path', async () => {
++  it('surfaces current Gemini 3.7 Flash through the Autobyteus runtime catalog path', async () => {
+     const syncService = {
+       ensureSyncedForCatalogRead: vi.fn().mockResolvedValue(undefined)
+     };
+@@ -71,11 +71,11 @@ describe('ModelCatalogService', () => {
+     expect(syncService.ensureSyncedForCatalogRead).toHaveBeenCalledTimes(1);
+     expect(remoteDiscovery.ensureDiscovered).toHaveBeenCalledWith('llm');
+     expect(autobyteusModelCatalog.listModels).toHaveBeenCalledTimes(1);
+-    expect(models.find((model) => model.model_identifier === 'gemini-3.5-flash')).toMatchObject({
+-      model_identifier: 'gemini-3.5-flash',
+-      display_name: 'gemini-3.5-flash',
+-      value: 'gemini-3.5-flash',
+-      canonical_name: 'gemini-3.5-flash'
++    expect(models.find((model) => model.model_identifier === 'gemini-3.7-flash')).toMatchObject({
++      model_identifier: 'gemini-3.7-flash',
++      display_name: 'gemini-3.7-flash',
++      value: 'gemini-3.7-flash',
++      canonical_name: 'gemini-3.7-flash'
+     });
+   });
+ });
+
+## Governing current catalog authorities
+    }),
+    configSchema: geminiSchema
+  },
+  {
+    name: 'gemini-3.7-flash',
+    value: 'gemini-3.7-flash',
+    provider: LLMProvider.GEMINI,
+    llmClass: GeminiLLM,
+    canonicalName: 'gemini-3.7-flash', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash', '2026-08-22', GEMINI_MEDIA_CAPABILITIES),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 3.75, { cachedInputReadTokenPricing: 0.075, pricingEffectiveDate: '2026-08-22' }) }),
+    configSchema: geminiSchema
+  },
+  ...qwenSupportedModelDefinitions,
+  {
+    name: 'glm-5.3',
+    value: 'glm-5.3',
+    provider: LLMProvider.GLM,
+    llmClass: GlmLLM,
+    canonicalName: 'glm-5.3', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://z.ai/blog/glm-5.3', '2026-08-22'),
+    defaultConfig: new LLMConfig({
+      extraParams: { thinking_type: 'enabled', reasoning_effort: 'max' },
+      pricingConfig: new TokenPricingConfig({ pricingSource: 'unverified_glm_5_3_deployment_pricing' }),
+    }),
+    configSchema: glmSchema
+  {
+    name: 'GLM-5.2 (Qwen)',
+    value: 'glm-5.2',
+    provider: LLMProvider.QWEN,
+    llmClass: QwenLLM,
+    canonicalName: 'glm-5.2',
+    modelIdentifierOverride: 'qwen:glm-5.2',
+    staticMetadata: createStaticModelMetadata(
+      198_000, null, null, ALIBABA_TEXT_GENERATION_URL, '2026-08-06',
+    ),
+  },
+  {
+    name: 'qwen3-max',
+    value: 'qwen3-max',
+    provider: LLMProvider.QWEN,
+    llmClass: QwenLLM,
+
+## Disabled/focused-test scan
+No skip/todo/only markers found in the changed durable files.
+
+## Existing execution evidence
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+ ✓ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test) 6746ms
+     ✓ commits one probed pair durably, compensates failures, restarts, and routes every exact Qwen model  6744ms
+stdout | tests/unit/llm-management/services/model-catalog-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/llm-management/services/model-catalog-service.test.ts > ModelCatalogService > surfaces current Gemini 3.7 Flash through the Autobyteus runtime catalog path
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/unit/llm-management/services/model-catalog-service.test.ts > ModelCatalogService > surfaces current Gemini 3.7 Flash through the Autobyteus runtime catalog path
+Successfully fetched 28 models from LLMFactory.
+
+stdout | tests/unit/llm-management/services/model-catalog-service.test.ts > ModelCatalogService > surfaces current Gemini 3.7 Flash through the Autobyteus runtime catalog path
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/llm-management/services/model-catalog-service.test.ts (1 test) 6ms
+ ✓ tests/unit/application-platform/application-launch-configuration-service.test.ts (6 tests) 15ms
+ ✓ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts (9 tests) 7ms
+ ✓ tests/unit/application-platform/application-current-model-selection-policy.test.ts (8 tests) 5ms
+ ✓ tests/unit/application-platform/application-launch-host-capability-validator.test.ts (3 tests) 4ms
+
+ Test Files  6 passed (6)
+      Tests  28 passed (28)
+   Start at  08:31:11
+   Duration  15.84s (transform 4.08s, setup 40ms, import 8.02s, tests 6.78s, environment 0ms)
+
+
+## Reviewer determination
+- The GLM assertion now proves the current global GLM identity and its 1,000,000-token context while the independent Qwen-hosted qwen:glm-5.2 identity, restart, and route assertions remain intact.
+- The Gemini test name and exact catalog fields now agree with the current supported-model definition for gemini-3.7-flash.
+- No assertion was removed or weakened, no compatibility-only expectation was added, and both files retain coherent responsibilities and existing isolation.
+- No reviewer rerun was needed: the diff is directly judgeable and API-REV-007 already records a canonical rebuild plus six files / 28 tests Pass.
+- Result: Pass; findings: none.

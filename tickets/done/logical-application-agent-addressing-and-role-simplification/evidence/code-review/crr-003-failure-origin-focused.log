@@ -1,0 +1,315 @@
+CRR-003 focused failure-origin review — APIE2E-F001
+UTC: 2026-08-26T16:37:25Z
+HEAD: 159dd376906374d2caa50251f98d4456f2584328
+
+== Independent supported trigger and consequence ==
+REQ-008 / AC-018 require maintained Studio/standalone launch and restart/reentry outcomes to remain functional.
+21:| BEH-007 | Maintained applications, SDK copies, and tests use the old address and role fields. | All supported callers and generated/vendored outputs move atomically to the new contract. | Business behavior, package parity, publication, streaming, and application UI outcomes remain the same. | REQ-008; AC-017, AC-018 |
+38:| `logical-application-agent-addressing-transition-inventory.md` | exact file/package/test/data proof inventory | REQ-001–REQ-008 | AC-001–AC-018 | N/A approval | Implementation completeness |
+39:| `current-personal-refresh-analysis.md` | current-base bootstrap, source-spine, reachability, persistence, and intersection proof | REQ-001–REQ-008 | AC-001–AC-018 | N/A approval | Current source evidence |
+76:### Preserved Behavior Boundary
+95:- **REQ-008:** Update every supported SDK/application/server/package consumer atomically, regenerate owned copies, remove the old unions/helpers/fields, and preserve all existing functional outcomes.
+116:- **AC-018:** focused plus realistic Studio/standalone tests preserve launch, root/member input, root/member stream, artifact projection, restart/recovery/reentry, and cleanup.
+155:| REQ-008 | UC-001–UC-007 |
+165:| AC-017–AC-018 | atomic package and realistic regression proof |
+
+== Real execution evidence ==
+{
+  "scenario": "APIE2E-STUDIO-COLD-RESTART-001",
+  "failureId": "APIE2E-F001",
+  "coldMutation": {
+    "status": 500,
+    "durationMs": 30070,
+    "url": "http://127.0.0.1:43960/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466c6f676963616c2d6170706c69636174696f6e2d6167656e742d61646472657373696e672d616e642d726f6c652d73696d706c696669636174696f6e2532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572/backend/graphql",
+    "body": "{\"detail\":\"Application worker request timed out: executeApplicationGraphql\"}"
+  },
+  "beforeCount": 8,
+  "afterCount": 10,
+  "assertions": {
+    "sameDataRecovered": true,
+    "coldMutation2xx": false,
+    "eventualTurnSaved": true
+  },
+  "result": "Fail"
+}
+
+== Host->worker timeout without cancellation/commit disposition ==
+   105	      if (this.requestHandlers.get(method) === handler) {
+   106	        this.requestHandlers.delete(method);
+   107	      }
+   108	    };
+   109	  }
+   110
+   111	  async request<T = unknown>(method: string, params?: Record<string, unknown>, timeoutMs = 30_000): Promise<T> {
+   112	    this.ensureAttached();
+   113	    const id = this.nextRequestId++;
+   114	    const promise = new Promise<T>((resolve, reject) => {
+   115	      const timeoutHandle = setTimeout(() => {
+   116	        this.pendingRequests.delete(id);
+   117	        reject(new Error(`Application worker request timed out: ${method}`));
+   118	      }, timeoutMs);
+   119
+   120	      this.pendingRequests.set(id, {
+   121	        resolve: (value) => {
+   122	          clearTimeout(timeoutHandle);
+   123	          resolve(value as T);
+   124	        },
+   125	        reject: (error) => {
+   126	          clearTimeout(timeoutHandle);
+   127	          reject(error);
+   128	        },
+   129	        timeoutHandle,
+   130	      });
+   202	    try {
+   203	      payload = JSON.parse(line);
+   204	    } catch {
+   205	      return;
+   206	    }
+   207
+   208	    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+   209	      return;
+   210	    }
+   211	    const envelope = payload as Record<string, unknown>;
+   212	    const method = typeof envelope.method === "string" ? envelope.method : null;
+   213	    const id = typeof envelope.id === "number" || typeof envelope.id === "string" ? envelope.id : null;
+   214
+   215	    if (method === APPLICATION_ENGINE_NOTIFICATION_METHOD) {
+   216	      for (const listener of this.notificationListeners) {
+   217	        try {
+   218	          listener((envelope.params ?? {}) as ApplicationEngineClientNotification);
+   219	        } catch {
+   220	          // no-op
+   221	        }
+   222	      }
+   223	      return;
+   224	    }
+   225
+   226	    if (method && id !== null) {
+   227	      void this.handleWorkerRequest(id, method, (envelope.params ?? {}) as Record<string, unknown>);
+   228	      return;
+   229	    }
+   230
+   231	    if (id === null) {
+   232	      return;
+   233	    }
+   234
+   235	    const pending = this.pendingRequests.get(id);
+
+== Worker->host capability timeout without cancellation/commit disposition ==
+    65	          message,
+    66	          recoverable: errorPayload?.recoverable === true,
+    67	        }));
+    68	      } else {
+    69	        pending.reject(new Error(message));
+    70	      }
+    71	      return true;
+    72	    }
+    73
+    74	    pending.resolve(payload.result);
+    75	    return true;
+    76	  }
+    77
+    78	  private async request(method: string, params: Record<string, unknown>): Promise<unknown> {
+    79	    const id = `host:${this.nextRequestId++}`;
+    80	    const promise = new Promise<unknown>((resolve, reject) => {
+    81	      const timeoutHandle = setTimeout(() => {
+    82	        this.pendingRequests.delete(id);
+    83	        reject(new Error(`Application host bridge request timed out: ${method}`));
+    84	      }, 30_000);
+    85	      this.pendingRequests.set(id, {
+    86	        resolve: (value) => {
+    87	          clearTimeout(timeoutHandle);
+    88	          resolve(value);
+    89	        },
+    90	        reject: (error) => {
+    91	          clearTimeout(timeoutHandle);
+    92	          reject(error);
+    93	        },
+    94	        timeoutHandle,
+    95	      });
+    96	    });
+    97
+    98	    await this.writeFrame({
+    99	      jsonrpc: "2.0",
+   100	      id,
+   101	      method,
+   102	      params,
+   103	    });
+   104	    return promise;
+   105	  }
+
+== Synchronous mutation waits for capability outcome ==
+   220
+   221	  async requestHint(input: { lessonId: string; text?: string | null }) {
+   222	    const lessonId = requireNonEmptyString(input.lessonId, "lessonId");
+   223	    const lesson = requireLesson(context, lessonId);
+   224	    const bindingId = ensureOpenBinding(lesson);
+   225	    const createdAt = new Date().toISOString();
+   226	    const detail = typeof input.text === "string" && input.text.trim()
+   227	      ? input.text.trim()
+   228	      : "Please give the student the next helpful hint without solving the full problem.";
+   229
+   230	    withAppDatabase(context.storage.appDatabasePath, (db) => {
+   231	      withTransaction(db, () => {
+   232	        createLessonMessageRepository(db).insertMessage({
+   233	          messageId: randomUUID(),
+   234	          lessonId,
+   235	          role: "student",
+   236	          kind: "hint_request",
+   237	          body: detail,
+   238	          createdAt,
+   239	        });
+   240	        createLessonRepository(db).upsertLesson({
+   241	          lessonId,
+   242	          prompt: lesson.prompt,
+   243	          status: lesson.status,
+   244	          updatedAt: createdAt,
+   245	          latestBindingId: lesson.latestBindingId,
+   246	          latestRunId: lesson.latestRunId,
+   247	          latestBindingStatus: lesson.latestBindingStatus,
+   248	          lastErrorMessage: null,
+   249	          closedAt: lesson.closedAt,
+   250	          artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
+   251	        });
+   252	      });
+   253	    });
+   254
+   255	    await context.agentExecution.sendInput({
+   256	      address: { bindingId, memberAddress: null },
+   257	      input: {
+   258	        text: `The student requests a hint. ${detail}`,
+   259	        metadata: { lessonId, requestKind: "hint" },
+   260	      },
+   261	    });
+   262
+   263	    return createLessonReadService(context).getLesson(lessonId);
+   264	  },
+   265
+   266	  async closeLesson(input: { lessonId: string }) {
+   267	    const lessonId = requireNonEmptyString(input.lessonId, "lessonId");
+   268	    const lesson = requireLesson(context, lessonId);
+   269	    const closedAt = new Date().toISOString();
+   270
+   271	    if (lesson.latestBindingId && !(lesson.latestBindingStatus && ["TERMINATED", "FAILED", "ORPHANED"].includes(lesson.latestBindingStatus))) {
+   272	      await context.agentExecution.terminate(lesson.latestBindingId);
+   273	    }
+   274
+   275	    withAppDatabase(context.storage.appDatabasePath, (db) => {
+   125	    const briefId = requireNonEmptyString(input.briefId, "briefId");
+   126	    const correlationService = createRunBindingCorrelationService(context);
+   127
+   128	    const launchContext = withAppDatabase(context.storage.appDatabasePath, (db) => {
+   129	      const briefRepository = createBriefRepository(db);
+   130	      const artifactRepository = createArtifactRepository(db);
+   131	      const reviewNoteRepository = createReviewNoteRepository(db);
+   132	      const brief = briefRepository.getById(briefId);
+   133	      if (!brief) {
+   134	        throw new Error(`Brief '${briefId}' was not found.`);
+   135	      }
+   136
+   137	      const writerArtifact = artifactRepository
+   138	        .listByBriefId(briefId)
+   139	        .find((artifact) => artifact.artifactKind === "writer") ?? null;
+   140	      const reviewNotes = reviewNoteRepository
+   141	        .listByBriefId(briefId)
+   142	        .map((note) => note.body.trim())
+   143	        .filter(Boolean);
+   144
+   145	      return {
+   146	        brief,
+   147	        latestWriterSummary: writerArtifact?.description?.trim() || null,
+   148	        latestWriterBody: writerArtifact?.body?.trim() || null,
+   149	        reviewNotes,
+   150	      };
+   151	    });
+   152
+   153	    const launchedAt = new Date().toISOString();
+   154	    const pendingLaunchRequest = correlationService.createPendingLaunchRequest(briefId);
+   155	    const draftingTeam = await context.agentResources.requireRunnable(DRAFTING_TEAM_SLOT_KEY);
+   156
+   157	    try {
+   158	      const binding = await context.agentExecution.startAgentTeam({
+   159	        launchRequestId: pendingLaunchRequest.launchRequestId,
+   160	        executionResourceRef: draftingTeam.executionResourceRef,
+   161	        launch: buildEffectiveTeamRunLaunch({
+   162	          configuration: draftingTeam,
+   163	        }),
+   164	        initialInput: {
+   165	          text: buildInitialInputText({
+   166	            title: launchContext.brief.title,
+   167	            latestWriterSummary: launchContext.latestWriterSummary,
+   168	            latestWriterBody: launchContext.latestWriterBody,
+   169	            reviewNotes: launchContext.reviewNotes,
+   170	          }),
+   171	          metadata: {
+   172	            briefId,
+   173	            title: launchContext.brief.title,
+   174	          },
+   175	        },
+   176	      });
+   177
+   178	      withAppDatabase(context.storage.appDatabasePath, (db) => {
+   179	        withTransaction(db, () => {
+   180	          const briefRepository = createBriefRepository(db);
+   181	          createPendingLaunchRequestRepository(db).markCommitted({
+   182	            launchRequestId: binding.launchRequestId,
+   183	            bindingId: binding.bindingId,
+   184	            committedAt: launchedAt,
+   185	          });
+
+== Failure-origin source ancestry ==
+autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts	base=bbe197e90898b41ac276fca48b5dfa5e28b4ce80	head=bbe197e90898b41ac276fca48b5dfa5e28b4ce80	blob-identical=yes
+autobyteus-server-ts/src/application-engine/worker/application-worker-host-bridge-client.ts	base=bc5ef21aad2dfdbc87e169a7340fceb0dc647cc5	head=bc5ef21aad2dfdbc87e169a7340fceb0dc647cc5	blob-identical=yes
+autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts	base=57d60345c50a7f4fbdda201837c2394dc55c1efe	head=57d60345c50a7f4fbdda201837c2394dc55c1efe	blob-identical=yes
+autobyteus-server-ts/src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts	base=df9469c3ae745eca2b727b58c996314e26847ccf	head=df9469c3ae745eca2b727b58c996314e26847ccf	blob-identical=yes
+autobyteus-server-ts/src/api/rest/application-backend-route-handlers.ts	base=e4bfa66fa7ad3f5df4fcafc690b14754e6545aa0	head=e4bfa66fa7ad3f5df4fcafc690b14754e6545aa0	blob-identical=yes
+autobyteus-server-ts/src/standalone-application-host/api/register-standalone-application-rest.ts	base=ed68431447198375049c01ccafb44fa686c573b3	head=ed68431447198375049c01ccafb44fa686c573b3	blob-identical=yes
+applications/brief-studio/backend-src/services/brief-run-launch-service.ts	base=104400007c41fdf14d323612c4dc61313e96a127	head=104400007c41fdf14d323612c4dc61313e96a127	blob-identical=yes
+applications/socratic-math-teacher/backend-src/graphql/index.ts	base=8063d0c6983e9d7d3fa2a463dc5afd15231c712c	head=8063d0c6983e9d7d3fa2a463dc5afd15231c712c	blob-identical=yes
+
+== Ticket-local Socratic delta ==
+diff --git a/applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts b/applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
+index 8bf323346..fb7abd316 100644
+--- a/applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
++++ b/applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
+@@ -203,17 +203,17 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
+           lastErrorMessage: null,
+           closedAt: lesson.closedAt,
+           artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
+         });
+       });
+     });
+
+     await context.agentExecution.sendInput({
+-      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
++      address: { bindingId, memberAddress: null },
+       input: {
+         text,
+         metadata: { lessonId },
+       },
+     });
+
+     return createLessonReadService(context).getLesson(lessonId);
+   },
+@@ -248,17 +248,17 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
+           lastErrorMessage: null,
+           closedAt: lesson.closedAt,
+           artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
+         });
+       });
+     });
+
+     await context.agentExecution.sendInput({
+-      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
++      address: { bindingId, memberAddress: null },
+       input: {
+         text: `The student requests a hint. ${detail}`,
+         metadata: { lessonId, requestKind: "hint" },
+       },
+     });
+
+     return createLessonReadService(context).getLesson(lessonId);
+   },
+
+Finding: both 30-second request layers delete correlation and reject locally without a cancellation/indeterminate/admission contract. A normal cold operation can continue and commit after HTTP 500. The governing mechanism predates and is blob-identical to the reviewed base; the Socratic ticket delta changes only the logical address shape, and the same failure reproduces through unchanged Brief launch.
+Classification: Design Impact -> /solution_designer. Raising a timeout alone would preserve the ambiguous-commit defect and is not an adequate local fix.

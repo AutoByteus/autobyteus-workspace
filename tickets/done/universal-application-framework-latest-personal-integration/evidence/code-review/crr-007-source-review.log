@@ -1,0 +1,47 @@
+CRR-007 affected implementation-source review — IR-005 / CR-006
+Date (UTC): 2026-08-22
+Reviewed implementation HEAD: ad2ef7597f615c673e2998e083f412fdae4e7854
+Prior focused review: CRR-006 at 82aca5eb467745c7f31e62dd14a187c6a44b2f74
+
+Reviewed production delta:
+- application-platform-lifecycle-contracts.ts (+5/-0; 63 effective non-empty lines)
+- application-platform-lifecycle.ts (+6/-0; 194 effective non-empty lines)
+- build-application-platform-runtime.ts (+1/-0; 179 effective non-empty lines)
+- application-storage-lifecycle-service.ts (+17/-0; 253 effective non-empty lines)
+- application-storage-paths.ts (+5/-1; 73 effective non-empty lines)
+
+CR-006 resolution trace:
+1. The graph-local ApplicationStorageLifecycleService now exposes `ensureRuntimeDirectoryPrepared(applicationId)`.
+2. That operation validates the application through the existing bundle authority, resolves the canonical existing storage layout, and materializes only layout.runtimeDir through `ensureApplicationRuntimeDirectory`.
+3. ApplicationPlatformLifecycle iterates only catalog applications accepted by its existing selected-application predicate after catalog validation and before built-in/definition/provider readiness.
+4. buildApplicationPlatformRuntime injects the exact storage lifecycle instance already shared by the state store, orchestration services, and engine launcher.
+5. The workspace resolver, launch configuration reader/store, provider readiness adapter, Codex client, and declared workspace path have no IR-005 delta.
+6. The narrow preparation does not call DatabaseSync, platform/app storage preparation, migration application, a fallback cwd, process.cwd, or global temp workspace.
+7. Failure uses the lifecycle's existing fail path; definition readiness is not invoked, and stop still attempts all owned cleanup categories.
+
+Boundary/architecture assessment:
+- ApplicationPlatformLifecycle remains the pre-listen sequencing owner; ApplicationStorageLifecycleService remains the physical materialization owner.
+- ApplicationPlatformLifecycle depends on the storage owner through a one-method Pick contract rather than an internal filesystem utility.
+- The storage owner validates catalog admission and reuses the existing canonical layout; neither lifecycle nor provider code computes an alternate identity.
+- No path resolver side effect, query-side database creation, provider fallback, new subsystem, compatibility path, schema change, migration, or reverse dependency was added.
+- Studio naturally prepares cataloged applications because it performs definition/provider readiness for those applications; standalone prepares only its selected application set.
+
+Reviewer validation:
+- affected selection: 6 files / 42 tests Pass, including architecture 15/15, lifecycle 4/4, storage 5/5, journal recovery 5/5, launch no-write 4/4, standalone lifecycle 9/9.
+- server build-config TypeScript no-emit: Pass.
+- direct lifecycle test uses the actual ApplicationProviderCredentialReadinessAdapter and proves exact canonical cwd exists at acquire/release.
+- fresh-root test proves platform.sqlite and app.sqlite remain absent.
+- failure test proves definition readiness is skipped and full stop remains available.
+- implementation full production build/sanitized bootstrap Pass retained from IR-005 handoff.
+- diff check: Pass.
+- all five source deltas are below +220/-220 and all source files are below 500 effective lines.
+- reviewer-generated shared build outputs removed; API/E2E-owned dirty coverage/reports/evidence preserved.
+
+Material-premise result:
+- CR-PREM-006 remains Reachable, but the corrected production path now creates the canonical runtime cwd before credential acquisition and therefore removes the prior ENOENT consequence.
+- No new or reclassified material premise.
+
+Decision:
+- CR-006 resolved.
+- CR-001 through CR-005 remain resolved.
+- No open implementation-source finding.

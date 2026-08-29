@@ -7,7 +7,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import type { AgentConfigOverride, ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
 import type { EditableTeamFormAgentNode } from '~/types/agent/EditableTeamRunFormModel'
-import type { StoredTeamFormAgentNode } from '~/types/agent/StoredTeamRunFormModel'
+import type { ExistingTeamFormAgentNode } from '~/types/agent/ExistingTeamRunFormModel'
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -98,13 +98,14 @@ const editableNode = (input: {
     runtimeCatalogState: { status: 'idle', error: null },
   }
 }
-const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): StoredTeamFormAgentNode => ({
-  mode: 'stored',
+const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): ExistingTeamFormAgentNode => ({
+  mode: 'existing',
   kind: 'agent',
   address: '/reviewer',
   displayName: 'Reviewer',
   isCoordinator: false,
   isCustomized: true,
+  directlyEdited: false,
   effectiveConfig: resolved(changes),
   storedWorkspace: {
     workspaceId: null,
@@ -113,7 +114,7 @@ const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): StoredT
     availability: 'historical-only',
   },
 })
-const mountItem = (node: EditableTeamFormAgentNode | StoredTeamFormAgentNode, disabled = false) =>
+const mountItem = (node: EditableTeamFormAgentNode | ExistingTeamFormAgentNode, disabled = false) =>
   mount(MemberOverrideItem, { props: { node, memberBreadcrumb: 'reviewer', disabled } })
 
 const ready = async () => {
@@ -130,6 +131,7 @@ describe('MemberOverrideItem', () => {
     setActivePinia(createPinia())
     llmStore = {
       providersWithModels: [],
+      providerSnapshots: vi.fn(() => []),
       providersWithModelsForSelection: vi.fn((runtimeKind: string) => runtimeProviders[runtimeKind] ?? []),
       fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
         const rows = runtimeProviders[runtimeKind] ?? []
@@ -244,7 +246,7 @@ describe('MemberOverrideItem', () => {
     ])
   })
 
-  it('renders exact stored partial-schema history once and accepts no mutation', async () => {
+  it('renders exact existing-run partial-schema history once while disabled', async () => {
     const exactConfig = Object.freeze({
       temperature: 0.2,
       reasoning_effort: 'ultra',
@@ -261,8 +263,8 @@ describe('MemberOverrideItem', () => {
     const wrapper = mountItem(node, true)
     await ready()
 
-    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('codex_app_server')
-    expect((wrapper.get('input#config--reviewer-temperature').element as HTMLInputElement).value).toBe('0.2')
+    expect((wrapper.get('#existing--reviewer-runtime-kind').element as HTMLSelectElement).value).toBe('codex_app_server')
+    expect((wrapper.get('input#existing--reviewer-temperature').element as HTMLInputElement).value).toBe('0.2')
     expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
     expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
     const residuals = wrapper.findAll('[data-test="historical-model-config-residual"]')
@@ -276,7 +278,7 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.emitted('update:override')).toBeUndefined()
   })
 
-  it('uses the same residual algorithm when the whole stored model schema is absent', async () => {
+  it('uses the same residual algorithm when the whole existing-run model schema is absent', async () => {
     const exactConfig = Object.freeze({
       reasoning_effort: 'ultra',
       service_tier: 'fast',
@@ -290,7 +292,7 @@ describe('MemberOverrideItem', () => {
     const before = JSON.stringify(node)
     const wrapper = mountItem(node, true)
     await ready()
-    expect((wrapper.get('#override-runtime--reviewer').element as HTMLSelectElement).value).toBe('removed-runtime')
+    expect((wrapper.get('#existing--reviewer-runtime-kind').element as HTMLSelectElement).value).toBe('removed-runtime')
     expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-agent-model')
     expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value).toBe('/history/reviewer')
     expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)

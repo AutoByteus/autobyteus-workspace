@@ -31,6 +31,7 @@ import { OLD_RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "../../../src/app-data-mi
 import { RawTraceRotationLayoutMigration } from "../../../src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { TeamAgentMemoryLayoutAppDataMigration } from "../../../src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.js";
+import { TeamRunExecutionTreeV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
@@ -341,11 +342,12 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     const defaultDefinitions = new AppDataMigrationRegistry().listDefinitions();
     const v1Index = defaultDefinitions.findIndex((item) => item.id === TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID);
     const layoutIndex = defaultDefinitions.findIndex((item) => item instanceof TeamAgentMemoryLayoutAppDataMigration);
+    const v2Index = defaultDefinitions.findIndex((item) => item instanceof TeamRunExecutionTreeV2AppDataMigration);
     const externalIndex = defaultDefinitions.findIndex((item) => item instanceof RemoveExternalRuntimeWorkingContextSnapshotsMigration);
     const rotationIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceRotationLayoutMigration);
     const activeNameIndex = defaultDefinitions.findIndex((item) => item instanceof RawTraceActiveFileNameMigration);
     const nativeIndex = defaultDefinitions.findIndex((item) => item instanceof MigrateNativeWorkingContextSnapshotsV5Migration);
-    expect([layoutIndex, externalIndex]).toEqual([v1Index + 1, v1Index + 2]);
+    expect([layoutIndex, v2Index, externalIndex]).toEqual([v1Index + 1, v1Index + 2, v1Index + 3]);
     expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
       externalIndex + 1,
       externalIndex + 2,
@@ -387,6 +389,7 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
         }),
       },
       new TeamAgentMemoryLayoutAppDataMigration(memoryDir),
+      new TeamRunExecutionTreeV2AppDataMigration(memoryDir),
       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(memoryDir),
       new RawTraceRotationLayoutMigration(memoryDir),
       new RawTraceActiveFileNameMigration(memoryDir),

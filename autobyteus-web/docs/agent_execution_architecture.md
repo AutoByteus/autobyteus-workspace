@@ -84,11 +84,17 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `sendMessageToFocusedMember()`: uses the focused exact
     `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
     `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
-    necessary, requires an exact Agent execution, begins one local submission,
+    necessary and resolves the focused AgentRun through the canonical execution
+    view to an exact attachment location (`containingTeamRunId` plus rooted
+    `memberAddress`) before local admission. Draft attachment ownership remains
+    launch/root scoped, while the `team_member_final` owner uses that containing
+    TeamRun; a configured or task-Team Agent nested below the root must not
+    substitute the root TeamRun id. It then begins one local submission,
     finalizes attachments, and emits `SEND_MESSAGE` with `execution_address`,
-    required `message_id`, and required `dedupe_key`. Invalid, stale, non-Agent,
-    or cross-root identity fails closed; there is no structural-template,
-    route-key, display-name, or generated-id fallback.
+    required `message_id`, and required `dedupe_key`. Missing execution location
+    and invalid, stale, non-Agent, or cross-root identity fail closed; there is
+    no root-id, structural-template, route-key, display-name, or generated-id
+    fallback.
   - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
     fresh command id and the exact execution address. `TeamStreamingService`
     completes the pending command only when `AGENT_COMMAND_ACK` matches both.
@@ -694,7 +700,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. A missing exact Team location fails before local admission or finalization. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
@@ -751,52 +757,54 @@ explicit preload when the pending path and the rest of the launch config are
 valid. The bound server remains authoritative for interpreting and
 canonicalizing the supplied absolute path.
 
-### Existing Run Configuration Inspection
+### Existing Run Model Configuration
 
-`components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
-editable new-run launch configuration and inspect-only configuration for an
-already selected run. When `selectionStore.selectedRunId` is present, the panel
-passes read-only mode to the Agent form or projects the Team V2
-`STORED_SNAPSHOT` through `projectStoredTeamRunFormModel(...)` instead of
-treating the selected run's config as a launch buffer. Editable Team drafts use
-`projectEditableTeamRunFormModel(...)`. Both enter the same
-`TeamRunConfigForm.vue` visual composition through a discriminated
-`TeamRunFormModel`, while editable and stored capabilities remain distinct at
-the root, recursive Team, and Agent boundaries.
+`RunConfigPanel.vue` routes a selected persisted Agent or Team to
+`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer. The
+editor and `existingRunModelConfigStore` own a Settings-scoped canonical network
+load, local draft, schema readiness, mutation state, and reconciliation. Cached
+history lifecycle state may conservatively relock the current target but cannot
+unlock it or supersede the Settings-owned read.
 
-Selected existing single-agent and team run configuration is intentionally
-inspect-only:
+Existing-run editing is intentionally narrow. Runtime kind, model identifier,
+workspace, automatic-tool policy, definition/provider identity, concrete run
+IDs, Team topology, and addresses are fixed presentation. Only schema-backed
+`llmConfig` controls are writable when the canonical editability contract says
+the persisted run is available, unarchived, and inactive. Locked forms keep
+their disclosures operable, but expose no launch action, workspace authoring,
+runtime/model selection, or stopped-run Reset.
 
-- runtime, model, workspace, auto-approve, and team-member override controls
-  render disabled;
-- the member, nested-Team, and model-detail disclosures remain operable so the
-  stored hierarchy can be inspected through the same layout used before launch;
-- stored nodes carry only neutral display facts and stored workspace display;
-  they do not import or fabricate `TeamLaunchDraft`, editable overrides,
-  inherited editing baselines, workspace authoring state, runtime-catalog
-  operation state, or mutation commands;
-- form update handlers and shared runtime/model normalization emissions no-op in
-  read-only mode so historical context is not locally mutated;
-- **Reset** and the launch/run button are absent while an existing run is
-  selected;
-- localized read-only notices explain that the selected run can be inspected but
-  not edited; and
-- stored topology/order and exact root, nested-Team, and Agent effective values
-  come from V2 and do not depend on the current Team definition.
+The server composes General Process liveness with the separate Application
+ownership lease. `ATTACHED`, `TERMINATING`, and `FAILED` Application bindings
+lock the exact Agent/Team identity; `TERMINATED` and `ORPHANED` release it.
+Startup recovery, lookup/provenance disagreement, or unreadable binding evidence
+fails closed. The user journey is sequential: complete Stop/terminalization,
+enter Settings for a fresh read, edit, Save, then let a later message restore the
+same identity with the saved model settings.
 
-The frontend consumes historical model configuration exactly as provided by the
-backend. `projectHistoricalModelConfigFields(...)` is the single pure classifier
-for stored model fields. In current-schema order it sends exactly representable
-explicit values to disabled normal controls and sends stale/unrepresentable
-explicit values to a compact historical residual. Persisted keys absent from
-the current schema are appended in stable key order. Whole-schema absence uses
-the same algorithm; no explicit key is normalized through an editable default,
-duplicated, or mutated. The accepted exactness boundary is producer-backed
-history from a named supported current/released catalog and normal launch path;
-the classifier remains generic rather than embedding provider or provenance
-branches. If model configuration is genuinely absent, the UI may show a
-localized `Not recorded for this historical run` state, but it must not infer a
-current default, recover a runtime value, or materialize metadata.
+For Team runs, `existingTeamModelConfigDraft.ts` projects the exact V2 configured
+topology. A parent scope edit propagates only through descendants that shared its
+starting value; divergent descendants and directly edited scopes remain stable.
+The resulting mutation contains exact configured-Team/configured-Agent patches
+only. Task nodes and fixed launch identity are not patch targets, and no Reset is
+offered because historical snapshots do not preserve definition-override
+provenance.
+
+`projectHistoricalModelConfigFields(...)` still owns residual safety. Explicit
+values that current controls can represent remain normal fields; stale, removed,
+or unrepresentable values remain visible once as historical residuals. Catalog
+or schema unavailability keeps Save locked, and the server validates every
+submitted scope against its own fixed runtime/model before persistence.
+
+Save requires a stopped, editable, schema-ready, changed draft. The
+revision-free Agent/Team mutations return canonical state, editability, outcome,
+and field errors. A supported restore that wins the General lifecycle lane
+relocks the client with `RUN_ACTIVE`; a persistence-indeterminate response forces
+canonical verification before another Save. Navigation discards unsaved values.
+There is no configuration revision, retained-draft rebase, or browser
+multi-writer merge policy. A successful update changes only persisted
+`llmConfig` and is applied by AutoByteus, Codex, or Claude when the same run is
+next restored; it never hot-mutates the active backend.
 
 The model-config surface is schema-driven, not thinking-only. It renders
 explicit `llmConfig` values first and valid schema defaults second; showing a
@@ -909,10 +917,12 @@ the UI must not imply improver completion proves downstream improvement.
 
 When the user clicks the workspace header add/new-run action while an existing
 single-agent or team run is selected, the frontend treats that selected run as a
-launch template for the new editable draft. The selected run itself remains
-inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
-the selected run config, including runtime kind, model identifier, workspace,
-auto-approve settings, `llmConfig`, and team member overrides.
+launch template for the new editable draft. The selected run itself remains a
+persisted existing-run context whose eligible model settings can be edited only
+through Settings; the add/new-run action instead seeds a separate editable
+launch buffer from a deep-cloned copy of the selected run config, including
+runtime kind, model identifier, workspace, auto-approve settings, `llmConfig`,
+and team member overrides.
 
 That source-copy path must preserve backend-provided model-thinking fields such
 as `reasoning_effort: "xhigh"` even when the runtime model catalog is still

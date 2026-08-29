@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {
-  APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
-  type ApplicationBackendBundleManifestV1,
+  APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
+  type ApplicationBackendBundleManifest,
   type ApplicationBackendSupportedExposures,
 } from '@autobyteus/application-sdk-contracts';
 
@@ -18,8 +18,8 @@ export type BackendBundleManifestInput = {
 
 export const createBackendBundleManifest = (
   input: Omit<BackendBundleManifestInput, 'backendRoot'>,
-): ApplicationBackendBundleManifestV1 => ({
-  contractVersion: APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
+): ApplicationBackendBundleManifest => ({
+  contractVersion: APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION,
   entryModule: 'backend/dist/entry.mjs',
   moduleFormat: 'esm',
   distribution: 'self-contained',
@@ -28,8 +28,8 @@ export const createBackendBundleManifest = (
     semver: input.targetRuntimeSemver,
   },
   sdkCompatibility: {
-    backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V6,
-    frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
+    backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
+    frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
   },
   supportedExposures: input.supportedExposures,
   ...(input.hasMigrations ? { migrationsDir: 'backend/migrations' } : {}),
@@ -38,7 +38,7 @@ export const createBackendBundleManifest = (
 
 export const writeBackendBundleManifest = async (
   input: BackendBundleManifestInput,
-): Promise<ApplicationBackendBundleManifestV1> => {
+): Promise<ApplicationBackendBundleManifest> => {
   const manifest = createBackendBundleManifest(input);
   await fs.mkdir(input.backendRoot, { recursive: true });
   await fs.writeFile(

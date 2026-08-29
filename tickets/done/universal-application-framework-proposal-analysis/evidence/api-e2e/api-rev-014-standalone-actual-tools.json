@@ -1,0 +1,128 @@
+{
+  "source": "actual raw traces; bearer/session descriptors excluded",
+  "events": [
+    {
+      "ts": 1786615959.112,
+      "seq": 6,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-5f2397fc-df37-49d1-83b2-41f5ce53e155",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "description": "Concise research checkpoint for the API REV 014 standalone current-base brief."
+          }
+        ]
+      },
+      "tool_result": null,
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_0e17dc0b3f2a448da318b65f440e927e"
+    },
+    {
+      "ts": 1786615959.12,
+      "seq": 7,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-5f2397fc-df37-49d1-83b2-41f5ce53e155",
+      "tool_args": null,
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_researcher_0e17dc0b3f2a448da318b65f440e927e:/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "runId": "brief_studio_researcher_0e17dc0b3f2a448da318b65f440e927e",
+            "path": "/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise research checkpoint for the API REV 014 standalone current-base brief.",
+            "revisionId": "b39decfb-ff38-42ac-897e-b4e0d54fe39a",
+            "createdAt": "2026-08-13T10:12:39.114Z",
+            "updatedAt": "2026-08-13T10:12:39.114Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_0e17dc0b3f2a448da318b65f440e927e"
+    },
+    {
+      "ts": 1786615965.004,
+      "seq": 8,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-35b07407-0fad-4baf-be33-6abd4fa2351c",
+      "tool_args": {
+        "recipient_name": "writer",
+        "message_type": "handoff",
+        "content": "Research checkpoint is ready at /private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: preserve the exact API REV 014 / standalone / current-base / 1786615920417 identifiers; treat current-base as time-bound; avoid inventing endpoint, audience, or acceptance-criteria details; draft with scope, intended outcome, decision criteria, and validation checkpoints. Please review this file and write/publish the concise brief checkpoint.",
+        "reference_files": [
+          "/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+        ]
+      },
+      "tool_result": null,
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_0e17dc0b3f2a448da318b65f440e927e"
+    },
+    {
+      "ts": 1786615965.607,
+      "seq": 9,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-35b07407-0fad-4baf-be33-6abd4fa2351c",
+      "tool_args": null,
+      "tool_result": "Delivered message to writer.",
+      "tool_error": null,
+      "member_run_id": "brief_studio_researcher_0e17dc0b3f2a448da318b65f440e927e"
+    },
+    {
+      "ts": 1786616003.951,
+      "seq": 9,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-5491ffcc-7a22-473e-8db5-2e2a2180a472",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "description": "Concise writer checkpoint for API REV 014 standalone current-base review."
+          }
+        ]
+      },
+      "tool_result": null,
+      "tool_error": null,
+      "member_run_id": "brief_studio_writer_9883c71c82bd4e9e90c089f3f3cdc8d3"
+    },
+    {
+      "ts": 1786616003.957,
+      "seq": 10,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-5491ffcc-7a22-473e-8db5-2e2a2180a472",
+      "tool_args": null,
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "id": "brief_studio_writer_9883c71c82bd4e9e90c089f3f3cdc8d3:/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "runId": "brief_studio_writer_9883c71c82bd4e9e90c089f3f3cdc8d3",
+            "path": "/private/tmp/api-rev014-standalone-data-1786615807/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "type": "file",
+            "status": "available",
+            "description": "Concise writer checkpoint for API REV 014 standalone current-base review.",
+            "revisionId": "e1f9478a-504d-4ce6-a151-f2ba76c09f86",
+            "createdAt": "2026-08-13T10:13:23.951Z",
+            "updatedAt": "2026-08-13T10:13:23.951Z"
+          }
+        ]
+      },
+      "tool_error": null,
+      "member_run_id": "brief_studio_writer_9883c71c82bd4e9e90c089f3f3cdc8d3"
+    }
+  ]
+}

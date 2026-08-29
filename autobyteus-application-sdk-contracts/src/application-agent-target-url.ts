@@ -1,9 +1,10 @@
 import type { ApplicationAgentTargetAddress } from "./application-agent-bindings.js";
+import { parseApplicationAgentMemberAddress } from "./application-agent-member-address.js";
 
 const decodeSegment = (value: string): string | null => {
   try {
-    const decoded = decodeURIComponent(value).trim();
-    return decoded || null;
+    const decoded = decodeURIComponent(value);
+    return decoded && decoded === decoded.trim() ? decoded : null;
   } catch {
     return null;
   }
@@ -12,11 +13,10 @@ const decodeSegment = (value: string): string | null => {
 export const getApplicationAgentTargetUrlSegments = (address: ApplicationAgentTargetAddress): string[] => {
   const bindingId = address.bindingId.trim();
   if (!bindingId) throw new Error("Application agent bindingId is required.");
-  if (address.target.kind === "AGENT_RUN") return [bindingId, "targets", "agent-run"];
-  if (address.target.kind === "AGENT_TEAM_RUN") return [bindingId, "targets", "agent-team-run"];
-  const agentRunId = address.target.agentRunId.trim();
-  if (!agentRunId) throw new Error("Application agent agentRunId is required.");
-  return [bindingId, "targets", "agent-team-member", agentRunId];
+  if (address.memberAddress === null) return [bindingId, "targets", "root"];
+  const memberAddress = parseApplicationAgentMemberAddress(address.memberAddress);
+  if (!memberAddress) throw new Error("Application agent memberAddress is invalid.");
+  return [bindingId, "targets", "member", memberAddress];
 };
 
 export const encodeApplicationAgentTargetUrl = (address: ApplicationAgentTargetAddress): string =>
@@ -31,16 +31,13 @@ export const decodeApplicationAgentTargetUrl = (path: string): ApplicationAgentT
   if (segments.length < 3 || segments[1] !== "targets") return null;
   const bindingId = decodeSegment(segments[0]!);
   if (!bindingId) return null;
-  if (segments.length === 3 && segments[2] === "agent-run") {
-    return { bindingId, target: { kind: "AGENT_RUN" } };
+  if (segments.length === 3 && segments[2] === "root") {
+    return { bindingId, memberAddress: null };
   }
-  if (segments.length === 3 && segments[2] === "agent-team-run") {
-    return { bindingId, target: { kind: "AGENT_TEAM_RUN" } };
-  }
-  if (segments.length === 4 && segments[2] === "agent-team-member") {
-    const agentRunId = decodeSegment(segments[3]!);
-    return agentRunId
-      ? { bindingId, target: { kind: "AGENT_TEAM_MEMBER", agentRunId } }
+  if (segments.length === 4 && segments[2] === "member") {
+    const memberAddress = parseApplicationAgentMemberAddress(decodeSegment(segments[3]!));
+    return memberAddress
+      ? { bindingId, memberAddress }
       : null;
   }
   return null;

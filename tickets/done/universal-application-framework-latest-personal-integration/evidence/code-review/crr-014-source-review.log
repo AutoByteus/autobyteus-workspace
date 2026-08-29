@@ -1,0 +1,96 @@
+=== CRR-014 AUTHORITATIVE SOURCE / STRUCTURAL AUDIT ===
+Review scope: IR-008 complete implementation-source and structural review
+Artifact HEAD=90152e8bfb7d7db92358093afa1dfafabe2a90e6
+Semantic merge=9a9150bea90a94ff43e67c417e5a424fd9dc76ce
+Checkpoint parent=a23849f165879050e2c9b676a2e9652d8a593c93
+Reviewed Personal parent=c5b87df4d6db15969ba70adee9dfd8394b1e7385
+
+--- Topology ---
+merge parents: a23849f165879050e2c9b676a2e9652d8a593c93 c5b87df4d6db15969ba70adee9dfd8394b1e7385
+PASS checkpoint is ancestor
+PASS reviewed Personal is ancestor
+artifact commits after semantic merge: 2
+
+--- Independent merge-tree conflict reproduction ---
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+content conflict count: 5
+
+--- Independent changed-both reproduction from exact merge base ---
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+changed-both count: 10
+
+--- Merge hygiene ---
+unmerged index entries: 0
+PASS no merge markers in governed production trees
+
+--- Prototype isolation / exact identity ---
+checkpoint-to-merge added prototype paths: 1934
+PASS prototype subtree byte-identical to reviewed Personal
+PASS root workspace membership unchanged
+PASS no production reference/import to prototype
+
+--- Retired/current-owner scan ---
+PASS absent autobyteus-server-ts/src/llm-management/providers/autobyteus-llm-model-provider.ts
+PASS absent autobyteus-server-ts/src/llm-management/providers/cached-autobyteus-llm-model-provider.ts
+PASS absent autobyteus-server-ts/src/llm-management/services/autobyteus-model-catalog.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/providers/audio-model-provider.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/providers/cached-audio-model-provider.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/providers/cached-image-model-provider.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/providers/cached-video-model-provider.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/providers/image-model-provider.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/services/audio-model-service.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/services/image-model-service.ts
+PASS absent autobyteus-server-ts/src/multimedia-management/services/video-model-service.ts
+PASS no modelsByRuntime/listProviderSettings in affected application seams
+
+--- Changed production source size audit ---
+changed production files checked: 85
+largest / proactive-threshold files:
+ 496 autobyteus-web/stores/llmProviderConfig.ts
+ 492 autobyteus-ts/src/clients/autobyteus-client.ts
+ 488 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+ 479 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ 468 autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+ 448 autobyteus-web/localization/messages/zh-CN/settings.ts
+ 448 autobyteus-web/localization/messages/en/settings.ts
+ 440 autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts
+ 437 autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts
+ 406 autobyteus-web/stores/serverSettings.ts
+ 392 autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts
+ 376 autobyteus-server-ts/src/services/server-settings-service.ts
+ 351 autobyteus-web/stores/agentRunStore.ts
+ 326 autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+ 320 autobyteus-ts/src/llm/llm-factory.ts
+ 307 autobyteus-ts/src/multimedia/image/image-client-factory.ts
+ 270 autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts
+ 267 autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts
+ 264 autobyteus-ts/src/multimedia/audio/audio-client-factory.ts
+ 259 autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+ 253 autobyteus-ts/src/llm/autobyteus-provider.ts
+ 253 autobyteus-server-ts/src/api/graphql/types/llm-provider.ts
+ 250 autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+ 249 autobyteus-web/composables/useRuntimeScopedModelSelection.ts
+ 244 autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts
+ 243 autobyteus-server-ts/src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.ts
+PASS all changed production source <=500 effective lines
+changed production files above proactive 220-line review threshold: 26
+
+--- Changed implementation/test code diff hygiene ---
+PASS changed implementation/test code diff check
+
+--- Reviewer worktree ownership audit ---
+PASS upstream solution/architecture/delivery artifacts preserved and unstaged.
+PASS reviewer-generated application-sdk-contracts/dist prerequisite output removed after validation.

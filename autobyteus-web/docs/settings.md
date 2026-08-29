@@ -899,58 +899,62 @@ no run, and surface the error at the owning scope; there is no hidden fallback.
 Duplicate launch/preparation is blocked. The bound server remains authoritative
 for interpreting and canonicalizing an absolute path.
 
-### Existing Run Configuration Inspection
+### Existing Run Model Configuration
 
-`components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
-editable new-run launch configuration and inspect-only configuration for an
-already selected run. When `selectionStore.selectedRunId` is present, the panel
-passes read-only mode to the Agent form or adapts the stored Team snapshot into
-the shared Team form instead of treating the selected run's config as a launch
-buffer.
+`components/workspace/config/RunConfigPanel.vue` separates editable new-run
+launch configuration from persisted configuration for a selected existing run.
+Existing runs mount `ExistingRunConfigEditor.vue`, which requests a fresh
+canonical Agent or Team resume configuration whenever Settings is entered. A
+cached history response may relock an in-flight view when activity appears, but
+it cannot unlock a run or replace the Settings-owned network read.
 
-Selected existing single-Agent and Team run configuration is intentionally
-inspect-only. Agent runs continue to use the read-only Agent form. Team runs use
-the same `TeamRunConfigForm.vue`, `TeamMemberConfigTree.vue`,
-`TeamScopeConfigEditor.vue`, and `MemberOverrideItem.vue` visual hierarchy as
-editable drafts, backed by a distinct `StoredTeamRunFormModel` projected from
-the exact `STORED_SNAPSHOT` in the V2 execution tree:
+The existing-run surface keeps runtime, model, workspace, automatic-tool policy,
+definition identity, provider binding, concrete run IDs, Team topology, and
+addresses fixed. Only current-schema `llmConfig` controls can become editable,
+and only when the canonical response says the run is present, unarchived, and
+inactive. Agent and Team disclosures remain usable while locked so users can
+inspect the persisted hierarchy and model fields. There is no existing-run
+runtime/model selector, workspace editor, launch button, or Reset action.
 
-- the root and every nested Team display their complete persisted
-  `defaultLaunchConfiguration`;
-- every configured Agent displays its complete persisted
-  `launchConfiguration`;
-- controls are disabled, while the outer member, nested Team, and model-detail
-  disclosures remain operable;
-- the stored model contains exact identities, effective values, hierarchy/order,
-  and stored workspace display only; it does not fabricate editable overrides,
-  inherited baselines, workspace selection/operation state, or catalog loading
-  state;
-- no editable **Reset** action is rendered and the launch/run button is absent;
-- Agent form update handlers and shared runtime/model normalization emissions
-  no-op in read-only mode so historical context is not locally mutated;
-- localized read-only notices explain that the selected run can be inspected but
-  not edited; and
-- complete model configuration, including explicit `null`, remains visible as
-  persisted rather than inferred from current catalogs.
+General Process activity and Application ownership are both locks. A normal
+Application binding in `ATTACHED`, `TERMINATING`, or `FAILED` state remains live
+ownership even if its worker is temporarily absent; `TERMINATED` and `ORPHANED`
+release that lease. Users must stop/terminalize the current owner, wait for the
+operation to finish, and reopen Settings before editing. Ownership recovery or
+inconsistent evidence fails closed rather than showing a false editable state.
 
-The frontend consumes historical model configuration exactly as provided by the
-backend. `projectHistoricalModelConfigFields(...)` walks current-schema fields
-in schema order. An explicit stored value stays in a disabled current control
-only when that control can represent it exactly. A stale enum value or another
-producer-backed unrepresentable value is rendered once through
-`HistoricalModelConfigFallback.vue`; persisted keys removed from the current
-schema follow in stable key order. Whole-schema absence uses the same residual
-rule for every persisted entry. No explicit stored value is replaced by a
-current default, rendered twice, or written back. Synthetic fields introduced
-only through arbitrary GraphQLJSON/catalog injection are not current-product
-acceptance inputs; the runtime classifier itself remains generic and
-provenance-free.
+`existingRunModelConfigStore` owns one local draft. Leaving the selection or
+Settings discards unsaved values. For a Team,
+`existingTeamModelConfigDraft.ts` starts from the exact V2 execution tree: a
+Team-scope edit propagates only through descendants that still share the same
+starting value, while already-divergent and directly edited branches remain
+unchanged. The mutation sends exact configured-Team/configured-Agent scope
+patches; task nodes and fixed identity are never patch targets. Historical Team
+snapshots do not retain override provenance, so stopped-run editing deliberately
+has no Reset-to-definition behavior.
 
-In a V2 Team snapshot, `llmConfig: null` is a complete recorded value. For
-standalone historical formats where model configuration is genuinely absent,
-the Agent form may show a localized `Not recorded for this historical run`
-state, but it must not infer a current default, recover a runtime value, or
-materialize metadata.
+Current schemas control safe editing. Exactly representable persisted values use
+the normal controls. Unsupported, stale, or otherwise unrepresentable explicit
+values remain visible as historical residuals instead of being normalized,
+duplicated, or silently written back. Missing catalog/schema state keeps Save
+locked. The server revalidates every Agent/Team scope against its own fixed
+runtime/model and returns field-addressed validation errors when applicable.
+
+Save is enabled only for a stopped, editable, schema-ready, changed draft. The
+revision-free mutations are `updateStoppedAgentRunModelConfig` and
+`updateStoppedTeamRunModelConfigs`; a no-op produces no write. Determinate
+responses replace the cached canonical state. If another supported workflow
+restores the run first, the response relocks as `RUN_ACTIVE`. A physically
+uncertain result triggers canonical verification and blocks another Save until
+refresh/retry resolves it. There is no optimistic configuration revision,
+retained-draft rebase, or multi-client merge policy.
+
+A successful Save changes persisted model settings only. It does not hot-mutate
+an active backend. The next eligible restore of the same Agent/Team/provider
+identity consumes the saved `llmConfig`; AutoByteus, Codex, and Claude apply
+their supported schema fields at bootstrap/session construction. Status, error,
+validation, success, saving, verification, and retry messages use the existing
+accessible announcement and focus boundaries.
 
 The model-config surface is schema-driven, not thinking-only. It renders
 explicit `llmConfig` values first and valid schema defaults second; showing a
@@ -1063,10 +1067,12 @@ the UI must not imply improver completion proves downstream improvement.
 
 When the user clicks the workspace header add/new-run action while an existing
 single-agent or team run is selected, the frontend treats that selected run as a
-launch template for the new editable draft. The selected run itself remains
-inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
-the selected run config, including runtime kind, model identifier, workspace,
-auto-approve settings, `llmConfig`, and team member overrides.
+launch template for the new editable draft. The selected run itself remains a
+persisted existing-run context whose eligible model settings can be edited only
+through Settings; the add/new-run action instead seeds a separate editable
+launch buffer from a deep-cloned copy of the selected run config, including
+runtime kind, model identifier, workspace, auto-approve settings, `llmConfig`,
+and team member overrides.
 
 That source-copy path must preserve backend-provided model-thinking fields such
 as `reasoning_effort: "xhigh"` even when the runtime model catalog is still

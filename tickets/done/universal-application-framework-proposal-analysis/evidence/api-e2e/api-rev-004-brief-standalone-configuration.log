@@ -1,0 +1,11 @@
+DATABASE=applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/platform.sqlite
+--- schema ---
+CREATE TABLE __autobyteus_resource_configurations (
+      slot_key TEXT PRIMARY KEY,
+      resource_ref_json TEXT,
+      launch_profile_json TEXT,
+      launch_defaults_json TEXT,
+      updated_at TEXT NOT NULL
+    );
+--- rows ---
+

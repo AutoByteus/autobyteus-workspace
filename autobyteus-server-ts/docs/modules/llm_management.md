@@ -175,6 +175,30 @@ remain nullable and `CURATED_ONLY`. The GraphQL contract intentionally does not
 expose raw `/models` payloads or API keys. Custom resolution never inspects the
 endpoint URL and does not perform alias, suffix, family, or fuzzy matching.
 
+### Persisted Run Model-Configuration Validation
+
+`ModelConfigValidationService` is the server authority for stopped existing-run
+`llmConfig` updates. It resolves the exact persisted runtime kind and model
+identifier through `ModelCatalogService`, normalizes either supported catalog
+schema representation, and validates only submitted current-schema keys. It
+returns distinct model-unavailable, schema-unavailable, and field-validation
+results; it does not guess a replacement model, silently drop an unsupported
+key, or write a rendered default merely because the UI displayed it.
+
+The validation boundary is shared by standalone and Team stopped updates. Team
+patches validate independently against every target scope's fixed runtime/model.
+Only validated `llmConfig` reaches persistence; runtime/model selection remains
+immutable for an existing run.
+
+Runtime application remains bootstrap/session owned. AutoByteus receives the
+persisted config during LLM creation, Codex maps `reasoning_effort` and
+`service_tier` into thread configuration, and Claude maps supported
+`thinking_enabled` and `reasoning_effort` values into SDK `thinking` and
+`effort` query options while retaining the same Claude session UUID. Catalog
+capabilities expose Claude thinking and effort fields only when the installed
+SDK model descriptor supports them. Editing never hot-mutates an already-live
+backend; an eligible later restore consumes the saved configuration.
+
 ### Claude Agent SDK Model Descriptions
 
 The Claude Agent SDK catalog reads the live `supportedModels()` response and

@@ -4,21 +4,27 @@ import os from "node:os";
 import { createRequire } from "node:module";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-import fastify from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+} from "../../../src/config/server-runtime-endpoints.js";
+import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import {
   closeLiveRuntimeSecretVault,
   initializeLiveRuntimeSecretVaultFromEnvironment,
 } from "../helpers/live-runtime-secret-vault-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
+import {
+  E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
+} from "../helpers/team-run-graphql-documents.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const describeAutoByteusTeamRuntime =
@@ -132,8 +138,8 @@ const resolveInvocationId = (payload: Record<string, unknown>): string | null =>
   return null;
 };
 
-const assistantTextMatches = (message: WsMessage, memberName: string, token: string): boolean => {
-  if (message.payload.agent_name !== memberName) {
+const assistantTextMatches = (message: WsMessage, agentRunId: string, token: string): boolean => {
+  if (message.payload.agent_run_id !== agentRunId) {
     return false;
   }
 
@@ -172,9 +178,13 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let testDataDir: string | null = null;
+  let runtimeServerApp: FastifyInstance | null = null;
+  let runtimeServerUrl: URL;
+  let originalInternalServerBaseUrl: string | undefined;
   const createdWorkspaceRoots = new Set<string>();
 
   beforeAll(async () => {
+    originalInternalServerBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-runtime-api-e2e-"));
     await writeFile(
       path.join(testDataDir, ".env"),
@@ -183,24 +193,36 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     await initializeLiveRuntimeSecretVaultFromEnvironment();
-    schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+    const started = await startStudioE2eRuntimeServer();
+    runtimeServerApp = started.fastify;
+    runtimeServerUrl = started.mainUrl;
+    schema = await buildGraphqlSchema();
   });
 
   afterAll(async () => {
+    if (runtimeServerApp) {
+      await runtimeServerApp.close();
+      runtimeServerApp = null;
+    }
+    await closeLiveRuntimeSecretVault();
     for (const workspaceRoot of createdWorkspaceRoots) {
       await rm(workspaceRoot, { recursive: true, force: true });
     }
     createdWorkspaceRoots.clear();
 
     if (testDataDir) {
-      await closeLiveRuntimeSecretVault();
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
+    }
+    if (originalInternalServerBaseUrl) {
+      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalServerBaseUrl;
+    } else {
+      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     }
   });
 
@@ -214,6 +236,20 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       throw result.errors[0];
     }
     return result.data as T;
+  };
+
+  const fetchConfiguredAgentExecution = async (
+    teamRunId: string,
+    memberName: string,
+  ) => {
+    const result = await execGraphql<{
+      getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+    }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+    const execution = flattenE2eConfiguredAgentExecutions(
+      result.getTeamRunResumeConfig.executionTree,
+    ).find((member) => member.memberName === memberName);
+    expect(execution).toBeTruthy();
+    return execution!;
   };
 
   const fetchModelIdentifier = async (): Promise<string> => {
@@ -345,9 +381,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     }>(createTeamRunMutation, {
       input: {
         teamDefinitionId: teamDefinitionResult.createAgentTeamDefinition.id,
+        teamConfigs: [{
+          teamAddress: "/",
+          llmModelIdentifier: input.llmModelIdentifier,
+          autoExecuteTools: input.autoExecuteTools,
+          skillAccessMode: "NONE",
+          runtimeKind: "autobyteus",
+          workspaceRootPath: input.workspaceRootPath,
+        }],
         memberConfigs: [
           {
-            memberName: "worker",
+            memberAddress: "/worker",
             agentDefinitionId: workerAgentDefinitionId,
             llmModelIdentifier: input.llmModelIdentifier,
             autoExecuteTools: input.autoExecuteTools,
@@ -365,16 +409,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
   };
 
   const openTeamSocket = async (teamRunId: string): Promise<{
-    app: Awaited<ReturnType<typeof fastify>>;
     socket: WebSocket;
     messages: WsMessage[];
   }> => {
-    const app = fastify();
-    await app.register(websocket);
-    await registerAgentWebsocket(app);
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${teamRunId}`);
+    const socket = new WebSocket(
+      `ws://${runtimeServerUrl.hostname}:${runtimeServerUrl.port}/ws/agent-team/${teamRunId}`,
+    );
     const messages: WsMessage[] = [];
     socket.on("message", (raw) => {
       const parsed = parseWsMessage(raw);
@@ -384,7 +424,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     });
     await waitForSocketOpen(socket);
     await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
-    return { app, socket, messages };
+    return { socket, messages };
   };
 
   it("routes send_message_to between real AutoByteus team members and projects reference files", async () => {
@@ -460,9 +500,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       {
         input: {
           teamDefinitionId: teamDefinitionResult.createAgentTeamDefinition.id,
+          teamConfigs: [{
+            teamAddress: "/",
+            llmModelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: "autobyteus",
+            workspaceRootPath,
+          }],
           memberConfigs: [
             {
-              memberName: "coordinator",
+              memberAddress: "/coordinator",
               agentDefinitionId: coordinatorAgentDefinitionId,
               llmModelIdentifier,
               autoExecuteTools: true,
@@ -472,7 +520,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
               llmConfig: buildRequiredToolChoiceLlmConfig(llmModelIdentifier),
             },
             {
-              memberName: "reviewer",
+              memberAddress: "/reviewer",
               agentDefinitionId: reviewerAgentDefinitionId,
               llmModelIdentifier,
               autoExecuteTools: true,
@@ -492,7 +540,20 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
     expect(teamRunId).toBeTruthy();
 
-    const { app, socket, messages } = await openTeamSocket(teamRunId);
+    const resumeResult = await execGraphql<{
+      getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+    }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+    const executionByName = new Map(
+      flattenE2eConfiguredAgentExecutions(
+        resumeResult.getTeamRunResumeConfig.executionTree,
+      ).map((member) => [member.memberName, member]),
+    );
+    const coordinatorExecution = executionByName.get("coordinator");
+    const reviewerExecution = executionByName.get("reviewer");
+    expect(coordinatorExecution?.agentRunId).toBeTruthy();
+    expect(reviewerExecution?.agentRunId).toBeTruthy();
+
+    const { socket, messages } = await openTeamSocket(teamRunId);
     const terminateMutation = `
       mutation TerminateAgentTeamRun($teamRunId: String!) {
         terminateAgentTeamRun(teamRunId: $teamRunId) {
@@ -504,14 +565,14 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
     try {
       const toolArgs = {
-        recipient_name: "./reviewer",
+        recipient_address: reviewerExecution?.memberAddress,
         content: deliveryContent,
         message_type: "all_autobyteus_reference_file_validation",
         reference_files: [referenceFilePath],
       };
       const startIndex = messages.length;
       sendE2eSendMessageCommand(socket, {
-        target_member_route_key: "coordinator",
+        agent_run_id: coordinatorExecution?.agentRunId,
         content:
           `Call send_message_to exactly once now with these exact JSON arguments: ${JSON.stringify(toolArgs)}. ` +
           "Do not call any other tool and do not answer with plain text.",
@@ -522,7 +583,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         startIndex,
         (message) =>
           message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-          message.payload.agent_name === "coordinator" &&
+          message.payload.agent_run_id === coordinatorExecution?.agentRunId &&
           message.payload.tool_name === "send_message_to",
         "coordinator send_message_to TOOL_EXECUTION_SUCCEEDED",
         240_000,
@@ -533,13 +594,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         startIndex,
         (message) =>
           isE2eTeamCommunicationMessage(message, {
-            senderMemberName: "coordinator",
-            recipientMemberName: "reviewer",
+            senderAgentRunId: coordinatorExecution?.agentRunId as string,
+            recipientAgentRunId: reviewerExecution?.agentRunId as string,
             content: deliveryContent,
           }) &&
-          message.payload.messageType === "all_autobyteus_reference_file_validation" &&
-          Array.isArray(message.payload.referenceFiles) &&
-          message.payload.referenceFiles.some((entry) => {
+          typeof message.payload.message === "object" &&
+          message.payload.message !== null &&
+          !Array.isArray(message.payload.message) &&
+          (message.payload.message as Record<string, unknown>).message_type ===
+            "all_autobyteus_reference_file_validation" &&
+          Array.isArray((message.payload.message as Record<string, unknown>).reference_files) &&
+          ((message.payload.message as Record<string, unknown>).reference_files as unknown[]).some((entry) => {
             return (
               entry &&
               typeof entry === "object" &&
@@ -554,13 +619,14 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       await waitForMessageAfter(
         messages,
         startIndex,
-        (message) => assistantTextMatches(message, "reviewer", replyToken),
+        (message) =>
+          message.payload.agent_run_id === reviewerExecution?.agentRunId &&
+          JSON.stringify(message.payload).includes(replyToken),
         `reviewer assistant text containing ${replyToken}`,
         240_000,
       );
     } finally {
       socket.close();
-      await app.close();
       await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId }).catch(() => undefined);
@@ -624,9 +690,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     }>(createTeamRunMutation, {
       input: {
         teamDefinitionId,
+        teamConfigs: [{
+          teamAddress: "/",
+          llmModelIdentifier,
+          autoExecuteTools: false,
+          skillAccessMode: "NONE",
+          runtimeKind: "autobyteus",
+          workspaceRootPath,
+        }],
         memberConfigs: [
           {
-            memberName: "worker",
+            memberAddress: "/worker",
             agentDefinitionId: workerAgentDefinitionId,
             llmModelIdentifier,
             autoExecuteTools: false,
@@ -635,7 +709,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
             workspaceRootPath,
           },
           {
-            memberName: "reviewer",
+            memberAddress: "/reviewer",
             agentDefinitionId: reviewerAgentDefinitionId,
             llmModelIdentifier,
             autoExecuteTools: false,
@@ -650,14 +724,13 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
     expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
     const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+    const workerExecution = await fetchConfiguredAgentExecution(
+      teamRunId,
+      "worker",
+    );
 
-    const streamApp = fastify();
-    await streamApp.register(websocket);
-    await registerAgentWebsocket(streamApp);
-    const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-    const streamUrl = new URL(streamAddress);
     const teamSocket = new WebSocket(
-      `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+      `ws://${runtimeServerUrl.hostname}:${runtimeServerUrl.port}/ws/agent-team/${teamRunId}`,
     );
     const streamMessages: WsMessage[] = [];
     teamSocket.on("message", (raw) => {
@@ -676,7 +749,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
     try {
       sendE2eSendMessageCommand(teamSocket, {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               `Use the relative path with base_dir set to ${workspaceRootPath}, perform the real tool call, then verify the created file with run_bash using cat ${targetAbsolutePath} before completing. Do not answer with plain text.`,
@@ -686,7 +759,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         streamMessages,
         toolStartIndex,
         (message) =>
-          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_run_id === workerExecution.agentRunId,
         "worker TOOL_APPROVAL_REQUESTED",
       );
       expect(approvalRequested.payload.tool_name).toBe("write_file");
@@ -702,7 +775,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "APPROVE_TOOL",
           payload: {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             invocation_id: invocationId,
             reason: "approved by team API e2e",
           },
@@ -713,7 +786,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         streamMessages,
         toolStartIndex,
         (message) =>
-          message.type === "TOOL_APPROVED" && message.payload.agent_name === "worker",
+          message.type === "TOOL_APPROVED" && message.payload.agent_run_id === workerExecution.agentRunId,
         "worker TOOL_APPROVED",
       );
       const toolSucceeded = await waitForMessageAfter(
@@ -721,7 +794,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         toolStartIndex,
         (message) =>
           message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-          message.payload.agent_name === "worker",
+          message.payload.agent_run_id === workerExecution.agentRunId,
         "worker TOOL_EXECUTION_SUCCEEDED",
       );
       const toolSucceededIndex = streamMessages.indexOf(toolSucceeded);
@@ -729,7 +802,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         streamMessages,
         toolSucceededIndex + 1,
         (message) =>
-          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_run_id === workerExecution.agentRunId,
         "worker second TOOL_APPROVAL_REQUESTED for file verification",
       );
       expect(verificationApproval.payload.tool_name).toBe("run_bash");
@@ -746,7 +819,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "APPROVE_TOOL",
           payload: {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             invocation_id: verificationInvocationId,
             reason: "approved expected file verification by team API e2e",
           },
@@ -758,7 +831,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         toolSucceededIndex + 1,
         (message) =>
           message.type === "TOOL_APPROVED" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           resolveInvocationId(message.payload) === verificationInvocationId,
         "worker verification TOOL_APPROVED",
       );
@@ -767,7 +840,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         toolSucceededIndex + 1,
         (message) =>
           message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           resolveInvocationId(message.payload) === verificationInvocationId,
         "worker verification TOOL_EXECUTION_SUCCEEDED",
       );
@@ -776,12 +849,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         streamMessages,
         verificationSucceededIndex + 1,
         (message) => {
-          if (message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker") {
+          if (message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_run_id === workerExecution.agentRunId) {
             throw new Error(
               `Unexpected additional worker tool approval after expected verification: ${JSON.stringify(message.payload)}`,
             );
           }
-          return message.type === "ASSISTANT_COMPLETE" && message.payload.agent_name === "worker";
+          return message.type === "ASSISTANT_COMPLETE" && message.payload.agent_run_id === workerExecution.agentRunId;
         },
         "worker ASSISTANT_COMPLETE after expected verification",
       );
@@ -790,7 +863,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         toolStartIndex,
         (message) =>
           message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           message.payload.status === "idle",
         "worker AGENT_STATUS IDLE",
       );
@@ -828,14 +901,14 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const restoreToken = `TEAM_RESTORE_${randomUUID().replace(/-/g, "_")}`;
       const restoreStartIndex = streamMessages.length;
       sendE2eSendMessageCommand(teamSocket, {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             content: `Reply with exactly ${restoreToken} and nothing else.`,
           });
 
       await waitForMessageAfter(
         streamMessages,
         restoreStartIndex,
-        (message) => assistantTextMatches(message, "worker", restoreToken),
+        (message) => assistantTextMatches(message, workerExecution.agentRunId, restoreToken),
         `worker assistant text containing ${restoreToken}`,
       );
       await waitForMessageAfter(
@@ -843,13 +916,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         restoreStartIndex,
         (message) =>
           message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after restore",
       );
     } finally {
       teamSocket.close();
-      await streamApp.close();
 
       const terminateMutation = `
         mutation TerminateAgentTeamRun($teamRunId: String!) {
@@ -874,8 +946,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       workspaceRootPath,
       autoExecuteTools: false,
     });
+    const workerExecution = await fetchConfiguredAgentExecution(
+      teamRunId,
+      "worker",
+    );
 
-    const { app, socket, messages } = await openTeamSocket(teamRunId);
+    const { socket, messages } = await openTeamSocket(teamRunId);
     const terminateMutation = `
       mutation TerminateAgentTeamRun($teamRunId: String!) {
         terminateAgentTeamRun(teamRunId: $teamRunId) {
@@ -892,7 +968,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const interruptStartIndex = messages.length;
 
       sendE2eSendMessageCommand(socket, {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
@@ -902,24 +978,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         messages,
         interruptStartIndex,
         (message) =>
-          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_run_id === workerExecution.agentRunId,
         "worker TOOL_APPROVAL_REQUESTED before interrupt",
       );
       const invocationId = resolveInvocationId(approvalRequested.payload);
       expect(invocationId).toBeTruthy();
-      const workerRunId =
-        typeof approvalRequested.payload.agent_id === "string" &&
-        approvalRequested.payload.agent_id.trim().length > 0
-          ? approvalRequested.payload.agent_id.trim()
-          : undefined;
-
       socket.send(
         JSON.stringify({
           type: "INTERRUPT_GENERATION",
           payload: {
             command_id: "client_interrupt_autobyteus_team_worker",
-            target_member_route_key: "worker",
-            ...(workerRunId ? { target_member_run_id: workerRunId } : {}),
+            agent_run_id: workerExecution.agentRunId,
           },
         }),
       );
@@ -939,14 +1008,14 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         interruptStartIndex,
         (message) =>
           message.type === "TOOL_EXECUTION_INTERRUPTED" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           resolveInvocationId(message.payload) === invocationId,
         "worker TOOL_EXECUTION_INTERRUPTED after interrupt",
       );
       await waitForMessageAfter(
         messages,
         interruptStartIndex,
-        (message) => message.type === "TURN_INTERRUPTED" && message.payload.agent_name === "worker",
+        (message) => message.type === "TURN_INTERRUPTED" && message.payload.agent_run_id === workerExecution.agentRunId,
         "worker TURN_INTERRUPTED after interrupt",
       );
       await waitForMessageAfter(
@@ -954,7 +1023,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         interruptStartIndex,
         (message) =>
           message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after interrupt",
       );
@@ -965,14 +1034,14 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const followUpToken = `TEAM_INTERRUPT_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
       const followUpStartIndex = messages.length;
       sendE2eSendMessageCommand(socket, {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             content: `Reply with exactly ${followUpToken} and nothing else.`,
           });
 
       await waitForMessageAfter(
         messages,
         followUpStartIndex,
-        (message) => assistantTextMatches(message, "worker", followUpToken),
+        (message) => assistantTextMatches(message, workerExecution.agentRunId, followUpToken),
         `worker assistant text containing ${followUpToken} after interrupt`,
       );
       await waitForMessageAfter(
@@ -980,13 +1049,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         followUpStartIndex,
         (message) =>
           message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after interrupt follow-up",
       );
     } finally {
       socket.close();
-      await app.close();
       await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId }).catch(() => undefined);
@@ -1002,8 +1070,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       workspaceRootPath,
       autoExecuteTools: false,
     });
+    const workerExecution = await fetchConfiguredAgentExecution(
+      teamRunId,
+      "worker",
+    );
 
-    const { app, socket, messages } = await openTeamSocket(teamRunId);
+    const { socket, messages } = await openTeamSocket(teamRunId);
     const terminateMutation = `
       mutation TerminateAgentTeamRun($teamRunId: String!) {
         terminateAgentTeamRun(teamRunId: $teamRunId) {
@@ -1029,7 +1101,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const terminateStartIndex = messages.length;
 
       sendE2eSendMessageCommand(socket, {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
@@ -1039,7 +1111,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         messages,
         terminateStartIndex,
         (message) =>
-          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_run_id === workerExecution.agentRunId,
         "worker TOOL_APPROVAL_REQUESTED before active terminate",
       );
 
@@ -1060,14 +1132,14 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       const followUpToken = `TEAM_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
       const followUpStartIndex = messages.length;
       sendE2eSendMessageCommand(socket, {
-            target_member_route_key: "worker",
+            agent_run_id: workerExecution.agentRunId,
             content: `Reply with exactly ${followUpToken} and nothing else.`,
           });
 
       await waitForMessageAfter(
         messages,
         followUpStartIndex,
-        (message) => assistantTextMatches(message, "worker", followUpToken),
+        (message) => assistantTextMatches(message, workerExecution.agentRunId, followUpToken),
         `worker assistant text containing ${followUpToken} after active terminate restore`,
       );
       await waitForMessageAfter(
@@ -1075,13 +1147,12 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         followUpStartIndex,
         (message) =>
           message.type === "AGENT_STATUS" &&
-          message.payload.agent_name === "worker" &&
+          message.payload.agent_run_id === workerExecution.agentRunId &&
           message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after active terminate restore follow-up",
       );
     } finally {
       socket.close();
-      await app.close();
       await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId }).catch(() => undefined);
@@ -1143,9 +1214,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     }>(createTeamRunMutation, {
       input: {
         teamDefinitionId,
+        teamConfigs: [{
+          teamAddress: "/",
+          llmModelIdentifier,
+          autoExecuteTools: true,
+          skillAccessMode: "NONE",
+          runtimeKind: "autobyteus",
+          workspaceRootPath,
+        }],
         memberConfigs: [
           {
-            memberName: "coordinator",
+            memberAddress: "/coordinator",
             agentDefinitionId: coordinatorAgentDefinitionId,
             llmModelIdentifier,
             autoExecuteTools: true,
@@ -1154,7 +1233,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
             workspaceRootPath,
           },
           {
-            memberName: "reviewer",
+            memberAddress: "/reviewer",
             agentDefinitionId: reviewerAgentDefinitionId,
             llmModelIdentifier,
             autoExecuteTools: true,
@@ -1168,23 +1247,6 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
     const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
 
-    const teamResumeQuery = `
-      query TeamResume($teamRunId: String!) {
-        getTeamRunResumeConfig(teamRunId: $teamRunId) {
-          metadata
-        }
-      }
-    `;
-    const projectionQuery = `
-      query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-        getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
-          agentRunId
-          summary
-          lastActivityAt
-          conversation
-        }
-      }
-    `;
     const terminateMutation = `
       mutation TerminateAgentTeamRun($teamRunId: String!) {
         terminateAgentTeamRun(teamRunId: $teamRunId) {
@@ -1203,13 +1265,8 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       }
     `;
 
-    const streamApp = fastify();
-    await streamApp.register(websocket);
-    await registerAgentWebsocket(streamApp);
-    const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
-    const streamUrl = new URL(streamAddress);
     const teamSocket = new WebSocket(
-      `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+      `ws://${runtimeServerUrl.hostname}:${runtimeServerUrl.port}/ws/agent-team/${teamRunId}`,
     );
     const streamMessages: WsMessage[] = [];
     teamSocket.on("message", (raw) => {
@@ -1229,9 +1286,11 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     };
 
     const resumeResult = await execGraphql<{
-      getTeamRunResumeConfig: { metadata: Record<string, unknown> };
-    }>(teamResumeQuery, { teamRunId });
-    const memberBindings = flattenE2eTeamMemberMetadata(resumeResult.getTeamRunResumeConfig.metadata);
+      getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
+    }>(E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT, { teamRunId });
+    const memberBindings = flattenE2eConfiguredAgentExecutions(
+      resumeResult.getTeamRunResumeConfig.executionTree,
+    );
     const coordinatorBinding = memberBindings.find((member) => member.memberName === "coordinator");
     const reviewerBinding = memberBindings.find((member) => member.memberName === "reviewer");
     expect(coordinatorBinding).toBeTruthy();
@@ -1255,20 +1314,17 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       },
     ];
 
-    const fetchProjection = async (memberRouteKey: string): Promise<TeamMemberProjection> => {
-      const result = await execGraphql<{
-        getTeamMemberRunProjection: TeamMemberProjection;
-      }>(projectionQuery, { teamRunId, memberRouteKey });
-      return result.getTeamMemberRunProjection;
+    const fetchProjection = async (agentRunId: string): Promise<TeamMemberProjection> => {
+      return getTeamMemberRunViewProjectionService().getProjection(teamRunId, agentRunId);
     };
 
     const waitForProjectionTokens = async (
-      memberRouteKey: string,
+      agentRunId: string,
       requiredTokens: string[],
     ): Promise<TeamMemberProjection> => {
       const deadline = Date.now() + 120_000;
       while (Date.now() < deadline) {
-        const projection = await fetchProjection(memberRouteKey);
+        const projection = await fetchProjection(agentRunId);
         const serializedConversation = JSON.stringify(projection.conversation);
         if (requiredTokens.every((token) => serializedConversation.includes(token))) {
           return projection;
@@ -1284,12 +1340,8 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       member: (typeof members)[number],
       requiredTokens: string[],
     ): Promise<void> => {
-      const projection = await fetchProjection(member.binding.memberRouteKey);
-      if (member.binding.memberRunId) {
-        expect(projection.agentRunId).toBe(member.binding.memberRunId);
-      } else {
-        expect(projection.agentRunId).toBeTruthy();
-      }
+      const projection = await fetchProjection(member.binding.agentRunId);
+      expect(projection.agentRunId).toBe(member.binding.agentRunId);
       const serializedConversation = JSON.stringify(projection.conversation);
       for (const token of requiredTokens) {
         expect(serializedConversation).toContain(token);
@@ -1301,13 +1353,15 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         const startIndex = streamMessages.length;
         sendE2eSendMessageCommand(teamSocket, {
           content: `Reply with exactly ${member.firstToken} and nothing else.`,
-          target_member_route_key: member.binding.memberRouteKey,
+          agent_run_id: member.binding.agentRunId,
         });
 
         await waitForMessageAfter(
           streamMessages,
           startIndex,
-          (message) => assistantTextMatches(message, member.memberName, member.firstToken),
+          (message) =>
+            message.payload.agent_run_id === member.binding.agentRunId &&
+            JSON.stringify(message.payload).includes(member.firstToken),
           `${member.memberName} assistant text containing ${member.firstToken}`,
         );
         await waitForMessageAfter(
@@ -1315,11 +1369,11 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           startIndex,
           (message) =>
             message.type === "AGENT_STATUS" &&
-            message.payload.agent_name === member.memberName &&
+            message.payload.agent_run_id === member.binding.agentRunId &&
             message.payload.status === "idle",
           `${member.memberName} AGENT_STATUS IDLE for first projection turn`,
         );
-        await waitForProjectionTokens(member.binding.memberRouteKey, [member.firstToken]);
+        await waitForProjectionTokens(member.binding.agentRunId, [member.firstToken]);
       }
 
       const firstTerminateResult = await execGraphql<{
@@ -1341,13 +1395,15 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         const startIndex = streamMessages.length;
         sendE2eSendMessageCommand(teamSocket, {
           content: `Reply with exactly ${member.secondToken} and nothing else.`,
-          target_member_route_key: member.binding.memberRouteKey,
+          agent_run_id: member.binding.agentRunId,
         });
 
         await waitForMessageAfter(
           streamMessages,
           startIndex,
-          (message) => assistantTextMatches(message, member.memberName, member.secondToken),
+          (message) =>
+            message.payload.agent_run_id === member.binding.agentRunId &&
+            JSON.stringify(message.payload).includes(member.secondToken),
           `${member.memberName} assistant text containing ${member.secondToken}`,
         );
         await waitForMessageAfter(
@@ -1355,11 +1411,11 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           startIndex,
           (message) =>
             message.type === "AGENT_STATUS" &&
-            message.payload.agent_name === member.memberName &&
+            message.payload.agent_run_id === member.binding.agentRunId &&
             message.payload.status === "idle",
           `${member.memberName} AGENT_STATUS IDLE for second projection turn`,
         );
-        await waitForProjectionTokens(member.binding.memberRouteKey, [member.firstToken, member.secondToken]);
+        await waitForProjectionTokens(member.binding.agentRunId, [member.firstToken, member.secondToken]);
       }
 
       const secondTerminateResult = await execGraphql<{
@@ -1372,7 +1428,6 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       }
     } finally {
       teamSocket.close();
-      await streamApp.close();
       await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId }).catch(() => undefined);

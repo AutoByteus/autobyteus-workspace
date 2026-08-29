@@ -1,0 +1,77 @@
+DR-007 ELECTRON MACOS ARM64 PACKAGE VERIFICATION
+timestamp_utc=2026-08-24T09:16:16Z
+head=737c03cb2f554cd65dabfc7bbfb3ab40a147baf4
+base=52b4be02ea793f2071fe5a63a94664ab25196433
+app=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.56.dmg
+zip=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.56.zip
+bundle_identifier=com.autobyteus.app
+bundle_version=1.4.56
+bundle_short_version=1.4.56
+minimum_system=12.0
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node: Mach-O 64-bit bundle arm64
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal_runtime=PASS
+packaged_owner=PASS:dist/compositions/build-studio-server.js
+packaged_owner=PASS:dist/compositions/build-standalone-application-server.js
+packaged_owner=PASS:dist/standalone-application-host/start-standalone-application-host.js
+packaged_owner=PASS:dist/application-platform/runtime/build-application-platform-runtime.js
+packaged_owner=PASS:dist/application-platform/runtime/application-platform-runtime-contracts.js
+packaged_owner=PASS:dist/application-platform/launch-configuration/application-launch-configuration-service.js
+packaged_owner=PASS:dist/application-platform/runtime/application-definition-runtime-readiness.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-controller.js
+packaged_owner=PASS:dist/application-engine/services/application-engine-launcher.js
+packaged_owner=PASS:dist/application-orchestration/services/application-agent-target-authorization-service.js
+packaged_owner=PASS:dist/application-orchestration/services/application-run-binding-launch-service.js
+packaged_owner=PASS:dist/application-agent-streaming/services/application-agent-stream-event-projector.js
+packaged_owner=PASS:dist/agent-tools/published-artifacts/publish-artifacts-tool.js
+packaged_owner=PASS:dist/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js
+packaged_owner=PASS:dist/agent-team-execution/domain/team-run-physical-scope.js
+packaged_owner=PASS:dist/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.js
+packaged_owner=PASS:dist/run-history/services/team-run-execution-tree-location-service.js
+packaged_owner=PASS:dist/api/graphql/types/token-usage-analytics.js
+packaged_owner=PASS:dist/token-usage/providers/token-usage-analytics-provider.js
+packaged_owner=PASS:dist/token-usage/repositories/sql/token-usage-analytics-repository.js
+packaged_owner=PASS:prisma/migrations/20260822090000_add_token_usage_analytics/migration.sql
+retired_owner_absent=PASS:dist/application-engine/services/application-engine-host-service.js
+retired_owner_absent=PASS:dist/application-orchestration/services/application-execution-resource-configuration-service.js
+retired_owner_absent=PASS:dist/application-orchestration/services/application-execution-resource-configuration-launch-profile.js
+latest_base_dependency_owner=PASS:llm/current-model-selection-error.js
+latest_base_dependency_owner=PASS:llm/errors/provider-error.js
+latest_base_dependency_owner=PASS:llm/utils/token-pricing-schedule.js
+latest_base_dependency_owner=PASS:tools/terminal/execution-cwd.js
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $D486619C
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $11F59813
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $23A4C404
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $909256EE
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $23A4C404
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $FCA22CE9
+Die überprüfte CRC32-Prüfsumme ist $34439B55
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.56.dmg" is VALID
+dmg_verify=PASS
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.56.zip.
+zip_verify=PASS
+dmg_size=466807449
+dmg_sha256=2e238280f6fd088328f2cd716e3b10e7a4a6aba0b7f4b587b20824dc7e7fbbb0
+zip_size=461539735
+zip_sha256=cb373d261d4fd9819e69da175d5fbe9631cf727c9bff50796224630a857ef30e
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+codesign_strict_exit=1
+codesign_posture=LOCAL_UNSIGNED_EXPECTED
+new_app_running=NO_PASS
+test_dmg_mounted=NO_PASS
+FINAL=PASS

@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 const unique = (prefix: string): string => `${prefix}-${randomUUID()}`;
 
@@ -49,6 +50,7 @@ const teamLaunchPresetFixture = {
 describe("External channel setup GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let closeStudioServices: (() => void) | null = null;
   const generatedBindingFilePath = path.join(
     process.cwd(),
     "external-channel",
@@ -56,6 +58,7 @@ describe("External channel setup GraphQL e2e", () => {
   );
 
   beforeAll(async () => {
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -65,6 +68,7 @@ describe("External channel setup GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    closeStudioServices?.();
     vi.restoreAllMocks();
     await rm(generatedBindingFilePath, { force: true });
   });

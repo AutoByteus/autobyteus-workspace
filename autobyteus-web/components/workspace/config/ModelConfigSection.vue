@@ -19,11 +19,12 @@
         :disabled="thinkingToggleDisabled"
         :label="thinkingLabel"
         :description="thinkingDescription"
-        :read-only-reason="thinkingControlState.enabled && !thinkingControlState.canDisable
-          ? $t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model')
-          : undefined"
+        :read-only-reason="thinkingReadOnlyReason"
         :compact="compact"
       />
+      <p v-if="thinkingValidationError" role="alert" class="mt-1 text-xs text-red-700">
+        {{ thinkingValidationError }}
+      </p>
     </template>
 
     <!-- Advanced Expand Button -->
@@ -60,6 +61,7 @@
         :missing-historical-config="showMissingHistoricalConfig"
         :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
         :control-variant="controlVariant"
+        :validation-errors="validationErrors"
         @update:config="emitConfig"
       />
     </div>
@@ -78,6 +80,7 @@ import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import {
   projectHistoricalModelConfigFields,
+  type HistoricalModelConfigControlField,
   type HistoricalModelConfigResidualField,
 } from '~/utils/historicalModelConfigFields';
 import {
@@ -89,6 +92,9 @@ import {
 import ModelConfigBasic from './ModelConfigBasic.vue';
 import ModelConfigAdvanced from './ModelConfigAdvanced.vue';
 import HistoricalModelConfigFallback from './HistoricalModelConfigFallback.vue';
+import { useLocalization } from '~/composables/useLocalization';
+
+const { t } = useLocalization();
 
 const props = defineProps<{
   schema: UiModelConfigSchema | null;
@@ -106,6 +112,7 @@ const props = defineProps<{
   historical?: boolean;
   historicalValueUnavailableMessage?: string;
   historicalModelConfigTitle?: string;
+  validationErrors?: Readonly<Record<string, string>>;
 }>();
 
 const emit = defineEmits<{
@@ -132,14 +139,15 @@ const historicalFields = computed(() => props.historical
 const presentedSchema = computed<UiModelConfigSchema | null>(() => {
   if (!props.historical) return props.schema;
   const entries = historicalFields.value
-    .filter((field) => field.kind === 'current_control')
+    .filter((field): field is HistoricalModelConfigControlField => field.kind === 'current_control')
     .map((field) => [field.key, field.schema]);
   return entries.length ? Object.fromEntries(entries) : null;
 });
 const presentedModelConfig = computed<Record<string, unknown> | null>(() => {
   if (!props.historical) return props.modelConfig ?? null;
   const entries = historicalFields.value
-    .filter((field) => field.kind === 'current_control' && field.hasExplicitStoredValue)
+    .filter((field): field is HistoricalModelConfigControlField =>
+      field.kind === 'current_control' && field.hasExplicitStoredValue)
     .map((field) => [field.key, field.storedValue]);
   return entries.length ? Object.fromEntries(entries) : null;
 });
@@ -160,6 +168,16 @@ const hasPresentation = computed(() => hasSchema.value || historicalResiduals.va
 const thinkingControlState = computed(() =>
   getThinkingControlState(presentedSchema.value, presentedModelConfig.value),
 );
+const validationErrors = computed(() => props.validationErrors ?? {});
+const thinkingValidationError = computed(() => getThinkingToggleOwnedParamKeys(presentedSchema.value)
+  .map((key) => validationErrors.value[key])
+  .find((message): message is string => Boolean(message)) ?? null);
+const thinkingReadOnlyReason = computed(() => {
+  if (!thinkingControlState.value.enabled || thinkingControlState.value.canDisable) return undefined;
+  return thinkingControlState.value.toggleOwnedKeys.length === 0
+    ? t('workspace.runModelConfig.thinkingAdvancedOnly')
+    : t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model');
+});
 
 const advancedSchema = computed<UiModelConfigSchema>(() => {
   const schema = presentedSchema.value ?? {};

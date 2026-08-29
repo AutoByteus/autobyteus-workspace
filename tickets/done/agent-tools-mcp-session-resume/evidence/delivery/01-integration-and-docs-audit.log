@@ -1,0 +1,42 @@
+# Delivery integration and documentation audit
+timestamp_utc=2026-08-28T09:24:40Z
+ticket_branch=codex/agent-tools-mcp-session-resume
+bootstrap_base_before_fetch=bf396dd5ed541cf6ef2179b305132b079aadd7ab
+tracked_base_after_fetch=bf396dd5ed541cf6ef2179b305132b079aadd7ab
+checkpoint_commit=7f6d2d4cb1010001e27e5a1685b922165c10d954
+relation_checkpoint_to_base=1 0
+
+checkpoint_parent=bf396dd5ed541cf6ef2179b305132b079aadd7ab
+checkpoint_parent_matches_base=yes
+
+## Initial refresh result
+command=git fetch --prune origin personal
+result=PASS
+base_advanced=no
+integration_method=already_current
+new_base_commits_integrated=no
+
+## Reviewed checkpoint
+commit=7f6d2d4cb1010001e27e5a1685b922165c10d954
+subject=chore(delivery): checkpoint reviewed agent tools session resume
+parent=bf396dd5ed541cf6ef2179b305132b079aadd7ab
+
+## Production/test/long-lived-doc diff check
+command=git diff --check origin/personal...HEAD -- autobyteus-server-ts
+result=PASS
+note=Raw API/E2E capture logs under the ticket evidence directory preserve tool output verbatim and are intentionally outside whitespace normalization.
+
+## Documentation stale-contract audit
+command=rg obsolete Agent Tools bearer, issuer, descriptor-header, and main-route phrases across the 15 scoped long-lived docs
+result=PASS
+
+## Current documentation assertions
+autobyteus-server-ts/docs/modules/agent_team_execution.md:258:   `AgentRunManager.prepareAgentRunTermination(expectedRun)`; a cancelled or
+autobyteus-server-ts/docs/modules/agent_tools.md:152:and process-memory scoped: the tokenless descriptor works only while the exact
+autobyteus-server-ts/docs/modules/agent_tools.md:154:ephemeral loopback listener, not the main Studio/standalone HTTP server; raw
+autobyteus-server-ts/docs/modules/agent_execution.md:182:`AgentRunManager.prepareAgentRunTermination(expectedRun)` is the only
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md:68:`/mcp/agent-tools/:sessionId`. Each application runtime activates tokenless
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:36:- dedicated loopback listener in
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:95:The run-session ID is deterministic routing identity, not a secret. It is
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:116:`AgentRunManager.prepareAgentRunTermination(expectedRun)` is the single
+result=PASS

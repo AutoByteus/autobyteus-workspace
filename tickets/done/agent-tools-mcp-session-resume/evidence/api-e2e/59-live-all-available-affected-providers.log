@@ -1,0 +1,1075 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:11923) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/.env
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T08:06:37.213Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/all-runtime-send-message-matrix-e2e-uuENuh/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Populating agent definition cache for the first time...
+[2026-08-28T08:06:37.350Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+[2026-08-28T08:06:37.364Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+In-memory cache: Added new agent definition with ID matrix-auto-025036dd-813e-4aa9-b122-c4ed073f9b7f.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Definition created successfully with ID: matrix-auto-025036dd-813e-4aa9-b122-c4ed073f9b7f
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+In-memory cache: Added new agent definition with ID matrix-codex-049ad1f5-f1b4-414f-81ed-57616855ddb1.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Definition created successfully with ID: matrix-codex-049ad1f5-f1b4-414f-81ed-57616855ddb1
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+In-memory cache: Added new agent definition with ID matrix-claude-e9d72088-79e8-4d38-8562-b6894ad5c95e.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Definition created successfully with ID: matrix-claude-e9d72088-79e8-4d38-8562-b6894ad5c95e
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+[2026-08-28T08:06:38.433Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID all-runtime-send-message-matrix-8b760d90-8de9-4573-9655-df83bee1eee4.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Team Definition created successfully with ID: all-runtime-send-message-matrix-8b760d90-8de9-4573-9655-df83bee1eee4
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+[2026-08-28T08:06:38.439Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID all-runtime-send-message-matrix-8b760d90-8de9-4573-9655-df83bee1eee4.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Team Definition with ID all-runtime-send-message-matrix-8b760d90-8de9-4573-9655-df83bee1eee4 deleted successfully.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+In-memory cache: Removed agent definition with ID matrix-auto-025036dd-813e-4aa9-b122-c4ed073f9b7f.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Definition with ID matrix-auto-025036dd-813e-4aa9-b122-c4ed073f9b7f deleted successfully.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+In-memory cache: Removed agent definition with ID matrix-codex-049ad1f5-f1b4-414f-81ed-57616855ddb1.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Definition with ID matrix-codex-049ad1f5-f1b4-414f-81ed-57616855ddb1 deleted successfully.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+In-memory cache: Removed agent definition with ID matrix-claude-e9d72088-79e8-4d38-8562-b6894ad5c95e.
+
+stdout | tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts > All active runtime send_message_to communication matrix e2e > routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team
+Agent Definition with ID matrix-claude-e9d72088-79e8-4d38-8562-b6894ad5c95e deleted successfully.
+
+ ❯ tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts (1 test | 1 failed) 1242ms
+     × routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team 703ms
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:12033) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-C8K24A
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-C8K24A/.env
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket
+Error creating agent definition: Error: Studio application API services are not configured.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+Error creating agent definition: Error: Studio application API services are not configured.
+
+ ❯ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests | 5 failed) 97ms
+     × routes send_message_to between real AutoByteus team members and projects reference files 11ms
+     × creates a real team, approves a tool call, restores it, and continues on the same websocket 2ms
+     × interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket 2ms
+     × terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket 2ms
+     × serves every team member projection after terminate, restore, and continue 2ms
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:12039) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/.env
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T08:06:41.055Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-task-delegation-e2e-appdata-6pR62D/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Overwriting existing tool definition for name: 'delegate_task'
+Overwriting existing tool definition for name: 'submit_task_result'
+Overwriting existing tool definition for name: 'review_task_result'
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Populating agent definition cache for the first time...
+[2026-08-28T08:06:41.149Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+[2026-08-28T08:06:41.162Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Agent definition cache populated with 49 items.
+
+ ❯ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (2 tests | 2 failed) 547ms
+     × AutoByteus coordinator delegates work and reviews a concrete task-agent result/revision cycle 9ms
+     × AutoByteus coordinator delegates to an agent-team target with the same visible activation copy 3ms
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:12095) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/.env
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T08:06:42.927Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Populating agent definition cache for the first time...
+[2026-08-28T08:06:43.034Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+[2026-08-28T08:06:43.049Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+In-memory cache: Added new agent definition with ID mixed-coordinator-80c270c4-b646-4ea3-93aa-af231d97e957.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition created successfully with ID: mixed-coordinator-80c270c4-b646-4ea3-93aa-af231d97e957
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+In-memory cache: Added new agent definition with ID mixed-specialist-ae7df902-fa49-43ec-858c-c7000be92fa6.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition created successfully with ID: mixed-specialist-ae7df902-fa49-43ec-858c-c7000be92fa6
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[2026-08-28T08:06:43.511Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID mixed-runtime-team-5afd947e-90f3-4091-accb-fb5f504fb42a.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team Definition created successfully with ID: mixed-runtime-team-5afd947e-90f3-4091-accb-fb5f504fb42a
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-y9x5WH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-y9x5WH.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Created and registered workspace ID: agent_ws_7bb031826536276d3af2b8bed005fe9860a60144ed9e951daec462db0223370a
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent team websocket attached for team run mixed_runtime_team_5afd947e_90f3_4091_accb_fb5f5_f77ff153400244a2beef21853b9f9a7e
+Created agent session aa014249-a934-4bf5-9b44-95d599b30aa6 for run mixed_runtime_team_5afd947e_90f3_4091_accb_fb5f5_f77ff153400244a2beef21853b9f9a7e
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team WebSocket connected: session=aa014249-a934-4bf5-9b44-95d599b30aa6, run=mixed_runtime_team_5afd947e_90f3_4091_accb_fb5f5_f77ff153400244a2beef21853b9f9a7e
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-y9x5WH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-workspace-y9x5WH.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Reusing registered workspace ID: agent_ws_7bb031826536276d3af2b8bed005fe9860a60144ed9e951daec462db0223370a
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mixed-team-runtime-e2e-appdata-bnw5MT/media
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRuntimeState initialized for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': LLM instance 'QwenLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' with config: 'mixed-coordinator-80c270c4-b646-4ea3-93aa-af231d97e957'.
+AgentWorker initialized for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'.
+Registered AgentContext for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Context registered.
+Agent facade initialized for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' created and stored successfully.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' requesting runtime to start.
+AgentRuntime for 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Starting worker.
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Starting...
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' asyncRun(): Starting.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Runtime init completed (event store initialized).
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Runtime init completed (status deriver initialized).
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Runtime init completed (AgentEventInbox initialized).
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' to become idle (timeout: 30s)...
+AgentEventStream (ID: 8417eca2-80ae-43b4-bb89-44b414c74349) initialized for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Subscribed to notifier.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Bootstrapper starting direct lifecycle execution.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Executing SystemPromptProcessingStep.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Skill access mode is NONE. Skipping skill catalog.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Final processed system prompt configured and captured. Trace ID: rt_1787904403604_df0f9e57-caa2-4b22-ba32-6b9493c84fbd. Final length: 5950.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' has become idle.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 8417eca2-80ae-43b4-bb89-44b414c74349) for 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 492c1f1b-e78e-4b71-b669-0e1f67e46581) initialized for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Published autobyteus agent run 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent run 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': UserInputContextBuildingProcessor completed. Final content length: 280
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Closed agent session aa014249-a934-4bf5-9b44-95d599b30aa6
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentEventStream (ID: 492c1f1b-e78e-4b71-b669-0e1f67e46581) for 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'. Attempting graceful shutdown.
+Agent 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentExternalEventNotifier (NotifierID: 9969957e-8714-4095-9425-1458f96077da, AgentID: mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' asyncRun() loop has finished.
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Shutdown resource cleanup completed successfully.
+AgentWorker 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Unregistered AgentContext for agent_id 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e'.
+AgentRuntime for 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+AgentRuntime for 'mixed_coordinator_80c270c4_b646_4ea3_93aa_af231d_f61f9f297a954e1c954c466744c7387e' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+[2026-08-28T08:09:43.845Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID mixed-runtime-team-5afd947e-90f3-4091-accb-fb5f504fb42a.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Team Definition with ID mixed-runtime-team-5afd947e-90f3-4091-accb-fb5f504fb42a deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+In-memory cache: Removed agent definition with ID mixed-coordinator-80c270c4-b646-4ea3-93aa-af231d97e957.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition with ID mixed-coordinator-80c270c4-b646-4ea3-93aa-af231d97e957 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+In-memory cache: Removed agent definition with ID mixed-specialist-ae7df902-fa49-43ec-858c-c7000be92fa6.
+
+stdout | tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts > Mixed AutoByteus+Codex GraphQL runtime e2e > creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration
+Agent Definition with ID mixed-specialist-ae7df902-fa49-43ec-858c-c7000be92fa6 deleted successfully.
+
+ ❯ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts (1 test | 1 failed) 180934ms
+     × creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration 180444ms
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:12289) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/.env
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T08:09:45.272Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Populating agent definition cache for the first time...
+[2026-08-28T08:09:45.383Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+[2026-08-28T08:09:45.397Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus)
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+In-memory cache: Added new agent definition with ID nested-program-manager-fd85d5f1-4d7c-4680-b321-d438e238c1f3.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition created successfully with ID: nested-program-manager-fd85d5f1-4d7c-4680-b321-d438e238c1f3
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+In-memory cache: Added new agent definition with ID nested-review-lead-fd85d5f1-4d7c-4680-b321-d438e238c1f3.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition created successfully with ID: nested-review-lead-fd85d5f1-4d7c-4680-b321-d438e238c1f3
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+In-memory cache: Added new agent definition with ID nested-qa-specialist-fd85d5f1-4d7c-4680-b321-d438e238c1f3.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Definition created successfully with ID: nested-qa-specialist-fd85d5f1-4d7c-4680-b321-d438e238c1f3
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+[2026-08-28T08:09:47.147Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID nested-build-squad-fd85d5f1-4d7c-4680-b321-d438e238c1f3.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team Definition created successfully with ID: nested-build-squad-fd85d5f1-4d7c-4680-b321-d438e238c1f3
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+[2026-08-28T08:09:47.163Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID nested-parent-delivery-team-fd85d5f1-4d7c-4680-b321-d438e238c1f3.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team Definition created successfully with ID: nested-parent-delivery-team-fd85d5f1-4d7c-4680-b321-d438e238c1f3
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-56WJ8j
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-56WJ8j.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Created and registered workspace ID: agent_ws_d81ce2f3901aa7992548b78fde48ef2fdcf7ffb4aeb4c1fe03d09e4aa44eac52
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent team websocket attached for team run nested_parent_delivery_team_fd85d5f1_4d7c_4680_b_e363a867b9044ecab68da531d7ba529c
+Created agent session 7ec2602d-1a0e-49c0-af63-32da7210339b for run nested_parent_delivery_team_fd85d5f1_4d7c_4680_b_e363a867b9044ecab68da531d7ba529c
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent Team WebSocket connected: session=7ec2602d-1a0e-49c0-af63-32da7210339b, run=nested_parent_delivery_team_fd85d5f1_4d7c_4680_b_e363a867b9044ecab68da531d7ba529c
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-56WJ8j
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-workspace-56WJ8j.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Reusing registered workspace ID: agent_ws_d81ce2f3901aa7992548b78fde48ef2fdcf7ffb4aeb4c1fe03d09e4aa44eac52
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nested-mixed-team-e2e-appdata-9eXs8z/media
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentRuntimeState initialized for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': LLM instance 'QwenLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' with config: 'nested-program-manager-fd85d5f1_4d7c_4680_b321_d438e238c1f3'.
+AgentWorker initialized for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'.
+Registered AgentContext for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'. Context registered.
+Agent facade initialized for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' created and stored successfully.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' requesting runtime to start.
+AgentRuntime for 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Starting worker.
+AgentWorker 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Starting...
+AgentWorker 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' asyncRun(): Starting.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Runtime init completed (event store initialized).
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Runtime init completed (status deriver initialized).
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Runtime init completed (AgentEventInbox initialized).
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' to become idle (timeout: 30s)...
+AgentEventStream (ID: e65844ec-de55-44af-8451-0e4b756e5061) initialized for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'. Subscribed to notifier.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Bootstrapper starting direct lifecycle execution.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Executing SystemPromptProcessingStep.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Skill access mode is NONE. Skipping skill catalog.
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Final processed system prompt configured and captured. Trace ID: rt_1787904587242_085e45cc-2846-442d-aa8d-ceaad1e060cc. Final length: 5984.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentWorker 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc' has become idle.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentEventStream (ID: e65844ec-de55-44af-8451-0e4b756e5061) for 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentEventStream (ID: 68d54450-31f2-4d6d-abac-4ae72b3e2f3d) initialized for agent_id 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Published autobyteus agent run 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc'.
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+Agent run 'nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc': UserInputContextBuildingProcessor completed. Final content length: 300
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts > Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) > launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores
+AgentExternalEventNotifier (NotifierID: c9ecb007-9a16-4de7-801b-c9b38a9de565, AgentID: nested_program_manager_fd85d5f1_4d7c_4680_b321_d_153742666b6d4c0892223087e7ada7cc) emitted agent_status. Kwarg keys for emit: agent_id,payload
+

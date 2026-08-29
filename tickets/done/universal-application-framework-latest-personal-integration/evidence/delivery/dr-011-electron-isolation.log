@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.58 test:e2e:electron:isolation /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+> node tests/e2e/electron-launch-profile-probe.mjs --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-011-electron-isolation
+
+[electron-launch-profile-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-011-electron-isolation/electron-launch-profile-evidence.json

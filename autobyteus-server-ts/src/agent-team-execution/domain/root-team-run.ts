@@ -37,6 +37,7 @@ import type {
 } from "../task-delegation/task-delegation-record.js";
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import { TaskDelegationService } from "../task-delegation/task-delegation-service.js";
+import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import type { TeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "./team-agent-platform-binding.js";
 import { adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
@@ -83,9 +84,15 @@ export class RootTeamRun {
     messages: TeamCommunicationMessagesSnapshot;
     persistence: TeamRunPersistenceCoordinator;
     publisher: TeamRunEventPublisher<TeamRunEvent>;
+    taskExecutionIdentity: TaskExecutionIdentityCapabilities;
     disposeRootSubjects?(): void;
     onTerminated?(): void;
   }) {
+    if (!options.taskExecutionIdentity ||
+        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
+        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
+      throw new Error("RootTeamRun task execution identity capabilities are required.");
+    }
     this.tree = options.tree;
     this.tasks = options.tasks;
     this.messages = options.messages;
@@ -114,6 +121,7 @@ export class RootTeamRun {
       replaceState: (state) => this.replaceTaskState(state),
       publish: (event) => options.publisher.publish(event),
       deliverSystemMessage: (agentRunId, message) => this.deliverSystemMessage(agentRunId, message),
+      taskExecutionIdentity: options.taskExecutionIdentity,
     });
     this.communication = new TeamCommunicationService({
       rootTeamRunId: this.teamRunId,

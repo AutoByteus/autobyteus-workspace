@@ -1,6 +1,5 @@
 import { TASK_DELEGATION_TOOL_MANIFEST } from "../../task-delegation/task-delegation-tool-manifest.js";
 import {
-  buildTaskDelegationToolContextFromMemberTeamContext,
   getTaskDelegationToolService,
   type TaskDelegationToolService,
 } from "../../task-delegation/task-delegation-tool-service.js";
@@ -37,20 +36,19 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
       configuredMcpCollisionPolicy: "protect_static_adapter",
       isAvailable: ({ sender }) => Boolean(sender?.memberTeamContext),
       execute: async ({ session, rawArguments }) => {
-        const memberTeamContext = session.sender.memberTeamContext;
-        if (!memberTeamContext) {
+        const capabilities = session.executionCapabilities;
+        if (capabilities.kind !== "team_member") {
           return createAgentToolsMcpErrorResult(
             toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(
-              new Error("Task delegation tools require an active team member context."),
+              new Error("Task delegation tools require an authenticated Team-member capability."),
             )),
             "task_delegation_context_required",
           );
         }
-        const context = buildTaskDelegationToolContextFromMemberTeamContext(memberTeamContext);
         try {
           const result = await entry.execute(
             this.taskDelegationToolService,
-            context,
+            capabilities.taskDelegation,
             entry.parseInput(asRawArguments(rawArguments)),
           );
           return createAgentToolsMcpSuccessResult(toTaskDelegationJsonString(result));

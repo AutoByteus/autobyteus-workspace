@@ -1,0 +1,5 @@
+=== final post-close timestamp ===
+2026-08-26T13:57:39Z
+=== listeners (expected empty) ===
+=== owned isolated processes (expected empty) ===
+=== remaining codex app-server children previously owned (PIDs 46158/54829 expected absent) ===

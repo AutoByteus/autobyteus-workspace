@@ -1,0 +1,302 @@
+SETUP_BODY 2726965662d73747564696f2d7465616d · PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d
+llmConfig: none · workspace: APPLICATION_RUNTIME
+
+/writer · codex_app_server · gpt-5.6-luna
+PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d · PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d
+llmConfig: none · workspace: APPLICATION_RUNTIME
+
+Execution resource
+Use manifest default · Brief Studio Team · Bundled · Agent team
+Brief Studio Team · Bundled · Agent team
+Article Writing Team · Shared · Agent team
+Classroom Simulation Team · Shared · Agent team
+Evidence-Driven Delivery Team · Shared · Agent team
+Kids Coloring Story Team · Shared · Agent team
+Kids Picture Story Team · Shared · Agent team
+Manga Video Studio Team · Shared · Agent team
+Narrated Presentation Video Team · Shared · Agent team
+Northstar Operating Company · Shared · Agent team
+Product Design & Prototyping Team · Shared · Agent team
+Requirements Engineering Team · Shared · Agent team
+Research To Deck Team · Shared · Agent team
+Software Development Department · Shared · Agent team
+Software Engineering Team · Shared · Agent team
+Software Product Promo Video Team · Shared · Agent team
+STORM Team · Shared · Agent team
+Bible Study Group · Shared · Agent team
+Clara Ocean Friends · Shared · Agent team
+Job Search Application Team · Shared · Agent team
+Marketing Team · Shared · Agent team
+Movie Maker · Shared · Agent team
+Nested Classroom Test Team · Shared · Agent team
+Presentation_Chemie · Shared · Agent team
+Socratic Math Team · Shared · Agent team
+Tutorial Video Creation Team · Shared · Agent team
+Default runtime
+Use application default runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Optional: save a preferred runtime for later launches from inside the application.
+
+Default model
+Select a default model
+
+Optional: save a preferred model for later application-owned launches.
+
+Default workspace root
+Loaded workspaces
+Custom path
+
+Enter or browse for an absolute workspace root path to reuse during application-owned launches.
+
+Optional: save a workspace root path for later launches from inside the application.
+
+Team member overrides
+
+Each member inherits the shared defaults unless you set a runtime or model override here.
+
+researcher
+
+/researcher
+
+RUNTIME OVERRIDE
+Inherit global runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+MODEL OVERRIDE
+Inherit global model
+
+writer
+
+/writer
+
+RUNTIME OVERRIDE
+Inherit global runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+MODEL OVERRIDE
+Inherit global model
+Save setup
+Cancel draft changes
+Confirm launch setup before opening the app
+
+Review or save the host-managed resource and launch defaults below, then enter the application. This gate never starts a run by itself.
+
+Enter application
+SETUP_READY 0
+IFRAME_INITIAL BRIEF WORKFLOW
+Brief Studio
+
+Create, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.
+
+WHAT YOU CAN DO HERE
+
+Stay focused on the brief work itself.
+Create the brief record that anchors the work.
+Generate fresh drafts when the brief is ready.
+Review outputs, notes, and approval state together.
+STEP 1
+Create
+
+Start with the business brief record and keep the work anchored to one brief.
+
+STEP 2
+Generate
+
+Launch new drafting runs over time as the brief evolves and needs another pass.
+
+STEP 3
+Review
+
+Keep draft outputs, review notes, and approval decisions together on the same record.
+
+Create a brief
+
+Start the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.
+
+BRIEF TITLE
+Create brief
+GraphQL stays the primary brief API while the host supplies runtime and workspace defaults.
+Briefs
+
+Track each brief, its latest draft state, and its review outcome.
+
+Refresh
+No briefs yet. Create your first brief to start the workflow.
+Brief detail
+
+Review generated drafts, notes, and approval state for the selected brief.
+
+Select a brief to review generated drafts, notes, and approval status.
+IFRAME_INPUTS [{"tag":"INPUT","placeholder":"Launch messaging orchestration brief","value":""}]
+BRIEF_CREATED 0
+GENERATE_CLICKED
+POLL 0 outputs 0 final false researcher false writer false
+POLL 1 outputs 0 final false researcher false writer false
+POLL 2 outputs 0 final false researcher false writer false
+POLL 3 outputs 0 final false researcher false writer false
+POLL 4 outputs 0 final false researcher false writer false
+POLL 5 outputs 0 final false researcher false writer false
+POLL 6 outputs 0 final false researcher false writer false
+POLL 7 outputs 0 final false researcher false writer false
+POLL 8 outputs 0 final false researcher false writer false
+POLL 9 outputs 0 final false researcher false writer false
+POLL 10 outputs 0 final false researcher false writer false
+POLL 11 outputs 0 final false researcher false writer false
+POLL 12 outputs 0 final false researcher false writer false
+POLL 13 outputs 0 final false researcher false writer false
+POLL 14 outputs 0 final false researcher false writer false
+POLL 15 outputs 0 final false researcher false writer false
+POLL 16 outputs 0 final false researcher false writer false
+POLL 17 outputs 0 final false researcher false writer false
+POLL 18 outputs 0 final false researcher false writer false
+POLL 19 outputs 0 final false researcher false writer false
+POLL 20 outputs 0 final false researcher false writer false
+POLL 21 outputs 0 final false researcher false writer false
+POLL 22 outputs 0 final false researcher false writer false
+POLL 23 outputs 0 final false researcher false writer false
+POLL 24 outputs 2 final true researcher true writer true
+PASSED true
+FINAL_IFRAME_BODY BRIEF WORKFLOW
+Brief Studio
+
+Create, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.
+
+WHAT YOU CAN DO HERE
+
+Stay focused on the brief work itself.
+Create the brief record that anchors the work.
+Generate fresh drafts when the brief is ready.
+Review outputs, notes, and approval state together.
+STEP 1
+Create
+
+Start with the business brief record and keep the work anchored to one brief.
+
+STEP 2
+Generate
+
+Launch new drafting runs over time as the brief evolves and needs another pass.
+
+STEP 3
+Review
+
+Keep draft outputs, review notes, and approval decisions together on the same record.
+
+Create a brief
+
+Start the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.
+
+BRIEF TITLE
+Create brief
+GraphQL stays the primary brief API while the host supplies runtime and workspace defaults.
+Briefs
+
+Track each brief, its latest draft state, and its review outcome.
+
+Refresh
+Provider Composition Live Brief
+In_review
+Brief brief-93f72da6-517d-4e79-8aee-43ef7f64f5e6
+Updated 26.8.2026, 13:33:03
+Brief detail
+
+Review generated drafts, notes, and approval state for the selected brief.
+
+Provider Composition Live Brief
+
+briefId brief-93f72da6-517d-4e79-8aee-43ef7f64f5e6
+
+In_review
+Created 26.8.2026, 13:30:58
+Updated 26.8.2026, 13:33:03
+BRIEF RECORD
+brief-93f72da6-517d-4e79-8aee-43ef7f64f5e6
+Status in_review
+DRAFT OUTPUTS
+2
+1 final
+REVIEW
+0 notes
+Approved — · Rejected —
+Generate draft
+Approve
+Reject
+Draft outputs
+
+Generated drafts stay attached to the same brief record for review.
+
+researcher
+Research
+
+/private/tmp/api-rev-002-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime/brief-studio/research.md
+
+Concise research checkpoint for Provider Composition Live Brief
+
+# Provider Composition Live Brief — Research Checkpoint
+
+- **Core framing:** Provider composition should be treated as a contract-first orchestration layer: normalize provider capabilities behind a stable interface, then assemble, select, or override implementations through configuration and dependency injection.
+- **Why it matters:** A composed provider layer can support routing by capability, cost, latency, geography, or data-retention policy while reducing lock-in and enabling controlled migration.
+- **Reliability pattern:** Production composition needs explicit health signals, timeouts, retries, circuit breakers, bulkheads, and deterministic failover. Static “provider is up” checks are insufficient; semantic or task-level quality signals are also needed.
+- **Control-plane/data-plane split:** Keep provider registration, policy, credentials, and routing rules in a control plane; keep request execution and provider adapters in the data plane. This allows policy changes without rewriting adapters.
+- **Testability:** Provider substitution and overrides make local, staging, and failure-mode testing practical; contract tests should verify capability parity and edge-case behavior across implementations.
+
+## Risks / open questions
+- “Composition” may mean sequential chaining, parallel fan-out/merge, fallback routing, or dependency injection; the brief should define the intended mode and scope.
+- Cross-provider differences in schemas, streaming, quotas, latency, and error semantics can create silent behavior drift.
+- Routing can conflict with privacy, residency, licensing, or vendor-specific retention requirements; policy precedence must be explicit.
+- Need baseline metrics and acceptance thresholds for quality, cost, latency, failover recovery, and data handling.
+
+## Recommendations / next steps
+- Define a minimal provider contract with capability discovery, normalized errors, request metadata, and trace correlation.
+- Start with one primary plus one fallback provider and a policy-driven router; add fan-out only after measuring value.
+- Instrument per-provider success, semantic quality, p50/p95 latency, cost, quota pressure, and fallback rate.
+- Validate with contract, chaos, and replay tests before enabling automatic production failover.
+
+Sources: Microsoft Orleans provider architecture (https://dotnet.github.io/orleans/docs/implementation/provider-authoring/); OpenRouter provider routing (https://openrouter.ai/docs/guides/routing/provider-selection); Microsoft ASP.NET Core dependency injection (https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection).
+
+writer
+Final
+
+/private/tmp/api-rev-002-provider-composition/studio/applications/bundle-app__brief-studio__7b353fa3ba8b1af8c4ac5e35c2fc6067fed50a225e490da4b079403bf0ef22f8/runtime/brief-studio/final-brief.md
+
+Concise writer checkpoint recommending a contract-first provider orchestration layer.
+
+# Provider Composition: Contract-First Orchestration
+
+**Recommendation:** Adopt a contract-first provider orchestration layer, beginning with one primary provider and one policy-selected fallback. Keep provider registration, credentials, routing rules, and privacy policy in a control plane; keep normalized request execution and provider-specific adapters in the data plane. This establishes portability and controlled failover without committing prematurely to complex fan-out or merge semantics.
+
+## Key evidence
+
+- A stable provider contract should cover capability discovery, normalized schemas and errors, request metadata, trace correlation, and explicit streaming/quotas behavior.
+- Policy-driven routing can select providers by capability, cost, latency, geography, retention, or residency requirements while reducing lock-in and supporting staged migration.
+- Reliability requires timeouts, bounded retries, circuit breakers, bulkheads, health signals, and deterministic failover. “Provider is up” alone is not enough; semantic/task-level quality signals should inform decisions.
+- Dependency injection and provider overrides make local, staging, replay, and failure-mode testing practical; contract tests can verify capability parity and edge-case behavior.
+- Instrument each provider for success, semantic quality, p50/p95 latency, cost, quota pressure, and fallback rate.
+
+## Risks or cautions
+
+- Define “composition” explicitly: initial scope should be selection/fallback routing, not sequential chaining or parallel fan-out/merge.
+- Cross-provider schema, streaming, quota, latency, and error differences can cause silent behavior drift unless normalization and contract tests are enforced.
+- Privacy, residency, licensing, retention, and vendor policy constraints may conflict with cost or latency goals; establish precedence before routing.
+- Automatic failover can preserve availability while degrading task quality; set acceptance thresholds and expose fallback decisions for review.
+
+## Next actions
+
+- Write the minimum provider contract and capability matrix.
+- Specify routing-policy precedence, data-handling constraints, and fallback eligibility.
+- Implement the primary-plus-fallback router with normalized errors and trace metadata.
+- Add contract, replay, chaos, and semantic-quality tests; define launch thresholds for quality, cost, latency, recovery, and data handling.
+
+
+Review notes
+
+Keep the approval conversation on the brief record itself.
+
+No review notes yet.
+Add review note
+Workflow diagnostics

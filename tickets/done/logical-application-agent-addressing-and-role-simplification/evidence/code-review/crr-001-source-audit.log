@@ -1,0 +1,59 @@
+=== identities ===
+HEAD 89cb3e5e0aea60241702e680f78b2a7c20eaa5b6
+origin/personal 4108786f4058ca83fd036df84666a2c846fd6401
+merge-base 4108786f4058ca83fd036df84666a2c846fd6401
+base_is_ancestor=yes
+=== unmerged ===
+=== diff check ===
+=== old public/app-role production occurrences ===
+autobyteus-server-ts/src/skill-improvement/services/skill-improvement-target-notification-service.ts:14:    if (input.target.kind !== "agent_run") {
+autobyteus-server-ts/src/agent-communication/services/send-message-to-dispatcher.ts:61:    if (parsed.target.kind === "target_agent_run_id") {
+=== allowed physical constant ===
+10:export const APPLICATION_AGENT_TEAM_MEMBER_STORAGE_RUNTIME_KIND = "AGENT_TEAM_MEMBER" as const;
+176:          APPLICATION_AGENT_TEAM_MEMBER_STORAGE_RUNTIME_KIND,
+=== authority consumption ===
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:60:        this.input.address,
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:69:      const releaseSource = this.input.runtimeSource.attach(lease.descriptor.runtime, (event) => this.onSourceEvent(event));
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:147:        address: structuredClone(this.input.address),
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts:148:        runtimeSubject: this.descriptor.runtime.subject,
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:319:    await this.postAuthorizedRunInputInternal(descriptor.runtime, input.input);
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:320:    return structuredClone(descriptor.binding);
+=== transition inventory expectation ===
+tickets/in-progress/logical-application-agent-addressing-and-role-simplification/logical-application-agent-addressing-contract.md:99:The descriptor is the one translation output. Host input discriminates `runtime` and passes only its exact IDs to the existing Agent/Team commands; stream subscription passes `runtime` to scope streaming; event creation uses `address` and `runtime.subject`; input response uses `binding`. None reloads or reinterprets the public address. The full descriptor never crosses into `ApplicationExecutionScope`.
+tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-spec.md:121:- Streaming/communication services own lease/session/event flow. Subscription uses the complete descriptor for authorization/address evidence but passes only `descriptor.runtime` to the scope; neither layer reinterprets the public selector.
+tickets/in-progress/logical-application-agent-addressing-and-role-simplification/logical-application-agent-addressing-transition-inventory.md:48:| `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts` | retain complete descriptor for authorization/event evidence, pass only `descriptor.runtime` to scope attach, emit new address/producer/event shape |
+=== changed implementation source size ===
+ 223 effective  242 physical applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts
+  45 effective   53 physical applications/socratic-math-teacher/backend-src/domain/lesson-model.ts
+ 169 effective  185 physical applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts
+ 274 effective  299 physical applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
+  60 effective   69 physical autobyteus-application-backend-sdk/src/application-agent-target-address.ts
+  74 effective   77 physical autobyteus-application-backend-sdk/src/index.ts
+  65 effective   71 physical autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts
+  79 effective   82 physical autobyteus-application-frontend-sdk/src/application-agent-server-frame-parser.ts
+  67 effective   78 physical autobyteus-application-sdk-contracts/src/application-agent-bindings.ts
+  16 effective   18 physical autobyteus-application-sdk-contracts/src/application-agent-member-address.ts
+  40 effective   44 physical autobyteus-application-sdk-contracts/src/application-agent-target-url.ts
+ 348 effective  390 physical autobyteus-application-sdk-contracts/src/index.ts
+ 261 effective  280 physical autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+ 272 effective  311 physical autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+ 483 effective  510 physical autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ 189 effective  211 physical autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts
+  64 effective   70 physical autobyteus-server-ts/src/api/websocket/application-agent-communication.ts
+  57 effective   62 physical autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts
+ 258 effective  271 physical autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-subscription.ts
+  36 effective   40 physical autobyteus-server-ts/src/application-orchestration/domain/application-execution-producer-projector.ts
+ 100 effective  107 physical autobyteus-server-ts/src/application-orchestration/domain/application-run-binding-record-codec.ts
+  84 effective   93 physical autobyteus-server-ts/src/application-orchestration/domain/models.ts
+ 169 effective  184 physical autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts
+ 424 effective  470 physical autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts
+ 283 effective  299 physical autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+ 291 effective  307 physical autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts
+ 240 effective  256 physical autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts
+ 127 effective  142 physical autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts
+ 112 effective  124 physical autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts
+ 108 effective  116 physical autobyteus-server-ts/src/standalone-application-host/api/register-standalone-application-websockets.ts
+=== status ===
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/architecture-review-revision-record.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/design-review-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/code-review/

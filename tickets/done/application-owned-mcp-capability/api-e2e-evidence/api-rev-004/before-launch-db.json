@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-08-27T21:32:31.705637Z",
+  "databasePath": ".autobyteus/api-e2e-004/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/db/app.sqlite",
+  "briefId": "brief-2263879a-640f-4606-8e92-d01e53a18dd5",
+  "briefs": [
+    {
+      "brief_id": "brief-2263879a-640f-4606-8e92-d01e53a18dd5",
+      "title": "API E2E Luna Patch Proof 2026-08-27T21:31Z",
+      "status": "not_started",
+      "latest_binding_id": null,
+      "latest_run_id": null,
+      "latest_binding_status": null,
+      "last_error_message": null,
+      "created_at": "2026-08-27T21:31:54.997Z",
+      "updated_at": "2026-08-27T21:31:54.997Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "bindings": [],
+  "artifacts": [],
+  "revisions": [],
+  "pending": []
+}

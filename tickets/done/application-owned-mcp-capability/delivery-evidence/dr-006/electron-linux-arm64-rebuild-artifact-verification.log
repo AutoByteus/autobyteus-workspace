@@ -1,0 +1,8 @@
+DR-006 README-directed Electron artifact verification
+UTC: 2026-08-28T13:02:03Z
+path: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage
+size_bytes: 646843699
+mode: -rwxr-xr-x (755)
+modified: 2026-08-28 13:01:49.992309965 +0000
+/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=4b12022a0a60af0d4b7920deac219fcbd1d92080, stripped
+597f8f8fac3cfaa8d8ab68d940bf30421b4654a9d20e2dcdc3c83392f22e544f  /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage

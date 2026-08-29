@@ -15,7 +15,15 @@
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
   - team: `team-run-history-service.ts#getTeamRunResumeConfig(...)`
-- Keep resume configuration truthful about active vs inactive state. For standalone agent runs, frontend follow-up sends should not restore directly; the backend `SEND_MESSAGE` command coordinator owns restore/start/send lifecycle. WebSocket connection can attach to a durable run identity and surface status projection without restoring the runtime. Team follow-up sends remain owned by the team restore/resolve boundary.
+- Keep resume configuration and model-setting editability truthful about General
+  Process activity, archive/catalog state, and live Application ownership.
+- Validate stopped-run `llmConfig` changes against the current catalog schema for
+  the run's fixed runtime and model, then persist only that narrow field.
+- For standalone agent runs, frontend follow-up sends should not restore
+  directly; the backend `SEND_MESSAGE` command coordinator owns
+  restore/start/send lifecycle. WebSocket connection can attach to a durable
+  run identity and surface status projection without restoring the runtime.
+  Team follow-up sends remain owned by the team restore/resolve boundary.
 - Project standalone visible status through `AgentRunStatusProjectionService`, with precedence `COMMAND_OVERLAY` first, active runtime second, prepared/historical metadata fallback third.
 - Normalize local application-owned replay traces into the canonical run-history replay bundle:
   - agent: `agent-run-view-projection-service.ts`
@@ -34,15 +42,66 @@ Workspace + agent operations:
 - `workspaceRunHistory(workspaceId, limitPerAgent)` for history under one visible workspace. The resolver resolves registered filesystem workspace ids through the workspace registry, resolves the fixed default temp workspace id through the temp workspace lifecycle, and rejects missing, unregistered, removed filesystem, or unrelated transient workspace ids.
 - `getRunProjection`
 - `getAgentRunResumeConfig`
+- `updateStoppedAgentRunModelConfig(input)`
 - `archiveStoredRun`
 - `deleteStoredRun`
 
 Team operations:
 
 - `getTeamRunResumeConfig`
+- `updateStoppedTeamRunModelConfigs(input)`
 - `getTeamMemberRunProjection`
 - `archiveStoredTeamRun`
 - `deleteStoredTeamRun`
+
+## Stopped Run Model Configuration
+
+Studio exposes one revision-free edit contract for persisted standalone Agent
+and Team runs. `getAgentRunResumeConfig` and `getTeamRunResumeConfig` return the
+canonical stored configuration together with `modelConfigEditability`. The only
+mutable field is `llmConfig`; runtime kind, model identifier, run identity,
+workspace, automatic-tool policy, provider binding, Team topology, and all
+other launch facts remain fixed.
+
+The GraphQL resolvers use `StudioRunModelConfigService` rather than calling the
+General history owners directly. That service first reads the canonical
+General resume configuration and then asks the read-only
+`ApplicationRunOwnershipService` whether the exact identity has a live
+Application lease. A General-managed run or a binding in `ATTACHED`,
+`TERMINATING`, or `FAILED` state is locked. Application ownership lookup waits
+for startup recovery and cross-checks global lookup state, persisted
+`applicationId`/`bindingId` provenance, the referenced binding, and contained
+Agent/Team identity. Missing or inconsistent ownership evidence fails closed;
+it never produces a false editable state or a General write.
+
+When no Application lease exists, stopped updates delegate to the existing
+General lifecycle owners:
+
+- `StandaloneAgentRunLifecycleService.updateStoppedModelConfig(...)` shares one
+  per-run transition lane with restore/activation and commits the validated
+  value to `run_metadata.json` through `AgentRunHistoryCatalogService`.
+- `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root
+  transition lane with Team restore. Each patch names an exact configured Team
+  or Agent address, can change only that scope's `llmConfig`, and commits the
+  resulting current V2 execution tree. Task nodes and fixed launch identity are
+  not mutation targets.
+
+The server resolves the exact fixed runtime/model in the current catalog and
+validates submitted values against that model's current schema. Unknown keys,
+invalid types/ranges/enums, missing required values, unavailable models, and
+unavailable schemas produce explicit non-success outcomes without persistence.
+Successful responses are `UPDATED` or `UNCHANGED`; other outcomes include
+`RUN_ACTIVE`, `RUN_ARCHIVED`, `NOT_FOUND`, `MODEL_UNAVAILABLE`,
+`SCHEMA_UNAVAILABLE`, `VALIDATION_FAILED`, `PERSISTENCE_FAILED`,
+`PERSISTENCE_INDETERMINATE`, and `INTERNAL_ERROR`. Every result carries the
+best canonical state, current editability, and field errors when available so
+the client can relock or reconcile instead of assuming success.
+
+A successful save does not hot-mutate a live backend. The next eligible
+General restore of the same Agent/Team/provider identity consumes the persisted
+`llmConfig`. There is no configuration revision, optimistic rebase, or
+multi-writer compatibility field. Current metadata and Team V2 packages are
+updated in place, so no persisted-data migration is required.
 
 ## Default History Visibility, Archive, And Delete Semantics
 

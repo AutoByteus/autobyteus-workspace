@@ -30,7 +30,8 @@ const canCurrentControlRepresent = (
   value: unknown,
   schema: UiModelConfigParameterSchema,
 ): boolean => {
-  if (!isModelConfigValueRepresentable(value, schema)) return false
+  const representationSchema = { ...schema, minimum: null, maximum: null, pattern: null }
+  if (!isModelConfigValueRepresentable(value, representationSchema)) return false
   if (Array.isArray(schema.enum) && schema.enum.length > 0) return true
   if (['boolean', 'string', 'integer', 'number'].includes(schema.type ?? '')) return true
   return typeof value === 'string'

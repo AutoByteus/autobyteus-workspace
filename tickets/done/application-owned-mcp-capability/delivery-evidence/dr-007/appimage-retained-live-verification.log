@@ -1,0 +1,30 @@
+DR-007 retained-session live verification
+UTC: 2026-08-28T13:08:53Z
+window_ids=48234500
+window_name=autobyteus
+WINDOW=48234500
+X=160
+Y=100
+WIDTH=1200
+HEIGHT=800
+SCREEN=0
+window_focus=attempted
+processes:
+24484 /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage
+24490 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus
+24493 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus --type=zygote --no-zygote-sandbox
+24494 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus --type=zygote
+24496 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus --type=zygote
+24525 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus --type=gpu-process --ozone-platform=x11 --enable-crash-reporter=02311326-44d9-4c70-b505-198b9911f7c3,no_channel --user-data-dir=/home/vncuser/.config/autobyteus --gpu-preferences=UAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAYAAAAAAAAABgAAAAAAAAAAQAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA --shared-files --field-trial-handle=3,i,1847301874646145484,4990375654688708153,262144 --enable-features=PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,11776038995624847198,3311076488234892780,4 --trace-process-track-uuid=3190708988185955192
+24530 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --enable-crash-reporter=02311326-44d9-4c70-b505-198b9911f7c3,no_channel --user-data-dir=/home/vncuser/.config/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1847301874646145484,4990375654688708153,262144 --enable-features=PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,11776038995624847198,3311076488234892780,4 --trace-process-track-uuid=3190708989122997041
+24545 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus --type=renderer --enable-crash-reporter=02311326-44d9-4c70-b505-198b9911f7c3,no_channel --user-data-dir=/home/vncuser/.config/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/resources/app.asar --enable-sandbox --ozone-platform=x11 --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1787770741509671 --launch-time-ticks=151765911987 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,1847301874646145484,4990375654688708153,262144 --enable-features=PdfUseShowSaveFilePicker --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=7,i,11776038995624847198,3311076488234892780,4 --trace-process-track-uuid=3190708990060038890
+24555 /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/autobyteus /tmp/appimage_extracted_1b660c961f1c204961681e58313b8e8c/resources/server/dist/app.js --port 29695 --data-dir /home/vncuser/.autobyteus/server-data
+server readiness:
+37544:[2026-08-28T13:07:31.374Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+37546:[2026-08-28T13:07:31.406Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+37548:[2026-08-28T13:07:31.626Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+106461:[2026-08-28T13:08:29.215Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+106463:[2026-08-28T13:08:29.216Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+106465:[2026-08-28T13:08:29.253Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+106467:[2026-08-28T13:08:29.428Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+106469:[2026-08-28T13:08:29.850Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

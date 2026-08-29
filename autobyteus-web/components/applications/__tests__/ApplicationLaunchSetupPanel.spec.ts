@@ -4,7 +4,6 @@ import { flushPromises, mount } from '@vue/test-utils'
 import ApplicationLaunchSetupPanel from '../ApplicationLaunchSetupPanel.vue'
 
 const fetchMock = vi.fn()
-
 vi.stubGlobal('fetch', fetchMock)
 
 vi.mock('~/composables/useLocalization', () => ({
@@ -25,8 +24,10 @@ vi.mock('~/composables/useLocalization', () => ({
         'applications.components.applications.ApplicationLaunchSetupPanel.currentSelection': 'Current selection',
         'applications.components.applications.ApplicationLaunchSetupPanel.save': 'Save setup',
         'applications.components.applications.ApplicationLaunchSetupPanel.saving': 'Saving setup…',
-        'applications.components.applications.ApplicationLaunchSetupPanel.reset': 'Reset changes',
+        'applications.components.applications.ApplicationLaunchSetupPanel.cancelChanges': 'Cancel changes',
+        'applications.components.applications.ApplicationLaunchSetupPanel.resetToPackageDefaults': 'Reset to package defaults',
         'applications.components.applications.ApplicationLaunchSetupPanel.saved': 'Setup saved.',
+        'applications.components.applications.ApplicationLaunchSetupPanel.packageDefaultsRestored': 'Package defaults restored.',
         'applications.components.applications.ApplicationLaunchSetupPanel.waitingForLoadBeforeEntry': 'Loading setup before entry',
         'applications.components.applications.ApplicationLaunchSetupPanel.savingBeforeEntry': 'Saving setup before entry',
         'applications.components.applications.ApplicationLaunchSetupPanel.saveOrResetChangesBeforeEntry': 'Save or reset changes before entry',
@@ -72,32 +73,32 @@ const ApplicationExecutionResourceSlotEditorStub = defineComponent({
       }, 'select-shared-team'),
       h('button', {
         type: 'button',
-        'data-testid': 'set-team-launch-profile',
+        'data-testid': 'set-sparse-team-override',
         onClick: () => emit('update:launchProfile', {
           kind: 'AGENT_TEAM',
           defaults: {
-            runtimeKind: 'lmstudio',
-            llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-            workspaceRootPath: '/tmp/brief-studio',
+            runtimeKind: '',
+            llmModelIdentifier: '',
+            workspaceRootPath: '',
           },
           memberProfiles: [
             {
               memberAddress: '/researcher',
               displayName: 'researcher',
-              agentDefinitionId: 'bundle-agent__researcher',
+              agentDefinitionId: 'shared-researcher',
               runtimeKind: '',
               llmModelIdentifier: '',
             },
             {
               memberAddress: '/writer',
               displayName: 'writer',
-              agentDefinitionId: 'bundle-agent__writer',
-              runtimeKind: 'lmstudio',
-              llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+              agentDefinitionId: 'shared-writer',
+              runtimeKind: '',
+              llmModelIdentifier: 'host-writer-model',
             },
           ],
         }),
-      }, 'set-team-launch-profile'),
+      }, 'set-sparse-team-override'),
       h('button', {
         type: 'button',
         'data-testid': 'mark-ready',
@@ -116,269 +117,269 @@ const okJson = (payload: unknown) => ({
   json: vi.fn(async () => payload),
 }) as unknown as Response
 
+const packageRef = {
+  source: 'bundle',
+  kind: 'AGENT_TEAM',
+  localId: 'brief-studio-team',
+} as const
+const alternateRef = {
+  source: 'shared',
+  kind: 'AGENT_TEAM',
+  definitionId: 'shared-writing-team',
+} as const
+
+const slot = {
+  slotKey: 'draftingTeam',
+  name: 'Drafting team',
+  description: 'Used for brief drafting runs.',
+  allowedExecutionResourceKinds: ['AGENT_TEAM'],
+  allowedExecutionResourceSources: ['bundle', 'shared'],
+  required: true,
+  supportedLaunchConfig: {
+    AGENT_TEAM: {
+      runtimeKind: true,
+      llmModelIdentifier: true,
+      workspaceRootPath: true,
+      memberOverrides: {
+        runtimeKind: true,
+        llmModelIdentifier: true,
+      },
+    },
+  },
+  defaultExecutionResourceRef: packageRef,
+}
+
+const baseline = (
+  executionResourceRef: typeof packageRef | typeof alternateRef,
+  source: 'PACKAGE' | 'SELECTED_RESOURCE',
+) => ({
+  slotKey: slot.slotKey,
+  executionResourceRef,
+  resourceDefinitionId: executionResourceRef.source === 'bundle'
+    ? 'bundle-team'
+    : executionResourceRef.definitionId,
+  resourceKind: 'AGENT_TEAM',
+  leaves: [
+    {
+      memberAddress: '/researcher',
+      displayName: 'researcher',
+      agentDefinitionId: executionResourceRef.source === 'bundle' ? 'bundle-researcher' : 'shared-researcher',
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.6-luna',
+      llmConfig: null,
+      provenance: {
+        runtimeKind: {
+          kind: source === 'PACKAGE' ? 'PACKAGE_AGENT_DEFAULT' : 'SELECTED_RESOURCE_AGENT_DEFAULT',
+          agentDefinitionId: executionResourceRef.source === 'bundle' ? 'bundle-researcher' : 'shared-researcher',
+        },
+        llmModelIdentifier: {
+          kind: source === 'PACKAGE' ? 'PACKAGE_AGENT_DEFAULT' : 'SELECTED_RESOURCE_AGENT_DEFAULT',
+          agentDefinitionId: executionResourceRef.source === 'bundle' ? 'bundle-researcher' : 'shared-researcher',
+        },
+        llmConfig: null,
+      },
+    },
+    {
+      memberAddress: '/writer',
+      displayName: 'writer',
+      agentDefinitionId: executionResourceRef.source === 'bundle' ? 'bundle-writer' : 'shared-writer',
+      runtimeKind: executionResourceRef.source === 'bundle' ? 'codex_app_server' : 'claude_agent_sdk',
+      llmModelIdentifier: executionResourceRef.source === 'bundle' ? 'gpt-5.6-luna' : 'claude-sonnet',
+      llmConfig: null,
+      provenance: {
+        runtimeKind: {
+          kind: source === 'PACKAGE' ? 'PACKAGE_AGENT_DEFAULT' : 'SELECTED_RESOURCE_AGENT_DEFAULT',
+          agentDefinitionId: executionResourceRef.source === 'bundle' ? 'bundle-writer' : 'shared-writer',
+        },
+        llmModelIdentifier: {
+          kind: source === 'PACKAGE' ? 'PACKAGE_AGENT_DEFAULT' : 'SELECTED_RESOURCE_AGENT_DEFAULT',
+          agentDefinitionId: executionResourceRef.source === 'bundle' ? 'bundle-writer' : 'shared-writer',
+        },
+        llmConfig: null,
+      },
+    },
+  ],
+})
+
+const effective = (selectedBaseline: ReturnType<typeof baseline>) => ({
+  ...selectedBaseline,
+  leaves: selectedBaseline.leaves.map((leaf) => ({
+    ...leaf,
+    runtimeKind: leaf.runtimeKind!,
+    llmModelIdentifier: leaf.llmModelIdentifier!,
+    workspaceRootPath: '/runtime/brief-app',
+    provenance: {
+      ...leaf.provenance,
+      workspaceRootPath: 'APPLICATION_RUNTIME',
+    },
+  })),
+})
+
+const packageView = {
+  applicationId: 'brief-app',
+  slots: [{
+    slot,
+    packageBaseline: baseline(packageRef, 'PACKAGE'),
+    selectedResourceBaseline: baseline(packageRef, 'PACKAGE'),
+    savedOverride: null,
+    savedOverrideState: 'ABSENT',
+    effectiveConfiguration: effective(baseline(packageRef, 'PACKAGE')),
+    issues: [],
+    canResetToPackageDefaults: false,
+    updatedAt: null,
+  }],
+  readiness: { status: 'RUNNABLE', issues: [] },
+}
+
+const savedLaunchOverride = {
+  kind: 'AGENT_TEAM',
+  defaults: null,
+  memberProfiles: [
+    {
+      memberAddress: '/researcher',
+      displayName: 'researcher',
+      agentDefinitionId: 'shared-researcher',
+    },
+    {
+      memberAddress: '/writer',
+      displayName: 'writer',
+      agentDefinitionId: 'shared-writer',
+      llmModelIdentifier: 'host-writer-model',
+    },
+  ],
+}
+
+const savedView = {
+  applicationId: 'brief-app',
+  slots: [{
+    slot,
+    packageBaseline: baseline(packageRef, 'PACKAGE'),
+    selectedResourceBaseline: baseline(alternateRef, 'SELECTED_RESOURCE'),
+    savedOverride: {
+      slotKey: slot.slotKey,
+      executionResourceRef: alternateRef,
+      launchOverride: savedLaunchOverride,
+    },
+    savedOverrideState: 'VALID',
+    effectiveConfiguration: effective(baseline(alternateRef, 'SELECTED_RESOURCE')),
+    issues: [],
+    canResetToPackageDefaults: true,
+    updatedAt: '2026-07-29T12:00:00.000Z',
+  }],
+  readiness: { status: 'RUNNABLE', issues: [] },
+}
+
+const resources = [
+  {
+    source: 'bundle',
+    kind: 'AGENT_TEAM',
+    localId: packageRef.localId,
+    definitionId: 'bundle-team',
+    name: 'Bundled Brief Team',
+    applicationId: 'brief-app',
+  },
+  {
+    source: 'shared',
+    kind: 'AGENT_TEAM',
+    localId: null,
+    definitionId: alternateRef.definitionId,
+    name: 'Shared Writing Team',
+    applicationId: null,
+  },
+]
+
 describe('ApplicationLaunchSetupPanel', () => {
   beforeEach(() => {
     fetchMock.mockReset()
   })
 
-  it('loads host-managed setup and saves launchProfile payloads without starting a run', async () => {
+  it('previews an alternate selection and saves only the sparse current launch override', async () => {
     fetchMock
-      .mockResolvedValueOnce(okJson([
-        {
-          slot: {
-            slotKey: 'draftingTeam',
-            name: 'Drafting team',
-            description: 'Used for brief drafting runs.',
-            allowedExecutionResourceKinds: ['AGENT_TEAM'],
-            allowedExecutionResourceSources: ['bundle', 'shared'],
-            required: true,
-            supportedLaunchConfig: {
-              AGENT_TEAM: {
-                runtimeKind: true,
-                llmModelIdentifier: true,
-                workspaceRootPath: true,
-                memberOverrides: {
-                  runtimeKind: true,
-                  llmModelIdentifier: true,
-                },
-              },
-            },
-            defaultExecutionResourceRef: {
-              source: 'bundle',
-              kind: 'AGENT_TEAM',
-              localId: 'brief-studio-team',
-            },
-          },
-          status: 'READY',
-          configuration: {
-            slotKey: 'draftingTeam',
-            executionResourceRef: {
-              source: 'bundle',
-              kind: 'AGENT_TEAM',
-              localId: 'brief-studio-team',
-            },
-            launchProfile: null,
-          },
-          invalidSavedConfiguration: null,
-          issue: null,
-          updatedAt: null,
-        },
-      ]))
-      .mockResolvedValueOnce(okJson([
-        {
-          source: 'bundle',
-          kind: 'AGENT_TEAM',
-          localId: 'brief-studio-team',
-          definitionId: 'brief-studio-team',
-          name: 'Bundled Brief Team',
-          applicationId: 'bundle-app__pkg__brief-studio',
-        },
-        {
-          source: 'shared',
-          kind: 'AGENT_TEAM',
-          localId: null,
-          definitionId: 'shared-writing-team',
-          name: 'Shared Writing Team',
-          applicationId: null,
-        },
-      ]))
+      .mockResolvedValueOnce(okJson(packageView))
+      .mockResolvedValueOnce(okJson(resources))
       .mockResolvedValueOnce(okJson({
-        slot: {
-          slotKey: 'draftingTeam',
-          name: 'Drafting team',
-          description: 'Used for brief drafting runs.',
-          allowedExecutionResourceKinds: ['AGENT_TEAM'],
-          allowedExecutionResourceSources: ['bundle', 'shared'],
-          required: true,
-          supportedLaunchConfig: {
-            AGENT_TEAM: {
-              runtimeKind: true,
-              llmModelIdentifier: true,
-              workspaceRootPath: true,
-              memberOverrides: {
-                runtimeKind: true,
-                llmModelIdentifier: true,
-              },
-            },
-          },
-          defaultExecutionResourceRef: {
-            source: 'bundle',
-            kind: 'AGENT_TEAM',
-            localId: 'brief-studio-team',
-          },
-        },
-        status: 'READY',
-        configuration: {
-          slotKey: 'draftingTeam',
-          executionResourceRef: {
-            source: 'shared',
-            kind: 'AGENT_TEAM',
-            definitionId: 'shared-writing-team',
-          },
-          launchProfile: {
-            kind: 'AGENT_TEAM',
-            defaults: {
-              runtimeKind: 'lmstudio',
-              llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-              workspaceRootPath: '/tmp/brief-studio',
-            },
-            memberProfiles: [
-              {
-                memberAddress: '/researcher',
-                displayName: 'researcher',
-                agentDefinitionId: 'bundle-agent__researcher',
-              },
-              {
-                memberAddress: '/writer',
-                displayName: 'writer',
-                agentDefinitionId: 'bundle-agent__writer',
-                runtimeKind: 'lmstudio',
-                llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-              },
-            ],
-          },
-        },
-        invalidSavedConfiguration: null,
-        issue: null,
-        updatedAt: '2026-04-20T18:45:00.000Z',
+        status: 'RESOLVED',
+        applicationId: 'brief-app',
+        slotKey: slot.slotKey,
+        executionResourceRef: alternateRef,
+        selectedResourceBaseline: baseline(alternateRef, 'SELECTED_RESOURCE'),
+        issues: [],
       }))
+      .mockResolvedValueOnce(okJson(savedView))
 
     const wrapper = mount(ApplicationLaunchSetupPanel, {
-      props: {
-        applicationId: 'bundle-app__pkg__brief-studio',
-        presentation: 'panel',
-      },
+      props: { applicationId: 'brief-app', presentation: 'panel' },
       global: {
         stubs: {
           ApplicationExecutionResourceSlotEditor: ApplicationExecutionResourceSlotEditorStub,
         },
       },
     })
-
     await flushPromises()
 
-    expect(fetchMock.mock.calls[0]?.[0]).toBe(
-      'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/execution-resource-configurations',
-    )
-    expect(fetchMock.mock.calls[1]?.[0]).toBe(
-      'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/available-execution-resources',
-    )
-    expect(wrapper.get('[data-testid="application-launch-setup-panel"]').attributes('data-presentation')).toBe('panel')
+    expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
+      phase: 'ready',
+      isLaunchReady: true,
+    })
+    await wrapper.get('[data-testid="select-shared-team"]').trigger('click')
+    await flushPromises()
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: false,
     })
-
-    await wrapper.get('[data-testid="select-shared-team"]').trigger('click')
-    await wrapper.get('[data-testid="set-team-launch-profile"]').trigger('click')
-    await wrapper.get('[data-testid="mark-ready"]').trigger('click')
-    await flushPromises()
-
-    const saveButton = wrapper.get('[data-testid="application-launch-setup-save-draftingTeam"]')
-    expect(saveButton.attributes('disabled')).toBeUndefined()
-
-    await saveButton.trigger('click')
-    await flushPromises()
-
-    expect(fetchMock).toHaveBeenCalledTimes(3)
-    const [, saveInit] = fetchMock.mock.calls[2] as [string, RequestInit]
-    expect(saveInit.method).toBe('PUT')
-    expect(JSON.parse(String(saveInit.body))).toEqual({
-      executionResourceRef: {
-        source: 'shared',
-        kind: 'AGENT_TEAM',
-        definitionId: 'shared-writing-team',
-      },
-      launchProfile: {
-        kind: 'AGENT_TEAM',
-        defaults: {
-          runtimeKind: 'lmstudio',
-          llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-          workspaceRootPath: '/tmp/brief-studio',
-        },
-        memberProfiles: [
-          {
-            memberAddress: '/researcher',
-            displayName: 'researcher',
-            agentDefinitionId: 'bundle-agent__researcher',
-          },
-          {
-            memberAddress: '/writer',
-            displayName: 'writer',
-            agentDefinitionId: 'bundle-agent__writer',
-            runtimeKind: 'lmstudio',
-            llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-          },
-        ],
-      },
+    expect(fetchMock.mock.calls[2]?.[0]).toBe(
+      'http://127.0.0.1:43123/rest/applications/brief-app/execution-resource-configurations/draftingTeam/selection-preview',
+    )
+    expect(JSON.parse(String((fetchMock.mock.calls[2]?.[1] as RequestInit).body))).toEqual({
+      executionResourceRef: alternateRef,
     })
 
+    await wrapper.get('[data-testid="set-sparse-team-override"]').trigger('click')
+    await wrapper.get('[data-testid="mark-ready"]').trigger('click')
+    await wrapper.get('[data-testid="application-launch-setup-save-draftingTeam"]').trigger('click')
+    await flushPromises()
+
+    const [saveUrl, saveInit] = fetchMock.mock.calls[3] as [string, RequestInit]
+    expect(saveUrl).toBe(
+      'http://127.0.0.1:43123/rest/applications/brief-app/execution-resource-configurations/draftingTeam',
+    )
+    expect(saveInit.method).toBe('PUT')
+    expect(JSON.parse(String(saveInit.body))).toEqual({
+      executionResourceRef: alternateRef,
+      launchOverride: savedLaunchOverride,
+    })
     expect(wrapper.text()).toContain('Setup saved.')
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: true,
-      blockingReason: null,
     })
   })
 
-  it('mounts the real execution-resource slot editor with available resources from the parent', async () => {
+  it('uses DELETE for explicit Reset and restores the package-selected view', async () => {
     fetchMock
-      .mockResolvedValueOnce(okJson([
-        {
-          slot: {
-            slotKey: 'draftingTeam',
-            name: 'Drafting team',
-            description: 'Used for brief drafting runs.',
-            allowedExecutionResourceKinds: ['AGENT_TEAM'],
-            allowedExecutionResourceSources: ['bundle', 'shared'],
-            required: true,
-            supportedLaunchConfig: null,
-            defaultExecutionResourceRef: null,
-          },
-          status: 'NOT_CONFIGURED',
-          configuration: null,
-          invalidSavedConfiguration: null,
-          issue: null,
-          updatedAt: null,
-        },
-      ]))
-      .mockResolvedValueOnce(okJson([
-        {
-          source: 'bundle',
-          kind: 'AGENT_TEAM',
-          localId: 'brief-studio-team',
-          definitionId: 'brief-studio-team',
-          name: 'Bundled Brief Team',
-          applicationId: 'bundle-app__pkg__brief-studio',
-        },
-        {
-          source: 'shared',
-          kind: 'AGENT_TEAM',
-          localId: null,
-          definitionId: 'shared-writing-team',
-          name: 'Shared Writing Team',
-          applicationId: null,
-        },
-      ]))
+      .mockResolvedValueOnce(okJson(savedView))
+      .mockResolvedValueOnce(okJson(resources))
+      .mockResolvedValueOnce(okJson(packageView))
 
     const wrapper = mount(ApplicationLaunchSetupPanel, {
-      props: {
-        applicationId: 'bundle-app__pkg__brief-studio',
-        presentation: 'page',
-      },
+      props: { applicationId: 'brief-app' },
       global: {
         stubs: {
-          ApplicationAgentLaunchProfileEditor: true,
-          ApplicationTeamLaunchProfileEditor: true,
+          ApplicationExecutionResourceSlotEditor: ApplicationExecutionResourceSlotEditorStub,
         },
       },
     })
-
     await flushPromises()
 
-    const selection = wrapper.get('select')
-    expect(selection.text()).toContain('Bundled Brief Team · Bundled · Agent team')
-    expect(selection.text()).toContain('Shared Writing Team · Shared · Agent team')
-    expect(wrapper.text()).not.toContain('Cannot read properties of undefined')
+    await wrapper.get('[data-testid="application-launch-setup-package-reset-draftingTeam"]').trigger('click')
+    await flushPromises()
+
+    const [resetUrl, resetInit] = fetchMock.mock.calls[2] as [string, RequestInit]
+    expect(resetUrl).toBe(
+      'http://127.0.0.1:43123/rest/applications/brief-app/execution-resource-configurations/draftingTeam',
+    )
+    expect(resetInit.method).toBe('DELETE')
+    expect(wrapper.text()).toContain('Package defaults restored.')
+    expect(wrapper.find('[data-testid="application-launch-setup-package-reset-draftingTeam"]').exists()).toBe(false)
   })
 })

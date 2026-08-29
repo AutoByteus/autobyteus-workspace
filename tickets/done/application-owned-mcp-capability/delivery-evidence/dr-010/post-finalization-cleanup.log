@@ -1,0 +1,101 @@
+DR-010 post-finalization cleanup execution
+started_at=2026-08-28T14:34:42Z
+personal_before=df50148581d933eaace2149b8980e871fee049ef
+origin_personal_before=df50148581d933eaace2149b8980e871fee049ef
+release_tag_target=027da92cbececb7d944c5a593157cfb59e54efe0
+ticket_local=744fcc2c1ec1b1af774c39aa420be17b03832c05
+ticket_remote=744fcc2c1ec1b1af774c39aa420be17b03832c05
+ticket_worktree_status:
+## codex/application-owned-mcp-capability...origin/codex/application-owned-mcp-capability
+ignored_top_level_outputs:
+!! applications/brief-studio/node_modules/
+!! applications/socratic-math-teacher/node_modules/
+!! autobyteus-application-backend-sdk/node_modules/
+!! autobyteus-application-devkit/node_modules/
+!! autobyteus-application-frontend-sdk/node_modules/
+!! autobyteus-application-sdk-contracts/node_modules/
+!! autobyteus-message-gateway/node_modules/
+!! autobyteus-server-ts/agent-teams/
+!! autobyteus-server-ts/agents/
+!! autobyteus-server-ts/applications/
+!! autobyteus-server-ts/autobyteus-web/
+!! autobyteus-server-ts/db/
+!! autobyteus-server-ts/dist/
+!! autobyteus-server-ts/node_modules/
+!! autobyteus-server-ts/tests/.tmp/
+!! autobyteus-server-ts/workspaces.json
+!! autobyteus-team-stream-contracts/node_modules/
+!! autobyteus-ts/dist/
+!! autobyteus-ts/node_modules/
+!! autobyteus-web/--host/
+!! autobyteus-web/.nuxt/
+!! autobyteus-web/build/dist/
+!! autobyteus-web/build/icons/1024x1024.png
+!! autobyteus-web/build/icons/128x128.png
+!! autobyteus-web/build/icons/256x256.png
+!! autobyteus-web/build/icons/512x512.png
+!! autobyteus-web/build/icons/64x64.png
+!! autobyteus-web/build/icons/icon.icns
+!! autobyteus-web/build/icons/icon.ico
+!! autobyteus-web/dist-mobile/
+!! autobyteus-web/dist/
+!! autobyteus-web/electron-dist/
+!! autobyteus-web/node_modules/
+!! autobyteus-web/resources/
+!! node_modules/
+merge_ancestry=PASS; ticket branch is ancestor of personal
+worktrees_before:
+worktree /home/autobyteus/workspace/autobyteus-workspace
+HEAD df50148581d933eaace2149b8980e871fee049ef
+branch refs/heads/personal
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-agent-definition-live-capability-refresh-concept
+HEAD 9d0fd7c570d58da1af2c7a40279327c8a20a8093
+branch refs/heads/codex/agent-definition-live-capability-refresh-concept
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability
+HEAD 744fcc2c1ec1b1af774c39aa420be17b03832c05
+branch refs/heads/codex/application-owned-mcp-capability
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-artifact-change-notification-design
+HEAD 306de420ca8830478529b40bd6dfda6694b742a9
+branch refs/heads/codex/artifact-change-notification-design
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-dynamic-agent-team-runtime
+HEAD 7eeda81b004962e4236258ea5480c4633239b482
+branch refs/heads/codex/dynamic-agent-team-runtime
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-google-antigravity-cli-integration-investigation
+HEAD 9d0fd7c570d58da1af2c7a40279327c8a20a8093
+branch refs/heads/codex/google-antigravity-cli-integration-investigation
+
+completed_at=2026-08-28T14:35:46Z
+ticket_worktree_exists=no
+local_ticket_branch_exists=no
+remote_ticket_branch_exists=no
+temporary_zlib_shim_exists=no
+test_profile_disposition=preserved under /home/vncuser for user continuity
+worktrees_after:
+worktree /home/autobyteus/workspace/autobyteus-workspace
+HEAD df50148581d933eaace2149b8980e871fee049ef
+branch refs/heads/personal
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-agent-definition-live-capability-refresh-concept
+HEAD 9d0fd7c570d58da1af2c7a40279327c8a20a8093
+branch refs/heads/codex/agent-definition-live-capability-refresh-concept
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-artifact-change-notification-design
+HEAD 306de420ca8830478529b40bd6dfda6694b742a9
+branch refs/heads/codex/artifact-change-notification-design
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-dynamic-agent-team-runtime
+HEAD 7eeda81b004962e4236258ea5480c4633239b482
+branch refs/heads/codex/dynamic-agent-team-runtime
+
+worktree /home/autobyteus/workspace/autobyteus-workspace-google-antigravity-cli-integration-investigation
+HEAD 9d0fd7c570d58da1af2c7a40279327c8a20a8093
+branch refs/heads/codex/google-antigravity-cli-integration-investigation
+
+personal_after=df50148581d933eaace2149b8980e871fee049ef
+origin_personal_after=df50148581d933eaace2149b8980e871fee049ef
+result=PASS

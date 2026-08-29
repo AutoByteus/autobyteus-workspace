@@ -2,16 +2,16 @@ import fastify from "fastify";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../../src/api/fastify-runtime-config.js";
 
-const applicationBackendApiGatewayMock = vi.hoisted(() => ({
+const applicationBackendApiGatewayMock = {
   getApplicationEngineStatus: vi.fn(),
   invokeApplicationQuery: vi.fn(),
-}));
-
-vi.mock("../../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", () => ({
-  getApplicationBackendApiGatewayService: () => applicationBackendApiGatewayMock,
-}));
+};
+const applicationLifecycleMock = {
+  awaitReady: vi.fn(),
+};
 
 import { registerApplicationBackendRoutes } from "../../../../src/api/rest/application-backends.js";
+import { registerApplicationAvailabilityRoutes } from "../../../../src/api/rest/application-availability.js";
 
 const LONG_APPLICATION_ID =
   "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d62756e646c652d6167656e742d6172636869746563747572652d616e616c797369732d696d706c656d656e746174696f6e2532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f";
@@ -20,6 +20,8 @@ describe("application backend REST routes under /rest prefix", () => {
   beforeEach(() => {
     applicationBackendApiGatewayMock.getApplicationEngineStatus.mockReset();
     applicationBackendApiGatewayMock.invokeApplicationQuery.mockReset();
+    applicationLifecycleMock.awaitReady.mockReset();
+    applicationLifecycleMock.awaitReady.mockResolvedValue(undefined);
   });
 
   it("serves status for long imported application ids through the parent /rest prefix", async () => {
@@ -30,7 +32,11 @@ describe("application backend REST routes under /rest prefix", () => {
 
     const app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(async (restApp) => {
-      await registerApplicationBackendRoutes(restApp);
+      await registerApplicationAvailabilityRoutes(restApp, {
+        gateway: applicationBackendApiGatewayMock as never,
+        lifecycle: applicationLifecycleMock as never,
+        availabilityService: {} as never,
+      });
     }, { prefix: "/rest" });
 
     const response = await app.inject({
@@ -44,6 +50,7 @@ describe("application backend REST routes under /rest prefix", () => {
       state: "ready",
     });
     expect(applicationBackendApiGatewayMock.getApplicationEngineStatus).toHaveBeenCalledWith(LONG_APPLICATION_ID);
+    expect(applicationLifecycleMock.awaitReady).toHaveBeenCalledTimes(1);
   });
 
   it("serves query calls for long imported application ids through the parent /rest prefix", async () => {
@@ -53,7 +60,10 @@ describe("application backend REST routes under /rest prefix", () => {
 
     const app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(async (restApp) => {
-      await registerApplicationBackendRoutes(restApp);
+      await registerApplicationBackendRoutes(restApp, {
+        gateway: applicationBackendApiGatewayMock as never,
+        lifecycle: applicationLifecycleMock as never,
+      });
     }, { prefix: "/rest" });
 
     const response = await app.inject({
@@ -81,5 +91,6 @@ describe("application backend REST routes under /rest prefix", () => {
       },
       { includeArchived: false },
     );
+    expect(applicationLifecycleMock.awaitReady).toHaveBeenCalledTimes(1);
   });
 });

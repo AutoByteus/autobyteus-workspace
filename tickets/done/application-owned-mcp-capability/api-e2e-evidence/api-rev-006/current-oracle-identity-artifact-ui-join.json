@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 2,
+  "apiRevision": "API-REV-006",
+  "oracle": "SR-010 / ARCH-REV-010 / corrected AC-039",
+  "sourceExecution": "API-REV-005 authoritative clean supported-browser journey",
+  "historicalSourceResultPreserved": "API-REV-005 Fail / 96.4% under superseded zero-shell oracle",
+  "result": "PASS",
+  "brief": {
+    "briefId": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+    "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+    "status": "in_review",
+    "bindingId": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+    "teamRunId": "brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a"
+  },
+  "runtime": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "configuredToolNames": [
+      "get_brief_context",
+      "publish_artifacts",
+      "send_message_to"
+    ],
+    "providerSessions": [
+      "01a04838-3d52-7353-bb81-b11e20c03e7b",
+      "01a04838-cc03-75e0-96b2-933cd33e5c9b"
+    ]
+  },
+  "members": {
+    "researcher": {
+      "agentRunId": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f",
+      "platformAgentRunId": "01a04838-3d52-7353-bb81-b11e20c03e7b",
+      "contextCallId": "exec-1fec777b-1490-4f58-b6bc-b9b6cdf19fa5",
+      "contextResult": {
+        "briefId": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+        "status": "not_started",
+        "latestBindingStatus": "ATTACHED",
+        "updatedAt": "2026-08-28T11:54:00.368Z"
+      },
+      "shellCallIds": [
+        "exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e"
+      ],
+      "publishCallId": "exec-fefbc6fa-9b30-4e01-942c-b9956ac3bf61",
+      "revisionId": "034f9046-aa1a-453f-b208-fd68c13c9bf8"
+    },
+    "writer": {
+      "agentRunId": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e",
+      "platformAgentRunId": "01a04838-cc03-75e0-96b2-933cd33e5c9b",
+      "contextCallId": "exec-e32cfb48-15b4-4d68-be66-b99ebc3076fd",
+      "contextResult": {
+        "briefId": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+        "status": "researching",
+        "latestBindingStatus": "ATTACHED",
+        "updatedAt": "2026-08-28T11:54:25.734Z"
+      },
+      "shellCallIds": [
+        "exec-f4bcd9ea-2a42-4054-b837-f18247e028af"
+      ],
+      "publishCallId": "exec-f150cb03-3c79-4e9e-9f4a-82526667c458",
+      "revisionId": "5004a302-335b-407b-99a1-6b3080869629"
+    }
+  },
+  "acceptanceChecks": {
+    "apiRev005EvidenceIntegrityVerified": true,
+    "noExecutableOrMaintainedInputDelta": true,
+    "maintainedInputsByteIdentical": true,
+    "maintainedInputsOperationAgnostic": true,
+    "legacyBusinessAssertionsRemainTrue": true,
+    "researcherContextFirstExactlyOnce": true,
+    "writerContextFirstExactlyOnce": true,
+    "researcherContextPairedSuccess": true,
+    "writerContextPairedSuccess": true,
+    "researchMarkerExact": true,
+    "writerMarkerExact": true,
+    "researchPublicationRelativeExact": true,
+    "writerPublicationRelativeExact": true,
+    "researchPublicationResolvesInMemberWorkspace": true,
+    "writerPublicationResolvesInMemberWorkspace": true,
+    "researchPublicationProducerExact": true,
+    "writerPublicationProducerExact": true,
+    "bindingExact": true,
+    "applicationIdentityPresent": true,
+    "handoffIdentityExact": true,
+    "handoffMarkerPathAndCompleteBodyExact": true,
+    "writerVerbatimResearchUse": true,
+    "writerNoCrossMemberRead": true,
+    "browserAllSemanticAssertionsTrue": true,
+    "browserSameBrief": true,
+    "finalBusinessStateInReview": true,
+    "currentLifecycleEvidencePassed": true
+  },
+  "diagnosticChecks": {
+    "researcherObservedFoundationCallPairedSuccess": true,
+    "writerObservedFoundationCallPairedSuccess": true
+  },
+  "assertions": {
+    "AC-032_researcher_context_first_once_business_prompt_artifact_publication_handoff": true,
+    "AC-033_writer_context_first_once_handoff_only_artifact_publication": true,
+    "AC-034_exact_identity_join_no_secret": true,
+    "AC-035_supported_browser_same_brief_in_review_two_one_final": true,
+    "AC-036_context_read_only_publication_reconciliation_causes_change": true,
+    "AC-037_exact_codex_luna_business_prompts_no_named_foundation": true,
+    "AC-038_complete_handoff_verbatim_use_relative_publication": true,
+    "AC-039_authorized_foundation_operation_and_authoritative_business_join": true,
+    "AC-040_deterministic_tokenless_headerless_listener": true,
+    "AC-041_same_url_fresh_restore_current_state": true,
+    "AC-042_general_null_application_exact_capability": true,
+    "AC-043_application_lane_quiesce_session_liveness": true,
+    "AC-044_exact_deactivation_shutdown_ownership": true
+  },
+  "operationDiagnostics": {
+    "acceptanceAuthority": false,
+    "researcher": {
+      "tool": "run_bash",
+      "callIds": [
+        "exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e"
+      ]
+    },
+    "writer": {
+      "tool": "run_bash",
+      "callIds": [
+        "exec-f4bcd9ea-2a42-4054-b837-f18247e028af"
+      ]
+    },
+    "classification": "Allowed already-authorized runtime foundation operation; diagnostic only",
+    "excludedFromAcceptanceDecision": true
+  },
+  "evidenceIntegrity": {
+    "apiRev005ManifestSha256": "0f4d62d4f21b49e28ff78bcd22bd7ba3abe9d39dc3de0e2ce971a2e7bf1d7536",
+    "maintainedInputVerification": "maintained-input-hash-verification.json",
+    "sourceJoin": "../api-rev-005/clean-identity-trace-artifact-ui-join.json"
+  }
+}

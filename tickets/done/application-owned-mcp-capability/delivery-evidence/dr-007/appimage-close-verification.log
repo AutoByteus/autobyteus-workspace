@@ -1,0 +1,7 @@
+DR-007 post-test close verification
+checked_at=2026-08-28T13:54:31Z
+close_method=X11 graceful window close; Electron requested packaged-server SIGTERM
+matching_windows=
+matching_processes=
+result=PASS; no matching X11 window or retained AppImage process remained
+test_profile_disposition=preserved under /home/vncuser for user continuity; not repository state

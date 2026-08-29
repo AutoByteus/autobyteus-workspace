@@ -10,13 +10,23 @@ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-ru
 import { createRootTeamRunPhysicalScope } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamAgentActivationError } from "../../../src/agent-team-execution/errors.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import {
+  testAgentNode,
+  testMemberTaskRootResolver,
+  testTeamRunConfig,
+} from "../../fixtures/current-team-run-fixtures.js";
 
 const nativeNode = testAgentNode("/Native", {
   agentRunId: "native-run",
   runtimeKind: RuntimeKind.AUTOBYTEUS,
   workspaceRootPath: "/tmp/native-team-workspace",
 });
+
+const testMemoryLocationService = {
+  getTeamAgentRunLocation: (input: { agentRunId: string }) => ({
+    memoryDir: `/tmp/${input.agentRunId}`,
+  }),
+};
 
 const createCandidate = () => {
   const run = {
@@ -76,8 +86,10 @@ const createHandle = (input: {
     config: nativeNode,
     activationMode: input.activationMode,
     agentRunManager: input.manager as never,
+    memoryLocationService: testMemoryLocationService as never,
     activityInspector: activityInspector as never,
     memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
+    taskRootResolver: testMemberTaskRootResolver(),
     workspaceManager: { ensureWorkspaceByRootPath } as never,
     publish: vi.fn(),
     acceptPlatformBinding,
@@ -213,16 +225,18 @@ describe("MixedAgentMemberHandle native activation", () => {
       abort: vi.fn(async () => ({ kind: "aborted" as const })),
     };
     const acceptPlatformBinding = vi.fn(async () => undefined);
-    const handle = new MixedAgentMemberHandle({
-      teamContext,
+      const handle = new MixedAgentMemberHandle({
+        teamContext,
       context,
       config: externalNode,
       activationMode: "fresh",
       agentRunManager: {
         prepareNewAgentRun: vi.fn(async () => candidate),
       } as never,
+      memoryLocationService: testMemoryLocationService as never,
       activityInspector: { inspect: vi.fn(() => ({ kind: "none" as const })) } as never,
       memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
+      taskRootResolver: testMemberTaskRootResolver(),
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-codex-task" })),
       } as never,
@@ -311,14 +325,16 @@ describe("MixedAgentMemberHandle native activation", () => {
     };
     const acceptPlatformBinding = vi.fn(async () => undefined);
     const activityInspector = { inspect: vi.fn(() => { throw new Error("not expected"); }) };
-    const handle = new MixedAgentMemberHandle({
-      teamContext,
+      const handle = new MixedAgentMemberHandle({
+        teamContext,
       context,
       config: externalNode,
       activationMode: "restore",
       agentRunManager: manager as never,
+      memoryLocationService: testMemoryLocationService as never,
       activityInspector: activityInspector as never,
       memberTeamContextBuilder: { build: vi.fn(async () => null) } as never,
+      taskRootResolver: testMemberTaskRootResolver(),
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-codex" })),
       } as never,

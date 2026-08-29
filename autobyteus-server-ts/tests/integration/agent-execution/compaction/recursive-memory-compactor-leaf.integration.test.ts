@@ -131,7 +131,7 @@ class RecordingChildRunService {
       ...input,
       memoryDir,
     }), runId);
-    const run = new AgentRun({ context: backend.getContext(), backend });
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: backend.getContext(), backend });
     const evidence: ChildRunEvidence = {
       runId,
       memoryDir,

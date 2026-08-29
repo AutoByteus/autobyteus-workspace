@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "resultConditions": {
+    "restoredActive": true,
+    "priorTaskRetainedAccepted": true,
+    "priorSixMessagesRetained": true,
+    "sameConfiguredAgentIdentities": true,
+    "exactTeamAddressRequestAfterRestart": true,
+    "exactReplyAfterRestart": true,
+    "exactlyTwoNewCommunicationRecords": true,
+    "browserCompletionVisible": true,
+    "browserContinuationMessagesVisible": true,
+    "v2TreeRetained": true,
+    "publicTerminationSucceeded": true,
+    "inactiveAfterTermination": true,
+    "retainedHistoryAfterTermination": true
+  },
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  }
+}

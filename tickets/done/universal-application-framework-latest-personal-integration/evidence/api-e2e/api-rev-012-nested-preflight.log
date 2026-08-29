@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1",
+  "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db",
+  "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/api-rev-012-nested-20260825-1.db",
+  "operationalTargetMatch": false,
+  "sanitizedDatabaseSelectorsAbsent": true,
+  "configurationOnlyExactTarget": true,
+  "databaseExists": false
+}

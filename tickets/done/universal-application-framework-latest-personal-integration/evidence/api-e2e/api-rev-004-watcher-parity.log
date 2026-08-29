@@ -1,0 +1,8 @@
+API-REV-004 maintained dual-host watcher parity
+HEAD=e2c9e2e4c89875c61aad57dea5a40d45832e6884
+paths=73
+ready_counts brief_standalone=2
+ready_counts socratic_standalone=3
+ready_counts brief_studio=2
+ready_counts socratic_studio=3
+PARITY_PASS 73/73 byte digests unchanged

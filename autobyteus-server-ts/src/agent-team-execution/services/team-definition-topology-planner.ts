@@ -14,6 +14,7 @@ import {
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import type { TeamRunIdentityAllocator } from "./team-run-identity-allocator.js";
 import {
+  cloneAgentLaunchConfiguration,
   projectAgentLaunchSettings,
   TeamRunConfig,
   type AgentLaunchConfiguration,
@@ -166,7 +167,10 @@ export class TeamDefinitionTopologyPlanner {
       if (result.has(address)) throw new Error(`Duplicate Team launch settings for '${address}'.`);
       if (index.agents.has(address)) throw new Error(`Team launch settings reference Agent placement '${address}'.`);
       if (!index.teams.has(address)) throw new Error(`Team launch settings reference unknown Team '${address}'.`);
-      result.set(address, value);
+      result.set(address, Object.freeze({
+        ...value,
+        ...cloneAgentLaunchConfiguration(value, `defaultLaunchConfiguration at '${address}'`),
+      }));
     }
     const missing = [...index.teams.keys()].find((address) => !result.has(address));
     if (missing) throw new Error(`Launch settings for Team '${missing}' were not provided.`);
@@ -188,7 +192,10 @@ export class TeamDefinitionTopologyPlanner {
       if (value.agentDefinitionId && value.agentDefinitionId !== member.agentDefinitionId) {
         throw new Error(`Launch settings for '${address}' reference the wrong Agent definition.`);
       }
-      result.set(address, value);
+      result.set(address, Object.freeze({
+        ...value,
+        ...cloneAgentLaunchConfiguration(value, `launchConfiguration at '${address}'`),
+      }));
     }
     const missing = [...index.agents.keys()].find((address) => !result.has(address));
     if (missing) throw new Error(`Launch settings for Team member '${missing}' were not provided.`);

@@ -1,0 +1,3 @@
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json

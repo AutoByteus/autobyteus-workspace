@@ -89,6 +89,22 @@ export class AgentDefinitionService {
     return AgentDefinitionService.instance;
   }
 
+  static bindProcessInstance(instance: AgentDefinitionService): void {
+    if (!instance) {
+      throw new Error("A process AgentDefinitionService instance is required.");
+    }
+    if (AgentDefinitionService.instance) {
+      throw new Error("The process AgentDefinitionService is already initialized.");
+    }
+    AgentDefinitionService.instance = instance;
+  }
+
+  static releaseProcessInstance(instance: AgentDefinitionService): void {
+    if (AgentDefinitionService.instance === instance) {
+      AgentDefinitionService.instance = null;
+    }
+  }
+
   readonly provider: AgentDefinitionProvider;
   private readonly freshProvider: AgentDefinitionFreshProvider;
   private registries: ProcessorRegistries;

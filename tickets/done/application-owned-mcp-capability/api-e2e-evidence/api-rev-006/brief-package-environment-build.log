@@ -1,0 +1,34 @@
+Scope: 2 of 12 workspace projects
+autobyteus-application-frontend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-frontend-sdk build: Done
+autobyteus-application-devkit build$ tsc -p tsconfig.build.json
+autobyteus-application-devkit build: Done
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/brief-studio-authoring@ build /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:18623) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T12:32:22.408Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T12:32:22.408Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-28T12:32:22.410Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/dist/importable-package
+Generated application root at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/dist/importable-package/applications/brief-studio
+
+> @autobyteus-example/brief-studio-authoring@ validate /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:18672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T12:32:26.032Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T12:32:26.032Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-28T12:32:26.036Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/dist/importable-package

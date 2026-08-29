@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "brief_studio_team_3fcc38699ad44130b20eb4149a19cdff",
+  "messages": [
+    {
+      "messageId": "teammsg_dgNX5VpVi2vNRgMuTAIXLXMegqVp-w0U",
+      "senderAgentRunId": "brief_studio_researcher_bef570119a744cd9a182403c0887fb7f",
+      "receiverAgentRunId": "brief_studio_writer_0985ae6e8c1943e89f3e4d6d4f3b0afc",
+      "content": "Research handoff for Brief Studio.\n\nBrief context: {\"briefId\":\"brief-2263879a-640f-4606-8e92-d01e53a18dd5\",\"title\":\"API E2E Luna Patch Proof 2026-08-27T21:31Z\",\"observedStatus\":\"researching\"}\n\nCanonical artifact path: brief-studio/research.md\n\n# API E2E Luna Patch Proof 2026-08-27T21:31Z\n\n## Key findings\n\n- The Brief Studio workflow separates application-routed capabilities from Luna's built-in patch operation, so file creation must be performed by the provider patch tool rather than a configured registry tool.\n- A reviewable artifact is only trustworthy when its first line preserves the exact brief-context marker returned by the application binding.\n- The canonical researcher output is `brief-studio/research.md`, and publication should reference that workspace-relative path rather than an absolute filesystem location.\n- The writer's handoff must be self-contained: the complete research body, marker, and relative path belong in one delivered message because the writer cannot rely on cross-workspace reads.\n- The final brief should demonstrate evidence continuity by reproducing at least one complete, non-marker Key findings bullet under a Key evidence heading.\n\n## Risks or open questions\n\nThe main operational risk is treating a successful-looking tool invocation as sufficient without checking the provider-reported result. Patch or publication failures must stop the normal sequence and be reported plainly, with no shell fallback or invented checkpoint. Another risk is marker drift: changing whitespace, field order, identity, title, or observed status can make the artifact impossible to reconcile. The workflow also depends on the writer receiving the full body verbatim; truncation or summary-only handoff would weaken reviewability. Finally, the brief's business-state transition is owned by application reconciliation after final publication, so artifact publication alone should not be described as the final review-state update.\n\n## Recommendations or next steps\n\nValidate the exact context marker once, then create the canonical research file through built-in `apply_patch`. Require and record patch success before publishing the same relative path. Send the writer one complete handoff containing the marker, path, and body verbatim. The writer should independently validate its single context result, match the brief identity, quote one complete finding, patch `brief-studio/final-brief.md`, publish it relatively, and report only confirmed outcomes.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-08-27T21:33:20.834Z"
+    }
+  ]
+}

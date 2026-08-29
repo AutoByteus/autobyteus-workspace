@@ -1,0 +1,12 @@
+API-REV-006 cleanup and isolation verification
+recordedAt=2026-08-22T19:16:02.768406+00:00
+ownedRoot=/private/tmp/api-rev006-electron-classroom-20260822210950-99567
+ownershipMarkerVerified=true
+credentialDatabaseAndKeyExistedBeforeRemoval=true
+ownedProcessesBeforeRemoval=NONE
+discoveryPort=55888 availableBeforeRemoval=true availableAfterRemoval=true
+classroomPort=55889 availableBeforeRemoval=true availableAfterRemoval=true
+ownedRootRemoved=true
+ownedProcessesAfterRemoval=NONE
+ordinaryPort=29695 ordinaryPid=37991 ordinaryHealthHttp=200 ordinaryUnaffected=true
+temporaryHarnessRemoved=true

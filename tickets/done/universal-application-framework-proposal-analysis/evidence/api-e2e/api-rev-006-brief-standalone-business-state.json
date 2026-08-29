@@ -1,0 +1,99 @@
+{
+  "brief_artifact_revisions": [
+    {
+      "artifact_kind": "researcher",
+      "binding_id": "5c59b963-6c19-4e64-9aa7-e9682e80c4ea",
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "projected_at": "2026-07-30T05:11:19.387Z",
+      "publication_kind": "research",
+      "published_at": "2026-07-30T05:11:19.387Z",
+      "revision_id": "49bc3578-2cbe-459b-a054-d4ea861ac1db",
+      "run_id": "brief_studio_team_a1a303a2e32e4ee5b5d3d5c8421577c9"
+    },
+    {
+      "artifact_kind": "writer",
+      "binding_id": "5c59b963-6c19-4e64-9aa7-e9682e80c4ea",
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "projected_at": "2026-07-30T05:11:19.387Z",
+      "publication_kind": "final",
+      "published_at": "2026-07-30T05:11:19.387Z",
+      "revision_id": "d91cd3b1-0ca6-4c53-be16-278200df4847",
+      "run_id": "brief_studio_team_a1a303a2e32e4ee5b5d3d5c8421577c9"
+    }
+  ],
+  "brief_artifacts": [
+    {
+      "artifact_kind": "researcher",
+      "body": "# Research checkpoint \u2014 API REV 006 standalone Agent Tools 2026-07-30T05:05:06.401Z\n\n## Key findings\n- The standalone application composition registers the agent-tools MCP route and boots the published-artifact tool group, so file tools and artifact publication are runtime capabilities rather than app-local GraphQL commands.\n- The MCP surface is session-scoped and bearer-authenticated; the route rejects missing/invalid sessions, unsupported protocol versions, wrong content types, and unsupported methods before dispatching JSON-RPC calls.\n- The bundled team is configured with distinct `researcher` and `writer` members. Artifact projection maps researcher paths to `research`/`research_blocker`, writer paths to `draft`/`final`/`writer_blocker`, and advances review state from researching to draft-ready to in-review.\n- Publication is durable only after a file exists and the exact path is submitted; the backend reads the published revision, correlates it to the active team member, and stores both the revision record and current artifact body.\n- The runtime evidence shows the brief was created and a team run attached, but no researcher artifact has yet been projected; this checkpoint therefore focuses on the required research-first contract and the standalone MCP path.\n\n## Risks / open questions\n- The active run currently exposes the generic shell bridge but not the bundled `write_file`, `publish_artifacts`, or teammate-message tools in the local tool surface, so the required sequence may be blocked by runtime tool injection rather than application logic.\n- Until a researcher publication is projected, the writer must not draft; premature writer output would violate the freshness/order contract.\n- A fallback should preserve the exact artifact paths and producer route keys expected by the projection service; guessed or reconstructed paths can be rejected or misclassified.\n\n## Recommendations / next steps\n- Restore or expose the researcher tool manifest, then write and publish `brief-studio/research.md` before any writer action.\n- Verify the publication appears as a researcher artifact with `publicationKind=research` and status `researching`, then hand off the exact absolute path plus the concise findings.\n- Have the writer review the handed-off file, write the final reviewable brief, and publish only after the write step returns its exact absolute path.\n",
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "description": null,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "publication_kind": "research",
+      "revision_id": "49bc3578-2cbe-459b-a054-d4ea861ac1db",
+      "updated_at": "2026-07-30T05:11:19.387Z"
+    },
+    {
+      "artifact_kind": "writer",
+      "body": "# API REV 006 standalone Agent Tools 2026-07-30T05:05:06.401Z\n\n## Recommendation\nShip the standalone Agent Tools surface behind the existing session-scoped MCP boundary, but treat artifact publication and team handoff as release gates. The implementation shape is sound: generic file and publication tools remain runtime capabilities, while Brief Studio owns durable projection and review state. The current run should be considered reviewable only after the researcher publication is recorded and the writer output is published from the exact written path.\n\n## Key evidence\n- Standalone composition registers the Agent Tools MCP route and published-artifact tool group; the app\u2019s GraphQL layer remains focused on brief lifecycle and review actions.\n- MCP requests are bearer-authenticated and session-scoped, with protocol, content-type, method, and session validation before dispatch.\n- Brief Studio maps `brief-studio/research.md` to a researcher/research artifact and `brief-studio/final-brief.md` to a writer/final artifact; final publication advances the brief to `in_review`.\n- Artifact projection snapshots the published revision, reads its body, correlates the producer member, and persists both revision history and the current artifact body.\n- The fresh-run contract is explicitly ordered: research write \u2192 publication \u2192 handoff \u2192 writer review \u2192 final write \u2192 publication.\n\n## Risks / cautions\n- The active run is attached, but the local agent surface did not expose the bundled `write_file`, `publish_artifacts`, or teammate handoff tools; this is a runtime injection blocker, not evidence of an MCP design defect.\n- Do not draft before a researcher publication is projected. Do not reconstruct a publish path; use the exact absolute path returned by the write operation.\n- Preserve producer route keys and allowed artifact names; otherwise projection can reject or misclassify the file.\n\n## Next actions\n- Restore the researcher tool manifest and publish the existing research checkpoint as the single `research` artifact.\n- Deliver the exact research path and summary to the writer, then have the writer review it and publish this final brief from the write result.\n- Verify the brief detail shows researcher and writer artifacts, status `in_review`, and a ready-for-review notification before human approval.\n",
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "description": null,
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "publication_kind": "final",
+      "revision_id": "d91cd3b1-0ca6-4c53-be16-278200df4847",
+      "updated_at": "2026-07-30T05:11:19.387Z"
+    }
+  ],
+  "brief_bindings": [
+    {
+      "artifact_catchup_completed_at": null,
+      "binding_id": "5c59b963-6c19-4e64-9aa7-e9682e80c4ea",
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "created_at": "2026-07-30T05:05:09.855Z",
+      "launch_request_id": "brief-launch-request-f20b1287-236c-40a6-8c54-559d4e4638ba",
+      "run_id": "brief_studio_team_a1a303a2e32e4ee5b5d3d5c8421577c9",
+      "updated_at": "2026-07-30T05:05:09.123Z"
+    }
+  ],
+  "briefs": [
+    {
+      "approved_at": null,
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "created_at": "2026-07-30T05:05:09.030Z",
+      "last_error_message": null,
+      "latest_binding_id": "5c59b963-6c19-4e64-9aa7-e9682e80c4ea",
+      "latest_binding_status": "ATTACHED",
+      "latest_run_id": "brief_studio_team_a1a303a2e32e4ee5b5d3d5c8421577c9",
+      "rejected_at": null,
+      "status": "in_review",
+      "title": "API REV 006 standalone Agent Tools 2026-07-30T05:05:06.401Z",
+      "updated_at": "2026-07-30T05:11:19.387Z"
+    }
+  ],
+  "database": "applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/app.sqlite",
+  "pending_launch_requests": [
+    {
+      "binding_id": "5c59b963-6c19-4e64-9aa7-e9682e80c4ea",
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "committed_at": "2026-07-30T05:05:09.874Z",
+      "created_at": "2026-07-30T05:05:09.123Z",
+      "launch_request_id": "brief-launch-request-f20b1287-236c-40a6-8c54-559d4e4638ba",
+      "status": "COMMITTED",
+      "updated_at": "2026-07-30T05:05:09.123Z"
+    }
+  ],
+  "processed_events": [
+    {
+      "brief_id": "brief-59f329db-2d10-42f3-8627-921c27358404",
+      "event_id": "b721ef2b-bc57-432b-a030-97e3a98c1028",
+      "journal_sequence": 1,
+      "processed_at": "2026-07-30T05:05:09.864Z"
+    }
+  ],
+  "review_notes": []
+}

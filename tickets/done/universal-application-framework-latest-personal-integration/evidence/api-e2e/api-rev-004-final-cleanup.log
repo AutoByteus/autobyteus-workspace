@@ -1,0 +1,96 @@
+API-REV-004 final runtime cleanup verification (pre-filesystem cleanup)
+utc=2026-08-22T12:28:37Z
+PORT_PASS 8015 free
+PORT_PASS 3015 free
+PORT_PASS 43145 free
+PORT_PASS 43146 free
+--- owned live processes ---
+--- codex app-server processes with owned roots ---
+--- filesystem cleanup ---
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/.autobyteus/dev
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher/.autobyteus/dev
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/brief-studio/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-devkit/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-sdk-contracts/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-frontend-sdk/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-ts/dist
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/.nuxt
+removed_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/dist
+removed_dir=/private/tmp/api-rev004-studio.xkprY3
+removed_scratch=/private/tmp/api-rev004-post.sha
+removed_scratch=/private/tmp/api-rev004-port-43145
+removed_scratch=/private/tmp/api-rev004-brief-studio-business.mjs
+removed_scratch=/private/tmp/api-rev004-inspect-apps.out
+removed_scratch=/private/tmp/api-rev004-socratic-standalone-restart.mjs
+removed_scratch=/private/tmp/api-rev004-parity-paths.txt
+removed_scratch=/private/tmp/api-rev004-inspect.out
+removed_scratch=/private/tmp/api-rev004-studio-root
+removed_scratch=/private/tmp/api-rev004-open-socratic.mjs
+removed_scratch=/private/tmp/api-rev004-port-3015
+removed_scratch=/private/tmp/api-rev004-pre.sha
+removed_scratch=/private/tmp/api-rev004-port-43146
+removed_scratch=/private/tmp/api-rev004-socratic-standalone-business.mjs
+removed_scratch=/private/tmp/api-rev004-socratic-studio-business.mjs
+removed_scratch=/private/tmp/api-rev004-studio-restart-recovery.mjs
+removed_scratch=/private/tmp/api-rev004-open-socratic.out
+removed_scratch=/private/tmp/api-rev004-inspect.mjs
+removed_scratch=/private/tmp/api-rev004-socratic-studio-remount.mjs
+removed_scratch=/private/tmp/api-rev004-port-8015
+removed_scratch=/private/tmp/api-rev004-brief-standalone-business.mjs
+removed_scratch=/private/tmp/api-rev004-inspect-apps.mjs
+--- post-clean ports ---
+PORT_PASS 8015 free
+PORT_PASS 3015 free
+PORT_PASS 43145 free
+PORT_PASS 43146 free
+--- post-clean scratch scan ---
+--- git diff check ---
+git_diff_check=PASS
+--- status ---
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+?? autobyteus-application-devkit/.tmp-tests/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-owned-launch-request-correlation.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/

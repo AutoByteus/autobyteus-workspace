@@ -1,0 +1,216 @@
+{
+  "scenario": "APIE2E-F001-WITNESS-BRIEF-STANDALONE-COLD-LAUNCH",
+  "startedAt": "2026-08-26T17:25:53.788Z",
+  "completedAt": "2026-08-26T17:28:40.384Z",
+  "result": "Pass",
+  "responses": [
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 7
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 13
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 5
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 15
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 15
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 64394
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 1
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 4
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 4
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 6
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 6
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 4
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 5
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 6
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 2
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 1
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    },
+    {
+      "url": "http://127.0.0.1:44952/_autobyteus/backend/graphql",
+      "status": 200,
+      "durationMs": 3
+    }
+  ],
+  "assertions": {
+    "coldMutation2xx": true,
+    "researchProjected": true,
+    "writerProjected": true,
+    "namedHandoffAndPublication": true,
+    "remountRecovered": true,
+    "reviewNote": true
+  },
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] notification received topic=brief.created"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] notification received topic=brief.draft_run_started"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] notification received topic=brief.ready_for_review"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] notification received topic=brief.note_added"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    },
+    {
+      "type": "info",
+      "text": "[BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f"
+    }
+  ],
+  "body": "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.\n\nWHAT YOU CAN DO HERE\n\nStay focused on the brief work itself.\nCreate the brief record that anchors the work.\nGenerate fresh drafts when the brief is ready.\nReview outputs, notes, and approval state together.\nSTEP 1\nCreate\n\nStart with the business brief record and keep the work anchored to one brief.\n\nSTEP 2\nGenerate\n\nLaunch new drafting runs over time as the brief evolves and needs another pass.\n\nSTEP 3\nReview\n\nKeep draft outputs, review notes, and approval decisions together on the same record.\n\nCreate a brief\n\nStart the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.\n\nBRIEF TITLE\nCreate brief\nGraphQL stays the primary brief API while the host supplies runtime and workspace defaults.\nBriefs\n\nTrack each brief, its latest draft state, and its review outcome.\n\nRefresh\nAPI-REV-002 completion-coupled cold launch\nIn_review\nBrief brief-ef8517cc-7a3d-4909-a9ce-97bd12e1a0cb\nUpdated 26.8.2026, 19:28:39\nBrief detail\n\nReview generated drafts, notes, and approval state for the selected brief.\n\nAPI-REV-002 completion-coupled cold launch\n\nbriefId brief-ef8517cc-7a3d-4909-a9ce-97bd12e1a0cb\n\nIn_review\nCreated 26.8.2026, 19:25:55\nUpdated 26.8.2026, 19:28:39\nBRIEF RECORD\nbrief-ef8517cc-7a3d-4909-a9ce-97bd12e1a0cb\nStatus in_review\nDRAFT OUTPUTS\n2\n1 final\nREVIEW\n0 notes\nApproved — · Rejected —\nGenerate draft\nApprove\nReject\nDraft outputs\n\nGenerated drafts stay attached to the same brief record for review.\n\nresearcher\nResearch\n\n/private/tmp/api-rev-002-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md\n\nConcise research checkpoint for API-REV-002 completion-coupled cold launch.\n\n# API-REV-002 completion-coupled cold launch — research checkpoint\n\n## Key findings\n- “Completion-coupled” should mean the launch is not considered ready, routable, or externally successful until the full initialization contract completes; partial readiness must remain observable but non-serving.\n- Cold launches need one explicit state machine (created → initializing → ready or failed), with a single completion signal used by orchestration, request routing, and client-facing status. This prevents races between startup hooks and traffic admission.\n- The API revision should preserve idempotency across retries: repeated initialization and readiness probes must not duplicate migrations, registrations, or side effects. A bounded timeout should produce a durable failure state and actionable reason.\n- Instrument the path end-to-end: cold-start duration, time-to-ready, failure phase, retry count, queued/rejected requests, and readiness-to-first-success. Compare these against warm-launch baselines before broad rollout.\n\n## Risks / open questions\n- “Complete” is ambiguous unless the contract names required checks (configuration, dependencies, schema, cache/model load, and health verification) and distinguishes required from best-effort work.\n- Holding traffic during initialization may increase latency or create retry storms; queue limits, backoff, and a clear 5xx/Retry-After policy are needed.\n- Backward compatibility is unresolved: existing clients may assume the endpoint is reachable immediately or may not understand a new readiness/failure status.\n\n## Recommendations / next steps\n- Define the readiness contract and transition table in API-REV-002, including timeout, cancellation, retry, and rollback semantics.\n- Add contract tests for concurrent launches, duplicate completion events, dependency failure, timeout, restart recovery, and traffic admission before readiness.\n- Roll out behind a feature flag, canary by service/region, and require dashboards plus an explicit rollback trigger before enabling globally.\n\nwriter\nFinal\n\n/private/tmp/api-rev-002-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md\n\nConcise writer checkpoint for API-REV-002.\n\n# API-REV-002: Completion-Coupled Cold Launch\n\nAdopt a completion-coupled launch contract: a cold instance remains non-serving until all required initialization checks complete successfully, then performs one explicit transition to **ready**. Treat readiness as a durable, idempotent state shared by orchestration, routing, and client-facing status. Roll out behind a feature flag and validate operational impact before broad enablement.\n\n## Key evidence\n- Use a single state machine: **created → initializing → ready** or **failed**. Partial initialization may be observable, but must not admit traffic or report external success.\n- Define “complete” as a named contract covering required configuration, dependencies, schema/migrations, cache or model loading, and health verification; label best-effort work separately.\n- Make initialization and readiness probes idempotent across retries and duplicate completion events, avoiding repeated migrations, registrations, or other side effects.\n- Make timeout, cancellation, dependency failure, restart recovery, and rollback semantics explicit. A bounded timeout should create an actionable durable failure state.\n- Instrument cold-start duration, time-to-ready, failure phase, retry count, queued/rejected requests, and readiness-to-first-success; compare with warm-launch baselines.\n\n## Risks / cautions\n- Holding traffic can raise latency and trigger retry storms. Set queue limits, exponential backoff, retry budgets, and a clear 5xx/Retry-After policy.\n- Existing clients may expect immediate reachability or lack support for new readiness/failure statuses; preserve compatibility or provide a versioned transition.\n- Broad rollout without observability could conceal regional or dependency-specific regressions.\n\n## Next actions\n- Write the readiness contract and transition table into API-REV-002, including required checks and failure semantics.\n- Add contract tests for concurrent launches, duplicate completion signals, dependency failure, timeout, restart recovery, and traffic admission before readiness.\n- Canary by service/region behind a feature flag; require dashboards, alert thresholds, and an explicit rollback trigger before global enablement.\n\nReview notes\n\nKeep the approval conversation on the brief record itself.\n\nNo review notes yet.\nAdd review note\nWorkflow diagnostics",
+  "afterReload": "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.\n\nWHAT YOU CAN DO HERE\n\nStay focused on the brief work itself.\nCreate the brief record that anchors the work.\nGenerate fresh drafts when the brief is ready.\nReview outputs, notes, and approval state together.\nSTEP 1\nCreate\n\nStart with the business brief record and keep the work anchored to one brief.\n\nSTEP 2\nGenerate\n\nLaunch new drafting runs over time as the brief evolves and needs another pass.\n\nSTEP 3\nReview\n\nKeep draft outputs, review notes, and approval decisions together on the same record.\n\nCreate a brief\n\nStart the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.\n\nBRIEF TITLE\nCreate brief\nGraphQL stays the primary brief API while the host supplies runtime and workspace defaults.\nBriefs\n\nTrack each brief, its latest draft state, and its review outcome.\n\nRefresh\nAPI-REV-002 completion-coupled cold launch\nIn_review\nBrief brief-ef8517cc-7a3d-4909-a9ce-97bd12e1a0cb\nUpdated 26.8.2026, 19:28:39\nBrief detail\n\nReview generated drafts, notes, and approval state for the selected brief.\n\nAPI-REV-002 completion-coupled cold launch\n\nbriefId brief-ef8517cc-7a3d-4909-a9ce-97bd12e1a0cb\n\nIn_review\nCreated 26.8.2026, 19:25:55\nUpdated 26.8.2026, 19:28:39\nBRIEF RECORD\nbrief-ef8517cc-7a3d-4909-a9ce-97bd12e1a0cb\nStatus in_review\nDRAFT OUTPUTS\n2\n1 final\nREVIEW\n1 notes\nApproved — · Rejected —\nGenerate draft\nApprove\nReject\nDraft outputs\n\nGenerated drafts stay attached to the same brief record for review.\n\nresearcher\nResearch\n\n/private/tmp/api-rev-002-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md\n\nConcise research checkpoint for API-REV-002 completion-coupled cold launch.\n\n# API-REV-002 completion-coupled cold launch — research checkpoint\n\n## Key findings\n- “Completion-coupled” should mean the launch is not considered ready, routable, or externally successful until the full initialization contract completes; partial readiness must remain observable but non-serving.\n- Cold launches need one explicit state machine (created → initializing → ready or failed), with a single completion signal used by orchestration, request routing, and client-facing status. This prevents races between startup hooks and traffic admission.\n- The API revision should preserve idempotency across retries: repeated initialization and readiness probes must not duplicate migrations, registrations, or side effects. A bounded timeout should produce a durable failure state and actionable reason.\n- Instrument the path end-to-end: cold-start duration, time-to-ready, failure phase, retry count, queued/rejected requests, and readiness-to-first-success. Compare these against warm-launch baselines before broad rollout.\n\n## Risks / open questions\n- “Complete” is ambiguous unless the contract names required checks (configuration, dependencies, schema, cache/model load, and health verification) and distinguishes required from best-effort work.\n- Holding traffic during initialization may increase latency or create retry storms; queue limits, backoff, and a clear 5xx/Retry-After policy are needed.\n- Backward compatibility is unresolved: existing clients may assume the endpoint is reachable immediately or may not understand a new readiness/failure status.\n\n## Recommendations / next steps\n- Define the readiness contract and transition table in API-REV-002, including timeout, cancellation, retry, and rollback semantics.\n- Add contract tests for concurrent launches, duplicate completion events, dependency failure, timeout, restart recovery, and traffic admission before readiness.\n- Roll out behind a feature flag, canary by service/region, and require dashboards plus an explicit rollback trigger before enabling globally.\n\nwriter\nFinal\n\n/private/tmp/api-rev-002-logical-addressing/brief-standalone/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md\n\nConcise writer checkpoint for API-REV-002.\n\n# API-REV-002: Completion-Coupled Cold Launch\n\nAdopt a completion-coupled launch contract: a cold instance remains non-serving until all required initialization checks complete successfully, then performs one explicit transition to **ready**. Treat readiness as a durable, idempotent state shared by orchestration, routing, and client-facing status. Roll out behind a feature flag and validate operational impact before broad enablement.\n\n## Key evidence\n- Use a single state machine: **created → initializing → ready** or **failed**. Partial initialization may be observable, but must not admit traffic or report external success.\n- Define “complete” as a named contract covering required configuration, dependencies, schema/migrations, cache or model loading, and health verification; label best-effort work separately.\n- Make initialization and readiness probes idempotent across retries and duplicate completion events, avoiding repeated migrations, registrations, or other side effects.\n- Make timeout, cancellation, dependency failure, restart recovery, and rollback semantics explicit. A bounded timeout should create an actionable durable failure state.\n- Instrument cold-start duration, time-to-ready, failure phase, retry count, queued/rejected requests, and readiness-to-first-success; compare with warm-launch baselines.\n\n## Risks / cautions\n- Holding traffic can raise latency and trigger retry storms. Set queue limits, exponential backoff, retry budgets, and a clear 5xx/Retry-After policy.\n- Existing clients may expect immediate reachability or lack support for new readiness/failure statuses; preserve compatibility or provide a versioned transition.\n- Broad rollout without observability could conceal regional or dependency-specific regressions.\n\n## Next actions\n- Write the readiness contract and transition table into API-REV-002, including required checks and failure semantics.\n- Add contract tests for concurrent launches, duplicate completion signals, dependency failure, timeout, restart recovery, and traffic admission before readiness.\n- Canary by service/region behind a feature flag; require dashboards, alert thresholds, and an explicit rollback trigger before global enablement.\n\nReview notes\n\nKeep the approval conversation on the brief record itself.\n\n7b02cb49-0ca9-4868-9988-6603db1356e7\n26.8.2026, 19:28:39\n\nAPI-REV-002 completion-coupled publication review.\n\nAdd review note\nWorkflow diagnostics"
+}

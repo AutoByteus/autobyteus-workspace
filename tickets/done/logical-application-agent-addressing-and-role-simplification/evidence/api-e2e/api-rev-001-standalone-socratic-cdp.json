@@ -1,0 +1,416 @@
+{
+  "scenario": "APIE2E-SOCRATIC-STANDALONE-CDP-001",
+  "startedAt": "2026-08-26T16:06:01.039Z",
+  "frames": [
+    {
+      "direction": "received",
+      "requestId": "17358.7",
+      "opcode": 1,
+      "payload": "{\"type\":\"connected\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\"}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"READY\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":1,\"observedAt\":\"2026-08-26T16:06:02.561Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TURN_STARTED\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.7",
+      "opcode": 1,
+      "payload": "{\"type\":\"notification\",\"notification\":{\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"topic\":\"lesson.hint_received\",\"payload\":{\"lessonId\":\"lesson-792c5063-8dc4-480b-b696-fb1dd77889b8\",\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"revisionId\":\"ce08803e-18fb-4b30-a732-5ce79a3a4a95\",\"runId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\"},\"publishedAt\":\"2026-08-26T16:06:13.739Z\"}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":2,\"observedAt\":\"2026-08-26T16:06:14.721Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"**\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":3,\"observedAt\":\"2026-08-26T16:06:14.722Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"Hint\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":4,\"observedAt\":\"2026-08-26T16:06:14.722Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\":**\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":5,\"observedAt\":\"2026-08-26T16:06:14.723Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" Sub\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":6,\"observedAt\":\"2026-08-26T16:06:14.724Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"tract\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":7,\"observedAt\":\"2026-08-26T16:06:14.724Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" **\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":8,\"observedAt\":\"2026-08-26T16:06:14.724Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"7\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":9,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" from\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":10,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" both\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":11,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" sides\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":12,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"**\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":13,\"observedAt\":\"2026-08-26T16:06:14.734Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" to\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":14,\"observedAt\":\"2026-08-26T16:06:14.751Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" undo\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":15,\"observedAt\":\"2026-08-26T16:06:14.771Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" the\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":16,\"observedAt\":\"2026-08-26T16:06:14.789Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" \\\\(\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":17,\"observedAt\":\"2026-08-26T16:06:14.808Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"+\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":18,\"observedAt\":\"2026-08-26T16:06:14.827Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"7\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":19,\"observedAt\":\"2026-08-26T16:06:14.846Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"\\\\\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":20,\"observedAt\":\"2026-08-26T16:06:14.865Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\").\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":21,\"observedAt\":\"2026-08-26T16:06:14.883Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" What\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":22,\"observedAt\":\"2026-08-26T16:06:14.903Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" equation\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":23,\"observedAt\":\"2026-08-26T16:06:14.923Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" remains\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":24,\"observedAt\":\"2026-08-26T16:06:14.940Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" for\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":25,\"observedAt\":\"2026-08-26T16:06:14.958Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" \\\\(\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":26,\"observedAt\":\"2026-08-26T16:06:14.977Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"2\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":27,\"observedAt\":\"2026-08-26T16:06:14.996Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"x\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":28,\"observedAt\":\"2026-08-26T16:06:15.014Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"\\\\\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":29,\"observedAt\":\"2026-08-26T16:06:15.033Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\")?\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":30,\"observedAt\":\"2026-08-26T16:06:15.181Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TURN_COMPLETED\"}}}"
+    }
+  ],
+  "sockets": [
+    {
+      "requestId": "17358.7",
+      "url": "ws://127.0.0.1:43951/_autobyteus/backend/notifications"
+    },
+    {
+      "requestId": "17358.11",
+      "url": "ws://127.0.0.1:43951/_autobyteus/agent/888b655e-1adf-47d7-9106-3617d451c9f8/targets/member/%2Ftutor"
+    }
+  ],
+  "assertions": {
+    "logicalTutorUrl": true,
+    "readyFrame": true,
+    "publicAddressEvidence": true,
+    "hintSaved": true
+  },
+  "beforeTranscriptCount": 4,
+  "afterTranscriptCount": 6,
+  "agentSocketUrls": [
+    "ws://127.0.0.1:43951/_autobyteus/agent/888b655e-1adf-47d7-9106-3617d451c9f8/targets/member/%2Ftutor"
+  ],
+  "relevantFrames": [
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"READY\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":1,\"observedAt\":\"2026-08-26T16:06:02.561Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TURN_STARTED\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":2,\"observedAt\":\"2026-08-26T16:06:14.721Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"**\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":3,\"observedAt\":\"2026-08-26T16:06:14.722Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"Hint\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":4,\"observedAt\":\"2026-08-26T16:06:14.722Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\":**\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":5,\"observedAt\":\"2026-08-26T16:06:14.723Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" Sub\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":6,\"observedAt\":\"2026-08-26T16:06:14.724Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"tract\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":7,\"observedAt\":\"2026-08-26T16:06:14.724Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" **\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":8,\"observedAt\":\"2026-08-26T16:06:14.724Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"7\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":9,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" from\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":10,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" both\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":11,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" sides\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":12,\"observedAt\":\"2026-08-26T16:06:14.725Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"**\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":13,\"observedAt\":\"2026-08-26T16:06:14.734Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" to\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":14,\"observedAt\":\"2026-08-26T16:06:14.751Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" undo\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":15,\"observedAt\":\"2026-08-26T16:06:14.771Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" the\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":16,\"observedAt\":\"2026-08-26T16:06:14.789Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" \\\\(\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":17,\"observedAt\":\"2026-08-26T16:06:14.808Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"+\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":18,\"observedAt\":\"2026-08-26T16:06:14.827Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"7\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":19,\"observedAt\":\"2026-08-26T16:06:14.846Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"\\\\\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":20,\"observedAt\":\"2026-08-26T16:06:14.865Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\").\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":21,\"observedAt\":\"2026-08-26T16:06:14.883Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" What\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":22,\"observedAt\":\"2026-08-26T16:06:14.903Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" equation\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":23,\"observedAt\":\"2026-08-26T16:06:14.923Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" remains\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":24,\"observedAt\":\"2026-08-26T16:06:14.940Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" for\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":25,\"observedAt\":\"2026-08-26T16:06:14.958Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\" \\\\(\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":26,\"observedAt\":\"2026-08-26T16:06:14.977Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"2\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":27,\"observedAt\":\"2026-08-26T16:06:14.996Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"x\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":28,\"observedAt\":\"2026-08-26T16:06:15.014Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\"\\\\\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":29,\"observedAt\":\"2026-08-26T16:06:15.033Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TEXT_DELTA\",\"delta\":\")?\"}}}"
+    },
+    {
+      "direction": "received",
+      "requestId": "17358.11",
+      "opcode": 1,
+      "payload": "{\"protocol\":\"autobyteus.application-agent-communication.v1\",\"type\":\"EVENT\",\"event\":{\"sequence\":30,\"observedAt\":\"2026-08-26T16:06:15.181Z\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__736f6372617469632d6d6174682d74656163686572\",\"address\":{\"bindingId\":\"888b655e-1adf-47d7-9106-3617d451c9f8\",\"memberAddress\":\"/tutor\"},\"runtimeSubject\":\"TEAM_RUN\",\"producer\":{\"agentRunId\":\"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\",\"displayName\":\"tutor\"},\"event\":{\"type\":\"TURN_COMPLETED\"}}}"
+    }
+  ],
+  "finalBody": "BUILT-IN TEACHING SAMPLE\nSocratic Math Teacher\n\nStart lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.\n\nSocratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.\nAdvanced app details\nStart lesson\n\nCreate one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.\n\nMATH PROBLEM\nStart lesson\nThe first response streams live, then the published tutor turn becomes the durable transcript.\nLessons\n\nTrack each lesson, its current tutoring status, and the latest activity.\n\nRefresh\nSolve 2x + 7 = 19. Explain one Socratic step at a time.\nActive\nLesson lesson-792c5063-8dc4-480b-b696-fb1dd77889b8\nUpdated 26.8.2026, 18:06:13\nLesson detail\n\nReview the tutoring conversation, current lesson status, and next student action.\n\nSolve 2x + 7 = 19. Explain one Socratic step at a time.\n\nlessonId lesson-792c5063-8dc4-480b-b696-fb1dd77889b8\n\nActive\nCreated 26.8.2026, 18:04:34\nUpdated 26.8.2026, 18:06:13\nLESSON RECORD\nlesson-792c5063-8dc4-480b-b696-fb1dd77889b8\nStatus active\nCONVERSATION\n6 messages\nClosed —\nNEXT STEP\nAsk a follow-up question or request a hint to continue this lesson.\nRequest hint\nClose lesson\nLIVE TUTOR\nTutor response saved\n\nThe authoritative tutor response is shown in the transcript below.\n\nTranscript\n\nThe lesson keeps the tutoring conversation and student follow-ups together in one record.\n\nstudent\nPrompt\n26.8.2026, 18:04:34\n\nSolve 2x + 7 = 19. Explain one Socratic step at a time.\n\ntutor\nLesson_response\n26.8.2026, 18:05:20\n\nWe want to get **2x** by itself. Since 7 is being added, what operation could undo the **+7** on the left side—and what should we do to the right side to keep the equation balanced?\n\nstudent\nFollow_up\n26.8.2026, 18:05:22\n\nI think x = 6. Is that correct? Ask me to verify it.\n\ntutor\nLesson_response\n26.8.2026, 18:05:34\n\nLet’s verify your answer by substituting **x = 6** into the original equation:\n\n**2(6) + 7 = 19**\n\nCan you calculate the left side and check whether it equals 19?\n\nstudent\nHint_request\n26.8.2026, 18:06:02\n\nPlease give the student the next helpful hint without solving the full problem.\n\ntutor\nLesson_hint\n26.8.2026, 18:06:13\n\nHint: To undo the **+7**, subtract **7 from both sides** of the equation. What equation does that leave for **2x**?\n\nSend follow-up\n\nSend one follow-up or request one hint. The next action becomes available after the tutor response is saved.\n\nAdvanced runtime details\nBackend notifications\n\nOptional app notifications fan out through the platform-owned application backend stream.\n\nlesson.hint_received\n26.8.2026, 18:06:13\n{\n  \"lessonId\": \"lesson-792c5063-8dc4-480b-b696-fb1dd77889b8\",\n  \"bindingId\": \"888b655e-1adf-47d7-9106-3617d451c9f8\",\n  \"revisionId\": \"ce08803e-18fb-4b30-a732-5ce79a3a4a95\",\n  \"runId\": \"socratic_math_tutor_47dfd37badcd4deb9bb43a499d2459a5\"\n}",
+  "result": "Pass",
+  "completedAt": "2026-08-26T16:06:15.333Z"
+}

@@ -15,21 +15,26 @@
 - Architecture design revision record: `N/A — not applicable`
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence: `N/A — initial implementation`
+- Triggering rework report, revision record, or evidence:
+  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-revision-record.md` (`DR-001`)
+  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-release-deployment-report.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-evidence/dr-001-integration-refresh.log`
 
 ## Current Implementation Summary
 
-The stable nested-Team row now derives one five-state aggregate from current descendant Agent execution rows and renders it between the existing disclosure/spacer and Team avatar. The derivation scans only the flattened subtree, includes recursive configured and task-scoped Agent descendants, applies `running > initializing > error > idle > offline`, and falls back to offline for empty or unrecognized status data. A dedicated non-interactive presentation component reuses the existing solid `StatusDot` visual language and adds localized hover and assistive-technology copy. Root Team-definition and TeamRun activity dots, exact Agent status presentation, projection patching, and all runtime/transport contracts are unchanged.
+The stable nested-Team row derives one five-state aggregate from current descendant Agent execution rows and renders it between the existing disclosure/spacer and Team avatar. The derivation scans only the flattened subtree, includes recursive configured and task-scoped Agent descendants, applies `running > initializing > error > idle > offline`, and falls back to offline for empty or unrecognized status data. A dedicated non-interactive presentation component reuses the existing solid `StatusDot` visual language and adds localized hover and assistive-technology copy. Root Team-definition and TeamRun activity dots, exact Agent status presentation, projection patching, and all runtime/transport contracts remain unchanged.
 
-- Implementation cycle: `Initial`
+`IR-002` integrates `origin/personal` at `e664db7cfd725bc6fa1633b71c53954a3fe66e44` into the API/E2E-passed candidate and resolves the sole merge conflict in `autobyteus-web/package.json`. The resolution retains current-base package version `1.4.62`, package manager metadata, and `test:e2e:existing-run-model-config`, while also retaining `test:e2e:nested-team-aggregate-status`. Feature production code, focused tests, README documentation, browser fixture/probe, and aggregate-specific locale entries are unchanged from validated candidate `ab6a1209c2f7864a2fff139538fc466ad2b78312`; unrelated current-base locale additions are preserved. No effective feature behavior or contract boundary changed.
+
+- Implementation cycle: `Rework — delivery integration recovery`
 - Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related architecture design revision IDs: `N/A`
 - Related architecture-review revision IDs: `N/A`
 - Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `DR-001`
+- Triggering finding IDs: `N/A — DR-001 records one delivery blocker without a separate finding ID`
 
 ## Routing Classification (Mandatory)
 
@@ -37,7 +42,7 @@ The stable nested-Team row now derives one five-state aggregate from current des
 - Architecture risk (`Low`/`High`): `Low`
 - Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/requirements-doc.md` section `Architecture Design Routing Assessment`
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale for confirmation or change: The complete delta stays inside the existing workspace-history presentation boundary: one local derivation, one small presentational component, two locale catalogs, and focused tests. It consumes current `TeamTreeNode.executionRows` and existing `AgentStatus` values. No API/event, network request, poller, persistence/schema, runtime lifecycle, readiness/interrupt authority, security, concurrency, deployment, migration, subsystem ownership, new architectural pattern, or structural refactor was introduced.
+- Evidence and rationale for confirmation or change: The cumulative feature remains inside the existing workspace-history presentation boundary: one local derivation, one small presentational component, two locale catalogs, and focused tests. `IR-002` adds no product source delta beyond merging the current base and resolving package script registration. It consumes current `TeamTreeNode.executionRows` and existing `AgentStatus` values. No API/event, network request, poller, persistence/schema, runtime lifecycle, readiness/interrupt authority, security, concurrency, deployment, migration, subsystem ownership, new architectural pattern, or structural refactor was introduced.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E`
 - Lightweight implementation self-review completed for the direct route: `Yes`
 - New design impact or escalation trigger: `None`
@@ -60,6 +65,7 @@ The stable nested-Team row now derives one five-state aggregate from current des
 - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts`
 - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/localization/messages/en/workspace.ts`
 - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/localization/messages/zh-CN/workspace.ts`
+- `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/package.json`
 
 ## Important Assumptions
 
@@ -68,7 +74,7 @@ The stable nested-Team row now derives one five-state aggregate from current des
 
 ## Known Risks
 
-- No material implementation risk was discovered. Independent downstream executable coverage and broader environment validation remain required.
+- No material implementation risk was discovered. `API-REV-001` passed the prior candidate at 98% confidence; independent API/E2E revalidation of the integrated candidate remains required before Delivery resumes.
 - Repository-wide Nuxt typecheck is not currently a clean gate because it reports a large set of existing unrelated diagnostics. No diagnostic named a newly added implementation file, but the command still failed and is recorded below rather than treated as a pass.
 
 ## Task Design Health Assessment Implementation Check
@@ -101,10 +107,28 @@ The stable nested-Team row now derives one five-state aggregate from current des
 
 ## Environment Or Dependency Notes
 
-- The isolated worktree initially had no dependencies. `corepack pnpm install --frozen-lockfile` completed without lockfile changes; `corepack pnpm exec nuxi prepare` generated ignored Nuxt type metadata.
+- `IR-002` refreshed dependencies with `corepack pnpm install --frozen-lockfile` and generated Nuxt metadata with `corepack pnpm exec nuxi prepare`; neither command changed the lockfile.
+- Current base adds workspace package `@autobyteus/application-sdk-contracts`. The first web build attempt failed because that package's ignored `dist` output was absent; building the workspace package with its declared `build` script and rerunning the web build passed. This is an environment prerequisite, not a feature defect.
 - Test runs emit existing KaTeX quirks-mode and stale Browserslist-data warnings. The production build emits the existing large-chunk warning. None blocked the changed surface.
 
 ## Local Implementation Checks Run
+
+### IR-002 — Current-base integration recovery
+
+- `corepack pnpm install --frozen-lockfile` — pass; current lockfile honored with no tracked change.
+- `corepack pnpm exec nuxi prepare` — pass.
+- `corepack pnpm test:nuxt components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run` — pass, 2 files / 40 tests (32 + 8).
+- `corepack pnpm test:nuxt stores/__tests__/runHistoryTeamExecutionRows.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts utils/__tests__/workspaceStatusDotPresentation.spec.ts --run` — pass, 3 files / 13 tests.
+- Package conflict assertion — pass: version `1.4.62`, package manager `pnpm@10.28.1`, and both `test:e2e:nested-team-aggregate-status` and `test:e2e:existing-run-model-config` resolve to existing probe files.
+- `corepack pnpm guard:web-boundary` — pass.
+- `corepack pnpm guard:localization-boundary` — pass.
+- `corepack pnpm audit:localization-literals` — pass with zero unresolved findings.
+- `corepack pnpm --filter @autobyteus/application-sdk-contracts build && corepack pnpm build` — pass; workspace contract package prerequisite, Nuxt production client/server build, and static prerender completed.
+- `git diff ab6a1209c2f7864a2fff139538fc466ad2b78312 -- <feature production/test/README/E2E paths>` — pass with no output; aggregate-specific English and Simplified Chinese entries also match the validated candidate, while the merged locale files correctly include unrelated current-base run-configuration copy. The only candidate-owned package delta relative to `origin/personal` is the nested-Team E2E script registration.
+- `git diff --check -- autobyteus-web/package.json` and staged equivalent — pass; no unresolved merge path remains.
+- `corepack pnpm exec nuxi typecheck` — not rerun in this packaging-only recovery round; `API-REV-001` records the existing repository-wide 317-diagnostic baseline with no new-file diagnostic, and this result is not claimed as passed.
+
+### IR-001 — Initial implementation baseline
 
 - `corepack pnpm test:nuxt components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run` — pass, 2 files / 15 tests.
 - `corepack pnpm test:nuxt stores/__tests__/runHistoryTeamExecutionRows.spec.ts stores/__tests__/runHistoryNavigationProjection.spec.ts utils/__tests__/workspaceStatusDotPresentation.spec.ts --run` — pass, 3 files / 13 tests.
@@ -123,6 +147,7 @@ The stable nested-Team row now derives one five-state aggregate from current des
 - States, layouts, viewports, and interactions inspected: Collapsed running+idle aggregate; expanded running+idle; reactive change to idle while expanded; collapse while idle; empty Team offline; disclosure click; row alignment; hover-help attributes; focusability; console/page errors.
 - Visual or interaction issues found and corrected: Initial implementation rendered as intended; no additional visual defect was found. Browser measurements confirmed an 8×8 dot, existing 6 px gap before the 16×16 avatar, blue pulse for running, green/no pulse for idle, a single indicator, stable alignment in both disclosure and spacer rows, and no browser console/page error.
 - Supporting evidence and remaining unverified states or limitations: Direct inspection confirmed running, idle, and offline render states; focused component/unit tests cover initializing and error classes/precedence plus recursive/task/sibling cases. The temporary preview screenshots were inspection aids only and are not downstream API/E2E evidence. Live backend transport was intentionally not stood up at this stage.
+- IR-002 recovery note: no rendered frontend path changed relative to API/E2E-validated candidate `ab6a1209c2f7864a2fff139538fc466ad2b78312`, so a second implementation-owned visual inspection was not proportionate. Prior durable Nuxt/Chromium evidence remains at `api-e2e-evidence/api-rev-001/`; API/E2E must revalidate the integrated commit before Delivery resumes.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -133,6 +158,6 @@ The stable nested-Team row now derives one five-state aggregate from current des
 - Inspect accessible name/title in English and Simplified Chinese and confirm the dot adds no focus target or independent action.
 - Guard network/transport/store behavior: no new request, poller, API/event, persisted field, lifecycle/readiness decision, or stop/delete behavior.
 
-## API / E2E / Executable Coverage Investigation And Execution Still Required
+## API / E2E Integrated-State Revalidation Still Required
 
-Independent executable coverage investigation, broader validation, pass/fail classification, and final confidence remain owned by `api_e2e_engineer`.
+`API-REV-001` established a 98% Pass for validated candidate `ab6a1209c2f7864a2fff139538fc466ad2b78312`. Independent executable revalidation of the latest-base-integrated commit, pass/fail classification, and confidence update remain owned by `api_e2e_engineer` before Delivery can continue.

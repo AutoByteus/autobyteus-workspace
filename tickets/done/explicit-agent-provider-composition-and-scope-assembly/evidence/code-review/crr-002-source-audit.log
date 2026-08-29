@@ -1,0 +1,94 @@
+=== PROCESS MANAGER CALL SITES ===
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:502:      "AgentTeamRunManager.initializeProcessInstance({",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:507:    expect(application).toContain("const teamRunManager = new AgentTeamRunManager({");
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:554:      "new AgentTeamRunManager()",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:555:      "new AgentTeamRunManager({})",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:556:      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: null })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:557:      "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: undefined })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:558:      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: getMixedTeamRunBackendFactory() })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:559:      "AgentTeamRunManager.initializeProcessInstance({ mixedTeamRunBackendFactory: missing as any })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:562:      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: factory })",
+autobyteus-server-ts/src/workspaces/workspace-removal-guard.ts:36:    const teamRunManager = this.teamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:49:    private readonly teamRunManager: Pick<AgentTeamRunManager, "getLifecycleSnapshot" | "subscribeToLifecycle"> = AgentTeamRunManager.getInstance(),
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:144:    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:212:    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:229:    const initial = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: initialFactory.factory });
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:236:    const restoredManager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: restoredFactory.factory });
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:272:    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:292:    const manager = new AgentTeamRunManager({ memoryDir, mixedTeamRunBackendFactory: factory.factory });
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:112:      agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+autobyteus-server-ts/src/services/team-communication/team-communication-projection-service.ts:32:    this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:799:        AgentTeamRunManager.getInstance().getActiveTeamRun(teamRunId);
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:904:        AgentTeamRunManager.getInstance().listActiveTeamRunIds();
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:944:        AgentTeamRunManager.getInstance().listManagedTeamRunIds();
+autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts:968:        AgentTeamRunManager.getInstance().listActiveTeamRunIds();
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:123:    const teamRunManager = new AgentTeamRunManager({
+autobyteus-server-ts/src/agent-communication/services/global-agent-run-message-router.ts:240:    return this.deps.teamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts:46:    this.teamRuns = options.teamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/src/run-history/services/team-run-live-projection-service.ts:17:    private readonly manager: Pick<AgentTeamRunManager, "getManagedTeamRun" | "getLifecycleSnapshot"> = AgentTeamRunManager.getInstance(),
+autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts:78:    this.manager = dependencies.teamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/src/run-history/services/team-run-history-service.ts:37:    this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:77:    expect(() => AgentTeamRunManager.getInstance()).toThrow(
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:115:    expect(AgentTeamRunManager.getInstance()).toBe(owned.agentTeamRunManager);
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:188:    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:87:    this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:63:    AgentTeamRunManager.instance = new AgentTeamRunManager(options);
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:348:export const getAgentTeamRunManager = (): AgentTeamRunManager => AgentTeamRunManager.getInstance();
+autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:15:const createManager = () => new AgentTeamRunManager({
+autobyteus-server-ts/tests/unit/agent-team-execution/agent-team-run-manager-lifecycle.test.ts:38:    expect(() => AgentTeamRunManager.getInstance()).toThrow(
+autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-projection-service.ts:129:    const managed = (this.options.manager ?? AgentTeamRunManager.getInstance()).getManagedTeamRun(rootTeamRunId);
+
+=== MIXED FACTORY CALL SITES ===
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:114:        mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:125:      mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:451:      /static getInstance\([^)]*options|instance \?\?= new AgentTeamRunManager|constructor\([^)]*= \{\}\)|getMixedTeamRunBackendFactory/,
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:461:      .filter((path) => read(path).includes("new MixedTeamRunBackendFactory("))
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:468:      expect(occurrences(source, "new MixedTeamRunBackendFactory("), relativePath)
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:510:      /AgentRunManager\.getInstance|AgentTeamRunManager\.getInstance|getAgentMemoryLocationService|getAgentConversationActivityInspector|getMemberTeamContextBuilder|getWorkspaceManager|getAgentToolMcpRunSessionReleaser/,
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:520:      /agent-tool-mcp-session-service|new MixedTeamManager|getMixedTeamRunBackendFactory|let cached|createTeamManager\?|agentToolMcpRunSessionReleaser\?|constructor\([^)]*= \{\}\)/,
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:525:    ))).not.toContain("getAgentToolMcpRunSessionReleaser");
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:534:      "new AgentRunManager({ agentToolMcpRunSessionReleaser: getAgentToolMcpRunSessionReleaser() })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:542:      "new MixedTeamRunBackendFactory()",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:543:      "new MixedTeamRunBackendFactory({ createTeamManager: build })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:544:      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: releaser, createTeamManager: null })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:545:      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: undefined, createTeamManager: build })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:546:      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: getAgentToolMcpRunSessionReleaser(), createTeamManager: build })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:547:      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: releaser, createTeamManager: missing as never })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:550:      "new MixedTeamRunBackendFactory({ agentToolMcpRunSessionReleaser: releaser, createTeamManager: build })",
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:558:      "new AgentTeamRunManager({ mixedTeamRunBackendFactory: getMixedTeamRunBackendFactory() })",
+autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:69:    const factory = new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:142:    const factory = new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts:159:    const factory = new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts:48:const createBackendFactory = () => new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-run-factory.test.ts:8:const createContextOnlyBackendFactory = () => new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-resolver-configured-overlap.test.ts:79:    const backendFactory = new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts:40:    const factory = new MixedTeamRunBackendFactory({
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts:91:    const factory = new MixedTeamRunBackendFactory({
+
+=== MIXED MANAGER PRODUCTION CALLS ===
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:118:            new MixedTeamManager(managerInput.context, {
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts:128:          new MixedTeamManager(managerInput.context, {
+
+=== AMBIENT GETTERS IN APP KERNEL AND SUPERVISOR ===
+autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:75:    const memoryDir = input.appConfig.getMemoryDir();
+
+=== MANAGER/FACTORY OPTIONALS ===
+autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts:518:    expect(factory).toContain("private readonly options: MixedTeamRunBackendFactoryOptions;");
+autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts:62:  agentToolMcpRunSessionReleaser?: AgentToolMcpRunSessionReleaser;
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:31:export type AgentTeamRunManagerOptions = Readonly<{
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:59:  static initializeProcessInstance(options: AgentTeamRunManagerOptions): AgentTeamRunManager {
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:71:  constructor(options: AgentTeamRunManagerOptions) {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:45:export type MixedTeamRunBackendFactoryOptions = Readonly<{
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:68:  options: MixedTeamRunBackendFactoryOptions | null | undefined,
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:69:): MixedTeamRunBackendFactoryOptions => {
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:83:  private readonly options: MixedTeamRunBackendFactoryOptions;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts:85:  constructor(options: MixedTeamRunBackendFactoryOptions) {
+
+=== DIFF CHECK ===
+
+=== SOURCE SIZES IR002 CHANGED ===
+ 320 autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+ 290 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+ 244 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ 182 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+ 173 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts

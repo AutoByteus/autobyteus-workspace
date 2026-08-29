@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -17,6 +17,7 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
 const harness = vi.hoisted(() => ({
   agentRunManager: {
@@ -204,14 +205,18 @@ describe("Archive run history GraphQL e2e", () => {
   let agentMetadataStore: AgentRunMetadataStore;
   let teamExecutionTreeStore: TeamRunExecutionTreeStore;
   let memoryLayout: AgentMemoryLayout;
+  let closeStudioServices: (() => void) | null = null;
 
   beforeAll(async () => {
+    closeStudioServices = configureE2eStudioApplicationApiServices().close;
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
+
+  afterAll(() => closeStudioServices?.());
 
   beforeEach(async () => {
     vi.clearAllMocks();

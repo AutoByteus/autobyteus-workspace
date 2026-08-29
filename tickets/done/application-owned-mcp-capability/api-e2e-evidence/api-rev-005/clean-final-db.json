@@ -1,0 +1,156 @@
+{
+  "appDatabase": {
+    "briefs": [
+      {
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+        "status": "in_review",
+        "latest_binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "latest_run_id": "brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a",
+        "latest_binding_status": "ATTACHED",
+        "last_error_message": null,
+        "created_at": "2026-08-28T11:53:44.796Z",
+        "updated_at": "2026-08-28T11:55:07.749Z",
+        "approved_at": null,
+        "rejected_at": null
+      }
+    ],
+    "brief_bindings": [
+      {
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "launch_request_id": "brief-launch-request-1f0bcfaf-0980-4564-a327-7256c8ddad1a",
+        "run_id": "brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a",
+        "created_at": "2026-08-28T11:54:00.353Z",
+        "updated_at": "2026-08-28T11:53:59.262Z",
+        "artifact_catchup_completed_at": null
+      }
+    ],
+    "brief_artifacts": [
+      {
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "revision_id": "034f9046-aa1a-453f-b208-fd68c13c9bf8",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+        "description": null,
+        "body": "Brief context: {\"briefId\":\"brief-6e01ee36-3707-416c-9270-9a8e9f8e8838\",\"title\":\"API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC\",\"observedStatus\":\"not_started\"}\n\n# API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC\n\n## Key findings\n- A reviewable production proof should connect the API revision to a reproducible request, response, environment, timestamp, and outcome rather than relying on an assertion that the deployment succeeded.\n- The strongest evidence package combines automated checks for contract shape, authentication behavior, error handling, latency, and backward compatibility with a small set of human-readable examples.\n- Clean evidence separates facts observed in production from expectations, test fixtures, and unresolved assumptions, making it easier for reviewers to distinguish shipped behavior from planned follow-up.\n- A concise change record should identify the endpoint or schema surface affected, the compatibility impact, the rollback path, and the owner responsible for monitoring after release.\n\n## Risks or open questions\nThe available brief context establishes the review title and a not-started status but does not provide endpoint-specific telemetry, schema diffs, incident history, or an explicit acceptance checklist. Reviewers should therefore verify that captured examples are from the intended production binding and that sensitive headers, tokens, and customer data are redacted. A passing smoke test may not expose rate-limit, timeout, regional, or dependency failures. It also remains open whether the revision changes undocumented behavior consumed by existing clients, and whether dashboards and alerts cover the new or modified paths.\n\n## Recommendations or next steps\nCreate a compact evidence matrix with one row per acceptance criterion and columns for source, timestamp, expected result, observed result, and reviewer disposition. Attach sanitized request/response examples and link each automated result to a durable run or commit identifier. Before sign-off, execute representative success and failure cases, validate authentication and authorization boundaries, compare latency and error rates with the prior revision, and rehearse rollback ownership. Record any gaps explicitly as follow-up items with owners and due dates; do not treat missing telemetry as proof of absence.\n",
+        "producer_member_address": "/researcher",
+        "updated_at": "2026-08-28T11:54:25.734Z"
+      },
+      {
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "revision_id": "5004a302-335b-407b-99a1-6b3080869629",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+        "description": null,
+        "body": "Brief context: {\"briefId\":\"brief-6e01ee36-3707-416c-9270-9a8e9f8e8838\",\"title\":\"API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC\",\"observedStatus\":\"researching\"}\n\n# API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC\n\n## Recommendation summary\nApprove the API revision for review, but defer final production sign-off until the evidence package demonstrates the shipped behavior against explicit acceptance criteria. The package should be reproducible, time-stamped, sanitized, and tied to a durable run or commit identifier. Treat the current context as a framing signal, not as endpoint-specific production proof.\n\n## Key evidence\n- A reviewable production proof should connect the API revision to a reproducible request, response, environment, timestamp, and outcome rather than relying on an assertion that the deployment succeeded.\n- The strongest evidence package combines automated checks for contract shape, authentication behavior, error handling, latency, and backward compatibility with a small set of human-readable examples.\n- Clean evidence separates facts observed in production from expectations, test fixtures, and unresolved assumptions, making it easier for reviewers to distinguish shipped behavior from planned follow-up.\n- A concise change record should identify the endpoint or schema surface affected, the compatibility impact, the rollback path, and the owner responsible for monitoring after release.\n\n## Risks and cautions\nThe available context does not include endpoint-specific telemetry, schema diffs, incident history, or an explicit acceptance checklist. Confirm that examples use the intended production binding, and redact sensitive headers, tokens, and customer data. A passing smoke test can miss rate limits, timeouts, regional variance, and dependency failures. Verify whether undocumented behavior used by existing clients changed, and whether dashboards and alerts cover all new or modified paths. Do not interpret missing telemetry as evidence that failures are absent.\n\n## Next actions\n1. Build an evidence matrix with one row per acceptance criterion and columns for source, timestamp, expected result, observed result, and reviewer disposition.\n2. Attach sanitized success and failure request/response examples, plus links to durable automated runs or the release commit.\n3. Validate authentication and authorization boundaries, latency and error rates versus the prior revision, backward compatibility, and representative regional/dependency cases.\n4. Record rollback ownership and rehearse the path; assign owners and due dates to every evidence gap before sign-off.\n",
+        "producer_member_address": "/writer",
+        "updated_at": "2026-08-28T11:55:07.749Z"
+      }
+    ],
+    "brief_artifact_revisions": [
+      {
+        "revision_id": "034f9046-aa1a-453f-b208-fd68c13c9bf8",
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "run_id": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f",
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+        "producer_member_address": "/researcher",
+        "published_at": "2026-08-28T11:54:25.734Z",
+        "projected_at": "2026-08-28T11:54:25.779Z"
+      },
+      {
+        "revision_id": "5004a302-335b-407b-99a1-6b3080869629",
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "run_id": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e",
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "path": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-005/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+        "producer_member_address": "/writer",
+        "published_at": "2026-08-28T11:55:07.749Z",
+        "projected_at": "2026-08-28T11:55:07.761Z"
+      }
+    ],
+    "pending_launch_requests": [
+      {
+        "launch_request_id": "brief-launch-request-1f0bcfaf-0980-4564-a327-7256c8ddad1a",
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "status": "COMMITTED",
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "created_at": "2026-08-28T11:53:59.262Z",
+        "updated_at": "2026-08-28T11:53:59.262Z",
+        "committed_at": "2026-08-28T11:54:00.389Z"
+      }
+    ],
+    "processed_events": [
+      {
+        "event_id": "7ee9c187-a1ce-45b8-91bb-1cc0ced51c93",
+        "brief_id": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "journal_sequence": 2,
+        "processed_at": "2026-08-28T11:54:00.368Z"
+      }
+    ]
+  },
+  "platformDatabase": {
+    "__autobyteus_run_bindings": [
+      {
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "launch_request_id": "brief-launch-request-1f0bcfaf-0980-4564-a327-7256c8ddad1a",
+        "status": "ATTACHED",
+        "runtime_subject": "TEAM_RUN",
+        "agent_run_id": null,
+        "team_run_id": "brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a",
+        "definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+        "resource_owner": "bundle",
+        "resource_kind": "AGENT_TEAM",
+        "resource_local_id": "brief-studio-team",
+        "resource_definition_id": null,
+        "created_at": "2026-08-28T11:54:00.353Z",
+        "updated_at": "2026-08-28T11:54:00.353Z",
+        "terminated_at": null,
+        "last_error_message": null,
+        "summary_json": "{\"bindingId\":\"e6aa7750-a3e7-4741-b468-8c8fef5a7b23\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-1f0bcfaf-0980-4564-a327-7256c8ddad1a\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"createdAt\":\"2026-08-28T11:54:00.353Z\",\"updatedAt\":\"2026-08-28T11:54:00.353Z\",\"terminatedAt\":null,\"lastErrorMessage\":null,\"runtime\":{\"subject\":\"TEAM_RUN\",\"teamRunId\":\"brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberAddress\":\"/researcher\",\"displayName\":\"researcher\",\"agentRunId\":\"brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f\"},{\"memberAddress\":\"/writer\",\"displayName\":\"writer\",\"agentRunId\":\"brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e\"}]}}"
+      }
+    ],
+    "__autobyteus_run_binding_members": [
+      {
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "member_address": "/researcher",
+        "display_name": "researcher",
+        "agent_run_id": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f",
+        "runtime_kind": "AGENT_TEAM_MEMBER"
+      },
+      {
+        "binding_id": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+        "member_address": "/writer",
+        "display_name": "writer",
+        "agent_run_id": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e",
+        "runtime_kind": "AGENT_TEAM_MEMBER"
+      }
+    ],
+    "__autobyteus_execution_event_journal": [
+      {
+        "journal_sequence": 2,
+        "event_id": "7ee9c187-a1ce-45b8-91bb-1cc0ced51c93",
+        "application_id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+        "launch_request_id": "brief-launch-request-1f0bcfaf-0980-4564-a327-7256c8ddad1a",
+        "family": "RUN_STARTED",
+        "published_at": "2026-08-28T11:54:00.368Z",
+        "binding_json": "{\"bindingId\":\"e6aa7750-a3e7-4741-b468-8c8fef5a7b23\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-1f0bcfaf-0980-4564-a327-7256c8ddad1a\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"createdAt\":\"2026-08-28T11:54:00.353Z\",\"updatedAt\":\"2026-08-28T11:54:00.353Z\",\"terminatedAt\":null,\"lastErrorMessage\":null,\"runtime\":{\"subject\":\"TEAM_RUN\",\"teamRunId\":\"brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberAddress\":\"/researcher\",\"displayName\":\"researcher\",\"agentRunId\":\"brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f\"},{\"memberAddress\":\"/writer\",\"displayName\":\"writer\",\"agentRunId\":\"brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e\"}]}}",
+        "producer_json": null,
+        "payload_json": "{}",
+        "acked_at": "2026-08-28T11:54:00.395Z",
+        "last_dispatch_attempt_number": 1,
+        "last_dispatched_at": "2026-08-28T11:54:00.379Z",
+        "last_error_kind": null,
+        "last_error_message": null,
+        "next_attempt_after": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+# DR-003 base refresh and docs sync evidence
+timestamp_utc=2026-08-26T05:20:09Z
+worktree=/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis
+
+## Reviewed checkpoint
+3ea5af9bfb53aa7150a75d5ca4beb60e5b22b484
+3ea5af9bf chore(delivery): checkpoint CRR-011 reviewed package
+
+## Initial/current base relationship
+origin/personal=306de420ca8830478529b40bd6dfda6694b742a9
+merge-base=306de420ca8830478529b40bd6dfda6694b742a9
+divergence(base...HEAD)=0	18
+PASS: tracked base is an ancestor; no unmerged paths
+
+## Delivery patch hygiene
+PASS: git diff --check
+
+## Obsolete long-lived-doc contract scan
+PASS: no obsolete stored-Team, activation-service, revision, or inspect-only authority in long-lived docs
+
+## Source-symbol alignment
+PASS: autobyteus-server-ts/src/run-history/services/studio-run-model-config-service.ts
+PASS: autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts
+PASS: autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+PASS: autobyteus-web/stores/existingRunModelConfigStore.ts
+PASS: autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts
+PASS: autobyteus-web/services/runConfigEditing/existingTeamModelConfigDraft.ts
+PASS: autobyteus-web/utils/llmConfigSchema.ts
+
+## Markdown relative-link and fence validation
+PASS: 14 Markdown files have balanced fences and resolvable relative links
+
+## Cumulative artifact and final evidence package
+PASS: 26 cumulative artifacts/evidence authorities exist
+PASS: API-REV-004 / CRR-011 / DR-003 authority markers
+
+## Release metadata preflight
+web_version=1.4.58
+latest_semantic_tag=v1.4.58
+
+## Final tracked-base refresh
+From https://github.com/AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin/personal=306de420ca8830478529b40bd6dfda6694b742a9
+merge-base=306de420ca8830478529b40bd6dfda6694b742a9
+divergence(base...HEAD)=0	18
+PASS: final base refresh unchanged/current; no integration or executable rerun required
+
+## Final worktree
+## codex/live-agent-definition-refresh-analysis...origin/personal [ahead 18]
+ M tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/docs-sync-report.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/handoff-summary.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/latest-base-integration-conflict-report.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/release-deployment-report.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/release-notes.md
+?? tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-003-base-refresh-and-docs-sync.log

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-08-27T20:35:17.613Z",
+  "archivedAt": null,
+  "applicationBinding": {
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "bindingId": "7aa49eaa-12c0-4eb8-a4ad-f18e3a804bf2"
+  },
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+    "teamDefinitionName": "Brief Studio Team",
+    "teamRunId": "brief_studio_team_e90a16c31d294a018a1bc2f504088b25",
+    "coordinatorAddress": "/researcher",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-003/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime"
+    },
+    "members": [
+      {
+        "address": "/researcher",
+        "agentDefinitionId": "team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+        "role": null,
+        "description": null,
+        "agentRunId": "brief_studio_researcher_b252c358fe3c481a9be1d8f0c1b5a961",
+        "platformAgentRunId": "01a044ef-2236-7610-8e75-dbdf2c2e2e4e",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-003/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime"
+        }
+      },
+      {
+        "address": "/writer",
+        "agentDefinitionId": "team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+        "role": null,
+        "description": null,
+        "agentRunId": "brief_studio_writer_bb33bfdd0b52452691e6b008abbd181f",
+        "platformAgentRunId": "01a044ef-698c-7490-a8b9-12cd5f1c1d78",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-003/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}

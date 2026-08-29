@@ -1,0 +1,40 @@
+API-REV-004 route separation
+Sat Aug 22 12:19:46 UTC 2026
+== standalone internal Agent Tools unauthenticated: 401 ==
+HTTP/1.1 401 Unauthorized
+content-type: application/json; charset=utf-8
+content-length: 49
+Date: Sat, 22 Aug 2026 12:19:46 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"unauthorized","message":"Unauthorized"}
+== standalone external gateway absent: 404 ==
+HTTP/1.1 404 Not Found
+content-type: application/json; charset=utf-8
+content-length: 84
+Date: Sat, 22 Aug 2026 12:19:46 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"message":"Route POST:/mcp/gateway not found","error":"Not Found","statusCode":404}
+== Studio internal Agent Tools unauthenticated: 401 ==
+HTTP/1.1 401 Unauthorized
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 49
+Date: Sat, 22 Aug 2026 12:19:46 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"error":"unauthorized","message":"Unauthorized"}
+== Studio external gateway initialize: 200 ==
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 193
+Date: Sat, 22 Aug 2026 12:19:46 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{"listChanged":false},"resources":{}},"serverInfo":{"name":"autobyteus_mcp_gateway","version":"0.1.0"}}}

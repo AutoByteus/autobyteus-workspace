@@ -1,0 +1,773 @@
+{
+  "token": "API-E2E-docker-node-image-upload-400-1787810745009",
+  "backendBaseUrl": "http://127.0.0.1:29695",
+  "frontendBaseUrl": "http://127.0.0.1:49469",
+  "backendHealth": {
+    "status": 200,
+    "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+  },
+  "preexistingDefinition": {
+    "id": "nested-classroom-test",
+    "name": "Nested Classroom Test Team",
+    "coordinatorMemberName": "Teacher",
+    "nodes": [
+      {
+        "memberName": "Teacher",
+        "ref": "teacher",
+        "refType": "AGENT",
+        "refScope": "TEAM_LOCAL"
+      },
+      {
+        "memberName": "StudentStudyGroup",
+        "ref": "student-study-group",
+        "refType": "AGENT_TEAM",
+        "refScope": "TEAM_LOCAL"
+      }
+    ]
+  },
+  "preexistingRunBefore": {
+    "teamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "isActive": false,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-25T09:55:33.294Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+          ]
+        },
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_two",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "nested-classroom-test",
+        "team_definition_name": "Nested Classroom Test Team",
+        "team_run_id": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "coordinator_address": "/Teacher",
+        "default_launch_configuration": {
+          "runtime_kind": "autobyteus",
+          "llm_model_identifier": "deepseek-v4-flash",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/Teacher",
+            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+            "role": null,
+            "description": null,
+            "agent_run_id": "test_teacher_9022aa44ce9b457e8797c691c0230351",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_team",
+            "address": "/StudentStudyGroup",
+            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+            "role": null,
+            "description": null,
+            "team_run_id": "student_study_group_6db89380b8824257a7529752bd51c523",
+            "coordinator_address": "/StudentStudyGroup/student_one",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+                "platform_agent_run_id": "01a03859-435d-78d0-851f-db992c051b78",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_two_901aa1413a154e19a5bf41092bf7f2b7",
+                "platform_agent_run_id": "01a03859-29b9-79e1-8956-8ab94a96c652",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        ],
+        "task_executions": [
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a1dff1c50ccc4922bb2c596ffe39279b",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7ce225c5861f4f1e9e67dcbc33fb9ceb",
+                "platform_agent_run_id": "01a03858-e0bc-7e61-a6c4-9706cb70a692"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4eef6194ab7447debfc928034b27c2e7",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T09:55:43.422Z",
+            "settled_at": "2026-08-25T09:56:19.023Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_838ba70cbe474257863a2f117b51ef7f",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_c824e8aa9a91413ab73bb46028cfa1fd",
+                "platform_agent_run_id": "01a03a61-c0b2-77d3-b30e-a89fa9ee0a3d"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_85805d311a91463abc39f52c8a746262",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:24:39.792Z",
+            "settled_at": "2026-08-25T19:24:49.747Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a5e1c30af93c480786d3f5fe4b9cb090",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7805962eb81445b681300bb8b8a096b8",
+                "platform_agent_run_id": "01a03a62-e6af-76d2-bcb7-a50a74375619"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_59666492210349929e2f4d6b2540700b",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:25:55.038Z",
+            "settled_at": "2026-08-25T19:26:08.101Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_c55fb66303ca4f0b99e176758a798c67",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_1d065f77a98d4d5eb1486ee763bfe0c6",
+                "platform_agent_run_id": "01a03ead-83a5-7490-a49e-f80fa8806773"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4e1934fb1bab4bcf8112e538013cb215",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T15:25:53.766Z",
+            "settled_at": "2026-08-26T15:26:07.610Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_b9e65ddcefa74a0d80b0dc3cdda408e2",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_3fcef6bf60d84cc7afa9cb091ead45bf",
+                "platform_agent_run_id": "01a03f53-4c86-7582-b007-0d7b500b14d8"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_d2b4467f6b22428683a8ec899387c54e",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T18:26:58.637Z",
+            "settled_at": "2026-08-26T18:27:20.697Z"
+          }
+        ]
+      }
+    }
+  },
+  "preexistingRunAfter": {
+    "teamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "isActive": false,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-25T09:55:33.294Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+          ]
+        },
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_two",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "nested-classroom-test",
+        "team_definition_name": "Nested Classroom Test Team",
+        "team_run_id": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "coordinator_address": "/Teacher",
+        "default_launch_configuration": {
+          "runtime_kind": "autobyteus",
+          "llm_model_identifier": "deepseek-v4-flash",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/Teacher",
+            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+            "role": null,
+            "description": null,
+            "agent_run_id": "test_teacher_9022aa44ce9b457e8797c691c0230351",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_team",
+            "address": "/StudentStudyGroup",
+            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+            "role": null,
+            "description": null,
+            "team_run_id": "student_study_group_6db89380b8824257a7529752bd51c523",
+            "coordinator_address": "/StudentStudyGroup/student_one",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+                "platform_agent_run_id": "01a03859-435d-78d0-851f-db992c051b78",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_two_901aa1413a154e19a5bf41092bf7f2b7",
+                "platform_agent_run_id": "01a03859-29b9-79e1-8956-8ab94a96c652",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        ],
+        "task_executions": [
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a1dff1c50ccc4922bb2c596ffe39279b",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7ce225c5861f4f1e9e67dcbc33fb9ceb",
+                "platform_agent_run_id": "01a03858-e0bc-7e61-a6c4-9706cb70a692"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4eef6194ab7447debfc928034b27c2e7",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T09:55:43.422Z",
+            "settled_at": "2026-08-25T09:56:19.023Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_838ba70cbe474257863a2f117b51ef7f",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_c824e8aa9a91413ab73bb46028cfa1fd",
+                "platform_agent_run_id": "01a03a61-c0b2-77d3-b30e-a89fa9ee0a3d"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_85805d311a91463abc39f52c8a746262",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:24:39.792Z",
+            "settled_at": "2026-08-25T19:24:49.747Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a5e1c30af93c480786d3f5fe4b9cb090",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7805962eb81445b681300bb8b8a096b8",
+                "platform_agent_run_id": "01a03a62-e6af-76d2-bcb7-a50a74375619"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_59666492210349929e2f4d6b2540700b",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:25:55.038Z",
+            "settled_at": "2026-08-25T19:26:08.101Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_c55fb66303ca4f0b99e176758a798c67",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_1d065f77a98d4d5eb1486ee763bfe0c6",
+                "platform_agent_run_id": "01a03ead-83a5-7490-a49e-f80fa8806773"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4e1934fb1bab4bcf8112e538013cb215",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T15:25:53.766Z",
+            "settled_at": "2026-08-26T15:26:07.610Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_b9e65ddcefa74a0d80b0dc3cdda408e2",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_3fcef6bf60d84cc7afa9cb091ead45bf",
+                "platform_agent_run_id": "01a03f53-4c86-7582-b007-0d7b500b14d8"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_d2b4467f6b22428683a8ec899387c54e",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T18:26:58.637Z",
+            "settled_at": "2026-08-26T18:27:20.697Z"
+          }
+        ]
+      }
+    }
+  },
+  "testRun": {
+    "teamRunId": "nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a",
+    "schemaVersion": 2,
+    "rootTeamRunId": "nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a",
+    "childTeamRunId": "student_study_group_a839b7c8c2204fea83c55d66cdd730f3",
+    "teacherAgentRunId": "test_teacher_ad5fe5e0597f4b1b89b3fd852295fcb8",
+    "studentOneAgentRunId": "student_one_4179f88f2503462f95bc6de94d55f752",
+    "teacherAddress": "/Teacher",
+    "studentOneAddress": "/StudentStudyGroup/student_one",
+    "teamRunDirectory": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a",
+    "createInput": {
+      "teamDefinitionId": "nested-classroom-test",
+      "teamConfigs": [
+        {
+          "teamAddress": "/",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        },
+        {
+          "teamAddress": "/StudentStudyGroup",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        }
+      ],
+      "memberConfigs": [
+        {
+          "memberAddress": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        }
+      ]
+    }
+  },
+  "nestedImage": null,
+  "nestedText": null,
+  "directRootImage": null,
+  "mismatch": null,
+  "cleanup": {
+    "browserClosed": true,
+    "frontendStopped": true,
+    "teamTerminated": true,
+    "teamDeleted": true,
+    "failedDraftDeleted": false,
+    "testRunAbsent": true,
+    "testRunDirectoryAbsent": true
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "websocketFramesSent": [],
+  "websocketFramesReceivedSummary": [
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "connected",
+      "payloadPreview": "{\"type\":\"connected\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "full-reload",
+      "payloadPreview": "{\"type\":\"full-reload\",\"path\":\"*\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=f6ce092a\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "connected",
+      "payloadPreview": "{\"type\":\"connected\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/pages/runtime/page.js?v=f6ce0"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/node_modules/.pnpm/vue-router@4.6.4_vue@3.5.28_typescript@5.9.3_/node_modules/vue-router/dist/devtools-EWN81iOl.mjs?v=f6ce092a\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/node_modules/.pnpm/@vue+apollo-composable@4.2.2_@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0._ddb4a148d3052c797d7ede4983388318/node_modules/@vue/apollo-composable/dist/index.mjs?v"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/crypto-js_sha256.js?v=a74c67a1\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/@xterm_xterm.js?v=5366dd34\",\"/node_modules/.cache/vite/client/deps/@xterm_addon-fit.js?v=68911e3d\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/axios.js?v=9c78db6a\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/@novnc_novnc.js?v=23ab3044\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/uuid.js?v=fe89c36a\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/compat/interval.js?v=f6ce"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/dompurify.js?v=21eb65ef\",\"/node_modules/.cache/vite/client/deps/@mdit_plugin-katex.js?v=3d5c772f\",\"/node_modules/.cache/vite/client/deps/katex.js?v=f905d7f2\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/@monaco-editor_loader.js?v=98c04246\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/vue-pdf-embed.js?v=f51aeffd\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/xlsx.js?v=95794f7e\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/mermaid.js?v=57462f02\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/markdown-it.js?v=dc40195d\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/@iconify_vue.js?v=a8fe2e06\"]}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49469/_nuxt/?token=7xUGK9EGDQpz",
+      "type": "prune",
+      "payloadPreview": "{\"type\":\"prune\",\"paths\":[\"/node_modules/.cache/vite/client/deps/prismjs.js?v=03f256e2\",\"/node_modules/.cache/vite/client/deps/prismjs_components_prism-markup.js?v=78176a8e\",\"/node_modules/.cache/vite/client/deps/prismjs_components_prism-css.js?v=ed490c42\",\"/node_modules/.cache/vite/client/deps/prism"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a",
+      "type": "CONNECTED",
+      "payloadPreview": "{\"type\":\"CONNECTED\",\"payload\":{\"session_id\":\"8734bb48-4d38-464b-b97e-f93ec23b62c9\",\"root_team_run_id\":\"nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a",
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "payloadPreview": "{\"type\":\"TEAM_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_team_run_id\":\"nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a\",\"base_change_sequence\":0,\"execution_tree\":{\"schema_version\":2,\"created_at\":\"2026-08-27T06:05:45.364Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[{\"from\":\""
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a",
+      "type": "TEAM_RUN_LIFECYCLE",
+      "payloadPreview": "{\"type\":\"TEAM_RUN_LIFECYCLE\",\"payload\":{\"is_active\":true}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/terminal/00dfe774-9367-4717-8eed-eacf60511ae4",
+      "type": "output",
+      "payloadPreview": "{\"type\":\"output\",\"data\":\"DQpUaGUgZGVmYXVsdCBpbnRlcmFjdGl2ZSBzaGVsbCBpcyBub3cgenNoLg0KVG8gdXBkYXRlIHlvdXIgYWNjb3VudCB0byB1c2UgenNoLCBwbGVhc2UgcnVuIGBjaHNoIC1zIC9iaW4venNoYC4NCkZvciBtb3JlIGRldGFpbHMsIHBsZWFzZSB2aXNpdCBodHRwczovL3N1cHBvcnQuYXBwbGUuY29tL2tiL0hUMjA4MDUwLg0K\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/terminal/00dfe774-9367-4717-8eed-eacf60511ae4",
+      "type": "output",
+      "payloadPreview": "{\"type\":\"output\",\"data\":\"G1s/MTAzNGh+ICQg\"}"
+    }
+  ],
+  "passed": false,
+  "failure": {
+    "message": "locator.waitFor: Error: strict mode violation: locator('textarea') resolved to 2 elements:\n    1) <textarea value=\"\" data-v-27c1256a=\"\" data-file-drop-target=\"true\" placeholder=\"Type a message...\" class=\"w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[0.9375rem] leading-6\"></textarea> aka getByRole('textbox', { name: 'Type a message...' })\n    2) <textarea tabindex=\"0\" autocorrect=\"off\" spellcheck=\"false\" autocapitalize=\"off\" aria-multiline=\"false\" aria-label=\"Terminal input\" class=\"xterm-helper-textarea\"></textarea> aka getByLabel('Terminal input')\n\nCall log:\n\u001b[2m  - waiting for locator('textarea') to be visible\u001b[22m\n\u001b[2m    2 × waiting for\" http://127.0.0.1:49469/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a&workspaceExecutionAgentRunId=student_one_4179f88f25034…\" navigation to finish...\u001b[22m\n\u001b[2m      - navigated to \"http://127.0.0.1:49469/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a&workspaceExecutionAgentRunId=student_one_4179f88f25034…\"\u001b[22m\n\u001b[2m    - locator resolved to hidden <textarea tabindex=\"0\" autocorrect=\"off\" spellcheck=\"false\" autocapitalize=\"off\" aria-multiline=\"false\" aria-label=\"Terminal input\" class=\"xterm-helper-textarea\"></textarea>\u001b[22m\n",
+    "stack": "locator.waitFor: Error: strict mode violation: locator('textarea') resolved to 2 elements:\n    1) <textarea value=\"\" data-v-27c1256a=\"\" data-file-drop-target=\"true\" placeholder=\"Type a message...\" class=\"w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[0.9375rem] leading-6\"></textarea> aka getByRole('textbox', { name: 'Type a message...' })\n    2) <textarea tabindex=\"0\" autocorrect=\"off\" spellcheck=\"false\" autocapitalize=\"off\" aria-multiline=\"false\" aria-label=\"Terminal input\" class=\"xterm-helper-textarea\"></textarea> aka getByLabel('Terminal input')\n\nCall log:\n\u001b[2m  - waiting for locator('textarea') to be visible\u001b[22m\n\u001b[2m    2 × waiting for\" http://127.0.0.1:49469/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a&workspaceExecutionAgentRunId=student_one_4179f88f25034…\" navigation to finish...\u001b[22m\n\u001b[2m      - navigated to \"http://127.0.0.1:49469/workspace?workspaceExecutionKind=team&workspaceExecutionRunId=nested_classroom_test_team_0207fd78b6f648e2bc8955641b357d0a&workspaceExecutionAgentRunId=student_one_4179f88f25034…\"\u001b[22m\n\u001b[2m    - locator resolved to hidden <textarea tabindex=\"0\" autocorrect=\"off\" spellcheck=\"false\" autocapitalize=\"off\" aria-multiline=\"false\" aria-label=\"Terminal input\" class=\"xterm-helper-textarea\"></textarea>\u001b[22m\n\n    at openFocusedPage (/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/tests/e2e/.docker-node-image-upload-400-live-probe.mjs:331:36)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/tests/e2e/.docker-node-image-upload-400-live-probe.mjs:385:18",
+    "details": null,
+    "graphqlPayload": null
+  }
+}

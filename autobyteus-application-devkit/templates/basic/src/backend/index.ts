@@ -1,7 +1,7 @@
 import { defineApplication } from '@autobyteus/application-backend-sdk';
 
 export default defineApplication({
-  definitionContractVersion: '6',
+  definitionContractVersion: '7',
   queries: {
     status: async (_input, context) => ({
       ok: true,

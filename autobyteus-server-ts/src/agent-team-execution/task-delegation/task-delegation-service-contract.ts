@@ -1,6 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import type { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
@@ -22,7 +21,7 @@ import type {
 } from "../services/team-run-resolver.js";
 import type { TaskDelegationContext } from "./task-delegation-record.js";
 import type { TaskDelegationRecordsSnapshot } from "./task-delegation-record-v1.js";
-import type { TaskTeamRunIdentityFactory } from "./task-team-run-identity-factory.js";
+import type { TaskExecutionIdentityCapabilities } from "./task-execution-identity-capabilities.js";
 
 export type TaskDelegationServiceState = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
@@ -58,7 +57,6 @@ export type TaskDelegationServiceOptions = Readonly<{
   replaceState(state: TaskDelegationServiceState): void;
   publish(event: TeamRunEvent): void;
   deliverSystemMessage(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
-  agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-  taskTeamRunIdentityFactory?: TaskTeamRunIdentityFactory;
+  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   tokenUsageMigrationReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
 }>;

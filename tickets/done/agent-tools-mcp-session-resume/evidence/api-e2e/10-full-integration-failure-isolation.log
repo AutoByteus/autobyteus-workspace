@@ -1,0 +1,2526 @@
+===== ISOLATED tests/integration/agent-definition/md-centric-provider.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-definition/md-centric-provider.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > throws AgentMdParseError when agent.md is malformed
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+stdout | tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > preserves unknown agent-config fields across update round-trips
+Initialized server settings service with 20 predefined settings
+
+ ❯ tests/integration/agent-definition/md-centric-provider.integration.test.ts (7 tests | 2 failed) 79ms
+     ✓ throws AgentMdParseError when agent.md is malformed 5ms
+     ✓ preserves unknown agent-config fields across update round-trips 33ms
+     ✓ persists defaultLaunchConfig when creating a shared agent definition 14ms
+     ✓ updates imported definitions in place without inferring bundled skills when config skillNames are empty 17ms
+     ✓ keeps explicit skillNames authoritative when a bundled skill is also present 3ms
+     × does not silently skip malformed application-owned agents during catalog reads 5ms
+     × updates application-owned agent defaultLaunchConfig in place 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > does not silently skip malformed application-owned agents during catalog reads
+Error: The property "getInstance" is not defined on the function.
+ ❯ tests/integration/agent-definition/md-centric-provider.integration.test.ts:272:8
+    270|     };
+    271| 
+    272|     vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+       |        ^
+    273|       listApplicationOwnedAgentSources: vi.fn(async () => [source]),
+    274|       getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: st…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > updates application-owned agent defaultLaunchConfig in place
+Error: The property "getInstance" is not defined on the function.
+ ❯ tests/integration/agent-definition/md-centric-provider.integration.test.ts:317:8
+    315|     await fs.writeFile(path.join(agentDir, "agent-config.json"), "{}\n…
+    316| 
+    317|     vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+       |        ^
+    318|       getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: st…
+    319|         requestedId === definitionId
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  07:42:13
+   Duration  3.37s (transform 1.85s, setup 17ms, import 2.67s, tests 79ms, environment 0ms)
+
+===== ISOLATED tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Tool 'run_bash' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': No tools provided in config.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_11111111111111111111111111111111' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' created and stored successfully.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111': Starting worker.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Starting...
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_11111111111111111111111111111111' to become idle (timeout: 30s)...
+AgentEventStream (ID: e1fd48ec-14a0-4b80-ac44-f28d179c673c) initialized for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: e784cbbd-deea-4825-b79a-40bf39569cde, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Final processed system prompt configured and captured. Trace ID: rt_1787895741598_ed469541-6ad9-4a47-af5e-ce1095947a03. Final length: 2596.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: e784cbbd-deea-4825-b79a-40bf39569cde, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentEventStream (ID: e1fd48ec-14a0-4b80-ac44-f28d179c673c) for 'autobyteus_backend_agent_11111111111111111111111111111111': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Removing agent 'autobyteus_backend_agent_11111111111111111111111111111111'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_11111111111111111111111111111111' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: e784cbbd-deea-4825-b79a-40bf39569cde, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentExternalEventNotifier (NotifierID: e784cbbd-deea-4825-b79a-40bf39569cde, AgentID: autobyteus_backend_agent_11111111111111111111111111111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_11111111111111111111111111111111': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+Unregistered AgentContext for agent_id 'autobyteus_backend_agent_11111111111111111111111111111111'.
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AgentRuntime for 'autobyteus_backend_agent_11111111111111111111111111111111' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentRuntimeState initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'memory_compactor_runtime_tools_empty_11111111': No tools provided in config.
+Agent 'memory_compactor_runtime_tools_empty_11111111': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'memory_compactor_runtime_tools_empty_11111111' with config: 'Memory Compactor'.
+AgentWorker initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+Registered AgentContext for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Context registered.
+Agent facade initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+Agent 'memory_compactor_runtime_tools_empty_11111111' created and stored successfully.
+Agent 'memory_compactor_runtime_tools_empty_11111111' requesting runtime to start.
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111': Starting worker.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Starting...
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' asyncRun(): Starting.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (event store initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (status deriver initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (AgentEventInbox initialized).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'memory_compactor_runtime_tools_empty_11111111' to become idle (timeout: 30s)...
+AgentEventStream (ID: b7328637-5e5b-4df6-bceb-2a3705fbeb55) initialized for agent_id 'memory_compactor_runtime_tools_empty_11111111'. Subscribed to notifier.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: 86e9419d-6b06-4fd4-bc92-1bc87798faa2, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Bootstrapper starting direct lifecycle execution.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'memory_compactor_runtime_tools_empty_11111111': Executing SystemPromptProcessingStep.
+Agent 'memory_compactor_runtime_tools_empty_11111111': No configured skills. Skipping skill catalog.
+Agent 'memory_compactor_runtime_tools_empty_11111111': Final processed system prompt configured and captured. Trace ID: rt_1787895741626_2a64850f-6460-4941-bcd7-e6a8e35bbaeb. Final length: 2619.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: 86e9419d-6b06-4fd4-bc92-1bc87798faa2, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Agent 'memory_compactor_runtime_tools_empty_11111111' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentEventStream (ID: b7328637-5e5b-4df6-bceb-2a3705fbeb55) for 'memory_compactor_runtime_tools_empty_11111111': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Removing agent 'memory_compactor_runtime_tools_empty_11111111'. Attempting graceful shutdown.
+Agent 'memory_compactor_runtime_tools_empty_11111111' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: 86e9419d-6b06-4fd4-bc92-1bc87798faa2, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentExternalEventNotifier (NotifierID: 86e9419d-6b06-4fd4-bc92-1bc87798faa2, AgentID: memory_compactor_runtime_tools_empty_11111111) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111' asyncRun() loop has finished.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Shutdown resource cleanup completed successfully.
+AgentWorker 'memory_compactor_runtime_tools_empty_11111111': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+Unregistered AgentContext for agent_id 'memory_compactor_runtime_tools_empty_11111111'.
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AgentRuntime for 'memory_compactor_runtime_tools_empty_11111111' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Tool 'run_bash' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentRuntimeState initialized for agent_id 'preferred_autobyteus_run_4242'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'preferred_autobyteus_run_4242': No tools provided in config.
+Agent 'preferred_autobyteus_run_4242': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'preferred_autobyteus_run_4242'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'preferred_autobyteus_run_4242' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'preferred_autobyteus_run_4242'.
+Registered AgentContext for agent_id 'preferred_autobyteus_run_4242'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'preferred_autobyteus_run_4242'. Context registered.
+Agent facade initialized for agent_id 'preferred_autobyteus_run_4242'.
+Agent 'preferred_autobyteus_run_4242' created and stored successfully.
+Agent 'preferred_autobyteus_run_4242' requesting runtime to start.
+AgentRuntime for 'preferred_autobyteus_run_4242': Starting worker.
+AgentWorker 'preferred_autobyteus_run_4242': Starting...
+AgentWorker 'preferred_autobyteus_run_4242' asyncRun(): Starting.
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (event store initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (status deriver initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (AgentEventInbox initialized).
+Agent 'preferred_autobyteus_run_4242': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'preferred_autobyteus_run_4242' to become idle (timeout: 30s)...
+AgentEventStream (ID: 7c8e0f1c-2418-4ca0-9644-7f8cc0441edd) initialized for agent_id 'preferred_autobyteus_run_4242'. Subscribed to notifier.
+Agent 'preferred_autobyteus_run_4242': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 7a79edba-d115-4d0b-9d11-e83064f05f9e, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242': Bootstrapper starting direct lifecycle execution.
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'preferred_autobyteus_run_4242': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'preferred_autobyteus_run_4242': Executing SystemPromptProcessingStep.
+Agent 'preferred_autobyteus_run_4242': No configured skills. Skipping skill catalog.
+Agent 'preferred_autobyteus_run_4242': Final processed system prompt configured and captured. Trace ID: rt_1787895741645_d56b07a2-49f0-47d7-bf0d-06e6598ede49. Final length: 2596.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 7a79edba-d115-4d0b-9d11-e83064f05f9e, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Agent 'preferred_autobyteus_run_4242' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentEventStream (ID: 7c8e0f1c-2418-4ca0-9644-7f8cc0441edd) for 'preferred_autobyteus_run_4242': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Removing agent 'preferred_autobyteus_run_4242'. Attempting graceful shutdown.
+Agent 'preferred_autobyteus_run_4242' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 7a79edba-d115-4d0b-9d11-e83064f05f9e, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentExternalEventNotifier (NotifierID: 7a79edba-d115-4d0b-9d11-e83064f05f9e, AgentID: preferred_autobyteus_run_4242) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242' asyncRun() loop has finished.
+AgentWorker 'preferred_autobyteus_run_4242': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentWorker 'preferred_autobyteus_run_4242': Shutdown resource cleanup completed successfully.
+AgentWorker 'preferred_autobyteus_run_4242': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+Unregistered AgentContext for agent_id 'preferred_autobyteus_run_4242'.
+AgentRuntime for 'preferred_autobyteus_run_4242': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AgentRuntime for 'preferred_autobyteus_run_4242' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Using temp workspace (ID: temp_ws_backend_integration) for agent.
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Tool 'run_bash' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteusBackendAgent' not found in registry. Skipping.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentRuntimeState initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': No tools provided in config.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_backend_agent_22222222222222222222222222222222' with config: 'AutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Registered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' created and stored successfully.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to start.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Starting worker.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Starting...
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun(): Starting.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (event store initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_backend_agent_22222222222222222222222222222222' to become idle (timeout: 30s)...
+AgentEventStream (ID: 74ecbd89-7cb3-4e7b-9da8-337ab7c2af37) initialized for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'. Subscribed to notifier.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: c8628fd9-21a8-4f67-84fa-c6ac5c727adb, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': No configured skills. Skipping skill catalog.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Final processed system prompt configured and captured. Trace ID: rt_1787895741663_f8e14707-5121-4d3f-943e-de3cf5522871. Final length: 2596.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: c8628fd9-21a8-4f67-84fa-c6ac5c727adb, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentEventStream (ID: 74ecbd89-7cb3-4e7b-9da8-337ab7c2af37) for 'autobyteus_backend_agent_22222222222222222222222222222222': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Removing agent 'autobyteus_backend_agent_22222222222222222222222222222222'. Attempting graceful shutdown.
+Agent 'autobyteus_backend_agent_22222222222222222222222222222222' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: c8628fd9-21a8-4f67-84fa-c6ac5c727adb, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentExternalEventNotifier (NotifierID: c8628fd9-21a8-4f67-84fa-c6ac5c727adb, AgentID: autobyteus_backend_agent_22222222222222222222222222222222) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222' asyncRun() loop has finished.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_backend_agent_22222222222222222222222222222222': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+Unregistered AgentContext for agent_id 'autobyteus_backend_agent_22222222222222222222222222222222'.
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AgentRuntime for 'autobyteus_backend_agent_22222222222222222222222222222222' stop() method completed.
+
+ ❯ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts (5 tests | 4 failed) 92ms
+     × creates a live backend that can process a turn and terminate cleanly 34ms
+     × materializes and restores the canonical Memory Compactor as a disabled leaf 18ms
+     × respects a preferred run id and provisions the standalone memory directory explicitly 18ms
+     × restores a terminated run with the same run id 18ms
+     ✓ rejects fresh create when the standalone run is not fully prepared 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+AssertionError: expected [] to deeply equal [ 'run_bash', 'read_file', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "run_bash",
+-   "read_file",
+-   "edit_file",
+-   "write_file",
+- ]
++ []
+
+ ❯ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:132:101
+    130|     expect(backend.isActive()).toBe(true);
+    131|     expect(backend.getContext().config.agentDefinitionId).toBe("def-au…
+    132|     expect(agentFactory.getAgent(runId)?.context.config.tools.map((too…
+       |                                                                                                     ^
+    133|       "run_bash",
+    134|       "read_file",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > materializes and restores the canonical Memory Compactor as a disabled leaf
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:193:37
+    191|       message: new AgentInputUserMessage("persist one compactor task b…
+    192|     });
+    193|     expect(commandResult.forwarded).toBe(true);
+       |                                     ^
+    194|     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle…
+    195| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:237:37
+    235|       message: new AgentInputUserMessage("hello explicit memory"),
+    236|     });
+    237|     expect(commandResult.forwarded).toBe(true);
+       |                                     ^
+    238|     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle…
+    239| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts:262:35
+    260|       message: new AgentInputUserMessage("first restoreable turn"),
+    261|     });
+    262|     expect(firstResult.forwarded).toBe(true);
+       |                                   ^
+    263|     await waitFor(() => created.getLifecycleSnapshot().phase === "idle…
+    264| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  07:42:17
+   Duration  4.47s (transform 2.67s, setup 28ms, import 3.68s, tests 92ms, environment 0ms)
+
+===== ISOLATED tests/integration/agent-team-execution/team-run-service.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts (5 tests | 5 failed) 8ms
+     × expands one root launch configuration across every Team and exact recursive Agent address 5ms
+     × creates one rooted mixed-runtime recursive plan and records the current V2 execution tree 1ms
+     × restores only through the strict manager package reader and refreshes the catalog from its current V2 tree 0ms
+     × terminates the newly materialized root if catalog creation fails 0ms
+     × records terminal history only when the manager accepts root termination 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > expands one root launch configuration across every Team and exact recursive Agent address
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new AgentMemoryLocationService src/agent-memory/services/agent-memory-location-service.ts:36:47
+ ❯ new TeamRunService src/agent-team-execution/services/team-run-service.ts:94:65
+ ❯ createHarness tests/integration/agent-team-execution/team-run-service.integration.test.ts:129:19
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:145:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > creates one rooted mixed-runtime recursive plan and records the current V2 execution tree
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new AgentMemoryLocationService src/agent-memory/services/agent-memory-location-service.ts:36:47
+ ❯ new TeamRunService src/agent-team-execution/services/team-run-service.ts:94:65
+ ❯ createHarness tests/integration/agent-team-execution/team-run-service.integration.test.ts:129:19
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:183:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > restores only through the strict manager package reader and refreshes the catalog from its current V2 tree
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new AgentMemoryLocationService src/agent-memory/services/agent-memory-location-service.ts:36:47
+ ❯ new TeamRunService src/agent-team-execution/services/team-run-service.ts:94:65
+ ❯ createHarness tests/integration/agent-team-execution/team-run-service.integration.test.ts:129:19
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:251:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > terminates the newly materialized root if catalog creation fails
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new AgentMemoryLocationService src/agent-memory/services/agent-memory-location-service.ts:36:47
+ ❯ new TeamRunService src/agent-team-execution/services/team-run-service.ts:94:65
+ ❯ createHarness tests/integration/agent-team-execution/team-run-service.integration.test.ts:129:19
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:269:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService current recursive topology integration > records terminal history only when the manager accepts root termination
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunExecutionTreeLocationService src/run-history/services/team-run-execution-tree-location-service.ts:49:52
+ ❯ new AgentMemoryLocationService src/agent-memory/services/agent-memory-location-service.ts:36:47
+ ❯ new TeamRunService src/agent-team-execution/services/team-run-service.ts:94:65
+ ❯ createHarness tests/integration/agent-team-execution/team-run-service.integration.test.ts:129:19
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:289:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  07:42:22
+   Duration  4.22s (transform 2.63s, setup 20ms, import 3.62s, tests 8ms, environment 0ms)
+
+===== ISOLATED tests/integration/agent/agent-websocket.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session a6b3cf82-90a2-4304-bb23-9e45dff8ea19 for run agent-e2e
+Agent WebSocket connected: session=a6b3cf82-90a2-4304-bb23-9e45dff8ea19, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session a6b3cf82-90a2-4304-bb23-9e45dff8ea19
+Agent WebSocket disconnected: a6b3cf82-90a2-4304-bb23-9e45dff8ea19
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session 5cac8aa7-ff49-42f9-9735-c86f1bbd7515 for run agent-e2e
+Agent WebSocket connected: session=5cac8aa7-ff49-42f9-9735-c86f1bbd7515, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session 5cac8aa7-ff49-42f9-9735-c86f1bbd7515
+Agent WebSocket disconnected: 5cac8aa7-ff49-42f9-9735-c86f1bbd7515
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session 609eb40a-2cbe-4973-bb90-b91861d3bcaf for run agent-e2e
+Agent WebSocket connected: session=609eb40a-2cbe-4973-bb90-b91861d3bcaf, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session 609eb40a-2cbe-4973-bb90-b91861d3bcaf
+Agent WebSocket disconnected: 609eb40a-2cbe-4973-bb90-b91861d3bcaf
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session 3d771111-2530-43b1-a3dc-11d04dfcbf16 for run agent-e2e
+Agent WebSocket connected: session=3d771111-2530-43b1-a3dc-11d04dfcbf16, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session 3d771111-2530-43b1-a3dc-11d04dfcbf16
+Agent WebSocket disconnected: 3d771111-2530-43b1-a3dc-11d04dfcbf16
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session 82917b5f-cd4f-4cc6-860e-8a58627a1c16 for run agent-e2e
+Agent WebSocket connected: session=82917b5f-cd4f-4cc6-860e-8a58627a1c16, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Closed agent session 82917b5f-cd4f-4cc6-860e-8a58627a1c16
+Agent WebSocket disconnected: 82917b5f-cd4f-4cc6-860e-8a58627a1c16
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Agent websocket attached for run agent-interrupt-ack
+Created agent session 1f2f9b30-835c-4097-999e-ba976fbd8872 for run agent-interrupt-ack
+Agent WebSocket connected: session=1f2f9b30-835c-4097-999e-ba976fbd8872, run=agent-interrupt-ack
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+INTERRUPT_GENERATION rejected for agent run agent-interrupt-ack: [NO_ACTIVE_TURN] The provider has no active turn to interrupt.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session 1f2f9b30-835c-4097-999e-ba976fbd8872
+Agent WebSocket disconnected: 1f2f9b30-835c-4097-999e-ba976fbd8872
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session 8abb98b4-8294-446f-b59a-0ac58f8029ac for run agent-e2e
+Agent WebSocket connected: session=8abb98b4-8294-446f-b59a-0ac58f8029ac, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+INTERRUPT_GENERATION rejected for missing agent run agent-e2e.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session 8abb98b4-8294-446f-b59a-0ac58f8029ac
+Agent WebSocket disconnected: 8abb98b4-8294-446f-b59a-0ac58f8029ac
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts (8 tests | 2 failed) 2224ms
+     × connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK 58ms
+     ✓ does not downgrade an already-running standalone send to initializing 20ms
+     ✓ activates a prepared identity through SEND_MESSAGE rather than websocket connect 28ms
+     × returns duplicate and busy ACKs for same and different in-flight command ids 2039ms
+     ✓ publishes error status and failed ACK when prepared activation fails 17ms
+     ✓ returns exact same-socket interrupt acknowledgements without publishing lifecycle state 28ms
+     ✓ keeps non-SEND commands active-only after identity-only connect 17ms
+     ✓ returns SESSION_NOT_READY when command arrives before connect handshake 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+AssertionError: expected { command_type: 'SEND_MESSAGE', …(7) } to match object { command_type: 'SEND_MESSAGE', …(7) }
+
+- Expected
++ Received
+
+@@ -6,8 +6,8 @@
+    "message_id": "msg-restore-1",
+    "run_id": "agent-e2e",
+    "state": "accepted",
+    "status": {
+      "agent_id": "agent-e2e",
+-     "status": "running",
++     "status": "offline",
+    },
+  }
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:355:27
+    353|         2,
+    354|       );
+    355|       expect(ack.payload).toMatchObject({
+       |                           ^
+    356|         command_type: "SEND_MESSAGE",
+    357|         run_id: runId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Error: Timed out waiting for matching websocket message
+ ❯ waitForMessageMatching tests/integration/agent/agent-websocket.integration.test.ts:183:9
+    181|     await new Promise((resolve) => setTimeout(resolve, 10));
+    182|   }
+    183|   throw new Error("Timed out waiting for matching websocket message");
+       |         ^
+    184| };
+    185| 
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:516:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  07:42:27
+   Duration  6.83s (transform 2.85s, setup 18ms, import 4.01s, tests 2.22s, environment 0ms)
+
+===== ISOLATED tests/integration/api/rest/upload-file.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/files
+File saved successfully to persistent storage: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-upload-S6hOD1/media/documents/e26240f1-f38d-4914-9a8a-535be602b525.txt
+Returning file URL: /rest/files/documents/e26240f1-f38d-4914-9a8a-535be602b525.txt
+
+stdout | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /images
+File saved successfully to persistent storage: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-upload-D6XrPt/media/images/bfc569cd-2edb-4a15-8384-f68041f19c35.png
+Returning file URL: /rest/files/images/bfc569cd-2edb-4a15-8384-f68041f19c35.png
+
+stderr | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > rejects unsupported file types
+Unsupported file type: application/zip
+
+stderr | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > returns 413 and does not persist truncated files when upload exceeds file size limit
+Uploaded file exceeded multipart size limit and was truncated: oversized-avatar.png
+
+ ❯ tests/integration/api/rest/upload-file.integration.test.ts (5 tests | 2 failed) 58ms
+     × uploads a file and serves it from /rest/files 33ms
+     × uploads a dummy PNG image and stores it under /images 8ms
+     ✓ rejects unsupported file types 5ms
+     ✓ returns 400 when no file is provided 4ms
+     ✓ returns 413 and does not persist truncated files when upload exceeds file size limit 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/files
+TypeError: Invalid URL
+ ❯ tests/integration/api/rest/upload-file.integration.test.ts:138:22
+    136|     expect(uploadJson.fileUrl).toContain("/rest/files/");
+    137| 
+    138|     const filePath = new URL(uploadJson.fileUrl).pathname;
+       |                      ^
+    139|     const fileResponse = await app.inject({
+    140|       method: "GET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /images
+TypeError: Invalid URL
+ ❯ tests/integration/api/rest/upload-file.integration.test.ts:187:23
+    185|     expect(uploadJson.fileUrl.endsWith(".png")).toBe(true);
+    186| 
+    187|     const imagePath = new URL(uploadJson.fileUrl).pathname;
+       |                       ^
+    188|     const fileResponse = await app.inject({
+    189|       method: "GET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  07:42:34
+   Duration  862ms (transform 112ms, setup 16ms, import 224ms, tests 58ms, environment 0ms)
+
+===== ISOLATED tests/integration/api/run-file-changes-api.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/api/run-file-changes-api.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:41787) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-tNEBjo/memory
+============================================================
+AppConfig initialization completed successfully
+
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts (5 tests | 5 skipped) 9ms
+     ↓ hydrates unified rows through GraphQL and serves current text/media bytes through the run-scoped route
+     ↓ does not hydrate legacy-only persisted runs after the clean-cut removal
+     ↓ hydrates historical AutoByteus team-member file changes through GraphQL and REST
+     ↓ returns 404 for historical rows whose files no longer exist
+     ↓ returns 409 for active runs when an indexed pending file has not been written yet
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new RunFileChangeProjectionService src/run-history/services/run-file-change-projection-service.ts:46:67
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts:165:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts:178:15
+    176|   afterAll(async () => {
+    177|     activeRuns.clear();
+    178|     await app.close();
+       |               ^
+    179|     await Promise.all([
+    180|       fs.rm(appDataDir, { recursive: true, force: true }),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 skipped (5)
+   Start at  07:42:36
+   Duration  5.72s (transform 3.64s, setup 19ms, import 5.13s, tests 9ms, environment 0ms)
+
+===== ISOLATED tests/integration/api/team-communication-api.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-api-appdata-p6sHEA
+AppConfig instance created.
+
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+AgentFactory (Singleton) initialized.
+
+(node:41805) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/api/team-communication-api.integration.test.ts (3 tests | 3 skipped) 4846ms
+     ↓ hydrates historical messages through GraphQL and serves reference content through the message-owned REST route
+     ↓ does not hydrate unmigrated old flat projections through a runtime compatibility fallback
+     ↓ maps unreadable reference content failures to a graceful 403 REST response
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamCommunicationProjectionService src/services/team-communication/team-communication-projection-service.ts:32:66
+ ❯ getTeamCommunicationProjectionService src/services/team-communication/team-communication-projection-service.ts:80:31
+ ❯ new TeamCommunicationContentService src/services/team-communication/team-communication-content-service.ts:73:7
+ ❯ getTeamCommunicationContentService src/services/team-communication/team-communication-content-service.ts:133:28
+ ❯ registerTeamCommunicationRoutes src/api/rest/team-communication.ts:28:52
+ ❯ tests/integration/api/team-communication-api.integration.test.ts:215:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 skipped (3)
+   Start at  07:42:42
+   Duration  5.57s (transform 3.90s, setup 17ms, import 136ms, tests 4.85s, environment 0ms)
+
+===== ISOLATED tests/integration/file-explorer/file-explorer.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ❯ tests/integration/file-explorer/file-explorer.integration.test.ts (6 tests | 6 failed) 12ms
+     × builds tree and lists file paths 4ms
+     × writes new file and emits ADD change 2ms
+     × modifies existing file and emits MODIFY change 2ms
+     × renames file and emits RENAME change 1ms
+     × moves file and emits MOVE change 1ms
+     × removes file and emits DELETE change 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+ ❯ tests/integration/file-explorer/file-explorer.integration.test.ts:21:16
+     19|   beforeEach(async () => {
+     20|     workspace = await createTempWorkspace();
+     21|     explorer = new FileExplorer(workspace);
+       |                ^
+     22|     await explorer.buildWorkspaceDirectoryTree();
+     23|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/file-explorer/file-explorer.integration.test.ts:26:20
+     24| 
+     25|   afterEach(async () => {
+     26|     await explorer.close();
+       |                    ^
+     27|     await fs.rm(workspace, { recursive: true, force: true });
+     28|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  07:42:48
+   Duration  777ms (transform 139ms, setup 17ms, import 168ms, tests 12ms, environment 0ms)
+
+===== ISOLATED tests/integration/file-explorer/file-system-watcher.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aCcNlW' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aCcNlW' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aCcNlW' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aCcNlW
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BrjGgy' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BrjGgy' completed in 0.0120 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BrjGgy' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BrjGgy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-BrjGgy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing root .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aCcNlW
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-i0Obfy' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-i0Obfy' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-i0Obfy' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-i0Obfy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Iwmn1q' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Iwmn1q' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Iwmn1q' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Iwmn1q
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Iwmn1q
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > does not emit events for pre-existing nested .gitignore excluded directories
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-i0Obfy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Engv03' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Engv03' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Engv03' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Engv03
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Engv03
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-f8sFG1' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-f8sFG1' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-f8sFG1' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-f8sFG1
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-f8sFG1
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-vAOMMJ' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-vAOMMJ' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-vAOMMJ' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-vAOMMJ
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-vAOMMJ
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-WSgt8B' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-WSgt8B' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-WSgt8B' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-WSgt8B
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-WSgt8B
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aXMbap' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aXMbap' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aXMbap' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aXMbap
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-aXMbap
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-4KL4HS' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-4KL4HS' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-4KL4HS' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-4KL4HS
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores default strategy paths like __pycache__
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-4KL4HS
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NI1gLK' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NI1gLK' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NI1gLK' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NI1gLK
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > ignores specific folders like .git and their contents
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NI1gLK
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-1rZSM9' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-1rZSM9' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-1rZSM9' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-1rZSM9
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-1rZSM9
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-CIApRI' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-CIApRI' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-CIApRI' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-CIApRI
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-CIApRI
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-LgmPnc' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-LgmPnc' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-LgmPnc' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-LgmPnc
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-LgmPnc
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-lONkxk' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-lONkxk' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-lONkxk' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-lONkxk
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-lONkxk
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Y5fG81' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Y5fG81' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Y5fG81' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Y5fG81
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Y5fG81
+
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 10 failed) 85566ms
+     ✓ does not emit events for pre-existing root .gitignore excluded directories  1206ms
+     ✓ does not emit events for pre-existing nested .gitignore excluded directories  1140ms
+     × emits add + modify + delete events 8068ms
+     × returns one idle event stream without stopping other subscribers 8067ms
+     × emits move/rename event 12066ms
+     × emits file creation event with node metadata 4065ms
+     × emits folder creation and deletion events 8069ms
+     ✓ ignores default strategy paths like __pycache__  867ms
+     ✓ ignores specific folders like .git and their contents  1670ms
+     × respects nested .gitignore files 8076ms
+     × respects root .gitignore files 8064ms
+     × captures rapid changes without dropping events 8066ms
+     × treats moves into ignored directories as deletes from the visible tree 8072ms
+     × emits delete events even if the in-memory node is missing 8069ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits delete events even if the in-memory node is missing
+Error: Timed out waiting for event
+ ❯ Timeout.<anonymous> tests/integration/file-explorer/file-system-watcher.integration.test.ts:26:14
+     24|     const timeout = setTimeout(() => {
+     25|       clearTimeout(timeout);
+     26|       reject(new Error("Timed out waiting for event"));
+       |              ^
+     27|     }, timeoutMs);
+     28|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 4 passed (14)
+   Start at  07:42:49
+   Duration  86.32s (transform 185ms, setup 21ms, import 174ms, tests 85.57s, environment 0ms)
+
+===== ISOLATED tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ❯ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts (1 test | 1 failed) 8ms
+     × returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+ ❯ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts:66:16
+     64|   beforeEach(async () => {
+     65|     workspace = await createTempWorkspace();
+     66|     explorer = new FileExplorer(workspace);
+       |                ^
+     67|     await explorer.buildWorkspaceDirectoryTree();
+     68|     await explorer.startWatcher();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts:72:20
+     70| 
+     71|   afterEach(async () => {
+     72|     await explorer.close();
+       |                    ^
+     73|     await fs.rm(workspace, { recursive: true, force: true });
+     74|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  07:44:16
+   Duration  779ms (transform 152ms, setup 16ms, import 186ms, tests 8ms, environment 0ms)
+
+===== ISOLATED tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-mcp-projection-gILQNx/working_context_snapshot.json
+
+ ❯ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts (1 test | 1 failed) 12ms
+     × persists an early MCP call plus minimal result and projects both UI surfaces 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+AssertionError: expected [ 'tool_call', 'tool_result' ] to deeply equal [ 'reasoning', 'tool_call', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "reasoning",
+    "tool_call",
+    "tool_result",
+  ]
+
+ ❯ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts:122:52
+    120| 
+    121|     const traces = readRawTraces(memoryDir);
+    122|     expect(traces.map((trace) => trace.traceType)).toEqual(["reasoning…
+       |                                                    ^
+    123|     expect(traces[0]).toMatchObject({
+    124|       traceType: "reasoning",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  07:44:18
+   Duration  2.80s (transform 1.43s, setup 18ms, import 2.18s, tests 12ms, environment 0ms)
+
+===== ISOLATED tests/integration/services/media-storage-service.integration.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-49zOvV/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+Processing media source URI: https://example.com/remote_image.png...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-49zOvV/media/images/remote_image_1.png. Server URL: /rest/files/images/remote_image_1.png
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > propagates download failures and leaves no files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-Uvja1u/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > propagates download failures and leaves no files
+Processing media source URI: https://example.com/remote_image.png...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-aiVrih/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+Processing media source URI: data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-aiVrih/media/documents/hello_text.txt. Server URL: /rest/files/documents/hello_text.txt
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-p92XBY/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+Processing media source URI: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-p92XBY/source.txt...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-p92XBY/media/documents/source.txt. Server URL: /rest/files/documents/source.txt
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files without category filter
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-s80Oop/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files without category filter
+Listing media files for category 'undefined' - Page: 1, Limit: 10
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-mArWSG/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+Listing media files for category 'images' - Page: 1, Limit: 10
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > paginates media files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-orocDU/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > paginates media files
+Listing media files for category 'undefined' - Page: 1, Limit: 1
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > paginates media files
+Listing media files for category 'undefined' - Page: 2, Limit: 1
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > deletes media files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-CktL0Y/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > deletes media files
+Attempting to delete media file: 'test_image.png' from category: 'images'
+Successfully deleted file: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-CktL0Y/media/images/test_image.png
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for missing media files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-aNbUYd/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for missing media files
+Attempting to delete media file: 'missing.png' from category: 'images'
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for invalid categories
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-qR7pPf/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for invalid categories
+Attempting to delete media file: 'file.txt' from category: 'aliens'
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for path traversal attempts
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-1hhq9V/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for path traversal attempts
+Attempting to delete media file: '../../../etc/passwd' from category: 'images'
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts (11 tests | 4 failed) 34ms
+     × saves media from a remote URL 9ms
+     ✓ propagates download failures and leaves no files 4ms
+     × saves media from a data URI 3ms
+     × saves media from a local file path 3ms
+     ✓ lists media files without category filter 3ms
+     × lists media files by category 3ms
+     ✓ paginates media files 3ms
+     ✓ deletes media files 2ms
+     ✓ throws for missing media files 2ms
+     ✓ throws for invalid categories 1ms
+     ✓ throws for path traversal attempts 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:49:78
+     47|     const localUrl = await service.storeMediaAndGetUrl(TEST_REMOTE_URL…
+     48| 
+     49|     expect(localUrl.startsWith("http://testserver:8000/rest/files/imag…
+       |                                                                              ^
+     50|     expect(localUrl.endsWith(".png")).toBe(true);
+     51| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:72:81
+     70|     const localUrl = await service.storeMediaAndGetUrl(SIMPLE_DATA_URI…
+     71| 
+     72|     expect(localUrl.startsWith("http://testserver:8000/rest/files/docu…
+       |                                                                                 ^
+     73|     expect(localUrl.endsWith(".txt")).toBe(true);
+     74|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:81:81
+     79| 
+     80|     const localUrl = await service.storeMediaAndGetUrl(sourceFile, "so…
+     81|     expect(localUrl.startsWith("http://testserver:8000/rest/files/docu…
+       |                                                                                 ^
+     82|     expect(localUrl.endsWith(".txt")).toBe(true);
+     83|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+AssertionError: expected '/rest/files/images/test_image.png' to be 'http://testserver:8000/rest/files/ima…' // Object.is equality
+
+Expected: "http://testserver:8000/rest/files/images/test_image.png"
+Received: "/rest/files/images/test_image.png"
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:115:34
+    113|     expect(result.files[0]?.category).toBe("images");
+    114|     expect(result.files[0]?.filename).toBe("test_image.png");
+    115|     expect(result.files[0]?.url).toBe(
+       |                                  ^
+    116|       "http://testserver:8000/rest/files/images/test_image.png",
+    117|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 7 passed (11)
+   Start at  07:44:21
+   Duration  735ms (transform 93ms, setup 18ms, import 114ms, tests 34ms, environment 0ms)
+

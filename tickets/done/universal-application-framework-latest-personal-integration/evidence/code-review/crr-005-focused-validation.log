@@ -1,0 +1,337 @@
+CRR-005 reviewer focused validation
+UTC 2026-08-22T09:49:20Z
+HEAD:
+ae5a1c7bcffbc4c8a54a5e3d1059d73861359b13
+
+== prepare shared ==
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+== affected 7-file server selection ==
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts (3 tests | 1 failed) 8ms
+     ✓ derives the shared tutor-member address from the authoritative active team binding 1ms
+     × surfaces wrong binding subjects and missing tutor membership as configuration defects 5ms
+     ✓ requests and carries the shared target address through the generated GraphQL client 1ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts (15 tests) 1759ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  454ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  892ms
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > projects FILE_CHANGE events, keeps live content transient, and persists metadata only
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts (4 tests) 59ms
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/agent-memory/agent-memory-location-service.test.ts (3 tests) 48ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (9 tests) 7ms
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69673) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+[2026-08-22T09:49:34.087Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases the agent manager when exclusive team-manager initialization fails
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts (2 tests) 7ms
+ ✓ tests/unit/application-backend/socratic-lesson-target-address.test.ts (2 tests) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/application-backend/socratic-lesson-target-projection.test.ts > Socratic lesson tutor target projection > surfaces wrong binding subjects and missing tutor membership as configuration defects
+AssertionError: expected [Function] to throw error including 'Application agent-team binding \'bind…' but got 'Socratic tutor binding must contain c…'
+
+Expected: "Application agent-team binding 'binding-lesson-1' does not contain agentRunId 'tutor'."
+Received: "Socratic tutor binding must contain configured memberAddress '/tutor'."
+
+ ❯ tests/unit/application-backend/socratic-lesson-target-projection.test.ts:105:76
+    103|       "Socratic tutor binding must be an agent-team binding.",
+    104|     );
+    105|     expect(() => deriveTutorTargetAddress(activeLesson, teamWithoutTut…
+       |                                                                            ^
+    106|       "Application agent-team binding 'binding-lesson-1' does not cont…
+    107|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 37 passed (38)
+   Start at  11:49:25
+   Duration  8.85s (transform 2.87s, setup 37ms, import 5.93s, tests 1.89s, environment 0ms)
+
+
+== backend SDK exact target-address contract ==
+
+> @autobyteus/application-backend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk
+> vitest run --no-watch
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-application-backend-sdk
+
+ ✓ tests/launch-profile.test.ts (4 tests) 4ms
+ ✓ tests/application-agent-target-address.test.ts (6 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  11:49:34
+   Duration  145ms (transform 82ms, setup 0ms, import 101ms, tests 8ms, environment 0ms)
+
+
+== server production TypeScript no-emit ==
+
+== Socratic backend TypeScript ==
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts (15 tests) 1855ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  490ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  943ms
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > projects FILE_CHANGE events, keeps live content transient, and persists metadata only
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts (4 tests) 69ms
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+ ✓ tests/unit/agent-memory/agent-memory-location-service.test.ts (3 tests) 52ms
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:71451) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (21 tests) 26ms
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:71452) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+[2026-08-22T09:50:14.974Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > keeps migration/history construction passive and owns exactly one process manager family
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts > GeneralProcessRunSupervisor ownership > releases the agent manager when exclusive team-manager initialization fails
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts (2 tests) 8ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (9 tests) 7ms
+ ✓ tests/unit/application-backend/socratic-lesson-target-address.test.ts (2 tests) 2ms
+
+ Test Files  7 passed (7)
+      Tests  56 passed (56)
+   Start at  11:50:05
+   Duration  9.86s (transform 3.10s, setup 38ms, import 6.78s, tests 2.02s, environment 0ms)

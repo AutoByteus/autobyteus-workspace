@@ -19,7 +19,7 @@ For new external applications, use `@autobyteus/application-devkit` and the guid
 import { defineApplication } from '@autobyteus/application-backend-sdk'
 
 export default defineApplication({
-  definitionContractVersion: '4',
+  definitionContractVersion: '7',
   graphql: {
     execute: async (request, context) => {
       if (request.operationName === 'StatusQuery') {
@@ -47,8 +47,39 @@ export default defineApplication({
       })
     },
   },
+  agentToolHandlers: {
+    get_application_status: async (_args, context) => {
+      const applicationId = context.caller.applicationId
+      return {
+        content: [{ type: 'text', text: `Application ${applicationId} is ready.` }],
+        structuredContent: { applicationId, ready: true },
+      }
+    },
+  },
 })
 ```
+
+## Application-owned agent tools
+
+Declare each application-owned tool statically in the v5 `application.json`
+`agentTools[]` array, then implement the exact same name in the v7 backend
+definition's `agentToolHandlers` map. Missing, extra, or non-function handlers
+make the application definition unready; declarations do not automatically
+grant a tool to every run. The Agent or Team member definition must select the
+tool name in its normal `toolNames` list.
+
+Each handler receives the validated JSON-object arguments and the normal
+`ApplicationHandlerContext` extended with immutable `context.caller` identity:
+`applicationId`, `bindingId`, `agentRunId`, and an optional canonical
+`memberAddress`. Those values come from the host-authorized application binding;
+do not add routing identity to a tool's input schema or trust model-provided
+identity fields.
+
+Handlers return `ApplicationAgentToolResult`: MCP-safe `content`, optional
+object `structuredContent`, and optional `isError`. The platform enforces the
+declared portable schema and bounded JSON/result contract around the worker
+call. A handler throw or worker transport failure becomes a sanitized tool
+failure; the host does not automatically retry a possibly mutating call.
 
 ## Application agent target addresses
 
@@ -58,18 +89,22 @@ When backend business code already owns a precise binding and needs a reusable o
 import {
   createApplicationAgentTargetAddress,
   createApplicationAgentTeamMemberTargetAddress,
-  createApplicationAgentTeamTargetAddress,
 } from '@autobyteus/application-backend-sdk'
 
 const agentAddress = createApplicationAgentTargetAddress(agentBinding)
-const wholeTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding)
+const wholeTeamAddress = createApplicationAgentTargetAddress(teamBinding)
+const reviewer = teamBinding.runtime.members.find(
+  (member) => member.memberAddress === '/reviewer',
+)
+if (!reviewer) throw new Error('Reviewer is not part of this binding')
+
 const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
   teamBinding,
-  'reviewer',
+  reviewer.memberAddress,
 )
 ```
 
-The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. They do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. The root builder accepts either an Agent or Team binding. The team-member builder accepts an exact canonical rooted `memberAddress` that is present in the Team binding. The builders do not expose or accept physical run IDs and do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks and is the sole logical-to-physical translator whenever an address is connected, observed, or sent to.
 
 The shared address DTO remains directly constructible. Code that owns only a `bindingId` and immediately performs a one-shot send should not fetch a binding solely to use a builder:
 
@@ -77,7 +112,7 @@ The shared address DTO remains directly constructible. Code that owns only a `bi
 await context.agentExecution.sendInput({
   address: {
     bindingId,
-    target: { kind: 'AGENT_TEAM_RUN' },
+    memberAddress: null,
   },
   input: { text: 'Continue the team task.' },
 })
@@ -86,7 +121,10 @@ await context.agentExecution.sendInput({
 ## Bundle expectations
 
 - The worker loads a self-contained ESM backend module.
-- The exported definition contract version must be `"4"`; stale definitions are rejected before handler invocation.
+- The exported definition contract version must be `"7"`; unsupported definitions are rejected before handler invocation.
+- `agentToolHandlers` must exactly match the v5 manifest's declared
+  `agentTools[]` names. Agent tools are not an eighth backend exposure flag;
+  they are invoked only through the application-scoped execution capability.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Optional `webSocketRoutes` require the bundle manifest's `webSockets` exposure flag and remain separate from standard agent communication.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.

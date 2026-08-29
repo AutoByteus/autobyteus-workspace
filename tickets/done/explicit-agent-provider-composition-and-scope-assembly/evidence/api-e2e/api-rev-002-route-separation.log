@@ -1,0 +1,23 @@
+{
+  "studioAgentToolsMissing": {
+    "status": 401,
+    "contentType": "application/json; charset=utf-8",
+    "body": "{\"error\":\"unauthorized\",\"message\":\"Unauthorized\"}"
+  },
+  "standaloneAgentToolsMissing": {
+    "status": 401,
+    "contentType": "application/json; charset=utf-8",
+    "body": "{\"error\":\"unauthorized\",\"message\":\"Unauthorized\"}"
+  },
+  "studioExternalGateway": {
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "body": "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-03-26\",\"capabilities\":{\"tools\":{\"listChanged\":false},\"resources\":{}},\"serverInfo\":{\"name\":\"autobyteus_mcp_gateway\",\"version\":\"0.1.0\"}}}"
+  },
+  "standaloneExternalGateway": {
+    "status": 404,
+    "contentType": "application/json; charset=utf-8",
+    "body": "{\"message\":\"Route POST:/mcp/gateway not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+  },
+  "pass": true
+}

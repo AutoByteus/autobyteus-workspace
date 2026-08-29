@@ -1,0 +1,50 @@
+# Latest-base refresh round 5 — conflict inventory
+head=c6d74710ad30b680f853fba0e90a68255f112955
+origin_personal=fb1335867a4223b2499e4513f58c609b6ac33ab4
+content_count=13
+modify_delete_count=30
+## content conflicts
+CONTENT	autobyteus-application-backend-sdk/src/launch-profile.ts
+CONTENT	autobyteus-application-backend-sdk/tests/application-agent-target-address.test.ts
+CONTENT	autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts
+CONTENT	autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+CONTENT	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+CONTENT	autobyteus-server-ts/src/server-runtime.ts
+CONTENT	autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+CONTENT	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+CONTENT	autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+CONTENT	autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+CONTENT	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+CONTENT	autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+CONTENT	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+## modify/delete conflicts
+MODIFY_DELETE	applications/brief-studio/backend/dist/vendor/launch-profile.js
+MODIFY_DELETE	applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+MODIFY_DELETE	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js
+MODIFY_DELETE	applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/vendor/launch-profile.js.map
+MODIFY_DELETE	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+MODIFY_DELETE	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+MODIFY_DELETE	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+MODIFY_DELETE	applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+MODIFY_DELETE	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+MODIFY_DELETE	applications/brief-studio/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+MODIFY_DELETE	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts
+MODIFY_DELETE	applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts.map
+MODIFY_DELETE	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+MODIFY_DELETE	applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+MODIFY_DELETE	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js
+MODIFY_DELETE	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/vendor/launch-profile.js.map
+MODIFY_DELETE	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+MODIFY_DELETE	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+MODIFY_DELETE	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+MODIFY_DELETE	applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+MODIFY_DELETE	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts
+MODIFY_DELETE	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/execution-resources.d.ts.map
+MODIFY_DELETE	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts
+MODIFY_DELETE	applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts.map
+MODIFY_DELETE	autobyteus-application-backend-sdk/dist/launch-profile.d.ts
+MODIFY_DELETE	autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map
+MODIFY_DELETE	autobyteus-application-backend-sdk/dist/launch-profile.js
+MODIFY_DELETE	autobyteus-application-backend-sdk/dist/launch-profile.js.map
+MODIFY_DELETE	autobyteus-application-sdk-contracts/dist/index.d.ts
+MODIFY_DELETE	autobyteus-application-sdk-contracts/dist/index.d.ts.map

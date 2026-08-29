@@ -29,6 +29,7 @@ export type LessonDetail = LessonRecord & {
 };
 
 const UNUSABLE_BINDING_STATUSES = new Set(["TERMINATING", "TERMINATED", "FAILED", "ORPHANED"]);
+const TUTOR_MEMBER_ADDRESS = "/tutor";
 
 const isApplicationAgentTeamBinding = (
   binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
@@ -48,5 +49,5 @@ export const deriveTutorTargetAddress = (lesson: Pick<
   if (!isApplicationAgentTeamBinding(binding)) {
     throw new Error("Socratic tutor binding must be an agent-team binding.");
   }
-  return createApplicationAgentTeamMemberTargetAddress(binding, "tutor");
+  return createApplicationAgentTeamMemberTargetAddress(binding, TUTOR_MEMBER_ADDRESS);
 };

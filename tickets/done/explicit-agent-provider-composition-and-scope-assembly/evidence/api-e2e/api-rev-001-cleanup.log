@@ -1,0 +1,30 @@
+UTC 2026-08-26T08:27:05Z
+Owned process candidates:
+Restored absent-at-baseline generated outputs:
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+ABSENT autobyteus-application-devkit/.tmp-tests
+Preserved initial server dist:
+PRESENT
+git diff --check:
+git status:
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/
+Additional generated shared SDK outputs removed after status audit:
+ABSENT autobyteus-application-backend-sdk/dist
+ABSENT autobyteus-application-sdk-contracts/dist
+Final status:
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/api-e2e-coverage-investigation.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/

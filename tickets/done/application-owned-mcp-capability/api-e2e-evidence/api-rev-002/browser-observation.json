@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-08-27T19:32:35Z",
+  "surface": "supported Brief Studio browser application iframe through the normal Applications catalog route",
+  "hostUrl": "http://127.0.0.1:3012/applications/<applicationId>",
+  "action": "Create brief, select it, click Generate draft, wait for the real configured Team, then click the supported Refresh control after trace completion",
+  "selectedBriefId": "brief-94b0d173-d106-49a9-8f70-654c29aeb403",
+  "selectedTitle": "API E2E \"Agent-to-UI\" \\ 2026-08-27T19:28Z",
+  "renderedStatus": "blocked",
+  "renderedDraftOutputs": 1,
+  "renderedFinalOutputs": 0,
+  "renderedArtifact": {
+    "role": "researcher",
+    "label": "Research Blocker",
+    "pathSuffix": "brief-studio/research-blocker.md"
+  },
+  "expectedStatus": "in_review",
+  "expectedResearchArtifact": "brief-studio/research.md",
+  "expectedFinalArtifactCount": 1,
+  "expectedFinalArtifact": "brief-studio/final-brief.md",
+  "screenshot": "failure-browser-blocked.png"
+}

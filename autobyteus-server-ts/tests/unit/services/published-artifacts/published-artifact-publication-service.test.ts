@@ -55,7 +55,7 @@ describe("PublishedArtifactPublicationService", () => {
     snapshotStore?: PublishedArtifactSnapshotStore;
   }): PublishedArtifactPublicationService =>
     new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(input.run),
       } as any,
       workspaceManager: {
@@ -116,6 +116,74 @@ describe("PublishedArtifactPublicationService", () => {
       runId: "run-1",
       payload: artifact,
     });
+  });
+
+  it("commits the snapshot and projection before awaiting the active run event", async () => {
+    const { run, workspaceRoot, memoryDir } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    let releaseEvent!: () => void;
+    const eventGate = new Promise<void>((resolve) => {
+      releaseEvent = resolve;
+    });
+    run.publishEvent = vi.fn(() => eventGate);
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+      snapshotStore,
+    });
+    const filePath = path.join(workspaceRoot, "docs", "awaited.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "committed before event", "utf-8");
+
+    let publicationSettled = false;
+    const publication = service.publishForRun({
+      runId: run.runId,
+      path: "docs/awaited.md",
+    }).finally(() => {
+      publicationSettled = true;
+    });
+    await vi.waitFor(() => expect(run.publishEvent).toHaveBeenCalledTimes(1));
+
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(projection.summaries).toHaveLength(1);
+    expect(projection.revisions).toHaveLength(1);
+    await expect(
+      snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+    ).resolves.toBe("committed before event");
+    expect(publicationSettled).toBe(false);
+
+    releaseEvent();
+    await expect(publication).resolves.toMatchObject({ path: await normalizePublishedPath(filePath) });
+  });
+
+  it("keeps the committed snapshot and projection when the active run event rejects", async () => {
+    const { run, workspaceRoot, memoryDir } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    run.publishEvent = vi.fn().mockRejectedValue(new Error("event pipeline unavailable"));
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+      snapshotStore,
+    });
+    const filePath = path.join(workspaceRoot, "docs", "durable-after-event-error.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "durable despite event error", "utf-8");
+
+    await expect(service.publishForRun({
+      runId: run.runId,
+      path: "docs/durable-after-event-error.md",
+    })).rejects.toThrow("event pipeline unavailable");
+
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(projection.summaries).toHaveLength(1);
+    expect(projection.revisions).toHaveLength(1);
+    await expect(
+      snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+    ).resolves.toBe("durable despite event error");
   });
 
 
@@ -337,6 +405,7 @@ describe("PublishedArtifactPublicationService", () => {
       snapshotStore,
     });
     const projectionService = new PublishedArtifactProjectionService({
+      activeRunReader: { getActiveRun: vi.fn(() => null) } as never,
       projectionStore,
       snapshotStore,
     });
@@ -501,7 +570,7 @@ describe("PublishedArtifactPublicationService", () => {
     const emitArtifactPersisted = vi.fn();
     const relayArtifactForExecutionContext = vi.fn().mockResolvedValue(undefined);
     const service = new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
       publishedArtifactRelayService: {
@@ -519,12 +588,8 @@ describe("PublishedArtifactPublicationService", () => {
       applicationId: "app-1",
       bindingId: "binding-1",
       producer: {
-        runId: "team-run-1",
-        memberRouteKey: "researcher",
-        memberName: "Researcher",
+        agentRunId: "researcher_member_run",
         displayName: "Researcher",
-        runtimeKind: "AGENT_TEAM_MEMBER",
-        teamPath: [],
       },
     } as const;
 
@@ -560,13 +625,61 @@ describe("PublishedArtifactPublicationService", () => {
     });
   });
 
+  it("keeps fallback publication committed when the injected application relay rejects", async () => {
+    const workspaceRoot = await createTempDir();
+    const memoryDir = await createTempDir();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const relayArtifactForExecutionContext = vi.fn()
+      .mockRejectedValue(new Error("application relay unavailable"));
+    const service = new PublishedArtifactPublicationService({
+      activeRunReader: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+      } as any,
+      publishedArtifactRelayService: {
+        relayArtifactForExecutionContext,
+      } as any,
+      projectionStore,
+      snapshotStore,
+    });
+    const filePath = path.join(workspaceRoot, "brief-studio", "relay-durable.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "durable before relay", "utf-8");
+    const applicationExecutionContext = {
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: {
+        agentRunId: "researcher_member_run",
+        displayName: "Researcher",
+      },
+    } as const;
+
+    await expect(service.publishForRun({
+      runId: "researcher_member_run",
+      path: "brief-studio/relay-durable.md",
+      fallbackRuntimeContext: {
+        memoryDir,
+        workspaceRootPath: workspaceRoot,
+        applicationExecutionContext,
+        emitArtifactPersisted: vi.fn(),
+      },
+    })).rejects.toThrow("application relay unavailable");
+
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(projection.summaries).toHaveLength(1);
+    expect(projection.revisions).toHaveLength(1);
+    await expect(
+      snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+    ).resolves.toBe("durable before relay");
+  });
+
   it("rejects inactive runs before persisting when no team-member fallback authority is available", async () => {
     const workspaceRoot = await createTempDir();
     const memoryDir = await createTempDir();
     const projectionStore = new PublishedArtifactProjectionStore();
     const snapshotStore = new PublishedArtifactSnapshotStore();
     const service = new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
       projectionStore,

@@ -50,6 +50,7 @@ describe('AgentRunConfigForm', () => {
 
     llmStore = {
       providerRows: [],
+      providerSnapshots: vi.fn(() => []),
       providersWithModelsForSelection: vi.fn(() =>
         llmStore.providerRows.filter((provider: any) => provider.models.length > 0),
       ),
@@ -117,6 +118,33 @@ describe('AgentRunConfigForm', () => {
       ...overrides,
     },
     models,
+  })
+
+  it('keeps existing-run identity fixed while allowing stopped model-config events', async () => {
+    setProviders([buildProviderRow('OPENAI', 'OpenAI', [{
+      modelIdentifier: 'gpt-4', name: 'GPT-4', value: 'gpt-4', canonicalName: 'gpt-4',
+      providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api',
+      configSchema: { type: 'object', properties: { effort: { type: 'string', enum: ['low', 'high'] } } },
+    }])])
+    const wrapper = mount(AgentRunConfigForm, { props: {
+      config: { ...mockConfig, isLocked: true, llmConfig: { effort: 'low' } },
+      agentDefinition: mockAgentDef as any,
+      workspaceLoadingState: { isLoading: false, error: null, loadedPath: '/workspace' },
+      workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace' },
+      existingRun: true,
+      existingModelConfigEditable: true,
+    } })
+    const fields = wrapper.findComponent({ name: 'RuntimeModelConfigFields' })
+    expect(fields.props()).toEqual(expect.objectContaining({
+      runtimeSelectionLocked: true,
+      modelSelectionLocked: true,
+      modelConfigDisabled: false,
+      modelConfigReadOnly: false,
+    }))
+    fields.vm.$emit('update:llmConfig', { effort: 'high' })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.emitted('update:llmConfig')).toEqual([[{ effort: 'high' }]])
+    expect((wrapper.get('#auto-execute').element as HTMLButtonElement).disabled).toBe(true)
   })
 
   it('renders correctly and loads runtime-scoped providers', () => {
@@ -514,102 +542,5 @@ describe('AgentRunConfigForm', () => {
     await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-3.5')
     expect(localConfig.llmModelIdentifier).toBe('gpt-3.5')
     expect(localConfig.llmConfig).toBeNull()
-  })
-
-
-  it('renders selected existing run configuration as read-only and expands advanced model settings', async () => {
-    setProviders([
-      buildProviderRow('OPENAI', 'OpenAI', [
-        {
-          modelIdentifier: 'gpt-4',
-          name: 'GPT-4',
-          value: 'gpt-4',
-          canonicalName: 'gpt-4',
-          providerId: 'OPENAI',
-          providerName: 'OpenAI',
-          providerType: 'OPENAI',
-          runtime: 'api',
-          configSchema: {
-            type: 'object',
-            properties: {
-              reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high'] },
-            },
-          },
-        },
-      ]),
-    ])
-
-    const localConfig = {
-      ...mockConfig,
-      llmConfig: { reasoning_effort: 'high' },
-      isLocked: false,
-    }
-
-    const wrapper = mount(AgentRunConfigForm, {
-      props: {
-        config: localConfig,
-        agentDefinition: mockAgentDef as any,
-        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
-        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
-        readOnly: true,
-      },
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    expect(wrapper.find('select#agent-run-runtime-kind').element.disabled).toBe(true)
-    expect(wrapper.find('button#auto-execute').element.disabled).toBe(true)
-    expect(wrapper.find('select#skill-access-mode').exists()).toBe(false)
-    expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
-    expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('disabled')).toBe(true)
-    expect(wrapper.get('[data-testid="advanced-params-toggle"]').attributes('aria-expanded')).toBe('true')
-    expect(wrapper.text()).toContain('Selected run configuration read only')
-
-    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-3.5')
-    expect(localConfig.llmModelIdentifier).toBe('gpt-4')
-  })
-
-  it('shows not-recorded historical model config state when selected run metadata remains null', async () => {
-    setProviders([
-      buildProviderRow('OPENAI', 'OpenAI', [
-        {
-          modelIdentifier: 'gpt-4',
-          name: 'GPT-4',
-          value: 'gpt-4',
-          canonicalName: 'gpt-4',
-          providerId: 'OPENAI',
-          providerName: 'OpenAI',
-          providerType: 'OPENAI',
-          runtime: 'api',
-          configSchema: {
-            type: 'object',
-            properties: {
-              reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high'] },
-            },
-          },
-        },
-      ]),
-    ])
-
-    const wrapper = mount(AgentRunConfigForm, {
-      props: {
-        config: {
-          ...mockConfig,
-          llmConfig: null,
-          isLocked: true,
-        },
-        agentDefinition: mockAgentDef as any,
-        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
-        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
-        readOnly: true,
-      },
-    })
-
-    await wrapper.vm.$nextTick()
-    await flushPromises()
-
-    expect(wrapper.text()).toContain('Not recorded for this historical run')
-    expect(wrapper.find('[data-testid="missing-historical-config-value"]').exists()).toBe(true)
   })
 })

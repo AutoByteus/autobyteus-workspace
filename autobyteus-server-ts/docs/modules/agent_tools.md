@@ -145,15 +145,18 @@ selected `ToolOrigin.MCP` registry tools discovered from configured external MCP
 servers. Codex App Server and Claude Agent SDK do not receive direct
 provider-native copies of raw external MCP config for those tools.
 
-The session service snapshots configured tool exposure, stores only a bearer
-token hash, derives `enabledTools` from server-supported definitions and
-selected MCP-origin registry definitions, and redacts secret descriptors for
-diagnostics. Active session validity is owner-lifetime and process-memory
-scoped: the descriptor works only while the registry entry is present, not
-revoked, and matched by bearer auth; restart or registry reset invalidates old
-descriptors until the runtime materializes a fresh descriptor. `tools/list`
-returns only tools enabled for that session, and `tools/call` rejects unknown or
-unconfigured tools before executor dispatch.
+The service derives a deterministic `agtrun_...` routing ID from the normalized
+run ID, snapshots configured tool exposure and current execution context, and
+derives `enabledTools` from server-supported definitions plus selected
+MCP-origin registry definitions. Active run-session validity is owner-lifetime
+and process-memory scoped: the tokenless descriptor works only while the exact
+current registry entry is active. The endpoint is served by one host-owned
+ephemeral loopback listener, not the main Studio/standalone HTTP server; raw
+peer, `Host`, and optional `Origin` admission replaces bearer authentication.
+Within one process, stop/restore reuses the deterministic route and activates
+fresh current context. A process restart rematerializes the descriptor against
+the new listener. `tools/list` returns only tools enabled for that run-session,
+and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
 `send_message_to`, `get_handoff_rules`, browser, media, task-delegation, and `publish_artifacts`
 tool families by delegating to their existing family manifests/services instead
@@ -164,7 +167,7 @@ remote MCP tool call. Codex App Server and Claude Agent SDK materialize this
 surface when at least one configured tool is available for the session. Their
 provider/server-qualified wire names stay below the runtime converter;
 application events, run history, and memory expose canonical registered tool
-names and must not contain bearer/header descriptor details.
+names and must not contain internal run-session routing details.
 See
 [Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
 security, and adapter contract.
@@ -331,4 +334,4 @@ Agent Tools MCP execution publishes against the active owning run id and uses
 the session execution context as fallback workspace, memory, and application
 runtime context. Application-facing events and published-artifact projections
 must use the canonical `publish_artifacts` identity and must not expose the MCP
-session id, bearer token, or provider-qualified server/tool name.
+run-session ID or provider-qualified server/tool name.

@@ -17,6 +17,7 @@ import type {
   AgentRunInputOptions,
 } from "../input/agent-run-input-contract.js";
 import { createAgentRunInputReservation } from "../input/agent-run-input-reservation.js";
+import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
 import type { AgentRunContext } from "./agent-run-context.js";
 import { resolveAgentRunErrorEvidence } from "./agent-run-error-evidence.js";
 import { resolveAgentRunEventTurnId } from "./agent-run-event-turn-id.js";
@@ -49,6 +50,7 @@ type AgentRunInterruptDecision =
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>; backend: AgentRunBackend;
   commandObservers?: AgentRunCommandObserver[];
+  providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
 };
 
 const logger = console;
@@ -57,6 +59,7 @@ export class AgentRun {
   readonly context: AgentRunContext<unknown | null>;
   private readonly backend: AgentRunBackend;
   private readonly commandObservers: AgentRunCommandObserver[];
+  private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly listeners = new Set<AgentRunEventListener>();
   private readonly dispatchQueue = new AgentRunEventDispatchQueue();
   private readonly lifecycleState = new AgentTurnLifecycleState();
@@ -72,6 +75,9 @@ export class AgentRun {
   constructor(options: AgentRunOptions) {
     this.context = options.context;
     this.backend = options.backend;
+    if (!options.providerInputNormalizer || typeof options.providerInputNormalizer.normalizeForProvider !== "function")
+      throw new Error("AgentRun provider input normalizer is required.");
+    this.providerInputNormalizer = options.providerInputNormalizer;
     this.commandObservers = [...(options.commandObservers ?? [])];
     this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
     this.unsubscribeFromBackendSource = this.backend.subscribeToSourceEventBatches(
@@ -104,11 +110,8 @@ export class AgentRun {
   }
 
   async publishEvent(event: AgentRunEvent): Promise<void> {
-    if (event.runId !== this.runId) {
-      throw new Error(
-        `Cannot publish event for run '${event.runId}' through run '${this.runId}'.`,
-      );
-    }
+    if (event.runId !== this.runId)
+      throw new Error(`Cannot publish event for run '${event.runId}' through run '${this.runId}'.`);
     await this.publishSourceEvents([event]);
   }
 
@@ -124,9 +127,7 @@ export class AgentRun {
         observer,
         this.backend.isActive(),
       );
-      if (!admission.accepted) {
-        return { admission, dispatch: null } as const;
-      }
+      if (!admission.accepted) return { admission, dispatch: null } as const;
       const dispatch = this.claimNextInput();
       return { admission, dispatch } as const;
     });
@@ -262,7 +263,9 @@ export class AgentRun {
     let result: AgentRunBackendInputDispatchResult | null = null;
     let failure: unknown = null;
     try {
-      result = await this.backend.dispatchUserInput(input.claim.dispatch);
+      result = await this.backend.dispatchUserInput(
+        this.providerInputNormalizer.normalizeForProvider(input.claim.dispatch),
+      );
     } catch (error) {
       failure = error;
     }
@@ -388,9 +391,7 @@ export class AgentRun {
     return { kind: "claimed", reservation };
   }
 
-  private startInterrupt(reservation: AgentRunInterruptReservation): void {
-    void this.executeInterrupt(reservation);
-  }
+  private startInterrupt(reservation: AgentRunInterruptReservation): void { void this.executeInterrupt(reservation); }
 
   private async executeInterrupt(reservation: AgentRunInterruptReservation): Promise<void> {
     let result: AgentOperationResult;

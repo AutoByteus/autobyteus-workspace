@@ -1,0 +1,99 @@
+# Application bundle iframe contract v4
+
+This document describes the current iframe/bootstrap contract used by bundled applications.
+
+The authoritative runtime contract lives in:
+
+- `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
+
+## Key contract points
+
+- the browser host owns launch readiness and iframe bootstrap
+- each route entry/reload gets one ephemeral `iframeLaunchId` for iframe bootstrap correlation only
+- the iframe app sends `autobyteus.application.ui.ready`
+- the host replies with `autobyteus.application.host.bootstrap`
+- bundle-side startup ownership belongs to `startApplication(...)` in `@autobyteus/application-frontend-sdk`
+- the bootstrap payload carries exact fixed desktop bases for backend request/response, notifications, optional custom backend WebSockets, and standard agent communication
+- app business APIs derive GraphQL, route, query, and command endpoints from `backendBaseUrl`
+- `applicationClient.agentCommunication.connect(address)` derives its canonical target URL from `agentCommunicationWebSocketBaseUrl`
+- `applicationClient.backend.connectWebSocket(path, options)` derives optional custom business sessions from `backendWebSocketBaseUrl`
+- the bootstrap and client expose no application authentication field
+- normal app backend request context contains only the durable `applicationId`
+
+## URL launch hints
+
+The host appends these query hints to the bundle entry HTML URL:
+
+- `autobyteusContractVersion=4`
+- `autobyteusApplicationId=<application id>`
+- `autobyteusIframeLaunchId=<ephemeral iframe bootstrap id>`
+- `autobyteusHostOrigin=<normalized host origin>`
+
+## Bootstrap payload shape
+
+```ts
+export type ApplicationBootstrapPayload = {
+  host: {
+    origin: string
+  }
+  application: {
+    applicationId: string
+    localApplicationId: string
+    packageId: string
+    name: string
+  }
+  iframeLaunchId: string
+  requestContext: {
+    applicationId: string
+  }
+  transport: {
+    backendBaseUrl: string | null
+    backendNotificationsUrl: string | null
+    backendWebSocketBaseUrl: string | null
+    agentCommunicationWebSocketBaseUrl: string | null
+  }
+}
+```
+
+The payload intentionally does **not** contain a platform-owned execution id, app session id, or prelaunched runtime summary. `iframeLaunchId` is not a durable app instance, run, or business identity.
+
+## Studio development
+
+External app authors can use the real Studio import/reload path through
+`@autobyteus/application-devkit`:
+
+```bash
+autobyteus-app dev --host studio
+```
+
+Studio retains the v4 query hints and bootstrap exchange. The frontend SDK keeps
+that wire behavior inside its Studio provider and normalizes it before business
+application code runs.
+
+## Frontend usage pattern
+
+```ts
+import {
+  startApplication,
+} from '@autobyteus/application-frontend-sdk'
+
+startApplication({
+  rootElement: document.getElementById('app-root'),
+  onBootstrapped: ({ runtimeBootstrap, applicationClient, rootElement }) => {
+    rootElement.textContent = `Started ${runtimeBootstrap.application.name}`
+    void applicationClient.backend.graphql({
+      query: 'query HealthQuery { __typename }',
+      operationName: 'HealthQuery',
+    })
+  },
+})
+```
+
+## Teaching samples
+
+- `applications/brief-studio/`
+- `applications/socratic-math-teacher/`
+
+## Related docs
+
+- [`../../docs/custom-application-development.md`](../../docs/custom-application-development.md)

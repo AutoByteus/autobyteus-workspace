@@ -1,0 +1,14 @@
+# DR-015 finalized ticket worktree cleanup
+timestamp_utc=2026-08-25T19:52:55Z
+removed_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration
+worktree_exists_after_cleanup=no
+worktree_registry_entry_after_cleanup=no
+local_ticket_branch=codex/universal-application-framework-latest-personal-integration
+local_ticket_branch_exists_after_cleanup=no
+remote_ticket_branch=origin/codex/universal-application-framework-latest-personal-integration
+remote_ticket_branch_commit=025e26d84c05671e9195edade786143bc4f2162f
+remote_ticket_branch_retained=yes
+personal_head_before_record=a0d56832e816ad526b503e0148524f87f4f190f5
+origin_personal_before_record=a0d56832e816ad526b503e0148524f87f4f190f5
+preexisting_main_untracked_article_work=preserved
+cleanup_result=Pass
