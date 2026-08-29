@@ -12,6 +12,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-004 | User selected a daily line/curve with visible point markers over vertical bars; Product Design returned RV-004 | Draft — Requirements Visualization Review Pending | Draft — Requirements Visualization Review Pending | BEH-003; REQ-015; AC-015; SCN-001; DEC-001 partially resolved | Daily trend form incorporated and validated; overall A/B/hybrid direction remains open |
 | RER-005 | Product returned RI-001 after user rejected contributor ranking as primary and prioritized monthly/daily Tokens/Cost plus cache composition | Draft — Requirements Visualization Review Pending | Draft — Requirement Impact Decision Pending | BEH-003/006; REQ-002/004–006/012/016; AC-001/003–006/011/016; SCN-001–003/007; DEC-005–DEC-008 | Primary hierarchy revised; RV-004 blocked; four focused user decisions required before RV-005 |
 | RER-006 | Product returned RV-005 representing the user's explicit no-prior/no-contributor/no-driver decisions | Draft — Requirement Impact Decision Pending | Draft — RV-005 Terminology And Detail Decision Pending | BEH-003/004; REQ-004–006/010/012; AC-003–007/009/011; SCN-001–003; DEC-001/003/005/006 resolved; DEC-007/008 open | Canonical removals fixed; RV-005 linked and validated; only input label and Detailed-usage placement remain for the focused loop |
+| RER-007 | User found the daily line's floating Y values and short vertical point guides confusing; Product returned RV-006 | Draft — RV-005 Terminology And Detail Decision Pending | Draft — RV-006 Terminology And Detail Decision Pending | BEH-003; REQ-015; AC-015; SCN-001 | Explicit axis/unit/tick behavior and zero point stems incorporated; no new requirement conflict; DEC-007/008 remain open |
 
 ## Revision Entries
 
@@ -104,3 +105,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture or direct-implementation route impact: No backend, GraphQL, persistence, accounting, or new data field is required. No engineering handoff is permitted while focused visual decisions and overall approval remain open.
 - Remaining gaps, assumptions, or blocked decisions: `DEC-007` input terminology; `DEC-008` Detailed-usage/grouping placement; then `DEC-002` control disclosure and `DEC-004` Run-details extent before final approval.
 - Next action or recipient: Ask the user the two focused RV-005 questions. After their answer, update the canonical package and send Product Design a focused visualization revision request using the dynamic handoff rules.
+
+### RER-007 — RV-006 explicit axes and no point stems
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user reported that the line chart looked strange because Y values floated without an obvious Y-axis and that the short vertical point guides looked like confusing dotted marks. Product Design returned `RV-006` with a focused presentation correction.
+- Prior authoritative status: `Draft — RV-005 Terminology And Detail Decision Pending`
+- Current authoritative status: `Draft — RV-006 Terminology And Detail Decision Pending`
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: `BEH-003`; `REQ-015`; `AC-015`; `SCN-001`. No decision ID is added; `DEC-007` and `DEC-008` remain open.
+- Why this baseline or revision was recorded: The feedback clarifies an observable comprehension requirement for the already-selected daily line form without changing data, accounting, or scope.
+- Canonical artifact sections changed: Document Status; BEH-003; REQ-015; AC-015; SCN-001; UI/Experience revision/evidence; Supplemental Artifacts; Traceability; Readiness evidence; investigation source log, Product decision/findings, artifact inventory, and rejected alternatives.
+- Supplemental artifacts added, changed, or removed: Updated Product-owned RV-006 ticket/review, browser validation, and visual-reference links in place. No Requirements-owned visual artifact was created.
+- Prototype evidence or product decisions incorporated: RV-006 content commit `0e4a0778ee499e9dc9ea6cb13b33b7f3bb987e9e` and review metadata commit `3bd5300a3e0bee3efed331e02ed2218c74a7e30e`; explicit X/Y axis lines; Tokens/Cost (USD) Y title; three Y labels; five aligned UTC ticks; 29 points; one line; zero bars; zero stems; 18/18 Chromium checks and `VAL-016` pass.
+- User approval impact: The axis/stem clarification is incorporated into the Draft approval basis. This is not overall requirements or final UI/UX approval; `DEC-007` and `DEC-008` still need user resolution.
+- Downstream architecture or direct-implementation route impact: Presentation-only refinement; no backend, GraphQL, persistence, accounting, or data-contract change. Routing remains prohibited until the remaining decisions and overall approval.
+- Remaining gaps, assumptions, or blocked decisions: `DEC-007` input terminology; `DEC-008` Detailed-usage/grouping placement; later `DEC-002` filter disclosure and `DEC-004` Run-details extent.
+- Next action or recipient: Ask the user to review RV-006 and answer the same two focused terminology/detail questions. After their answer, update the package and route the next focused visualization revision dynamically.
