@@ -234,6 +234,16 @@ const messages = {
     "Updated {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "Temporary task execution",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_running":
+    "Team status: Running",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_initializing":
+    "Team status: Initializing",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_error":
+    "Team status: Error",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_idle":
+    "Team status: Idle",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline":
+    "Team status: Offline",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
