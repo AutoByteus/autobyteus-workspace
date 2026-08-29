@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.58 test:e2e:token-statistics-ui /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> node tests/e2e/token-statistics-ui-probe.mjs -- --skip-server-build --output-dir /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/evidence/api-e2e
+
+Fail: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/evidence/api-e2e/token-statistics-browser-result.json
+ ELIFECYCLE  Command failed with exit code 1.

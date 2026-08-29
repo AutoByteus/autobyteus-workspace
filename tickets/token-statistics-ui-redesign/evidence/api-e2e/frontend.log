@@ -1,0 +1,444 @@
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 46693
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:46693/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 44ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), {
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x2)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x3)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x4)
+
+✔ Vite server built in 991ms
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x5)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=85da8dc2:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x6)
+
+[nitro] ✔ Nuxt Nitro server built in 1039ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: qrcode, crypto-js/sha256, zod
+ℹ ✨ optimized dependencies changed. reloading
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 42119
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:42119/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 45ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 950ms
+[nitro] ✔ Nuxt Nitro server built in 976ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 39429
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:39429/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 44ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 934ms
+[nitro] ✔ Nuxt Nitro server built in 1095ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 43133
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:43133/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 46ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 939ms
+[nitro] ✔ Nuxt Nitro server built in 1016ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 43783
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:43783/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 43ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 1036ms
+[nitro] ✔ Nuxt Nitro server built in 1035ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 37281
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:37281/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 41ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 756ms
+[nitro] ✔ Nuxt Nitro server built in 997ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 46729
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:46729/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 41ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 924ms
+[nitro] ✔ Nuxt Nitro server built in 945ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 38779
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:38779/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 46ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 1024ms
+[nitro] ✔ Nuxt Nitro server built in 1147ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 33167
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:33167/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 44ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 988ms
+[nitro] ✔ Nuxt Nitro server built in 972ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 34119
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:34119/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 43ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 1019ms
+[nitro] ✔ Nuxt Nitro server built in 992ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 37165
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:37165/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 47ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 771ms
+[nitro] ✔ Nuxt Nitro server built in 973ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 45637
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:45637/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 41ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 899ms
+[nitro] ✔ Nuxt Nitro server built in 980ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 39853
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:39853/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 44ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 940ms
+[nitro] ✔ Nuxt Nitro server built in 1079ms
+ℹ Vite client warmed up in 2ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 42383
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:42383/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 46ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 832ms
+[nitro] ✔ Nuxt Nitro server built in 1031ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 45319
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:45319/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 45ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 930ms
+[nitro] ✔ Nuxt Nitro server built in 970ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 33811
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:33811/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 43ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 935ms
+[nitro] ✔ Nuxt Nitro server built in 1062ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.
+
+> autobyteus@1.4.58 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 42443
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:42443/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 42ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 923ms
+[nitro] ✔ Nuxt Nitro server built in 960ms
+ℹ Vite client warmed up in 1ms
+ ELIFECYCLE  Command failed.

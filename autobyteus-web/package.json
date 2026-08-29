@@ -46,6 +46,7 @@
     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
+    "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
     "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
     "test:e2e:system-instruction-activity": "node tests/e2e/system-instruction-activity-probe.mjs",
