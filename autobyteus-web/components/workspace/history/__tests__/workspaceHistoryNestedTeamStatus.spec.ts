@@ -64,9 +64,10 @@ const taskAgentRow = (
   key: string,
   depth: number,
   status: AgentStatus | string | null,
+  transientKind: RunHistoryTransientExecutionRow['transientKind'] = 'task_agent',
 ): RunHistoryTransientExecutionRow => ({
   kind: 'transient_execution',
-  transientKind: 'task_agent',
+  transientKind,
   rowKey: `task-agent:${key}`,
   teamRunId: 'root-team-run',
   memberAddress: `/${key}`,
@@ -77,6 +78,25 @@ const taskAgentRow = (
   currentStatus: status,
   depth,
   hasChildren: false,
+});
+
+const taskTeamRow = (
+  key: string,
+  depth: number,
+  status: AgentStatus | string | null,
+): RunHistoryTransientExecutionRow => ({
+  kind: 'transient_execution',
+  transientKind: 'task_team',
+  rowKey: `task-team:${key}`,
+  teamRunId: 'root-team-run',
+  memberAddress: `/${key}`,
+  agentRunId: null,
+  teamRunIdForNode: `${key}-team-run`,
+  memberKind: 'agent_team',
+  displayName: key,
+  currentStatus: status,
+  depth,
+  hasChildren: true,
 });
 
 describe('aggregateNestedTeamAgentStatus', () => {
@@ -96,24 +116,52 @@ describe('aggregateNestedTeamAgentStatus', () => {
     expect(aggregateNestedTeamAgentStatus(rows, team)).toBe(expected);
   });
 
+  it.each(
+    [
+      AgentStatus.Offline,
+      AgentStatus.Idle,
+      AgentStatus.Error,
+      AgentStatus.Initializing,
+      AgentStatus.Running,
+    ].flatMap((left, leftRank, statuses) => statuses.map((right, rightRank) => ({
+      left,
+      right,
+      expected: statuses[Math.max(leftRank, rightRank)],
+    }))),
+  )('selects $expected over the pair $left + $right', ({ left, right, expected }) => {
+    const team = stableTeamRow('pair-team', 0);
+    const rows: RunHistoryTeamExecutionRow[] = [
+      team,
+      stableAgentRow('left-agent', 1, left),
+      taskAgentRow('right-agent', 1, right),
+    ];
+
+    expect(aggregateNestedTeamAgentStatus(rows, team)).toBe(expected);
+  });
+
   it('falls back to offline for empty descendants and non-Team targets', () => {
     const team = stableTeamRow('empty-team', 0);
     const agent = stableAgentRow('agent', 1, AgentStatus.Running);
+    const absentTeam = stableTeamRow('absent-team', 0);
 
     expect(aggregateNestedTeamAgentStatus([team], team)).toBe(AgentStatus.Offline);
     expect(aggregateNestedTeamAgentStatus([agent], agent)).toBe(AgentStatus.Offline);
+    expect(aggregateNestedTeamAgentStatus([team], absentTeam)).toBe(AgentStatus.Offline);
   });
 
-  it('includes recursive task-scoped Agents while isolating ancestors and sibling Teams', () => {
+  it('includes recursive task-scoped Agent kinds while isolating ancestors, containers, and sibling Teams', () => {
+    const outsideAncestor = stableAgentRow('outside-ancestor', 0, AgentStatus.Running);
     const teamA = stableTeamRow('team-a', 0);
     const nestedTeam = stableTeamRow('nested-team', 1);
     const teamB = stableTeamRow('team-b', 0);
     const rows: RunHistoryTeamExecutionRow[] = [
+      outsideAncestor,
       teamA,
       stableAgentRow('team-a-agent', 1, AgentStatus.Idle),
       nestedTeam,
       stableAgentRow('nested-offline-agent', 2, AgentStatus.Offline),
-      taskAgentRow('nested-task-agent', 2, AgentStatus.Initializing),
+      taskTeamRow('nested-task-team-container', 2, AgentStatus.Running),
+      taskAgentRow('nested-task-team-child', 3, AgentStatus.Initializing, 'task_team_child'),
       teamB,
       taskAgentRow('sibling-running-agent', 1, AgentStatus.Running),
     ];
