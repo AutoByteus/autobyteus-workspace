@@ -9,15 +9,15 @@
 - Base or reference revision: `9d0fd7c570d58da1af2c7a40279327c8a20a8093` (current local `personal` revision supplied by the task environment)
 - Bootstrap result: Dedicated clean Git worktree and branch created successfully from the available local base. Worktree initialization initially exceeded the command yield window but completed in the background; final `git status --short --branch` was clean before investigation.
 - Bootstrap blocker: `N/A`
-- Current requirements revision ID: `RER-001`
-- Investigation status: `Complete for requirements approval; user approval pending`
+- Current requirements revision ID: `RER-002`
+- Investigation status: `Complete; requirements approved and direct-implementation routing assessment complete`
 
 ## Initial Request And Clarifications
 
 - Original request: Analyze why a nested Team row shows no status even when one member is running and another is idle, and define behavior so a status icon before the Team avatar stays visible when the Team is collapsed.
-- Clarifications received: The user explicitly identified the desired example: `product_prototyper` running (blue) plus `prototype_bootstrapper` idle (green) should make the `product_design_prototyping_team` row busy/blue.
+- Clarifications received: The user explicitly identified the desired example: `product_prototyper` running (blue) plus `prototype_bootstrapper` idle (green) should make the `product_design_prototyping_team` row busy/blue. After reviewing the distinction between the binary root TeamRun activity dot, the root/coordinator Agent's exact status, and the proposed nested-Team aggregate, the user accepted the recommendation to add aggregation only to stable nested Team rows and preserve root behavior.
 - User-supplied facts and constraints: The subteam execution itself is working correctly; the problem is frontend status presentation. The status icon should appear before the Team's initial/avatar and remain informative when collapsed.
-- Initial ambiguity: The user specified running+idle but not all mixed-state precedence, recursive descendants, task-scoped descendants, empty state, or whether “Team status” should be authoritative. `RER-001` proposes presentation-only recursive aggregation and a complete precedence for explicit approval.
+- Initial ambiguity: The user specified running+idle but not all mixed-state precedence, recursive descendants, task-scoped descendants, empty state, or whether “Team status” should be authoritative. `RER-001` proposed presentation-only recursive aggregation and a complete precedence; the clarification and approval round accepted that proposal and explicitly preserved the root TeamRun activity meaning in `RER-002`.
 
 ## Product And Domain Understanding
 
@@ -48,6 +48,7 @@
 | 2026-08-29 | Doc | `autobyteus-web/docs/agent_integration_minimal_bridge.md`; `autobyteus-web/docs/agent_execution_architecture.md` | Check current product/architecture invariants. | Team containers deliberately do not synthesize a root five-state status; current Team rows show binary activity without aggregate status. | Preserve root semantics; authorize only a nested-row display aggregation. |
 | 2026-08-29 | Command | `git log --all --oneline -- WorkspaceHistoryWorkspaceSection.vue`; `git log -p -S...` | Determine whether Team-dot behavior was recently removed. | Historical component versions also restricted the row `StatusDot` to Agent rows; no verified current supported aggregate nested-Team dot was found. | Treat requested behavior as new UI behavior, not restoration of a proven current contract. |
 | 2026-08-29 | Command | `test -d node_modules`; inspect package scripts | Assess ability to run baseline component tests without changing environment. | No root or worktree dependency installation is available. Static code/tests provide sufficient current-behavior evidence, but no test command was run. | Downstream runs focused test suites in its prepared environment. |
+| 2026-08-29 | User | Clarification and approval messages in the requirements conversation | Resolve whether nested aggregates should match or change the root TeamRun dot and obtain explicit approval. | User accepted nested-Team-only aggregation, preserving the root TeamRun's binary active/inactive dot and the root/coordinator Agent's independent exact status. The prior proposed recursive scope and precedence were accepted with this clarification. | Mark package Approved and perform routing assessment. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -106,7 +107,7 @@
 
 | Source / Actor | Need, Problem, Or Constraint | Evidence Strength | Requirement Implication | Open Question |
 | --- | --- | --- | --- | --- |
-| User request | Know that a subteam is working even when collapsed. | Direct, explicit. | Aggregate indicator is mandatory and running+idle must be blue. | Full mixed-state precedence and descendant scope require approval. |
+| User request and approval | Know that a subteam is working even when collapsed without disturbing root TeamRun semantics. | Direct, explicit, approved. | Aggregate indicator is mandatory, running+idle is blue, and aggregation applies only to stable nested Team rows. | None. |
 | User screenshots | Existing dot language and exact missing placement. | Direct visual evidence. | Put dot before Team avatar and preserve the rest of the row. | None for placement. |
 | Existing product contracts | Team container has no authoritative five-state runtime status. | Authoritative code/docs. | Summary must be presentation-only and derived from exact Agent statuses. | None if package is approved as written. |
 
@@ -135,7 +136,7 @@
 - Prototype needed: `No`
 - Decision rationale: This is a small, precisely located UI addition that reuses an existing five-state dot language. The user supplied expanded, mixed-status, and collapsed screenshots and specified the desired blue state and placement. A runnable visualizer or final prototype would not materially clarify the remaining policy decision, which is expressed more precisely by the status decision table.
 - Requirement / behavior IDs involved: `BEH-001`–`BEH-004`; `REQ-001`–`REQ-007`.
-- Product decisions or uncertainties to resolve: User approval of recursive/task-scoped scope and the precedence in `DEC-001`.
+- Product decisions or uncertainties to resolve: `None`; `DEC-001` and nested-Team-only scope were approved in `RER-002`.
 - Critical journey and states: Expanded/collapsed nested Team; running+idle; initializing; error; idle+offline; all offline/unknown; deeper scoped execution transition.
 - Known constraints and non-goals: No sidebar redesign, no new runtime Team status, no contract/persistence change, no transient task-Team row indicator.
 - Alternative evidence path / next action when no prototype is used: Review the canonical requirements and decision table directly with the user; use focused component/status-matrix tests downstream.
@@ -167,9 +168,9 @@
 
 | ID | Type (`Assumption`/`Unknown`/`Risk`) | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| ASM-001 | Assumption | Team status is presentation-only, not authoritative lifecycle. | Prevents conflict with existing contracts. | User approves `REQ-006`; downstream rechecks. | Pending approval. |
-| ASM-002 | Assumption | Precedence is running > initializing > error > idle > offline. | Defines mixed cases and keeps work visible. | User decision `DEC-001`. | Pending approval. |
-| ASM-003 | Assumption | Recursive and current task-scoped Agent descendants count. | Prevents hidden work in deeper execution subtrees. | User decision `DEC-001`. | Pending approval. |
+| ASM-001 | Assumption | Team status is presentation-only, not authoritative lifecycle. | Prevents conflict with existing contracts. | User approved `REQ-006`; downstream rechecks. | Accepted in `RER-002`. |
+| ASM-002 | Assumption | Precedence is running > initializing > error > idle > offline. | Defines mixed cases and keeps work visible. | User decision `DEC-001`. | Accepted in `RER-002`. |
+| ASM-003 | Assumption | Recursive and current task-scoped Agent descendants count. | Prevents hidden work in deeper execution subtrees. | User decision `DEC-001`. | Accepted in `RER-002`. |
 | RISK-001 | Risk | A Team aggregate dot could be reused as liveness/readiness authority. | Would violate exact status and root lifecycle separation. | `REQ-006`, `AC-010`; downstream review. | Mitigated in requirements. |
 | RISK-002 | Risk | Aggregating from stale nested payload copies could miss live row patches. | Collapsed dot could fail the core live-update goal. | `REQ-005`; current projection evidence; downstream tests. | Mitigated in requirements. |
 | GAP-001 | Unknown | Baseline tests were not executed in this worktree because dependencies are absent. | Static evidence is strong, but runtime regression proof remains downstream work. | Implementation Engineer runs focused test suites. | Open, non-blocking for approval. |
@@ -189,4 +190,5 @@
 - Use the current scoped execution projection as evidence. Live exact-Agent patches update current execution rows; structural nested row payload copies are not independently authoritative after patches.
 - Verify recursion, task-scoped descendant inclusion, sibling isolation, empty/unknown fallback, and collapsed live updates with focused tests.
 - Preserve selection/disclosure event behavior and current binary activity dots.
+- Approved route evidence: preliminary size `Small`, preliminary risk `Low`, no structural-impact trigger found, and current frontend ownership can support the behavior. Route directly to Implementation Engineer, which must recheck and return `Design Impact` if implementation evidence contradicts this assessment.
 - This investigation records feasibility and constraints only; it does not prescribe the target module, helper, selector, or data-flow architecture.

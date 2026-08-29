@@ -2,12 +2,12 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current requirements revision ID: `RER-001`
+- Status: `Approved`
+- Current requirements revision ID: `RER-002`
 - Request / ticket: `subteam-aggregate-status`
 - Requirements owner: `/requirements_engineering_team/requirements_engineer`
 - Date: `2026-08-29`
-- Approval state and reference: Awaiting explicit user approval of the `RER-001` intended behavior, especially the recursive aggregation scope and mixed-status precedence.
+- Approval state and reference: Explicit user approval received in the requirements conversation on `2026-08-29`: “I agree with your suggestion. Add aggregates to status only to the nested team rows.” This approved the proposed recursive nested-Team aggregate, precedence, and preservation of the root TeamRun's binary activity meaning.
 
 ## Problem And Desired Outcome
 
@@ -74,8 +74,8 @@
 | Requirement ID | Requirement | Related Behavior IDs | Priority / Criticality | Rationale | Source / Decision Reference |
 | --- | --- | --- | --- | --- | --- |
 | REQ-001 | Each stable configured nested Team row represented with a `TEAM` badge shall show one aggregate status dot after its disclosure chevron or alignment spacer and immediately before its Team avatar. | BEH-001, BEH-003 | Must | Makes status visible in the exact location requested and preserves hierarchy alignment. | User request and screenshots. |
-| REQ-002 | The aggregate shall consider every currently projected descendant row that owns an Agent execution within that nested-Team subtree, recursively through deeper configured Teams. While present in that subtree, task-scoped Agent executions shall also count; sibling and ancestor executions shall not. | BEH-002 | Must | A collapsed Team should summarize all work it currently contains without leaking unrelated status. | Proposed clarification of the user's “team itself” intent; `DEC-001` approval pending. |
-| REQ-003 | The aggregate status precedence shall be: `running` if any descendant is running; otherwise `initializing` if any descendant is initializing; otherwise `error` if any descendant is in error; otherwise `idle` if any descendant is idle; otherwise `offline`. Missing, null, unknown, or an empty descendant set shall resolve to `offline`. | BEH-002, BEH-003 | Must | Guarantees that active work remains visible in mixed-status Teams while retaining the existing five-state language for non-running states. | Reported running+idle example; existing `StatusDot` semantics; `DEC-001` approval pending. |
+| REQ-002 | The aggregate shall consider every currently projected descendant row that owns an Agent execution within that nested-Team subtree, recursively through deeper configured Teams. While present in that subtree, task-scoped Agent executions shall also count; sibling and ancestor executions shall not. | BEH-002 | Must | A collapsed Team should summarize all work it currently contains without leaking unrelated status. | Approved `DEC-001`; user approval reference above. |
+| REQ-003 | The aggregate status precedence shall be: `running` if any descendant is running; otherwise `initializing` if any descendant is initializing; otherwise `error` if any descendant is in error; otherwise `idle` if any descendant is idle; otherwise `offline`. Missing, null, unknown, or an empty descendant set shall resolve to `offline`. | BEH-002, BEH-003 | Must | Guarantees that active work remains visible in mixed-status Teams while retaining the existing five-state language for non-running states. | Reported running+idle example; existing `StatusDot` semantics; approved `DEC-001`. |
 | REQ-004 | The Team-row dot shall use the existing solid status-dot presentation: running blue with pulse, initializing amber with pulse, error red, idle green, and offline/unknown gray. | BEH-001, BEH-002 | Must | Maintains visual consistency with descendant Agent rows. | `workspaceStatusDotPresentation.ts`; user screenshots. |
 | REQ-005 | The aggregate dot shall update from current projected descendant statuses whether the nested Team is expanded or collapsed, without requiring disclosure, selection, navigation, or manual refresh and without adding a network request or polling loop. | BEH-003, BEH-004 | Must | Collapsed-state monitoring is the core requested outcome. | User request; current reactive execution projection. |
 | REQ-006 | The aggregate shall be presentation-only. It shall not be persisted, transported as a new contract field/event, or used to determine TeamRun liveness, Agent readiness, message routing, command admission, stop/interrupt availability, or deletion/archival behavior. | BEH-002, BEH-004 | Must | Prevents a UI summary from becoming false runtime authority. | Existing documented status boundary. |
@@ -113,12 +113,12 @@
 - Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: `N/A — not applicable`
 - Product prototype ticket record and folder (externally owned): `N/A — not applicable`
 - Prototype revision or commit: `N/A — not applicable`
-- UI/UX user-confirmation reference: Awaiting approval of `RER-001`.
+- UI/UX user-confirmation reference: User approval on `2026-08-29` recorded in `RER-002`; nested-Team-only aggregate accepted and root TeamRun binary activity explicitly preserved.
 - Approved visual-reference baseline: `N/A — no final prototype; existing status dots and user screenshots define the relevant visual language and placement.`
 - Normative visual and interaction details, including the approved final references: One solid aggregate dot appears after the disclosure/spacer and before the Team avatar; mapping and precedence are specified by `REQ-003` and `REQ-004`; it remains visible when collapsed; it is informational and non-interactive.
 - Explicitly illustrative fixture content or permitted implementation variation: Names, initials, timestamps, selection state, and example Team composition in the screenshots are illustrative. The relative dot placement, one-dot presentation, status mapping, and collapsed visibility are normative. Minor spacing may follow the established Agent-row spacing token as long as `AC-008` passes.
 - Required screens, states, transitions, feedback, responsive behavior, or accessibility outcomes: Workspaces/Teams sidebar; nested configured Team rows; expanded and collapsed; all five aggregate states; live status transitions; existing desktop responsive truncation; localized accessible status name.
-- Explicitly unresolved product decisions: `DEC-001`—user approval of recursive/task-scoped aggregation and the mixed-status precedence proposed in `REQ-002` and `REQ-003`.
+- Explicitly unresolved product decisions: `None`.
 
 ### Aggregate Status Decision Table
 
@@ -170,15 +170,15 @@ Evaluate rows from top to bottom; the first matching condition wins.
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | “Team status” means a presentation summary of contained Agent statuses, not a new authoritative Team lifecycle. | Current contracts explicitly have no aggregate Team status, while the user's goal is collapsed visual awareness. | User approval of `REQ-006`; downstream recheck. | Proposed; awaiting approval. |
-| ASM-002 | Work visibility takes precedence over error/idle/offline visibility in a mixed Team, producing the order in `REQ-003`. | The user's explicit example requires running+idle to show busy/blue. | User approval of `DEC-001`. | Proposed; awaiting approval. |
-| ASM-003 | “Contained members” includes recursive and currently projected task-scoped Agent descendants, not only direct configured Agents. | Otherwise collapsed Teams could still hide active work performed inside deeper/task execution. | User approval of `DEC-001`. | Proposed; awaiting approval. |
+| ASM-001 | “Team status” means a presentation summary of contained Agent statuses, not a new authoritative Team lifecycle. | Current contracts explicitly have no aggregate Team status, while the user's goal is collapsed visual awareness. | User approval of `REQ-006`; downstream recheck. | Accepted in `RER-002`. |
+| ASM-002 | Work visibility takes precedence over error/idle/offline visibility in a mixed Team, producing the order in `REQ-003`. | The user's explicit example requires running+idle to show busy/blue. | User approval of `DEC-001`. | Accepted in `RER-002`. |
+| ASM-003 | “Contained members” includes recursive and currently projected task-scoped Agent descendants, not only direct configured Agents. | Otherwise collapsed Teams could still hide active work performed inside deeper/task execution. | User approval of `DEC-001`. | Accepted in `RER-002`. |
 
 ## Open Decisions And Questions
 
 | Decision / Question ID | Question | Why It Matters | Options / Evidence | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Approve the recursive descendant scope and precedence `running > initializing > error > idle > offline` proposed by `REQ-002` and `REQ-003`? | This defines every mixed and nested state, not only the reported running+idle example. | Recommended: approve as written because it always surfaces active work; alternative: configured direct members only or a different error precedence. | User | Pending explicit approval. |
+| DEC-001 | Approve the recursive descendant scope and precedence `running > initializing > error > idle > offline` proposed by `REQ-002` and `REQ-003`? | This defines every mixed and nested state, not only the reported running+idle example. | Approved as written together with nested-Team-only scope; root TeamRun binary activity remains unchanged. | User | Approved on `2026-08-29` in `RER-002`. |
 
 ## Traceability
 
@@ -207,12 +207,25 @@ Evaluate rows from top to bottom; the first matching condition wins.
 - Requirements and acceptance criteria are testable and traceable: `Yes`
 - Applicable scenarios are covered: `Yes`
 - Prototype and supplemental evidence is integrated consistently: `Yes`
-- Applicable UI/UX approval and final visual-reference basis are recorded: `N/A — a prototype is not needed; explicit requirements approval is pending`
+- Applicable UI/UX approval and final visual-reference basis are recorded: `Yes — user approved the screenshot-grounded nested-Team-only behavior; no prototype is applicable`
 - Material assumptions and open decisions are visible: `Yes`
-- User approval received: `No`
-- Requirements package ready for downstream route: `No`
-- Remaining blocker: Explicit user approval of the intended behavior and `DEC-001`.
+- User approval received: `Yes`
+- Requirements package ready for downstream route: `Yes`
+- Remaining blocker: `None`
 
 ## Architecture Design Routing Assessment
 
-Not performed. Per the Requirements Engineering workflow, routing assessment begins only after the user explicitly approves the intended behavior and the Readiness Check passes. Preliminary evidence is retained in `investigation-notes.md`; no downstream route or outcome classification is authorized yet.
+- Assessment status: `Complete`
+- Assessment owner and date: `/requirements_engineering_team/requirements_engineer`, `2026-08-29`
+- Preliminary task size: `Small`
+- Preliminary architectural risk: `Low`
+- Structural surfaces reviewed: Workspace history nested-row renderer; current Team execution-row hierarchy and reactive status patch path; exact Agent status and binary root TeamRun lifecycle contracts; row selection/disclosure ownership; localization/accessibility presentation.
+- Payload/content surfaces reviewed: Existing five Agent status values, flattened current execution rows with subtree depth/identity, user-supplied current-state screenshots, and localized accessible status copy.
+- Structural-impact triggers: `None`
+- Evidence paths: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/investigation-notes.md`; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/stores/runHistoryTeamExecutionRows.ts`; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web/stores/runHistoryNavigationPatches.ts`; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-ts/docs/agent_team_streaming_protocol.md`.
+- Decision rationale: The approved behavior is a bounded presentation derivation from status and hierarchy already available in the current frontend projection. It preserves the root TeamRun activity dot and exact Agent status authority and requires no API/external contract, persistence schema/invariant, security/privacy boundary, concurrency/lifecycle behavior, deployment, migration, subsystem ownership, new architectural pattern, or structural refactoring decision. Existing frontend ownership can support the change and focused tests.
+- Selected route: `Implementation Engineer`
+- Outcome classification: `Approved Direct-Implementation`
+- Direct-route conditions all satisfied: `Yes`
+- Architecture design, review, and design-revision artifacts: `N/A — not applicable`
+- Downstream re-entry trigger: Implementation must return `Design Impact` if the current projection cannot support a correct recursive/reactive summary without changing a contract, lifecycle, persistence boundary, ownership boundary, or structural architecture; return `Requirement Gap` for any proposed change to the approved aggregation semantics or scope.
