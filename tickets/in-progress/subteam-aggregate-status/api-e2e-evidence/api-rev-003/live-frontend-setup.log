@@ -1,0 +1,11 @@
+API-REV-003 live frontend setup
+HEAD: c61d4928c74e143cdd00bc4d11f2af2959ed5d6c
+Started: 2026-08-29T19:02:59Z
+
+$ corepack pnpm --filter @autobyteus/application-sdk-contracts build
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+$ BACKEND_NODE_BASE_URL=http://127.0.0.1:8000 corepack pnpm exec nuxi dev --host 127.0.0.1 --port 33335

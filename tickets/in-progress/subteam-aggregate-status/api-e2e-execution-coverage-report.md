@@ -18,10 +18,10 @@
 - Relevant Delivery Revision IDs: `DR-001`
 - Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/api-e2e-coverage-investigation.md`
 - API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Execution Round: `2 — DR-001 integration recovery`
-- Trigger: Implementation Engineer `IR-002` direct revalidation handoff for integrated candidate `b56806e75d4753b6534ed905771e29a064e05b60`
-- Prior Round Reviewed: `Yes — API-REV-001 Pass / 98%, all canonical reports, and retained evidence`
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Execution Round: `3 — live frontend against the existing container backend`
+- Trigger: the user correctly identified that API-REV-002's exhaustive Chromium journey used deterministic execution rows and explicitly requested a visual/runtime check through the real frontend connected to the already-running backend
+- Prior Round Reviewed: `Yes — API-REV-001 and API-REV-002 are completed Pass results; all canonical reports and retained evidence were reviewed`
 - Latest Authoritative Round: this report
 
 ## Routing Classification
@@ -35,115 +35,106 @@
 ## Investigation And Execution Basis
 
 - Coverage investigation artifact: `api-e2e-coverage-investigation.md`
-- Investigation completed before durable coverage changes or final execution: `Yes`
-- Investigation plan followed: `Yes`; all round-2 repository/static/build/typecheck checks ran before the required integrated Chromium gate.
-- Existing coverage decisions revised during execution: `No`. API-REV-001's durable tests and probe remained valid and were rerun unchanged; no test source was changed in API-REV-002.
+- Investigation completed before final execution: `Yes`
+- Investigation plan followed: `Yes — the integrated production frontend was started through the repository's Nuxt development path, pointed to the discovered existing server, exercised in Chromium, and cleaned up`
+- Existing coverage decisions revised during execution: `No`. API-REV-001's exhaustive durable derivation/component/browser coverage and API-REV-002's integrated revalidation remain valid. Round 3 added supplemental live-system evidence only.
 - Reroute required before or during execution: `No`
-- Notes: the merge conflict was implementation/integration state, not a behavior change. Static audit confirms the API-REV-001 feature, test, fixture, probe, and README assets are byte-equivalent; aggregate locale values are unchanged; and package metadata differs from `origin/personal` only by the intended nested-Team E2E script.
+- Notes: API-REV-003 has no production, configuration, or durable-test delta. Repeating deterministic repository suites could not address the user's realism concern, so the round concentrated on the actual `/workspace` UI, existing persisted runs, normal GraphQL reads, and live Team-run WebSockets.
 
 ## Compatibility / Legacy Scope Check
 
 - Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
 - Compatibility-only or legacy-retention behavior observed in implementation: `No`
-- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes — persisted-data decision remains Not Affected`
+- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes — Not Affected`; existing data was read normally and the aggregate remained presentation-only
 - Durable coverage added or retained only for compatibility-only behavior: `No`
 - Compatibility reroute classification: `N/A`
 - Upstream recipient notified: `N/A`
 
 ## Changed Boundary And Evidence Matrix
 
-All scenario IDs are reused from API-REV-001 and were rechecked against the integrated candidate.
+API-REV-002's `NTAS-UT-001`, `NTAS-UT-002`, `NTAS-CMP-001`, `NTAS-STORE-001`, `NTAS-REG-001`, `NTAS-STATIC-001`, and `NTAS-BR-001`–`NTAS-BR-004` remain the authoritative deterministic/exhaustive baseline. API-REV-003 adds the following real-system scenarios without replacing that baseline.
 
 | Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| `NTAS-UT-001` | `REQ-003`; `AC-001`–`AC-004`, `AC-007`; `QR-003` | Five-state normalization and full precedence | Vitest derivation unit | Durable | Pass — 32-test file includes all 25 known-state pairs | `api-rev-002/repository-revalidation.log` |
-| `NTAS-UT-002` | `REQ-002`; `AC-005`, `AC-007` | Recursive configured/task/task-team-child scope and isolation | Vitest derivation unit | Durable | Pass | same log |
-| `NTAS-CMP-001` | `REQ-001`, `REQ-004`, `REQ-005`, `REQ-007`; `AC-001`, `AC-006`, `AC-008`, `AC-009`, `AC-011` | Real Vue component DOM/reactivity/events | Nuxt component test | Durable | Pass — focused 2 files / 40 tests | same log |
-| `NTAS-STORE-001` | `REQ-002`, `REQ-005`, `REQ-006`; `AC-005`, `AC-006`, `AC-010` | Current execution rows and exact status patch authority | Store/projection Vitest | Durable | Pass — 3 files / 13 tests | same log |
-| `NTAS-REG-001` | preserved `BEH-002`–`BEH-004`; `AC-009`, `AC-010`; `QR-004` | Workspace history, selection, lifecycle/action regression | Broader affected Vitest suite | Durable | Pass — 13 files / 159 tests | same log |
-| `NTAS-STATIC-001` | `REQ-005`, `REQ-006`; `AC-010`; persisted-data `Not Affected`; `DR-001` | Integrated manifest/equivalence plus no new contract/request/persistence/lifecycle authority | Git/content audit, guards, SDK contract prerequisite, Nuxt production build | Durable executable/static | Pass | `integrated-static-audit.txt`; `repository-build-and-guards.log` |
-| `NTAS-BR-001` | `REQ-001`, `REQ-003`, `REQ-004`, `REQ-007`; `AC-001`–`AC-004`, `AC-007`, `AC-008`, `AC-011` | Actual Chromium DOM/CSS/accessibility and route scope | Normal Nuxt dev renderer + Chromium | Browser / Durable | Pass | `browser/evidence.json`; `expanded-running.png` |
-| `NTAS-BR-002` | `REQ-002`, `REQ-005`, `REQ-006`; `AC-005`, `AC-006`, `AC-010` | Recursive/task scope, sibling isolation, collapsed live patch, request/navigation guard | Nuxt + Chromium request ledger | Browser / Durable | Pass | `browser/evidence.json`; `collapsed-live-idle.png` |
-| `NTAS-BR-003` | `REQ-005`, `REQ-006`, `REQ-007`; `AC-009`, `AC-011`; `QR-001` | Click/keyboard/disclosure ownership and runtime localization | Chromium interaction + locale runtime | Browser / Durable | Pass | `browser/evidence.json`; `localized-zh-cn.png` |
-| `NTAS-BR-004` | Operational quality | Browser console/page/request health | Chromium event ledger | Browser / Durable | Pass — zero console/page errors and failed requests | `browser/evidence.json` |
+| `NTAS-LIVE-001` | runtime prerequisite for `REQ-001`–`REQ-007` | Existing backend discovery, reachability, and normal frontend configuration | Health/GraphQL probes plus frontend traffic | Live | Pass | `api-rev-003/backend-discovery.log`; `live-browser/live-evidence.json` |
+| `NTAS-LIVE-002` | `REQ-001`, `REQ-004`, `REQ-007`; `AC-001`, `AC-008`, `AC-011` | Actual persisted current-run Team rows and visual placement/accessibility | Real `/workspace` + Chromium | Live / Browser | Pass — three collapsed configured Teams had exactly one 8×8 dot after disclosure and 6px before the avatar, with correct status/label/title/role and no tabindex | `live-current-collapsed-sidebar.png`; `live-evidence.json` |
+| `NTAS-LIVE-003` | `REQ-002`, `REQ-003`, `REQ-005`; `AC-002`–`AC-007`, `AC-009` | Actual descendant projections, expanded/collapsed state, and real WebSocket reactivity | Current and historical Team runs in Chromium | Live / Browser | Pass — aggregate equaled current descendant precedence, survived recollapse, and followed streamed idle/offline changes without a fixed-state assumption | expanded/collapsed screenshots; `live-evidence.json` |
+| `NTAS-LIVE-004` | `REQ-005`, `REQ-006`; `AC-006`, `AC-009`, `AC-010`; `QR-004` | Runtime/network/authority regression guard | Chromium request, response, WebSocket, console, and page-error ledgers | Live / Browser | Pass — 41 REST/GraphQL requests, four WebSockets, no nested-toggle request, aggregate-named request, failure, HTTP error, console error, or page error | `live-evidence.json`; `frontend-nuxt.log` |
 
 ## Additional Repository Coverage Execution
 
-None after the investigation's post-repository confidence decision. The required browser gate is recorded below.
+None in API-REV-003. There was no code or durable-test delta. The complete integrated repository baseline remains API-REV-002: focused 2 files / 40 tests, adjacent 3 files / 13 tests, broader affected 13 files / 159 tests, static/guard/build checks, and deterministic Chromium scenarios all passed. The broad `nuxi typecheck` limitation remains exit 1 with 316 unrelated diagnostics and zero aggregate-owned path diagnostics; it is not claimed as passed.
 
 ## Validation Confidence Scorecard
 
-| Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
+| Confidence Category | Pre-Live Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | ---: | ---: | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 96% | 99% | +3 | Integrated `NTAS-BR-001`–`004` directly re-proved every `AC-001`–`AC-011` | None material |
-| Changed-boundary execution directness | 95% | 100% | +5 | The merge-integrated production component/CSS ran directly in Chromium | None material |
-| Cross-boundary integration realism and mock gap | 90% | 96% | +6 | Real renderer/request ledger plus store projection tests; collapsed patch emitted no relevant request | Fixture mutates the real component prop boundary rather than receiving an actual WebSocket frame; transport is unchanged |
-| Environment, configuration, identity, and fixture fidelity | 95% | 97% | +2 | Current-base package/SDK prerequisite/build and normal Nuxt/Chromium execution passed | No backend account or secret, by design and not applicable to this presentation-only boundary |
-| Failure, edge-case, lifecycle, and recovery evidence | 95% | 98% | +3 | Integrated browser re-proved live collapse, scope/isolation, exactly-once interactions, empty fallback, and clean runtime | No material recovery path exists for pure derivation |
-| User-surface, browser, and desktop-shell confidence | 88% | 98% | +10 | Five computed presentations, expanded/collapsed state, English/Chinese accessibility, interaction, and screenshots all passed on `b56806e75` | Electron shell intentionally not run because no shell-specific surface changed |
-| Durable regression coverage quality and relevance | 98% | 98% | 0 | Existing exhaustive unit/component/probe coverage remained deterministic and passed unchanged | None material |
+| Requirement and acceptance-criteria proof | 99% | 100% | +1 | Existing exhaustive proof plus actual current/historical Team rows confirmed display, collapse, and reactivity | None material |
+| Changed-boundary execution directness | 100% | 100% | 0 | Unmodified integrated production component/styles executed directly in `/workspace` | None material |
+| Cross-boundary integration realism and mock gap | 88% | 99% | +11 | Normal health, workspace-history, projection, and Team-run WebSocket traffic populated and updated the exact UI | Only external deployment/user-data variance remains |
+| Environment, configuration, identity, and fixture fidelity | 92% | 100% | +8 | Existing same-container server/data, real workspace/run identities, normal Nuxt frontend, and Chromium; no mocked data/API | None material for this local integrated candidate |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | 99% | +1 | Real timing changes exposed and corrected two harness assumptions; final invariant-based journey passed | No independent recovery behavior exists for pure presentation derivation |
+| User-surface, browser, and desktop-shell confidence | 92% | 99% | +7 | Live screenshots/DOM matched the supplied tree shape and verified placement in collapsed/expanded rows | Electron shell intentionally not run because no shell boundary changed |
+| Durable regression coverage quality and relevance | 98% | 98% | 0 | Exhaustive durable unit/component/browser coverage remains requirement-linked and passed in API-REV-002 | Live existing-data probe is intentionally temporary because statuses are timing-sensitive |
 
-- Overall post-repository confidence: `94%` (93.9%, rounded)
-- Overall final confidence: `98%`
-- Calculation method: simple average of seven applicable categories, rounded to nearest whole percent
-- Confidence change produced by broader validation: `+4 percentage points overall`; browser/user-surface increased from `88%` to `98%`
+- Overall pre-live confidence: `95%` (simple average `95.3%`, rounded), but one applicable category was below `90%`
+- Overall final confidence: `99%` (simple average `99.3%`, rounded)
+- Confidence change produced by broader validation: `+4 percentage points overall`; cross-boundary realism rose from `88%` to `99%`
 - Every critical acceptance criterion directly proven: `Yes`
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: broad `nuxi typecheck` remains non-clean with 316 repository-wide diagnostics and is not claimed as passed. Zero diagnostics name the aggregate component/helper/fixture/probe; the one adjacent component-spec diagnostic is an unchanged current-base/API-REV-001 `referenceFiles` fixture. Direct Vitest compilation, production build, and integrated Nuxt/Chromium execution bound this limitation.
+- Confidence-limiting residual risks: broad repository `nuxi typecheck` remains a known unrelated non-clean baseline. Electron-shell execution is not material to the changed browser-equivalent renderer boundary.
 
 ## Broader Validation Decision And Execution
 
-- Decision and selected execution mode from the coverage investigation: `Required — Browser`
+- Decision and selected execution mode: `Required — Browser + existing backend; executed and passed`
 - Material deviation from the planned mode or rationale: `None`
-- Confidence gap actually addressed: prior browser proof targeted the pre-integration candidate. This run directly tested merge-integrated DOM/CSS, collapsed reactivity, locale runtime, input ownership, request/navigation behavior, and runtime health.
-- Startup order, commands, and readiness results: durable script `corepack pnpm test:e2e:nested-team-aggregate-status -- --output-dir <api-rev-002/browser> --browser-executable /usr/bin/chromium`; probe installed the deterministic route, selected port `33843`, started Nuxt, received HTTP 200/control-hook readiness, then launched Chromium.
-- Environment choices: headless `/usr/bin/chromium`, isolated light-theme context, unreachable loopback backend base with only ordinary framework behavior observed; no production data.
-- Seed data, fixtures, identities, authentication, permissions, or session state: deterministic current `TeamTreeNode`/execution rows for configured parent/deep/sibling/empty Teams, configured/task/task-team-child Agents, root/group rows, and transient task-Team exclusion; no identity or authentication required.
+- Confidence gap addressed: actual server projections, persisted Team-run rows, normal runtime configuration, live WebSockets, screenshot-shape fidelity, and absence of new aggregate network authority
+- Startup order and readiness:
+  1. Discovered supervisor-owned `autobyteus_server`, PID `54`, command `node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data`.
+  2. Confirmed `GET http://127.0.0.1:8000/rest/health` returned 200 and GraphQL `__typename` succeeded.
+  3. Built the declared `@autobyteus/application-sdk-contracts` prerequisite.
+  4. Started the API/E2E-owned frontend with `BACKEND_NODE_BASE_URL=http://127.0.0.1:8000 corepack pnpm exec nuxi dev --host 127.0.0.1 --port 33335`.
+  5. Confirmed `/workspace` returned 200, then launched `/usr/bin/chromium` with Playwright Core.
+- Environment choices: backend and frontend were in the same container/PID namespace, so loopback was correct and `host.docker.internal` was unnecessary
+- Data/identity/session state: existing workspace `autobyteus-workspace`; current run `software_development_department_fccba22e6afe4135adc5f291e40d0c11`; reference historical run `software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62`; no test identity, mock server, intercepted data, or created database
 
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Full five-state presentation | Running blue pulse; initializing amber pulse; error red; idle green; offline gray; one accessible non-focusable dot in the approved position | Status, class, computed RGB, animation, 8×8 sizing, 6px avatar gap, label/title, and ordering all matched | `NTAS-BR-001`; expanded screenshot | Pass |
-| Recursive/task/sibling scope | Deep task Agent contributes to target ancestors; sibling cannot leak | Product/deep resolved initializing while unrelated sibling remained running | `NTAS-BR-002` | Pass |
-| Collapsed live patch | Running→idle changes without expansion, navigation, refresh, duplicate, or aggregate request | Collapsed parent became idle; URL stable; one dot; `relevantPatchRequests=[]` | `NTAS-BR-002`; collapsed screenshot | Pass |
-| Accessibility/localization | English and Simplified Chinese labels/titles for all states; no independent action/focus target | All ten localized state presentations matched; no tabindex or interactive descendants | `NTAS-BR-001`, `NTAS-BR-003`; locale screenshot | Pass |
-| Interaction preservation | Dot bubbles to existing row once; disclosure/Enter/Space each toggle once; no container member selection | Counters advanced exactly through four toggles; member selection stayed zero | `NTAS-BR-003` | Pass |
-| Route exclusions/authority | Root/group binary activity preserved; no aggregate on Agent/root/transient rows; no new request | DOM route assertions passed; only Nuxt dev metadata GET observed | `NTAS-BR-001`–`003`; request ledger | Pass |
-| Runtime health | No console error, page error, failed request, or residue | `browserEvents=[]`, `failures=[]`; probe result Pass; cleanup complete | `NTAS-BR-004`; `evidence.json`; `nuxt.log` | Pass |
+| Existing backend and real UI readiness | Server health succeeds and integrated `/workspace` loads actual Team-run history | Health 200, GraphQL success, workspace and real current/historical runs loaded | `backend-discovery.log`; `workspace-loaded.png`; network ledger | Pass |
+| Collapsed current-run rows | Each stable nested Team shows one correct dot after disclosure and before avatar | Requirements, Product, and Software Teams each showed one dot; 8×8, 6px avatar gap, correct English label/title/role, no tabindex | `live-current-collapsed-sidebar.png`; `NTAS-LIVE-002` JSON | Pass |
+| Expanded descendants and precedence | Parent status equals the highest-priority current descendant and remains valid through projection changes | Current Software aggregate matched six descendant statuses; historical Product aggregate changed with its two live-projected descendants | expanded screenshots; `NTAS-LIVE-003` JSON | Pass |
+| Recollapse/reactivity | Dot remains visible and current without independent action or navigation | Both inspected Teams retained the dot after recollapse; live idle/offline changes were reflected | `NTAS-LIVE-003` JSON | Pass |
+| Screenshot-shape and interaction | Existing Team-tree layout remains intact; new dot occupies the intended prior gap | Real sidebar matched the supplied hierarchical shape; disclosure still toggled and emitted no network request | live screenshots; `nestedToggleRequests=[]` | Pass |
+| Runtime/network authority | No aggregate contract/request/poller/error is introduced | No aggregate-named request; no disclosure request; zero failed requests, HTTP errors, console errors, or page errors | `NTAS-LIVE-004` JSON | Pass |
 
 ## Desktop Application Validation
 
-- Validation approach executed: project-preferred Chromium execution of the web-equivalent Nuxt renderer
-- Browser-tested web-equivalent behavior and evidence: all approved aggregation, rendering, reactivity, localization, accessibility, and input behavior in `NTAS-BR-001`–`004`
-- Shell-specific or lifecycle behavior and evidence: none changed; no preload, IPC, native window, packaging, embedded-server, or updater validation was justified
+- Validation approach executed: project-preferred Chromium execution of the web-equivalent Nuxt renderer against the existing backend
+- Browser-tested behavior: production aggregate derivation/presentation, real projection integration, collapsed/expanded state, reactivity, accessibility, interaction preservation, and runtime/network health
+- Shell-specific or lifecycle behavior: no preload, IPC, native window, packaging, embedded-server, updater, or process-lifecycle boundary changed; actual Electron execution was not justified
 - Effect on any already-running desktop application: `None`
-- Behavior not directly proven and confidence consequence: actual Electron shell was not launched; negligible residual uncertainty because the changed boundary is entirely browser-equivalent
+- Behavior not directly proven and confidence consequence: Electron-shell-only behavior was not executed; negligible residual uncertainty for this frontend-only change
 
 ## Platform / Runtime Targets
 
-- Operating system / platform: Linux `aarch64`, kernel `6.12.54-linuxkit`, UTC
-- Runtime/framework: Node `22.23.1`; pnpm `10.28.2`; Nuxt `3.21.1`; Vue `3.5.28`; Vitest `3.2.4`; Playwright Core `1.58.2`
-- Browser: Chromium `149.0.7827.196`
-- Device/locale/accessibility: `960×900`, light color scheme; English and Simplified Chinese locale runtime; semantic DOM, computed style, and focus/input assertions
+- Operating system/platform: Linux `aarch64`, UTC, Docker-container execution
+- Runtime/framework baseline: Node `22.23.1`; pnpm `10.28.2`; Nuxt `3.21.1`; Vue `3.5.28`; Playwright Core `1.58.2` (from API-REV-002 environment evidence)
+- Browser: `/usr/bin/chromium` (`149.0.7827.196` from API-REV-002 environment evidence)
+- Device/locale/accessibility: `1512×900` viewport for live run; English live DOM labels; API-REV-002 retains direct English and Simplified Chinese exhaustive locale proof
 
 ## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
 - Approved persisted-data decision: `Not Affected`
-- Representative existing data exercised: `N/A — deterministic current in-memory execution rows`
-- Direct-use, discard/rebuild, or migration result: `N/A`; integrated static audit confirms no persistence/store/type path changed
+- Representative existing data exercised: existing current and historical Software Development Department Team-run projections under `/home/autobyteus/data`
+- Direct-use, discard/rebuild, or migration result: existing data was directly usable by the normal current reader; the aggregate was recomputed from current execution rows and was not stored
 - Migration completion/recovery evidence: `N/A`
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
-- Residual untested persisted-data risk: `None`
+- Residual untested persisted-data risk: `None material`; no write or schema boundary changed
 
 ## Tests Implemented Or Updated
 
-None in API-REV-002. API-REV-001's following durable paths were retained and rerun unchanged:
-
-- `autobyteus-web/components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts`
-- `autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue`
-- `autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs`
-- `autobyteus-web/package.json` script registration
-- `autobyteus-web/README.md` probe documentation
+None in API-REV-003.
 
 ## Tests Removed As Stale Or Obsolete
 
@@ -152,76 +143,74 @@ None.
 ## Durable Coverage Changed In The Codebase
 
 - Repository-resident durable coverage added, updated, or removed this round: `No`
-- Paths added or updated: `None in API-REV-002`
+- Paths added or updated: `None`
 - Paths removed: `None`
-- Added or updated paths attached for proportional test-code review: `Not Applicable — direct low-risk route and no round-2 durable test diff`
+- Added or updated paths attached for proportional test-code review: `Not Applicable — direct low-risk route and no round-3 durable test diff`
 - Diff or repository evidence supplied for removed paths: `N/A`
 
 ## Other Execution Artifacts
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-002/repository-revalidation.log` | Focused and broader Vitest evidence | Retained | 40 focused, 13 adjacent, and 159 broader tests passed |
-| `api-e2e-evidence/api-rev-002/integrated-static-audit.txt` | Merge/package/feature/locale/authority audit | Retained | All assertions pass |
-| `api-e2e-evidence/api-rev-002/repository-build-and-guards.log` | Guards, SDK prerequisite, production build/prerender | Retained | Pass; only non-blocking warnings |
-| `api-e2e-evidence/api-rev-002/typecheck-baseline.log` | Broad non-clean baseline | Retained | Exit 1; 316 diagnostics; no aggregate-owned path diagnostic |
-| `api-e2e-evidence/api-rev-002/browser/evidence.json` and `nuxt.log` | Browser scenarios/request/events/cleanup and renderer log | Retained | Authoritative integrated browser result Pass |
-| same browser directory, three PNGs | Visual support | Retained | Expanded, collapsed idle, and Simplified Chinese states |
+| `api-e2e-evidence/api-rev-003/backend-discovery.log` | Existing server process/environment/health evidence | Retained | Confirms port `8000`, PID `54`, health and GraphQL success |
+| `api-e2e-evidence/api-rev-003/live-frontend-setup.log` | Frontend prerequisite/startup notes | Retained | Integrated worktree and backend base |
+| `api-e2e-evidence/api-rev-003/live-browser/live-evidence.json` | Final semantic DOM/network/WebSocket/runtime result | Retained | `NTAS-LIVE-001`–`004` Pass |
+| `api-e2e-evidence/api-rev-003/live-browser/frontend-nuxt.log` | Real frontend runtime log | Retained | No page/runtime failure |
+| `api-e2e-evidence/api-rev-003/live-browser/live-*.png` and `workspace-loaded.png` | Visual evidence against supplied tree shape | Retained | Current/historical, expanded/collapsed views |
+| `api-e2e-evidence/api-rev-003/live-browser/attempt-1-*` | Harness correction evidence | Retained | Fixed invalid assumption that a timing-dependent current Team must be running |
+| `api-e2e-evidence/api-rev-003/live-browser/attempt-2-*` | Harness correction evidence | Retained | Fixed invalid assumption that a WebSocket-hydrated historical Team must remain idle |
 
 ## Temporary Execution Methods / Scaffolding
 
 | Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| `autobyteus-web/pages/api-e2e-nested-team-aggregate-status.vue` copied from the durable fixture | Provide a deterministic route in the normal Nuxt renderer | All `NTAS-BR-*` scenarios passed | Removed; exact path absent |
-| Probe-owned Nuxt process and Chromium context | Exercise the real renderer safely | Browser evidence Pass on port `33843` | Browser closed; owned Nuxt PID `86518` terminated; no residue found |
+| `/tmp/ntas-live-backend-check.mjs` | Invariant-based Playwright journey against user-owned timing-sensitive existing data | Final `live-evidence.json` Pass | Deleted after execution |
+| API/E2E-owned Nuxt process on `33335` | Serve the integrated real frontend without disturbing the existing backend | `/workspace` and live scenarios passed | Process stopped; port confirmed closed |
 
 ## Dependencies Mocked Or Emulated
 
-| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
-| --- | --- | --- | --- |
-| Backend health | Isolated context handles only the normal health dependency if requested | No backend contract changed; fixture is presentation-local | None material |
-| Live execution projection source | Deterministic reactive execution rows at the production component prop boundary | WebSocket/persistence is explicitly unchanged; store patch tests separately prove projection replacement | Small bounded gap reflected in 96% integration score |
+None in API-REV-003. The existing backend, persisted data, REST/GraphQL calls, and WebSockets were real. API-REV-002's deterministic fixture remains complementary exhaustive evidence, not the basis of the round-3 realism claim.
 
 ## Result Summary
 
 | Result | Scenario IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | `NTAS-UT-001`, `NTAS-UT-002`, `NTAS-CMP-001`, `NTAS-STORE-001`, `NTAS-REG-001`, `NTAS-STATIC-001`, `NTAS-BR-001`–`NTAS-BR-004` | Every approved criterion and preserved boundary passed on the merge-integrated candidate. |
-| Out Of Scope | actual Electron shell; real backend/API/WebSocket/persistence | No such boundary changed; browser/store/static evidence directly proves the affected renderer and exclusions. |
+| Pass | `NTAS-LIVE-001`–`NTAS-LIVE-004` | Integrated real frontend displayed and updated the nested-Team aggregate correctly against the existing backend/data, visually matched the supplied tree shape, preserved interaction/network authority, and produced no runtime errors |
+| Pass — retained prior evidence | `NTAS-UT-001`, `NTAS-UT-002`, `NTAS-CMP-001`, `NTAS-STORE-001`, `NTAS-REG-001`, `NTAS-STATIC-001`, `NTAS-BR-001`–`NTAS-BR-004` | API-REV-002 remains the exhaustive deterministic/integrated baseline; no code delta invalidated it |
 
 ## Cleanup Performed
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Temporary Nuxt fixture page | API/E2E probe | Removed exact installed path | Pass; absent |
-| Nuxt dev process group | API/E2E probe | Terminated and awaited by probe | Pass; PID `86518` cleanup recorded |
-| Chromium page/context/browser | API/E2E probe | Closed in probe cleanup | Pass |
-| Generated SDK contract build output | API/E2E execution | Removed after build evidence capture | Pass |
-| Accounts/database/storage | None created | N/A | N/A |
-| Logs/JSON/screenshots | API/E2E evidence | Retained under `api-rev-002` | Pass |
+| Chromium context/browser | API/E2E | Closed | Pass |
+| Nuxt frontend on `33335` | API/E2E | Terminated only the owned process; confirmed port closed | Pass |
+| Temporary live probe and generated SDK output | API/E2E | Removed | Pass |
+| Existing backend PID `54` on `8000` | User/container supervisor | Left running; current refresh confirmed health HTTP 200 | Pass — no disruption |
+| Existing persisted workspace/run data | User | Read-only observation; no cleanup necessary | Pass |
 
 ## Preliminary Classification
 
-No implementation, design, requirement, or API/E2E defect remains. Delivery `DR-001` was a bounded integration conflict resolved by Implementation `IR-002`; API-REV-002 independently confirms the integrated candidate.
+No implementation, design, requirement, or API/E2E defect remains. The two retained intermediate failures were temporary harness assumptions contradicted by legitimate real-time status changes, not product failures; the final invariant-based scenario resolved both and passed.
 
 ## Recommended Recipient
 
-Delivery Engineer through the exact recipient returned by `get_handoff_rules` for `Pass`, `Small`, `Low`, direct-route validation.
+Delivery Engineer through the exact recipient returned by `get_handoff_rules` for a direct-route `Pass`, `Small`, `Low` result.
 
 ## Evidence / Notes
 
-- Integrated implementation candidate validated: `b56806e75d4753b6534ed905771e29a064e05b60`.
-- Merge parents independently verified: `ab6a1209c2f7864a2fff139538fc466ad2b78312` and `e664db7cfd725bc6fa1633b71c53954a3fe66e44`.
-- Repository-wide typecheck is a recorded limitation, not a successful gate and not an implementation failure.
-- Delivery-owned untracked `DR-001` artifacts were preserved without modification or staging.
+- Integrated implementation candidate: `b56806e75d4753b6534ed905771e29a064e05b60`.
+- API-REV-002 report/evidence commit: `c61d4928c`; no product or durable-test file changed in API-REV-003.
+- Existing backend port: `8000`; temporary frontend port: `33335` (now closed).
+- The real frontend looked correct against the supplied screenshots: the existing Team-tree structure remained intact and the new aggregate dot appeared in the intended gap between disclosure and Team avatar.
+- Repository-wide typecheck remains a recorded limitation, not a successful gate and not a feature failure.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: `98%`
+- Final validation confidence: `99%`
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required — Browser; executed on integrated commit and passed`
+- Broader validation decision: `Required — Browser + existing backend; executed and passed`
 - Critical acceptance criteria lacking direct proof: `None`
 - Required next recipient: `Delivery Engineer — direct low-risk route; proportional test-code review Not Required`
-- Notes: preserve `Small` / `Low`; no durable coverage changed in API-REV-002; residual risk is negligible and bounded to the unrelated broad typecheck baseline.
+- Notes: preserve `Small` / `Low`; no durable coverage changed in API-REV-003; residual risk is negligible and bounded to the unrelated broad typecheck baseline and intentionally out-of-scope Electron shell.

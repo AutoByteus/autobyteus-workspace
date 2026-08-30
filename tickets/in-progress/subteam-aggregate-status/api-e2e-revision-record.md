@@ -8,6 +8,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 | --- | --- | --- | --- | --- |
 | `API-REV-001` | Implementation Engineer / `implementation-handoff.md` / round 1 | `RER-002`; `IR-001`; architecture/review revisions `N/A` | `N/A` | `Pass` / `98%` |
 | `API-REV-002` | Implementation Engineer / `implementation-handoff.md` / round 2 DR-001 recovery | `RER-002`; `IR-002`; `DR-001`; architecture/review revisions `N/A` | `Pass` / `98%` | `Pass` / `98%` |
+| `API-REV-003` | User / live-system supplemental round 3 | `RER-002`; `IR-002`; `DR-001`; `API-REV-002`; architecture/review revisions `N/A` | `Pass` / `98%` | `Pass` / `99%` |
 
 ## Revision Entries
 
@@ -55,3 +56,28 @@ None — `API-REV-001` has no prior completed API/E2E result or failure.
 - New or remaining failure IDs: `None`
 - Recommended recipient: Delivery Engineer via dynamic handoff rules; proportional test-code review `Not Required — direct low-risk route`.
 - Remaining risks, blocked evidence, or untested scope: actual Electron shell and real backend transport remain intentionally out of scope because no such boundary changed. Broad repository typecheck remains non-clean with 316 unrelated diagnostics; direct unit/component/build/browser execution bounds the limitation.
+
+### API-REV-003 — Existing-backend frontend validation
+
+- Triggering role, report path, and round: User; direct questions distinguishing API-REV-002's deterministic frontend fixture from a real frontend connected to the existing server; round 3 supplemental live-system validation.
+- Triggering finding or scenario IDs: realism gap identified by the user; new scenarios `NTAS-LIVE-001`–`NTAS-LIVE-004`.
+- Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: architecture design/review `N/A`; `IR-002`; code review `N/A`; `DR-001`; prior validation `API-REV-002`.
+- Why this revision was recorded: API-REV-002 proved the real component exhaustively but populated it with deterministic execution rows. The user explicitly requested proof that the integrated frontend looked and behaved correctly with the already-running container backend and existing data, so that additional completed result must be authoritative rather than left as an unrecorded supplement.
+- Coverage decisions or durable test paths changed: none. The existing live data is user-owned and its status changes through real WebSockets, so the final invariant-based probe was temporary; API-REV-001's deterministic exhaustive durable coverage remains the regression authority.
+- Scenarios added, changed, removed, or rechecked: added backend discovery/reachability, real `/workspace` collapsed-row placement/accessibility, actual current/historical descendant equality and recollapse/reactivity, and live request/WebSocket/runtime authority guards; no scenario was removed.
+- Commands, environment, fixture, or broader-validation delta: used existing backend `127.0.0.1:8000` (supervisor PID `54`, `/home/autobyteus/data`), started integrated Nuxt on API/E2E-owned port `33335`, and ran Chromium against actual `autobyteus-workspace` current/historical Team runs. Recorded 41 REST/GraphQL requests and four WebSockets with no request/runtime failure. No repository suite was rerun because round 3 changed no code and targeted the actual-system gap specifically.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| Attempt 1 required the current Software Team aggregate to be `running`. | API/E2E temporary-harness assumption; real current status is timing-dependent | Replaced fixed-status expectation with the approved invariant: aggregate equals current descendant precedence and remains a valid five-state presentation | `api-e2e-evidence/api-rev-003/live-browser/attempt-1-live-evidence.json`; final `live-evidence.json` |
+| Attempt 2 required the reference historical Product Team to remain `idle`. | API/E2E temporary-harness assumption; real WebSocket hydration legitimately updated both children and aggregate to `offline` | Asserted descendant/aggregate equality, live reactivity, and collapsed persistence rather than a frozen server state | `attempt-2-live-evidence.json`; final `live-evidence.json` |
+| No product scenario failure existed in API-REV-002. | Prior result `Pass` / `98%` | All prior deterministic evidence remains valid; live-system scenarios add direct integration proof | API-REV-002 artifacts plus `NTAS-LIVE-001`–`004` Pass |
+
+- Canonical artifacts and sections updated: coverage investigation live-system basis/scorecards/decision; execution coverage report round 3; this revision entry; retained `api-e2e-evidence/api-rev-003/` process, DOM, network, WebSocket, screenshot, failure-resolution, and cleanup artifacts.
+- Prior result and confidence: `Pass` / `98%`
+- Current result and confidence: `Pass` / `99%`
+- New or remaining failure IDs: `None`
+- Recommended recipient: Delivery Engineer via dynamic handoff rules; proportional test-code review `Not Required — direct low-risk route`.
+- Remaining risks, blocked evidence, or untested scope: actual Electron shell remains intentionally out of scope because no shell-specific surface changed. Broad repository typecheck remains non-clean with 316 unrelated diagnostics; API-REV-003 changed no source or durable test file. Backend remained healthy; the temporary frontend was stopped and port `33335` confirmed closed.
