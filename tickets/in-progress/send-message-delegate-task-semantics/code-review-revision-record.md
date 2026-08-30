@@ -8,6 +8,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | --- | --- | --- | --- | --- | --- |
 | `CRR-001` | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/code-review-report.md` | Implementation Review / `IR-001` Implementation Complete | `N/A` | `Pass` | None |
 | `CRR-002` | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` API/E2E Pass | `CRR-001` source-review `Pass`; no prior test-review result | `Fail` | `TEST-001` |
+| `CRR-003` | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-test-review-report.md` | API/E2E Local Fix Rereview / `API-REV-002`, `TEST-001` | `CRR-002` test-review `Fail` | `Pass` | `TEST-001` resolved |
 
 ## Revision Entries
 
@@ -56,3 +57,28 @@ None. `CRR-001` had no source-review findings, and this is the first proportiona
 - Material score or classification changes: No implementation-source score change; the upstream API/E2E confidence was not rescored. Proportional test-review result `Fail`; finding classification `Local Fix` owned by `/software_engineering_team/api_e2e_engineer`.
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer` for the assertion fix, focused live rerun, evidence/report and API/E2E revision update, and return for proportional rereview.
 - Remaining risks or uncertainty: unresolved `TEST-001`; Delivery-owned consumer/release verification and active documentation for the approved public result break; unrelated corrupt loose object `efc0e81d1567e4658f15dac8896de1807825db4b` should be verified and safely repaired before final integration/GC.
+
+### CRR-003 — API/E2E Structured-Content Local Fix Pass
+
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Local Fix Rereview`, round `2`
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer; `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-execution-coverage-report.md`; `API-REV-002`; `TEST-001`, API-SCN-004/006
+- Relevant architecture design revision IDs: `AD-REV-001`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`
+- Relevant implementation revision IDs: `IR-001`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A — delivery not yet entered`
+- Prior authoritative result: `CRR-002` proportional API/E2E test-code review `Fail` with unresolved `TEST-001`.
+- Current authoritative result: `Pass` — `TEST-001` is resolved and no actionable test-code finding remains.
+- What changed in the review result and why: API-REV-002 makes `structuredContent` required in the local response type, rejects any absent or non-record runtime value, and unconditionally compares it with the parsed MCP text object in the helper used by both the active exact-run and inactive post-termination branches. The corrected focused live Codex boundary passed, so the durable test now enforces REQ-016 and AC-014/016 as claimed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Resolution Evidence | Resolution |
+| --- | --- | --- |
+| `TEST-001` | Commit `e68c328e0`; corrected result type/helper and both call sites; manifest-verified `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-002/live/codex-exact-routing.log` passed 1 file / 1 test through Codex App Server -> Agent Tools MCP -> message router. | `Resolved` |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: No implementation-source score change; API/E2E confidence remains `97.7%` and was not rescored. Proportional test-review result changed from `Fail` to `Pass`; carried `Medium` / `High` classification unchanged.
+- Recommended recipient: `/software_engineering_team/delivery_engineer` under the dynamic handoff rules.
+- Remaining risks or uncertainty: Delivery-owned broader consumer/release verification and active documentation for the approved public result break; unrelated corrupt loose object `efc0e81d1567e4658f15dac8896de1807825db4b` should be verified for reachability and safely repaired before final integration/GC.
