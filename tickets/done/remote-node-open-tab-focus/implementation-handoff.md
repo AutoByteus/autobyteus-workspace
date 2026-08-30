@@ -2,13 +2,13 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/design-spec.md`
 - Supplemental task artifacts: None
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/architecture-review-revision-record.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence, when applicable: N/A — initial implementation followed the passing Round 1 review baseline.
 
 ## Current Implementation Summary
@@ -16,7 +16,7 @@
 The shared browser tool-success presentation handler now reads the current renderer window's authoritative embedded-node binding and the local Browser-shell availability state. It returns before either Electron-local browser focus or right-side Browser selection unless both are true. For an eligible embedded result, the existing awaited `focusSession(tab_id)` followed by `setActiveTab('browser')` sequence remains unchanged. No generic tool lifecycle, standalone/team projection, backend, protocol, Electron-main, Docker, persistence, compatibility, or documentation path was changed.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`

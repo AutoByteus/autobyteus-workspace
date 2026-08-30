@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Initial remote-node open-tab projection baseline
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-report.md`; API/E2E Round 1
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-report.md`; API/E2E Round 1
 - Triggering finding or scenario IDs: No code-review finding; mandatory post-review coverage investigation for API-E2E-001 through API-E2E-008 and desktop variants
 - Related revision IDs: `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001`
 - Why this baseline was recorded: First completed API/E2E validation result for implementation commit `8118e68e6c11fad541bf8b5bdd42e23da8b3ba91`
@@ -23,9 +23,9 @@
 None.
 
 - Canonical artifacts updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-revision-record.md`
 - Prior result and confidence: N/A
 - Current result and confidence: Pass / 96.1%
 - New or remaining failure IDs: None

@@ -4,18 +4,18 @@
 
 - Review Round: 1
 - Trigger: Successful API/E2E Round 1 (`API-REV-001`) for implementation commit `8118e68e6c11fad541bf8b5bdd42e23da8b3ba91`; mandatory proportional durable test-code review after execution
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/requirements.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/requirements.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: None
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/solution-revision-record.md` (`SR-001`)
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/implementation-revision-record.md` (`IR-001`)
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-revision-record.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/solution-revision-record.md` (`SR-001`)
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/implementation-revision-record.md` (`IR-001`)
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-revision-record.md` (`API-REV-001`)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-revision-record.md` (`API-REV-001`)
 - Delivery Revision Record Reviewed As Context (delivery re-entry only): N/A
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `96.1%`

@@ -2,21 +2,21 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/design-spec.md`
 - Supplemental Task Artifacts: None
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/solution-revision-record.md` (`SR-001`)
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/implementation-revision-record.md` (`IR-001`)
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-revision-record.md` (`CRR-001`)
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/solution-revision-record.md` (`SR-001`)
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/implementation-revision-record.md` (`IR-001`)
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-revision-record.md` (`CRR-001`)
 - Delivery Revision Record: N/A
 - Relevant Delivery Revision IDs: N/A
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Execution Round: 1
 - Trigger: `CRR-001` passed implementation commit `8118e68e6c11fad541bf8b5bdd42e23da8b3ba91` and requested the mandatory coverage investigation/execution stage.
@@ -25,7 +25,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: Yes
 - Investigation plan followed: Yes. The planned browser-first then last-resort desktop/Docker sequence ran. Two safe setup adjustments were required: build the generated application SDK contract before retrying the full Nuxt suite, and remove the Codex-host-only `ELECTRON_RUN_AS_NODE` variable for normal packaged Electron launch semantics. The clean Docker node had no user BrowserServer MCP, so its independent Chrome/CDP boundary—not the unavailable embedded Electron adapter—proved remote URL ownership.
 - Existing coverage decisions revised during execution: No. All relevant coverage remained `Still Valid`; no stale scenario or missing durable policy case emerged.

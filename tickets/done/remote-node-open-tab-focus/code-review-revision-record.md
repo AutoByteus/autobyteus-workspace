@@ -6,16 +6,16 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-report.md` | Implementation Review / `IR-001` handoff | N/A | Pass | None |
-| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` | Pass | Not Applicable | None |
+| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-report.md` | Implementation Review / `IR-001` handoff | N/A | Pass | None |
+| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` | Pass | Not Applicable | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial embedded-only Browser-projection source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/code-review-report.md`
 - Review entry point and round: `Implementation Review`, Round 1
-- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/implementation-handoff.md`; finding/scenario IDs N/A
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/implementation-handoff.md`; finding/scenario IDs N/A
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -36,9 +36,9 @@ None.
 
 ### CRR-002 — No durable API/E2E test-code change
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, Round 1
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md`; API/E2E scenarios `API-E2E-001` through `API-E2E-008` and desktop variants; no failure or finding IDs
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md`; API/E2E scenarios `API-E2E-001` through `API-E2E-008` and desktop variants; no failure or finding IDs
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
