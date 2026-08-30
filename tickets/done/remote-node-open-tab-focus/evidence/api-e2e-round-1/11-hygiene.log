@@ -1,0 +1,79 @@
+$ git diff --check
+started=2026-08-30T04:42:39Z
+diff_check_exit=0
+$ git status --short --branch
+## codex/remote-node-open-tab-focus...origin/personal [ahead 1]
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-coverage-investigation.md
+?? tickets/in-progress/remote-node-open-tab-focus/code-review-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/code-review-revision-record.md
+?? tickets/in-progress/remote-node-open-tab-focus/evidence/
+$ git diff --name-only HEAD
+$ git ls-files --others --exclude-standard
+autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts
+autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-agent-bindings.js
+autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map
+autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts
+autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-agent-communication.js
+autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map
+autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts
+autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-agent-events.js
+autobyteus-application-sdk-contracts/dist/application-agent-events.js.map
+autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts
+autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-agent-member-address.js
+autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map
+autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts
+autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-agent-target-url.js
+autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map
+autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts
+autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-agent-tools.js
+autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.js
+autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js
+autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map
+autobyteus-application-sdk-contracts/dist/application-websockets.d.ts
+autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map
+autobyteus-application-sdk-contracts/dist/application-websockets.js
+autobyteus-application-sdk-contracts/dist/application-websockets.js.map
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+autobyteus-application-sdk-contracts/dist/execution-resources.js
+autobyteus-application-sdk-contracts/dist/execution-resources.js.map
+autobyteus-application-sdk-contracts/dist/index.d.ts
+autobyteus-application-sdk-contracts/dist/index.d.ts.map
+autobyteus-application-sdk-contracts/dist/index.js
+autobyteus-application-sdk-contracts/dist/index.js.map
+autobyteus-application-sdk-contracts/dist/manifests.d.ts
+autobyteus-application-sdk-contracts/dist/manifests.d.ts.map
+autobyteus-application-sdk-contracts/dist/manifests.js
+autobyteus-application-sdk-contracts/dist/manifests.js.map
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js
+autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map
+tickets/in-progress/remote-node-open-tab-focus/api-e2e-coverage-investigation.md
+tickets/in-progress/remote-node-open-tab-focus/code-review-report.md
+tickets/in-progress/remote-node-open-tab-focus/code-review-revision-record.md
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/01-handler-focused.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/02-related-nuxt.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/03-related-electron.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/04-full-nuxt.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/05-workspace-contract-builds.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/06-full-nuxt-retry.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/07-full-electron.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/08-web-boundary.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/09-production-build.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/10-typecheck.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/11-hygiene.log
+finished=2026-08-30T04:42:40Z

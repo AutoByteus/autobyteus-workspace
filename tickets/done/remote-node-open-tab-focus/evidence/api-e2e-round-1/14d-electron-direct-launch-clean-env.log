@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.62 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --hold-ms 1000
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":64658,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-9b8xAH","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:64658","healthUrl":"http://127.0.0.1:64658/rest/health"}

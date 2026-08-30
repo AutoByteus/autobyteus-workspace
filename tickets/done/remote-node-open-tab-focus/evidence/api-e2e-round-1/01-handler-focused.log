@@ -1,0 +1,7 @@
+$ pnpm test:nuxt services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts --run --reporter=verbose
+started=2026-08-30T04:26:19Z
+result=Pass
+exit_code=0
+Vitest v3.2.4: 1 file passed, 6 tests passed; duration 10.50s.
+Cases: eligible embedded object result; eligible JSON-string result; remote-node suppression; unavailable-shell suppression; unrelated-tool ignore; missing-tab-id ignore. Focus-before-select order assertion passed.
+Warnings: repository-level stale Browserslist data and KaTeX quirks-mode warning; neither affected result.

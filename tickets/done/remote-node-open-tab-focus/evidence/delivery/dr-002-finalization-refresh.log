@@ -1,0 +1,17 @@
+# DR-002 finalization refresh
+recorded_at=2026-08-30T06:09:07Z
+user_acceptance=the task is done. lets finalize no need to release a new version
+user_acceptance_date=2026-08-30
+finalization_authorized=yes
+release_authorized=no (no new version requested)
+refresh_command=git fetch origin personal
+tracked_base_before=d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea
+tracked_base_after=d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea
+ticket_head_before_archive=305c4509172c0c719ca3db44bbab94a56631b764
+base_ancestry=pass (origin/personal is already an ancestor of HEAD)
+behind_count=0
+target_advanced_after_verification=no
+re_integration=not needed
+renewed_verification=not needed
+post_refresh_rerun=not needed (no new base commit was integrated; user-verified executable state is unchanged)
+next=archive ticket, commit/push ticket branch, update personal, merge/push personal, skip release, clean worktree/branches
