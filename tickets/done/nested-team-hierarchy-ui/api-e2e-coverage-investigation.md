@@ -2,21 +2,21 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-doc.md` (`RER-002`, Approved)
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-revision-record.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-doc.md` (`RER-002`, Approved)
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-revision-record.md`
 - Design Spec: `N/A — not applicable; direct route`
 - Supplemental Task Artifacts: approved Product package under `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001`, specifically `ui-ux-spec.md`, `user-decision-record.md`, `requirement-impact.md`, `ui-behavior-test-matrix.md`, `prototype-runbook.md`, `browser-validation-rv-006.json`, and `visual-references/visual-reference-manifest.json`; implementation-render evidence under the task ticket's `implementation-evidence/` directory
 - Architecture Design Revision Record: `N/A — not applicable; direct route`
 - Design Review Report: `N/A — not applicable; direct route`
 - Architecture Review Revision Record: `N/A — not applicable; direct route`
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-revision-record.md` (`IR-001`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-revision-record.md` (`IR-001`)
 - Code Review Report: `N/A — not applicable; confirmed Medium/Low direct route`
 - Code Review Revision Record: `N/A — not applicable; confirmed Medium/Low direct route`
 - Delivery Revision Record (delivery re-entry only): `N/A — initial validation`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record (created after the first completed result): `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-revision-record.md` (to be created as `API-REV-001` after the completed result)
+- API/E2E Revision Record (created after the first completed result): `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-revision-record.md` (to be created as `API-REV-001` after the completed result)
 - Current API/E2E Revision ID: `N/A — initial investigation precedes the first completed result`
 - Current Investigation Round: `1`
 - Trigger: Implementation Engineer handoff for production commit `d64560aee9f828853c75a0abff7347ec4fbaf54b`, cumulative handoff `cc92be20d523b4740c1c4d9b2e57600f984e29b7`

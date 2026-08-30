@@ -1,0 +1,16 @@
+$ APPIMAGE_EXTRACT_AND_RUN=1 LD_LIBRARY_PATH=/tmp/nthui-appimage-libs AutoByteus_enterprise_linux-arm64-1.4.62.AppImage --no-sandbox
+started_utc=2026-08-30T17:07:19Z
+[2026-08-30T17:07:34.340Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1788109654340,"pid":60618,"hostname":"949e7ba9a82d","msg":"Server listening at http://0.0.0.0:29695"}
+[2026-08-30T17:07:34.341Z] [INFO] [electron.embedded-server.stdout] [2026-08-30T17:07:34.340Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+[2026-08-30T17:07:34.343Z] [INFO] [electron.embedded-server.stdout] [2026-08-30T17:07:34.343Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:29695
+[2026-08-30T17:07:34.511Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-08-30T17:07:34.511Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-08-30T17:07:40.969Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-08-30T17:07:42.025Z] [INFO] [electron] [updater] Update for version 1.4.62 is not available (latest version: 1.4.62, downgrade is disallowed).
+[2026-08-30T17:07:43.468Z] [ERROR] [electron.embedded-server.stderr] [CodexAppServerClient] stderr: 2026-08-30T17:07:43.468290Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+XDG_RUNTIME_DIR (/run/user/1000) is not owned by us (uid 0), but by uid 1000! (This could e.g. happen if you try to connect to a non-root PulseAudio as a root user, over the native protocol. Don't do that.)
+stopped_utc=2026-08-30T17:09:00Z
+termination=Delivery sent SIGINT after explicit user verification; application and bundled backend exited.
+post_stop_port_29695=free
+post_stop_owned_processes=none
+exit_code=130 (expected interactive verification stop)

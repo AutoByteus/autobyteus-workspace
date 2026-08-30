@@ -1,0 +1,44 @@
+Nested Team Hierarchy UI — DR-001 Integration Refresh And Check
+Date (UTC): 2026-08-30
+Ticket branch: requirements/nested-team-hierarchy-ui
+Bootstrap base: 3606d0ee7a3e9eb5d418199d7502f0f8460d7a56
+Validated candidate before refresh: 926fbc100635bfd9bf5b87746983604395e10baf
+Latest tracked remote base fetched: origin/personal@d1a399a5919cf9b6040050d5699caeb0cd1e6633
+Base commits beyond bootstrap: 6
+Checkpoint: Not needed; validated candidate and evidence were already committed and the worktree was clean.
+Integration command: git merge --no-edit origin/personal
+Integration result: Pass; no conflicts.
+Integration merge commit: c6d07a9a8a99b5f9d8f146d064c9bcb41287da91
+Integrated base ancestry: origin/personal is an ancestor of the ticket branch.
+
+Post-integration executable check follows.
+$ corepack pnpm test:nuxt components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run --pool threads --maxWorkers 1 --no-file-parallelism --no-isolate
+started_utc=2026-08-30T12:00:55Z
+
+> autobyteus@1.4.62 test:nuxt /home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run --pool threads --maxWorkers 1 --no-file-parallelism --no-isolate
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (9 tests) 150ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  12:01:16
+   Duration  40.64s (transform 13.06s, setup 35.20s, collect 957ms, tests 150ms, environment 2.42s, prepare 1.31s)
+
+completed_utc=2026-08-30T12:01:57Z
+exit_code=0

@@ -109,6 +109,24 @@ TeamRun rows, definition groups, Agent rows, and transient task-Team rows. This
 summary is not an owned Team field, public event, persisted value, liveness
 signal, or command/readiness/interrupt/delete authority.
 
+An expanded TeamRun renders its configured and transient execution rows as one
+compact printed-file-tree hierarchy. `WorkspaceTeamExecutionTree.vue` consumes
+the existing depth-first `executionRows` projection and applies only the current
+disclosure state; `WorkspaceHierarchyBranches.vue` derives continuous ancestor
+rails plus a right-only elbow whose vertical segment stops at the final sibling.
+Configured nested Teams use an unboxed filled user-group icon and semibold name,
+configured Agents retain circular avatars, and transient task Teams retain a
+dashed indigo treatment with a bolt icon. These are presentation roles only and
+do not change topology, status authority, or selection identity.
+
+The execution subtree exposes a localized `tree`/`treeitem` accessibility model
+with level, role, address, status, selection, and disclosure state. Full role,
+name, and address remain available through the native title and a keyboard-focus
+tooltip when the visible name truncates. The named Workspace-history container
+keeps controls operable at the supported 260/320/520px widths and Default/Large/
+Extra Large font presets: repeated age yields at 320px and below, and depth-2
+status may yield below 280px, with both returning on hover or focus.
+
 ## Default Launch Preferences
 
 `AgentTeamDefinitionForm.vue` now round-trips `defaultLaunchConfig` through the shared `DefinitionLaunchPreferencesSection.vue` surface for both shared and application-owned teams.

@@ -3,10 +3,10 @@
 ## Upstream Artifact Package
 
 - Upstream route: `Direct Requirements-to-Implementation`
-- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-doc.md`
-- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/investigation-notes.md`
-- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-revision-record.md` (`RER-002`)
-- Requirements routing assessment: `Architecture Design Routing Assessment` in `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-doc.md`
+- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-doc.md`
+- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/investigation-notes.md`
+- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-revision-record.md` (`RER-002`)
+- Requirements routing assessment: `Architecture Design Routing Assessment` in `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-doc.md`
 - Design spec: `N/A — not applicable`
 - Supplemental task artifacts:
   - `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/ui-ux-spec.md`
@@ -17,7 +17,7 @@
   - `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/browser-validation-rv-006.json`
   - `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/visual-references/visual-reference-manifest.json`
   - `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/visual-references`
-  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-evidence`
+  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-evidence`
 - Architecture design revision record: `N/A — not applicable`
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
@@ -28,7 +28,7 @@
 The production Workspace history team-run subtree now renders as the approved compact printed file tree. Existing production execution rows, expansion state, exact/aggregate statuses, relative time, and selection actions remain authoritative. Focused presentational components render connector geometry, configured/transient identity, responsive metadata, accessible identity, and interaction feedback without prototype scenario controls or synthetic production paths.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-revision-record.md`
+- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Production implementation commit: `d64560aee9f828853c75a0abff7347ec4fbaf54b`
 - Related architecture design revision IDs: `N/A`
@@ -42,7 +42,7 @@ The production Workspace history team-run subtree now renders as the approved co
 
 - Task size (`Small`/`Medium`/`Large`): `Medium`
 - Architecture risk (`Low`/`High`): `Low`
-- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-doc.md` — `Architecture Design Routing Assessment`
+- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-doc.md` — `Architecture Design Routing Assessment`
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: The completed delta remains a bounded frontend presentation/accessibility change. It consumes the existing `RunHistoryTeamExecutionRow` node kind/depth/children/status/selection surfaces, existing panel policy, and existing state/action boundaries. No API, contract, persistence, migration, security, concurrency, deployment, lifecycle, or subsystem-ownership change was required. Medium reflects multiple components, responsive states, accessibility semantics, and test/evidence updates.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E`
@@ -135,7 +135,7 @@ The production Workspace history team-run subtree now renders as the approved co
 - Project development / preview instructions and rendered surface used: Project Nuxt development renderer. A temporary preview route rendered the new production hierarchy components with representative data, was exercised through Chromium, and was removed afterward. No preview fixture/control shipped.
 - States, layouts, viewports, and interactions inspected: 320px Default and 520px Default deep tree; 260px Extra Large long localized names; configured and transient team/agent roles; selected leaf; focus tooltip; pointer collapse; keyboard Enter expansion; narrow age/status hover/focus recovery; tree/item ARIA; horizontal overflow and console/page errors.
 - Visual or interaction issues found and corrected: Confirmed container queries against the actual panel owner; verified 120ms metadata recovery after transition; verified the selected ref uses `#eef2ff`, inset 2px `#6366f1`, and 0px radius; confirmed focus tooltip z-index 60. No remaining in-scope rendered defect was observed.
-- Supporting evidence and remaining unverified states or limitations: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-evidence`; independent real backend/live-history browser validation and accessibility-tree/system checks remain downstream-owned.
+- Supporting evidence and remaining unverified states or limitations: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-evidence`; independent real backend/live-history browser validation and accessibility-tree/system checks remain downstream-owned.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

@@ -2,22 +2,22 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-revision-record.md` (`RER-002`)
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-doc.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-revision-record.md` (`RER-002`)
 - Design Spec: `N/A — not applicable; direct route`
 - Supplemental Task Artifacts: approved Product package under `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001`, including `ui-ux-spec.md`, `user-decision-record.md`, `requirement-impact.md`, `ui-behavior-test-matrix.md`, `prototype-runbook.md`, `browser-validation-rv-006.json`, and `visual-references/visual-reference-manifest.json`; implementation evidence under the ticket `implementation-evidence/` directory
 - Architecture Design Revision Record: `N/A — not applicable; direct route`
 - Design Review Report: `N/A — not applicable; direct route`
 - Architecture Review Revision Record: `N/A — not applicable; direct route`
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-revision-record.md` (`IR-001`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-revision-record.md` (`IR-001`)
 - Code Review Report: `N/A — not applicable; confirmed Medium/Low direct route`
 - Code Review Revision Record: `N/A — not applicable; confirmed Medium/Low direct route`
 - Delivery Revision Record (delivery re-entry only): `N/A — initial validation`
 - Relevant Delivery Revision IDs: `N/A`
-- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-revision-record.md`
+- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Execution Round: `1`
 - Trigger: Implementation Engineer direct validation handoff at production commit `d64560aee9f828853c75a0abff7347ec4fbaf54b`, cumulative handoff `cc92be20d523b4740c1c4d9b2e57600f984e29b7`
@@ -34,7 +34,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: `Yes`
 - Investigation plan followed: `Yes`. The only material refinement was evidence-driven: the existing aggregate-status browser probe was reclassified from `Still Valid` to `Needs Update` after its first rerun exposed an obsolete placement helper that expected the removed circular Team avatar. The investigation was updated before replacing that expectation with the approved filled configured-Team icon.
 - Existing coverage decisions revised during execution, with evidence: `tests/e2e/nested-team-aggregate-status-probe.mjs` retained all current status, live-patch, localization, exclusion, and interaction assertions; only the stale direct-sibling/avatar traversal was updated. Evidence: investigation `Existing Durable Coverage Inventory` and `Stale Or Obsolete Coverage Decisions`.

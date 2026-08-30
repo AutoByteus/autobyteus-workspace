@@ -12,7 +12,7 @@ The current production code and `implementation-handoff.md` are authoritative. T
 
 ### IR-001 — Approved Workspace history hierarchy baseline
 
-- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/requirements-doc.md`; approved direct package `REQPKG-NTHUI-001`; initial implementation round.
+- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/requirements-doc.md`; approved direct package `REQPKG-NTHUI-001`; initial implementation round.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

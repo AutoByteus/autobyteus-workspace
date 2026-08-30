@@ -12,7 +12,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 
 ### API-REV-001 — Durable Workspace hierarchy browser baseline
 
-- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/implementation-handoff.md`; initial API/E2E round 1
+- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/implementation-handoff.md`; initial API/E2E round 1
 - Triggering finding or scenario IDs: `N/A — initial baseline`; executed `NTHUI-REP-001`, `NTHUI-REP-002`, `NTHUI-BR-001`–`005`, `NTAS-BR-001`–`004`, and `NTHUI-BUILD-001`
 - Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: architecture-design `N/A`; architecture-review `N/A`; implementation `IR-001`; code-review `N/A`; delivery `N/A`
 - Why this baseline or coverage/execution revision was recorded: Required initial completed API/E2E baseline for the confirmed `Medium` + `Low` direct-route implementation. It establishes durable browser proof of the approved printed-tree hierarchy and revalidates preserved live/history behavior.
@@ -25,10 +25,10 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 None. This is the first completed API/E2E result. Iterative harness/stale-assertion corrections occurred before the completed baseline and did not identify a production failure.
 
 - Canonical artifacts and sections updated:
-  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-coverage-investigation.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-execution-coverage-report.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-revision-record.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-evidence/`
+  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-execution-coverage-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/done/nested-team-hierarchy-ui/api-e2e-evidence/`
 - Prior result and confidence: `N/A`
 - Current result and confidence: `Pass / 97%`
 - New or remaining failure IDs: `None`
