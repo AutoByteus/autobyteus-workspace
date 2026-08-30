@@ -1,0 +1,23 @@
+$ pnpm test:electron electron/browser/__tests__/browser-shell-controller.spec.ts electron/shell/__tests__/workspace-shell-window.spec.ts electron/shell/__tests__/workspace-shell-window-registry.spec.ts --run
+started=2026-08-30T04:27:25Z
+
+> autobyteus@1.4.62 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web
+> vitest --config ./electron/vitest.config.ts electron/browser/__tests__/browser-shell-controller.spec.ts electron/shell/__tests__/workspace-shell-window.spec.ts electron/shell/__tests__/workspace-shell-window-registry.spec.ts --run
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron
+
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 3ms
+stdout | browser/__tests__/browser-shell-controller.spec.ts
+Downloading Electron binary...
+
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 9ms
+
+ Test Files  3 passed (3)
+      Tests  13 passed (13)
+   Start at  06:27:26
+   Duration  2.67s (transform 195ms, setup 0ms, collect 2.25s, tests 14ms, environment 0ms, prepare 422ms)
+
+finished=2026-08-30T04:27:29Z
+exit_code=0

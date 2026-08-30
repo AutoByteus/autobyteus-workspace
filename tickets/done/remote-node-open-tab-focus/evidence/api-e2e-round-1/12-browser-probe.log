@@ -1,0 +1,7 @@
+result=Pass
+route=http://127.0.0.1:64838/__api_e2e_open_tab_projection
+scenarios=API-E2E-005A:Pass,API-E2E-005B:Pass,API-E2E-006:Pass,API-E2E-007:Pass
+browserEvents=7
+cleanup={"browserContext":"closed","browser":"closed","nuxt":{"status":"terminated","pid":64868,"exitCode":null,"signalCode":"SIGTERM"},"temporaryRoute":"removed"}
+evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe.json
+screenshot=/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe.png

@@ -1,0 +1,12 @@
+$ pnpm --filter @autobyteus/application-sdk-contracts build && pnpm --filter @autobyteus/team-stream-contracts build
+started=2026-08-30T04:34:49Z
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+finished=2026-08-30T04:34:52Z
+exit_code=0

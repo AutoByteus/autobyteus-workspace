@@ -1,6 +1,7 @@
 import type { ToolExecutionSucceededPayload } from '../protocol/messageTypes';
 import { parseToolExecutionSucceededPayload } from '../handlers/toolLifecycleParsers';
 import { useBrowserShellStore } from '~/stores/browserShellStore';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 
 const OPEN_TAB_TOOL_NAME = 'open_tab';
@@ -40,6 +41,11 @@ export const handleBrowserToolExecutionSucceeded = async (
   }
 
   const browserShellStore = useBrowserShellStore();
+  const windowNodeContextStore = useWindowNodeContextStore();
+  if (!windowNodeContextStore.isEmbeddedWindow || !browserShellStore.browserAvailable) {
+    return;
+  }
+
   const { setActiveTab } = useRightSideTabs();
 
   try {

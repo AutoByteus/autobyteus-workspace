@@ -158,17 +158,30 @@ This keeps Browser browser-like without turning the shell into an uncontrolled m
 
 ## Runtime Flow
 
-### Open browser
+### Open browser and project a successful result
 
 1. Agent runtime calls `open_tab`.
-2. Server parses and validates arguments.
-3. `BrowserToolService` sends the request through the local browser bridge.
-4. Electron main opens or reuses a browser session.
-5. Electron main returns `{ tab_id, status, url, title }`.
-6. Normal tool-result streaming reaches the renderer.
-7. Renderer asks Electron main to focus that session in the current shell.
-8. `BrowserShellController` publishes the shell snapshot.
-9. The renderer shows the `Browser` tab and internal session tabs.
+2. The executing server/runtime parses and validates the arguments, then routes
+   the call to its configured browser boundary. Embedded Electron uses the local
+   Browser bridge; a Docker or remote node uses its own configured browser
+   runtime, such as BrowserServer MCP.
+3. The executing browser runtime opens or reuses a session and returns a result
+   containing its own `tab_id`.
+4. Normal tool-result streaming reports `TOOL_EXECUTION_SUCCEEDED` to the
+   renderer. Generic conversation-tool and Activity projection records that
+   success for both embedded and remote executions.
+5. Automatic local Browser focus and right-side tab selection are a separate,
+   embedded-Electron-only presentation step. The renderer performs them only
+   when the current window is bound to the embedded node and the local Browser
+   shell is available.
+6. On that eligible embedded path, the renderer asks Electron main to focus the
+   returned local session, `BrowserShellController` publishes the shell
+   snapshot, and the renderer selects the `Browser` right-side tab.
+7. For a Docker or remote-node result, the renderer does not send the remote
+   `tab_id` to Electron's local Browser shell and does not change the current
+   right-side selection. The successful tool result remains visible through the
+   normal lifecycle/activity surfaces, while the opened tab remains owned by
+   the executing node's browser runtime.
 
 ### Follow-up operations
 
@@ -283,6 +296,10 @@ Docker and remote nodes do not pair back to the host Electron browser.
 
 Browser automation for Docker or remote nodes should be configured as an MCP server inside that node, for example with BrowserServer MCP.
 If no browser MCP is configured and selected for the agent, those nodes should expose no browser tools.
+When a configured remote browser reports a successful `open_tab`, the canonical
+tool-success event and its conversation/Activity presentation are still
+preserved. Only Electron-local Browser focus and automatic right-side
+`Browser` selection are suppressed for the remote-bound window.
 
 ## Runtime Adapter Notes
 
