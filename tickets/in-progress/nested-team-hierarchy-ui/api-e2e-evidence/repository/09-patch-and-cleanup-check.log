@@ -1,0 +1,5 @@
+node --check autobyteus-web/tests/e2e/nested-team-hierarchy-probe.mjs — PASS
+node --check autobyteus-web/tests/e2e/nested-team-aggregate-status-probe.mjs — PASS
+temporary hierarchy and aggregate Nuxt routes absent after probe cleanup — PASS
+git diff --check — PASS
+owned probe ports 43879 and 36771 closed — PASS

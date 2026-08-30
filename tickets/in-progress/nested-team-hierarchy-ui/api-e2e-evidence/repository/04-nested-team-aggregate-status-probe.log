@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.62 test:e2e:nested-team-aggregate-status /home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web
+> node tests/e2e/nested-team-aggregate-status-probe.mjs -- --output-dir ../tickets/in-progress/nested-team-hierarchy-ui/api-e2e-evidence/nested-team-aggregate-status
+
+Nested Team aggregate status browser probe passed. Evidence: /home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-evidence/nested-team-aggregate-status/evidence.json
