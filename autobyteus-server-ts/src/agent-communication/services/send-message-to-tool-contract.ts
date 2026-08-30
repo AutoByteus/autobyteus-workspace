@@ -1,11 +1,16 @@
+import {
+  SEND_MESSAGE_TO_LLM_DESCRIPTION,
+  SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION,
+  SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION,
+} from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
+
 export const SEND_MESSAGE_TO_TOOL_NAME = "send_message_to";
 
-export const SEND_MESSAGE_TO_TOOL_DESCRIPTION =
-  "Send a self-contained message using exactly one selector: recipient_address for one canonical absolute non-root /... logical Agent-or-AgentTeam address in the same rooted AgentTeam, or target_agent_run_id for one exact currently active AgentRun ID. AgentTeam addresses deliver through the configured coordinator ingress.";
+export const SEND_MESSAGE_TO_TOOL_DESCRIPTION = SEND_MESSAGE_TO_LLM_DESCRIPTION;
 
 export const SEND_MESSAGE_TO_FIELD_DESCRIPTIONS = {
-  recipientAddress: "Canonical absolute non-root logical Agent-or-AgentTeam address beginning with '/'. Relative, bare, traversal, and backslash forms are invalid. Provide either recipient_address or target_agent_run_id, never both.",
-  targetAgentRunId: "Exact currently active AgentRun.runId. Provide either target_agent_run_id or recipient_address, never both. This selector is live-only: inactive, preallocated, recoverable, lazy-startable, or unknown run ids are rejected.",
+  recipientAddress: SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION,
+  targetAgentRunId: SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION,
   content:
     "Self-contained message body to deliver. Explain the handoff like an email body; you may naturally mention important absolute paths here, and also put files that should appear with the message in reference_files. Example: 'Implementation is ready. The handoff is at /Users/me/project/implementation-handoff.md and the test log is at /Users/me/project/test.log; please review the risks below.'",
   messageType: "Optional message type label.",

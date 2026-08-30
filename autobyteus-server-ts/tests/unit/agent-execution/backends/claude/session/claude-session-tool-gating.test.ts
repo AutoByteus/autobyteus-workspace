@@ -500,7 +500,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       expect.objectContaining({
         prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution",
+          "Use `delegate_task` to assign a new bounded unit of work",
         ),
         allowedTools: [
           "delegate_task",

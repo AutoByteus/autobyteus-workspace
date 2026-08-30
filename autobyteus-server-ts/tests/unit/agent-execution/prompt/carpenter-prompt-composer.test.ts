@@ -85,7 +85,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt).toContain("└── /C              (nested AgentTeam)");
     expect(prompt).toContain("The letters in this example are placeholders only.");
     expect(prompt).not.toContain("requirements_engineering");
-    expect(prompt).toContain("## AgentTeam Collaboration\n\nUse `send_message_to` with `recipient_address`");
+    expect(prompt).toContain("## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.");
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
     expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));
     expect(prompt.indexOf("## AgentTeam Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));

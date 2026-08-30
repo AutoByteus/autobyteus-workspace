@@ -5,6 +5,7 @@ import { buildAgentRunMessageSenderContext } from "../../../src/agent-communicat
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
 
 const sender = buildAgentRunMessageSenderContext({
   senderRunId: "sender-run",
@@ -25,6 +26,7 @@ const createTargetRun = (input: {
   }));
   const run = {
     runId: input.runId ?? "target-run",
+    config: { memberTeamContext: null },
     postUserMessage,
     publishEvent: vi.fn(async (event: AgentRunEvent) => {
       emittedEvents.push(event);
@@ -57,7 +59,7 @@ describe("GlobalAgentRunMessageRouter", () => {
       referenceFiles: ["/tmp/direct.md"],
     });
 
-    expect(result.accepted).toBe(true);
+    expect(result).toMatchObject({ accepted: true, agentRunId: "standalone-target" });
     expect(agentRunManager.getActiveRun).toHaveBeenCalledWith("standalone-target");
     expect(target.postUserMessage).toHaveBeenCalledTimes(1);
     const postedMessage = target.postUserMessage.mock.calls[0]?.[0] as { content?: string; metadata?: Record<string, unknown> };
@@ -95,12 +97,57 @@ describe("GlobalAgentRunMessageRouter", () => {
       content: "Direct to member.",
     });
 
-    expect(result.accepted).toBe(true);
+    expect(result).toMatchObject({ accepted: true, agentRunId: "team-member-run" });
     expect(target.emittedEvents[0]!.payload).toEqual(expect.objectContaining({
       receiver_run_id: "team-member-run",
       content: "Direct to member.",
     }));
     expect(target.emittedEvents[0]!.payload).not.toHaveProperty("team_run_id");
+  });
+
+  it("confirms the exact accepting AgentRun when same-root delivery uses the Team owner", async () => {
+    const memberTeamContext = testMemberTeamContext({
+      rootTeamRunId: "root-team-run",
+      teamRunId: "root-team-run",
+      memberAddress: "/sender",
+      agentRunId: "sender-run",
+    });
+    const sameRootSender = buildAgentRunMessageSenderContext({
+      senderRunId: "sender-run",
+      senderName: "Sender",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberTeamContext,
+    });
+    const target = createTargetRun({ runId: "same-root-target" });
+    const targetTeamContext = testMemberTeamContext({
+      rootTeamRunId: "root-team-run",
+      teamRunId: "root-team-run",
+      memberAddress: "/target",
+      agentRunId: "same-root-target",
+    });
+    (target.run as unknown as { config: { memberTeamContext: unknown } })
+      .config.memberTeamContext = targetTeamContext;
+    const deliverExactAgentMessage = vi.fn(async () => ({
+      accepted: true,
+      code: "DELIVERED",
+      message: "Delivered by Team owner.",
+    }));
+    const router = new GlobalAgentRunMessageRouter({
+      agentRunManager: { getActiveRun: vi.fn(() => target.run) },
+      teamRunManager: {
+        getActiveTeamRun: vi.fn(() => ({ deliverExactAgentMessage }) as never),
+      },
+    });
+
+    await expect(router.deliver({
+      sender: sameRootSender,
+      targetAgentRunId: "same-root-target",
+      content: "Exact Team message.",
+    })).resolves.toMatchObject({
+      accepted: true,
+      agentRunId: "same-root-target",
+    });
+    expect(deliverExactAgentMessage).toHaveBeenCalledOnce();
   });
 
   it("rejects unknown, inactive, preallocated, or recoverable-only targets via the same not-active result", async () => {
@@ -132,6 +179,7 @@ describe("GlobalAgentRunMessageRouter", () => {
 
     expect(result.accepted).toBe(false);
     expect(result.code).toBe("TARGET_AGENT_RUN_REJECTED_INPUT");
+    expect(result.agentRunId).toBeUndefined();
     expect(target.emittedEvents).toEqual([]);
   });
 
@@ -149,6 +197,7 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(result).toMatchObject({
       accepted: true,
       code: "DELIVERED_EVENT_PUBLICATION_FAILED",
+      agentRunId: "target-run",
     });
     expect(target.postUserMessage).toHaveBeenCalledTimes(1);
   });

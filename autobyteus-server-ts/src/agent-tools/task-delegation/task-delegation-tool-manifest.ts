@@ -1,4 +1,5 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
+import type { ZodType } from "zod";
 import type {
   DelegateTaskInput,
   DelegateTaskResult,
@@ -7,6 +8,8 @@ import type {
   SubmitTaskResultInput,
   SubmitTaskResultResult,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+import { DelegateTaskResultSchema } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
+import { DELEGATE_TASK_LLM_DESCRIPTION } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
   REVIEW_TASK_RESULT_TOOL_NAME,
@@ -35,6 +38,7 @@ export type TaskDelegationToolManifestEntry = {
   name: TaskDelegationToolName;
   description: string;
   parameterSchema: ParameterSchema;
+  resultSchema?: ZodType;
   parseInput: (rawArguments: Record<string, unknown>) => TaskDelegationToolParsedInput;
   execute: (
     service: TaskDelegationToolService,
@@ -46,12 +50,13 @@ export type TaskDelegationToolManifestEntry = {
 export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = [
   {
     name: DELEGATE_TASK_TOOL_NAME,
-    description:
-      "Delegate one ready-to-run task to any mounted Agent or AgentTeam in the same rooted AgentTeam. recipient_address must be one exact canonical absolute non-root address beginning with '/'; relative, bare, traversal, and backslash forms are invalid. Provide complete task details in description and optional absolute local reference_files. Agent targets start one fresh task Agent; AgentTeam targets start one fresh task Team through its configured coordinator.",
+    description: DELEGATE_TASK_LLM_DESCRIPTION,
     parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASK_TOOL_NAME),
+    resultSchema: DelegateTaskResultSchema,
     parseInput: parseDelegateTaskInput,
-    execute: (service, context, input) =>
-      service.delegateTask(context, input as DelegateTaskInput),
+    execute: async (service, context, input) => DelegateTaskResultSchema.parse(
+      await service.delegateTask(context, input as DelegateTaskInput),
+    ),
   },
   {
     name: SUBMIT_TASK_RESULT_TOOL_NAME,

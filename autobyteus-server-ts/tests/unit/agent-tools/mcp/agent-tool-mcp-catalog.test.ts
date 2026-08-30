@@ -306,7 +306,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       enabledTools: exposure.enabledTools,
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
-    }) as any);
+    }) as any, "2025-03-26");
 
     expect(tools).toEqual([
       {
@@ -368,7 +368,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
       enabledTools: exposure.enabledTools,
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,
-    }) as any)).toHaveLength(1);
+    }) as any, "2025-03-26")).toHaveLength(1);
 
     const session = buildSession({
       enabledTools: exposure.enabledTools,
@@ -412,7 +412,7 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
 
     expect(exposure.enabledTools).toEqual(["open_tab"]);
     expect(exposure.toolRoutes.open_tab?.kind).toBe("configured_mcp_tool");
-    expect(catalog.listMcpToolsForSession(session).map((tool) => tool.name)).toEqual(["open_tab"]);
+    expect(catalog.listMcpToolsForSession(session, "2025-03-26").map((tool) => tool.name)).toEqual(["open_tab"]);
 
     const availability = catalog.resolveToolCallAvailability(session, "open_tab");
     expect(availability.ok).toBe(true);

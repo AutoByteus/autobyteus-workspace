@@ -15,10 +15,10 @@ import {
 } from "../../agent-communication/services/send-message-to-tool-contract.js";
 import { buildSendMessageToParameterSchema } from "./send-message-to-parameter-schema.js";
 import {
-  communicationRejection,
-  serializeAgentCommunicationToolResult,
-  toAgentCommunicationToolResult,
-} from "../../agent-communication/services/agent-communication-tool-result.js";
+  sendMessageToRejection,
+  serializeSendMessageToResult,
+  toSendMessageToResult,
+} from "../../agent-communication/services/send-message-to-tool-result-contract.js";
 
 const SERVER_OWNED_AGENT_COMMUNICATION_TOOL = "server-owned-agent-communication";
 
@@ -57,7 +57,7 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
     kwargs: Record<string, unknown> = {},
   ): Promise<string> {
     if (!this.sender) {
-      return serializeAgentCommunicationToolResult(communicationRejection(
+      return serializeSendMessageToResult(sendMessageToRejection(
         "AGENT_COMMUNICATION_SENDER_CONTEXT_REQUIRED",
         "send_message_to requires an active Agent sender context.",
       ));
@@ -68,7 +68,7 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
       rawArguments: kwargs,
       sender: this.sender,
     });
-    return serializeAgentCommunicationToolResult(toAgentCommunicationToolResult(result));
+    return serializeSendMessageToResult(toSendMessageToResult(result));
   }
 }
 
