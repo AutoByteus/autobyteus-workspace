@@ -10,8 +10,8 @@
 - Base or reference revision: `3606d0ee7a3e9eb5d418199d7502f0f8460d7a56` (source inspection performed against the same revision in the clean primary checkout while the dedicated worktree populated)
 - Bootstrap result: Complete. A dedicated worktree and task branch were created and verified clean before artifact creation.
 - Bootstrap blocker: `N/A`
-- Current requirements revision ID: `RER-001`
-- Investigation status: Coherent draft baseline complete; `Requirements Visualization Needed` before user approval.
+- Current requirements revision ID: `RER-002`
+- Investigation status: Approved requirements reconciled with Product package `REQPKG-NTHUI-001`; readiness passed; Architecture Design Routing Assessment completed as `Approved Direct-Implementation`.
 
 ## Initial Request And Clarifications
 
@@ -53,6 +53,10 @@
 | 2026-08-30 | Git/Doc | `git log -- WorkspaceHistoryWorkspaceSection.vue`; `tickets/done/team-tasks-auto-open/requirements-doc.md` and `design-spec.md` | Understand why current collapse behavior exists. | Earlier work intentionally replaced an always-expanded flat list with default-collapsed recursive rows and 12px indentation. The current complaint shows that collapse controls alone did not make the opened hierarchy legible. | Do not regress to always-expanded; solve hierarchy comprehension. |
 | 2026-08-30 | Git | Commit `dcd0baf8c` (`feat(web): show nested team aggregate status`) | Confirm recent status treatment. | Nested teams now show aggregate descendant status, increasing useful information but also adding another repeated glyph in the dense row. | Preserve semantics; reconsider visual priority only. |
 | 2026-08-30 | Command | `file` and Pillow image inspection | Confirm screenshot dimensions. | Images are 1036×1214 and 660×830 RGBA PNGs. | Use as current-state references only. |
+| 2026-08-30 | Product | `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/user-decision-record.md` | Verify explicit approval and exact decisions. | User approved the current hierarchy UI, font, color, and symbol and explicitly preferred the filled User group icon. DEC-001–DEC-003 are resolved. | Reconcile canonical requirements. |
+| 2026-08-30 | Product | `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/ui-ux-spec.md` | Verify approved normative experience and repository consistency. | Approved spec links the baseline-native prototype, implementation `801b571…`, final package `9606aa4…`, five final visuals, responsive states, accessibility, and mocked boundaries. | Link as behavior-defining supplement. |
+| 2026-08-30 | Product | `requirement-impact.md`; `visual-reference-manifest.json`; `browser-validation-rv-006.json` | Reconcile affected IDs and verify evidence completeness. | Requirement Impact traces all decisions to REQ/AC IDs; five visuals were captured after approval; Product validation passed 24/24 with zero runtime errors. | Complete readiness and routing assessment. |
+| 2026-08-30 | Product | `prototype-ticket.md`; prototype repository state reported by Product Prototyper | Verify ownership, integration, and cleanup. | Product ticket completed; prototype integrated to its canonical `personal`; ticket worktree removed; review runtime stopped; Product artifacts remain durable. | Reference Product-owned paths rather than recreating artifacts. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -96,8 +100,8 @@
 - Persistence schema or invariant change: Absent; expansion remains ephemeral.
 - Security or privacy boundary change: Absent.
 - Concurrency or lifecycle change: Absent; live/history refresh semantics are preserved.
-- Deployment, migration, ownership-boundary, architectural-pattern, or structural-refactoring change: No confirmed trigger. Exact routing will be assessed only after requirements and visual decisions are approved.
-- Confirmed absent, present, or unknown: Confirmed absent for API/persistence/security/concurrency/deployment/migration; structural refactoring remains unknown until the approved visual treatment is known, but current evidence supports a bounded frontend presentation change.
+- Deployment, migration, ownership-boundary, architectural-pattern, or structural-refactoring change: Absent. The approved Product package remains within existing frontend history presentation/state surfaces.
+- Confirmed absent, present, or unknown: Confirmed absent for API/persistence/security/concurrency/deployment/migration/ownership/architectural-pattern triggers. Bounded component composition and tests do not constitute structural architecture impact.
 
 ## Runtime, Probe, Or Reproduction Findings
 
@@ -133,67 +137,75 @@
 - Required semantics or data that must be preserved: Node kinds, addresses, run IDs, depth/children, status, summaries, timestamps, selection and action targets.
 - Acceptable loss, reset, rebuild, or regeneration: Existing component-local expansion state may reset on unmount/restart.
 - Privacy, retention, compliance, downtime, or operational constraints: None added.
-- Remaining evidence gap: None for requirements visualization.
+- Remaining evidence gap: None for requirements readiness or direct-routing assessment; production implementation and validation remain downstream-owned.
 
 ## Product Prototype Decision
 
-- Prototype needed: `Yes — Requirements Visualization`
-- Decision rationale: The user explicitly says the hierarchy feels wrong but cannot identify whether the cause is color, typography, layout, or another factor. Several plausible compact tree languages and metadata-density treatments can satisfy the behavioral requirements. Visual hierarchy, information density, truncation, and responsive behavior are central to the decision, so prose alone is insufficient.
-- Requirement / behavior IDs involved: `BEH-001`–`BEH-005`; `REQ-001`–`REQ-012`; especially `DEC-001`–`DEC-003`.
-- Product decisions or uncertainties to resolve:
-  1. Branch/connector rails vs nested team surfaces vs a hybrid.
-  2. Team-node differentiation from agent/task/run nodes.
-  3. Always-visible vs reduced/responsive status and age metadata.
-- Critical journey and states: Definition group with several runs; one expanded task run; coordinator/direct agent; three sibling subteams; one deeper subteam; stable and transient team; subteam collapsed/expanded; multiple subteams expanded; selected leaf; mixed statuses; long labels; 260/320/520px; Default and Extra Large fonts; hover, keyboard focus, and disclosure.
-- Known constraints and non-goals: Preserve current grouping, collapse/selection/reveal/status/action semantics; no backend/data/global-navigation redesign; compact sidebar rather than full-page chart.
-- Alternative evidence path / next action when no prototype is used: `N/A — interactive comparison is justified.`
-- Prototype request artifact / message reference: Pending dynamic handoff after artifact persistence.
-- Established separate prototype repository/root and ticket reference, when applicable: None yet; Product Design & Prototyping owns bootstrap, repository, ticket, and visualizer artifacts.
+- Prototype needed: `Completed — approved Product Experience prototype`
+- Decision rationale: Interactive, baseline-native Product experience evidence was necessary because hierarchy language, metadata density, and team identity were material visual decisions. Focused revision rounds removed standalone/review chrome and converged on the familiar printed file-tree grammar requested by the user.
+- Requirement / behavior IDs involved: `BEH-001`–`BEH-005`; `REQ-001`–`REQ-012`; `AC-001`–`AC-008`; `DEC-001`–`DEC-003`.
+- Product decisions resolved:
+  1. Printed file-tree rails, no nested-team cards.
+  2. Responsive age/status metadata with focus/hover recovery.
+  3. Filled unboxed User group icon and semibold configured-team name; circular agents; dashed bolt transient teams.
+- Critical journey and states: Completed for default collapsed, one/deep expanded, selected leaf, configured/transient nodes, long names, 260/320/520px, Default/Extra Large, hover/focus, keyboard disclosure, ancestor reveal, quiet refresh, status semantics, and run actions.
+- Known constraints and non-goals: Preserved exactly in the approved UI/UX specification, including no backend/topology/status/persistence/global-navigation change and no production review controls/fixtures.
+- Alternative evidence path / next action when no prototype is used: `N/A — approved prototype completed.`
+- Prototype request artifact / message reference: Product ticket `REQPKG-NTHUI-001`; final handoff `Prototype Completed + Requirement Impact` received 2026-08-30.
+- Established separate prototype repository/root and ticket reference, when applicable: `/home/autobyteus/workspace/autobyteus-web-prototype`; durable ticket `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001`.
 
 ## Prototype Findings
 
-- Prototype package path (external Product Design & Prototyping repository): Pending.
-- Approved UI/UX specification path: `N/A — exploratory visualization only at this stage.`
-- Review URL: Pending.
-- Explicit user-confirmation reference: Pending.
-- Journeys and scenarios validated: Pending.
-- Final visual-reference paths: `N/A — no final prototype yet.`
-- Product decisions supported by evidence: Pending `DEC-001`–`DEC-003`.
-- Alternatives rejected or still open: All three decisions open.
-- Mocked boundaries and production gaps: Visualizer may mock history/topology data but must use the source fixture constraints above.
-- Requirements sections affected: UI/Interaction, Requirements, Acceptance Criteria, Open Decisions, Readiness.
+- Prototype package path (external Product Design & Prototyping repository): `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001`.
+- Approved UI/UX specification path: `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/ui-ux-spec.md`.
+- Review URL: Last validated loopback route is recorded in `ui-ux-spec.md`; runtime was intentionally stopped after approval and Product cleanup.
+- Explicit user-confirmation reference: `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/user-decision-record.md`, 2026-08-30.
+- Journeys and scenarios validated: Definition/run grouping; collapsed/expanded sibling/deep teams; selected leaf and ancestor reveal; 260/320/520 responsive states; Default/Extra Large; configured/transient identity; status/age; hover/focus recovery; pointer/keyboard disclosure; semantic tree; quiet refresh; run actions.
+- Final visual-reference paths: `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/visual-references/VIS-001-workspace-hierarchy-default-320.png` through `VIS-005-workspace-hierarchy-deep-tree-520.png`; manifest in the same folder.
+- Product decisions supported by evidence: `DEC-001` printed rails; `DEC-002` responsive metadata; `DEC-003` filled User group/configured-team treatment; collapsed default; orthogonal selection.
+- Alternatives rejected or still open: Nested cards/surfaces, hybrid/card treatment, crossing branches, outline team symbol, rounded/thick selection, and visible review/recommendation chrome were rejected. No material UI decision remains open.
+- Mocked boundaries and production gaps: Synthetic topology, identities, statuses, ages, summaries, conversations, quiet refresh, query/localStorage scenarios, and capture automation; no production backend/performance/architecture claim.
+- Requirements sections affected: Document status, REQ-002/003/005/008, acceptance evidence, UI/Experience, supplements, decisions, traceability, readiness, and routing assessment.
+- Consistency check: UI/UX spec, user decision, ticket, implementation/final revisions, five post-approval visuals, and browser validation agree. Product validation: typecheck/lint/build pass, 12/12 tests, 13/13 boundary checks, 24/24 focused browser checks, zero runtime errors.
 
 ## Supplemental Artifact Inventory
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/home/autobyteus/data/memory/agent_teams/software_development_department_5fe79472c2324349aa5399cf00f469e8/requirements_engineering_team_90aa23f500764922b5162216363580af/requirements_engineer_6ebad92b619a4af186fd2937d6ef41ef/context_files/ctx_41d8ee5e50a0__image.png` | User | Wide current-state evidence. | Workspace history hierarchy. | REQ-001–REQ-008; AC-001, AC-002, AC-005. | Available. | Current-state evidence, not future-state approval. |
-| `/home/autobyteus/data/memory/agent_teams/software_development_department_5fe79472c2324349aa5399cf00f469e8/requirements_engineering_team_90aa23f500764922b5162216363580af/requirements_engineer_6ebad92b619a4af186fd2937d6ef41ef/context_files/ctx_00c9cf9ea623__image.png` | User | Narrow current-state evidence. | Workspace history hierarchy. | REQ-003, REQ-006–REQ-008; AC-004, AC-005. | Available. | Current-state evidence, not future-state approval. |
+| `/home/autobyteus/data/memory/agent_teams/software_development_department_5fe79472c2324349aa5399cf00f469e8/requirements_engineering_team_90aa23f500764922b5162216363580af/requirements_engineer_6ebad92b619a4af186fd2937d6ef41ef/context_files/ctx_41d8ee5e50a0__image.png` | User | Wide current-state evidence. | Workspace history hierarchy. | REQ-001–REQ-008; AC-001, AC-002, AC-005. | Available. | Current-state evidence, not future-state norm. |
+| `/home/autobyteus/data/memory/agent_teams/software_development_department_5fe79472c2324349aa5399cf00f469e8/requirements_engineering_team_90aa23f500764922b5162216363580af/requirements_engineer_6ebad92b619a4af186fd2937d6ef41ef/context_files/ctx_00c9cf9ea623__image.png` | User | Narrow current-state evidence. | Workspace history hierarchy. | REQ-003, REQ-006–REQ-008; AC-004, AC-005. | Available. | Current-state evidence, not future-state norm. |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/ui-ux-spec.md` | Product Design & Prototyping | Approved normative UI/UX and implementation fidelity boundary. | Entire requested experience. | REQ-001–REQ-012; AC-001–AC-008. | Approved. | Normative. |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/user-decision-record.md` | Product Design & Prototyping | Explicit approval and decisions. | DEC-001–DEC-003 and additional details. | All affected IDs. | Approved evidence. | Approval authority record. |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/requirement-impact.md` | Product Design & Prototyping | Exact reconciliation map. | Canonical RER-001 impact. | REQ-001–REQ-012; AC-001–AC-008. | Integrated into RER-002. | Supporting evidence. |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/visual-references/visual-reference-manifest.json` | Product Design & Prototyping | Five post-approval visual references. | Default, expanded, selected, narrow focus, wide deep tree. | AC-001–AC-007. | PASS. | Normative except identified fixture content. |
+| `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-NTHUI-001/browser-validation-rv-006.json` | Product Design & Prototyping | Prototype browser validation. | Product experience behavior and boundaries. | AC-001–AC-008. | 24/24 PASS. | Supporting; not production sign-off. |
 
 ## Assumptions, Unknowns, And Risks
 
 | ID | Type (`Assumption`/`Unknown`/`Risk`) | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| ASM-001 | Assumption | The intended surface is Workspace history, matching source and screenshots. | Prevents accidental redesign of unrelated team views. | Validated by code/visual mapping; user may correct during visualizer review. | High-confidence. |
-| UNK-001 | Unknown | Preferred compact tree visual language. | Determines normative future-state presentation. | Product Prototyper visualizer + user decision. | Open. |
-| UNK-002 | Unknown | Preferred metadata density at narrow width. | Could materially change scanability and information visibility. | Product Prototyper visualizer + user decision. | Open. |
-| UNK-003 | Unknown | Preferred team-vs-agent node emphasis. | Badge-only treatment is insufficient, but a heavy card may waste space. | Product Prototyper visualizer + user decision. | Open. |
-| RISK-001 | Risk | Solving only font color may leave ancestry ambiguous. | Color does not communicate parent-child relationships and is inaccessible as the sole cue. | Enforce REQ-002/REQ-011 and compare structural alternatives. | Mitigated in draft. |
-| RISK-002 | Risk | Strong connector/group styling may consume too much width at 260px/125%. | A visually clear wide prototype can fail in supported narrow settings. | Visualizer and final validation matrix. | Open. |
-| RISK-003 | Risk | Changing row composition can regress disclosure/selection/status/transient behavior. | These are established workflows with existing tests. | Preservation requirements and focused test coverage. | Controlled. |
-| RISK-004 | Risk | Visual semantics and accessibility semantics may diverge. | A tree that looks clear may remain ambiguous to screen readers or keyboard users. | AC-007 plus accessibility-tree inspection. | Open. |
+| ASM-001 | Assumption | The intended surface is Workspace history, matching source and screenshots. | Prevents accidental redesign of unrelated team views. | Confirmed by baseline-native approved prototype. | Resolved. |
+| UNK-001 | Unknown | Preferred compact tree visual language. | Determines normative presentation. | User approved printed file-tree rails. | Resolved. |
+| UNK-002 | Unknown | Preferred metadata density at narrow width. | Changes scanability and information visibility. | User approved responsive age/status recovery. | Resolved. |
+| UNK-003 | Unknown | Preferred team-vs-agent node emphasis. | Governs role recognition. | User approved filled User group icon + semibold team names, circular agents, dashed bolt transient teams. | Resolved. |
+| RISK-001 | Risk | Color-only styling could leave ancestry ambiguous. | Fails requested hierarchy and accessibility. | Approved continuous rails plus role symbols/typography. | Mitigated. |
+| RISK-002 | Risk | Hierarchy styling could consume too much width at 260px/125%. | Supported narrow state could fail. | VIS-004 and Product validation show no overflow with responsive metadata. | Mitigated in approved experience; production revalidation required. |
+| RISK-003 | Risk | Row composition could regress disclosure/selection/status/transient behavior. | Established workflows must remain stable. | Preservation requirements and existing/product test matrix. | Controlled; downstream validation required. |
+| RISK-004 | Risk | Visual and accessibility semantics may diverge. | Screen-reader/keyboard hierarchy could remain ambiguous. | Approved tree/treeitem semantics and Product checks; production accessibility verification required. | Controlled. |
 
 ## Requirement Implications
 
-- The root cause is not missing topology: the model already contains node kind, depth, children, and addresses, and nested subteams already collapse/expand correctly.
-- The current presentation compresses four roles—definition group, task/run, nested team, and agent—into a nearly uniform row language. A 12px margin and `Team` badge are insufficient when multiple subteams expand or labels truncate.
-- Repeated status/avatar/age glyphs create horizontal columns that can visually outweigh the tree structure. Status semantics should remain, but the visualizer must determine their priority and responsive placement.
-- Supported left-panel and font settings make narrow density a first-class requirement, not an edge case.
-- A requirements visualizer is necessary before approval because the user has identified the outcome but not the preferred visual grammar.
+- The approved experience resolves the original ambiguity without changing topology: the production model already supplies node kind, depth, child relationships, addresses, selection IDs, status, and configured/transient identity.
+- `DEC-001` requires printed file-tree rails with exact right-only non-crossing elbows and correct last-sibling termination; cards and grouped team surfaces are not permitted.
+- `DEC-002` requires responsive age/status yielding with pointer/keyboard recovery at narrow widths and continuous age at 520px.
+- `DEC-003` requires the filled unboxed User group icon and semibold configured-team names, circular agent avatars, and separate transient bolt/dashed treatment.
+- Nested teams remain collapsed by default; deep selection reveals ancestors; the approved orthogonal selection treatment must not erase rails.
+- The approved package preserves all backend/topology/status/persistence/lifecycle boundaries and all existing history interactions.
+- Current evidence supports a Medium, Low-risk, no-structural-impact direct implementation route.
 
 ## Notes For Downstream Architecture Design Or Direct Implementation
-
-- Use the approved visual/product decision, not an invented styling choice.
-- Preserve existing execution-tree identities, configured/transient classification, component-local expansion, ancestor reveal, status aggregation, selection targets, and live/history refresh outcomes.
-- Current evidence indicates no backend/API/persistence change is needed. Reassess routing after the visual decisions and user approval are integrated.
-- Verify keyboard and accessibility-tree semantics; the current visual row/declaration pattern should not be treated as a normative target structure.
+- Implement against the approved Product-owned `ui-ux-spec.md` and `VIS-001`–`VIS-005`; do not recreate or reinterpret the prototype's review/query/fixture machinery.
+- Preserve execution-tree identities, configured/transient classification, component-local expansion, ancestor reveal, status aggregation, selection targets, quiet refresh, run actions, and live/history hydration.
+- Existing frontend facts support the experience without API, persistence, security, concurrency, lifecycle, deployment, ownership, migration, or architectural-pattern changes.
+- Verify connector geometry, last-sibling behavior, responsive metadata/focus recovery, filled icon fidelity, orthogonal selection, semantic tree behavior, and configured/transient live/history scenarios in production.
+- Direct-route re-entry: return `Design Impact` if implementation uncovers a structural trigger; return `Requirement Gap` for behavior beyond the approved package.
