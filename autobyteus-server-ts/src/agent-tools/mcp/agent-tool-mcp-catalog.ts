@@ -12,6 +12,7 @@ import {
   AgentToolsMcpSchemaMapper,
   getAgentToolsMcpSchemaMapper,
   type AgentToolsMcpInputSchema,
+  type AgentToolsMcpOutputSchema,
 } from "./agent-tools-mcp-schema-mapper.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "./providers/default-agent-tool-mcp-adapter-providers.js";
 import {
@@ -36,6 +37,7 @@ export type AgentToolsMcpToolDefinition = {
   name: string;
   description: string;
   inputSchema: AgentToolsMcpInputSchema;
+  outputSchema?: AgentToolsMcpOutputSchema;
 };
 
 export type AgentToolMcpSessionToolExposure = {
@@ -187,7 +189,10 @@ export class AgentToolMcpCatalog {
     };
   }
 
-  listMcpToolsForSession(session: AgentToolMcpSession): AgentToolsMcpToolDefinition[] {
+  listMcpToolsForSession(
+    session: AgentToolMcpSession,
+    protocolVersion: string,
+  ): AgentToolsMcpToolDefinition[] {
     return session.enabledTools
       .map((toolName) => {
         const route = session.toolRoutes[toolName];
@@ -195,7 +200,7 @@ export class AgentToolMcpCatalog {
           return null;
         }
         if (route.kind === AGENT_TOOL_MCP_STATIC_ADAPTER_ROUTE_KIND) {
-          return this.buildStaticMcpToolDefinition(route.toolName);
+          return this.buildStaticMcpToolDefinition(route.toolName, protocolVersion);
         }
         if (route.kind === AGENT_TOOL_MCP_APPLICATION_TOOL_ROUTE_KIND) {
           return {
@@ -318,12 +323,15 @@ export class AgentToolMcpCatalog {
     };
   }
 
-  private buildStaticMcpToolDefinition(toolName: string): AgentToolsMcpToolDefinition {
+  private buildStaticMcpToolDefinition(
+    toolName: string,
+    protocolVersion: string,
+  ): AgentToolsMcpToolDefinition {
     const adapter = this.adaptersByName.get(toolName);
     if (!adapter) {
       throw new Error(`Unsupported Agent Tools MCP definition '${toolName}'.`);
     }
-    return this.toMcpToolDefinition(adapter.definition);
+    return this.toMcpToolDefinition(adapter.definition, protocolVersion);
   }
 
   private buildConfiguredMcpToolDefinition(
@@ -353,11 +361,15 @@ export class AgentToolMcpCatalog {
 
   private toMcpToolDefinition(
     definition: AgentToolMcpSupportedToolDefinition,
+    protocolVersion?: string,
   ): AgentToolsMcpToolDefinition {
     return {
       name: definition.name,
       description: definition.description,
       inputSchema: this.schemaMapper.toMcpInputSchema(definition.inputSchema),
+      ...(definition.outputSchema && protocolVersionSupportsOutputSchema(protocolVersion)
+        ? { outputSchema: this.schemaMapper.toMcpOutputSchema(definition.outputSchema) }
+        : {}),
     };
   }
 }
@@ -376,3 +388,7 @@ const normalizeToolNames = (toolNames: Iterable<string>): string[] => [
       .filter(Boolean),
   ),
 ];
+
+const protocolVersionSupportsOutputSchema = (
+  protocolVersion: string | undefined,
+): boolean => protocolVersion === "2025-06-18" || protocolVersion === "2025-11-25";

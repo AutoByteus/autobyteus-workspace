@@ -12,8 +12,12 @@ import {
   type AgentToolMcpAdapterProvider,
   type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
-import { toAgentCommunicationToolResult } from "../../../agent-communication/services/agent-communication-tool-result.js";
-import { toAgentCommunicationMcpToolResult } from "../agent-communication-mcp-result-mapper.js";
+import {
+  SendMessageToResultSchema,
+  serializeSendMessageToResult,
+  toSendMessageToResult,
+} from "../../../agent-communication/services/send-message-to-tool-result-contract.js";
+import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
 
 export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(
@@ -27,17 +31,23 @@ export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvi
           name: SEND_MESSAGE_TO_TOOL_NAME,
           description: SEND_MESSAGE_TO_TOOL_DESCRIPTION,
           inputSchema: buildSendMessageToParameterSchema(),
+          outputSchema: SendMessageToResultSchema,
         },
         configuredMcpCollisionPolicy: "protect_static_adapter",
         isAvailable: () => true,
-        execute: async ({ session, rawArguments }) =>
-          toAgentToolMcpToolResult(toAgentCommunicationMcpToolResult(toAgentCommunicationToolResult(
+        execute: async ({ session, rawArguments }) => {
+          const result = toSendMessageToResult(
             await this.sendMessageDispatcher.dispatch({
               toolName: SEND_MESSAGE_TO_TOOL_NAME,
               rawArguments,
               sender: session.sender,
             }),
-          ))),
+          );
+          return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(
+            serializeSendMessageToResult(result),
+            { isError: !result.accepted },
+          ));
+        },
       },
     ];
   }

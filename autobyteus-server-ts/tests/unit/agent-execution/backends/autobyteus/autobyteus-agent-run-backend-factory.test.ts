@@ -575,7 +575,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         message_type: "direct_message",
         reference_files: ["/tmp/server-reference.md"],
       }),
-    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","result":null}');
+    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","target_agent_run_id":null}');
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         rootTeamRunId: "team-1",

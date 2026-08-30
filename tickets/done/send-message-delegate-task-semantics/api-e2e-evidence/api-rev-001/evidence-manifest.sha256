@@ -1,0 +1,10 @@
+d59efba255b1b3ab7d23d7c5e09236e35a73d3bb90a347b54cd494cb99708e32  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/cleanup/final-cleanup-and-diff-check.log
+c8fd7b3588b3302e8fb513e9e54cfddd828e2cda8b71e38a63b960ddeb798bc5  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/live/codex-exact-routing.log
+dccb65d12dfd4ca339c7c3503608fbd8b48aa850bc71c00a3104bbd03d06b92f  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/live/configured-three-provider-intent-third-rerun.log
+b6b2a9ba98d976fd69e20ad9581a5ffcfe6ce1e57ebd112fad739fdc113c7da6  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/live/team-delegation-and-logical-message-final.log
+682269b341ef53af7e256b8b9d5466da647404358f6a310e586cbc4df27660dc  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/repository/build-full.log
+839779d908062fd8742147add407193c6eb9e0e0d145821107f09d328cd22d16  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/repository/changed-e2e-collection-final.log
+d5f6a977ab33c756cd9f02dec2de8e3920deb1ed489c61673a0dc14d6788b27e  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/repository/focused-contract-and-lifecycle-final.log
+a82d460c6691a9d5f9eca156a526530d1bd722d5e13ec0f8f8d9f148bf8cade7  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/repository/prepare-shared.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/repository/typecheck.log
+763aed558d40a658c5d92969b7eb513241c09ae66ef0069f2053a4fc0fa5c4f0  tickets/in-progress/send-message-delegate-task-semantics/api-e2e-evidence/api-rev-001/stabilization-notes.md

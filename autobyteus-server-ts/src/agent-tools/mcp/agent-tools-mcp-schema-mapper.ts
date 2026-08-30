@@ -1,7 +1,12 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import type { AgentToolMcpInputSchemaSource } from "./agent-tool-mcp-definition-provider.js";
+import { z } from "zod";
+import type {
+  AgentToolMcpInputSchemaSource,
+  AgentToolMcpOutputSchemaSource,
+} from "./agent-tool-mcp-definition-provider.js";
 
 export type AgentToolsMcpInputSchema = Record<string, unknown>;
+export type AgentToolsMcpOutputSchema = Record<string, unknown> & { type: "object" };
 
 export class AgentToolsMcpSchemaMapper {
   toMcpInputSchema(schemaSource: AgentToolMcpInputSchemaSource): AgentToolsMcpInputSchema {
@@ -9,6 +14,14 @@ export class AgentToolsMcpSchemaMapper {
       ? schemaSource.toJsonSchema()
       : clonePlainSchema(schemaSource);
     return normalizeObjectInputSchema(schema);
+  }
+
+  toMcpOutputSchema(schemaSource: AgentToolMcpOutputSchemaSource): AgentToolsMcpOutputSchema {
+    const schema = z.toJSONSchema(schemaSource) as Record<string, unknown>;
+    if (schema.type !== undefined && schema.type !== "object") {
+      throw new Error("Agent Tools MCP output schemas must have an object root.");
+    }
+    return { ...schema, type: "object" };
   }
 }
 

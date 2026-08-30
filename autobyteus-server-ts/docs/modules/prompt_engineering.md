@@ -162,9 +162,13 @@ and then renders two sibling sections from the validated current member context:
 `AgentTeam Addressing` followed by `AgentTeam Collaboration`. They appear before
 native `Working Environment`. The first teaches one canonical absolute non-root
 address grammar and the member's exact address. The second explains universal
-same-root `send_message_to` and `delegate_task`, ordered `get_handoff_rules`,
-task result/review tools, and delivery confirmation. The renderer contains no
-flat recipient or delegation-target roster.
+same-root collaboration through an intent-first distinction: `send_message_to`
+contacts an already existing mounted execution, while `delegate_task` spawns one
+fresh independently tracked task execution and delivers its complete assignment.
+It also explains exact returned ingress identities, genuine later
+clarification, duplicate-dispatch prohibition, formal task result/review tools,
+ordered `get_handoff_rules`, and delivery confirmation. The renderer contains
+no flat recipient or delegation-target roster.
 
 For example, a Team-bound Agent can receive this shape:
 
@@ -179,9 +183,14 @@ Your Agent address is:
 
 ## AgentTeam Collaboration
 
-Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam.
+Choose the collaboration mode based on your primary intent.
+`send_message_to` communicates with an already existing execution.
+`delegate_task` spawns a fresh task execution that independently owns a unit of work.
+These operations are not interchangeable. Never use both to deliver the same work.
 
-Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address.
+After successful delegation, genuinely new clarification may be sent to the exact
+active task ingress using the returned `target_agent_run_id`. Formal task output
+and review use `submit_task_result` and `review_task_result`.
 ```
 
 The runtime renderer owns the complete exact wording and is shared by
@@ -250,17 +259,22 @@ Concrete team tool calls still follow their out-of-band schemas:
 ```text
 get_handoff_rules({})
 
-send_message_to({ recipient_address: "./release_manager", content: "Checks passed." })
+send_message_to({ recipient_address: "/release_manager", content: "Checks passed." })
 
 delegate_task({
-  recipient_address: "./release_manager",
+  recipient_address: "/release_manager",
   description: "Verify the release notes against the tested change and report mismatches.",
   reference_files: ["/work/releases/release-notes.md"]
 })
 ```
 
 `send_message_to` accepts exactly one of `recipient_address` or an exact currently
-active `target_agent_run_id`. Delegation references are absolute local paths.
+active `target_agent_run_id`. `recipient_address` is a canonical absolute
+non-root logical address; relative addresses and `/` are invalid. Accepted
+messaging returns the exact existing receiver as flat `target_agent_run_id`,
+while rejection returns null identity. Successful delegation returns `task_id`,
+`status:"active"`, and the fresh task ingress as `target_agent_run_id`;
+`not_started` omits that identity. Delegation references are absolute local paths.
 The runtime exposes native AutoByteus schemas locally and routes Codex/Claude
 through the session-scoped `autobyteus_agent_tools` MCP descriptor. Provider
 wire names are normalized back to canonical application tool names.

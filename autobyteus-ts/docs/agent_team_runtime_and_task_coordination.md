@@ -76,18 +76,20 @@ task-team child-run lifecycle.
 A coordinator/delegator creates one bounded ready-to-run task per tool call with
 explicit accountable target fields:
 
-- `target`: `{ kind: "member" | "team", name }`; `member` targets are physical
-  current-team agent members, while `team` targets are visible current-team
-  `agent_team` / subteam members that own the delegated work;
+- `recipient_address`: one canonical absolute non-root logical address beginning
+  with `/` for the mounted Agent or AgentTeam definition from which a fresh task
+  execution is spawned;
 - `description`: the complete work-packet body, including objective, context,
   scope, constraints, done conditions, and expected output guidance;
 - optional `reference_files`: file or artifact paths the task execution target
   should inspect.
 
-The old direct `member_name` selector is not the current model-facing surface.
-Communication recipients are not delegation targets: a subteam representative
-can receive ordinary `send_message_to` traffic while the visible subteam itself
-is the `delegate_task` team target.
+The old `target` object and direct `member_name` selector are not the current
+model-facing surface. The same logical Agent or AgentTeam address can be used by
+either collaboration operation, but the operation defines the effect:
+`send_message_to` contacts the already mounted Agent execution or mounted Team
+coordinator, while `delegate_task` spawns a fresh task Agent or fresh task Team
+and delivers the complete packet to that new execution.
 
 The service creates one internal ledger record, assigns a stable id such as
 `task_0001`, and activates one execution instance for the accepted task. Member
@@ -98,9 +100,19 @@ independent tasks are represented by multiple `delegate_task` calls. For
 sequential follow-up work, the coordinator reviews task A's submitted result and
 then calls `delegate_task` again for task B; a later team-target task receives a
 fresh task-team run identity rather than reusing the completed run.
-The public `delegate_task` result returns only the task id and
-`status: "active"` after successful activation; activation failure returns the
-task id, `status: "not_started"`, and a concise failure `message`.
+The public `delegate_task` result returns the task id, `status: "active"`, and
+the fresh task Agent or task Team coordinator ingress as
+`target_agent_run_id`. Activation failure returns the task id,
+`status: "not_started"`, and a concise failure `message`, with no target identity
+because no contactable task execution exists. The original logical
+`recipient_address` remains the mounted definition and is not an alias for the
+fresh task execution.
+
+The delegation call is already the task-creation and assignment step. Callers
+must not repeat its work packet through `send_message_to`. Genuinely new later
+clarification may be sent to the exact active task ingress using the returned
+`target_agent_run_id`; that message does not create another task or change task
+lifecycle state.
 
 ### Result submission and review
 
@@ -140,7 +152,10 @@ internal lifecycle/event details.
 
 `send_message_to` remains available for ordinary teammate communication and
 handoffs. It is not the task result, revision, acceptance, or finalization
-protocol.
+protocol. Accepted logical messaging returns the exact existing Agent or mounted
+AgentTeam coordinator that accepted the message as flat
+`target_agent_run_id`; rejection returns `target_agent_run_id:null`. The removed
+generic `result:null` field is not retained.
 
 ## Event And Settlement Semantics
 
@@ -183,12 +198,18 @@ delegation to the same logical team remains topology-based.
 
 - Use `send_message_to` for free-form conversation and handoff messages only; do
   not use it for task result submission, revision requests, acceptance, or
-  finalization.
+  finalization. It communicates with an existing execution and does not spawn or
+  track a task.
 - Use `delegate_task`, `submit_task_result`, and `review_task_result` for
   bounded server-managed work with ledger state, result/review events, system
   notifications, and safe task-agent or task-team settlement on supported
   server team backends.
+- Do not deliver the same assignment through both `delegate_task` and
+  `send_message_to`. After successful delegation, use the returned exact active
+  `target_agent_run_id` only for genuinely additional clarification.
 - Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
   `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
-- If a future MCP transport is added, it should call the existing server-owned
-  task-delegation service rather than duplicating task state or behavior.
+- AutoByteus Agent Tools MCP adapters call the existing server-owned
+  communication/task-delegation services, advertise machine-readable output
+  schemas on supported post-2025-03 revisions, and return MCP text JSON equal to
+  structured content. Do not duplicate task state or behavior in a transport.

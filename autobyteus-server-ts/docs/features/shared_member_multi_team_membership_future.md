@@ -9,8 +9,8 @@ for example `/build_squad/review_lead`. It does not duplicate a child Team
 coordinator into the parent as a communication representative. Instead, all
 Team-bound Agents use the root topology and explicit logical addresses:
 
-- `/...` starts at the collaboration root;
-- `./...` starts at the caller's immediate Team;
+- one canonical absolute non-root `/...` address starts at the collaboration
+  root; relative addresses and `/` are invalid;
 - an Agent address targets that Agent;
 - a Team address targets that Team through its exact direct Agent coordinator
   ingress; and

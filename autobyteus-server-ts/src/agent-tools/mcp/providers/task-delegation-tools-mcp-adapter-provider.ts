@@ -7,14 +7,16 @@ import {
   toTaskDelegationJsonString,
   toTaskDelegationToolErrorPayload,
 } from "../../task-delegation/task-delegation-tool-serialization.js";
-import type {
-  AgentToolMcpAdapterProvider,
-  AgentToolMcpToolAdapter,
+import {
+  toAgentToolMcpToolResult,
+  type AgentToolMcpAdapterProvider,
+  type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
 import {
   createAgentToolsMcpErrorResult,
   createAgentToolsMcpSuccessResult,
 } from "../agent-tools-mcp-operation-result.js";
+import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
 
 const asRawArguments = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -32,6 +34,7 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
         name: entry.name,
         description: entry.description,
         inputSchema: entry.parameterSchema,
+        ...(entry.resultSchema ? { outputSchema: entry.resultSchema } : {}),
       },
       configuredMcpCollisionPolicy: "protect_static_adapter",
       isAvailable: ({ sender }) => Boolean(sender?.memberTeamContext),
@@ -51,7 +54,10 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
             capabilities.taskDelegation,
             entry.parseInput(asRawArguments(rawArguments)),
           );
-          return createAgentToolsMcpSuccessResult(toTaskDelegationJsonString(result));
+          const serializedResult = toTaskDelegationJsonString(result);
+          return entry.resultSchema
+            ? toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(serializedResult))
+            : createAgentToolsMcpSuccessResult(serializedResult);
         } catch (error) {
           return createAgentToolsMcpErrorResult(
             toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(error)),

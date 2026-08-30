@@ -222,6 +222,7 @@ describe("Agent Tools MCP tokenless route integration", () => {
         tools: [expect.objectContaining({ name: SEND_MESSAGE_TO_TOOL_NAME })],
       },
     });
+    expect(tools.json().result.tools[0]).not.toHaveProperty("outputSchema");
     await expect(post(enabledSessionId, {
       jsonrpc: "2.0",
       id: 2,
@@ -269,6 +270,24 @@ describe("Agent Tools MCP tokenless route integration", () => {
       result: { content: [{ type: "text", text: "Delivered via MCP." }] },
     });
   });
+
+  it.each(["2025-06-18", "2025-11-25"])(
+    "advertises send_message_to outputSchema for negotiated MCP %s",
+    async (protocolVersion) => {
+      const tools = await post(enabledSessionId, {
+        jsonrpc: "2.0",
+        id: "tools-with-output",
+        method: "tools/list",
+        params: {},
+      }, { "mcp-protocol-version": protocolVersion });
+
+      expect(tools.statusCode).toBe(200);
+      const [sendTool] = tools.json().result.tools;
+      expect(sendTool.name).toBe(SEND_MESSAGE_TO_TOOL_NAME);
+      expect(sendTool.outputSchema?.type).toBe("object");
+      expect(sendTool.outputSchema?.oneOf).toEqual(expect.any(Array));
+    },
+  );
 
   it("is consumable by the official SDK over the real loopback listener without headers", async () => {
     await app.listen({ host: "127.0.0.1", port: 0 });

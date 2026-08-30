@@ -140,7 +140,9 @@ export class GlobalAgentRunMessageRouter {
         messageType,
         referenceFiles,
       });
-      return result;
+      return result.accepted
+        ? { ...result, agentRunId: targetAgentRunId }
+        : result;
     }
 
     const messageId = buildDirectAgentRunMessageId();
@@ -191,6 +193,7 @@ export class GlobalAgentRunMessageRouter {
     return {
       ...postResult,
       accepted: true,
+      agentRunId: targetAgentRunId,
       code: publicationError
         ? "DELIVERED_EVENT_PUBLICATION_FAILED"
         : postResult.code ?? "DELIVERED",

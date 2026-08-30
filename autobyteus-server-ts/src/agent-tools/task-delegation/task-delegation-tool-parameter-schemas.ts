@@ -9,24 +9,29 @@ import {
   SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
+import {
+  DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
+  DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
+  DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
+} from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 export const buildDelegateTaskParameterSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
     name: "recipient_address",
     type: ParameterType.STRING,
-    description: "Exact canonical absolute non-root address beginning with '/' for any mounted Agent or AgentTeam in the same rooted AgentTeam. Relative, bare, traversal, backslash, and root-only forms are invalid.",
+    description: DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
     required: true,
   }),
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "Complete task details: objective, context, scope, constraints, done conditions, expected output, and reference guidance for the task itself.",
+    description: DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
     required: true,
   }),
   new ParameterDefinition({
     name: "reference_files",
     type: ParameterType.ARRAY,
-    description: "Optional absolute local file paths the task execution target should inspect. Use full filesystem paths, for example paths returned by file-writing tools or `realpath`; relative paths and URLs are rejected.",
+    description: DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
     required: false,
     arrayItemSchema: { type: "string" },
   }),
