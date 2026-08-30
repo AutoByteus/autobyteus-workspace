@@ -1,0 +1,45 @@
+Delivery post-refresh verification — DR-002
+Date: 2026-08-29 UTC
+HEAD=c61d4928c74e143cdd00bc4d11f2af2959ed5d6c
+origin/personal=e664db7cfd725bc6fa1633b71c53954a3fe66e44
+Remote base advancement after API-REV-002: none; origin/personal is an ancestor of HEAD.
+
+$ corepack pnpm test:nuxt components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run
+
+> autobyteus@1.4.62 test:nuxt /home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/autobyteus-web
+
+stderr | components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts (32 tests) 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (8 tests) 116ms
+
+ Test Files  2 passed (2)
+      Tests  40 passed (40)
+   Start at  18:20:29
+   Duration  9.11s (transform 4.65s, setup 14.94s, collect 250ms, tests 121ms, environment 1.26s, prepare 642ms)
+
+focused_test_exit=0
+
+$ git diff --check
+diff_check_exit=0

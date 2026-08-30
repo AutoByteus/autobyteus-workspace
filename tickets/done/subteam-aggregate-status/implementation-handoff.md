@@ -3,9 +3,9 @@
 ## Upstream Artifact Package
 
 - Upstream route: `Direct Requirements-to-Implementation`
-- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/requirements-doc.md`
-- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/investigation-notes.md`
-- Requirements revision record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/requirements-revision-record.md`
+- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-doc.md`
+- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/investigation-notes.md`
+- Requirements revision record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-revision-record.md`
 - Requirements routing assessment: `requirements-doc.md` section `Architecture Design Routing Assessment`
 - Design spec: `N/A — not applicable`
 - Supplemental task artifacts:
@@ -16,9 +16,9 @@
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
 - Triggering rework report, revision record, or evidence:
-  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-revision-record.md` (`DR-001`)
-  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-release-deployment-report.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-evidence/dr-001-integration-refresh.log`
+  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-revision-record.md` (`DR-001`)
+  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-release-deployment-report.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-evidence/dr-001-integration-refresh.log`
 
 ## Current Implementation Summary
 
@@ -27,7 +27,7 @@ The stable nested-Team row derives one five-state aggregate from current descend
 `IR-002` integrates `origin/personal` at `e664db7cfd725bc6fa1633b71c53954a3fe66e44` into the API/E2E-passed candidate and resolves the sole merge conflict in `autobyteus-web/package.json`. The resolution retains current-base package version `1.4.62`, package manager metadata, and `test:e2e:existing-run-model-config`, while also retaining `test:e2e:nested-team-aggregate-status`. Feature production code, focused tests, README documentation, browser fixture/probe, and aggregate-specific locale entries are unchanged from validated candidate `ab6a1209c2f7864a2fff139538fc466ad2b78312`; unrelated current-base locale additions are preserved. No effective feature behavior or contract boundary changed.
 
 - Implementation cycle: `Rework — delivery integration recovery`
-- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/implementation-revision-record.md`
+- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related architecture design revision IDs: `N/A`
 - Related architecture-review revision IDs: `N/A`
@@ -40,7 +40,7 @@ The stable nested-Team row derives one five-state aggregate from current descend
 
 - Task size (`Small`/`Medium`/`Large`): `Small`
 - Architecture risk (`Low`/`High`): `Low`
-- Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/requirements-doc.md` section `Architecture Design Routing Assessment`
+- Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-doc.md` section `Architecture Design Routing Assessment`
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: The cumulative feature remains inside the existing workspace-history presentation boundary: one local derivation, one small presentational component, two locale catalogs, and focused tests. `IR-002` adds no product source delta beyond merging the current base and resolving package script registration. It consumes current `TeamTreeNode.executionRows` and existing `AgentStatus` values. No API/event, network request, poller, persistence/schema, runtime lifecycle, readiness/interrupt authority, security, concurrency, deployment, migration, subsystem ownership, new architectural pattern, or structural refactor was introduced.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E`

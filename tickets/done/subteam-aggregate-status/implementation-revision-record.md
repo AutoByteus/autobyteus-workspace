@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Recursive nested-Team aggregate status baseline
 
-- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/requirements-doc.md`; initial implementation after approved `RER-002`.
+- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-doc.md`; initial implementation after approved `RER-002`.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-002 — Latest-base package conflict recovery
 
-- Triggering role, report path, and round: Delivery Engineer; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-revision-record.md` and `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/delivery-release-deployment-report.md`; `DR-001`, recovery round 1.
+- Triggering role, report path, and round: Delivery Engineer; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-revision-record.md` and `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-release-deployment-report.md`; `DR-001`, recovery round 1.
 - Triggering finding IDs: `N/A — DR-001 records the latest-base packaging conflict as a delivery blocker without a separate finding ID`.
 - Classification: `Local Fix`
 - Prior authoritative result: Candidate `ab6a1209c2f7864a2fff139538fc466ad2b78312` passed API/E2E as `API-REV-001` at 98% confidence, then Delivery blocked because merging current `origin/personal` conflicted in `autobyteus-web/package.json`.

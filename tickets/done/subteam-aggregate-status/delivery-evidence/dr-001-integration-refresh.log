@@ -1,0 +1,17 @@
+Delivery integration refresh attempt — DR-001
+Date: 2026-08-29 UTC
+Ticket branch: requirements/subteam-aggregate-status
+Validated candidate before refresh: ab6a1209c2f7864a2fff139538fc466ad2b78312
+Bootstrap base: 9d0fd7c570d58da1af2c7a40279327c8a20a8093
+Command: git fetch --prune origin
+Result: PASS
+Latest remote target/base checked: origin/personal e664db7cfd725bc6fa1633b71c53954a3fe66e44
+Remote base advancement from bootstrap: 284 commits
+Command: git merge --no-edit origin/personal
+Result: BLOCKED
+Conflict: autobyteus-web/package.json
+Conflict detail: the validated ticket branch adds test:e2e:nested-team-aggregate-status at the same scripts-map position where origin/personal adds test:e2e:existing-run-model-config; origin/personal also carries the current version 1.4.62 versus candidate-base 1.4.58.
+Policy action: merge was aborted; no resolution was selected by Delivery because the delivery workflow requires code/packaging conflicts to be rerouted rather than silently resolved.
+Command: git merge --abort
+Expected restoration: clean validated candidate at ab6a1209c2f7864a2fff139538fc466ad2b78312 before delivery-owned blocker artifacts.
+Post-integration executable check: NOT RUN — no integrated state existed.
