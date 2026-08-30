@@ -13,6 +13,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-005 | User preferred the earlier prompt structure and requested explicit `forked`/`spawned` instance terminology analysis | Ready for Approval | Ready for Approval | REQ-002, REQ-013; AC-013 | `Spawned fresh task instance` selected as the accurate mental model; unqualified `forked` wording rejected because no live-state clone is established |
 | RER-006 | User requested verification of message/delegation returned instance identities | Ready for Approval | Ready for Approval — Scope Decision Needed | BEH-008; DEC-002 | Confirmed current public asymmetry: message result discards resolved existing AgentRun ID while delegation exposes fresh task ingress ID; optional output-contract expansion awaits user decision |
 | RER-007 | User selected the existing message `result` slot for exact receiving AgentRun identity | Ready for Approval — Scope Decision Needed | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | DEC-002 Option A approved: successful message output returns the exact existing receiver while delegation continues returning the spawned task ingress |
+| RER-008 | User requested an explicit AgentTeam delegation/packet-ingress explanation | Ready for Approval | Ready for Approval | REQ-015; AC-015 | Four outcomes made mandatory: existing Agent, existing Team coordinator, fresh task Agent, and fresh task Team coordinator |
 
 ## Revision Entries
 
@@ -120,3 +121,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: The approved public output-contract change is a structural-impact trigger, so the eventual approved package must route through Architecture Designer rather than direct implementation.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
 - Next action or recipient: Confirm the exact semantic distinction and obtain the remaining decision/approval before completing the architecture-routing assessment.
+
+### RER-008 — Agent And AgentTeam Four-Case Clarity
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user asked whether the prompt should state more clearly that delegating to an AgentTeam spawns a fresh task Team instance while its coordinator Agent receives the task.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-007.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-015; AC-015; SCN-001, SCN-002, and SCN-006.
+- Why this baseline or revision was recorded: The same logical `recipient_address` is accepted by both operations, so the prompt must make the operation-specific Agent and AgentTeam outcomes directly comparable rather than leaving Team coordinator ingress implicit.
+- Canonical artifact sections changed: Requirements, acceptance criteria, traceability, investigation intake/source log, and requirement implications.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: VIS-R04 AgentTeam parity remains supporting evidence; no visualizer revision is required.
+- User approval impact: The four-case clarity direction is captured; DEC-001 and explicit complete-package approval remain pending.
+- Downstream architecture impact: Exact prompt format remains downstream-owned, but it must preserve all four observable outcomes and the distinction between spawned Team ownership and coordinator packet ingress.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
+- Next action or recipient: Present the refined prompt text and obtain remaining user decision/approval.
