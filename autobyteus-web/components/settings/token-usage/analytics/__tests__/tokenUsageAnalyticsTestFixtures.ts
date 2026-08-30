@@ -16,7 +16,7 @@ export const aggregate = (overrides: Partial<TokenUsageCostSummaryAggregate> = {
   cacheReadInputTokenRate: null,
   standardInputTokenRate: null,
   cacheCreationInputTokenRate: null,
-  cacheState: 'known',
+  cacheState: 'unknown',
   estimatedApiInputCost: null,
   estimatedApiStandardInputCost: null,
   estimatedApiCacheReadInputCost: null,

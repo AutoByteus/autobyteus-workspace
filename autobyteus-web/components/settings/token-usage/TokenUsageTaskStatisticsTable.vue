@@ -1,7 +1,7 @@
 <template>
-  <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-    <table class="min-w-full divide-y divide-gray-200 text-sm">
-      <thead class="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <table class="min-w-[1220px] w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
         <tr>
           <th class="px-3 py-3" :aria-sort="sortAriaSort('task')">
             <button
@@ -122,14 +122,14 @@
           </th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-100 bg-white">
+      <tbody class="divide-y divide-slate-100 bg-white">
         <template v-for="entry in visibleRows" :key="entry.row.rowId">
-          <tr :class="entry.depth > 0 ? 'align-top bg-gray-50/60 hover:bg-gray-100/60' : 'align-top hover:bg-gray-50'">
+          <tr :class="entry.depth > 0 ? 'align-top bg-slate-50/60 hover:bg-slate-100/60' : 'align-top hover:bg-slate-50'">
             <td class="px-3 py-3 min-w-[20rem]" :style="{ paddingLeft: `${0.75 + entry.depth * 1.25}rem` }">
               <div class="flex items-start gap-2">
                 <button
                   v-if="entry.row.children.length"
-                  class="mt-0.5 rounded text-gray-500 hover:text-gray-900"
+                  class="mt-0.5 rounded text-slate-500 hover:text-slate-900"
                   type="button"
                   :aria-label="expandedRows.has(entry.row.rowId) ? $t('settings.components.settings.TokenUsageStatistics.collapseTeam') : $t('settings.components.settings.TokenUsageStatistics.expandTeam')"
                   @click="toggleExpanded(entry.row.rowId)"
@@ -138,9 +138,9 @@
                 </button>
                 <span v-else class="w-3" />
                 <div>
-                  <div class="font-medium text-gray-900">{{ entry.depth > 0 ? '↳ ' : '' }}{{ entry.row.displayName }}</div>
-                  <div v-if="entry.row.summary" class="text-xs text-gray-600">“{{ entry.row.summary }}”</div>
-                  <div class="text-xs text-gray-500">{{ rowMetadata(entry.row) }}</div>
+                  <div class="font-medium text-slate-900">{{ entry.depth > 0 ? '↳ ' : '' }}{{ entry.row.displayName }}</div>
+                  <div v-if="entry.row.summary" class="text-xs text-slate-600">“{{ entry.row.summary }}”</div>
+                  <div class="text-xs text-slate-500">{{ rowMetadata(entry.row) }}</div>
                 </div>
               </div>
             </td>
@@ -148,11 +148,11 @@
             <td class="px-3 py-3">{{ formatter.formatDistinctValues(entry.row.modelDisplayNames, 'model') }}</td>
             <td class="px-3 py-3 text-right tabular-nums">
               <div>{{ formatter.formatInteger(entry.row.aggregate.grossInputTokens) }}</div>
-              <div class="text-xs text-gray-500">{{ formatter.cacheSubline(entry.row.aggregate) }}</div>
+              <div class="text-xs text-slate-500">{{ formatter.cacheSubline(entry.row.aggregate) }}</div>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">
               <div>{{ formatter.formatInteger(entry.row.aggregate.outputTokens) }}</div>
-              <div v-if="formatter.thinkingSubline(entry.row.aggregate)" class="text-xs text-gray-500">{{ formatter.thinkingSubline(entry.row.aggregate) }}</div>
+              <div v-if="formatter.thinkingSubline(entry.row.aggregate)" class="text-xs text-slate-500">{{ formatter.thinkingSubline(entry.row.aggregate) }}</div>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">
               {{ formatter.formatCostCell(entry.row.aggregate.estimatedApiInputCost, entry.row.aggregate.currency, entry.row.aggregate.apiCostStatus) }}
@@ -162,7 +162,7 @@
             </td>
             <td class="px-3 py-3 text-right font-semibold tabular-nums">
               <button
-                class="group ml-auto inline-flex items-center gap-1 rounded font-semibold text-gray-900 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                class="group ml-auto inline-flex items-center gap-1 rounded font-semibold text-slate-900 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                 type="button"
                 :aria-controls="detailRowId(entry.row)"
                 :aria-expanded="detailRows.has(entry.row.rowId)"
@@ -212,8 +212,8 @@ type VisibleTaskRow = {
   depth: number;
 };
 
-const { t: $t } = useLocalization();
-const formatter = createTokenUsageStatisticsFormatter($t);
+const { t: $t, resolvedLocale } = useLocalization();
+const formatter = createTokenUsageStatisticsFormatter($t, () => resolvedLocale.value);
 const sortKey = ref<TokenUsageTaskSortKey>('createdAt');
 const sortDirection = ref<TokenUsageSortDirection>('desc');
 const expandedRows = reactive(new Set<string>());
@@ -270,8 +270,8 @@ const sortHeaderButtonClass = (key: TokenUsageTaskSortKey, alignRight = false): 
   [
     alignRight ? 'ml-auto' : '',
     'inline-flex items-center gap-1 rounded py-0.5 font-semibold',
-    sortKey.value === key ? 'text-gray-900' : 'text-gray-600',
-    'hover:text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
+    sortKey.value === key ? 'text-slate-900' : 'text-slate-600',
+    'hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
   ].filter(Boolean).join(' ')
 );
 
@@ -294,7 +294,7 @@ const sortButtonLabel = (key: TokenUsageTaskSortKey, columnLabel: string): strin
 
 const sortTriangleClass = (key: TokenUsageTaskSortKey, direction: TokenUsageSortDirection): string => {
   const active = sortKey.value === key && sortDirection.value === direction;
-  const tone = active ? 'border-current' : 'border-gray-300';
+  const tone = active ? 'border-current' : 'border-slate-300';
   if (direction === 'asc') return `h-0 w-0 border-x-[3px] border-b-[4px] border-x-transparent ${tone}`;
   return `h-0 w-0 border-x-[3px] border-t-[4px] border-x-transparent ${tone}`;
 };
@@ -312,7 +312,7 @@ const toggleDetails = (rowId: string): void => {
 const detailRowId = (row: TokenUsageTaskStatisticsRow): string => `token-usage-cost-details-${row.rowId.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
 const costDetailArrowClass = (rowId: string): string => {
-  const base = 'text-gray-400 group-hover:text-blue-600';
+  const base = 'text-slate-400 group-hover:text-blue-600';
   if (detailRows.has(rowId)) {
     return `${base} h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-current`;
   }
