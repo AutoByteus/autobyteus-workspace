@@ -1,0 +1,119 @@
+[
+  {
+    "scenario": {
+      "name": "deep-320",
+      "width": 320,
+      "tree": "deep",
+      "font": "default"
+    },
+    "errors": [],
+    "initial": {
+      "panelClientWidth": 318,
+      "panelScrollWidth": 318,
+      "treeRole": "tree",
+      "treeLabel": "Hierarchy review · active coordination run organization tree",
+      "treeItemCount": 17,
+      "selectedBackground": "rgb(238, 242, 255)",
+      "selectedBoxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+      "selectedRadius": "0px",
+      "ageOpacity": "0",
+      "depthTwoStatusOpacity": "1",
+      "teamIcon": true,
+      "transientIcon": true
+    },
+    "ageAfterHover": "1",
+    "focus": {
+      "tooltipDisplay": "block",
+      "tooltipText": "Agent · Research Operations Specialist With A Very Long Localized Role · /product/research",
+      "rowZ": "60",
+      "ageOpacity": "1",
+      "ariaLabel": "Agent, Research Operations Specialist With A Very Long Localized Role, level 2, running, /product/research",
+      "title": "Agent · Research Operations Specialist With A Very Long Localized Role · /product/research"
+    },
+    "disclosure": {
+      "countBefore": 17,
+      "countCollapsed": 12,
+      "collapsedExpanded": "false",
+      "countExpanded": 17,
+      "keyboardExpanded": "true"
+    }
+  },
+  {
+    "scenario": {
+      "name": "deep-520",
+      "width": 520,
+      "tree": "deep",
+      "font": "default"
+    },
+    "errors": [],
+    "initial": {
+      "panelClientWidth": 518,
+      "panelScrollWidth": 518,
+      "treeRole": "tree",
+      "treeLabel": "Hierarchy review · active coordination run organization tree",
+      "treeItemCount": 17,
+      "selectedBackground": "rgb(238, 242, 255)",
+      "selectedBoxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+      "selectedRadius": "0px",
+      "ageOpacity": "1",
+      "depthTwoStatusOpacity": "1",
+      "teamIcon": true,
+      "transientIcon": true
+    },
+    "ageAfterHover": "1",
+    "focus": {
+      "tooltipDisplay": "block",
+      "tooltipText": "Agent · Research Operations Specialist With A Very Long Localized Role · /product/research",
+      "rowZ": "60",
+      "ageOpacity": "1",
+      "ariaLabel": "Agent, Research Operations Specialist With A Very Long Localized Role, level 2, running, /product/research",
+      "title": "Agent · Research Operations Specialist With A Very Long Localized Role · /product/research"
+    },
+    "disclosure": {
+      "countBefore": 17,
+      "countCollapsed": 12,
+      "collapsedExpanded": "false",
+      "countExpanded": 17,
+      "keyboardExpanded": "true"
+    }
+  },
+  {
+    "scenario": {
+      "name": "focus-260-xl",
+      "width": 260,
+      "tree": "deep",
+      "font": "xl"
+    },
+    "errors": [],
+    "initial": {
+      "panelClientWidth": 258,
+      "panelScrollWidth": 258,
+      "treeRole": "tree",
+      "treeLabel": "Hierarchy review · active coordination run organization tree",
+      "treeItemCount": 17,
+      "selectedBackground": "rgb(238, 242, 255)",
+      "selectedBoxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+      "selectedRadius": "0px",
+      "ageOpacity": "0",
+      "depthTwoStatusOpacity": "0",
+      "teamIcon": true,
+      "transientIcon": true
+    },
+    "ageAfterHover": "1",
+    "focus": {
+      "tooltipDisplay": "block",
+      "tooltipText": "Agent · Research Operations Specialist With A Very Long Localized Role · /product/research",
+      "rowZ": "60",
+      "ageOpacity": "1",
+      "ariaLabel": "Agent, Research Operations Specialist With A Very Long Localized Role, level 2, running, /product/research",
+      "title": "Agent · Research Operations Specialist With A Very Long Localized Role · /product/research"
+    },
+    "disclosure": {
+      "countBefore": 17,
+      "countCollapsed": 12,
+      "collapsedExpanded": "false",
+      "countExpanded": 17,
+      "keyboardExpanded": "true"
+    }
+  }
+]

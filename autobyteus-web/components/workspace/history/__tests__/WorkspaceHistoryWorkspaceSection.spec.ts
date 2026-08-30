@@ -219,7 +219,13 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     const taskRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
     expect(taskRow.attributes('data-transient-kind')).toBe('task_agent');
     expect(taskRow.attributes('data-member-address')).toBe('/worker');
-    expect(taskRow.classes()).toContain('ring-indigo-200');
+    expect(taskRow.classes()).toContain('is-selected');
+    expect(taskRow.attributes()).toMatchObject({
+      role: 'treeitem',
+      'aria-level': '2',
+      'aria-selected': 'true',
+      title: 'Temporary task agent · Task: Solve current task · /worker',
+    });
     await taskRow.trigger('click');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: 'task-agent-run-1',
@@ -388,7 +394,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
       'h-2', 'w-2', 'bg-blue-500', 'animate-pulse',
     ]));
     expect(dot.attributes('tabindex')).toBeUndefined();
-    expect(dot.element.nextElementSibling?.classList.contains('h-4')).toBe(true);
+    expect(dot.element.parentElement?.nextElementSibling?.classList.contains('h-4')).toBe(true);
     expect(nestedRow.get('[data-test="workspace-team-member-disclosure"]').element.compareDocumentPosition(dot.element))
       .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
@@ -416,5 +422,76 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
       'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
     );
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
+  });
+
+  it('renders accessible printed-tree rails, node identities, and orthogonal selection', async () => {
+    const nestedAgent = stableAgent('/design/researcher', {
+      displayName: 'Research Operations Specialist',
+      agentRunId: 'researcher-run',
+    });
+    const designTeam: TeamMemberTreeRow = {
+      ...stableAgent('/design', { displayName: 'Product Design & Prototyping' }),
+      kind: 'agent_team', agentRunId: null, teamDefinitionId: 'design-team',
+      teamRunIdForNode: 'design-team-run', coordinatorAddress: nestedAgent.memberAddress,
+      currentStatus: null, children: [nestedAgent],
+    };
+    const coordinator = stableAgent('/coordinator', {
+      displayName: 'Workspace Program Coordinator',
+      agentRunId: 'coordinator-run',
+    });
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1',
+      rootChildren: [
+        testSubTeamNode('/design', [
+          testAgentNode(nestedAgent.memberAddress, { agentRunId: nestedAgent.agentRunId! }),
+        ], {
+          teamRunId: 'design-team-run',
+          coordinatorAddress: nestedAgent.memberAddress,
+          displayName: 'Product Design & Prototyping',
+        }),
+        testAgentNode(coordinator.memberAddress, { agentRunId: coordinator.agentRunId! }),
+      ],
+      coordinatorAddress: coordinator.memberAddress,
+      focusedAgentRunId: coordinator.agentRunId!,
+    });
+    const { wrapper } = mountSubject({
+      stableChildren: [designTeam, coordinator],
+      liveContext,
+    });
+
+    const tree = wrapper.get('[data-test="workspace-team-execution-tree"]');
+    expect(tree.attributes('role')).toBe('tree');
+    expect(tree.attributes('aria-label')).toContain('organization tree');
+
+    const designRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/design"]');
+    expect(designRow.attributes()).toMatchObject({
+      role: 'treeitem',
+      'aria-level': '1',
+      'aria-expanded': 'false',
+      'aria-selected': 'false',
+      title: 'Agent team · design · /design',
+    });
+    expect(designRow.classes()).toContain('font-semibold');
+    expect(designRow.find('[data-team-icon="user-group-solid"]').exists()).toBe(true);
+    expect(designRow.get('[data-test="workspace-team-member-disclosure"]').attributes('aria-label'))
+      .toBe('Expand design');
+    expect(designRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
+      .toBe('true');
+
+    const selectedCoordinator = wrapper.get('[data-test="workspace-team-member-team-run-1-/coordinator"]');
+    expect(selectedCoordinator.classes()).toContain('is-selected');
+    expect(selectedCoordinator.attributes()).toMatchObject({
+      'aria-selected': 'true',
+      'aria-current': 'true',
+    });
+
+    await designRow.trigger('keydown', { key: 'Enter' });
+    await wrapper.vm.$nextTick();
+    const nestedAgentRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/design/researcher"]');
+    expect(nestedAgentRow.attributes('aria-level')).toBe('2');
+    expect(nestedAgentRow.find('[data-test="workspace-team-member-avatar"]').exists()).toBe(true);
+    expect(nestedAgentRow.find('[data-test="workspace-hierarchy-branches"] [data-ancestor-depth="0"]').exists()).toBe(true);
+    expect(nestedAgentRow.get('[data-test="workspace-hierarchy-branches"] [data-has-following-sibling]').attributes('data-has-following-sibling'))
+      .toBe('false');
   });
 });
