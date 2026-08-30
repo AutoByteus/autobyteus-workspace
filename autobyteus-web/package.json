@@ -45,6 +45,7 @@
     "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64",
     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
+    "test:e2e:nested-team-aggregate-status": "node tests/e2e/nested-team-aggregate-status-probe.mjs",
     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
     "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",

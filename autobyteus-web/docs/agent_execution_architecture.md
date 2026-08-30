@@ -225,6 +225,25 @@ definition field. Representative ordering, leaf-agent status, socket
 subscription, and Stop/pending state must not influence either the exact-run
 cue or the group projection.
 
+Stable configured nested-Team rows inside one concrete TeamRun may also render a
+presentation-only five-state summary in the Workspaces history tree. The
+summary folds the exact Agent statuses already present in that Team's flattened
+`executionRows` descendant scope with the precedence `running > initializing >
+error > idle > offline`. Configured descendants, task Agents, and task-Team
+children inside the nested Team contribute; the parent container itself,
+ancestors, adjacent siblings, and rows after the nested subtree do not. Unknown,
+missing, or empty status input normalizes to `offline`. The dot remains visible
+when the nested Team is collapsed and reacts to the existing execution-row
+projection, so it performs no request or polling of its own.
+
+This nested-row summary does not change status authority. It is neither a Team
+status model nor a replacement for exact leaf `AGENT_STATUS` or binary root
+`TEAM_RUN_LIFECYCLE`. It is not persisted or transported and must not influence
+TeamRun liveness, focus, readiness, command admission, interrupt/Stop, archive,
+delete, or lifecycle decisions. Root TeamRun rows and definition groups retain
+the binary activity cues described above; transient task-Team rows do not gain
+the aggregate dot.
+
 Delegated task executions are task-scoped execution projections rather than
 structural topology. Every Team Agent event carries one `agent_execution`
 binding with `kind`, exact `execution_address`, and an `agent_run_id` only when

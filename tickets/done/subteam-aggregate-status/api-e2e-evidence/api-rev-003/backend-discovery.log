@@ -1,0 +1,21 @@
+API-REV-003 existing-backend discovery
+Captured: 2026-08-29T19:02:55Z
+
+Process: node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+CWD: /app/autobyteus-server-ts
+Supervisor: autobyteus_server                RUNNING   pid 54, uptime 1 day, 2:25:05
+
+GET http://127.0.0.1:8000/rest/health
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 45
+Date: Sat, 29 Aug 2026 19:02:55 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"status":"ok","message":"Server is running"}
+GraphQL __typename
+{"data":{"__typename":"Query"}}
+
+Routing decision: backend and test frontend share this container/PID namespace; use 127.0.0.1:8000 directly. Do not use host.docker.internal.

@@ -1,0 +1,29 @@
+STATIC BOUNDARY AUDIT — subteam-aggregate-status API-REV-001
+Implementation range: 2f03c8a0b..dcd0baf8c
+
+Changed files in implementation commit:
+  autobyteus-web/components/workspace/history/NestedTeamAggregateStatusDot.vue
+  autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+  autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+  autobyteus-web/components/workspace/history/__tests__/workspaceHistoryNestedTeamStatus.spec.ts
+  autobyteus-web/components/workspace/history/workspaceHistoryNestedTeamStatus.ts
+  autobyteus-web/localization/messages/en/workspace.ts
+  autobyteus-web/localization/messages/zh-CN/workspace.ts
+  tickets/in-progress/subteam-aggregate-status/implementation-handoff.md
+  tickets/in-progress/subteam-aggregate-status/implementation-revision-record.md
+
+Changed web production paths excluding tests/locales:
+  autobyteus-web/components/workspace/history/NestedTeamAggregateStatusDot.vue
+  autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+  autobyteus-web/components/workspace/history/workspaceHistoryNestedTeamStatus.ts
+
+Forbidden contract/backend/store/type/electron changed paths: []
+Forbidden network/poller/persistence/lifecycle authority tokens in added production lines: []
+
+Uncommitted API/E2E production-source paths: []
+
+Result: PASS
+
+$ git diff --check
+
+Result: PASS
