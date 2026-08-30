@@ -492,10 +492,10 @@ Claude Agent SDK and Codex App Server expose in-scope effective backend agent
 tools through the unified Agent Tools MCP route, not through runtime-owned
 duplicated tool projections. The enabled set includes selected server-owned
 tool families and selected configured MCP-origin registry tools. A valid team
-context automatically unions `send_message_to` and `delegate_task` into that
-effective set even when the agent definition omitted both; configured duplicate
-names are deduplicated. Other tools remain explicitly configured and
-availability-gated. When at least one effective and available tool is enabled,
+context automatically unions `get_handoff_rules`, `send_message_to`, and
+`delegate_task` into that effective set even when the agent definition omitted
+them; configured duplicate names are deduplicated. Other tools remain explicitly
+configured and availability-gated. When at least one effective and available tool is enabled,
 the runtime materializer creates a live `autobyteus_agent_tools` descriptor:
 
 - Codex passes it only as thread-scoped

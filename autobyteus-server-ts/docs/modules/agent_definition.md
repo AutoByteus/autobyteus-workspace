@@ -73,9 +73,10 @@ Block publication when required evidence or a rollback path is missing.
 
 `agent-config.json.skillNames` selects ordinary configured lazy skills, while
 `toolNames` selects explicitly configured capabilities. A valid team runtime
-automatically adds `send_message_to` and `delegate_task`; authors do not need to
-duplicate those two names merely to make team membership functional. Other
-tools remain explicitly configured and availability-gated.
+automatically adds `get_handoff_rules`, `send_message_to`, and `delegate_task`;
+authors do not need to duplicate those three names merely to make team
+membership functional. Other tools remain explicitly configured and
+availability-gated.
 
 Agent definitions contain no prompt-processor selection field, and the
 create/update/read/GraphQL/frontend surfaces must not create a parallel prompt

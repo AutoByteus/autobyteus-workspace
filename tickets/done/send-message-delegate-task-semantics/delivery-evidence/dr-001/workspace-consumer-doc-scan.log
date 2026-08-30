@@ -1,0 +1,45 @@
+Delivery DR-001 workspace-consumer and active-doc contract scan
+timestamp_utc=2026-08-30T13:08:58Z
+head=2a7a4a16c2707028df0722fabb0b8bfc1b551170
++ removed generic result owner/mapper symbol scan (active code/docs; tickets excluded)
+PASS: no removed generic result owner or mapper remains
++ obsolete send_message_to result-shape wording scan (active docs; tickets excluded)
+PASS: no obsolete send_message_to result wording remains
++ obsolete relative-address collaboration wording scan (active docs)
+PASS: no obsolete relative-address collaboration wording remains
++ stale delegate-task input/result wording scan (active docs)
+PASS: no stale delegate_task wording remains
++ required durable result concepts
+autobyteus-server-ts/docs/modules/agent_tools.md:103:- `target_agent_run_id` for an exact currently active `AgentRun.runId`. This
+autobyteus-server-ts/docs/modules/agent_tools.md:109:Explicitly configured standalone runs can use `target_agent_run_id` without team context.
+autobyteus-server-ts/docs/modules/agent_tools.md:130:`{accepted,code,message,target_agent_run_id}` operation result. Accepted calls
+autobyteus-server-ts/docs/modules/agent_tools.md:132:return `target_agent_run_id:null`. The removed generic `result` field is not a
+autobyteus-server-ts/docs/modules/agent_tools.md:241:`{task_id,status:"active",target_agent_run_id}`, where
+autobyteus-server-ts/docs/modules/agent_tools.md:242:`target_agent_run_id` is the fresh task Agent or fresh task Team coordinator
+autobyteus-server-ts/docs/modules/agent_tools.md:244:and omits `target_agent_run_id` because no contactable task execution exists.
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:105:`target_agent_run_id`. Activation failure returns the task id,
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:114:`target_agent_run_id`; that message does not create another task or change task
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:157:`target_agent_run_id`; rejection returns `target_agent_run_id:null`. The removed
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md:209:  `target_agent_run_id` only for genuinely additional clarification.
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:267:  `target_agent_run_id` is a live-only exact active-run selector.
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:296:`{accepted,code,message,target_agent_run_id}`: success contains the exact
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:297:existing AgentRun receiver, while rejection uses `target_agent_run_id:null` and
+autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md:299:`{task_id,status,target_agent_run_id}` branch for the fresh task ingress or the
+autobyteus-server-ts/docs/modules/agent_team_execution.md:311:fresh task Agent or task Team coordinator ingress as `target_agent_run_id`.
+autobyteus-server-ts/docs/modules/agent_team_execution.md:313:`message`, omitting `target_agent_run_id` because no contactable fresh execution
+autobyteus-server-ts/docs/modules/agent_team_execution.md:379:coordinator run as flat `target_agent_run_id`; rejection returns null identity.
+autobyteus-server-ts/docs/modules/agent_team_execution.md:387:`target_agent_run_id` remains the separate live-only direct AgentRun route owned
+autobyteus-server-ts/docs/modules/prompt_engineering.md:192:active task ingress using the returned `target_agent_run_id`. Formal task output
+autobyteus-server-ts/docs/modules/prompt_engineering.md:272:active `target_agent_run_id`. `recipient_address` is a canonical absolute
+autobyteus-server-ts/docs/modules/prompt_engineering.md:274:messaging returns the exact existing receiver as flat `target_agent_run_id`,
+autobyteus-server-ts/docs/modules/prompt_engineering.md:276:`status:"active"`, and the fresh task ingress as `target_agent_run_id`;
+autobyteus-server-ts/docs/modules/agent_communication.md:18:- `target_agent_run_id`: an exact, currently active `AgentRun.runId`.
+autobyteus-server-ts/docs/modules/agent_communication.md:113:  "target_agent_run_id": "existing-reviewer-run-123"
+autobyteus-server-ts/docs/modules/agent_communication.md:117:For a logical Agent address, `target_agent_run_id` is that mounted Agent's
+autobyteus-server-ts/docs/modules/agent_communication.md:128:  "target_agent_run_id": null
+autobyteus-server-ts/docs/modules/agent_communication.md:142:## `target_agent_run_id` Global Direct Route
+autobyteus-server-ts/docs/modules/agent_communication.md:144:`target_agent_run_id` is a live-only global direct route. The value must be the
+autobyteus-server-ts/docs/modules/agent_communication.md:218:Explicitly configured standalone runs can use `target_agent_run_id` without team context.
+autobyteus-server-ts/docs/modules/agent_communication.md:245:fresh task ingress using the returned exact `target_agent_run_id` while that run
++ git diff --check
+scan_exit=0

@@ -1,0 +1,31 @@
+Delivery DR-002 finalization refresh
+timestamp_utc=2026-08-30T16:33:38Z
+ticket_branch=codex/send-message-delegate-task-semantics
+ticket_head_before=2a7a4a16c2707028df0722fabb0b8bfc1b551170
+origin_personal_before=d1a399a5919cf9b6040050d5699caeb0cd1e6633
++ git fetch --prune origin personal
+From https://github.com/AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal_after=d1a399a5919cf9b6040050d5699caeb0cd1e6633
+ahead_behind_ticket_vs_origin_personal=
+22	0
+origin_personal_is_ancestor=yes
+ticket_worktree_status=
+ M autobyteus-server-ts/docs/features/shared_member_multi_team_membership_future.md
+ M autobyteus-server-ts/docs/modules/agent_communication.md
+ M autobyteus-server-ts/docs/modules/agent_definition.md
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/agent_tools.md
+ M autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-server-ts/docs/modules/prompt_engineering.md
+ M autobyteus-ts/docs/agent_team_design.md
+ M autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+?? tickets/in-progress/send-message-delegate-task-semantics/delivery-evidence/
+?? tickets/in-progress/send-message-delegate-task-semantics/delivery-release-deployment-report.md
+?? tickets/in-progress/send-message-delegate-task-semantics/delivery-revision-record.md
+?? tickets/in-progress/send-message-delegate-task-semantics/docs-sync-report.md
+?? tickets/in-progress/send-message-delegate-task-semantics/handoff-summary.md
+?? tickets/in-progress/send-message-delegate-task-semantics/release-notes.md
+refresh_exit=0
