@@ -1,0 +1,27 @@
+
+> autobyteus@1.4.62 dev /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 40773
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:40773/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because lockfile has changed
+✔ Vite client built in 213ms
+✔ Vite server built in 353ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 4862ms
+ℹ Vite client warmed up in 2ms
+ℹ ✨ new dependencies optimized: @iconify/vue
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: qrcode, crypto-js/sha256, zod
+ℹ ✨ optimized dependencies changed. reloading
+ ELIFECYCLE  Command failed.

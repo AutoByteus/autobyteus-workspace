@@ -147,6 +147,11 @@ const mountSubject = (options: {
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs': 'No active team runs',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run': 'Active team run',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run': 'Inactive team run',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_running': 'Team status: Running',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_initializing': 'Team status: Initializing',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_error': 'Team status: Error',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_idle': 'Team status: Idle',
+        'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline': 'Team status: Offline',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently': 'Localized delete team history permanently',
       }[key] ?? key) },
     },
@@ -337,5 +342,79 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/software_team/review_lead', agentRunId: 'review-lead-run',
     }, 'workspace:/ws/a');
+  });
+
+  it('keeps a localized nested-Team aggregate visible, reactive, aligned, and non-interactive while collapsed', async () => {
+    const prototyper = stableAgent('/product_team/product_prototyper', {
+      displayName: 'product_prototyper', agentRunId: 'product-prototyper-run',
+      currentStatus: AgentStatus.Running,
+    });
+    const bootstrapper = stableAgent('/product_team/prototype_bootstrapper', {
+      displayName: 'prototype_bootstrapper', agentRunId: 'prototype-bootstrapper-run',
+      currentStatus: AgentStatus.Idle,
+    });
+    const productTeam: TeamMemberTreeRow = {
+      ...stableAgent('/product_team', { displayName: 'Product Design & Prototyping Team' }),
+      kind: 'agent_team', agentRunId: null, teamDefinitionId: 'product-team',
+      teamRunIdForNode: 'product-team-run', coordinatorAddress: prototyper.memberAddress,
+      currentStatus: null, children: [prototyper, bootstrapper],
+    };
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1',
+      rootChildren: [testSubTeamNode('/product_team', [
+        testAgentNode(prototyper.memberAddress, { agentRunId: prototyper.agentRunId! }),
+        testAgentNode(bootstrapper.memberAddress, { agentRunId: bootstrapper.agentRunId! }),
+      ], { teamRunId: 'product-team-run', coordinatorAddress: prototyper.memberAddress })],
+      coordinatorAddress: prototyper.memberAddress,
+      focusedAgentRunId: prototyper.agentRunId!,
+    });
+    liveContext.view.getAgentContext(prototyper.agentRunId!)!.state.currentStatus = AgentStatus.Running;
+    liveContext.view.getAgentContext(bootstrapper.agentRunId!)!.state.currentStatus = AgentStatus.Idle;
+
+    const { wrapper, state, actions, team } = mountSubject({
+      stableChildren: [productTeam], liveContext,
+    });
+    const nestedRow = wrapper.get('[data-test="workspace-team-member-team-run-1-/product_team"]');
+    expect(wrapper.find('[data-test="workspace-team-member-team-run-1-/product_team/product_prototyper"]').exists()).toBe(false);
+    expect(nestedRow.findAll('[data-test="nested-team-aggregate-status-dot"]')).toHaveLength(1);
+    let dot = nestedRow.get('[data-test="nested-team-aggregate-status-dot"]');
+    expect(dot.attributes()).toMatchObject({
+      'data-status': AgentStatus.Running,
+      'aria-label': 'Team status: Running',
+      title: 'Team status: Running',
+      role: 'img',
+    });
+    expect(dot.get('[aria-hidden="true"]').classes()).toEqual(expect.arrayContaining([
+      'h-2', 'w-2', 'bg-blue-500', 'animate-pulse',
+    ]));
+    expect(dot.attributes('tabindex')).toBeUndefined();
+    expect(dot.element.nextElementSibling?.classList.contains('h-4')).toBe(true);
+    expect(nestedRow.get('[data-test="workspace-team-member-disclosure"]').element.compareDocumentPosition(dot.element))
+      .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+
+    const idleRows = team.executionRows.map((row) => {
+      if (row.memberKind !== 'agent') return row;
+      return row.kind === 'stable_member'
+        ? { ...row, row: { ...row.row, currentStatus: AgentStatus.Idle } }
+        : { ...row, currentStatus: AgentStatus.Idle };
+    });
+    await wrapper.setProps({ workspaceTeams: [{ ...team, executionRows: idleRows }] });
+    await wrapper.vm.$nextTick();
+    dot = nestedRow.get('[data-test="nested-team-aggregate-status-dot"]');
+    expect(dot.attributes()).toMatchObject({
+      'data-status': AgentStatus.Idle,
+      'aria-label': 'Team status: Idle',
+      title: 'Team status: Idle',
+    });
+    expect(dot.get('[aria-hidden="true"]').classes()).toContain('bg-green-500');
+    expect(dot.get('[aria-hidden="true"]').classes()).not.toContain('animate-pulse');
+
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
+    await dot.trigger('click');
+    expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
+    expect(state.toggleTeamMember).toHaveBeenCalledWith(
+      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
+    );
+    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });
 });

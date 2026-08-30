@@ -91,13 +91,23 @@ standalone shared teams.
 Team definitions are reusable configuration, not runtime subjects. Definition
 catalog and detail surfaces therefore expose no owned runtime status field,
 status dot, or lifecycle label. Runtime liveness belongs only to a concrete team
-run, and five-state status belongs only to exact leaf agents. Workspace history
-and running-team presentation may group displayed runs by definition and show a
-presentation-only any-active cue for that rendered collection. The group dot is
-derived from `runs.some(run => run.isActive)` and is not stored on, transported
-with, or inferred as a status of the definition. Each child run row still shows
-only its own binary `isActive` cue; neither cue depends on representative member
-status, socket subscription, or Stop/pending state.
+run, and authoritative five-state status belongs only to exact leaf agents.
+Workspace history and running-team presentation may group displayed runs by
+definition and show a presentation-only any-active cue for that rendered
+collection. The group dot is derived from `runs.some(run => run.isActive)` and
+is not stored on, transported with, or inferred as a status of the definition.
+Each child run row still shows only its own binary `isActive` cue; neither cue
+depends on representative member status, socket subscription, or Stop/pending
+state.
+
+Within a concrete TeamRun's Workspaces history hierarchy, a stable configured
+nested-Team row may separately summarize the exact Agent statuses already
+projected beneath that row. The UI-only fold uses `running > initializing >
+error > idle > offline`, includes descendant task Agent/task-Team-child rows,
+stays visible while collapsed, and excludes ancestors, adjacent siblings, root
+TeamRun rows, definition groups, Agent rows, and transient task-Team rows. This
+summary is not an owned Team field, public event, persisted value, liveness
+signal, or command/readiness/interrupt/delete authority.
 
 ## Default Launch Preferences
 

@@ -1,0 +1,2235 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:42081
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:42081
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:4527) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:21:12.325Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031272437,"pid":4527,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:42081"}
+[2026-08-29T19:21:12.438Z] [INFO] [server.runtime] Server listening on 127.0.0.1:42081
+[2026-08-29T19:21:12.441Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:42081
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-YwK7XT/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:21:12.503Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:21:12.616Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T19:21:31.852Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:21:31.935Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:41479
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:41479
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:5042) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Successfully registered tool definition: 'search_web'
+Overwriting existing tool definition for name: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:22:15.210Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031335327,"pid":5042,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:41479"}
+[2026-08-29T19:22:15.327Z] [INFO] [server.runtime] Server listening on 127.0.0.1:41479
+[2026-08-29T19:22:15.329Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:41479
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-2nuuvc/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:22:15.404Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:22:15.513Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T19:22:27.976Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:22:28.055Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:35317
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:35317
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:5501) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:22:55.309Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031375420,"pid":5501,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:35317"}
+[2026-08-29T19:22:55.421Z] [INFO] [server.runtime] Server listening on 127.0.0.1:35317
+[2026-08-29T19:22:55.422Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:35317
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-3HOiLm/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:22:55.478Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:22:55.620Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T19:23:38.838Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:23:39.070Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:38783
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:38783
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:5983) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:24:06.293Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031446404,"pid":5983,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:38783"}
+[2026-08-29T19:24:06.404Z] [INFO] [server.runtime] Server listening on 127.0.0.1:38783
+[2026-08-29T19:24:06.407Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:38783
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-29Vpwn/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:24:06.462Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:24:06.586Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T19:24:20.466Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:24:20.674Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:35143
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:35143
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:6450) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:24:46.677Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031486789,"pid":6450,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:35143"}
+[2026-08-29T19:24:46.790Z] [INFO] [server.runtime] Server listening on 127.0.0.1:35143
+[2026-08-29T19:24:46.791Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:35143
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-XmUf1x/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:24:46.879Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:24:46.975Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T19:25:29.995Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:25:30.100Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:40793
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:40793
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:6980) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:26:38.293Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031598404,"pid":6980,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:40793"}
+[2026-08-29T19:26:38.405Z] [INFO] [server.runtime] Server listening on 127.0.0.1:40793
+[2026-08-29T19:26:38.407Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:40793
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-i3XFlR/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:26:38.499Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:26:38.653Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788031612154,"pid":6980,"hostname":"949e7ba9a82d","reqId":"req-a","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_PROVIDER_KEY_INVALID","stack":"Error: TOKEN_USAGE_ANALYTICS_PROVIDER_KEY_INVALID\n    at TokenUsageAnalyticsRangePolicy.plan (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-range-policy.js:26:19)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:17:39)\n    at TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:66)\n    at file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_PROVIDER_KEY_INVALID"}
+[2026-08-29T19:27:22.246Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:27:22.297Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:45921
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:45921
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:7509) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:28:09.508Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031689620,"pid":7509,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:45921"}
+[2026-08-29T19:28:09.620Z] [INFO] [server.runtime] Server listening on 127.0.0.1:45921
+[2026-08-29T19:28:09.624Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:45921
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-7HJ8hd/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:28:09.674Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:28:09.776Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788031703287,"pid":7509,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:28:53.372Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:28:53.414Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:42175
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:42175
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:8050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:30:24.863Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031824983,"pid":8050,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:42175"}
+[2026-08-29T19:30:24.983Z] [INFO] [server.runtime] Server listening on 127.0.0.1:42175
+[2026-08-29T19:30:24.985Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:42175
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-H8P6B8/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:30:25.089Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:30:25.218Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788031841820,"pid":8050,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:30:42.996Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:30:43.185Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:45665
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:45665
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:8537) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:31:15.729Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031875840,"pid":8537,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:45665"}
+[2026-08-29T19:31:15.841Z] [INFO] [server.runtime] Server listening on 127.0.0.1:45665
+[2026-08-29T19:31:15.843Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:45665
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-nHfX1s/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:31:15.898Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:31:15.998Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788031889215,"pid":8537,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:31:30.425Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:31:30.521Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:46331
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:46331
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:8995) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Successfully registered tool definition: 'search_web'
+Overwriting existing tool definition for name: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:31:54.766Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031914877,"pid":8995,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:46331"}
+[2026-08-29T19:31:54.877Z] [INFO] [server.runtime] Server listening on 127.0.0.1:46331
+[2026-08-29T19:31:54.880Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:46331
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-MRNem4/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:31:54.960Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:31:55.068Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788031928734,"pid":8995,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:32:41.310Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:32:41.432Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:38429
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:38429
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:9510) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:33:15.155Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788031995267,"pid":9510,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:38429"}
+[2026-08-29T19:33:15.267Z] [INFO] [server.runtime] Server listening on 127.0.0.1:38429
+[2026-08-29T19:33:15.269Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:38429
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-xNpgSF/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:33:15.323Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:33:15.424Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032009092,"pid":9510,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:34:01.504Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:34:01.617Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:42245
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:42245
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:10010) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:34:29.592Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788032069701,"pid":10010,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:42245"}
+[2026-08-29T19:34:29.701Z] [INFO] [server.runtime] Server listening on 127.0.0.1:42245
+[2026-08-29T19:34:29.704Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:42245
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-hD3BWH/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:34:29.759Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:34:29.855Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032083206,"pid":10010,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:34:45.685Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:34:45.914Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:33915
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:33915
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:10469) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:35:12.845Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788032112954,"pid":10469,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:33915"}
+[2026-08-29T19:35:12.954Z] [INFO] [server.runtime] Server listening on 127.0.0.1:33915
+[2026-08-29T19:35:12.956Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:33915
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-pttfuu/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:35:13.026Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:35:13.120Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032126707,"pid":10469,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:35:59.347Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:35:59.545Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:45661
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:45661
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:10984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:36:32.264Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788032192378,"pid":10984,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:45661"}
+[2026-08-29T19:36:32.378Z] [INFO] [server.runtime] Server listening on 127.0.0.1:45661
+[2026-08-29T19:36:32.380Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:45661
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-KZdfq2/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:36:32.460Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:36:32.554Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032207203,"pid":10984,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:36:49.969Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:36:49.984Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:35685
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:35685
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:11446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:37:18.388Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788032238502,"pid":11446,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:35685"}
+[2026-08-29T19:37:18.502Z] [INFO] [server.runtime] Server listening on 127.0.0.1:35685
+[2026-08-29T19:37:18.505Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:35685
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-CVrvKw/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:37:18.588Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:37:18.699Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032251785,"pid":11446,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:37:36.876Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:37:37.067Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:34579
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:34579
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:12028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:38:40.590Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788032320698,"pid":12028,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:34579"}
+[2026-08-29T19:38:40.698Z] [INFO] [server.runtime] Server listening on 127.0.0.1:34579
+[2026-08-29T19:38:40.700Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:34579
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-iJWSmV/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:38:40.756Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:38:40.868Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032334631,"pid":12028,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:38:59.367Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:38:59.522Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:46743
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:46743
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:12557) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T19:39:28.691Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788032368803,"pid":12557,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:46743"}
+[2026-08-29T19:39:28.803Z] [INFO] [server.runtime] Server listening on 127.0.0.1:46743
+[2026-08-29T19:39:28.805Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:46743
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-0Mvrj9/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T19:39:28.884Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T19:39:28.980Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1788032382097,"pid":12557,"hostname":"949e7ba9a82d","reqId":"req-b","err":{"type":"GraphQLError","message":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED","stack":"Error: TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED\n    at assertTokenUsageAnalyticsBucketReconciliation (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/services/token-usage-analytics-aggregation-policy.js:86:15)\n    at TokenUsageAnalyticsProvider.getAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/token-usage/providers/token-usage-analytics-provider.js:23:9)\n    at async TokenUsageAnalyticsResolver.tokenUsageAnalytics (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/dist/api/graphql/types/token-usage-analytics.js:439:26)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["tokenUsageAnalytics"],"locations":[{"line":40,"column":3}],"extensions":{}},"msg":"TOKEN_USAGE_ANALYTICS_SELECTED_COST_RECONCILIATION_FAILED"}
+[2026-08-29T19:39:46.832Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T19:39:46.866Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:41719
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:41719
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:17853) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T20:05:09.048Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788033909174,"pid":17853,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:41719"}
+[2026-08-29T20:05:09.174Z] [INFO] [server.runtime] Server listening on 127.0.0.1:41719
+[2026-08-29T20:05:09.177Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:41719
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-DJdw49/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T20:05:09.287Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T20:05:09.477Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T20:05:27.564Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T20:05:27.661Z] [INFO] [server.runtime] Server closed cleanly.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+App data directory: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/.env
+Loading environment from: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:44593
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:44593
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data
+DB DIRECTORY: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /root/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/linux-arm64-openssl-3.0.x (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-statistics-e2e.db" at "file:/tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/db/token-statistics-e2e.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:18518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+AgentRunManager initialized.
+[2026-08-29T20:06:51.434Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+{"level":30,"time":1788034011556,"pid":18518,"hostname":"949e7ba9a82d","msg":"Server listening at http://127.0.0.1:44593"}
+[2026-08-29T20:06:51.556Z] [INFO] [server.runtime] Server listening on 127.0.0.1:44593
+[2026-08-29T20:06:51.558Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:44593
+Creating temp workspace at: /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-token-statistics-e2e-AstqNK/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 49 agent definitions into cache.
+[2026-08-29T20:06:51.666Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Loaded tool group: Agent Communication Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-08-29T20:06:51.805Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+Pre-loaded 31 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-08-29T20:07:14.166Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-29T20:07:14.189Z] [INFO] [server.runtime] Server closed cleanly.

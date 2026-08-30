@@ -465,6 +465,26 @@ pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-view
 
 The probe chooses a free local port by default. Use `--port <port>` to pin it. If automatic browser discovery does not find Chrome/Chromium, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Nested Team Aggregate Status Browser Probe
+
+The Workspaces/Teams history tree has a self-starting browser probe for the
+presentation-only aggregate status on stable configured nested-Team rows. It
+covers the full five-state presentation, recursive and task-scoped Agent
+aggregation, sibling isolation, expanded/collapsed rendering, collapsed live
+patching without a new request, English and Simplified Chinese accessibility
+copy, exactly-once row/disclosure interaction, and root/Agent/transient-Team
+route exclusions. The probe installs a temporary Nuxt fixture route, starts an
+owned development server on a free loopback port, runs Chrome through
+Playwright Core, captures evidence, and removes only the resources it owns:
+
+```bash
+pnpm test:e2e:nested-team-aggregate-status -- --output-dir test-results/nested-team-aggregate-status
+```
+
+Use `--port <port>` to pin the port. If automatic discovery does not find
+Chrome/Chromium, pass `--browser-executable <path>` or set
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:

@@ -1,0 +1,8 @@
+checked_at_utc=2026-08-30T03:14:44Z
+display=:99
+main_pid=27774
+main_process=27774 /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus --no-sandbox
+bundled_server_process=27859 /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+graphql_response={"data":{"__typename":"Query"}}
+window=50331649 name=autobyteus WINDOW=50331649 X=10 Y=10 WIDTH=10 HEIGHT=10 SCREEN=0
+window=48234500 name=autobyteus WINDOW=48234500 X=160 Y=100 WIDTH=1200 HEIGHT=800 SCREEN=0

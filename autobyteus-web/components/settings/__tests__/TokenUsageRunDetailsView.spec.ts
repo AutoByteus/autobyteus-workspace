@@ -14,6 +14,8 @@ const { storeSlot, messages } = vi.hoisted(() => ({
     rangeSeparator: 'to',
     loadingStatistics: 'Loading…',
     fetchStatistics: 'Fetch Statistics',
+    runControls: 'Run details controls',
+    runsCreated: 'Runs created',
     loadingStatisticsLong: 'Loading token usage statistics…',
     rangeMeaning: 'The date range selects runs by creation time; totals show each selected run’s lifetime usage.',
     historyMigrationRequired: 'Stored token history is temporarily unavailable while its data migration is incomplete. New runs remain available.',
@@ -21,6 +23,7 @@ const { storeSlot, messages } = vi.hoisted(() => ({
     tryWiderRangeOrModel: 'Try a wider date range or switch to Model.',
     noModelUsage: 'No runtime/model usage found for this date range.',
     selectDatesAlert: 'Please select both start and end dates.',
+    invalidDateOrder: 'Choose a start date on or before the end date.',
   } as Record<string, string>,
 }));
 
@@ -111,7 +114,7 @@ describe('TokenUsageRunDetailsView', () => {
     expect(wrapper.text()).not.toContain('Group by');
     expect(wrapper.find('[title]').exists()).toBe(false);
     expect(wrapper.find('button.border-b-2').exists()).toBe(false);
-    expect(wrapper.findAll('button')).toHaveLength(1);
+    expect(wrapper.findAll('button')).toHaveLength(3);
     expect(wrapper.text()).not.toContain('Tasks created in period');
     expect(wrapper.text()).not.toContain('rangeMode');
     expect(wrapper.find('[data-test="task-table"]').exists()).toBe(true);
@@ -120,14 +123,16 @@ describe('TokenUsageRunDetailsView', () => {
     expect(storeSlot.store.fetchStatistics.mock.calls[0]).toHaveLength(2);
 
     const controlTags = wrapper
-      .findAll('select, input[type="date"], button')
+      .findAll('input[type="date"], button')
       .map((control) => control.element.tagName.toLowerCase());
-    expect(controlTags).toEqual(['select', 'input', 'input', 'button']);
+    expect(controlTags).toEqual(['input', 'input', 'button', 'button', 'button']);
 
-    const groupingSelect = wrapper.find('select');
-    expect(groupingSelect.attributes('aria-label')).toBe('Result grouping');
-    expect((groupingSelect.element as HTMLSelectElement).value).toBe('task');
-    expect(Array.from((groupingSelect.element as HTMLSelectElement).options).map((option) => option.text)).toEqual(['Task', 'Model']);
+    const grouping = wrapper.get('[role="radiogroup"]');
+    expect(grouping.attributes('aria-label')).toBe('Result grouping');
+    const groupingRadios = grouping.findAll('[role="radio"]');
+    expect(groupingRadios.map((radio) => radio.text())).toEqual(['Task', 'Model']);
+    expect(groupingRadios[0]!.attributes('aria-checked')).toBe('true');
+    expect(groupingRadios[1]!.attributes('aria-checked')).toBe('false');
 
     const [startInput, endInput] = wrapper.findAll('input[type="date"]');
     expect(startInput!.attributes('aria-label')).toBe('Start date');
@@ -135,8 +140,9 @@ describe('TokenUsageRunDetailsView', () => {
     expect((startInput!.element as HTMLInputElement).value).toBe('2026-06-22');
     expect((endInput!.element as HTMLInputElement).value).toBe('2026-06-29');
 
-    await groupingSelect.setValue('model');
-    expect((groupingSelect.element as HTMLSelectElement).value).toBe('model');
+    await groupingRadios[1]!.trigger('click');
+    expect(groupingRadios[0]!.attributes('aria-checked')).toBe('false');
+    expect(groupingRadios[1]!.attributes('aria-checked')).toBe('true');
     expect(wrapper.find('[data-test="task-table"]').exists()).toBe(false);
     expect(wrapper.find('[data-test="model-table"]').exists()).toBe(true);
     expect((startInput!.element as HTMLInputElement).value).toBe('2026-06-22');
@@ -149,7 +155,7 @@ describe('TokenUsageRunDetailsView', () => {
 
     await startInput!.setValue('2026-06-21');
     await endInput!.setValue('2026-06-28');
-    await wrapper.find('select').setValue('model');
+    await wrapper.get('[role="radiogroup"]').findAll('[role="radio"]')[1]!.trigger('click');
     await buttonByText(wrapper, 'Fetch Statistics')!.trigger('click');
 
     expect(storeSlot.store.fetchStatistics).toHaveBeenLastCalledWith('2026-06-21', '2026-06-28');
@@ -165,7 +171,7 @@ describe('TokenUsageRunDetailsView', () => {
     expect(wrapper.text()).toContain('Try a wider date range or switch to Model.');
     expect(wrapper.find('[data-test="task-table"]').exists()).toBe(false);
 
-    await wrapper.find('select').setValue('model');
+    await wrapper.get('[role="radiogroup"]').findAll('[role="radio"]')[1]!.trigger('click');
     expect(wrapper.text()).toContain('No runtime/model usage found for this date range.');
     expect(wrapper.find('[data-test="model-table"]').exists()).toBe(false);
   });
@@ -180,5 +186,19 @@ describe('TokenUsageRunDetailsView', () => {
     expect(alert.text()).toContain('Stored token history is temporarily unavailable');
     expect(alert.text()).toContain('New runs remain available');
     expect(alert.text()).not.toContain('TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED');
+  });
+
+  it('blocks an inverted creation-date range before fetching', async () => {
+    const wrapper = await mountPage();
+    const [startInput, endInput] = wrapper.findAll('input[type="date"]');
+    storeSlot.store.fetchStatistics.mockClear();
+
+    await startInput!.setValue('2026-06-29');
+    endInput!.element.removeAttribute('min');
+    await endInput!.setValue('2026-06-28');
+    await buttonByText(wrapper, 'Fetch Statistics')!.trigger('click');
+
+    expect(wrapper.get('[role="alert"]').text()).toBe('Choose a start date on or before the end date.');
+    expect(storeSlot.store.fetchStatistics).not.toHaveBeenCalled();
   });
 });

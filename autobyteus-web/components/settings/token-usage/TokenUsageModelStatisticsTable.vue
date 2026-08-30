@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-      <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+      <table class="min-w-[1080px] w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
           <tr>
             <th class="px-3 py-3">{{ $t('settings.components.settings.TokenUsageStatistics.runtime') }}</th>
             <th class="px-3 py-3">{{ $t('settings.components.settings.TokenUsageStatistics.llm_model') }}</th>
@@ -16,19 +16,19 @@
             <th class="px-3 py-3 text-right">{{ $t('settings.components.settings.TokenUsageStatistics.total_cost') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 bg-white">
-          <tr v-for="row in rows" :key="row.rowId" class="align-top hover:bg-gray-50">
+        <tbody class="divide-y divide-slate-100 bg-white">
+          <tr v-for="row in rows" :key="row.rowId" class="align-top hover:bg-slate-50">
             <td class="px-3 py-3">{{ formatter.formatRuntimeKind(row.runtimeKind) }}</td>
-            <td class="px-3 py-3 font-medium text-gray-900">{{ row.modelDisplayName }}</td>
+            <td class="px-3 py-3 font-medium text-slate-900">{{ row.modelDisplayName }}</td>
             <td class="px-3 py-3 text-right tabular-nums">{{ formatter.formatInteger(row.aggregate.grossInputTokens) }}</td>
             <td class="px-3 py-3 text-right tabular-nums">
               <div>{{ formatter.formatInteger(row.aggregate.cacheReadInputTokens) }}</div>
-              <div class="text-xs text-gray-500">{{ formatter.cacheSubline(row.aggregate) }}</div>
+              <div class="text-xs text-slate-500">{{ formatter.cacheSubline(row.aggregate) }}</div>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">{{ formatter.formatInteger(row.aggregate.outputTokens) }}</td>
             <td class="px-3 py-3 text-right tabular-nums">
               <div>{{ formatter.formatInteger(row.aggregate.reasoningOutputTokens) }}</div>
-              <div v-if="row.aggregate.reasoningOutputTokens" class="text-xs text-gray-500">{{ $t('settings.components.settings.TokenUsageStatistics.includedDiagnostic') }}</div>
+              <div v-if="row.aggregate.reasoningOutputTokens" class="text-xs text-slate-500">{{ $t('settings.components.settings.TokenUsageStatistics.includedDiagnostic') }}</div>
             </td>
             <td class="px-3 py-3 text-right tabular-nums">{{ formatter.formatCostCell(row.aggregate.estimatedApiInputCost, row.aggregate.currency, row.aggregate.apiCostStatus) }}</td>
             <td class="px-3 py-3 text-right tabular-nums">{{ formatter.formatCostCell(row.aggregate.estimatedApiOutputCost, row.aggregate.currency, row.aggregate.apiCostStatus) }}</td>
@@ -50,7 +50,7 @@ defineProps<{
   rows: TokenUsageRuntimeModelStatisticsRow[];
 }>();
 
-const { t: $t } = useLocalization();
-const formatter = createTokenUsageStatisticsFormatter($t);
+const { t: $t, resolvedLocale } = useLocalization();
+const formatter = createTokenUsageStatisticsFormatter($t, () => resolvedLocale.value);
 
 </script>
