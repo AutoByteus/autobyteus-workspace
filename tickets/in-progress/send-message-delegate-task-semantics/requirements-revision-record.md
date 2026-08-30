@@ -10,6 +10,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-002 | User explicitly requested a visualized requirement | Ready for Approval | Draft — Requirements Visualization Needed | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Focused exploratory visualizer brief added; cross-team Product Prototyper handoff required before user decision/approval |
 | RER-003 | Product Design & Prototyping returned review-ready `SMDS-RV-001` / `VIS-R04` | Draft — Requirements Visualization Needed | Ready for Approval | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Exploratory visualizer evidence reconciled and review URL presented; DEC-001 and explicit approval remain pending |
 | RER-004 | User emphasized intuitive, straightforward, ambiguity-free LLM instruction design | Ready for Approval | Ready for Approval | REQ-012; AC-012; QR-005 | Cognitive clarity and production-copy hygiene made explicit and testable; DEC-001 and complete-package approval remain pending |
+| RER-005 | User preferred the earlier prompt structure and requested explicit `forked`/`spawned` instance terminology analysis | Ready for Approval | Ready for Approval | REQ-002, REQ-013; AC-013 | `Spawned fresh task instance` selected as the accurate mental model; unqualified `forked` wording rejected because no live-state clone is established |
 
 ## Revision Entries
 
@@ -72,3 +73,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: Architecture/design must preserve a concise two-mode mental model and validate readability/model choice behavior, while owning exact source placement and edit boundaries.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
 - Next action or recipient: Present the simplified candidate collaboration block and obtain the user's DEC-001 choice and approval or revision feedback.
+
+### RER-005 — Fresh Task Instance Terminology
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user preferred the earlier `Ordinary Communication` / `Dedicated Task Execution` structure and asked whether `forked` or `spawned` would more clearly signal that delegation creates a different task Agent or task AgentTeam instance.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-004.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-002, REQ-013; AC-013; SCN-002 and SCN-006.
+- Why this baseline or revision was recorded: Preserve the user's preferred intuitive organization while preventing an appealing metaphor from creating a false state-inheritance contract.
+- Canonical artifact sections changed: Requirements, acceptance criteria, traceability, investigation intake/source log, and requirement implications.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: The visualizer's fresh-worker distinction remains consistent; no visualization revision is needed.
+- User approval impact: `Spawned fresh task instance` is the recommended copy direction. DEC-001 and explicit approval of the complete intended behavior remain pending.
+- Downstream architecture impact: Exact prose remains downstream-owned, but it must preserve fresh execution identity and must not promise cloning of live mounted-run state.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
+- Next action or recipient: Present the earlier-style prompt revised with `spawned fresh task instance` language and obtain user confirmation or further edits.

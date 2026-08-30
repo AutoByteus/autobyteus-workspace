@@ -3,11 +3,11 @@
 ## Document Status
 
 - Status: `Ready for Approval`
-- Current requirements revision ID: `RER-004`
+- Current requirements revision ID: `RER-005`
 - Request / ticket: Clarify and enforce the distinct orchestration semantics of `send_message_to` and `delegate_task`
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-30
-- Approval state and reference: User confirmed on 2026-08-30 that the LLM-facing contract must be intuitive, straightforward, and unambiguous; requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001 and explicit approval of the complete intended behavior remain pending
+- Approval state and reference: User confirmed on 2026-08-30 that the LLM-facing contract must be intuitive, straightforward, and unambiguous and expressed a preference for the earlier `Ordinary Communication` / `Dedicated Task Execution` structure with explicit instance-creation language; requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001 and explicit approval of the complete intended behavior remain pending
 
 ## Problem And Desired Outcome
 
@@ -85,7 +85,7 @@
 | Requirement ID | Requirement | Related Behavior IDs | Priority / Criticality | Rationale | Source / Decision Reference |
 | --- | --- | --- | --- | --- | --- |
 | REQ-001 | Agent-facing collaboration guidance shall define `send_message_to` as ordinary delivery to an already existing Agent execution or AgentTeam coordinator ingress and shall state that it creates no task or task lifecycle. | BEH-001, BEH-002, BEH-006 | Must | Establishes the real-life “talk to the existing person” model without making an unsupported transport-timing claim. | User request; SRC-004–SRC-006 |
-| REQ-002 | Agent-facing guidance shall define `delegate_task` as the single operation that creates one fresh independently tracked task execution and delivers the complete task description and reference packet to it. | BEH-001, BEH-003, BEH-006 | Must | Prevents the model from treating delegation as only task registration followed by a separate message. | User request; SRC-007–SRC-009 |
+| REQ-002 | Agent-facing guidance shall define `delegate_task` as the single operation that spawns one fresh, independently tracked task Agent or task AgentTeam instance and delivers the complete task description and reference packet to that new execution. | BEH-001, BEH-003, BEH-006 | Must | Prevents the model from treating delegation as only task registration followed by a separate message and makes the separate execution identity intuitive. | User request; SRC-007–SRC-009, SRC-021–SRC-022 |
 | REQ-003 | Guidance shall give an explicit primary-intent choice: use one ordinary message when the intent is communication; use one delegation when the intent is new bounded independently owned work. The same work packet shall not be dispatched through both tools. | BEH-001–BEH-004 | Must | Directly addresses the observed planner confusion. | User request; decision table |
 | REQ-004 | After successful delegation, the original logical `recipient_address` shall not be described or used as an alias for the fresh task execution. Genuine additional clarification, when allowed by DEC-001, shall target the returned exact active `target_agent_run_id` and shall not repeat the original task packet. | BEH-002–BEH-004 | Must | Protects execution identity and avoids duplicate work reaching the mounted recipient. | Existing approved interaction contract; SRC-003, SRC-005, SRC-008, SRC-009 |
 | REQ-005 | `send_message_to` shall not be presented as a task-result, revision, acceptance, finalization, or task-creation fallback. Formal task lifecycle outcomes shall continue through `submit_task_result` and `review_task_result`. | BEH-005 | Must | Free-form messages do not mutate task state. | SRC-002, SRC-003, SRC-013 |
@@ -96,6 +96,7 @@
 | REQ-010 | The canonical distinction shall be expressed as existing-execution communication versus fresh task-execution creation/lifecycle, not as synchronous versus asynchronous transport timing. | BEH-002, BEH-003 | Must | The user's “synchronous” phrasing describes organizational intent; it is not established as an API timing contract. | User request; technical evidence |
 | REQ-011 | No provider-specific forced-tool selection, hidden fallback, combined orchestration tool, message-text classifier, or automatic duplicate call shall be introduced to compensate for ambiguous guidance. | BEH-001, BEH-006 | Must | Keeps intended behavior explicit and avoids adding an unapproved orchestration policy. | Scope decision |
 | REQ-012 | The collaboration block shall teach one intuitive two-mode mental model before selector or lifecycle detail: talk to an existing Agent/Team with `send_message_to`, or create a fresh task worker with `delegate_task`. It shall use plain, direct, parallel wording; keep each consequence and prohibition adjacent to the relevant tool; avoid internal requirement IDs, unresolved placeholders, and unexplained implementation jargon; and remain concise enough that the primary choice is immediately salient. | BEH-001–BEH-006 | Must | The system prompt is an LLM decision interface. Correct facts are insufficient if the model must infer the choice boundary from scattered or overly technical prose. | User clarification on 2026-08-30; SRC-020 |
+| REQ-013 | Instance-creation wording shall use `spawned`, `fresh instance`, or an equally clear creation term. It shall not call delegation a `fork` unless the runtime actually copies the live recipient execution's conversation/history/state. The current contract shall instead explain that a new execution with new run identity is instantiated from the mounted Agent or AgentTeam definition. | BEH-002–BEH-004 | Must | `Spawned` reinforces separate identity without falsely implying inherited live execution state, which the current fresh-activation path does not provide. | User terminology question; SRC-021–SRC-022 |
 
 ## Acceptance Criteria
 
@@ -113,6 +114,7 @@
 | AC-010 | REQ-009 | Authoritative docs and tests are scanned after the change | Active docs and exact prompt/tool assertions agree with the approved semantic distinction and current selector/runtime behavior | Historical ticket evidence may remain historical when clearly marked; active contradictory guidance fails review | Documentation audit and targeted test review |
 | AC-011 | REQ-011 | Approved guidance is implemented | Existing tool names, inputs, outputs, routing, task states, and exposure remain unchanged; no auto-classifier/combined tool/forced provider policy appears | Any proposed runtime prohibition or schema change returns as a requirement gap | Diff/contract review |
 | AC-012 | REQ-001–REQ-005, REQ-012 | A Team-bound LLM receives only the collaboration block and representative ordinary-message, bounded-task, duplicate-dispatch, and task-lifecycle scenarios | From the block alone, the LLM can state the two modes, choose the correct tool, explain the execution/lifecycle consequence, and reject sending the same assignment through both; the visible prompt contains no internal decision IDs or unresolved placeholders | A prompt that is technically correct but requires inference across scattered paragraphs, leads to mixed-tool dispatch, or exposes requirements-process notation fails review | Exact-copy readability review plus representative configured-runtime evaluation |
+| AC-013 | REQ-002, REQ-007, REQ-013 | The collaboration block describes delegation to an Agent and to an AgentTeam | The wording makes clear that each successful delegation spawns a separate fresh task instance with new concrete run identity from the selected definition, while the mounted existing instance remains distinct | The wording must not imply that the current mounted run's conversation, memory, or live state is cloned into the task instance | Exact prompt review plus task Agent/Team identity verification |
 
 ## Relevant Scenarios And Journeys
 
@@ -206,6 +208,7 @@
 | REQ-010 | BEH-002, BEH-003 | AC-001 | SCN-001–SCN-003 | Decision table terminology guardrail |
 | REQ-011 | BEH-001, BEH-006 | AC-011 | SCN-007 | Scope guardrail |
 | REQ-012 | BEH-001–BEH-006 | AC-001–AC-006, AC-012 | SCN-001–SCN-007 | User clarity direction; decision table; VIS-R04 cognition-first actor story |
+| REQ-013 | BEH-002–BEH-004 | AC-003, AC-005, AC-008, AC-013 | SCN-002, SCN-006 | Fresh Agent activation and fresh Team-subtree materialization evidence |
 
 ## Downstream Architecture Input
 

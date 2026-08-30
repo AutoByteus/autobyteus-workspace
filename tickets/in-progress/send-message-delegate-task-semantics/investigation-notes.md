@@ -9,7 +9,7 @@
 - Base or reference revision: `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Dedicated task worktree and branch created successfully; canonical draft artifacts created under `tickets/in-progress/send-message-delegate-task-semantics/`.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-004`
+- Current requirements revision ID: `RER-005`
 - Investigation status: Requirements visualization returned and integrated; package ready for user decision and approval
 
 ## Initial Request And Clarifications
@@ -20,6 +20,7 @@
 - Initial ambiguity: The word “synchronous” may mean communication with an already existing/live recipient rather than blocking request/response timing. The phrase “first delegate task, later send a message again doesn't make sense” may mean (A) forbid redundant re-dispatch of the same work to the logical recipient, or (B) forbid every delegator-to-task-assignee ordinary follow-up. Current authoritative behavior explicitly permits genuine follow-up by exact run ID, so the distinction is material.
 - Later user request: On 2026-08-26 the user explicitly asked Requirements Engineering to send the requirement to Product Prototyper so they can review a visualized requirement before deciding/approving it.
 - Prompt-quality clarification: On 2026-08-30 the user emphasized that this system prompt is a decision interface for an LLM and must therefore be intuitive, straightforward, and free of ambiguity, rather than merely technically complete.
+- Terminology/structure preference: On 2026-08-30 the user preferred the earlier `Ordinary Communication` / `Dedicated Task Execution` organization and proposed `forked` or `spawned` task instance language to make separate identity unmistakable.
 
 ## Product And Domain Understanding
 
@@ -57,6 +58,8 @@
 | SRC-018 | 2026-08-26 | Product-owned artifact | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-review.md`; `prototype-ticket.md`; `validation-evidence.md` | Reconcile the returned requirements visualizer with the canonical package | `VIS-R04` covers existing-execution messaging, fresh-task delegation, wrong logical-address duplicate dispatch, DEC-001 Option A/B, identifier separation, formal lifecycle, and delegation failure; all content is illustrative and DEC-001 remains unapproved | Link the review package and present its URL to the user without inferring approval |
 | SRC-019 | 2026-08-30 | Command / Runtime | `npm run dev -- --host 0.0.0.0 --port 4179`; `http://127.0.0.1:4179` | Make returned exploratory evidence reviewable | Vite visualizer started successfully at the Product-owned review URL | Ask user to review and decide DEC-001 |
 | SRC-020 | 2026-08-30 | User | “This system prompt is very important for LLM... intuitive and understandable and straightforward... no ambiguity.” | Establish the required cognition and clarity standard for final Agent-facing copy | The contract must teach the tool-choice mental model directly; correctness hidden in technical or scattered prose is not sufficient | Add REQ-012, AC-012, and QR-005; keep requirements-process notation out of production copy |
+| SRC-021 | 2026-08-30 | User | Preference for the earlier `Ordinary Communication` wording and suggestion to call delegated instances `forked` or `spawned` | Refine the LLM mental model and terminology | Explicit new-instance language may make the execution boundary more salient; the exact word must not imply unsupported state inheritance | Inspect the activation/materialization path and constrain terminology |
+| SRC-022 | 2026-08-30 | Code | `task-delegation-service.ts`; `task-team-run-identity-factory.ts`; `mixed-task-agent-execution-registry.ts`; `mixed-agent-member-handle.ts` | Determine whether `forked` or `spawned` accurately describes task creation | Task Agents receive newly allocated AgentRun IDs and `activationMode: "fresh"` with a `new` activation plan; task Teams materialize a complete fresh subtree with new TeamRun/AgentRun identities from configured nodes. No live mounted-run conversation/history clone is established | Prefer `spawned fresh task instance`; avoid unqualified `forked` wording |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -171,6 +174,7 @@
 4. Task submission/review separation must remain prominent because prior product history already showed agents confuse free-form lifecycle wording with formal actions.
 5. Provider parity and active documentation alignment are part of the requirement because ambiguous or stale secondary cues can undo a central prompt fix.
 6. Prompt structure is part of correctness for this change: begin with the two-mode choice in plain language, keep parallel cause-and-effect descriptions together, then add only the edge cases needed to prevent misuse. Internal requirement IDs and approval placeholders belong in requirements artifacts, never in the production collaboration block.
+7. `Spawned` is a useful plain-language reinforcement because delegation creates a new concrete execution identity. `Forked` is not safe as the canonical term: it conventionally suggests a branch or copy of the existing live run's state, while the current implementation performs fresh activation/materialization from configuration with new run IDs.
 
 ## Notes For Downstream Architecture Design
 
