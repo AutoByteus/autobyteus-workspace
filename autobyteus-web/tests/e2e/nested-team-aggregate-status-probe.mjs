@@ -188,13 +188,14 @@ const dotDetails = async (locator) => {
   await locator.waitFor({ state: 'visible', timeout: timeoutMs });
   return await locator.evaluate((element) => {
     const inner = element.querySelector('[aria-hidden="true"]');
-    const next = element.nextElementSibling;
+    const statusContainer = element.closest('.member-status');
+    const next = statusContainer?.nextElementSibling;
     const stableRow = element.closest('[data-row-kind="stable_member"]');
     const leading = stableRow?.querySelector(
-      ':scope > [data-test="workspace-team-member-disclosure"], :scope > span[aria-hidden="true"]',
+      ':scope > [data-test="workspace-team-member-disclosure"], :scope > span.ml-2[aria-hidden="true"]',
     );
     if (!(inner instanceof HTMLElement) || !(next instanceof HTMLElement)) {
-      throw new Error('Aggregate wrapper is missing its solid dot or following avatar');
+      throw new Error('Aggregate wrapper is missing its solid dot or following configured-Team identity');
     }
     const outerRect = element.getBoundingClientRect();
     const innerRect = inner.getBoundingClientRect();
@@ -219,13 +220,14 @@ const dotDetails = async (locator) => {
       outerHeight: Math.round(outerRect.height),
       innerWidth: Math.round(innerRect.width),
       innerHeight: Math.round(innerRect.height),
-      avatarWidth: Math.round(nextRect.width),
-      avatarHeight: Math.round(nextRect.height),
-      gapToAvatar: Math.round(nextRect.left - outerRect.right),
+      identityKind: next.getAttribute('data-team-icon'),
+      identityWidth: Math.round(nextRect.width),
+      identityHeight: Math.round(nextRect.height),
+      gapToIdentity: Math.round(nextRect.left - outerRect.right),
       leadingDataTest: leading?.getAttribute('data-test') || null,
       leadingAriaHidden: leading?.getAttribute('aria-hidden') || null,
       afterLeading: leadingRect ? outerRect.left >= leadingRect.right : false,
-      beforeAvatar: outerRect.right <= nextRect.left,
+      beforeIdentity: outerRect.right <= nextRect.left,
     };
   });
 };
@@ -258,9 +260,13 @@ const assertDot = async (locator, { status, label, placement = false }) => {
   if (placement) {
     assert(details.leadingDataTest === 'workspace-team-member-disclosure' || details.leadingAriaHidden === 'true',
       'Aggregate must follow a disclosure control or alignment spacer', details);
-    assert(details.afterLeading && details.beforeAvatar, 'Aggregate must be between disclosure/spacer and avatar', details);
-    assert(details.avatarWidth === 16 && details.avatarHeight === 16, 'Team avatar size changed unexpectedly', details);
-    assert(details.gapToAvatar >= 5 && details.gapToAvatar <= 7, 'Aggregate-to-avatar gap must preserve the 6px token', details);
+    assert(details.afterLeading && details.beforeIdentity,
+      'Aggregate must remain between disclosure/spacer and configured-Team identity', details);
+    assert(details.identityKind === 'user-group-solid'
+      && details.identityWidth === 16 && details.identityHeight === 16,
+    'Configured Team must use the approved 16px filled User group identity', details);
+    assert(details.gapToIdentity >= 5 && details.gapToIdentity <= 7,
+      'Aggregate-to-Team-identity gap must preserve the 6px token', details);
   }
   return details;
 };

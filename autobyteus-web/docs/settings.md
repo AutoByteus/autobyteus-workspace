@@ -415,12 +415,19 @@ global Workspaces/run-history tree owns live execution identity and hierarchy:
 it composes stable history rows with pure renderer-only transient display rows
 from the V2 execution view in `AgentTeamContext.view`, keeps durable members
 visually solid, and renders task-agent, task-team root, and task-team child
-executions inline with explicit transient row kinds. A transient row has a light ghost background and
-exactly one visible transient marker in the leading status-dot slot: an
-explicit eight-dot SVG ring (`h-2.5 w-2.5`) whose eight `currentColor` circles
-preserve status color semantics. It must not use the superseded CSS dotted-border
-or dashed-stroke marker treatments, add a second dotted initials/avatar marker,
-add a trailing marker, or show visible `Temp` / `Temporary` copy in the row body.
+executions inline with explicit transient row kinds. Stable configured Team
+rows use an unboxed filled user-group icon and semibold name, while stable Agent
+rows retain their circular avatar. A transient task-Team row uses one dashed
+indigo row treatment plus a bordered bolt icon; a transient task-Agent keeps the
+eight-dot `StatusDot` variant so its exact status color remains visible. Neither
+role adds visible `Temp` / `Temporary` copy to the row body.
+
+`WorkspaceTeamExecutionTree.vue` applies the existing local disclosure state to
+the depth-first execution projection and derives sibling continuation metadata.
+`WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
+right-only current elbow from that metadata; the current vertical continues to
+the next sibling or stops at the current row midpoint for the last sibling.
+These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
 team-member focus path. A team-member row is current only when its owning
 `teamRunId` is the authoritative selected TeamRun and its exact member address
@@ -430,6 +437,19 @@ expose the single `aria-current="true"` navigation state, while focus, hover,
 status, and transient presentation remain separate visual states. The right-
 side Team tab owns task detail/content through its Tasks section; it is not the
 primary execution hierarchy or status surface.
+
+The expanded execution subtree exposes localized `tree` and `treeitem`
+semantics. Every row reports its localized role, name, exact address, level,
+status, selection, and applicable expanded state; row bodies and independent
+disclosures remain operable with pointer, Enter, and Space without disclosure
+clicks bubbling into selection. A native title and focus-visible tooltip recover
+the complete role/name/address when a label truncates. The
+`workspace-history-panel` container preserves the supported 260/320/520px and
+Default/Large/Extra Large matrix: repeated member age yields at 320px and below,
+depth-2 status may yield below 280px, and hidden metadata returns on hover or
+keyboard focus. Selected execution rows keep a straight 2px indigo inset rule,
+`#eef2ff` background, and zero corner radius so selection does not erase the
+tree grammar or node role.
 
 `TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
 remains the default for a selected team run with no delegated task entries, but
@@ -779,9 +799,11 @@ authoritative selected team run plus that run's focused member route; clearing
 the team selection or having no valid target leaves no member row current. The
 Workspace history tree renders recursive `team.rootTeam.members` structure
 from the V2 history projection. Nested configured-Team member rows appear as
-subteam rows with a Team badge and their own disclosure control; they are
-collapsed by default, expand children recursively with indentation, and disclosure-bearing subteam row-body
-activation toggles children while preserving row selection/focus. The explicit
+semibold subteam rows with an unboxed filled user-group icon and their own
+disclosure control; they are collapsed by default and expand children through
+the continuous-rail/right-elbow printed-tree grammar described above.
+Disclosure-bearing configured subteam row-body activation toggles children and
+selects only when that structural row has a concrete Agent run. The explicit
 disclosure control remains visible and toggles children without selecting the
 row or bubbling into the row-body handler. Leaf member rows without children
 remain select-only. Clicking a member or subteam row whose canonical address

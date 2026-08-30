@@ -268,6 +268,20 @@ const messages = {
     "团队状态：空闲",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline":
     "团队状态：离线",
+  "workspace.history.hierarchy.tree_label": "{{name}}组织树",
+  "workspace.history.hierarchy.role.agent_team": "智能体团队",
+  "workspace.history.hierarchy.role.agent": "智能体",
+  "workspace.history.hierarchy.role.temporary_task_team": "临时任务团队",
+  "workspace.history.hierarchy.role.temporary_task_agent": "临时任务智能体",
+  "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",
+  "workspace.history.hierarchy.tree_item": "{{role}}，{{name}}，第 {{level}} 级，{{status}}，{{address}}",
+  "workspace.history.hierarchy.expand": "展开{{name}}",
+  "workspace.history.hierarchy.collapse": "折叠{{name}}",
+  "workspace.history.hierarchy.status.running": "运行中",
+  "workspace.history.hierarchy.status.initializing": "正在初始化",
+  "workspace.history.hierarchy.status.error": "错误",
+  "workspace.history.hierarchy.status.idle": "空闲",
+  "workspace.history.hierarchy.status.offline": "离线",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

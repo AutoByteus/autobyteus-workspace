@@ -46,6 +46,7 @@
     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
     "test:e2e:nested-team-aggregate-status": "node tests/e2e/nested-team-aggregate-status-probe.mjs",
+    "test:e2e:nested-team-hierarchy": "node tests/e2e/nested-team-hierarchy-probe.mjs",
     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
     "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",

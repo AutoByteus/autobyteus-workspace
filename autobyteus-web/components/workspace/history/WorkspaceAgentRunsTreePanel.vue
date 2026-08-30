@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col bg-white">
+  <div class="workspace-history-panel flex h-full flex-col bg-white">
     <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
       <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3>
       <button
@@ -389,3 +389,9 @@ onBeforeUnmount(() => {
   }
 });
 </script>
+
+<style scoped>
+.workspace-history-panel {
+  container: workspace-history-panel / inline-size;
+}
+</style>

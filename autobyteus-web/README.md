@@ -485,6 +485,27 @@ Use `--port <port>` to pin the port. If automatic discovery does not find
 Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Nested Team Hierarchy Browser Probe
+
+The Workspace-history nested-Team hierarchy has a self-starting Chromium probe
+covering the production printed-tree components and current execution-row
+contracts. It verifies configured, transient, and deep mixed-node identity;
+continuous ancestor rails and terminating right-only elbows; orthogonal
+selection; the complete 260/320/520px by Default/Large/Extra Large matrix;
+narrow metadata and full-identity recovery; localized tree/treeitem accessibility
+output; pointer and keyboard disclosure; exact selection and Stop action routing;
+quiet-refresh preservation; runtime errors; and owned cleanup. The probe installs
+a temporary Nuxt fixture route, starts an owned development server on a free
+loopback port, writes evidence, and removes only the resources it owns:
+
+```bash
+pnpm test:e2e:nested-team-hierarchy -- --output-dir test-results/nested-team-hierarchy
+```
+
+Use `--port <port>` to pin the port. If automatic browser discovery does not find
+Chrome/Chromium, pass `--browser-executable <path>` or set
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:
@@ -502,6 +523,7 @@ pnpm codegen
 - `pnpm test:e2e:electron:isolation`: Run the complete packaged Electron isolation probe and write evidence
 - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
 - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
+- `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

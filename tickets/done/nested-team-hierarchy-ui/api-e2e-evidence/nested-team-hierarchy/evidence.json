@@ -1,0 +1,432 @@
+{
+  "startedAt": "2026-08-30T11:43:27.994Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/usr/bin/chromium",
+  "webDir": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web",
+  "fixturePath": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web/tests/e2e/fixtures/nested-team-hierarchy.page.vue",
+  "installedPagePath": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web/pages/api-e2e-nested-team-hierarchy.vue",
+  "routePath": "/api-e2e-nested-team-hierarchy",
+  "scenarios": {
+    "NTHUI-BR-001": {
+      "description": "Production components render the approved deep configured/transient printed tree, connector grammar, role identity, and orthogonal selection",
+      "result": "Pass",
+      "startedAt": "2026-08-30T11:43:41.027Z",
+      "details": {
+        "rowCount": 16,
+        "configuredTeamIcons": 4,
+        "agentAvatars": 10,
+        "transientTeamIcons": 1,
+        "transientRows": 2,
+        "selected": {
+          "backgroundColor": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "borderRadius": "0px",
+          "ariaSelected": "true",
+          "ariaCurrent": "true"
+        },
+        "statusEvidence": {
+          "exactAgentLabel": "Agent, Accessibility & Design System Coordinator, level 2, error, /product/accessibility",
+          "configuredAggregate": "running",
+          "transientAgentLabel": "Temporary task agent, Task: Browser Accessibility Reviewer, level 2, initializing, /temporary-review/reviewer"
+        },
+        "deepLayout": {
+          "address": "/software/quality/automation",
+          "depth": 2,
+          "hasFollowingSibling": false,
+          "rowHeight": 28,
+          "branchHeight": 34.375,
+          "branchLeft": 420,
+          "branchRight": 428,
+          "leadingLeft": 429,
+          "beforeLeft": 0,
+          "beforeWidth": 1,
+          "beforeHeight": 17.6875,
+          "afterLeft": 0,
+          "afterWidth": 8,
+          "afterHeight": 1,
+          "ancestorDepths": [
+            0
+          ]
+        },
+        "screenshot": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-evidence/nested-team-hierarchy/deep-320.png"
+      }
+    },
+    "NTHUI-BR-002": {
+      "description": "The complete supported width/font matrix has no overflow or clipped disclosure while narrow metadata yields and remains recoverable",
+      "result": "Pass",
+      "startedAt": "2026-08-30T11:43:41.216Z",
+      "details": {
+        "matrix": [
+          {
+            "width": 260,
+            "font": "default",
+            "rootFontPixels": 16,
+            "ageOpacity": "0",
+            "depthTwoStatusOpacity": "0",
+            "nameMetrics": {
+              "clientWidth": 130,
+              "scrollWidth": 445
+            },
+            "clientWidth": 260,
+            "scrollWidth": 260,
+            "panelRect": {
+              "left": 347,
+              "right": 607,
+              "width": 260
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 260,
+            "font": "large",
+            "rootFontPixels": 18,
+            "ageOpacity": "0",
+            "depthTwoStatusOpacity": "0",
+            "nameMetrics": {
+              "clientWidth": 114,
+              "scrollWidth": 501
+            },
+            "clientWidth": 260,
+            "scrollWidth": 260,
+            "panelRect": {
+              "left": 350,
+              "right": 610,
+              "width": 260
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 260,
+            "font": "extra-large",
+            "rootFontPixels": 20,
+            "ageOpacity": "0",
+            "depthTwoStatusOpacity": "0",
+            "nameMetrics": {
+              "clientWidth": 98,
+              "scrollWidth": 557
+            },
+            "clientWidth": 260,
+            "scrollWidth": 260,
+            "panelRect": {
+              "left": 353,
+              "right": 613,
+              "width": 260
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 320,
+            "font": "default",
+            "rootFontPixels": 16,
+            "ageOpacity": "0",
+            "depthTwoStatusOpacity": "1",
+            "nameMetrics": {
+              "clientWidth": 190,
+              "scrollWidth": 445
+            },
+            "clientWidth": 320,
+            "scrollWidth": 320,
+            "panelRect": {
+              "left": 347,
+              "right": 667,
+              "width": 320
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 320,
+            "font": "large",
+            "rootFontPixels": 18,
+            "ageOpacity": "0",
+            "depthTwoStatusOpacity": "1",
+            "nameMetrics": {
+              "clientWidth": 174,
+              "scrollWidth": 501
+            },
+            "clientWidth": 320,
+            "scrollWidth": 320,
+            "panelRect": {
+              "left": 350,
+              "right": 670,
+              "width": 320
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 320,
+            "font": "extra-large",
+            "rootFontPixels": 20,
+            "ageOpacity": "0",
+            "depthTwoStatusOpacity": "1",
+            "nameMetrics": {
+              "clientWidth": 158,
+              "scrollWidth": 557
+            },
+            "clientWidth": 320,
+            "scrollWidth": 320,
+            "panelRect": {
+              "left": 353,
+              "right": 673,
+              "width": 320
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 520,
+            "font": "default",
+            "rootFontPixels": 16,
+            "ageOpacity": "1",
+            "depthTwoStatusOpacity": "1",
+            "nameMetrics": {
+              "clientWidth": 357,
+              "scrollWidth": 445
+            },
+            "clientWidth": 520,
+            "scrollWidth": 520,
+            "panelRect": {
+              "left": 347,
+              "right": 867,
+              "width": 520
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 520,
+            "font": "large",
+            "rootFontPixels": 18,
+            "ageOpacity": "1",
+            "depthTwoStatusOpacity": "1",
+            "nameMetrics": {
+              "clientWidth": 337,
+              "scrollWidth": 501
+            },
+            "clientWidth": 520,
+            "scrollWidth": 520,
+            "panelRect": {
+              "left": 350,
+              "right": 870,
+              "width": 520
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          },
+          {
+            "width": 520,
+            "font": "extra-large",
+            "rootFontPixels": 20,
+            "ageOpacity": "1",
+            "depthTwoStatusOpacity": "1",
+            "nameMetrics": {
+              "clientWidth": 317,
+              "scrollWidth": 557
+            },
+            "clientWidth": 520,
+            "scrollWidth": 520,
+            "panelRect": {
+              "left": 353,
+              "right": 873,
+              "width": 520
+            },
+            "treeRole": "tree",
+            "disclosures": 5,
+            "outsideControls": 0,
+            "rowOverflow": 0
+          }
+        ],
+        "hoverAgeOpacity": "1",
+        "focus": {
+          "title": "智能体 · Research Operations Specialist With A Very Long Localized Role · /product/research",
+          "ariaLabel": "智能体，Research Operations Specialist With A Very Long Localized Role，第 2 级，空闲，/product/research",
+          "rowZIndex": "60",
+          "tooltipDisplay": "block",
+          "tooltipText": "智能体 · Research Operations Specialist With A Very Long Localized Role · /product/research",
+          "ageOpacity": "1"
+        },
+        "narrowScreenshot": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-evidence/nested-team-hierarchy/focus-260-extra-large-zh-cn.png",
+        "wideScreenshot": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/tickets/in-progress/nested-team-hierarchy-ui/api-e2e-evidence/nested-team-hierarchy/deep-520.png"
+      }
+    },
+    "NTHUI-BR-003": {
+      "description": "Pointer and keyboard disclosure remain independent, structural rows never fabricate selection, concrete selection and run actions remain exact, and quiet refresh preserves state",
+      "result": "Pass",
+      "startedAt": "2026-08-30T11:43:44.231Z",
+      "details": {
+        "rowCountBeforeRefresh": 9,
+        "rowCountAfterRefresh": 9,
+        "stateBeforeRefresh": {
+          "panelWidth": 320,
+          "fontScale": "default",
+          "selectedAgentRunId": "hierarchy-architect-run",
+          "refreshCount": 0,
+          "coordinatorStatus": "running",
+          "expanded": {
+            "team:hierarchy-product-team-run": false,
+            "team:hierarchy-software-team-run": true,
+            "team:hierarchy-quality-team-run": true,
+            "team:hierarchy-operations-team-run": false,
+            "task-team:hierarchy-task-team-run": true
+          },
+          "counters": {
+            "toggles": 5,
+            "memberSelections": 1,
+            "teamSelections": 0,
+            "terminate": 1,
+            "archive": 0,
+            "delete": 0
+          }
+        },
+        "stateAfterRefresh": {
+          "panelWidth": 320,
+          "fontScale": "default",
+          "selectedAgentRunId": "hierarchy-architect-run",
+          "refreshCount": 1,
+          "coordinatorStatus": "idle",
+          "expanded": {
+            "team:hierarchy-product-team-run": false,
+            "team:hierarchy-software-team-run": true,
+            "team:hierarchy-quality-team-run": true,
+            "team:hierarchy-operations-team-run": false,
+            "task-team:hierarchy-task-team-run": true
+          },
+          "counters": {
+            "toggles": 5,
+            "memberSelections": 1,
+            "teamSelections": 0,
+            "terminate": 1,
+            "archive": 0,
+            "delete": 0
+          }
+        }
+      }
+    },
+    "NTHUI-BR-004": {
+      "description": "Chromium accessibility output and localized keyboard focus expose role, identity, level, status, selection, and disclosure state",
+      "result": "Pass",
+      "startedAt": "2026-08-30T11:43:44.734Z",
+      "details": {
+        "attributes": {
+          "role": "treeitem",
+          "level": "2",
+          "selected": "true",
+          "current": "true",
+          "label": "智能体，Accessibility & Design System Coordinator，第 2 级，错误，/product/accessibility",
+          "title": "智能体 · Accessibility & Design System Coordinator · /product/accessibility",
+          "tooltip": "智能体 · Accessibility & Design System Coordinator · /product/accessibility"
+        },
+        "teamAttributes": {
+          "role": "treeitem",
+          "level": "1",
+          "expanded": "true",
+          "label": "智能体团队，Software Engineering，第 1 级，运行中，/software",
+          "disclosureLabel": "折叠Software Engineering"
+        },
+        "treeAx": {
+          "role": "tree",
+          "name": "Active Coordination Run With A Long Localized Summary组织树",
+          "ignored": false,
+          "properties": {
+            "multiselectable": false,
+            "orientation": "vertical",
+            "required": false
+          }
+        },
+        "selectedAx": {
+          "role": "treeitem",
+          "name": "智能体，Accessibility & Design System Coordinator，第 2 级，错误，/product/accessibility",
+          "ignored": false,
+          "properties": {
+            "focusable": true,
+            "focused": true,
+            "level": 2,
+            "selected": true
+          }
+        },
+        "softwareAx": {
+          "role": "treeitem",
+          "name": "智能体团队，Software Engineering，第 1 级，运行中，/software",
+          "ignored": false,
+          "properties": {
+            "focusable": true,
+            "level": 1,
+            "expanded": true,
+            "selected": false
+          }
+        },
+        "recoveredStatusOpacity": "1"
+      }
+    },
+    "NTHUI-BR-005": {
+      "description": "Browser execution completes without console errors, page errors, or failed requests",
+      "result": "Pass",
+      "startedAt": "2026-08-30T11:43:45.152Z",
+      "details": {
+        "browserEventCount": 1,
+        "unexpectedEvents": [],
+        "observedRequestCount": 2
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ],
+  "requests": [
+    {
+      "at": "2026-08-30T11:43:41.638Z",
+      "method": "GET",
+      "resourceType": "fetch",
+      "url": "http://127.0.0.1:43879/_nuxt/builds/meta/dev.json"
+    },
+    {
+      "at": "2026-08-30T11:43:42.580Z",
+      "method": "GET",
+      "resourceType": "xhr",
+      "url": "http://127.0.0.1:43879/rest/health"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 16916,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "fixture": {
+      "status": "removed",
+      "path": "/home/autobyteus/workspace/autobyteus-workspace-nested-team-hierarchy-ui-requirements/autobyteus-web/pages/api-e2e-nested-team-hierarchy.vue"
+    }
+  },
+  "port": 43879,
+  "baseUrl": "http://127.0.0.1:43879",
+  "finishedAt": "2026-08-30T11:43:45.283Z",
+  "result": "Pass"
+}

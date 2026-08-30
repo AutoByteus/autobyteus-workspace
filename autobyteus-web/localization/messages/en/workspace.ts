@@ -269,6 +269,20 @@ const messages = {
     "Team status: Idle",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline":
     "Team status: Offline",
+  "workspace.history.hierarchy.tree_label": "{{name}} organization tree",
+  "workspace.history.hierarchy.role.agent_team": "Agent team",
+  "workspace.history.hierarchy.role.agent": "Agent",
+  "workspace.history.hierarchy.role.temporary_task_team": "Temporary task team",
+  "workspace.history.hierarchy.role.temporary_task_agent": "Temporary task agent",
+  "workspace.history.hierarchy.identity": "{{role}} · {{name}} · {{address}}",
+  "workspace.history.hierarchy.tree_item": "{{role}}, {{name}}, level {{level}}, {{status}}, {{address}}",
+  "workspace.history.hierarchy.expand": "Expand {{name}}",
+  "workspace.history.hierarchy.collapse": "Collapse {{name}}",
+  "workspace.history.hierarchy.status.running": "running",
+  "workspace.history.hierarchy.status.initializing": "initializing",
+  "workspace.history.hierarchy.status.error": "error",
+  "workspace.history.hierarchy.status.idle": "idle",
+  "workspace.history.hierarchy.status.offline": "offline",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
