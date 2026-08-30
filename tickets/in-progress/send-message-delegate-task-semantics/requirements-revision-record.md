@@ -15,6 +15,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-007 | User selected the existing message `result` slot for exact receiving AgentRun identity | Ready for Approval — Scope Decision Needed | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | DEC-002 Option A approved: successful message output returns the exact existing receiver while delegation continues returning the spawned task ingress |
 | RER-008 | User requested an explicit AgentTeam delegation/packet-ingress explanation | Ready for Approval | Ready for Approval | REQ-015; AC-015 | Four outcomes made mandatory: existing Agent, existing Team coordinator, fresh task Agent, and fresh task Team coordinator |
 | RER-009 | User clarified that `target_agent_run_id` replaces `result` rather than nesting beneath it | Ready for Approval | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | Message output contract refined to flat top-level identity with no dot notation; rejection returns a null identity |
+| RER-010 | User requested one contract file containing the exact proposed prompt | Ready for Approval | Ready for Approval | REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002 | Added contract `ATC-001` as the primary exact-copy approval supplement |
 
 ## Revision Entries
 
@@ -152,3 +153,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: The structural public-contract trigger remains; design must address removal of `result`, stable failure shape, native/MCP parity, and any strict consumers.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
 - Next action or recipient: Present the corrected flat schema and continue the remaining requirements approval loop.
+
+### RER-010 — Consolidated Collaboration Contract
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user requested a dedicated contract file and asked that it contain the exact collaboration prompt.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-009.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002.
+- Why this baseline or revision was recorded: Provide one readable normative approval artifact that does not require the user or downstream teams to reconstruct the exact prompt and result contracts from multiple tables.
+- Canonical artifact sections changed: Requirements status/approval reference, supplemental artifacts, readiness, investigation intake/source log, and supplement inventory.
+- Supplemental artifacts added, changed, or removed: Added `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/agent-team-collaboration-contract.md` as contract `ATC-001`.
+- Prototype evidence or product decisions incorporated: The contract reflects VIS-R04's existing-versus-fresh execution distinction but remains a requirements-owned textual contract, not a Product-owned UI/UX artifact.
+- User approval impact: The exact prompt is now directly reviewable. It uses recommended DEC-001 Option A and requires explicit approval or revision feedback.
+- Downstream architecture impact: No target architecture is prescribed. Once approved, the flat message result is a structural contract trigger requiring Architecture Designer routing.
+- Remaining gaps, assumptions, or blocked decisions: Explicit approval or revision of contract `ATC-001`, including the exact-run clarification rule.
+- Next action or recipient: Present the contract path and concise approval basis to the user.

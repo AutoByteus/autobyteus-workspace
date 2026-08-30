@@ -3,11 +3,11 @@
 ## Document Status
 
 - Status: `Ready for Approval`
-- Current requirements revision ID: `RER-009`
+- Current requirements revision ID: `RER-010`
 - Request / ticket: Clarify and enforce the distinct orchestration semantics of `send_message_to` and `delegate_task`
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-30
-- Approval state and reference: User confirmed on 2026-08-30 that the LLM-facing contract must be intuitive, straightforward, and unambiguous, preferred the earlier `Ordinary Communication` / `Dedicated Task Execution` structure with explicit spawned-instance language, selected a flat `target_agent_run_id` field to replace the always-null public message `result` field, and requested an explicit Agent-versus-AgentTeam four-case distinction; requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001 and explicit approval of the complete intended behavior remain pending
+- Approval state and reference: User requested a dedicated collaboration contract with the exact proposed prompt on 2026-08-30. Contract `ATC-001` is ready for review and encodes the recommended DEC-001 Option A; explicit approval of the contract and complete intended behavior remains pending. Requirements visualizer `SMDS-RV-001` / `VIS-R04` remains available at `http://127.0.0.1:4179`.
 
 ## Problem And Desired Outcome
 
@@ -180,6 +180,7 @@
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md` | Concise normative intent/tool/selector decision aid with positive and negative examples | REQ-001–REQ-007, REQ-010; AC-001–AC-008 | Proposed | Behavior-defining; included in user approval basis |
+| `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/agent-team-collaboration-contract.md` | Consolidate the normative four-case identity matrix, flat tool-result contracts, invariants, and exact proposed provider-shared prompt | REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002 | Proposed — Ready for User Approval | Behavior-defining; primary exact-copy approval supplement |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md` | Focus the exploratory visualizer on the existing-execution versus fresh-task-execution model and DEC-001 | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Delivered to Product Design & Prototyping | Requirements-owned request brief; not a final UI/UX specification |
 | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-review.md` | Record the Product-owned `VIS-R04` review package, covered scenarios, motion behavior, evidence limits, and open decision | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Ready for user review | Exploratory evidence only; it does not itself approve DEC-001 or define final UI/UX |
 | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/visual-references` | Provide durable screenshots of the explanatory states | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Available | Supporting visualization evidence; non-normative for implementation UI |
@@ -238,4 +239,4 @@
 - Material assumptions and open decisions are visible: `Yes`
 - User approval received: `No`
 - Architecture-ready: `No`
-- Remaining blocker: User decision on DEC-001 and explicit approval of the intended behavior and decision-table supplement.
+- Remaining blocker: Explicit user approval or revision feedback for contract `ATC-001`, including its recommended exact-run clarification rule, and the complete intended behavior package.

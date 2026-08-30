@@ -9,7 +9,7 @@
 - Base or reference revision: `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Dedicated task worktree and branch created successfully; canonical draft artifacts created under `tickets/in-progress/send-message-delegate-task-semantics/`.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-009`
+- Current requirements revision ID: `RER-010`
 - Investigation status: Requirements visualization returned and integrated; package ready for user decision and approval
 
 ## Initial Request And Clarifications
@@ -25,6 +25,7 @@
 - Return-contract decision: On 2026-08-30 the user selected the existing generic `send_message_to.result` slot to carry the exact receiving `target_agent_run_id`, aligning successful feedback with the identity returned by `delegate_task` while preserving existing-versus-spawned semantics.
 - AgentTeam clarity request: On 2026-08-30 the user asked for a clearer prompt explanation that delegating to an AgentTeam spawns a fresh task Team instance while its coordinator Agent receives the task packet.
 - Flat-result clarification: On 2026-08-30 the user clarified that `target_agent_run_id` should replace the top-level `result` field rather than be nested as `result.target_agent_run_id`.
+- Contract request: On 2026-08-30 the user requested a dedicated contract file that includes the exact proposed collaboration prompt.
 
 ## Product And Domain Understanding
 
@@ -69,6 +70,7 @@
 | SRC-025 | 2026-08-30 | User | “Why don't we just replace that result with task agent runID, just like a dedicated task?” | Resolve DEC-002 and interpret the existing result slot | User selected returning identity through the existing `result` field. Requirements correct the proposed label: messaging returns the exact existing receiving AgentRun ID, not a task Agent ID; delegation returns the newly spawned task ingress AgentRun ID | Add REQ-014/AC-014 and route the approved public contract change through architecture after full requirements approval |
 | SRC-026 | 2026-08-30 | User / Code | User AgentTeam clarification plus `mixed-task-team-execution-registry.ts`, `task-team-run-identity-factory.ts`, `task-delegation-service.ts`, and `root-team-run.ts` | Verify and sharpen AgentTeam packet-receiver semantics | Logical messaging to a Team resolves its existing configured coordinator. Team delegation materializes a complete fresh task Team subtree with new TeamRun/AgentRun IDs, binds its new coordinator, and releases the work packet by posting it to that coordinator AgentRun. The delegation result returns that fresh coordinator as `target_agent_run_id` | Require one explicit four-case Agent/AgentTeam contrast in the LLM-facing guidance |
 | SRC-027 | 2026-08-30 | User / Code | User correction plus `agent-communication-tool-result.ts` usage scan | Resolve message success schema shape | User explicitly rejected nested dot notation. The `AgentCommunicationToolResultEnvelope` and its always-null `result` are used only by `send_message_to` native/MCP mapping in current source, so replacing that field with flat `target_agent_run_id` loses no existing successful payload while still requiring contract migration and parity updates | Refine REQ-014/AC-014 and DEC-002 to the flat field; require `null` on rejection |
+| SRC-028 | 2026-08-30 | User | “I think now you can create a contract file... add this exact prompt in the contract file as well.” | Establish the requested approval artifact | User wants one consolidated normative contract containing the exact LLM-facing copy rather than reconstructing it from requirements tables | Create `agent-team-collaboration-contract.md`, link it into the approval basis, and preserve architecture boundaries |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -160,6 +162,7 @@
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md` | Requirements Engineering | Make the message/delegation/result/review choice concrete with examples | Contract semantics only | REQ-001–REQ-007, REQ-010; AC-001–AC-008 | Proposed | Behavior-defining; awaiting user approval |
+| `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/agent-team-collaboration-contract.md` | Requirements Engineering | Consolidate exact prompt copy, public result schemas, the four-case matrix, and normative invariants | Complete collaboration contract | REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002 | Proposed — Ready for User Approval | Primary behavior-defining exact-copy supplement; user approval required |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md` | Requirements Engineering | Define the focused exploratory question, scenarios, and review objective for Product Prototyper | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Delivered | Request brief; user approval applies to decisions later clarified, not to this brief as a final UI/UX spec |
 | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-review.md` | Product Design & Prototyping | Record the review-ready `VIS-R04` journey, evidence, and limitations | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Ready for user review | Exploratory evidence; does not itself approve behavior |
 | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/visual-references` | Product Design & Prototyping | Preserve supporting screenshots of the explanatory states | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Available | Non-normative evidence; no final UI/UX approval applies |
