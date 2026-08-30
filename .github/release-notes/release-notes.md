@@ -1,44 +1,28 @@
-# AutoByteus v1.4.62 — Application-Owned Agent Tools
+# AutoByteus 1.4.63 — Nested Team Hierarchy UI
 
-## Added
+## Improved
 
-- Application manifest v5 `agentTools[]` declarations with backend definition v7 `agentToolHandlers`.
-- Application-scoped tool composition for AutoByteus, Claude, and Codex without process-global application-tool registration.
-- A shared authorization, strict schema-validation, worker-dispatch, bounded-result, and call-lifecycle gateway.
-- Deterministic tokenless Agent Tools MCP run-session composition with fresh application routes across activation and restore.
-- Serialized package/application catalog transitions that quiesce and drain only the affected application-tool lane.
-- Brief Studio's read-only `get_brief_context` teaching workflow.
+- Expanded Workspace-history Team runs now read as a compact printed file tree with continuous ancestor rails and correctly terminating right-only elbows.
+- Configured Teams use a filled user-group symbol and semibold label, Agents retain circular avatars, and transient task Teams use a separate dashed bolt treatment.
+- Selected rows use an orthogonal indigo treatment that preserves connector and node-role cues.
+- Long names remain recoverable by hover/title and keyboard-focus tooltip. Localized tree semantics expose each visible node's role, name, address, level, status, selection, and disclosure state.
+- The hierarchy remains operable across the supported 260px, 320px, and 520px panels and Default, Large, and Extra Large font presets; secondary age/status metadata yields and recovers as space requires.
 
-## Brief Studio Workflow
+## Preserved Behavior
 
-The shipped researcher and writer each call `get_brief_context` first, retain the returned Brief marker, create their member-workspace artifacts, publish canonical relative paths, and complete the Team handoff. Existing artifact publication and Brief reconciliation—not the read-only context tool—move the same Brief to `in_review` and refresh the UI.
+- Team-definition/run grouping, default-collapsed nested Teams, independent disclosure, exact member selection, selected-ancestor reveal, Stop isolation, status meaning, configured/transient execution identity, and quiet-refresh state remain unchanged.
+- The change does not alter team topology, APIs, persistence, lifecycle, authentication, external providers, or Electron-shell integration.
 
-Artifact creation is operation-neutral. Any already-authorized foundation capability supplied by the runtime is valid. Provider/native/normalized operation events remain diagnostic; the authoritative proof is the real artifact and path, publication, handoff/result use, exact identity joins, read-only causality, and same-brief UI result.
+## Validation
 
-## Security And Lifecycle
+- Focused changed component: `9/9` passed.
+- Focused history/tree/state/selection/projection/hydration: `120/120` passed.
+- Broader affected history/GraphQL/hydration: `201/201` passed.
+- Durable hierarchy and aggregate-status Chromium scenarios passed, including the complete 3×3 width/font matrix, localized accessibility output, interactions, refresh, runtime safety, and owned cleanup.
+- Production Nuxt build passed with `15` routes prerendered. Delivery's focused check passed `9/9` after the final latest-base refresh.
 
-- Application declarations never enter the shared process registry.
-- Platform/static Agent Tools MCP names are reserved from applications.
-- Same-name application tools can coexist in separate applications.
-- An application route can outrank configured external MCP only inside the exact owning application session.
-- General-process, cross-application, stale, forged, and terminal-binding callers fail closed.
-- The dedicated Agent Tools listener is process-local, loopback-only, tokenless, and separate from the main Studio/standalone HTTP listener.
-- Package quiesce/drain and exact-run session deactivation remain separate lifecycle owners.
-- Handler and worker failures are sanitized and are not automatically retried.
+## Operational Notes
 
-## Compatibility
-
-Generated/importable application packages built for manifest v4/backend definition v6 must be rebuilt for v5/v7. Existing application databases, bindings, journals, overrides, Agent/Team definitions, and global MCP configuration remain directly usable; no migration is required. No v4/v6 or bearer-session production compatibility fallback was added.
-
-## Verification
-
-- Original platform scope: API-REV-001 `Pass / 97.2%`, including the decisive `33 files / 234 tests` matrix.
-- Agent/browser/lifecycle scope: API-REV-006 `Pass / 98.4%` for AC-032–AC-044.
-- Implementation source review: CRR-013 `Pass`.
-- Proportional durable-test review: CRR-014 `Pass`, no findings.
-- Latest-base integration: `origin/personal` `64cb4e952` merged cleanly at `7ab0a9968`.
-- Linux ARM64 Electron package: README-directed build passed; the accepted AppImage was launched with a ready embedded server and visible UI, then closed gracefully after user testing.
-
-## Known Residuals
-
-External provider behavior remains nondeterministic. Supplemental server typecheck retains the pre-existing TS6059 rootDir/include issue. API-REV-005 remains truthful failure history under the superseded zero-shell oracle. Historical API-BROAD-001 failures in five unchanged workspace/run-history files were not represented as feature passes.
+- Persisted data: `Not Affected`; no migration, rebuild, compatibility path, or data rollback is required.
+- Known non-blocking risk: Extremely large hierarchy performance has no approved threshold; durable browser evidence covers 16 visible rows through depth 3.
+- A Linux ARM64 `1.4.62` package was built and launched as the pre-release verification candidate; its bundled backend passed health checks and the user explicitly accepted the result. Release artifacts are produced independently for version `1.4.63` by the documented tag-triggered desktop workflow.
