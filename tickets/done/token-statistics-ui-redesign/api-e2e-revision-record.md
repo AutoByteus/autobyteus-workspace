@@ -11,7 +11,7 @@
 
 ### API-REV-001 — Initial direct-route live API/browser baseline
 
-- Triggering role, report path, and round: `implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-handoff.md`; execution round 1
+- Triggering role, report path, and round: `implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-handoff.md`; execution round 1
 - Triggering finding or scenario IDs: initial validation package; completed finding `APIE2E-F001` / `TS-E2E-002`
 - Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: architecture/design/code-review/delivery revisions `N/A — not applicable or not yet produced`; implementation `IR-001`
 - Why this baseline was recorded: first completed API/E2E result for REQPKG-TSUI-001; no prior record/result/confidence exists or is inferred.
@@ -32,7 +32,7 @@ None — `API-REV-001` is the initial completed result.
 
 ### API-REV-002 — Corrected partial-pricing live API/browser rerun
 
-- Triggering role, report path, and round: `code_reviewer`; `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md`; execution round 2 after `CRR-002`
+- Triggering role, report path, and round: `code_reviewer`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md`; execution round 2 after `CRR-002`
 - Triggering finding or scenario IDs: prior `F-001`; `APIE2E-F001 / TS-E2E-002`
 - Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: architecture design/review `N/A — direct route`; implementation `IR-002`; code review `CRR-001`, `CRR-002`; prior API/E2E `API-REV-001`; delivery `N/A`
 - Why this revision was recorded: rechecks the historical critical failure first against the reviewed implementation correction, then reruns the complete durable Live API + Browser + Lifecycle workflow.

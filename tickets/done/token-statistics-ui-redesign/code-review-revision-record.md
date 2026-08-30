@@ -6,16 +6,16 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001`, `APIE2E-F001` / `TS-E2E-002` | N/A | Fail — Local Fix | F-001 |
-| CRR-002 | `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md` | Implementation Review round 2 / `IR-002`, resolution of `F-001` | Fail — Local Fix | Pass | F-001 resolved |
+| CRR-001 | `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001`, `APIE2E-F001` / `TS-E2E-002` | N/A | Fail — Local Fix | F-001 |
+| CRR-002 | `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md` | Implementation Review round 2 / `IR-002`, resolution of `F-001` | Fail — Local Fix | Pass | F-001 resolved |
 
 ## Revision Entries
 
 ### CRR-001 — Partial-pricing API failure originates in inherited reconciliation policy
 
-- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md`
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-execution-coverage-report.md`; `API-REV-001`; `APIE2E-F001`; `TS-E2E-002`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-execution-coverage-report.md`; `API-REV-001`; `APIE2E-F001`; `TS-E2E-002`
 - Relevant architecture design revision IDs: `N/A`
 - Relevant architecture-review revision IDs: `N/A`
 - Relevant implementation revision IDs: `IR-001`
@@ -36,9 +36,9 @@ None.
 
 ### CRR-002 — Partial-pricing reconciliation correction passes focused source review
 
-- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md`
+- Canonical review report updated: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-handoff.md`; `IR-002`; `F-001`; prior `APIE2E-F001 / TS-E2E-002`
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-handoff.md`; `IR-002`; `F-001`; prior `APIE2E-F001 / TS-E2E-002`
 - Relevant architecture design revision IDs: `N/A`
 - Relevant architecture-review revision IDs: `N/A`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`

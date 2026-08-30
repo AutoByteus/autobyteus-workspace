@@ -7,10 +7,10 @@
 - Requirements approval commit: `7e39057ca048ad27ce8b21be3fb4576d3c4bb673`
 - Selected source authority: `origin/personal` at recorded pin `9d0fd7c570d58da1af2c7a40279327c8a20a8093`; the implementation branch has that exact pin as its merge base. The remote-tracking ref has since advanced and was not substituted for the approved source authority.
 - Upstream route: `Direct Requirements-to-Implementation`
-- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`
-- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/investigation-notes.md`
-- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-revision-record.md`
-- Requirements routing assessment: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`, section `Architecture Design Routing Assessment`
+- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`
+- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/investigation-notes.md`
+- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-revision-record.md`
+- Requirements routing assessment: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`, section `Architecture Design Routing Assessment`
 - Design spec: `N/A — not applicable`
 - Supplemental task artifacts:
   - `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/ui-ux-spec.md`
@@ -24,11 +24,11 @@
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
 - Triggering rework report, revision record, or evidence:
-  - `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-coverage-investigation.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-execution-coverage-report.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-revision-record.md` (`API-REV-001`; `APIE2E-F001` / `TS-E2E-002`)
-  - `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-revision-record.md` (`CRR-001`; `F-001`)
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-coverage-investigation.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-execution-coverage-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-revision-record.md` (`API-REV-001`; `APIE2E-F001` / `TS-E2E-002`)
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-revision-record.md` (`CRR-001`; `F-001`)
 
 ## Current Implementation Summary
 
@@ -36,7 +36,7 @@ The production Token Statistics package implements the approved focused Analytic
 
 - Implementation cycle: `Rework`
 - Production implementation commits: frontend baseline `603aa510ef2333c7c271a2c9149b48e63c93e6b9`; CRR-001 local fix `49ddfb2276b292f8fee80022f81157ebeeddb478`
-- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-revision-record.md`
+- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related architecture design revision IDs: `N/A`
 - Related architecture-review revision IDs: `N/A`
@@ -49,7 +49,7 @@ The production Token Statistics package implements the approved focused Analytic
 
 - Task size (`Small`/`Medium`/`Large`): `Medium`
 - Architecture risk (`Low`/`High`): `Low`
-- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`, section `Architecture Design Routing Assessment`
+- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`, section `Architecture Design Routing Assessment`
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: The cumulative package remains within existing frontend and token-usage analytics ownership. IR-002 is a bounded correctness fix in the existing server reconciliation guard plus focused unit/GraphQL regressions. It changes no API/external contract, generated GraphQL type/query, store lifecycle, persistence/schema, pricing formula, security/privacy, concurrency, deployment, subsystem ownership, or migration. Medium still reflects the cumulative breadth; Low remains justified because the repair narrows an inherited contradiction without introducing a structural decision.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Code Review` — required focused source-review return for `CRR-001` / `F-001` before API/E2E reruns
@@ -69,12 +69,12 @@ The production Token Statistics package implements the approved focused Analytic
 
 ## Key Files Or Areas
 
-- Analytics orchestration and retained state composition: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage/analytics`
-- Run-details unification: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage`
-- Locale-aware Run-details/presentation utilities: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/utils/tokenUsageAnalyticsPresentation.ts` and `components/settings/token-usage/tokenUsageStatisticsUi.ts`
-- Localized content: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/localization/messages/en/token-usage-settings.ts` and `zh-CN/token-usage-settings.ts`
-- Server partial-cost reconciliation authority: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/src/token-usage/services/token-usage-analytics-aggregation-policy.ts`
-- Server regressions: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts` and `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts`
+- Analytics orchestration and retained state composition: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/components/settings/token-usage/analytics`
+- Run-details unification: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/components/settings/token-usage`
+- Locale-aware Run-details/presentation utilities: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/utils/tokenUsageAnalyticsPresentation.ts` and `components/settings/token-usage/tokenUsageStatisticsUi.ts`
+- Localized content: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/localization/messages/en/token-usage-settings.ts` and `zh-CN/token-usage-settings.ts`
+- Server partial-cost reconciliation authority: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/token-usage/services/token-usage-analytics-aggregation-policy.ts`
+- Server regressions: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts` and `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts`
 - Focused frontend regression coverage: component specs under `autobyteus-web/components/settings/**/__tests__`, plus the unchanged store and Settings-page suites
 
 ## Important Assumptions
@@ -122,9 +122,9 @@ The production Token Statistics package implements the approved focused Analytic
 
 ## Environment Or Dependency Notes
 
-- Workspace: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements`
-- Frontend: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web`
-- Server: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts`
+- Workspace: `/home/autobyteus/workspace/autobyteus-workspace`
+- Frontend: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web`
+- Server: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts`
 - Branch: `requirements/token-statistics-ui-redesign`
 - Node: `v22.23.1`; pnpm: `10.28.2`; inspected browser: Chromium `149.0.7827.196`
 - Dependencies were restored with `corepack pnpm install --frozen-lockfile`; no dependency or lockfile change was made.

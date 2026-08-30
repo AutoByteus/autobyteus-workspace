@@ -1,0 +1,28 @@
+# DR-001 Delivery Artifact Audit
+
+checked_at=2026-08-29T20:21:22Z
+head=a20aa43d2e855a139476f32e97ca49604665a8a2
+origin_personal=e664db7cfd725bc6fa1633b71c53954a3fe66e44
+ahead_behind=18	0
+merge_base=e664db7cfd725bc6fa1633b71c53954a3fe66e44
+
+## git diff --check
+PASS
+
+## Required delivery artifacts
+PASS /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/docs-sync-report.md
+PASS /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/handoff-summary.md
+PASS /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/release-notes.md
+PASS /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/release-deployment-report.md
+PASS /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/delivery-revision-record.md
+
+## Integrated browser result
+PASS failures=0 scenarios=9 graphql_requests=29 cleanup=complete
+
+## Long-lived docs stale-claim scan
+PASS no superseded Analytics/CSV claims remain
+
+## Architecture/direct-route N/A visibility
+/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/handoff-summary.md:17:- Architecture design/spec, architecture-design revision, design review, and architecture-review revision: `N/A — direct route`
+/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/handoff-summary.md:103:- Architecture artifacts/revisions/review: `N/A — direct route`
+PASS

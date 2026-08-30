@@ -3,9 +3,9 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`
-- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/investigation-notes.md`
-- Requirements Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-revision-record.md`
+- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/investigation-notes.md`
+- Requirements Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-revision-record.md`
 - Design Spec Reviewed As Context: `N/A — direct Low-Risk route; no architecture design was selected`
 - Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001/ui-ux-spec.md`, `ui-behavior-test-matrix.md`, `prototype-assumptions.md`, and the preserved analytics data-contract context identified by the requirements package
 - Architecture Design Revision Record Reviewed As Context: `N/A — not applicable`
@@ -13,18 +13,18 @@
 - Design Review Report Reviewed As Context: `N/A — not applicable`
 - Architecture Review Revision Record Reviewed As Context: `N/A — not applicable`
 - Relevant Architecture Review Revision IDs: `N/A`
-- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`, `IR-002`
-- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-revision-record.md`
+- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
 - Current Review Round: `2`
 - Trigger: `IR-002` focused source-review return after `CRR-001 / F-001` and `API-REV-001 / APIE2E-F001 / TS-E2E-002`
 - Prior Review Round Reviewed: `CRR-001`, API/E2E Failure-Origin Review round 1, `Fail — Local Fix`
 - Latest Authoritative Round: `2`
-- Coverage Investigation Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-coverage-investigation.md` as triggering context
-- Execution Coverage Report Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-execution-coverage-report.md` as triggering context
-- API/E2E Revision Record Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-revision-record.md`
+- Coverage Investigation Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-coverage-investigation.md` as triggering context
+- Execution Coverage Report Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-execution-coverage-report.md` as triggering context
+- API/E2E Revision Record Reviewed (failure-origin entry point): `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: `API-REV-001`
 - Delivery Revision Record Reviewed (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`

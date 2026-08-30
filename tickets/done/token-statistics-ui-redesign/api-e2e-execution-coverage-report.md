@@ -2,22 +2,22 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-revision-record.md` (`RER-010`)
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-revision-record.md` (`RER-010`)
 - Design Spec: `N/A — not applicable for the direct route`
 - Supplemental Task Artifacts: approved Product `ui-ux-spec.md`, `ui-behavior-test-matrix.md`, `prototype-assumptions.md`, `implementation-feasibility-audit.md`, normative `VIS-009`–`VIS-015`, final reference manifest, and final prototype validation under `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001`
 - Architecture Design Revision Record: `N/A — not applicable for the direct route`
 - Design Review Report: `N/A — not applicable for the direct route`
 - Architecture Review Revision Record: `N/A — not applicable for the direct route`
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-revision-record.md` (`IR-001`, `IR-002`)
-- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md` (`CRR-002`)
-- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-revision-record.md` (`IR-001`, `IR-002`)
+- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md` (`CRR-002`)
+- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
 - Delivery Revision Record: `N/A — delivery has not started`
 - Relevant Delivery Revision IDs: `N/A`
-- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-revision-record.md`
+- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-002`
 - Current Execution Round: `2`
 - Trigger: `CRR-002` source-review pass for `IR-002`, resolving `CRR-001 / F-001` and requiring APIE2E-F001 / TS-E2E-002 first, then the complete retained workflow

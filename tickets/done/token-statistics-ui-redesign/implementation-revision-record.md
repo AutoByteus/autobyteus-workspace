@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-001 — Focused Token Statistics production implementation
 
-- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`; approved initial implementation round at `RER-010` / commit `7e39057ca048ad27ce8b21be3fb4576d3c4bb673`.
+- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`; approved initial implementation round at `RER-010` / commit `7e39057ca048ad27ce8b21be3fb4576d3c4bb673`.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 
 ### IR-002 — Reconcile legitimate partial-cost daily gaps
 
-- Triggering role, report path, and round: Code Reviewer; `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md`; `CRR-001` focused API/E2E failure-origin review, round 1, triggered by `API-REV-001`.
+- Triggering role, report path, and round: Code Reviewer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md`; `CRR-001` focused API/E2E failure-origin review, round 1, triggered by `API-REV-001`.
 - Triggering finding IDs: `F-001`; `APIE2E-F001` / `TS-E2E-002`
 - Classification: `Local Fix`
 - Prior authoritative result: `Fail — Local Fix`

@@ -203,7 +203,7 @@ The analytics provider owns the complete read policy:
 - computes the prior comparable range and day/week/month display granularity;
 - reads coverage plus selected/comparison facets in one coherent transaction;
 - applies runtime/provider/model filters consistently to cards, buckets,
-  breakdowns, filter options, and export data;
+  breakdowns, and filter options;
 - returns contiguous trend buckets, elapsed cumulative comparison series, exact
   breakdown rows, active-day count, and coverage/cost-quality metadata; and
 - throws on unsafe primary token totals instead of rounding beyond JavaScript
@@ -428,25 +428,39 @@ accept complete current-record GraphQL summaries or strict post-persist
 `run_summary_after_event` snapshots, while Team aggregation retains its existing
 single-flight refresh and exact identity rules.
 
-Settings > Token Statistics now has two sibling views:
+Settings > Token Statistics has two sibling views:
 
 - **Analytics** is the default. `tokenUsageAnalytics` owns one coherent selection
-  and latest-response state for UTC presets/custom dates, Tokens/Estimated cost,
-  and runtime/provider/model filters. Summary cards, chronological trend,
-  cumulative prior-period pace, ranked breakdown (default Runtime + model), and
-  exact tables all consume the same server result.
+  and latest-response state for UTC presets/custom dates and optional opaque
+  runtime/provider/model filters. Filter drafts apply atomically; Tokens/Cost
+  and Detailed-usage grouping are presentation-only and do not refetch.
+- Six equal summary peers expose Total tokens, Uncached input
+  (`standardInputTokens`), Cached input, Output, Estimated API cost, and Cache hit
+  rate. The current presentation intentionally omits prior-period comparison,
+  Input/Output ratio, cumulative pace, and ranked contributor/driver content even
+  though comparison fields remain in the unchanged server result.
+- One chronological open-top daily line renders the selected Tokens or Cost
+  metric with point markers, explicit axes/guides, and an exact on-page daily
+  bucket disclosure. Null/unpriced monetary buckets split the line instead of
+  becoming zero; a partial known estimate remains numeric and retains exact
+  `MISSING`/missing-price evidence for omitted buckets.
+- **Detailed usage** stays visibly present and groups the same server breakdown
+  rows by Runtime + model, Runtime, Provider, or Model. It preserves exact token,
+  share, cost-quality/currency, missing-dimension, and expandable component
+  evidence with table-local horizontal scrolling.
 - Coverage copy distinguishes full/partial/unavailable tracking and covered empty
-  periods. Cost surfaces preserve complete, partial, missing/local, and mixed-
-  currency evidence. Charts omit unsafe monetary values with visible explanation
-  rather than plotting them as zero.
-- CSV export is local and deterministic. It uses the applied half-open UTC range,
-  selected filters/grouping, exact identity snapshots, token components,
-  captured estimated cost/currency/status, and tracking metadata; it performs no
-  upload.
+  periods. Cache and cost surfaces preserve reported-zero, not-reported,
+  unsupported/local, unknown, complete, partial, missing, and mixed-currency
+  states without inventing percentages or monetary values. Formatting follows
+  the active locale while exact accounting stays on page.
+- CSV export and its helper/Blob/object-URL/download path were removed without a
+  replacement export, report, or share workflow. The removed pace chart and
+  separate exact-breakdown component are likewise obsolete; exact evidence now
+  lives in the daily disclosure and Detailed usage.
 - **Run details** preserves the creation-time-selected/lifetime-total task/team/
   run tables, Model diagnostic grouping, sorting, expansion, cost disclosure,
-  first-observed fallback, and history-migration guidance under the renamed
-  `tokenUsageRunStatistics` store/query/type boundary.
+  first-observed fallback, retained loading/error/empty states, and
+  history-migration guidance under `tokenUsageRunStatistics`.
 
 Task rows continue to render backend-provided `children`, `rootTeamRunId`,
 `runId`, display fields, models, totals, and cost statuses. The frontend must not
@@ -459,7 +473,8 @@ is not `$0`; local/no-bill and mixed-currency states remain explicit.
 - Deterministic unit/integration/E2E coverage owns contribution admission,
   UTC range policy, aggregation/cost reconciliation, real-SQLite rollback and
   shared-facet contention, coverage/no-backfill, GraphQL, preserved Run details,
-  frontend stores/states/charts/accessibility, and exact CSV behavior.
+  frontend stores/states/line-and-table accessibility, localization, and the
+  strict absence of any export/file-generation path.
 - Built-process restart coverage proves that existing current rows remain
   directly usable through run, Team, and member GraphQL reads without a data
   migration, rewritten row identity, or duplicate fold.
@@ -469,12 +484,12 @@ is not `$0`; local/no-bill and mixed-currency states remain explicit.
 - Released-scale evidence covers approximately 154,000 legacy rows, 1,269 runs,
   bounded source shaping, single-transaction consolidation, reusable SQLite
   pages, and absence of startup `VACUUM`.
-- Live Chrome coverage checks default/custom UTC analytics, tracking/empty
-  distinctions, local exact CSV download, Run-details navigation, semantic tab
-  selection/focus, the transparent blue 2px selected-tab treatment, desktop/mobile
-  layout, and console/page errors. Current-frontend execution against the user's
-  production backend also proves populated graph and Run-details behavior; browser
-  proof does not imply Electron-shell execution.
+- Live Chromium coverage checks default/custom UTC analytics, atomic filters,
+  tracking/empty distinctions, partial-pricing line gaps and exact disclosures,
+  Detailed usage, retry, Run-details navigation, semantic tab selection/focus,
+  English/Simplified Chinese desktop and 390px layout, and the negative
+  Blob/object-URL/download boundary. Browser proof covers the web-equivalent
+  renderer and does not imply Electron-shell execution.
 - Real LM Studio, Codex, and Claude runtime E2E remains opt-in:
 
 ```sh

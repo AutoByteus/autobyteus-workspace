@@ -2,21 +2,21 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/requirements-revision-record.md` (`RER-010`)
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-doc.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/requirements-revision-record.md` (`RER-010`)
 - Design Spec: `N/A — not applicable for the direct route`
 - Supplemental Task Artifacts: approved Product `ui-ux-spec.md`; `ui-behavior-test-matrix.md`; `prototype-assumptions.md`; `implementation-feasibility-audit.md`; normative `VIS-009`–`VIS-015`; `final-reference-manifest.json`; and final prototype validation under `/home/autobyteus/workspace/autobyteus-web-prototype/tickets/done/REQPKG-TSUI-001`
 - Architecture Design Revision Record: `N/A — not applicable for the direct route`
 - Design Review Report: `N/A — not applicable for the direct route`
 - Architecture Review Revision Record: `N/A — not applicable for the direct route`
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/implementation-revision-record.md` (`IR-001`, `IR-002`)
-- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-report.md` (`CRR-002` source-review pass)
-- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/implementation-revision-record.md` (`IR-001`, `IR-002`)
+- Code Review Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-report.md` (`CRR-002` source-review pass)
+- Code Review Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
 - Delivery Revision Record (delivery re-entry only): `N/A — delivery has not started`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/token-statistics-ui-redesign/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-002`
 - Current Investigation Round: `2`
 - Trigger: Code Reviewer outcome `Source Review Pass — API/E2E Rerun Required`; reviewed implementation source commit `49ddfb2276b292f8fee80022f81157ebeeddb478`, implementation artifact commit `76310eac5be58b3dd837024f17d267f4f102bf92`, review artifact commit `b94b38a3a`
@@ -69,7 +69,7 @@ The explicit negative boundary remains mandatory: no visible or operable compari
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements`; branch `requirements/token-statistics-ui-redesign`
+- Assigned task worktree / workspace: `/home/autobyteus/workspace/autobyteus-workspace`; branch `requirements/token-statistics-ui-redesign`
 - Project type and runtime stack: pnpm monorepo; Nuxt 3/Vue 3/Pinia/Tailwind; Fastify/TypeGraphQL/Prisma/SQLite server; Vitest; Playwright Core/Chromium; Electron wrapper
 - Conflicting, missing, or unclear project instructions: web `nuxi typecheck` retains an accepted unrelated 313-diagnostic baseline; server `tsconfig.json` includes tests outside `rootDir: src`; production builds pass. Historical token-usage docs describe superseded UI/CSV behavior and are not requirements authority.
 - Required environment variables or secrets available: `N/A — credential-free isolated data and local services are sufficient`
