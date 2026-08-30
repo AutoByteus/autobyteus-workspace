@@ -6,7 +6,7 @@
 - Trigger: `CRR-003 Pass` after `API-REV-002 Pass`; `TEST-001` resolved; retained API/E2E confidence `97.7%`
 - Bootstrap base reference: `personal` / `origin/personal` at `d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea`
 - Integrated base reference used for docs sync: `origin/personal` at `d1a399a5919cf9b6040050d5699caeb0cd1e6633`, merged without conflict at `2a7a4a16c2707028df0722fabb0b8bfc1b551170`
-- Post-integration verification reference: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/post-integration-verification.log` (`5` files / `32` tests passed after shared prerequisites built)
+- Post-integration verification reference: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/post-integration-verification.log` (`5` files / `32` tests passed after shared prerequisites built)
 
 ## Why Docs Were Updated
 
@@ -74,8 +74,8 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Complete the user-authorized repository finalization and safe cleanup. No release/version action is required.
-- Notes: The user authorized finalization on `2026-08-30` and explicitly requested no new release version. The final remote refresh found `origin/personal` unchanged at `d1a399a5919cf9b6040050d5699caeb0cd1e6633`, already integrated, so no re-integration, rerun, or renewed verification was required. A workspace consumer/active-doc scan passed at `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/workspace-consumer-doc-scan.log`. External consumers outside this repository must still migrate from the removed `result` field before adopting the change.
+- Next delivery action: `None — repository finalization and safe cleanup completed; no release was requested.`
+- Notes: The user authorized finalization on `2026-08-30` and explicitly requested no new release version. The final remote refresh found `origin/personal` unchanged at `d1a399a5919cf9b6040050d5699caeb0cd1e6633`, already integrated, so no re-integration, rerun, or renewed verification was required. Ticket commit `b3e54e7d2` was merged/pushed to `personal` at `e24f4d173`, and the dedicated worktree plus local/remote ticket branches were removed after containment verification. A workspace consumer/active-doc scan passed at `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/workspace-consumer-doc-scan.log`. External consumers outside this repository must still migrate from the removed `result` field before adopting the change.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

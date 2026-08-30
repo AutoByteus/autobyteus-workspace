@@ -4,8 +4,8 @@
 
 - Package: `ATC-001`
 - Ticket: `send-message-delegate-task-semantics`
-- Delivery revision: `DR-001 accepted; DR-002 finalization in progress`
-- Status: `User verified; final refresh unchanged; ticket archived; repository finalization in progress; no release required`
+- Delivery revision: `DR-002`
+- Status: `Completed — user verified; finalized to origin/personal; no release required; safe cleanup complete`
 - Classification: `task_size=Medium`; `architectural_risk=High`
 - Selected route: `Architecture Design -> Architecture Review -> Implementation -> Source Review -> API/E2E -> Durable Test-Code Review -> Delivery`
 - Ticket branch: `codex/send-message-delegate-task-semantics`
@@ -33,7 +33,7 @@
 - Checkpoint commit: not needed; all reviewed source/test/review state was already committed at `fe6ad044c` and the worktree was clean.
 - Integration: `git merge --no-edit origin/personal`; completed without conflict at `2a7a4a16c2707028df0722fabb0b8bfc1b551170` before Delivery edited documentation or handoff artifacts.
 - Post-integration executable check: shared prerequisites built, then five focused collaboration contract/result/MCP test files passed `32` tests; `git diff --check` passed.
-- Evidence: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/post-integration-verification.log`
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/post-integration-verification.log`
 
 ## Validation Summary
 
@@ -50,8 +50,8 @@
 
 - Updated eleven long-lived server/core docs covering communication, task delegation, prompt composition, MCP, Codex, effective tool exposure, cross-package ownership, and the current address baseline.
 - Recorded the removed envelope/mapper, absolute logical selector, existing/fresh run identity, no-duplicate assignment rule, exact-run clarification, and formal lifecycle separation.
-- Docs report: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/docs-sync-report.md`
-- Release notes: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/release-notes.md`
+- Docs report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/docs-sync-report.md`
+- Release notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/release-notes.md`
 
 ## Consumer / Release Verification
 
@@ -63,7 +63,7 @@
 
 - Upstream reported loose object `efc0e81d1567e4658f15dac8896de1807825db4b` as corrupt.
 - Delivery verified it is currently a readable `tree` object of size `1310`, recalculates to the same OID, is reachable from refs/reflogs at `tickets/in-progress`, and passes strict Git fsck. No destructive repair or quarantine was needed; the initial fetch/object store already presented a healthy object.
-- Evidence: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/git-object-health.log`
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-001/git-object-health.log`
 
 ## User Verification Record
 
@@ -77,7 +77,7 @@ The user accepted the verified package and authorized finalization on `2026-08-3
 
 User statement: `now finalize, no need to release a new version`.
 
-The post-verification refresh kept `origin/personal` unchanged at `d1a399a5919cf9b6040050d5699caeb0cd1e6633`, already integrated at `2a7a4a16c2707028df0722fabb0b8bfc1b551170`. No re-integration, executable rerun, docs change, or renewed verification was required. Evidence: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-002/finalization-refresh.log`.
+The post-verification refresh kept `origin/personal` unchanged at `d1a399a5919cf9b6040050d5699caeb0cd1e6633`, already integrated at `2a7a4a16c2707028df0722fabb0b8bfc1b551170`. No re-integration, executable rerun, docs change, or renewed verification was required. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-002/finalization-refresh.log`.
 
 ## Residual Risks And Evidence Limits
 
@@ -85,36 +85,42 @@ The post-verification refresh kept `origin/personal` unchanged at `d1a399a5919cf
 - Model selection is probabilistic, although the configured AutoByteus, Codex, and Claude scenarios each produced exactly one delegation, one activation, and zero logical duplicate assignment messages in retained evidence.
 - Multi-node topology was not exercised because the changed routing/result contract is process-local and no material multi-node boundary changed.
 - The general `autobyteus-server-ts/tsconfig.json` retains a pre-existing `rootDir`/`include` mismatch; the supported build config, full build, focused tests, and live paths passed.
-- Release/signing/notarization/publication evidence does not yet exist and must not be inferred from repository or live test success.
+- Release/signing/notarization/publication was explicitly not required and must not be inferred from repository or live test success.
 
-## Repository Finalization In Progress
+## Repository Finalization Record
 
-- Ticket is archived at `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/`.
-- Ticket-branch commit/push, target update/merge/push, and safe cleanup are in progress. Exact final commits and cleanup results will be recorded before terminal handoff.
-- Finalization target: `origin/personal` / local `personal`, from the implementation bootstrap context.
+- Ticket is archived at `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/`.
+- Ticket finalization commit: `b3e54e7d2b1952e9c9e7bf68b720e9023690c452` (`chore(delivery): finalize collaboration semantics`); pushed successfully before target integration.
+- Finalization target update: local `personal` fast-forwarded from `d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea` to refreshed `origin/personal@d1a399a5919cf9b6040050d5699caeb0cd1e6633`.
+- Target merge: `e24f4d17356b5f2a2b913a48596fee06e0b51af0` (`Merge send-message delegate-task semantics`); pushed successfully to `origin/personal`.
+- Target containment: both local `personal` and `origin/personal` contained the ticket finalization commit before cleanup.
+- Safe cleanup: dedicated ticket worktree removed and pruned; local and remote `codex/send-message-delegate-task-semantics` branches deleted after containment verification.
 - Release/version/tag/publication/deployment: `Not required — explicit user instruction`.
-- Rollback: after finalization, revert the final ticket merge if the strict public identity or no-duplicate/lifecycle/MCP parity contract regresses. No persisted-data rollback is required.
+- Finalization/cleanup evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-002/finalization-and-cleanup.log`.
+- Final metadata/manifest evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-002/final-metadata-audit.log`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-002/evidence-manifest.sha256`.
+- Rollback: revert merge `e24f4d17356b5f2a2b913a48596fee06e0b51af0` if the strict public identity or no-duplicate/lifecycle/MCP parity contract regresses. No persisted-data rollback is required.
 
 ## Authoritative Artifact Package
 
-- Requirements: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/requirements-doc.md`
-- Requirements investigation: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/investigation-notes.md`
-- Requirements revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/requirements-revision-record.md`
-- Approved collaboration contract: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/agent-team-collaboration-contract.md`
-- Decision table: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/orchestration-decision-table.md`
-- Design: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/design-spec.md`
-- Architecture design revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/architecture-design-revision-record.md`
-- Design review: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/design-review-report.md`
-- Architecture review revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/architecture-review-revision-record.md`
-- Implementation handoff: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/implementation-handoff.md`
-- Implementation revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/implementation-revision-record.md`
-- Source review: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/code-review-report.md`
-- Code review revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/code-review-revision-record.md`
-- API/E2E coverage investigation: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/api-e2e-coverage-investigation.md`
-- API/E2E execution: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/api-e2e-execution-coverage-report.md`
-- API/E2E revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/api-e2e-revision-record.md`
-- Proportional test-code review: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/api-e2e-test-review-report.md`
-- Docs sync: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/docs-sync-report.md`
-- Release notes: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/release-notes.md`
-- Delivery report: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-release-deployment-report.md`
-- Delivery revisions: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/done/send-message-delegate-task-semantics/delivery-revision-record.md`
+- Requirements: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/requirements-doc.md`
+- Requirements investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/investigation-notes.md`
+- Requirements revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/requirements-revision-record.md`
+- Approved collaboration contract: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/agent-team-collaboration-contract.md`
+- Decision table: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/orchestration-decision-table.md`
+- Design: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/design-spec.md`
+- Architecture design revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/architecture-design-revision-record.md`
+- Design review: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/design-review-report.md`
+- Architecture review revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/architecture-review-revision-record.md`
+- Implementation handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/implementation-handoff.md`
+- Implementation revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/implementation-revision-record.md`
+- Source review: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/code-review-report.md`
+- Code review revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/code-review-revision-record.md`
+- API/E2E coverage investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/api-e2e-coverage-investigation.md`
+- API/E2E execution: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/api-e2e-execution-coverage-report.md`
+- API/E2E revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/api-e2e-revision-record.md`
+- Proportional test-code review: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/api-e2e-test-review-report.md`
+- Docs sync: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/docs-sync-report.md`
+- Release notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/release-notes.md`
+- Delivery report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-release-deployment-report.md`
+- Delivery revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-revision-record.md`
+- Final delivery evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/send-message-delegate-task-semantics/delivery-evidence/dr-002/`
