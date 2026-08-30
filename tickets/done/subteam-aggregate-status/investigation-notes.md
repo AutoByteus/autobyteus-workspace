@@ -3,9 +3,9 @@
 ## Investigation Meta
 
 - Request / ticket: `subteam-aggregate-status`
-- Workspace root: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements`
+- Workspace root: `/home/autobyteus/workspace/autobyteus-workspace`
 - Repository mode: `Git`
-- Task worktree / branch: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements` / `requirements/subteam-aggregate-status`
+- Task worktree / branch: `/home/autobyteus/workspace/autobyteus-workspace` / `requirements/subteam-aggregate-status`
 - Base or reference revision: `9d0fd7c570d58da1af2c7a40279327c8a20a8093` (current local `personal` revision supplied by the task environment)
 - Bootstrap result: Dedicated clean Git worktree and branch created successfully from the available local base. Worktree initialization initially exceeded the command yield window but completed in the background; final `git status --short --branch` was clean before investigation.
 - Bootstrap blocker: `N/A`
@@ -36,7 +36,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 2026-08-29 | User | Request text and three supplied PNGs | Establish current and desired UI behavior. | Leaf Agent rows show gray/green/blue dots; nested Team rows show avatar/name/`TEAM` badge but no status dot. When collapsed, running member work is invisible. | Define dot placement, aggregation, and collapsed behavior. |
 | 2026-08-29 | Command | `git rev-parse --show-toplevel; git branch --show-current; git status --short --branch; git worktree list --porcelain` | Verify repository and isolation. | Shared checkout was on `personal`; no dedicated task worktree existed. | Created isolated worktree/branch. |
-| 2026-08-29 | Command | `git worktree add -b requirements/subteam-aggregate-status /home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements 9d0fd7c...` | Bootstrap isolated requirements workspace. | Worktree created; final status clean. | Use only this worktree for task artifacts. |
+| 2026-08-29 | Command | `git worktree add -b requirements/subteam-aggregate-status /home/autobyteus/workspace/autobyteus-workspace 9d0fd7c...` | Bootstrap isolated requirements workspace. | Worktree created; final status clean. | Use only this worktree for task artifacts. |
 | 2026-08-29 | Other | `view_image` on all three supplied paths; `sha256sum` and `file` | Inspect exact visuals and preserve evidence identity. | Expanded images confirm no dot on Team rows; second image confirms running+idle; third image confirms collapsed visibility gap. PNG sizes are 858×942, 836×218, and 856×150. | Record images as current-state supplements. |
 | 2026-08-29 | Code | `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` | Identify row owner and current rendering condition. | Stable nested rows render `StatusDot` only when `displayRow.row.row.kind === 'agent'`; configured Team rows still render avatar/name/`TEAM` badge. Visible rows are filtered by expansion state. | Requirements can target stable nested Team rows precisely. |
 | 2026-08-29 | Code | `autobyteus-web/components/workspace/common/StatusDot.vue`; `autobyteus-web/utils/workspaceStatusDotPresentation.ts`; `AgentStatus.ts` | Identify visual/status language. | Five statuses map to amber pulse, blue pulse, green, red, and gray. Unknown maps gray. `StatusDot` itself is decorative (`aria-hidden`). | Reuse visual language; add accessible Team-summary copy. |

@@ -6,7 +6,7 @@
 - Trigger: `API-REV-003 Pass` after integrated-candidate and existing-backend live-system validation
 - Bootstrap base reference: local `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Integrated base reference used for docs sync: `origin/personal` at `e664db7cfd725bc6fa1633b71c53954a3fe66e44`, integrated by merge commit `b56806e75d4753b6534ed905771e29a064e05b60`
-- Post-integration verification reference: API/E2E integrated evidence commit `c61d4928c74e143cdd00bc4d11f2af2959ed5d6c`; existing-backend live evidence commit `3eeeb65fad7c3f34fa5aac43b2dab0ac619eeaf5`; Delivery checks `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-evidence/dr-002-post-refresh-check.log` and `dr-003-finalization-refresh.log`
+- Post-integration verification reference: API/E2E integrated evidence commit `c61d4928c74e143cdd00bc4d11f2af2959ed5d6c`; existing-backend live evidence commit `3eeeb65fad7c3f34fa5aac43b2dab0ac619eeaf5`; Delivery checks `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-evidence/dr-002-post-refresh-check.log` and `dr-003-finalization-refresh.log`
 
 ## Why Docs Were Updated
 

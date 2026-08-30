@@ -3,13 +3,13 @@
 ## Status
 
 User verification was received on `2026-08-30`: **approved to finalize, no need
-to release a new version**. The ticket is archived under `tickets/done/` and
-repository finalization is in progress. No version bump, tag, release, or
-deployment will be performed.
+to release a new version**. The ticket is archived, merged and pushed to
+`origin/personal`, and the dedicated worktree plus local/remote ticket branches
+were cleaned up. No version bump, tag, release, or deployment was performed.
 
 ## Authoritative Worktree And Branch
 
-- Worktree: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements`
+- Worktree: `/home/autobyteus/workspace/autobyteus-workspace`
 - Ticket branch: `requirements/subteam-aggregate-status`
 - Finalization target: `origin/personal`
 - Bootstrap base: `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
@@ -138,3 +138,22 @@ rows.
 - Delivery revisions: `tickets/done/subteam-aggregate-status/delivery-revision-record.md`
 - Deterministic browser evidence: `tickets/done/subteam-aggregate-status/api-e2e-evidence/api-rev-002/browser/`
 - Existing-backend live evidence: `tickets/done/subteam-aggregate-status/api-e2e-evidence/api-rev-003/live-browser/`
+
+## Finalization Record
+
+- Archived ticket: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/`
+- Ticket finalization commit: `a45987b35` (`docs(delivery): archive nested team aggregate status`)
+- Ticket branch push: `Completed`
+- Finalization target update: local `personal` fast-forwarded to
+  `origin/personal` at `e664db7cf`
+- Target merge commit: `db4898e94b0430be279f50774209545dcfe5c91a`
+  (`Merge nested team aggregate status`)
+- Target push: `Completed` to `origin/personal`
+- Release/version/tag/deployment: `Not required — explicit user instruction`
+- Dedicated worktree cleanup: `Completed`
+- Worktree prune: `Completed`
+- Local ticket branch cleanup: `Completed`
+- Remote ticket branch cleanup: `Completed`
+- Final cleanup evidence:
+  `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-evidence/dr-003-finalization-cleanup.log`
+- Remaining blocker: `None`

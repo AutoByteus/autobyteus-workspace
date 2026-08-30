@@ -2,22 +2,22 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-doc.md` (`Approved`, `RER-002`)
-- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-revision-record.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/requirements-doc.md` (`Approved`, `RER-002`)
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/requirements-revision-record.md`
 - Design Spec: `N/A — not applicable for the approved direct route`
 - Supplemental Task Artifacts: the three user-supplied current-state PNGs inventoried in the requirements package
 - Architecture Design Revision Record: `N/A — not applicable for the approved direct route`
 - Design Review Report: `N/A — not applicable for the approved direct route`
 - Architecture Review Revision Record: `N/A — not applicable for the approved direct route`
-- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-revision-record.md` (`IR-002`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/implementation-revision-record.md` (`IR-002`)
 - Code Review Report: `N/A — not applicable for the approved direct route`
 - Code Review Revision Record: `N/A — not applicable for the approved direct route`
-- Delivery Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-revision-record.md`
+- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-001`
-- Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/api-e2e-revision-record.md`
+- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-003`
 - Current Execution Round: `3 — live frontend against the existing container backend`
 - Trigger: the user correctly identified that API-REV-002's exhaustive Chromium journey used deterministic execution rows and explicitly requested a visual/runtime check through the real frontend connected to the already-running backend

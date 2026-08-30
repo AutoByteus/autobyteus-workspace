@@ -2,21 +2,21 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-doc.md` (`Approved`, `RER-002`)
-- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/requirements-revision-record.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/requirements-doc.md` (`Approved`, `RER-002`)
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/requirements-revision-record.md`
 - Design Spec: `N/A — not applicable for the approved direct route`
 - Supplemental Task Artifacts: the three user-supplied current-state PNGs inventoried in `requirements-doc.md` and `investigation-notes.md`
 - Architecture Design Revision Record: `N/A — not applicable for the approved direct route`
 - Design Review Report: `N/A — not applicable for the approved direct route`
 - Architecture Review Revision Record: `N/A — not applicable for the approved direct route`
-- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-revision-record.md` (`IR-002`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/implementation-revision-record.md` (`IR-002`)
 - Code Review Report: `N/A — not applicable for the approved direct route`
 - Code Review Revision Record: `N/A — not applicable for the approved direct route`
-- Delivery Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/delivery-revision-record.md`
+- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-001`
-- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-003 — Pass / 99%; API-REV-002 is the prior completed Pass / 98%`
 - Current Investigation Round: `3 — live frontend against the existing container backend`
 - Trigger: user correctly distinguished the deterministic API-REV-002 renderer fixture from the real frontend connected to the already-running backend and requested an actual-system visual check against the supplied screenshots
@@ -86,7 +86,7 @@ API-REV-003 adds no code or durable coverage. Its purpose is to close the user's
 
 ## Project Execution Discovery
 
-- Assigned task worktree: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements`
+- Assigned task worktree: `/home/autobyteus/workspace/autobyteus-workspace`
 - Project type and runtime stack: pnpm monorepo; Nuxt/Vue frontend; Vitest with Nuxt test utilities; Playwright Core browser probes; Electron wrapper whose relevant renderer behavior is web-equivalent
 - Conflicting, missing, or unclear project instructions: none for the selected frontend/browser path. Repository-wide `nuxi typecheck` has a known unrelated failing baseline and is recorded as a limitation, never as a pass.
 - Required environment variables or secrets available: no secret or account was needed. API-REV-002's deterministic fixture remained isolated; API-REV-003 discovered the existing same-container backend at `127.0.0.1:8000` and started Nuxt with `BACKEND_NODE_BASE_URL=http://127.0.0.1:8000`.

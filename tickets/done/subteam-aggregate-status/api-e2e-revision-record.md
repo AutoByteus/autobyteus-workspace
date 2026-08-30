@@ -14,7 +14,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 
 ### API-REV-001 — Recursive nested-Team aggregate executable baseline
 
-- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-handoff.md`; initial direct-route validation round.
+- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/implementation-handoff.md`; initial direct-route validation round.
 - Triggering finding or scenario IDs: implementation commit `dcd0baf8c`; validation scenarios `NTAS-UT-001`, `NTAS-UT-002`, `NTAS-CMP-001`, `NTAS-STORE-001`, `NTAS-REG-001`, `NTAS-STATIC-001`, and `NTAS-BR-001`–`NTAS-BR-004`.
 - Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: architecture design/review `N/A`; `IR-001`; code review `N/A`; delivery `N/A`.
 - Why this baseline was recorded: establishes the first completed API/E2E result for the approved direct `Small` / `Low` package and prevents a missing record from implying prior confidence.
@@ -35,7 +35,7 @@ None — `API-REV-001` has no prior completed API/E2E result or failure.
 
 ### API-REV-002 — Merge-integrated candidate revalidation
 
-- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/done/subteam-aggregate-status/implementation-handoff.md`; round 2 after Delivery `DR-001` returned the package for latest-base integration recovery.
+- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/implementation-handoff.md`; round 2 after Delivery `DR-001` returned the package for latest-base integration recovery.
 - Triggering finding or scenario IDs: integrated candidate `b56806e75d4753b6534ed905771e29a064e05b60`; merge parents `ab6a1209c2f7864a2fff139538fc466ad2b78312` and `e664db7cfd725bc6fa1633b71c53954a3fe66e44`; reused `NTAS-UT-001`, `NTAS-UT-002`, `NTAS-CMP-001`, `NTAS-STORE-001`, `NTAS-REG-001`, `NTAS-STATIC-001`, and `NTAS-BR-001`–`NTAS-BR-004`.
 - Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: architecture design/review `N/A`; `IR-002`; code review `N/A`; `DR-001`.
 - Why this revision was recorded: Delivery's target base advanced after API-REV-001 and conflicted in `autobyteus-web/package.json`. Implementation resolved the conflict, so the merge-integrated commit required an independent executable result rather than inheriting API-REV-001 confidence.
