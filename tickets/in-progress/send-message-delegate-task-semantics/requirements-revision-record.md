@@ -16,6 +16,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-008 | User requested an explicit AgentTeam delegation/packet-ingress explanation | Ready for Approval | Ready for Approval | REQ-015; AC-015 | Four outcomes made mandatory: existing Agent, existing Team coordinator, fresh task Agent, and fresh task Team coordinator |
 | RER-009 | User clarified that `target_agent_run_id` replaces `result` rather than nesting beneath it | Ready for Approval | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | Message output contract refined to flat top-level identity with no dot notation; rejection returns a null identity |
 | RER-010 | User requested one contract file containing the exact proposed prompt | Ready for Approval | Ready for Approval | REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002 | Added contract `ATC-001` as the primary exact-copy approval supplement |
+| RER-011 | User asked whether tool schemas should be updated with the clarified result contract | Ready for Approval | Ready for Approval | REQ-016; AC-016 | Required authoritative machine-readable result schemas/types and native/MCP/tool-description parity while preserving distinct input schemas |
 
 ## Revision Entries
 
@@ -168,3 +169,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: No target architecture is prescribed. Once approved, the flat message result is a structural contract trigger requiring Architecture Designer routing.
 - Remaining gaps, assumptions, or blocked decisions: Explicit approval or revision of contract `ATC-001`, including the exact-run clarification rule.
 - Next action or recipient: Present the contract path and concise approval basis to the user.
+
+### RER-011 — Tool Schema Alignment
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user asked whether the `send_message_to` and `delegate_task` schemas should also be updated to match the clarified prompt and result identities.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-010.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-016; AC-016; REQ-008 and REQ-014 traceability.
+- Why this baseline or revision was recorded: Prevent a correct system prompt from coexisting with stale or prose-only result contracts in provider tool metadata and serialized outputs.
+- Canonical artifact sections changed: Requirements, acceptance criteria, traceability, investigation intake/source log, and requirement implications; ATC-001 schema projection requirements.
+- Supplemental artifacts added, changed, or removed: Updated `agent-team-collaboration-contract.md`; no new file added.
+- Prototype evidence or product decisions incorporated: None; schema projection is a technical contract concern.
+- User approval impact: The schema-alignment requirement is included in ATC-001's approval basis; full contract approval remains pending.
+- Downstream architecture impact: Architecture Designer must choose the authoritative result-schema/type owner and determine whether/how MCP output schema support is introduced, while preserving provider parity.
+- Remaining gaps, assumptions, or blocked decisions: Explicit approval or revision of contract `ATC-001`, including the exact-run clarification rule.
+- Next action or recipient: Explain that result schemas/tool descriptions must update while input schemas remain distinct, then obtain contract approval or revisions.

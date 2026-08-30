@@ -4,7 +4,7 @@
 
 - Contract ID: `ATC-001`
 - Status: `Proposed — Ready for User Approval`
-- Requirements revision: `RER-010`
+- Requirements revision: `RER-011`
 - Owner: Requirements Engineering
 - Scope: LLM-facing collaboration semantics, public success/failure identity results, and exact provider-shared collaboration prompt
 - Runtime architecture: Not defined by this contract
@@ -87,6 +87,15 @@ A rejected message exposes no successful receiver identity.
 ```
 
 No fresh contactable task execution or `target_agent_run_id` exists when delegation does not start.
+
+## Schema Projection Requirements
+
+- The `send_message_to` public result type/schema must replace `result` with flat `target_agent_run_id: string | null`.
+- The `delegate_task` public result type/schema must continue to expose its discriminated outcomes: active results contain `task_id`, `status: "active"`, and `target_agent_run_id`; not-started results contain `task_id`, `status: "not_started"`, and `message` with no successful target identity.
+- Native JSON, MCP text content, MCP structured content, public TypeScript types, documentation, and contract tests must project the same field names and null/omission rules.
+- The input schemas remain intentionally different and must not be made artificially identical: `send_message_to` accepts exactly one message target selector plus message content; `delegate_task` accepts one logical `recipient_address` plus a complete task description and optional references.
+- Agent-facing tool descriptions must state the successful returned identity semantics so the tool metadata does not contradict or underspecify the system prompt.
+- The current MCP adapter definition type exposes only `inputSchema`. Downstream architecture must determine the authoritative machine-readable output-schema seam, but the result contract must not remain prose-only.
 
 ## Exact Provider-Shared Collaboration Prompt
 
@@ -192,7 +201,7 @@ corresponding tool confirms success.
 6. AgentTeam delegation spawns the complete fresh task Team instance/subtree; its fresh coordinator receives the initial packet.
 7. The same assignment is never dispatched through both collaboration tools.
 8. Formal result submission and review use `submit_task_result` and `review_task_result`.
-9. Native, MCP, AutoByteus, Codex, and Claude projections expose the same semantics and result identity fields.
+9. Native, MCP, AutoByteus, Codex, and Claude projections expose the same semantics, machine-readable result contract, and identity fields.
 
 ## Approval Basis
 
@@ -202,6 +211,7 @@ Approval of this contract approves:
 - the four-case Agent/AgentTeam identity and delivery matrix;
 - flat `send_message_to.target_agent_run_id` replacing the always-null `result` field;
 - preservation of `delegate_task.task_id`, `status`, and `target_agent_run_id` semantics;
+- authoritative machine-readable result schemas/types and identical native/MCP/tool-description projections while preserving distinct input schemas;
 - genuinely new exact-run clarification after delegation as written in `Additional Task Clarification`;
 - the duplicate-dispatch and formal-lifecycle prohibitions.
 
