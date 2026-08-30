@@ -12,6 +12,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-004 | User emphasized intuitive, straightforward, ambiguity-free LLM instruction design | Ready for Approval | Ready for Approval | REQ-012; AC-012; QR-005 | Cognitive clarity and production-copy hygiene made explicit and testable; DEC-001 and complete-package approval remain pending |
 | RER-005 | User preferred the earlier prompt structure and requested explicit `forked`/`spawned` instance terminology analysis | Ready for Approval | Ready for Approval | REQ-002, REQ-013; AC-013 | `Spawned fresh task instance` selected as the accurate mental model; unqualified `forked` wording rejected because no live-state clone is established |
 | RER-006 | User requested verification of message/delegation returned instance identities | Ready for Approval | Ready for Approval — Scope Decision Needed | BEH-008; DEC-002 | Confirmed current public asymmetry: message result discards resolved existing AgentRun ID while delegation exposes fresh task ingress ID; optional output-contract expansion awaits user decision |
+| RER-007 | User selected the existing message `result` slot for exact receiving AgentRun identity | Ready for Approval — Scope Decision Needed | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | DEC-002 Option A approved: successful message output returns the exact existing receiver while delegation continues returning the spawned task ingress |
 
 ## Revision Entries
 
@@ -104,3 +105,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: DEC-002 Option A is a public contract change and a structural-impact trigger requiring Architecture Designer routing after requirements approval. Option B preserves the previously expected prompt/tool/docs-only scope.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; DEC-002; explicit complete-package approval.
 - Next action or recipient: Report the exact current outputs and obtain the user's DEC-002 choice before finalizing the prompt claim or route.
+
+### RER-007 — Message Result Identity Decision
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: After learning that the generic public `send_message_to.result` field is currently null despite internal receiver resolution, the user directed that the field should return the resolved AgentRun identity analogous to the identity returned by delegation.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval — Scope Decision Needed under RER-006.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-008; REQ-014; AC-014; DEC-002.
+- Why this baseline or revision was recorded: Convert the investigated requirement gap into approved intended behavior while retaining the correct distinction between an existing message receiver and a newly spawned task ingress.
+- Canonical artifact sections changed: Status/approval reference, current/desired behavior, scope, requirements, acceptance criteria, compatibility constraint, open decisions, traceability, architecture input, readiness, investigation intake/source log, and requirement implications.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: None; the visualizer remains explanatory identity evidence and does not define wire schemas.
+- User approval impact: DEC-002 is resolved as Option A. DEC-001 and explicit approval of the complete package remain pending.
+- Downstream architecture impact: The approved public output-contract change is a structural-impact trigger, so the eventual approved package must route through Architecture Designer rather than direct implementation.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
+- Next action or recipient: Confirm the exact semantic distinction and obtain the remaining decision/approval before completing the architecture-routing assessment.
