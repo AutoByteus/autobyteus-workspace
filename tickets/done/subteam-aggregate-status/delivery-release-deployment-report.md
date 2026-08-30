@@ -15,8 +15,25 @@
 - Handoff summary artifact: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
-- Notes: Summary describes the recovered integration, API-REV-003 live-system validation, user approval, durable docs sync, repository finalization, explicit no-release result, and completed cleanup.
+- Current delivery revision ID: `DR-004`
+- Notes: Summary describes the recovered integration, API-REV-003 live-system validation, user approval, durable docs sync, repository finalization, explicit no-release result, completed cleanup, and the corrected terminal documentation package.
+
+## Terminal Verification Correction
+
+- Trigger: Architecture Designer terminal verification at
+  `ffa427d2352ae66a5d9a36385227c8a54b30802d`.
+- Finding 1: final metadata had rewritten historical Requirements worktree and
+  `git worktree add` evidence to the durable root checkout path.
+- Resolution 1: restored the historical dedicated worktree path
+  `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements`
+  and exact bootstrap command evidence in `investigation-notes.md`.
+- Finding 2: `handoff-summary.md` said real backend transport was not run despite
+  API-REV-003's real REST/GraphQL/WebSocket validation.
+- Resolution 2: corrected the summary to exclude only actual Electron shell
+  execution and retain the authoritative real-backend evidence.
+- Scope impact: `Documentation/evidence only`; no product code, configuration,
+  test, behavior, acceptance, persisted-data, release, or deployment change.
+- Renewed user verification: `Not required`.
 
 ## Initial Delivery Integration Refresh
 
@@ -38,9 +55,9 @@
 
 - Initial explicit user completion/verification received: `Yes — 2026-08-30 UTC`
 - Initial verification / acceptance reference: User statement: `approved to finalize, no need to release a new version.`
-- Renewed verification required after later re-integration: `No — no later re-integration has occurred`
+- Renewed verification required after later re-integration: `No — no later re-integration occurred, and DR-004 is a documentation/evidence-only factual correction`
 - Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: `N/A`
+- Renewed verification / acceptance reference: `N/A — original 2026-08-30 approval remains applicable`
 
 ## Docs Sync Result
 
@@ -74,7 +91,7 @@
 - Re-integration before final merge result: `Not needed — final refresh found target unchanged and already integrated`
 - Target branch update result: `Completed — local personal fast-forwarded to origin/personal e664db7cf`
 - Merge into target result: `Completed — db4898e94b0430be279f50774209545dcfe5c91a (Merge nested team aggregate status)`
-- Push target branch result: `Completed — origin/personal advanced to db4898e94; final metadata is persisted by this report's enclosing personal commit and push`
+- Push target branch result: `Completed — origin/personal advanced through db4898e94 and ffa427d23; corrected DR-004 metadata is persisted by this report's enclosing personal commit and push`
 - Repository finalization status: `Completed`
 - Blocker (if applicable): `None`
 
@@ -137,6 +154,7 @@
 | Delivery diff check | `Pass` | `delivery-evidence/dr-002-post-refresh-check.log` |
 | Finalization refresh after user approval | `Pass — target unchanged; no re-integration needed; API-REV-003 cleanup verified` | `delivery-evidence/dr-003-finalization-refresh.log` |
 | Ticket archive/commit/push/merge and safe cleanup | `Pass — completed` | ticket `a45987b35`; merge `db4898e94`; `delivery-evidence/dr-003-finalization-cleanup.log` |
+| DR-004 terminal documentation correction | `Pass — historical Requirements evidence restored; backend-validation statement corrected; no executable delta` | `delivery-evidence/dr-004-terminal-correction.log` |
 | Repository-wide Nuxt typecheck | `Known non-clean baseline; not claimed as passed` | 316 unrelated diagnostics; `api-e2e-evidence/api-rev-002/typecheck-baseline.log` |
 
 ## Rollback Criteria
@@ -151,6 +169,6 @@
 - Applicable release/deployment/rollout complete or not required: `Yes — not required under current scope`
 - Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: `Yes — after this final metadata commit is pushed`
-- Terminal package sent to `/architecture_designer`: `No`
-- Terminal message/reference: `Pending immediate dynamic-rule handoff after final metadata push`
+- Successful terminal package eligible for return: `Yes — after the corrected DR-004 metadata commit is pushed`
+- Terminal package sent to `/architecture_designer`: `No — corrected resend pending; prior DR-003 package was returned for documentation correction`
+- Terminal message/reference: `Pending corrected dynamic-rule handoff after DR-004 metadata push`

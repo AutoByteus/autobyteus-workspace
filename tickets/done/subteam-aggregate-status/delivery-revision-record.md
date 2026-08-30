@@ -7,6 +7,7 @@
 | DR-001 | `API-REV-001` pass; initial delivery integration refresh | `N/A` | `Blocked — latest-base packaging conflict` | `docs-sync-report.md`; `delivery-release-deployment-report.md`; `delivery-evidence/dr-001-integration-refresh.log` |
 | DR-002 | `IR-002` integration recovery and `API-REV-002` pass | `DR-001 Blocked` | `Ready for explicit user verification` | `docs-sync-report.md`; `handoff-summary.md`; `release-notes.md`; `delivery-release-deployment-report.md`; two canonical frontend docs; `delivery-evidence/dr-002-post-refresh-check.log` |
 | DR-003 | `API-REV-003` pass plus explicit user finalization approval | `DR-002 Ready for verification` | `Completed — finalized without release` | `handoff-summary.md`; `delivery-release-deployment-report.md`; `delivery-evidence/dr-003-finalization-refresh.log`; `delivery-evidence/dr-003-finalization-cleanup.log` |
+| DR-004 | Architecture terminal verification of `ffa427d23` | `DR-003 Completed` | `Completed — terminal documentation corrected` | `investigation-notes.md`; `handoff-summary.md`; `docs-sync-report.md`; `delivery-release-deployment-report.md`; `delivery-evidence/dr-004-terminal-correction.log` |
 
 ## Revision Entries
 
@@ -60,3 +61,47 @@
 - Why this baseline or delivery revision was recorded: Completes the delivery history with the latest live validation, explicit user decision, exact repository finalization state, explicit no-release outcome, cleanup evidence, and terminal-package readiness.
 - Next recipient/action: Use `get_handoff_rules`, send the authoritative terminal cumulative package to the exact returned recipient, and stop.
 - Remaining blockers, rollback concerns, or untested scope: `None`. Repository-wide Nuxt typecheck remains the recorded unrelated 316-diagnostic baseline and is not claimed as passed. Actual Electron shell remains intentionally unexecuted because no shell boundary changed. Roll back by reverting merge `db4898e94` if the user-facing status behavior regresses.
+
+### DR-004 — `Correct terminal historical evidence and validation summary`
+
+- Delivery round and trigger: Architecture Designer terminal-package verification
+  found two documentation/evidence inconsistencies at final metadata commit
+  `ffa427d2352ae66a5d9a36385227c8a54b30802d`.
+- Triggering upstream report, verification, or evidence: Architecture Designer
+  rework message; `investigation-notes.md`; `handoff-summary.md`;
+  `api-e2e-execution-coverage-report.md`.
+- Prior authoritative result (`N/A` for `DR-001`): `DR-003 — user-approved
+  repository finalization completed without release`.
+- Current authoritative result: `Completed — historical Requirements bootstrap
+  evidence restored and handoff validation boundary corrected; product and
+  finalization state unchanged`.
+- Docs sync report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/docs-sync-report.md`
+  — DR-004 correction recorded.
+- Handoff summary: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/handoff-summary.md`
+  — corrected and ready for resend.
+- Release/publication/deployment report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-release-deployment-report.md`
+  — DR-004 current authority.
+- Integration and post-integration verification: No repository integration or
+  executable state changed. The correction restores the exact historical
+  dedicated worktree/bootstrap command and aligns the summary with API-REV-003's
+  real existing-backend REST/GraphQL/WebSocket evidence. `git diff --check` and
+  a documentation-only changed-path audit passed; evidence is
+  `delivery-evidence/dr-004-terminal-correction.log`.
+- User verification/finalization state: Original explicit 2026-08-30 approval,
+  repository finalization, no-release decision, and cleanup remain valid.
+  Renewed verification is not required because DR-004 changes only factual
+  documentation/evidence and does not materially change the user-facing handoff.
+- Terminal return to `/architecture_designer`: `Not yet eligible at
+  artifact-write time only because the corrected DR-004 metadata commit/push
+  must precede resend; all substantive gates remain passed`.
+- Terminal return message/reference: `Pending corrected dynamic-rule resend after
+  metadata push`.
+- Why this baseline or delivery revision was recorded: Preserves immutable
+  historical Requirements evidence, removes the live-backend contradiction,
+  and makes the corrected terminal state independently auditable.
+- Next recipient/action: Commit and push the documentation-only correction,
+  verify `personal == origin/personal` with a clean tree, then use
+  `get_handoff_rules` and resend the authoritative terminal package.
+- Remaining blockers, rollback concerns, or untested scope: `None`. Product code,
+  API/E2E evidence/results, user verification, repository merge, cleanup, and the
+  explicit no-release outcome are unchanged.

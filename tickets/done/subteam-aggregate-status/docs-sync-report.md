@@ -60,3 +60,20 @@
 - Classification: `N/A`
 - Recommended recipient: `N/A`
 - Why docs could not be finalized truthfully: `N/A — docs sync completed on the current integrated and checked branch state`.
+
+## Post-Finalization Documentation Correction — DR-004
+
+- Trigger: Architecture Designer terminal verification at final metadata commit
+  `ffa427d2352ae66a5d9a36385227c8a54b30802d`.
+- Result: `Pass — factual archive/handoff corrections completed`.
+- Historical evidence correction: restored the original dedicated Requirements
+  worktree path and exact `git worktree add` command target in
+  `investigation-notes.md`; Requirements Engineering ownership and intended
+  behavior remain unchanged.
+- Validation-summary correction: `handoff-summary.md` now states that only the
+  actual Electron shell was not run and accurately records API-REV-003's real
+  backend REST/GraphQL/WebSocket execution.
+- Long-lived product docs changed: `None`.
+- Product code/configuration/tests changed: `None`.
+- Renewed user verification: `Not required — documentation/evidence-only factual
+  correction with no material user-facing handoff change`.

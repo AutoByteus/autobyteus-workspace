@@ -91,9 +91,10 @@ rows.
 - Known baseline: repository-wide `nuxi typecheck` remains non-clean with 316
   unrelated diagnostics and is not claimed as passed. No diagnostic names an
   aggregate-owned path.
-- Actual Electron shell and real backend transport were intentionally not run
-  because neither boundary changed; the affected renderer boundary was exercised
-  through real Nuxt/Chromium.
+- Actual Electron shell execution was intentionally not run because no
+  shell-specific boundary changed. API-REV-003 did exercise the real existing
+  backend through normal REST/GraphQL requests and Team-run WebSockets from the
+  integrated Nuxt frontend in Chromium.
 
 ## Durable Documentation Sync
 
@@ -157,3 +158,20 @@ rows.
 - Final cleanup evidence:
   `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/subteam-aggregate-status/delivery-evidence/dr-003-finalization-cleanup.log`
 - Remaining blocker: `None`
+
+## Terminal Documentation Correction — DR-004
+
+- Architecture terminal verification found that final metadata commit
+  `ffa427d23` had incorrectly rewritten the historical Requirements worktree
+  path in `investigation-notes.md` and that this summary contradicted
+  API-REV-003 by saying real backend transport was not run.
+- Restored the exact historical Requirements workspace and `git worktree add`
+  evidence to
+  `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements`.
+- Corrected the validation limitation above: only actual Electron shell
+  execution remained unrun; API-REV-003 used the real existing backend,
+  REST/GraphQL, and Team-run WebSockets.
+- Product code, approved behavior, validation results, user approval,
+  finalization, and the explicit no-release decision are unchanged.
+- Renewed user verification: `Not required — documentation/evidence-only factual
+  correction with no executable or user-facing behavior delta`.
