@@ -1,13 +1,17 @@
 <template>
-  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-    <div class="flex flex-wrap items-center gap-3">
+  <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" data-testid="detailed-usage-section">
+    <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
       <div>
-        <h3 class="font-bold text-slate-950">{{ t('settings.components.settings.TokenUsageAnalytics.whereUsageWent') }}</h3>
-        <p class="text-sm text-slate-500">{{ t('settings.components.settings.TokenUsageAnalytics.rankedDrivers') }}</p>
+        <h3 class="text-base font-bold tracking-tight text-slate-950">{{ t('settings.components.settings.TokenUsageAnalytics.detailedUsage') }}</h3>
+        <p class="mt-1 text-xs text-slate-500">{{ t('settings.components.settings.TokenUsageAnalytics.detailedUsageHelp') }}</p>
       </div>
-      <label class="ml-auto text-sm font-semibold text-slate-600">
+      <label class="flex items-center gap-2 text-xs font-bold text-slate-600">
         {{ t('settings.components.settings.TokenUsageAnalytics.groupBy') }}
-        <select :value="grouping" class="ml-2 rounded-lg border-slate-300 bg-white text-sm" @change="onGroupingChange">
+        <select
+          :value="grouping"
+          class="rounded-lg border-slate-300 bg-white text-sm font-medium text-slate-800 focus:border-blue-500 focus:ring-blue-500"
+          @change="onGroupingChange"
+        >
           <option value="RUNTIME_MODEL">{{ t('settings.components.settings.TokenUsageAnalytics.runtimeModel') }}</option>
           <option value="RUNTIME">{{ t('settings.components.settings.TokenUsageAnalytics.runtime') }}</option>
           <option value="PROVIDER">{{ t('settings.components.settings.TokenUsageAnalytics.provider') }}</option>
@@ -15,30 +19,70 @@
         </select>
       </label>
     </div>
-    <p v-if="chartUnavailable" class="mt-4 rounded-lg bg-amber-50 p-4 text-sm text-amber-900">
-      {{ t('settings.components.settings.TokenUsageAnalytics.costChartUnavailable') }}
-    </p>
-    <div v-else-if="chartRows.length" class="mt-4 h-72">
-      <canvas
-        ref="canvas"
-        role="img"
-        tabindex="0"
-        :aria-label="t('settings.components.settings.TokenUsageAnalytics.breakdownChartAria')"
-      ></canvas>
-    </div>
-    <p v-else class="mt-4 rounded-lg bg-slate-50 p-4 text-sm text-slate-600">
-      {{ t('settings.components.settings.TokenUsageAnalytics.noChartValues') }}
-    </p>
 
-    <TokenUsageExactBreakdownTable :result="result" :metric="metric" />
+    <div class="overflow-x-auto border-t border-slate-200">
+      <table class="w-full min-w-[720px] text-sm">
+        <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          <tr>
+            <th class="px-4 py-3 sm:px-5">{{ groupingLabel }}</th>
+            <th class="px-4 py-3 text-right">{{ t('settings.components.settings.TokenUsageAnalytics.tokens') }}</th>
+            <th class="px-4 py-3 text-right">{{ t('settings.components.settings.TokenUsageAnalytics.estimatedApiCost') }}</th>
+            <th class="px-4 py-3 text-right">{{ t('settings.components.settings.TokenUsageAnalytics.share') }}</th>
+            <th class="px-4 py-3 text-right">{{ t('settings.components.settings.TokenUsageAnalytics.details') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <template v-for="row in displayRows" :key="row.key">
+            <tr class="hover:bg-slate-50/80">
+              <td class="px-4 py-3 sm:px-5">
+                <span class="block font-semibold text-slate-900">{{ row.label }}</span>
+                <span class="mt-0.5 block text-xs text-slate-500">{{ row.context }}</span>
+              </td>
+              <td class="px-4 py-3 text-right font-medium tabular-nums text-slate-900">{{ integer(row.aggregate.totalTokens) }}</td>
+              <td class="px-4 py-3 text-right tabular-nums">
+                <span class="block text-slate-900">{{ rowCost(row) }}</span>
+                <span class="mt-0.5 block text-xs text-slate-500">{{ qualityLabel(row.costQuality.kind) }}</span>
+                <span v-if="row.costQuality.missingPriceDimensions.length" class="mt-0.5 block text-xs text-amber-700">
+                  {{ t('settings.components.settings.TokenUsageAnalytics.missingDimensions') }}: {{ row.costQuality.missingPriceDimensions.join(', ') }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right tabular-nums text-slate-700">{{ rowShare(row) }}</td>
+              <td class="px-4 py-3 text-right">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  :aria-expanded="expandedRows.has(row.key)"
+                  :aria-controls="detailsId(row.key)"
+                  @click="toggleRow(row.key)"
+                >
+                  {{ expandedRows.has(row.key) ? t('settings.components.settings.TokenUsageAnalytics.hideDetails') : t('settings.components.settings.TokenUsageAnalytics.details') }}
+                  <svg aria-hidden="true" class="h-3.5 w-3.5 transition-transform" :class="expandedRows.has(row.key) ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.51a.75.75 0 0 1-1.08 0l-4.25-4.51a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" /></svg>
+                </button>
+              </td>
+            </tr>
+            <tr v-if="expandedRows.has(row.key)" :id="detailsId(row.key)" class="bg-blue-50/50">
+              <td colspan="5" class="px-4 py-4 sm:px-5">
+                <dl class="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
+                  <div v-for="detail in exactDetails(row)" :key="detail.label">
+                    <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-500">{{ detail.label }}</dt>
+                    <dd class="mt-1 font-semibold tabular-nums text-slate-900">{{ detail.value }}</dd>
+                  </div>
+                </dl>
+                <p class="mt-3 text-xs text-slate-500">
+                  {{ t('settings.components.settings.TokenUsageAnalytics.costEvidence', { status: row.aggregate.apiCostStatus, currency: row.costQuality.currency || notAvailable }) }}
+                </p>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Chart, registerables } from 'chart.js';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
-import TokenUsageExactBreakdownTable from './TokenUsageExactBreakdownTable.vue';
 import type {
   TokenUsageAnalyticsBreakdownRow,
   TokenUsageAnalyticsGrouping,
@@ -47,141 +91,119 @@ import type {
 } from '~/types/tokenUsageAnalytics';
 import {
   formatTokenUsageAnalyticsCost,
+  mergeTokenUsageAnalyticsCostQualities,
 } from '~/utils/tokenUsageAnalyticsPresentation';
 
-interface ChartGroup {
-  name: string;
-  value: number;
-  rows: TokenUsageAnalyticsBreakdownRow[];
-}
+type DetailedUsageAggregate = Pick<TokenUsageAnalyticsBreakdownRow['aggregate'],
+  'grossInputTokens' | 'standardInputTokens' | 'cacheReadInputTokens' | 'cacheCreationInputTokens' |
+  'outputTokens' | 'reasoningOutputTokens' | 'totalTokens' | 'estimatedApiTotalCost' | 'apiCostStatus'>;
 
-Chart.register(...registerables);
+type DetailedUsageRow = {
+  key: string;
+  label: string;
+  context: string;
+  aggregate: DetailedUsageAggregate;
+  costQuality: TokenUsageAnalyticsBreakdownRow['costQuality'];
+  sourceRows: TokenUsageAnalyticsBreakdownRow[];
+};
+
 const props = defineProps<{
   result: TokenUsageAnalyticsResult;
   metric: TokenUsageAnalyticsMetric;
   grouping: TokenUsageAnalyticsGrouping;
 }>();
 const emit = defineEmits<{ 'update:grouping': [value: TokenUsageAnalyticsGrouping] }>();
-const { t } = useLocalization();
-const canvas = ref<HTMLCanvasElement | null>(null);
-let chart: Chart<'bar'> | null = null;
-const runtimeLabels: Record<string, string> = {
-  autobyteus: 'Autobyteus',
-  codex_app_server: 'Codex',
-  claude_agent_sdk: 'Claude SDK',
-};
+const { t, resolvedLocale } = useLocalization();
+const expandedRows = reactive(new Set<string>());
+const runtimeLabels: Record<string, string> = { autobyteus: 'Autobyteus', codex_app_server: 'Codex', claude_agent_sdk: 'Claude SDK' };
 const notAvailable = computed(() => t('settings.components.settings.TokenUsageAnalytics.notAvailable'));
-const notComparable = computed(() => t('settings.components.settings.TokenUsageAnalytics.notComparable'));
-const onGroupingChange = (event: Event) => emit(
-  'update:grouping',
-  (event.target as HTMLSelectElement).value as TokenUsageAnalyticsGrouping,
-);
+const integer = (value: number) => new Intl.NumberFormat(resolvedLocale.value).format(value);
+const percent = (value: number) => new Intl.NumberFormat(resolvedLocale.value, { style: 'percent', maximumFractionDigits: 1 }).format(value);
 const runtime = (value: string) => runtimeLabels[value] ?? value;
-const integer = (value: number) => new Intl.NumberFormat().format(value);
-const percent = (value: number) => new Intl.NumberFormat(undefined, {
-  style: 'percent', maximumFractionDigits: 1,
-}).format(value);
-const qualityLabel = (kind: string) => t(`settings.components.settings.TokenUsageAnalytics.quality${kind}`);
-const label = (row: TokenUsageAnalyticsBreakdownRow) => {
-  if (props.grouping === 'RUNTIME') return runtime(row.runtimeKind);
-  if (props.grouping === 'PROVIDER') return row.providerDisplayName;
-  if (props.grouping === 'MODEL') return row.modelDisplayName;
-  return `${runtime(row.runtimeKind)} · ${row.modelDisplayName}`;
+const groupingLabel = computed(() => props.grouping === 'RUNTIME_MODEL'
+  ? t('settings.components.settings.TokenUsageAnalytics.runtimeModel')
+  : t(`settings.components.settings.TokenUsageAnalytics.${props.grouping.toLowerCase()}`));
+const onGroupingChange = (event: Event) => emit('update:grouping', (event.target as HTMLSelectElement).value as TokenUsageAnalyticsGrouping);
+const identity = (row: TokenUsageAnalyticsBreakdownRow) => {
+  if (props.grouping === 'RUNTIME') return { key: row.runtimeKind, label: runtime(row.runtimeKind), context: t('settings.components.settings.TokenUsageAnalytics.runtime') };
+  if (props.grouping === 'PROVIDER') return { key: row.providerKey, label: row.providerDisplayName, context: t('settings.components.settings.TokenUsageAnalytics.provider') };
+  if (props.grouping === 'MODEL') return { key: row.modelKey, label: row.modelDisplayName, context: t('settings.components.settings.TokenUsageAnalytics.model') };
+  return { key: `${row.runtimeKind}:${row.modelKey}`, label: `${runtime(row.runtimeKind)} · ${row.modelDisplayName}`, context: t('settings.components.settings.TokenUsageAnalytics.runtimeModel') };
 };
-const metricValue = (row: TokenUsageAnalyticsBreakdownRow): number | null => {
-  if (props.metric === 'TOKENS') return row.aggregate.totalTokens;
-  if (!['COMPLETE', 'PARTIAL'].includes(row.costQuality.kind) || !row.costQuality.currency ||
-    row.costQuality.currency !== props.result.selectedCostQuality.currency) return null;
-  return row.aggregate.estimatedApiTotalCost;
-};
-const chartUnavailable = computed(() => props.metric === 'COST' &&
-  props.result.selectedCostQuality.kind === 'MIXED_CURRENCY');
-const grouped = computed<ChartGroup[]>(() => {
-  const groups = new Map<string, ChartGroup>();
-  for (const row of props.result.breakdownRows) {
-    const amount = metricValue(row);
-    if (amount == null) continue;
-    const key = label(row);
-    const group = groups.get(key) ?? { name: key, value: 0, rows: [] };
-    group.value += amount;
-    group.rows.push(row);
-    groups.set(key, group);
+const toDetailedAggregate = (row: TokenUsageAnalyticsBreakdownRow): DetailedUsageAggregate => ({
+  grossInputTokens: row.aggregate.grossInputTokens,
+  standardInputTokens: row.aggregate.standardInputTokens,
+  cacheReadInputTokens: row.aggregate.cacheReadInputTokens,
+  cacheCreationInputTokens: row.aggregate.cacheCreationInputTokens,
+  outputTokens: row.aggregate.outputTokens,
+  reasoningOutputTokens: row.aggregate.reasoningOutputTokens,
+  totalTokens: row.aggregate.totalTokens,
+  estimatedApiTotalCost: row.aggregate.estimatedApiTotalCost,
+  apiCostStatus: row.aggregate.apiCostStatus,
+});
+const displayRows = computed<DetailedUsageRow[]>(() => {
+  const groups = new Map<string, DetailedUsageRow>();
+  for (const sourceRow of props.result.breakdownRows) {
+    const rowIdentity = identity(sourceRow);
+    const current = groups.get(rowIdentity.key);
+    if (!current) {
+      groups.set(rowIdentity.key, {
+        ...rowIdentity,
+        aggregate: toDetailedAggregate(sourceRow),
+        costQuality: sourceRow.costQuality,
+        sourceRows: [sourceRow],
+      });
+      continue;
+    }
+    current.sourceRows.push(sourceRow);
+    current.aggregate.grossInputTokens += sourceRow.aggregate.grossInputTokens;
+    current.aggregate.standardInputTokens += sourceRow.aggregate.standardInputTokens;
+    current.aggregate.cacheReadInputTokens += sourceRow.aggregate.cacheReadInputTokens;
+    current.aggregate.cacheCreationInputTokens += sourceRow.aggregate.cacheCreationInputTokens;
+    current.aggregate.outputTokens += sourceRow.aggregate.outputTokens;
+    current.aggregate.reasoningOutputTokens += sourceRow.aggregate.reasoningOutputTokens;
+    current.aggregate.totalTokens += sourceRow.aggregate.totalTokens;
+    if (sourceRow.aggregate.estimatedApiTotalCost != null) {
+      current.aggregate.estimatedApiTotalCost = (current.aggregate.estimatedApiTotalCost ?? 0) + sourceRow.aggregate.estimatedApiTotalCost;
+    }
+    current.costQuality = mergeTokenUsageAnalyticsCostQualities(current.sourceRows.map((row) => row.costQuality));
+    const statuses = new Set(current.sourceRows.map((row) => row.aggregate.apiCostStatus));
+    current.aggregate.apiCostStatus = statuses.size === 1 ? [...statuses][0]! : 'mixed';
   }
-  return [...groups.values()].sort((left, right) => right.value - left.value || left.name.localeCompare(right.name));
+  return [...groups.values()].sort((left, right) => (
+    right.aggregate.totalTokens - left.aggregate.totalTokens || left.label.localeCompare(right.label, resolvedLocale.value)
+  ));
 });
-const chartRows = computed<ChartGroup[]>(() => {
-  if (grouped.value.length <= 8) return grouped.value;
-  const visible = grouped.value.slice(0, 8);
-  const remaining = grouped.value.slice(8);
-  return [...visible, {
-    name: t('settings.components.settings.TokenUsageAnalytics.other'),
-    value: remaining.reduce((sum, row) => sum + row.value, 0),
-    rows: remaining.flatMap((row) => row.rows),
-  }];
+const qualityLabel = (kind: string) => t(`settings.components.settings.TokenUsageAnalytics.quality${kind}`);
+const rowCost = (row: DetailedUsageRow) => formatTokenUsageAnalyticsCost({
+  value: row.aggregate.estimatedApiTotalCost,
+  currency: row.costQuality.currency,
+  qualityKind: row.costQuality.kind,
+  localLabel: t('settings.components.settings.TokenUsageAnalytics.localNoBill'),
+  unpricedLabel: t('settings.components.settings.TokenUsageAnalytics.unpriced'),
+  currencyUnavailableLabel: t('settings.components.settings.TokenUsageAnalytics.currencyUnavailable'),
+  locale: resolvedLocale.value,
 });
-const chartTotal = computed(() => grouped.value.reduce((sum, row) => sum + row.value, 0));
-const groupValue = (group: ChartGroup) => props.metric === 'TOKENS'
-  ? integer(group.value)
-  : formatTokenUsageAnalyticsCost({
-      value: group.value,
-      currency: props.result.selectedCostQuality.currency,
-      qualityKind: props.result.selectedCostQuality.kind,
-      localLabel: t('settings.components.settings.TokenUsageAnalytics.localNoBill'),
-      unpricedLabel: t('settings.components.settings.TokenUsageAnalytics.unpriced'),
-      currencyUnavailableLabel: t('settings.components.settings.TokenUsageAnalytics.currencyUnavailable'),
-    });
-const groupEvidence = (group: ChartGroup) => {
-  const qualities = [...new Set(group.rows.map((row) => qualityLabel(row.costQuality.kind)))].join(', ');
-  const statuses = [...new Set(group.rows.map((row) => row.aggregate.apiCostStatus))].join(', ');
-  const currencies = [...new Set(group.rows.map((row) => row.costQuality.currency).filter(Boolean))].join(', ') || notAvailable.value;
-  return [
-    `${t('settings.components.settings.TokenUsageAnalytics.share')}: ${chartTotal.value > 0 ? percent(group.value / chartTotal.value) : notComparable.value}`,
-    `${t('settings.components.settings.TokenUsageAnalytics.costQuality')}: ${qualities}`,
-    `${t('settings.components.settings.TokenUsageAnalytics.capturedApiCostStatus')}: ${statuses}`,
-    `${t('settings.components.settings.TokenUsageAnalytics.currency')}: ${currencies}`,
-  ];
+const rowShare = (row: DetailedUsageRow) => {
+  const rowValue = props.metric === 'TOKENS' ? row.aggregate.totalTokens : row.aggregate.estimatedApiTotalCost;
+  const totalValue = props.metric === 'TOKENS' ? props.result.selectedAggregate.totalTokens : props.result.selectedAggregate.estimatedApiTotalCost;
+  if (rowValue == null || totalValue == null || totalValue === 0 || (props.metric === 'COST' && (
+    !['COMPLETE', 'PARTIAL'].includes(row.costQuality.kind) ||
+    !['COMPLETE', 'PARTIAL'].includes(props.result.selectedCostQuality.kind) ||
+    !row.costQuality.currency ||
+    row.costQuality.currency !== props.result.selectedCostQuality.currency
+  ))) return notAvailable.value;
+  return percent(rowValue / totalValue);
 };
-
-const render = async () => {
-  await nextTick();
-  chart?.destroy();
-  chart = null;
-  if (!canvas.value || chartUnavailable.value || !chartRows.value.length) return;
-  chart = new Chart(canvas.value, {
-    type: 'bar',
-    data: {
-      labels: chartRows.value.map((row) => row.name),
-      datasets: [{
-        label: props.metric === 'TOKENS'
-          ? t('settings.components.settings.TokenUsageAnalytics.tokens')
-          : t('settings.components.settings.TokenUsageAnalytics.estimatedCost'),
-        data: chartRows.value.map((row) => row.value),
-        backgroundColor: '#0f766e',
-        borderRadius: 5,
-      }],
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (item) => groupValue(chartRows.value[item.dataIndex]!),
-            afterLabel: (item) => groupEvidence(chartRows.value[item.dataIndex]!),
-          },
-        },
-      },
-      scales: {
-        x: { beginAtZero: true },
-        y: { grid: { display: false } },
-      },
-    },
-  });
-};
-
-onMounted(render);
-watch(() => [props.result, props.metric, props.grouping], render, { deep: true });
-onBeforeUnmount(() => chart?.destroy());
+const exactDetails = (row: DetailedUsageRow) => [
+  { label: t('settings.components.settings.TokenUsageAnalytics.uncachedInput'), value: integer(row.aggregate.standardInputTokens) },
+  { label: t('settings.components.settings.TokenUsageAnalytics.cachedInput'), value: integer(row.aggregate.cacheReadInputTokens) },
+  { label: t('settings.components.settings.TokenUsageAnalytics.cacheWrite'), value: integer(row.aggregate.cacheCreationInputTokens) },
+  { label: t('settings.components.settings.TokenUsageAnalytics.grossInput'), value: integer(row.aggregate.grossInputTokens) },
+  { label: t('settings.components.settings.TokenUsageAnalytics.output'), value: integer(row.aggregate.outputTokens) },
+  { label: t('settings.components.settings.TokenUsageAnalytics.reasoningIncluded'), value: integer(row.aggregate.reasoningOutputTokens) },
+];
+const toggleRow = (key: string) => expandedRows.has(key) ? expandedRows.delete(key) : expandedRows.add(key);
+const detailsId = (key: string) => `token-usage-details-${key.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+watch(() => props.grouping, () => expandedRows.clear());
 </script>

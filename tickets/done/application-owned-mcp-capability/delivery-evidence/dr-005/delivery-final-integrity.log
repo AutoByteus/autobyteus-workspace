@@ -1,0 +1,38 @@
+DR-005 final integrity checks
+UTC: 2026-08-28T12:54:19Z
+$ git diff --check
+PASS
+$ current contract constants
+autobyteus-application-sdk-contracts/src/manifests.ts:8:export const APPLICATION_MANIFEST_VERSION = "5" as const;
+autobyteus-application-sdk-contracts/src/manifests.ts:48:  manifestVersion: typeof APPLICATION_MANIFEST_VERSION;
+autobyteus-application-sdk-contracts/src/index.ts:42:export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION = "7" as const;
+autobyteus-application-sdk-contracts/src/index.ts:76:    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION;
+autobyteus-application-sdk-contracts/src/index.ts:363:  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION;
+$ stale durable-doc contract/owner scan (tickets excluded)
+PASS: no stale durable wording found
+$ maintained Brief role prompt provider/foundation-operation scan
+PASS: role prompts remain operation-neutral
+$ DR-005 current-status wording scan
+PASS: current delivery artifacts supersede DR-004
+$ relative Markdown link validation
+PASS: relative links resolve across 7 reviewed files
+$ delivery evidence sensitive-pattern scan
+PASS: no matching secret-shaped value
+$ AppImage integrity recheck
+autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.61.AppImage: OK
+$ latest base ancestry
+HEAD=7ab0a996834830a0d8f2c74e406bc1b9bd4926cb
+origin/personal=64cb4e952a6053fb267fdc43859fb30ae8bcdf6b
+origin-only / ticket-only=0	10
+PASS
+$ tracked/untracked status
+ M applications/brief-studio/README.md
+ M docs/custom-application-development.md
+ M tickets/in-progress/application-owned-mcp-capability/delivery-integration-evidence.log
+ M tickets/in-progress/application-owned-mcp-capability/delivery-latest-base-conflict-report.md
+ M tickets/in-progress/application-owned-mcp-capability/delivery-revision-record.md
+ M tickets/in-progress/application-owned-mcp-capability/docs-sync-report.md
+ M tickets/in-progress/application-owned-mcp-capability/handoff-summary.md
+ M tickets/in-progress/application-owned-mcp-capability/release-deployment-report.md
+ M tickets/in-progress/application-owned-mcp-capability/release-notes.md
+?? tickets/in-progress/application-owned-mcp-capability/delivery-evidence/

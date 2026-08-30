@@ -1,0 +1,642 @@
+{
+  "startedAt": "2026-08-24T11:51:21.350Z",
+  "completedAt": "2026-08-24T11:51:55.686Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web",
+  "skipBuild": true,
+  "artifact": {
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "size": 33968,
+    "sha256": "c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0",
+    "reusedAcrossAllPreparedScenarios": true
+  },
+  "ordinaryApplication": {
+    "before": {
+      "label": "before packaged validation",
+      "listenerPids": [
+        39614
+      ],
+      "health": {
+        "ok": true,
+        "status": 200
+      },
+      "identities": [
+        {
+          "pid": 39614,
+          "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+          "commandIsAutoByteus": true
+        }
+      ]
+    },
+    "after": {
+      "label": "after all packaged validation",
+      "listenerPids": [
+        39614
+      ],
+      "health": {
+        "ok": true,
+        "status": 200
+      },
+      "identities": [
+        {
+          "pid": 39614,
+          "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+          "commandIsAutoByteus": true
+        }
+      ]
+    },
+    "identityPreserved": true
+  },
+  "scenarios": {
+    "E2E-PKG-001": {
+      "id": "E2E-PKG-001",
+      "title": "Direct same-artifact coexistence, isolated paths, and caller-root retention",
+      "startedAt": "2026-08-24T11:51:21.868Z",
+      "completedAt": "2026-08-24T11:51:34.864Z",
+      "result": "pass",
+      "details": {
+        "metadata": {
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "port": 61736,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-profile-probe-qfV5Ft/caller-retained-direct-root",
+          "ownsDataRoot": false,
+          "clientBaseUrl": "http://127.0.0.1:61736",
+          "healthUrl": "http://127.0.0.1:61736/rest/health"
+        },
+        "preparedEnvironment": {
+          "preservedMarkerKeys": [
+            "CODEX_HOME",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "SERPER_API_KEY",
+            "AUTOBYTEUS_E2E_CALLER_SENTINEL"
+          ],
+          "isolationKeysForced": true
+        },
+        "ordinaryDuring": {
+          "label": "during direct E2E",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "ordinaryAfter": {
+          "label": "after direct E2E",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "processTree": {
+          "supported": true,
+          "rootPid": 28310,
+          "processTreeIdentity": "posix-process-group:28310",
+          "processCount": 5,
+          "backendPid": 28321,
+          "backendSelectedPort": true,
+          "backendSelectedDataRoot": true,
+          "backendHostOverrideAbsent": true,
+          "chromiumUserDataIsolated": true,
+          "backendEnvironment": {
+            "supported": true,
+            "matches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          }
+        },
+        "isolatedPaths": {
+          "baseDataRoot": true,
+          "serverData": true,
+          "logs": true,
+          "extensions": true,
+          "browserArtifacts": true,
+          "userData": true,
+          "sessionData": true,
+          "crashDumps": true,
+          "downloads": true
+        },
+        "registryBaseUrlMatches": true,
+        "cleanupResult": {
+          "processTreeCompletion": {
+            "status": "complete",
+            "identity": "posix-process-group:28310",
+            "forced": false,
+            "gracefulError": null
+          },
+          "portObservation": {
+            "status": "available",
+            "port": 61736,
+            "detail": null
+          }
+        },
+        "callerRootRetained": true,
+        "sentinel": {
+          "unchanged": true,
+          "count": 3
+        }
+      }
+    },
+    "E2E-PKG-002": {
+      "id": "E2E-PKG-002",
+      "title": "Playwright renderer endpoint, provider, environment, profile, and updater journey",
+      "startedAt": "2026-08-24T11:51:34.865Z",
+      "completedAt": "2026-08-24T11:51:48.146Z",
+      "result": "pass",
+      "details": {
+        "metadata": {
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "port": 61800,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-H0g42u",
+          "ownsDataRoot": true,
+          "clientBaseUrl": "http://127.0.0.1:61800",
+          "healthUrl": "http://127.0.0.1:61800/rest/health"
+        },
+        "preparedEnvironment": {
+          "preservedMarkerKeys": [
+            "CODEX_HOME",
+            "OPENAI_API_KEY",
+            "GOOGLE_API_KEY",
+            "SERPER_API_KEY",
+            "AUTOBYTEUS_E2E_CALLER_SENTINEL"
+          ],
+          "isolationKeysForced": true
+        },
+        "journey": {
+          "bridge": {
+            "status": "running",
+            "statusBaseUrlMatches": true,
+            "healthUrlMatches": true,
+            "registryBaseUrlMatches": true,
+            "health": "ok",
+            "windowNodeId": "embedded-local"
+          },
+          "rendererGraphql": {
+            "ok": true,
+            "status": 200
+          },
+          "rendererWebSocket": {
+            "opened": true
+          },
+          "providerSettings": {
+            "visible": true,
+            "loadFailureAbsent": true,
+            "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-009-electron-isolation/provider-settings.png"
+          },
+          "updater": {
+            "handlerAbsentBeforeDelay": true,
+            "handlerAbsentAfterDelay": true,
+            "logActivityAbsent": true
+          },
+          "mainSnapshot": {
+            "isPackaged": true,
+            "paths": {
+              "userData": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-H0g42u/electron/user-data",
+              "sessionData": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-H0g42u/electron/session-data",
+              "logs": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-H0g42u/logs",
+              "crashDumps": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-H0g42u/electron/crash-dumps",
+              "downloads": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-H0g42u/electron/downloads"
+            },
+            "environmentMatches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          },
+          "endpointTraffic": {
+            "observedSelectedEndpoint": true,
+            "observedProductionEndpoint": false
+          },
+          "traffic": {
+            "requests": [
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "method": "POST",
+                "url": "http://127.0.0.1:61800/graphql"
+              }
+            ],
+            "responses": [
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              },
+              {
+                "status": 200,
+                "url": "http://127.0.0.1:61800/graphql"
+              }
+            ],
+            "websockets": [
+              "ws://127.0.0.1:61800/graphql"
+            ],
+            "failures": [],
+            "pageErrors": []
+          }
+        },
+        "processTree": {
+          "supported": true,
+          "rootPid": 28437,
+          "processTreeIdentity": "posix-process-group:28437",
+          "processCount": 5,
+          "backendPid": 28443,
+          "backendSelectedPort": true,
+          "backendSelectedDataRoot": true,
+          "backendHostOverrideAbsent": true,
+          "chromiumUserDataIsolated": true,
+          "backendEnvironment": {
+            "supported": true,
+            "matches": {
+              "CODEX_HOME": true,
+              "OPENAI_API_KEY": true,
+              "GOOGLE_API_KEY": true,
+              "SERPER_API_KEY": true,
+              "AUTOBYTEUS_E2E_CALLER_SENTINEL": true
+            }
+          }
+        },
+        "isolatedPaths": {
+          "baseDataRoot": true,
+          "serverData": true,
+          "logs": true,
+          "extensions": true,
+          "browserArtifacts": true,
+          "userData": true,
+          "sessionData": true,
+          "crashDumps": true,
+          "downloads": true
+        },
+        "cleanupResult": {
+          "processTreeCompletion": {
+            "status": "complete",
+            "identity": "posix-process-group:28437",
+            "forced": false,
+            "gracefulError": null
+          },
+          "portObservation": {
+            "status": "available",
+            "port": 61800,
+            "detail": null
+          }
+        },
+        "ownedRootDisposed": true,
+        "ordinaryAfter": {
+          "label": "after Playwright E2E",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "sentinel": {
+          "unchanged": true,
+          "count": 3
+        }
+      }
+    },
+    "E2E-PKG-003": {
+      "id": "E2E-PKG-003",
+      "title": "Two simultaneous Playwright instances keep ports, roots, and renderer state isolated",
+      "startedAt": "2026-08-24T11:51:48.147Z",
+      "completedAt": "2026-08-24T11:51:52.762Z",
+      "result": "pass",
+      "details": {
+        "exactArtifactPaths": [
+          "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus"
+        ],
+        "distinctPorts": [
+          61839,
+          61840
+        ],
+        "distinctRoots": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-N3yk02",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-hXe00J"
+        ],
+        "localStorageMarkers": [
+          "parallel-instance-one",
+          "parallel-instance-two"
+        ],
+        "distinctUserData": true,
+        "health": [
+          {
+            "ok": true,
+            "status": 200
+          },
+          {
+            "ok": true,
+            "status": 200
+          }
+        ],
+        "ordinaryDuring": {
+          "label": "during parallel E2E",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "ordinaryAfter": {
+          "label": "after parallel E2E",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        },
+        "cleanupResults": [
+          {
+            "processTreeCompletion": {
+              "status": "complete",
+              "identity": "posix-process-group:28532",
+              "forced": false,
+              "gracefulError": null
+            },
+            "portObservation": {
+              "status": "available",
+              "port": 61839,
+              "detail": null
+            }
+          },
+          {
+            "processTreeCompletion": {
+              "status": "complete",
+              "identity": "posix-process-group:28550",
+              "forced": false,
+              "gracefulError": null
+            },
+            "portObservation": {
+              "status": "available",
+              "port": 61840,
+              "detail": null
+            }
+          }
+        ],
+        "ownedRootsDisposed": true
+      }
+    },
+    "E2E-PKG-004": {
+      "id": "E2E-PKG-004",
+      "title": "Raw packaged invalid and partial profiles fail closed",
+      "startedAt": "2026-08-24T11:51:52.763Z",
+      "completedAt": "2026-08-24T11:51:54.450Z",
+      "result": "pass",
+      "details": {
+        "cases": [
+          {
+            "name": "missing-root",
+            "exitCode": 1,
+            "signal": null,
+            "expectedDiagnosticObserved": true,
+            "processGroupAbsent": true
+          },
+          {
+            "name": "missing-port",
+            "exitCode": 1,
+            "signal": null,
+            "expectedDiagnosticObserved": true,
+            "processGroupAbsent": true
+          },
+          {
+            "name": "production-port",
+            "exitCode": 1,
+            "signal": null,
+            "expectedDiagnosticObserved": true,
+            "processGroupAbsent": true
+          },
+          {
+            "name": "production-root",
+            "exitCode": 1,
+            "signal": null,
+            "expectedDiagnosticObserved": true,
+            "processGroupAbsent": true
+          },
+          {
+            "name": "relative-root",
+            "exitCode": 1,
+            "signal": null,
+            "expectedDiagnosticObserved": true,
+            "processGroupAbsent": true
+          },
+          {
+            "name": "occupied-port",
+            "exitCode": 1,
+            "signal": null,
+            "expectedDiagnosticObserved": true,
+            "processGroupAbsent": true
+          }
+        ],
+        "foreignFixtureSurvivedEveryCase": true,
+        "sentinel": {
+          "unchanged": true,
+          "count": 3
+        },
+        "ordinaryAfter": {
+          "label": "after invalid profiles",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        }
+      }
+    },
+    "E2E-PKG-005": {
+      "id": "E2E-PKG-005",
+      "title": "Foreign allocation-race owner survives and does not veto owned-root disposal",
+      "startedAt": "2026-08-24T11:51:54.450Z",
+      "completedAt": "2026-08-24T11:51:55.188Z",
+      "result": "pass",
+      "details": {
+        "startupFailedClosed": true,
+        "readinessErrorMentionsExit": true,
+        "cleanupResult": {
+          "processTreeCompletion": {
+            "status": "complete",
+            "identity": "posix-process-group:28692",
+            "forced": false,
+            "gracefulError": null
+          },
+          "portObservation": {
+            "status": "occupied-after-owned-tree-exit",
+            "port": 61912,
+            "detail": "listen EADDRINUSE: address already in use 0.0.0.0:61912"
+          }
+        },
+        "foreignListenerStillRunning": true,
+        "ownedRootDisposed": true,
+        "ordinaryAfter": {
+          "label": "after allocation race",
+          "listenerPids": [
+            39614
+          ],
+          "health": {
+            "ok": true,
+            "status": 200
+          },
+          "identities": [
+            {
+              "pid": 39614,
+              "fingerprint": "a71e353d5647245650ac24324e55e6d1ecc2e17191bb5d9259f52986e39c4991",
+              "commandIsAutoByteus": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  "failures": [],
+  "cleanup": [
+    {
+      "label": "direct Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "Playwright Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "parallel Playwright session 2",
+      "result": "pass"
+    },
+    {
+      "label": "parallel Playwright session 1",
+      "result": "pass"
+    },
+    {
+      "label": "invalid-profile occupied-port fixture",
+      "result": "pass"
+    },
+    {
+      "label": "allocation-race direct session",
+      "result": "pass"
+    },
+    {
+      "label": "allocation-race foreign listener",
+      "result": "pass"
+    },
+    {
+      "label": "controlled caller root",
+      "result": "pass"
+    },
+    {
+      "label": "probe temporary root",
+      "result": "pass"
+    }
+  ],
+  "controlledSentinels": {
+    "unchanged": true,
+    "count": 3
+  }
+}

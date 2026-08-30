@@ -1,0 +1,424 @@
+{
+  "scenario": "APIE2E-PROVIDER-008",
+  "errors": null,
+  "snapshots": [
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "ANTHROPIC",
+        "name": "Anthropic",
+        "providerType": "ANTHROPIC",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 6,
+      "sampleModels": [
+        {
+          "modelIdentifier": "claude-fable-5",
+          "providerId": "ANTHROPIC",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "claude-opus-4.7",
+          "providerId": "ANTHROPIC",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "claude-opus-4.8",
+          "providerId": "ANTHROPIC",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "claude-opus-5",
+          "providerId": "ANTHROPIC",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "claude-sonnet-4.6",
+          "providerId": "ANTHROPIC",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "claude-sonnet-5",
+          "providerId": "ANTHROPIC",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "AUTOBYTEUS",
+        "name": "AutoByteus",
+        "providerType": "AUTOBYTEUS",
+        "isCustom": false,
+        "catalogMode": "DISCOVERED"
+      },
+      "sources": [
+        {
+          "modelKind": "LLM",
+          "state": "IDLE",
+          "modelCount": 0,
+          "successfulUnitCount": 0,
+          "failedUnitCount": 0,
+          "safeMessage": null
+        },
+        {
+          "modelKind": "AUDIO",
+          "state": "IDLE",
+          "modelCount": 0,
+          "successfulUnitCount": 0,
+          "failedUnitCount": 0,
+          "safeMessage": null
+        },
+        {
+          "modelKind": "IMAGE",
+          "state": "IDLE",
+          "modelCount": 0,
+          "successfulUnitCount": 0,
+          "failedUnitCount": 0,
+          "safeMessage": null
+        }
+      ],
+      "llmModelCount": 0,
+      "sampleModels": []
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "DEEPSEEK",
+        "name": "DeepSeek",
+        "providerType": "DEEPSEEK",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 2,
+      "sampleModels": [
+        {
+          "modelIdentifier": "deepseek-v4-flash",
+          "providerId": "DEEPSEEK",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "deepseek-v4-pro",
+          "providerId": "DEEPSEEK",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "GEMINI",
+        "name": "Gemini",
+        "providerType": "GEMINI",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 2,
+      "sampleModels": [
+        {
+          "modelIdentifier": "gemini-3.1-pro-preview",
+          "providerId": "GEMINI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "gemini-3.7-flash",
+          "providerId": "GEMINI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "GLM",
+        "name": "GLM",
+        "providerType": "GLM",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 1,
+      "sampleModels": [
+        {
+          "modelIdentifier": "glm-5.3",
+          "providerId": "GLM",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "GROK",
+        "name": "Grok",
+        "providerType": "GROK",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 1,
+      "sampleModels": [
+        {
+          "modelIdentifier": "grok-4.6",
+          "providerId": "GROK",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "KIMI",
+        "name": "Kimi",
+        "providerType": "KIMI",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 1,
+      "sampleModels": [
+        {
+          "modelIdentifier": "kimi-k3",
+          "providerId": "KIMI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "LMSTUDIO",
+        "name": "LM Studio",
+        "providerType": "LMSTUDIO",
+        "isCustom": false,
+        "catalogMode": "DISCOVERED"
+      },
+      "sources": [
+        {
+          "modelKind": "LLM",
+          "state": "IDLE",
+          "modelCount": 0,
+          "successfulUnitCount": 0,
+          "failedUnitCount": 0,
+          "safeMessage": null
+        }
+      ],
+      "llmModelCount": 0,
+      "sampleModels": []
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "MINIMAX",
+        "name": "MiniMax",
+        "providerType": "MINIMAX",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 1,
+      "sampleModels": [
+        {
+          "modelIdentifier": "minimax-m3",
+          "providerId": "MINIMAX",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "MISTRAL",
+        "name": "Mistral",
+        "providerType": "MISTRAL",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 2,
+      "sampleModels": [
+        {
+          "modelIdentifier": "devstral-2",
+          "providerId": "MISTRAL",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "mistral-large-3",
+          "providerId": "MISTRAL",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "OLLAMA",
+        "name": "Ollama",
+        "providerType": "OLLAMA",
+        "isCustom": false,
+        "catalogMode": "DISCOVERED"
+      },
+      "sources": [
+        {
+          "modelKind": "LLM",
+          "state": "IDLE",
+          "modelCount": 0,
+          "successfulUnitCount": 0,
+          "failedUnitCount": 0,
+          "safeMessage": null
+        }
+      ],
+      "llmModelCount": 0,
+      "sampleModels": []
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "OPENAI",
+        "name": "OpenAI",
+        "providerType": "OPENAI",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 6,
+      "sampleModels": [
+        {
+          "modelIdentifier": "gpt-5.4",
+          "providerId": "OPENAI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "gpt-5.4-mini",
+          "providerId": "OPENAI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "gpt-5.5",
+          "providerId": "OPENAI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "gpt-5.6-luna",
+          "providerId": "OPENAI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "gpt-5.6-sol",
+          "providerId": "OPENAI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "gpt-5.6-terra",
+          "providerId": "OPENAI",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    },
+    {
+      "runtimeKind": "autobyteus",
+      "ownerProvider": {
+        "id": "QWEN",
+        "name": "Qwen",
+        "providerType": "QWEN",
+        "isCustom": false,
+        "catalogMode": "STATIC"
+      },
+      "sources": [],
+      "llmModelCount": 6,
+      "sampleModels": [
+        {
+          "modelIdentifier": "qwen:deepseek-v4-flash-0731",
+          "providerId": "QWEN",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "qwen:deepseek-v4-pro",
+          "providerId": "QWEN",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "qwen:glm-5.2",
+          "providerId": "QWEN",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "qwen3-max",
+          "providerId": "QWEN",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "qwen3.7-max",
+          "providerId": "QWEN",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        },
+        {
+          "modelIdentifier": "qwen3.8-max",
+          "providerId": "QWEN",
+          "runtime": "api",
+          "hostConfigured": false,
+          "metadataProvenance": null
+        }
+      ]
+    }
+  ]
+}

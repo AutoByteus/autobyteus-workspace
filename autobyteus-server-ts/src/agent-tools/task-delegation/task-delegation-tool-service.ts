@@ -1,5 +1,3 @@
-import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
-import { getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type {
   DelegateTaskInput,
   DelegateTaskResult,
@@ -11,17 +9,8 @@ import type {
 import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
 import { TaskDelegationToolRunRouter } from "./task-delegation-tool-run-router.js";
 
-const buildTaskDelegationToolRunRouter = (): TaskDelegationToolRunRouter =>
-  new TaskDelegationToolRunRouter({
-    resolveTeamRun: (teamRunId) => getTeamRunService().resolveActiveTeamRun(teamRunId),
-  });
-
-export const buildTaskDelegationToolContextFromMemberTeamContext = (
-  memberTeamContext: MemberTeamContext,
-): TaskDelegationToolContext => Object.freeze({ identity: memberTeamContext.identity });
-
 export class TaskDelegationToolService {
-  constructor(private readonly router = buildTaskDelegationToolRunRouter()) {}
+  constructor(private readonly router = new TaskDelegationToolRunRouter()) {}
 
   async delegateTask(context: TaskDelegationToolContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
     return (await this.router.resolveRoot(context)).delegateTask(context, input);

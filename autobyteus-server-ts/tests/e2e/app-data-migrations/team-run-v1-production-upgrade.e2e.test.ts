@@ -242,10 +242,10 @@ const readMigrationLedger = (databasePath: string): Array<Record<string, unknown
   }
 };
 
-const APPLICATION_BINDING = Object.freeze({
-  applicationId: "synthetic-migration-application",
-  bindingId: "synthetic-migration-binding",
-});
+// This migration fixture exercises the General process history contract. Application provenance
+// would require a real current package and durable binding, which is outside this migration's
+// purpose and must not be synthesized because SR-005 intentionally fails closed on it.
+const GENERAL_PROCESS_APPLICATION_BINDING = null;
 
 const ROOT_COORDINATOR_CONFIGURATION = Object.freeze({
   runtimeKind: "autobyteus",
@@ -294,7 +294,7 @@ const agent = (
   skillAccessMode: configuration.skillAccessMode,
   llmConfig: configuration.llmConfig,
   workspaceRootPath: configuration.workspaceRootPath,
-  applicationExecutionContext: APPLICATION_BINDING,
+  applicationExecutionContext: GENERAL_PROCESS_APPLICATION_BINDING,
   role: "Synthetic migration member",
   description: "Synthetic released-shape member",
 });
@@ -741,7 +741,7 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
   const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_run_execution_tree.json"), "utf8"));
   expect(tree).toMatchObject({
     schemaVersion: 2,
-    applicationBinding: APPLICATION_BINDING,
+    applicationBinding: GENERAL_PROCESS_APPLICATION_BINDING,
     handoffs: [{
       from: "/lead",
       to: "/research/reviewer",

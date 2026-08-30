@@ -1,0 +1,39 @@
+captured_at=2026-08-24T09:46:43Z
+branch=codex/universal-application-framework-latest-personal-integration
+protected_head=95c63b5a982ba90ccbb8c6345af66a9485fa5a78
+prior_integrated_personal=52b4be02ea793f2071fe5a63a94664ab25196433
+origin_personal=389748b0b9f0dea051aaed18641de131cf0adbbb
+merge_base=52b4be02ea793f2071fe5a63a94664ab25196433
+divergence=153	4
+new_personal_commits=4
+new_personal_paths=95
+new_personal_status_counts:
+A 81
+M 14
+new_personal_numstat_totals:
+insertions=43104 deletions=246
+new_personal_commits_log:
+bfbeb0810 fix workspace selection state for team launches
+2950019a3 preserve explicit workspace mode during discovery
+0ac0f2941 chore(delivery): finalize remote workspace team launch
+389748b0b chore(release): bump workspace release version to 1.4.57
+unmerged_index_before:
+merge_tree_preview:
+84a9aa60ad8170282eb7613ae211a0e6cfb2b4c4
+100644 03599f30cbdb414a65c720f887f235657bd6cc35 1	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 2ed4f7264b86463a119ec881724099dbca82919e 2	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 c26ebff529f03822fa8f5567c62e0b7c3de735b6 3	autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+100644 94512fe0287f5583f183765e690326636bed0f85 1	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 72bf6a8c09c0456f49d99f52b162c713349b83d2 2	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+100644 2edbab5870242833e12d3bad67f4df76fdf80465 3	autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+
+Auto-merging autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Auto-merging autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+CONFLICT (content): Merge conflict in autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+merge_tree_exit=1
+unmerged_index_after:
+final_handoff_refetch_origin_personal=389748b0b9f0dea051aaed18641de131cf0adbbb
+final_handoff_merge_tree_exit=1
+final_handoff_conflict_count=2
+final_handoff_unmerged_index_count=0

@@ -1,0 +1,15 @@
+UTC=2026-07-30T18:53:50.917480+00:00
+head=d29ac0397a318e92e08ee882a3c20415ff3d8fee
+port_43125=CLEAR
+port_8000=CLEAR
+port_3000=CLEAR
+port_9229=CLEAR
+path_/tmp/api-rev011-standalone-data=REMOVED
+path_/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development=REMOVED
+path_/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit/.tmp-api-rev011=REMOVED
+path_/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-server-ts/tests/.tmp=REMOVED
+api_owned_process_match_count=0
+preexisting_user_port_43124=NO_LONGER_RUNNING_USER_ENDED_IT
+package_authoring_source_count=51
+dist_file_count=22
+git_diff_check=PASS

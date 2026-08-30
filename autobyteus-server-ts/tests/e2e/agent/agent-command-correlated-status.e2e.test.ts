@@ -180,7 +180,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
 }
 
 const buildAgentRun = (backend: ScriptedAgentRunBackend): AgentRun =>
-  new AgentRun({
+  new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     context: backend.getContext(),
     backend,
   });

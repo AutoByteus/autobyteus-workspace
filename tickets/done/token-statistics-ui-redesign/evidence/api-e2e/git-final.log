@@ -1,0 +1,11 @@
+package.json valid
+ M autobyteus-web/package.json
+?? autobyteus-web/tests/e2e/token-statistics-seed.mjs
+?? autobyteus-web/tests/e2e/token-statistics-ui-probe.mjs
+?? tickets/token-statistics-ui-redesign/api-e2e-coverage-investigation.md
+?? tickets/token-statistics-ui-redesign/evidence/
+ autobyteus-web/package.json | 1 +
+ 1 file changed, 1 insertion(+)
+true
+tickets/token-statistics-ui-redesign/api-e2e-coverage-investigation.md:19:- API/E2E Revision Record (created after the first completed result): `/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/api-e2e-revision-record.md` (not yet created)
+Final artifact validation passed.

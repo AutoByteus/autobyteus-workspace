@@ -1,0 +1,12 @@
+timestamp=2026-08-22T18:20:55Z
+owned_root=/private/tmp/api-rev005-electron-classroom-20260822194413
+owned_root_removed=yes
+port_53376=free
+port_54491=free
+owned_root_processes_begin
+owned_root_processes_end
+ordinary_listener_begin
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 37991 normy   26u  IPv4 0x18aca2748ac08799      0t0  TCP *:29695 (LISTEN)
+ordinary_listener_end
+ordinary_health=200

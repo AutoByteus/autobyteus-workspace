@@ -1,0 +1,48 @@
+CRR-005 affected implementation-source review
+Date (UTC): 2026-08-22
+Reviewed HEAD: ae5a1c7bcffbc4c8a54a5e3d1059d73861359b13
+Prior failure-origin review: CRR-004 at 62a0add1d56bcbee960021b8be17d243abe24b4c
+Implementation revision: IR-004
+
+Reviewed production delta:
+- applications/socratic-math-teacher/backend-src/domain/lesson-model.ts (+10/-1; 53 effective non-empty lines)
+- autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts (+5/-0; 113 effective non-empty lines)
+- autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts (+5/-1; 250 effective non-empty lines)
+- autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts (+13/-0; 221 effective non-empty lines)
+
+CR-004 resolution trace:
+- Supported Start Lesson reaches deriveTutorTargetAddress.
+- lesson-model.ts:52-60 finds the configured exact memberAddress '/tutor', fails explicitly if absent, and passes that member's exact agentRunId to createApplicationAgentTeamMemberTargetAddress.
+- application-agent-target-address.ts:56-81 retains exact agentRunId normalization and membership validation; the SDK was not relaxed or changed by IR-004.
+- No synthetic identity, route-token fallback, compatibility alias, or duplicate target builder was added.
+
+CR-005 resolution trace:
+- The approved host order remains migrations before process-run ownership. server-runtime.ts runs app-data migrations before buildStudioServer; start-standalone-application-host.ts runs them before createGeneralProcessRunSupervisor.
+- team-run-execution-tree-location-service.ts:29-32,235-241 provides an explicit frozen stored-history-only manager projection. This path cannot call AgentTeamRunManager.getInstance and retains the existing validated V1 stored-tree reader.
+- runtime-memory-location-classifier.ts:74-80 injects that stored-only location service into migration classification.
+- general-process-run-supervisor.ts:48-59 injects a RunFileChangeService using the same stored-only tree lookup before exclusive process AgentTeamRunManager initialization at lines 65-83.
+- General process TeamRun creation writes the exact initial execution tree and admits it before materializing/starting runs (agent-team-run-manager.ts:83-102), so run-file projection can use the stored V1 tree without a second live manager reference.
+- Supervisor failure unwind (agent release when team initialization fails), stop order, idempotent close, and restart release remain intact.
+- Scan of changed migration/classifier/supervisor paths found no AgentTeamRunManager.getInstance, AgentRunManager.getInstance, or getRunFileChangeService default call.
+
+Structural result:
+- Corrections stay within the existing Socratic domain identity owner, run-history location owner, migration classifier dependency, and named general-process assembly owner.
+- No new cycle, mixed-level dependency, global fallback, deferred proxy, compatibility layer, schema/migration, package contract, or production route was introduced.
+- All source deltas are below +220/-220; all changed source files are below the 500 effective-line hard limit.
+- git diff --check for 62a0add1d..HEAD: Pass.
+
+Reviewer validation:
+- IR-004 direct regressions are included in the current 7-file reviewer selection and pass.
+- Reviewer affected selection: 7 files / 56 tests Pass (architecture 15/15; process-owner 2/2; stored memory 3/3; Socratic exact target 2/2; migration runner 21/21; run-file changes 4/4; standalone lifecycle 9/9).
+- Backend SDK suite: 2 files / 10 tests Pass, including exact target-address 6/6.
+- Server tsconfig.build.json no-emit: Pass.
+- Socratic backend TypeScript: Pass.
+- Full server production build/sanitized bootstrap is retained from IR-004 implementation evidence; the affected reviewer checks did not contradict it.
+
+Transparent downstream-owned coverage note:
+- A first reviewer selection included API/E2E's preserved unstaged socratic-lesson-target-projection.test.ts delta. Its current missing-tutor assertion still expects the pre-fix SDK error and therefore fails 1 assertion against IR-004's approved explicit Socratic configuration error. This is an API/E2E-owned stale expectation in the already-preserved dirty coverage package, not production-source evidence and not part of commit ae5a1c7bc. API/E2E must reconcile it before claiming a later Pass and return all durable test edits for proportional review.
+
+Decision basis:
+- CR-004 and CR-005 are resolved in source.
+- CR-PREM-004, CR-PREM-005A, and CR-PREM-005B remain independently reachable, but the corrected production paths no longer produce their prior consequences.
+- No new implementation-source finding.

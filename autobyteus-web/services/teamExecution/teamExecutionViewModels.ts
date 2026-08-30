@@ -41,6 +41,12 @@ export interface TeamAgentContextEntry {
   readonly agentContext: AgentContext;
 }
 
+export interface TeamAgentExecutionLocation {
+  readonly agentRunId: string;
+  readonly memberAddress: AgentTeamAddress;
+  readonly containingTeamRunId: string;
+}
+
 export interface TeamTaskHistoryRow {
   readonly task: TaskDelegationRecordDto;
   readonly label: string;

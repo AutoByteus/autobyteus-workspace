@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
-  APPLICATION_MANIFEST_VERSION_V4,
-  type ApplicationManifestV4,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
+  APPLICATION_MANIFEST_VERSION,
+  type ApplicationManifest,
   type ApplicationExecutionResourceSlotDeclaration,
   type ApplicationExecutionResourceKind,
   type ApplicationExecutionResourceSource,
@@ -12,6 +12,8 @@ import {
   type ApplicationSupportedLaunchConfigDeclaration,
   type ApplicationSupportedTeamLaunchConfigDeclaration,
   type ApplicationSupportedTeamMemberOverrideDeclaration,
+  type ApplicationAgentToolDeclaration,
+  parseApplicationAgentToolDeclarations,
 } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
@@ -23,16 +25,19 @@ const DEFAULT_ALLOWED_EXECUTION_RESOURCE_SOURCES: ApplicationExecutionResourceSo
 const SUPPORTED_AGENT_LAUNCH_KEYS = new Set<keyof ApplicationSupportedAgentLaunchConfigDeclaration>([
   "llmModelIdentifier",
   "runtimeKind",
+  "llmConfig",
   "workspaceRootPath",
 ]);
 const SUPPORTED_TEAM_MEMBER_OVERRIDE_KEYS =
   new Set<keyof ApplicationSupportedTeamMemberOverrideDeclaration>([
     "llmModelIdentifier",
     "runtimeKind",
+    "llmConfig",
   ]);
 const SUPPORTED_TEAM_LAUNCH_KEYS = new Set<keyof ApplicationSupportedTeamLaunchConfigDeclaration>([
   "llmModelIdentifier",
   "runtimeKind",
+  "llmConfig",
   "workspaceRootPath",
   "memberOverrides",
 ]);
@@ -82,6 +87,7 @@ type ParsedManifest = {
   entryHtmlRelativePath: string;
   backendBundleManifestRelativePath: string;
   executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
+  agentTools: readonly ApplicationAgentToolDeclaration[];
 };
 
 export class ApplicationManifestParseError extends Error {
@@ -418,9 +424,9 @@ export const parseApplicationManifest = (
     throw new ApplicationManifestParseError("Application manifest must be a JSON object.");
   }
 
-  const manifest = payload as ApplicationManifestV4 & Record<string, unknown>;
+  const manifest = payload as ApplicationManifest & Record<string, unknown>;
   rejectLegacyField(manifest, "application manifest", "resourceSlots", "executionResourceSlots");
-  rejectUnknownFields(manifest, ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots"], "Application manifest");
+  rejectUnknownFields(manifest, ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots", "agentTools"], "Application manifest");
   if (!manifest.ui || typeof manifest.ui !== "object" || Array.isArray(manifest.ui)) {
     throw new ApplicationManifestParseError("ui must be an object.");
   }
@@ -432,9 +438,9 @@ export const parseApplicationManifest = (
   const backend = manifest.backend as Record<string, unknown>;
   rejectUnknownFields(backend, ["bundleManifest"], "backend");
   const manifestVersion = normalizeRequiredString(manifest.manifestVersion, "manifestVersion");
-  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V4) {
+  if (manifestVersion !== APPLICATION_MANIFEST_VERSION) {
     throw new ApplicationManifestParseError(
-      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V4}'.`,
+      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION}'.`,
     );
   }
 
@@ -442,9 +448,9 @@ export const parseApplicationManifest = (
     ui.frontendSdkContractVersion,
     "ui.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION) {
     throw new ApplicationManifestParseError(
-      `Application manifest '${manifestPath}' declares ui.frontendSdkContractVersion '${frontendSdkContractVersion}', but '${APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6}' is required. Rebuild or reinstall the application with the current AutoByteus application SDKs.`,
+      `Unsupported ui.frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );
   }
 
@@ -471,6 +477,7 @@ export const parseApplicationManifest = (
       { requiredPrefix: "backend/" },
     ),
     executionResourceSlots: normalizeExecutionResourceSlots(manifest.executionResourceSlots),
+    agentTools: parseApplicationAgentToolDeclarations(manifest.agentTools),
   };
 };
 

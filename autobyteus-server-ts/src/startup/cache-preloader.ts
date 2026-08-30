@@ -1,5 +1,3 @@
-import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
-import { AgentTeamDefinitionService } from "../agent-team-definition/services/agent-team-definition-service.js";
 import { getMcpConfigService } from "../mcp-server-management/services/mcp-config-service.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 
@@ -11,22 +9,6 @@ const logger = {
 export async function runCachePreloading(): Promise<void> {
   logger.info("Background cache pre-loading process has started.");
   const runtimeModelCatalogService = getModelCatalogService();
-
-  try {
-    const agentDefService = AgentDefinitionService.getInstance();
-    const definitions = await agentDefService.getAllAgentDefinitions();
-    logger.info(`Pre-loaded ${definitions.length} agent definitions into cache.`);
-  } catch (error) {
-    logger.error(`Failed to preload agent definitions: ${String(error)}`);
-  }
-
-  try {
-    const teamDefService = AgentTeamDefinitionService.getInstance();
-    const teamDefinitions = await teamDefService.getAllDefinitions();
-    logger.info(`Pre-loaded ${teamDefinitions.length} agent team definitions into cache.`);
-  } catch (error) {
-    logger.error(`Failed to preload agent team definitions: ${String(error)}`);
-  }
 
   try {
     const mcpService = getMcpConfigService();

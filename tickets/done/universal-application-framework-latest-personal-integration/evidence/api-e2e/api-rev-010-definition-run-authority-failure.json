@@ -1,0 +1,257 @@
+{
+  "agent": {
+    "status": 200,
+    "body": {
+      "data": {
+        "createAgentDefinition": {
+          "id": "agent-43950-1787665326635",
+          "name": "agent-43950-1787665326635"
+        }
+      }
+    }
+  },
+  "team": {
+    "status": 200,
+    "body": {
+      "data": {
+        "createAgentTeamDefinition": {
+          "id": "team-43950-1787665326635",
+          "name": "team-43950-1787665326635"
+        }
+      }
+    }
+  },
+  "catalog": {
+    "status": 200,
+    "body": {
+      "data": {
+        "providerModelCatalogSnapshots": [
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "ANTHROPIC",
+              "name": "Anthropic"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "claude-fable-5"
+              },
+              {
+                "modelIdentifier": "claude-opus-4.7"
+              },
+              {
+                "modelIdentifier": "claude-opus-4.8"
+              },
+              {
+                "modelIdentifier": "claude-opus-5"
+              },
+              {
+                "modelIdentifier": "claude-sonnet-4.6"
+              },
+              {
+                "modelIdentifier": "claude-sonnet-5"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "AUTOBYTEUS",
+              "name": "AutoByteus"
+            },
+            "llmModels": []
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "DEEPSEEK",
+              "name": "DeepSeek"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "deepseek-v4-flash"
+              },
+              {
+                "modelIdentifier": "deepseek-v4-pro"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "GEMINI",
+              "name": "Gemini"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "gemini-3.1-pro-preview"
+              },
+              {
+                "modelIdentifier": "gemini-3.7-flash"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "GLM",
+              "name": "GLM"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "glm-5.3"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "GROK",
+              "name": "Grok"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "grok-4.6"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "KIMI",
+              "name": "Kimi"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "kimi-k3"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "LMSTUDIO",
+              "name": "LM Studio"
+            },
+            "llmModels": []
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "MINIMAX",
+              "name": "MiniMax"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "minimax-m3"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "MISTRAL",
+              "name": "Mistral"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "devstral-2"
+              },
+              {
+                "modelIdentifier": "mistral-large-3"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "OLLAMA",
+              "name": "Ollama"
+            },
+            "llmModels": []
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "OPENAI",
+              "name": "OpenAI"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "gpt-5.4"
+              },
+              {
+                "modelIdentifier": "gpt-5.4-mini"
+              },
+              {
+                "modelIdentifier": "gpt-5.5"
+              },
+              {
+                "modelIdentifier": "gpt-5.6-luna"
+              },
+              {
+                "modelIdentifier": "gpt-5.6-sol"
+              },
+              {
+                "modelIdentifier": "gpt-5.6-terra"
+              }
+            ]
+          },
+          {
+            "runtimeKind": "autobyteus",
+            "ownerProvider": {
+              "id": "QWEN",
+              "name": "Qwen"
+            },
+            "llmModels": [
+              {
+                "modelIdentifier": "qwen:deepseek-v4-flash-0731"
+              },
+              {
+                "modelIdentifier": "qwen:deepseek-v4-pro"
+              },
+              {
+                "modelIdentifier": "qwen:glm-5.2"
+              },
+              {
+                "modelIdentifier": "qwen3-max"
+              },
+              {
+                "modelIdentifier": "qwen3.7-max"
+              },
+              {
+                "modelIdentifier": "qwen3.8-max"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "selectedModel": "claude-fable-5",
+  "agentRun": {
+    "status": 200,
+    "body": {
+      "data": {
+        "createAgentRun": {
+          "success": false,
+          "runId": null,
+          "message": "Error: AgentDefinition 'agent-43950-1787665326635' cannot be loaded for agent run identity allocation."
+        }
+      }
+    }
+  },
+  "teamRun": {
+    "status": 200,
+    "body": {
+      "data": {
+        "createAgentTeamRun": {
+          "success": false,
+          "teamRunId": null,
+          "message": "Error: AgentTeamDefinition with ID team-43950-1787665326635 not found."
+        }
+      }
+    }
+  },
+  "serverOutput": "Platform detection: Windows=false\nApp root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts\nApp data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635\nAppConfig instance created.\nConfig file path: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/.env\nLoading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/.env\n[dotenv@17.3.1] injecting env (4) from tests/.tmp/authority-43950-1787665326635/.env -- tip: 🛡️ auth for agents: https://vestauth.com\nEnvironment variables loaded successfully\nServer public base URL configured to: http://127.0.0.1:57279\n=== Starting logging configuration ===\nLogging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/logging_config.ini\n============================================================\nSERVER PUBLIC URL: http://127.0.0.1:57279\nAPP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts\nAPP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635\nDB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/db\nLOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/logs\nDOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/download\nMEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/memory\n============================================================\nAppConfig initialization completed successfully\nAgentFactory (Singleton) initialized.\nRunning Prisma migrations...\nUnable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.\nPrisma schema loaded from prisma/schema.prisma\nDatasource \"db\": SQLite database \"authority-43950-1787665326635.db\" at \"file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/authority-43950-1787665326635.db\"\n\nSQLite database authority-43950-1787665326635.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/db/authority-43950-1787665326635.db\n\n24 migrations found in prisma/migrations\n\nApplying migration `20260203074245_init`\nApplying migration `20260208094000_add_external_channel_tables`\nApplying migration `20260209174500_add_channel_message_receipt_turn_id`\nApplying migration `20260209213000_remove_agent_conversation_tables`\nApplying migration `20260210101500_add_agent_avatar`\nApplying migration `20260210192000_add_agent_team_avatar`\nApplying migration `20260211214500_add_sync_columns_and_tombstones`\nApplying migration `20260212070000_remove_workflow_definition`\nApplying migration `20260309103000_add_channel_binding_launch_preset`\nApplying migration `20260310153000_add_channel_binding_team_definition_id`\nApplying migration `20260331102000_remove_channel_bindings_table`\nApplying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`\nApplying migration `20260517090000_add_app_data_migration_records`\nApplying migration `20260624090000_add_token_usage_ledger_events`\nApplying migration `20260625193000_token_usage_component_pricing_explainability`\nApplying migration `20260629120000_add_token_usage_display_fields`\nApplying migration `20260702093000_token_usage_execution_address`\nApplying migration `20260726090000_add_secret_vault`\nApplying migration `20260730090000_add_token_usage_provider_name`\nApplying migration `20260801090000_token_usage_member_display_name`\nApplying migration `20260814090000_team_run_execution_tree_v1`\nApplying migration `20260819090000_add_token_usage_run_records`\nApplying migration `20260820090000_redesign_app_data_migration_summary`\nApplying migration `20260822090000_add_token_usage_analytics`\n\nThe following migration(s) have been applied:\n\nmigrations/\n  └─ 20260203074245_init/\n    └─ migration.sql\n  └─ 20260208094000_add_external_channel_tables/\n    └─ migration.sql\n  └─ 20260209174500_add_channel_message_receipt_turn_id/\n    └─ migration.sql\n  └─ 20260209213000_remove_agent_conversation_tables/\n    └─ migration.sql\n  └─ 20260210101500_add_agent_avatar/\n    └─ migration.sql\n  └─ 20260210192000_add_agent_team_avatar/\n    └─ migration.sql\n  └─ 20260211214500_add_sync_columns_and_tombstones/\n    └─ migration.sql\n  └─ 20260212070000_remove_workflow_definition/\n    └─ migration.sql\n  └─ 20260309103000_add_channel_binding_launch_preset/\n    └─ migration.sql\n  └─ 20260310153000_add_channel_binding_team_definition_id/\n    └─ migration.sql\n  └─ 20260331102000_remove_channel_bindings_table/\n    └─ migration.sql\n  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/\n    └─ migration.sql\n  └─ 20260517090000_add_app_data_migration_records/\n    └─ migration.sql\n  └─ 20260624090000_add_token_usage_ledger_events/\n    └─ migration.sql\n  └─ 20260625193000_token_usage_component_pricing_explainability/\n    └─ migration.sql\n  └─ 20260629120000_add_token_usage_display_fields/\n    └─ migration.sql\n  └─ 20260702093000_token_usage_execution_address/\n    └─ migration.sql\n  └─ 20260726090000_add_secret_vault/\n    └─ migration.sql\n  └─ 20260730090000_add_token_usage_provider_name/\n    └─ migration.sql\n  └─ 20260801090000_token_usage_member_display_name/\n    └─ migration.sql\n  └─ 20260814090000_team_run_execution_tree_v1/\n    └─ migration.sql\n  └─ 20260819090000_add_token_usage_run_records/\n    └─ migration.sql\n  └─ 20260820090000_redesign_app_data_migration_summary/\n    └─ migration.sql\n  └─ 20260822090000_add_token_usage_analytics/\n    └─ migration.sql\n      \nAll migrations have been successfully applied.\nDatabase migrations completed successfully.\n(node:43951) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nprisma:info Starting a sqlite pool with 21 connections.\nCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.\nAgentRunManager initialized.\n[2026-08-25T13:42:09.318Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.\nInitialized server settings service with 20 predefined settings\nCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.\n[2026-08-25T13:42:09.320Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.\nAgentRunManager initialized.\nLoading workspace packages to trigger registration...\nSuccessfully loaded workspace packages.\nCreating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/temp_workspace\nCreated metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/temp_workspace.\nInitialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/temp_workspace with fixed ID 'temp_ws_default'\nTemp workspace created and cached with ID: temp_ws_default\nRegistering agent customization processors...\nInput processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.\nRegistered input processor 'WorkspacePathSanitizationProcessor'.\nInput processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.\nRegistered input processor 'UserInputContextBuildingProcessor'.\nLLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.\nRegistered LLM response processor 'MediaUrlTransformerProcessor'.\nTool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.\nRegistered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.\nAgent customization processor registration complete.\nSuccessfully registered tool definition: 'read_file'\nSuccessfully registered tool definition: 'write_file'\nSuccessfully registered tool definition: 'edit_file'\nSuccessfully registered tool definition: 'run_bash'\nSuccessfully registered tool definition: 'start_background_process'\nSuccessfully registered tool definition: 'get_background_processes'\nSuccessfully registered tool definition: 'get_process_output'\nSuccessfully registered tool definition: 'stop_background_process'\nSuccessfully registered tool definition: 'search_web'\nSuccessfully registered tool definition: 'read_media_file'\nSuccessfully registered tool definition: 'download_media'\nSuccessfully registered tool definition: 'read_url'\nRegistered required tool unit: Core Tools\nSuccessfully registered tool definition: 'generate_image'\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\nSuccessfully registered tool definition: 'generate_video'\nRegistered required tool unit: Media Tools\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'delegate_task'\nSuccessfully registered tool definition: 'submit_task_result'\nSuccessfully registered tool definition: 'review_task_result'\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Agent Communication Tools\nOverwriting existing tool definition for name: 'search_web'\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\nServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated\nInitialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.\nPopulating agent definition cache for the first time...\nAgent definition cache populated with 2 items.\nPopulating agent definition cache for the first time...\n[2026-08-25T13:42:09.445Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...\n[2026-08-25T13:42:09.445Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.\nAgent definition cache populated with 2 items.\n{\"level\":30,\"time\":1787665329479,\"pid\":43951,\"hostname\":\"normys-MacBook-Pro.local\",\"msg\":\"Server listening at http://127.0.0.1:57279\"}\n[2026-08-25T13:42:09.479Z] [INFO] [server.runtime] Server listening on 127.0.0.1:57279\n[2026-08-25T13:42:09.480Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:57279\nScheduling Studio-only non-critical startup tasks...\nBackground cache pre-loading process has started.\nPopulating agent definition cache for the first time...\nRunning MCP tool registration background task...\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nLoading and registering all MCP server configurations from file...\nPopulating MCP server config cache for the first time...\nBackground task 'Memory Sync Worker' completed successfully.\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nFinished loading and registering all MCP server configurations.\nBackground task 'MCP Tool Registration' completed successfully.\nAgent definition cache populated with 2 items.\nPre-loaded 2 agent definitions into cache.\n[2026-08-25T13:42:09.495Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...\n[2026-08-25T13:42:09.495Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.\nPre-loaded 0 agent team definitions into cache.\nPre-loaded 0 MCP server configs into cache.\nPre-loaded 28 LLM models into cache.\nPre-loaded 7 image models into cache.\nPre-loaded 4 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\nIn-memory cache: Added new agent definition with ID agent-43950-1787665326635.\nAgent Definition created successfully with ID: agent-43950-1787665326635\n[2026-08-25T13:42:09.589Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID team-43950-1787665326635.\nAgent Team Definition created successfully with ID: team-43950-1787665326635\nCreating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/ws\nCreated metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/ws.\nCreated and registered workspace ID: agent_ws_444d123fa8c68b0f3c2f279b5debafc65df2083e9a4509d8d9f16c5f40b33337\nError in createAgentRun: Error: AgentDefinition 'agent-43950-1787665326635' cannot be loaded for agent run identity allocation.\nCreating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/ws\nCreated metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/authority-43950-1787665326635/ws.\nReusing registered workspace ID: agent_ws_444d123fa8c68b0f3c2f279b5debafc65df2083e9a4509d8d9f16c5f40b33337\nError creating agent team run: Error: AgentTeamDefinition with ID team-43950-1787665326635 not found.\n"
+}

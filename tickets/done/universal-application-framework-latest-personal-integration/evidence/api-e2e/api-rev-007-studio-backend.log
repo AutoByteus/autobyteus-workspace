@@ -1,0 +1,283 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+App data directory: /private/tmp/api-rev007-studio
+AppConfig instance created.
+Config file path: /private/tmp/api-rev007-studio/.env
+Loading environment from: /private/tmp/api-rev007-studio/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../private/tmp/api-rev007-studio/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8027
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8027
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/api-rev007-studio
+DB DIRECTORY: /private/tmp/api-rev007-studio/db
+LOGS DIRECTORY: /private/tmp/api-rev007-studio/logs
+DOWNLOAD DIRECTORY: /private/tmp/api-rev007-studio/download
+MEMORY DIRECTORY: /private/tmp/api-rev007-studio/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/private/tmp/api-rev007-studio/db/development.db"
+
+SQLite database development.db created at file:/private/tmp/api-rev007-studio/db/development.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:42938) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+[2026-08-23T06:05:15.468Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-23T06:05:15.468Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/api-rev007-studio/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev007-studio/temp_workspace.
+Initialized TempWorkspace at /private/tmp/api-rev007-studio/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-08-23T06:05:15.571Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:05:15.572Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1787465115600,"pid":42938,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8027"}
+[2026-08-23T06:05:15.600Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8027
+[2026-08-23T06:05:15.601Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8027
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+Populating agent definition cache for the first time...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Agent definition cache populated with 2 items.
+Pre-loaded 2 agent definitions into cache.
+[2026-08-23T06:05:15.614Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:05:15.614Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 15
+Successfully fetched 43 models from LLMFactory.
+LLM models cache populated with 43 items.
+Pre-loaded 43 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-23T06:06:22.265Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:06:22.268Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-23T06:06:22.271Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:06:22.271Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Creating new workspace for rootPath: /private/tmp/api-rev007-studio/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev007-studio/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Created and registered workspace ID: agent_ws_1c10e76fc5799f3b59996f169c2dcf8742a7b5b0fa3dbc8aca02550acb8d4663
+Creating new workspace for rootPath: /private/tmp/api-rev007-studio/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev007-studio/applications/bundle-app__socratic-math-teacher__cd38f73d70b13a2fbff24106c08c54ef46302c30d0a1f5e2ed39f462403f4b6b/runtime.
+Reusing registered workspace ID: agent_ws_1c10e76fc5799f3b59996f169c2dcf8742a7b5b0fa3dbc8aca02550acb8d4663
+Published codex_app_server agent run 'socratic_math_tutor_d4874dee58c346c192d0436c177d0ec4'.
+Creating new workspace for rootPath: /private/tmp/api-rev007-studio/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev007-studio/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Created and registered workspace ID: agent_ws_849bf9d8088e8611fc604e1e93044b552a02db3abdcaa2b1ff960411cbdc7cc2
+Creating new workspace for rootPath: /private/tmp/api-rev007-studio/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev007-studio/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Reusing registered workspace ID: agent_ws_849bf9d8088e8611fc604e1e93044b552a02db3abdcaa2b1ff960411cbdc7cc2
+Published codex_app_server agent run 'brief_studio_researcher_de29dc1791224e82bcd5d78f113b817c'.
+{"level":40,"time":1787465452954,"pid":42938,"hostname":"MacBookPro","reqId":"req-2s","method":"POST","url":"/mcp/agent-tools/fake-session","statusCode":401,"elapsedMs":1.731083869934082,"msg":"http request completed"}
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-23T06:11:31.776Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:11:31.777Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-23T06:11:31.807Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:11:31.808Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Creating new workspace for rootPath: /private/tmp/api-rev007-studio/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime
+Created metadata-only FileSystemWorkspace at /private/tmp/api-rev007-studio/applications/bundle-app__brief-studio__dff2993a20fe475cc984604995d2289c03130e4d46e5d81db3c2ac2211b740f7/runtime.
+Reusing registered workspace ID: agent_ws_849bf9d8088e8611fc604e1e93044b552a02db3abdcaa2b1ff960411cbdc7cc2
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+Published codex_app_server agent run 'brief_studio_writer_30eb5f9036824ff1bd697f5ae387056d'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+[2026-08-23T06:14:34.821Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Populating agent definition cache for the first time...
+[2026-08-23T06:14:34.822Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 2 items.
+[2026-08-23T06:14:34.824Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-23T06:14:34.825Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.

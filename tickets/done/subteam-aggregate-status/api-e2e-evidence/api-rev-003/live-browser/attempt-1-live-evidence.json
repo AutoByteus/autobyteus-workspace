@@ -1,0 +1,312 @@
+{
+  "startedAt": "2026-08-29T19:07:34.858Z",
+  "baseUrl": "http://127.0.0.1:33335",
+  "backendBaseUrl": "http://127.0.0.1:8000",
+  "browser": "/usr/bin/chromium",
+  "viewport": {
+    "width": 1512,
+    "height": 900
+  },
+  "existingData": {
+    "workspace": "autobyteus-workspace",
+    "teamDefinition": "Software Development Department",
+    "currentRun": "software_development_department_fccba22e6afe4135adc5f291e40d0c11",
+    "referenceRun": "software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62"
+  },
+  "scenarios": {
+    "NTAS-LIVE-001": {
+      "result": "Pass",
+      "health": {
+        "status": 200,
+        "body": {
+          "status": "ok",
+          "message": "Server is running"
+        }
+      },
+      "backendProxyApiRequestCountAtReady": 13,
+      "websocketCountAtReady": 2
+    },
+    "NTAS-LIVE-002": {
+      "result": "Pass",
+      "currentCollapsed": {
+        "/requirements_engineering_team": {
+          "status": "idle",
+          "ariaLabel": "Team status: Idle",
+          "title": "Team status: Idle",
+          "role": "img",
+          "tabindex": null,
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+          "innerWidth": 8,
+          "innerHeight": 8,
+          "gapToAvatar": 6,
+          "afterDisclosure": true,
+          "beforeAvatar": true,
+          "expanded": "false"
+        },
+        "/product_design_prototyping_team": {
+          "status": "offline",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "role": "img",
+          "tabindex": null,
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "innerWidth": 8,
+          "innerHeight": 8,
+          "gapToAvatar": 6,
+          "afterDisclosure": true,
+          "beforeAvatar": true,
+          "expanded": "false"
+        },
+        "/software_engineering_team": {
+          "status": "offline",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "role": "img",
+          "tabindex": null,
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "innerWidth": 8,
+          "innerHeight": 8,
+          "gapToAvatar": 6,
+          "afterDisclosure": true,
+          "beforeAvatar": true,
+          "expanded": "false"
+        }
+      },
+      "screenshot": "/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-003/live-browser/live-current-collapsed-sidebar.png"
+    }
+  },
+  "apiRequests": [
+    {
+      "at": "2026-08-29T19:07:36.267Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:36.288Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:36.288Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:36.289Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:36.289Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:36.322Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetApplicationsCapability"
+    },
+    {
+      "at": "2026-08-29T19:07:36.328Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetServerSettings"
+    },
+    {
+      "at": "2026-08-29T19:07:36.328Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetAllWorkspaces"
+    },
+    {
+      "at": "2026-08-29T19:07:36.330Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetAgentDefinitions"
+    },
+    {
+      "at": "2026-08-29T19:07:36.335Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetAgentTeamDefinitions"
+    },
+    {
+      "at": "2026-08-29T19:07:36.600Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:33335/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:36.653Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetWorkspaceRunHistory"
+    },
+    {
+      "at": "2026-08-29T19:07:36.736Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:38.030Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamRunResumeConfig"
+    },
+    {
+      "at": "2026-08-29T19:07:38.040Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTaskDelegationRecords"
+    },
+    {
+      "at": "2026-08-29T19:07:38.040Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamCommunicationMessages"
+    },
+    {
+      "at": "2026-08-29T19:07:38.055Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.056Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:07:38.307Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:07:38.313Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetSkillImprovementCapability"
+    },
+    {
+      "at": "2026-08-29T19:07:38.315Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:33335/rest/health",
+      "resourceType": "xhr",
+      "operationName": null
+    }
+  ],
+  "websockets": [
+    {
+      "url": "ws://127.0.0.1:33335/_nuxt/?token=Kk7pSojemi9x",
+      "openedAt": "2026-08-29T19:07:35.250Z",
+      "closed": false,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8000/ws/terminal/d156bb3f-96f1-4da0-9c4d-3ba14f56e365",
+      "openedAt": "2026-08-29T19:07:36.335Z",
+      "closed": false,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8000/ws/agent-team/software_development_department_fccba22e6afe4135adc5f291e40d0c11",
+      "openedAt": "2026-08-29T19:07:38.311Z",
+      "closed": false,
+      "errors": []
+    }
+  ],
+  "failedRequests": [],
+  "badResponses": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failures": [
+    "Error: current software Team should be running while api_e2e_engineer is running\n    at check (file:///tmp/ntas-live-backend-check.mjs:99:60)\n    at file:///tmp/ntas-live-backend-check.mjs:138:3"
+  ],
+  "result": "Fail",
+  "finishedAt": "2026-08-29T19:07:38.588Z"
+}

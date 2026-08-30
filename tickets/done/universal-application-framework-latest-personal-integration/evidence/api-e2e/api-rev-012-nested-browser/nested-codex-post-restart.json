@@ -1,0 +1,807 @@
+{
+  "checkedAt": "2026-08-25T19:02:43.487Z",
+  "rootTeamRunId": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+  "passed": true,
+  "resultConditions": {
+    "restoredActive": true,
+    "priorTaskRetainedAccepted": true,
+    "priorSixMessagesRetained": true,
+    "sameConfiguredAgentIdentities": true,
+    "exactTeamAddressRequestAfterRestart": true,
+    "exactReplyAfterRestart": true,
+    "exactlyTwoNewCommunicationRecords": true,
+    "browserCompletionVisible": true,
+    "browserContinuationMessagesVisible": true,
+    "v2TreeRetained": true,
+    "publicTerminationSucceeded": true,
+    "inactiveAfterTermination": true,
+    "retainedHistoryAfterTermination": true
+  },
+  "initial": {
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_1b8408e71b5b4f91a0f6029cb64e839c",
+        "status": "accepted",
+        "recipientAddress": "/StudentStudyGroup",
+        "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa",
+        "updates": [
+          {
+            "kind": "submission",
+            "decision": null,
+            "content": "NESTED_CLASSROOM_OK_NESTED-CODEX-FINAL"
+          },
+          {
+            "kind": "review",
+            "decision": "accept",
+            "content": null
+          }
+        ]
+      }
+    ],
+    "getTeamCommunicationMessages": [
+      {
+        "messageId": "teammsg_3bvyGetJbjWucNdKAV2Cie42Jy0ytZJ3",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "Please reply to /Teacher using send_message_to and include exactly NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL.",
+        "messageType": "agent_message",
+        "referenceFiles": [
+          {
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-browser/nested-codex-final-reference.txt"
+          }
+        ]
+      },
+      {
+        "messageId": "teammsg_sLBLafjDCXoq7I4i__aGCs24qRTNFvyl",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_qwsasL20A069720e7eCXTqY6Sc15r30A",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "Please reply to /Teacher using send_message_to and include exactly NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL.",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_GUR5AMHeowPdgNkO5Qu1vKzHSHDeqyss",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_vEAPbkwged9hq4_153baO7EGMYELub8q",
+        "senderAgentRunId": "student_one_b9a9d24c76d441ca925cb9d9963eb5a5",
+        "receiverAgentRunId": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+        "content": "TASK_PEER_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_Jl62-1hmqKFYHxuAXY9wzUBnUDvhehWx",
+        "senderAgentRunId": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "TASK_PEER_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      }
+    ],
+    "getTeamRunResumeConfig": {
+      "teamRunId": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 2,
+        "created_at": "2026-08-25T18:54:51.727Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [
+          {
+            "from": "/Teacher",
+            "to": "/StudentStudyGroup",
+            "rules": [
+              "When a bounded classroom task is ready to be delegated to the nested student study group.",
+              "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+            ]
+          },
+          {
+            "from": "/Teacher",
+            "to": "/StudentStudyGroup/student_one",
+            "rules": [
+              "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_one",
+            "to": "/Teacher",
+            "rules": [
+              "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+              "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_one",
+            "to": "/StudentStudyGroup/student_two",
+            "rules": [
+              "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_two",
+            "to": "/StudentStudyGroup/student_one",
+            "rules": [
+              "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+            ]
+          }
+        ],
+        "root_team": {
+          "address": "/",
+          "team_definition_id": "nested-classroom-test",
+          "team_definition_name": "Nested Classroom Test Team",
+          "team_run_id": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+          "coordinator_address": "/Teacher",
+          "default_launch_configuration": {
+            "runtime_kind": "codex_app_server",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": {
+              "reasoning_effort": "medium"
+            },
+            "auto_execute_tools": true,
+            "skill_access_mode": "PRELOADED_ONLY",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+          },
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/Teacher",
+              "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+              "role": null,
+              "description": null,
+              "agent_run_id": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+              "platform_agent_run_id": "01a03a46-7896-7a90-91e1-6c93b5a78b54",
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              }
+            },
+            {
+              "kind": "configured_team",
+              "address": "/StudentStudyGroup",
+              "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+              "role": null,
+              "description": null,
+              "team_run_id": "student_study_group_11193b4f105b48898427de4b177d6f9f",
+              "coordinator_address": "/StudentStudyGroup/student_one",
+              "default_launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              },
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/StudentStudyGroup/student_one",
+                  "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "student_one_3b366df92e944bb692a782c265142627",
+                  "platform_agent_run_id": "01a03a46-a31c-7a33-8e7a-089c8314b227",
+                  "launch_configuration": {
+                    "runtime_kind": "codex_app_server",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": {
+                      "reasoning_effort": "medium"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "PRELOADED_ONLY",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/StudentStudyGroup/student_two",
+                  "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+                  "platform_agent_run_id": "01a03a46-f043-7721-bbbd-5aa882f2f3ff",
+                  "launch_configuration": {
+                    "runtime_kind": "codex_app_server",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": {
+                      "reasoning_effort": "medium"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "PRELOADED_ONLY",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_team",
+              "address": "/StudentStudyGroup",
+              "team_run_id": "team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa",
+              "members": [
+                {
+                  "kind": "task_team_agent",
+                  "address": "/StudentStudyGroup/student_one",
+                  "agent_run_id": "student_one_b9a9d24c76d441ca925cb9d9963eb5a5",
+                  "platform_agent_run_id": "01a03a46-d153-7b43-910e-e890b16da1e9"
+                },
+                {
+                  "kind": "task_team_agent",
+                  "address": "/StudentStudyGroup/student_two",
+                  "agent_run_id": "student_two_00d559ae2c0f4a23ad5cf86453d85178",
+                  "platform_agent_run_id": null
+                }
+              ],
+              "task_executions": [],
+              "started_at": "2026-08-25T18:55:14.707Z",
+              "settled_at": "2026-08-25T18:56:18.179Z"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "final": {
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_1b8408e71b5b4f91a0f6029cb64e839c",
+        "status": "accepted",
+        "recipientAddress": "/StudentStudyGroup",
+        "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa",
+        "updates": [
+          {
+            "kind": "submission",
+            "decision": null,
+            "content": "NESTED_CLASSROOM_OK_NESTED-CODEX-FINAL"
+          },
+          {
+            "kind": "review",
+            "decision": "accept",
+            "content": null
+          }
+        ]
+      }
+    ],
+    "getTeamCommunicationMessages": [
+      {
+        "messageId": "teammsg_3bvyGetJbjWucNdKAV2Cie42Jy0ytZJ3",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "Please reply to /Teacher using send_message_to and include exactly NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL.",
+        "messageType": "agent_message",
+        "referenceFiles": [
+          {
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-browser/nested-codex-final-reference.txt"
+          }
+        ]
+      },
+      {
+        "messageId": "teammsg_sLBLafjDCXoq7I4i__aGCs24qRTNFvyl",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_qwsasL20A069720e7eCXTqY6Sc15r30A",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "Please reply to /Teacher using send_message_to and include exactly NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL.",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_GUR5AMHeowPdgNkO5Qu1vKzHSHDeqyss",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_vEAPbkwged9hq4_153baO7EGMYELub8q",
+        "senderAgentRunId": "student_one_b9a9d24c76d441ca925cb9d9963eb5a5",
+        "receiverAgentRunId": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+        "content": "TASK_PEER_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_Jl62-1hmqKFYHxuAXY9wzUBnUDvhehWx",
+        "senderAgentRunId": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "TASK_PEER_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_VzgbzfqaJwCNNrVo4A5v6MSwiwjW6pVa",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "POST_RESTART_NESTED_TEAM_ROUTE_REQUEST. Please reply to /Teacher using send_message_to with exactly POST_RESTART_NESTED_TEAM_ACK.",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_qi-NHa-rX_nb1JVB4_XiAWwu8G8XaKMC",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "POST_RESTART_NESTED_TEAM_ACK",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      }
+    ],
+    "getTeamRunResumeConfig": {
+      "teamRunId": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+      "isActive": true,
+      "executionTree": {
+        "schema_version": 2,
+        "created_at": "2026-08-25T18:54:51.727Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [
+          {
+            "from": "/Teacher",
+            "to": "/StudentStudyGroup",
+            "rules": [
+              "When a bounded classroom task is ready to be delegated to the nested student study group.",
+              "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+            ]
+          },
+          {
+            "from": "/Teacher",
+            "to": "/StudentStudyGroup/student_one",
+            "rules": [
+              "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_one",
+            "to": "/Teacher",
+            "rules": [
+              "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+              "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_one",
+            "to": "/StudentStudyGroup/student_two",
+            "rules": [
+              "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_two",
+            "to": "/StudentStudyGroup/student_one",
+            "rules": [
+              "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+            ]
+          }
+        ],
+        "root_team": {
+          "address": "/",
+          "team_definition_id": "nested-classroom-test",
+          "team_definition_name": "Nested Classroom Test Team",
+          "team_run_id": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+          "coordinator_address": "/Teacher",
+          "default_launch_configuration": {
+            "runtime_kind": "codex_app_server",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": {
+              "reasoning_effort": "medium"
+            },
+            "auto_execute_tools": true,
+            "skill_access_mode": "PRELOADED_ONLY",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+          },
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/Teacher",
+              "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+              "role": null,
+              "description": null,
+              "agent_run_id": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+              "platform_agent_run_id": "01a03a46-7896-7a90-91e1-6c93b5a78b54",
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              }
+            },
+            {
+              "kind": "configured_team",
+              "address": "/StudentStudyGroup",
+              "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+              "role": null,
+              "description": null,
+              "team_run_id": "student_study_group_11193b4f105b48898427de4b177d6f9f",
+              "coordinator_address": "/StudentStudyGroup/student_one",
+              "default_launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              },
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/StudentStudyGroup/student_one",
+                  "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "student_one_3b366df92e944bb692a782c265142627",
+                  "platform_agent_run_id": "01a03a46-a31c-7a33-8e7a-089c8314b227",
+                  "launch_configuration": {
+                    "runtime_kind": "codex_app_server",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": {
+                      "reasoning_effort": "medium"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "PRELOADED_ONLY",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/StudentStudyGroup/student_two",
+                  "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+                  "platform_agent_run_id": "01a03a46-f043-7721-bbbd-5aa882f2f3ff",
+                  "launch_configuration": {
+                    "runtime_kind": "codex_app_server",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": {
+                      "reasoning_effort": "medium"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "PRELOADED_ONLY",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_team",
+              "address": "/StudentStudyGroup",
+              "team_run_id": "team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa",
+              "members": [
+                {
+                  "kind": "task_team_agent",
+                  "address": "/StudentStudyGroup/student_one",
+                  "agent_run_id": "student_one_b9a9d24c76d441ca925cb9d9963eb5a5",
+                  "platform_agent_run_id": "01a03a46-d153-7b43-910e-e890b16da1e9"
+                },
+                {
+                  "kind": "task_team_agent",
+                  "address": "/StudentStudyGroup/student_two",
+                  "agent_run_id": "student_two_00d559ae2c0f4a23ad5cf86453d85178",
+                  "platform_agent_run_id": null
+                }
+              ],
+              "task_executions": [],
+              "started_at": "2026-08-25T18:55:14.707Z",
+              "settled_at": "2026-08-25T18:56:18.179Z"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "termination": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "afterTermination": {
+    "getTaskDelegationRecords": [
+      {
+        "taskId": "task_1b8408e71b5b4f91a0f6029cb64e839c",
+        "status": "accepted",
+        "recipientAddress": "/StudentStudyGroup",
+        "targetTeamRunId": "team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa",
+        "updates": [
+          {
+            "kind": "submission",
+            "decision": null,
+            "content": "NESTED_CLASSROOM_OK_NESTED-CODEX-FINAL"
+          },
+          {
+            "kind": "review",
+            "decision": "accept",
+            "content": null
+          }
+        ]
+      }
+    ],
+    "getTeamCommunicationMessages": [
+      {
+        "messageId": "teammsg_3bvyGetJbjWucNdKAV2Cie42Jy0ytZJ3",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "Please reply to /Teacher using send_message_to and include exactly NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL.",
+        "messageType": "agent_message",
+        "referenceFiles": [
+          {
+            "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-012-nested-browser/nested-codex-final-reference.txt"
+          }
+        ]
+      },
+      {
+        "messageId": "teammsg_sLBLafjDCXoq7I4i__aGCs24qRTNFvyl",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_qwsasL20A069720e7eCXTqY6Sc15r30A",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "Please reply to /Teacher using send_message_to and include exactly NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL.",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_GUR5AMHeowPdgNkO5Qu1vKzHSHDeqyss",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_vEAPbkwged9hq4_153baO7EGMYELub8q",
+        "senderAgentRunId": "student_one_b9a9d24c76d441ca925cb9d9963eb5a5",
+        "receiverAgentRunId": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+        "content": "TASK_PEER_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_Jl62-1hmqKFYHxuAXY9wzUBnUDvhehWx",
+        "senderAgentRunId": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "TASK_PEER_NESTED-CODEX-FINAL",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_VzgbzfqaJwCNNrVo4A5v6MSwiwjW6pVa",
+        "senderAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "receiverAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "content": "POST_RESTART_NESTED_TEAM_ROUTE_REQUEST. Please reply to /Teacher using send_message_to with exactly POST_RESTART_NESTED_TEAM_ACK.",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      },
+      {
+        "messageId": "teammsg_qi-NHa-rX_nb1JVB4_XiAWwu8G8XaKMC",
+        "senderAgentRunId": "student_one_3b366df92e944bb692a782c265142627",
+        "receiverAgentRunId": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+        "content": "POST_RESTART_NESTED_TEAM_ACK",
+        "messageType": "agent_message",
+        "referenceFiles": []
+      }
+    ],
+    "getTeamRunResumeConfig": {
+      "teamRunId": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+      "isActive": false,
+      "executionTree": {
+        "schema_version": 2,
+        "created_at": "2026-08-25T18:54:51.727Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [
+          {
+            "from": "/Teacher",
+            "to": "/StudentStudyGroup",
+            "rules": [
+              "When a bounded classroom task is ready to be delegated to the nested student study group.",
+              "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+            ]
+          },
+          {
+            "from": "/Teacher",
+            "to": "/StudentStudyGroup/student_one",
+            "rules": [
+              "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_one",
+            "to": "/Teacher",
+            "rules": [
+              "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+              "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_one",
+            "to": "/StudentStudyGroup/student_two",
+            "rules": [
+              "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+            ]
+          },
+          {
+            "from": "/StudentStudyGroup/student_two",
+            "to": "/StudentStudyGroup/student_one",
+            "rules": [
+              "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+            ]
+          }
+        ],
+        "root_team": {
+          "address": "/",
+          "team_definition_id": "nested-classroom-test",
+          "team_definition_name": "Nested Classroom Test Team",
+          "team_run_id": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7",
+          "coordinator_address": "/Teacher",
+          "default_launch_configuration": {
+            "runtime_kind": "codex_app_server",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": {
+              "reasoning_effort": "medium"
+            },
+            "auto_execute_tools": true,
+            "skill_access_mode": "PRELOADED_ONLY",
+            "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+          },
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/Teacher",
+              "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+              "role": null,
+              "description": null,
+              "agent_run_id": "test_teacher_9929e29326ca439f8d2f88f10557dbd4",
+              "platform_agent_run_id": "01a03a46-7896-7a90-91e1-6c93b5a78b54",
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              }
+            },
+            {
+              "kind": "configured_team",
+              "address": "/StudentStudyGroup",
+              "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+              "role": null,
+              "description": null,
+              "team_run_id": "student_study_group_11193b4f105b48898427de4b177d6f9f",
+              "coordinator_address": "/StudentStudyGroup/student_one",
+              "default_launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": {
+                  "reasoning_effort": "medium"
+                },
+                "auto_execute_tools": true,
+                "skill_access_mode": "PRELOADED_ONLY",
+                "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+              },
+              "members": [
+                {
+                  "kind": "configured_agent",
+                  "address": "/StudentStudyGroup/student_one",
+                  "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "student_one_3b366df92e944bb692a782c265142627",
+                  "platform_agent_run_id": "01a03a46-a31c-7a33-8e7a-089c8314b227",
+                  "launch_configuration": {
+                    "runtime_kind": "codex_app_server",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": {
+                      "reasoning_effort": "medium"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "PRELOADED_ONLY",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+                  }
+                },
+                {
+                  "kind": "configured_agent",
+                  "address": "/StudentStudyGroup/student_two",
+                  "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                  "role": null,
+                  "description": null,
+                  "agent_run_id": "student_two_d6fdbc25a936423cbfba21ddb5d3c7b1",
+                  "platform_agent_run_id": "01a03a46-f043-7721-bbbd-5aa882f2f3ff",
+                  "launch_configuration": {
+                    "runtime_kind": "codex_app_server",
+                    "llm_model_identifier": "gpt-5.6-luna",
+                    "llm_config": {
+                      "reasoning_effort": "medium"
+                    },
+                    "auto_execute_tools": true,
+                    "skill_access_mode": "PRELOADED_ONLY",
+                    "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1/temp_workspace"
+                  }
+                }
+              ],
+              "task_executions": []
+            }
+          ],
+          "task_executions": [
+            {
+              "kind": "task_team",
+              "address": "/StudentStudyGroup",
+              "team_run_id": "team_local_team_nested_classroom_test_student_st_c65079efabdc4796a0c6ce93d8a701aa",
+              "members": [
+                {
+                  "kind": "task_team_agent",
+                  "address": "/StudentStudyGroup/student_one",
+                  "agent_run_id": "student_one_b9a9d24c76d441ca925cb9d9963eb5a5",
+                  "platform_agent_run_id": "01a03a46-d153-7b43-910e-e890b16da1e9"
+                },
+                {
+                  "kind": "task_team_agent",
+                  "address": "/StudentStudyGroup/student_two",
+                  "agent_run_id": "student_two_00d559ae2c0f4a23ad5cf86453d85178",
+                  "platform_agent_run_id": null
+                }
+              ],
+              "task_executions": [],
+              "started_at": "2026-08-25T18:55:14.707Z",
+              "settled_at": "2026-08-25T18:56:18.179Z"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "visibleMessages": [
+    "Message · from student_one\n25. Aug., 21:02\n\nPOST_RESTART_NESTED_TEAM_ACK",
+    "Message · to student_one\n25. Aug., 21:02\n\nPOST_RESTART_NESTED_TEAM_ROUTE_REQUEST. Please reply to /Teacher using send_message_to with exactly POST_RESTART_NESTED_TEAM_ACK.",
+    "Message · from student_one\n25. Aug., 20:55\n\nNESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL",
+    "Message · to student_one\n25. Aug., 20:55\n\nPlease reply to /Teacher using send_message_to and include exactly NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL.",
+    "Message · from student_one\n25. Aug., 20:55\n\nNESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL",
+    "Message · to student_one\n25. Aug., 20:55\n\nPlease reply to /Teacher using send_message_to and include exactly NESTED_TEAM_ADDRESS_ACK_NESTED-CODEX-FINAL.\n\nnested-codex-final-reference.txt",
+    "NESTED_DIRECT_MEMBER_ACK_NESTED-CODEX-FINAL"
+  ],
+  "consoleEvents": []
+}

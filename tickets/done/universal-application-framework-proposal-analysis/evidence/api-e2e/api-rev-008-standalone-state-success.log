@@ -1,0 +1,35 @@
+appdb=applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/app.sqlite
+## app tables
+brief_artifact_revisions  briefs                    review_notes            
+brief_artifacts           pending_launch_requests 
+brief_bindings            processed_events        
+## briefs
+[{"brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","title":"API REV 008 graph publication shutdown 1785398337317","status":"in_review","latest_binding_id":"5ecc1138-4092-4d9a-b1bc-7db4dd0a37b7","latest_run_id":"brief_studio_team_d130f60668e247b4a5b4c066d6aac59b","latest_binding_status":"ATTACHED","last_error_message":null,"created_at":"2026-07-30T07:58:58.057Z","updated_at":"2026-07-30T08:00:22.820Z","approved_at":null,"rejected_at":null}]
+## bindings
+appdb=applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/db/app.sqlite
+## brief_bindings
+[{"binding_id":"5ecc1138-4092-4d9a-b1bc-7db4dd0a37b7","brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","launch_request_id":"brief-launch-request-a1fef5e9-8faf-41b8-b3e1-cec37ff63623","run_id":"brief_studio_team_d130f60668e247b4a5b4c066d6aac59b","created_at":"2026-07-30T07:58:58.795Z","updated_at":"2026-07-30T07:58:58.131Z","artifact_catchup_completed_at":null}]
+## brief_artifacts
+[{"brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","artifact_kind":"researcher","publication_kind":"research","revision_id":"289a1fe6-8b7b-4e8a-9c4d-22db82ba54d0","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md","description":"Concise research checkpoint for the API graph publication shutdown brief.","body":"# API REV 008 graph publication shutdown 1785398337317 — Research Checkpoint\n\n## Key findings\n- The brief should define a controlled shutdown of graph publication, separating the public-facing publish path from graph construction, reads, and already-committed artifacts.\n- A safe sequence is: announce freeze, stop new publication intake, drain or explicitly cancel in-flight jobs, verify queue and worker state, then disable publishing and retain read-only access where possible.\n- Idempotent shutdown controls, an auditable operator action, and a clear status endpoint are essential to prevent duplicate publishes, partial graph versions, or ambiguous “stopped” states.\n- Recovery should preserve the last known-good graph snapshot and support a reversible restart with replay/reconciliation of work accepted before the cutoff.\n\n## Risks / open questions\n- The exact publication topology, queue semantics, and ownership of in-flight jobs are not yet specified; drain guarantees may differ by implementation.\n- Consumers may treat publication success as availability of the new graph, creating consistency or cache-invalidation gaps during shutdown.\n- Required RTO/RPO, maintenance window, notification audience, and authorization/audit requirements need confirmation before rollout.\n\n## Recommendations / next steps\n- Define a shutdown state machine with explicit cut-off time, drain timeout, cancellation policy, health signals, and operator permissions.\n- Add preflight/postflight checks for queue depth, worker leases, snapshot integrity, downstream notifications, and read-path health.\n- Make the runbook reversible: capture a checkpoint, publish a final status event, verify the retained snapshot, and document restart/replay validation.\n","producer_member_route_key":"researcher","updated_at":"2026-07-30T07:59:40.295Z"},
+{"brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","artifact_kind":"writer","publication_kind":"final","revision_id":"621ab70e-4256-4fcf-8db2-fa1f4536d21d","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md","description":"Concise writer checkpoint and final brief for controlled graph publication shutdown.","body":"","producer_member_route_key":"writer","updated_at":"2026-07-30T08:00:22.820Z"}]
+## revisions
+[{"revision_id":"289a1fe6-8b7b-4e8a-9c4d-22db82ba54d0","brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","binding_id":"5ecc1138-4092-4d9a-b1bc-7db4dd0a37b7","run_id":"brief_studio_researcher_dadfa335b241414da361903c080f88a7","artifact_kind":"researcher","publication_kind":"research","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md","producer_member_route_key":"researcher","published_at":"2026-07-30T07:59:40.295Z","projected_at":"2026-07-30T07:59:40.306Z"},
+{"revision_id":"621ab70e-4256-4fcf-8db2-fa1f4536d21d","brief_id":"brief-92dcf66c-1a9c-4885-a6af-7f57b149a3d8","binding_id":"5ecc1138-4092-4d9a-b1bc-7db4dd0a37b7","run_id":"brief_studio_writer_93ad650792ee4bba9b99280832aa7689","artifact_kind":"writer","publication_kind":"final","path":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md","producer_member_route_key":"writer","published_at":"2026-07-30T08:00:22.820Z","projected_at":"2026-07-30T08:00:22.835Z"}]
+## platform tables
+__autobyteus_app_migrations                 
+__autobyteus_execution_event_dispatch_cursor
+__autobyteus_execution_event_journal        
+__autobyteus_publication_dispatch_cursor    
+__autobyteus_publication_journal            
+__autobyteus_resource_configurations        
+__autobyteus_run_binding_members            
+__autobyteus_run_bindings                   
+__autobyteus_session_index                  
+__autobyteus_session_projection             
+__autobyteus_storage_meta                   
+## journal
+## runtime files
+applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md
+applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md
+3a0ecfe5135932af1e3f561550a8f17ce2e415e2be59e867ef2cb5f219bf947e  applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md

@@ -1,0 +1,140 @@
+{
+  "checkedAt": "2026-08-13T11:11:04Z",
+  "dataRoot": "/private/tmp/api-rev015-studio-1786618978",
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+  "applicationProjection": {
+    "briefs": [
+      {
+        "brief_id": "brief-fd27815a-7cee-402e-a8b1-5cd4705d4881",
+        "title": "API REV 015 Studio restart 1786619122929",
+        "status": "in_review",
+        "latest_binding_id": "64369c65-33aa-40bb-8c3c-03d0ab641857",
+        "latest_run_id": "brief_studio_team_750cfa7ccead47c598bfedc9421600c0",
+        "latest_binding_status": "ATTACHED",
+        "last_error_message": null
+      }
+    ],
+    "artifacts": [
+      {
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "revision_id": "ecb5102b-8950-4ec4-be56-c155f5a9c51e",
+        "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+        "producer_member_route_key": "writer"
+      },
+      {
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "revision_id": "4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5",
+        "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+        "producer_member_route_key": "researcher"
+      }
+    ],
+    "revisions": [
+      {
+        "artifact_kind": "researcher",
+        "publication_kind": "research",
+        "revision_id": "4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5",
+        "run_id": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+        "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+        "producer_member_route_key": "researcher"
+      },
+      {
+        "artifact_kind": "writer",
+        "publication_kind": "final",
+        "revision_id": "ecb5102b-8950-4ec4-be56-c155f5a9c51e",
+        "run_id": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8",
+        "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+        "producer_member_route_key": "writer"
+      }
+    ]
+  },
+  "genericPersistedProjection": {
+    "researcher": {
+      "version": 1,
+      "summaries": [
+        {
+          "id": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+          "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise research checkpoint for the API REV 015 studio restart brief.",
+          "revisionId": "4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5",
+          "createdAt": "2026-08-13T11:06:06.304Z",
+          "updatedAt": "2026-08-13T11:06:06.304Z"
+        },
+        {
+          "id": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+          "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "status": "available",
+          "description": "Retained generic publication used to validate Brief startup eligibility filtering.",
+          "revisionId": "8085564f-fd0f-48d9-bdd9-6ec1bebdb4a8",
+          "createdAt": "2026-08-13T11:10:29.507Z",
+          "updatedAt": "2026-08-13T11:10:29.507Z"
+        }
+      ],
+      "revisions": [
+        {
+          "revisionId": "4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5",
+          "artifactId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+          "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+          "type": "file",
+          "description": "Concise research checkpoint for the API REV 015 studio restart brief.",
+          "createdAt": "2026-08-13T11:06:06.304Z",
+          "snapshotRelativePath": "published_artifacts/revisions/4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5/research.md",
+          "sourceFileName": "research.md"
+        },
+        {
+          "revisionId": "8085564f-fd0f-48d9-bdd9-6ec1bebdb4a8",
+          "artifactId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0",
+          "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "description": "Retained generic publication used to validate Brief startup eligibility filtering.",
+          "createdAt": "2026-08-13T11:10:29.507Z",
+          "snapshotRelativePath": "published_artifacts/revisions/8085564f-fd0f-48d9-bdd9-6ec1bebdb4a8/final-brief.md",
+          "sourceFileName": "final-brief.md"
+        }
+      ]
+    },
+    "writer": {
+      "version": 1,
+      "summaries": [
+        {
+          "id": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8",
+          "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise writer checkpoint for the API REV 015 studio restart.",
+          "revisionId": "ecb5102b-8950-4ec4-be56-c155f5a9c51e",
+          "createdAt": "2026-08-13T11:06:48.548Z",
+          "updatedAt": "2026-08-13T11:06:48.548Z"
+        }
+      ],
+      "revisions": [
+        {
+          "revisionId": "ecb5102b-8950-4ec4-be56-c155f5a9c51e",
+          "artifactId": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8:/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_writer_a69696bd8f984429acd6fafe38ea21a8",
+          "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "description": "Concise writer checkpoint for the API REV 015 studio restart.",
+          "createdAt": "2026-08-13T11:06:48.548Z",
+          "snapshotRelativePath": "published_artifacts/revisions/ecb5102b-8950-4ec4-be56-c155f5a9c51e/final-brief.md",
+          "sourceFileName": "final-brief.md"
+        }
+      ]
+    }
+  },
+  "assertions": {
+    "briefInReview": true,
+    "applicationArtifactsRemainExactlyEligible": true,
+    "genericResearcherRetainsIneligibleFinal": true,
+    "genericWriterRetainsEligibleFinal": true
+  }
+}

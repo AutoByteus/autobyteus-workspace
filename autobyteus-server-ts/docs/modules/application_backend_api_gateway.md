@@ -16,7 +16,8 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - `src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts`
 - `src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts`
 - `src/application-backend-api-gateway/websockets/application-backend-websocket-session-service.ts`
-- `src/application-engine/services/application-engine-host-service.ts`
+- `src/application-engine/services/application-engine-controller.ts`
+- `src/application-engine/services/application-engine-launcher.ts`
 
 ## Authority Boundary
 
@@ -48,9 +49,28 @@ The same REST module also exposes the host launch-setup surfaces outside the bac
 
 - `GET /rest/applications/:applicationId/available-execution-resources`
 - `GET /rest/applications/:applicationId/execution-resource-configurations`
+- `POST /rest/applications/:applicationId/execution-resource-configurations/:slotKey/selection-preview`
 - `PUT /rest/applications/:applicationId/execution-resource-configurations/:slotKey`
+- `DELETE /rest/applications/:applicationId/execution-resource-configurations/:slotKey`
 
-Those setup routes feed the authoritative pre-entry setup gate on `/applications/:id` before the iframe host is allowed to enter the application.
+Those setup routes feed the authoritative pre-entry setup gate on
+`/applications/:id` before the iframe host is allowed to enter the
+application. Reads keep `packageBaseline`, `selectedResourceBaseline`,
+`savedOverride`, and `effectiveConfiguration` distinct. Selection preview does
+not write state, `PUT` stores a validated sparse Studio override, and `DELETE`
+resets that override so the bundle-owned package baseline becomes effective.
+
+### Internal Agent Tools route is separate
+
+Studio and the standalone application host each start one process-owned
+`AgentToolsMcpHost` on a dedicated ephemeral `127.0.0.1` listener. The main
+Studio/standalone Fastify server does not register
+`/mcp/agent-tools/:sessionId`. Each application runtime activates tokenless
+run-sessions through its `ScopedAgentToolMcpSessionAuthority`; local peer,
+`Host`, and optional `Origin` admission protects the dedicated listener, while
+publication still uses only that scope's `PublishedArtifactPublisher`.
+Studio's `/mcp/gateway` remains a separate main-server external-client boundary
+and is not registered by standalone.
 
 ### WebSocket notifications
 
@@ -62,13 +82,14 @@ The gateway bridges worker-published notifications into a per-application websoc
 
 - `GET /ws/applications/:applicationId/backend/routes/*`
 
-The gateway validates active application/exposure state, forwards only normalized path, decoded business query/params, sanitized headers, and trusted application scope, and coordinates the network session with the Engine Host. The worker-owned `ApplicationBackendHost` selects one exact `webSocketRoutes` declaration and owns application handler execution. Framework readiness precedes application frames, text/binary delivery is bounded and ordered, and two-sided cleanup is exactly once.
+The gateway validates active application/exposure state, forwards only normalized path, decoded business query/params, sanitized headers, and trusted application scope, and coordinates the network session through the engine launcher and controller. The worker-owned `ApplicationBackendHost` selects one exact `webSocketRoutes` declaration and owns application handler execution. Framework readiness precedes application frames, text/binary delivery is bounded and ordered, and two-sided cleanup is exactly once.
 
 This escape hatch is not used to implement `applicationClient.agentCommunication.connect(address)`.
 
 ## Engine Handoff
 
-- `ensure-ready`, query, command, route, GraphQL, and event-handler dispatch invocations all rely on `ApplicationEngineHostService`.
+- `ApplicationEngineLauncher` owns ensure/start/restart/stop; `ApplicationEngineController` owns attached worker handles, status/listeners, and query/command/route/GraphQL/WebSocket/event/artifact invocation.
+- Accepted backend queries, commands, routes, GraphQL work, and handler callbacks are synchronous completion-coupled operations. The engine retains their correlation until the worker returns the actual result/domain error or the worker/transport closes; it does not manufacture a local work-timeout response while the handler or a nested context capability continues. Bounded startup/stop controls terminate and await the worker before exposing timeout failure.
 - Status reads do not implicitly start the worker.
 - Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationHub`.
 - For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, agent execution and resources), see [`application_communication_model.md`](./application_communication_model.md).
@@ -88,6 +109,6 @@ This escape hatch is not used to implement `applicationClient.agentCommunication
 - [`application_storage.md`](./application_storage.md)
 - [`application_communication_model.md`](./application_communication_model.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`

@@ -15,7 +15,7 @@
 - REST: `/rest/*`
   - Phone Access management and pairing: `/rest/remote-access/*`
   - Memory Sync hub ingestion: `/rest/memory-sync/v1/*`
-- MCP Streamable HTTP:
+- Process-local MCP Streamable HTTP on a dedicated ephemeral loopback listener:
   - AutoByteus Agent Tools MCP Server: `/mcp/agent-tools/:sessionId`
 - Mobile web/PWA static shell: `/mobile` and `/mobile/*`
 - WebSocket:

@@ -1,0 +1,102 @@
+# API-REV-014 exact current 6-file checkpoint web gate plus AC-025 editor
+head=7e8e43340b5d83547e74395c9c03ba28ee8248a2
+start=2026-08-13T10:01:34Z
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+
+stderr | components/applications/__tests__/ApplicationSurface.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/application/__tests__/applicationAssetUrl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/application/__tests__/applicationAssetUrl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts (3 tests) 4ms
+ ✓ components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts (5 tests) 21ms
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (2 tests) 23ms
+ ✓ utils/application/__tests__/applicationAssetUrl.spec.ts (3 tests) 3ms
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] iframe loaded applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 src=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=file%3A%2F%2F
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] received ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1
+
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits a bridge error when the bootstrap payload cannot be cloned into postMessage
+[ApplicationIframeHost] bridge error applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned.
+
+ ✓ components/applications/__tests__/ApplicationIframeHost.spec.ts (2 tests) 13ms
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps the iframe canvas hidden behind an opaque host reveal gate until bootstrap delivery succeeds
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+[ApplicationSurface] accepted ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > ignores stale ready signals that do not match the active launch descriptor
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+stderr | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] launch failed applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Bootstrap bridge failed
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+ ✓ components/applications/__tests__/ApplicationSurface.spec.ts (4 tests) 23ms
+ ✓ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (2 tests) 37ms
+
+ Test Files  7 passed (7)
+      Tests  21 passed (21)
+   Start at  12:01:37
+   Duration  7.37s (transform 4.10s, setup 42.28s, collect 1.71s, tests 124ms, environment 2.36s, prepare 1.41s)
+
+end=2026-08-13T10:01:45Z

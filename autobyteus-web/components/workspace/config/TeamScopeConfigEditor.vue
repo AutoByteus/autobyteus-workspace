@@ -24,21 +24,26 @@
       :runtime-kind="scope.effectiveConfig.runtimeKind"
       :llm-model-identifier="scope.effectiveConfig.llmModelIdentifier"
       :llm-config="scope.effectiveConfig.llmConfig"
-      :disabled="isInteractionDisabled"
-      :read-only="isInteractionDisabled"
-      :runtime-selection-locked="isInteractionDisabled"
-      :historical-model-config="scope.mode === 'stored'"
-      :runtime-help-text="t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
+      :disabled="scope.mode === 'editable' && isInteractionDisabled"
+      :read-only="scope.mode === 'editable' && isInteractionDisabled"
+      :runtime-selection-locked="isFixedFieldDisabled"
+      :model-selection-locked="isFixedFieldDisabled"
+      :model-config-disabled="isInteractionDisabled"
+      :model-config-read-only="isInteractionDisabled"
+      :historical-model-config="scope.mode === 'existing'"
+      :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
       :model-label="t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
-      :model-help-text="t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
+      :model-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
       :id-prefix="inputIdPrefix"
-      :advanced-initially-expanded="scope.mode === 'stored'"
+      :advanced-initially-expanded="scope.mode === 'existing'"
       :historical-value-unavailable-message="historicalUnavailableMessage"
       :historical-model-config-title="historicalModelConfigTitle"
+      :validation-errors="modelConfigFieldErrors"
       control-variant="quiet"
       @update:runtime-kind="updateField('runtime', $event)"
       @update:llm-model-identifier="updateField('model', $event)"
       @update:llm-config="updateField('llmConfig', $event)"
+      @schema-state="emit('schema-state', scope.address, $event)"
     />
 
     <div class="mt-8">
@@ -56,8 +61,8 @@
         @update:model-value="updateWorkspaceSelection"
       />
       <WorkspaceSelector
-        v-else-if="storedScope"
-        :model="{ mode: 'stored', workspace: storedScope.storedWorkspace }"
+        v-else-if="existingScope"
+        :model="{ mode: 'stored', workspace: existingScope.storedWorkspace }"
         :disabled="true"
         :historical-value-unavailable-message="historicalUnavailableMessage"
         :auto-select-default="false"
@@ -77,7 +82,7 @@
       <AutoApproveSwitch
         :id="autoExecuteId"
         :checked="scope.effectiveConfig.autoExecuteTools"
-        :disabled="isInteractionDisabled"
+        :disabled="isFixedFieldDisabled"
         :label="t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools')"
         @toggle="updateField('auto', $event)"
       />
@@ -165,21 +170,26 @@
         :runtime-kind="scope.effectiveConfig.runtimeKind"
         :llm-model-identifier="scope.effectiveConfig.llmModelIdentifier"
         :llm-config="scope.effectiveConfig.llmConfig"
-        :disabled="isInteractionDisabled"
-        :read-only="isInteractionDisabled"
-        :runtime-selection-locked="isInteractionDisabled"
-        :historical-model-config="scope.mode === 'stored'"
-        :runtime-help-text="t('workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help')"
+        :disabled="scope.mode === 'editable' && isInteractionDisabled"
+        :read-only="scope.mode === 'editable' && isInteractionDisabled"
+        :runtime-selection-locked="isFixedFieldDisabled"
+        :model-selection-locked="isFixedFieldDisabled"
+        :model-config-disabled="isInteractionDisabled"
+        :model-config-read-only="isInteractionDisabled"
+        :historical-model-config="scope.mode === 'existing'"
+        :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help')"
         :model-label="t('workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model')"
-        :model-help-text="t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
+        :model-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
         :id-prefix="inputIdPrefix"
-        :advanced-initially-expanded="scope.mode === 'stored'"
+        :advanced-initially-expanded="scope.mode === 'existing'"
         :historical-value-unavailable-message="historicalUnavailableMessage"
         :historical-model-config-title="historicalModelConfigTitle"
+        :validation-errors="modelConfigFieldErrors"
         control-variant="quiet"
         @update:runtime-kind="updateField('runtime', $event)"
         @update:llm-model-identifier="updateField('model', $event)"
         @update:llm-config="updateField('llmConfig', $event)"
+        @schema-state="emit('schema-state', scope.address, $event)"
       />
 
       <div class="mt-6">
@@ -197,8 +207,8 @@
           @update:model-value="updateWorkspaceSelection"
         />
         <WorkspaceSelector
-          v-else-if="storedScope"
-          :model="{ mode: 'stored', workspace: storedScope.storedWorkspace }"
+          v-else-if="existingScope"
+          :model="{ mode: 'stored', workspace: existingScope.storedWorkspace }"
           :disabled="true"
           :historical-value-unavailable-message="historicalUnavailableMessage"
           :auto-select-default="false"
@@ -216,7 +226,7 @@
         <AutoApproveSwitch
           :id="autoExecuteId"
           :checked="scope.effectiveConfig.autoExecuteTools"
-          :disabled="isInteractionDisabled"
+          :disabled="isFixedFieldDisabled"
           :label="t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve')"
           @toggle="updateField('auto', $event)"
         />
@@ -242,6 +252,7 @@ const props = withDefaults(defineProps<{
   scope: Readonly<TeamScopeFormModel>
   isRoot?: boolean
   disabled?: boolean
+  modelConfigFieldErrors?: Readonly<Record<string, string>>
 }>(), {
   isRoot: false,
   disabled: false,
@@ -252,11 +263,14 @@ const emit = defineEmits<{
   (e: 'reset'): void
   (e: 'update:workspace-selection', address: string, selection: WorkspaceSelectionState): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
+  (e: 'update-existing-model-config', address: string, config: Record<string, unknown> | null): void
+  (e: 'schema-state', address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
 }>()
 const { t } = useLocalization()
 const editableScope = computed(() => props.scope.mode === 'editable' ? props.scope : null)
-const storedScope = computed(() => props.scope.mode === 'stored' ? props.scope : null)
-const isInteractionDisabled = computed(() => props.disabled || props.scope.mode === 'stored')
+const existingScope = computed(() => props.scope.mode === 'existing' ? props.scope : null)
+const isInteractionDisabled = computed(() => props.disabled)
+const isFixedFieldDisabled = computed(() => props.disabled || props.scope.mode === 'existing')
 const expanded = ref(false)
 const pendingOverride = ref<TeamScopeConfigOverride>({
   ...(props.scope.mode === 'editable' ? props.scope.override ?? {} : {}),
@@ -273,6 +287,7 @@ const stateLabel = computed(() => t(`workspace.components.workspace.config.TeamS
 const stateBadgeClass = computed(() => props.scope.isCustomized ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600')
 const historicalUnavailableMessage = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable'))
 const historicalModelConfigTitle = computed(() => t('workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration'))
+const modelConfigFieldErrors = computed(() => props.modelConfigFieldErrors ?? {})
 
 const normalizeOverride = (value: TeamScopeConfigOverride): TeamScopeConfigOverride | null => {
   const inherited = editableScope.value?.inheritedConfig
@@ -293,7 +308,12 @@ const emitOverride = (next: TeamScopeConfigOverride) => {
   emit('update-override', normalized)
 }
 const updateField = (field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: unknown) => {
-  if (isInteractionDisabled.value || !editableScope.value) return
+  if (isInteractionDisabled.value) return
+  if (existingScope.value) {
+    if (field === 'llmConfig') emit('update-existing-model-config', props.scope.address, value as Record<string, unknown> | null)
+    return
+  }
+  if (!editableScope.value) return
   if (props.isRoot) { emit('update-root', field, value); return }
   const next = { ...pendingOverride.value }
   if (field === 'runtime') next.runtimeKind = value as TeamScopeConfigOverride['runtimeKind']

@@ -1,0 +1,133 @@
+{
+  "source": "actual raw traces; bearer/session descriptors excluded",
+  "events": [
+    {
+      "ts": 1785489667.187,
+      "seq": 6,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-7c7f4989-ad3d-4f77-92f0-13be60273288",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "description": "Research checkpoint for worker exit publication recovery"
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17"
+    },
+    {
+      "ts": 1785489667.191,
+      "seq": 7,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_FAILED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-7c7f4989-ad3d-4f77-92f0-13be60273288",
+      "tool_result": null,
+      "tool_error": "Published artifact path '/private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6e65__62726965662d73747564696f/runtime/brief-studio/research.md' does not resolve to a readable regular file.",
+      "member_run_id": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17"
+    },
+    {
+      "ts": 1785489675.939,
+      "seq": 12,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-3f915a11-0d74-4c0f-9711-873e17737e6f",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "description": "Research checkpoint for worker exit publication recovery"
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17"
+    },
+    {
+      "ts": 1785489675.959,
+      "seq": 13,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-3f915a11-0d74-4c0f-9711-873e17737e6f",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "runId": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17",
+            "path": "/private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+            "status": "available",
+            "revisionId": "05848fb9-2625-475a-a6e2-967a3ebe61ae"
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17"
+    },
+    {
+      "ts": 1785489683.957,
+      "seq": 15,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-66c29c0b-9853-4de3-b2e7-9c348f7cf21a",
+      "tool_args": {
+        "recipient_name": "writer",
+        "message_type": "handoff",
+        "reference_files": [
+          "/private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+        ]
+      },
+      "member_run_id": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17"
+    },
+    {
+      "ts": 1785489684.078,
+      "seq": 16,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "send_message_to",
+      "tool_call_id": "exec-66c29c0b-9853-4de3-b2e7-9c348f7cf21a",
+      "tool_result": "Delivered message to writer.",
+      "member_run_id": "brief_studio_researcher_a17cc37007fc4efc8dee00fc54d47e17"
+    },
+    {
+      "ts": 1785489742.604,
+      "seq": 12,
+      "trace_type": "tool_call",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-3f368373-6a0c-4317-b98e-406c93df1ddb",
+      "tool_args": {
+        "artifacts": [
+          {
+            "path": "/private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "description": "Writer checkpoint: publication recovery recommendation brief"
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_writer_c3653de605b8469b81b6325c0ddb2685"
+    },
+    {
+      "ts": 1785489742.609,
+      "seq": 13,
+      "trace_type": "tool_result",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "publish_artifacts",
+      "tool_call_id": "exec-3f368373-6a0c-4317-b98e-406c93df1ddb",
+      "tool_result": {
+        "success": true,
+        "artifacts": [
+          {
+            "runId": "brief_studio_writer_c3653de605b8469b81b6325c0ddb2685",
+            "path": "/private/tmp/api-rev012-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+            "status": "available",
+            "revisionId": "00747921-4848-42df-9126-5a1779730c53"
+          }
+        ]
+      },
+      "member_run_id": "brief_studio_writer_c3653de605b8469b81b6325c0ddb2685"
+    }
+  ]
+}

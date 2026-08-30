@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.54 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --port 53054 --data-root /private/tmp/api-rev005-electron-classroom-20260822194413
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":53054,"dataRoot":"/private/tmp/api-rev005-electron-classroom-20260822194413","ownsDataRoot":false,"clientBaseUrl":"http://127.0.0.1:53054","healthUrl":"http://127.0.0.1:53054/rest/health"}

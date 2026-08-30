@@ -1,0 +1,9 @@
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:10:36.561Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T09:10:36.564Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+The process AgentTeamRunManager is already initialized.

@@ -1,0 +1,57 @@
+# DR-001 final delivery audit
+timestamp_utc=2026-08-26T17:53:40Z
+branch=codex/logical-application-agent-addressing-and-role-simplification
+head=0a55b013ad6250b5ffe02609aa43cfc7e465463d
+origin_personal=4108786f4058ca83fd036df84666a2c846fd6401
+merge_base=4108786f4058ca83fd036df84666a2c846fd6401
+divergence=7	0
+base_is_ancestor=yes
+--- unmerged paths ---
+unmerged_paths=none
+--- checkpoint non-ticket source delta from reviewed head ---
+checkpoint_non_ticket_delta=none
+--- delivery artifact existence ---
+artifact_existence=Pass
+--- build hashes ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.dmg: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.58.zip: OK
+build_hashes=Pass
+--- isolation ---
+electron_isolation=Pass (5/5; no failures)
+--- stale address/docs scan ---
+stale_address_scan=Pass
+--- generated outputs ---
+generated_untracked_sdk_cleanup=Pass
+--- artifact hygiene ---
+Repository artifact hygiene check passed.
+Tracked files scanned: 25595
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+--- secret marker scan ---
+secret_marker_scan=Pass
+--- staged diff check ---
+diff_check=Pass
+--- ordinary listener ---
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 94487 normy   26u  IPv4 0xc0597f8d50338a75      0t0  TCP *:29695 (LISTEN)
+ordinary_listener_preserved=Pass
+--- status ---
+M  autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+M  autobyteus-server-ts/docs/modules/application_communication_model.md
+M  autobyteus-server-ts/docs/modules/application_engine.md
+M  autobyteus-server-ts/docs/modules/applications.md
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/delivery-revision-record.md
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/docs-sync-report.md
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/electron-test-build-report.md
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-base-refresh-and-integration.log
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-isolation.log
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-isolation/electron-launch-profile-evidence.json
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-isolation/provider-settings.png
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-macos-arm64-build.log
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-electron-macos-arm64-verification.log
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-post-integration-check-corrected.log
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-post-integration-check.log
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/handoff-summary.md
+A  tickets/in-progress/logical-application-agent-addressing-and-role-simplification/release-deployment-report.md
+?? tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-001-final-audit.log
+result=Pass

@@ -5,8 +5,13 @@ import type {
   ReviewTaskResultResult,
   SubmitTaskResultInput,
   SubmitTaskResultResult,
-  TaskDelegationContext,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
+import {
+  cloneTeamMemberExecutionIdentity,
+  type TeamMemberExecutionIdentity,
+} from "../../agent-team-execution/domain/team-member-execution-identity.js";
+import type { MemberTaskRootResolver } from "../../agent-team-execution/task-delegation/member-task-root-resolver.js";
+import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 
 export const DELEGATE_TASK_TOOL_NAME = "delegate_task";
 export const SUBMIT_TASK_RESULT_TOOL_NAME = "submit_task_result";
@@ -28,7 +33,40 @@ export const TASK_DELEGATION_TOOL_NAMES = new Set<string>(
 export const isTaskDelegationToolName = (value: string | null | undefined): boolean =>
   typeof value === "string" && TASK_DELEGATION_TOOL_NAMES.has(value.trim());
 
-export type TaskDelegationToolContext = TaskDelegationContext;
+export type TaskDelegationToolContext = Readonly<{
+  identity: TeamMemberExecutionIdentity;
+  rootResolver: MemberTaskRootResolver;
+}>;
+
+export const TASK_DELEGATION_TOOL_CONFIG_KEY = "taskDelegation";
+
+export const requireConfiguredTaskDelegationToolContext = (
+  config: ToolConfig | null | undefined,
+): TaskDelegationToolContext => {
+  const value = config?.get<unknown>(TASK_DELEGATION_TOOL_CONFIG_KEY);
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Task delegation tools require a bound taskDelegation ToolConfig.");
+  }
+  const context = value as Partial<TaskDelegationToolContext>;
+  const identity = context.identity;
+  if (
+    !identity ||
+    typeof identity.rootTeamRunId !== "string" ||
+    !identity.rootTeamRunId.trim() ||
+    typeof identity.memberAddress !== "string" ||
+    !identity.memberAddress.trim() ||
+    typeof identity.agentRunId !== "string" ||
+    !identity.agentRunId.trim() ||
+    !context.rootResolver ||
+    typeof context.rootResolver.resolveActiveRoot !== "function"
+  ) {
+    throw new Error("Task delegation tools require a valid bound taskDelegation context.");
+  }
+  return Object.freeze({
+    identity: cloneTeamMemberExecutionIdentity(identity),
+    rootResolver: context.rootResolver,
+  });
+};
 
 export type TaskDelegationToolInputs = {
   [DELEGATE_TASK_TOOL_NAME]: DelegateTaskInput;

@@ -10,6 +10,7 @@ import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/dom
 import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost-calculator.js";
 
 const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
@@ -477,5 +478,60 @@ describe("token usage unit-price GraphQL hydration", () => {
     const localRuntimeStats = result.runtimeStats.find((row) => row.llmModel === localModel);
     expect(localRuntimeStats?.aggregate.unitPrices.standardInput).toEqual(unitPrice("local_no_api_bill", null));
     expect(localRuntimeStats?.aggregate.unitPrices.output).toEqual(unitPrice("local_no_api_bill", null));
+  });
+
+  it("persists a DeepSeek policy selected from observed_at through the real pricing boundary", async () => {
+    const runId = `deepseek-observed-at-${randomUUID()}`;
+    createdRunIds.add(runId);
+    const enriched = await new TokenCostCalculator().enrichCost(createTokenUsageUpdatedPayload({
+      runId,
+      payload: {
+        usage_event_id: `deepseek-observed-at-${randomUUID()}`,
+        idempotency_key: `deepseek-observed-at:${randomUUID()}`,
+        observed_at: "2026-08-29T02:00:00Z",
+        runtime_kind: "autobyteus",
+        ingestion_kind: "codex_thread_token_usage",
+        usage_scope: "per_turn",
+        model_provider: "DEEPSEEK",
+        model_identifier: "deepseek-v4-pro",
+        input_token_semantic: "gross_includes_cache",
+        reported_input_tokens: 0,
+        reported_output_tokens: 1_000_000,
+        reported_total_tokens: 1_000_000,
+        accounting_input_tokens: 0,
+        accounting_output_tokens: 1_000_000,
+        accounting_total_tokens: 1_000_000,
+        standard_input_tokens: 0,
+        cache_miss_input_tokens: 0,
+        cache_read_input_tokens: 0,
+        cache_creation_input_tokens: 0,
+        cache_creation_5m_input_tokens: 0,
+        cache_creation_1h_input_tokens: 0,
+        cache_state: "not_reported",
+        reasoning_output_tokens: 0,
+        billable_output_tokens: 1_000_000,
+        quality_flags: [],
+      },
+    }));
+    await store.recordObservation(enriched);
+    const persisted = await rootPrismaClient.tokenUsageRunRecord.findUnique({ where: { runId } });
+    expect(persisted).not.toBeNull();
+    if (!persisted) throw new Error("Expected DeepSeek token usage record to be persisted.");
+    expect(JSON.parse(persisted.pricingSummaryJson)).toMatchObject({
+      pricingPolicyKeys: {
+        status: "single",
+        value: "autobyteus_model_catalog:DEEPSEEK:deepseek-v4-pro:deepseek-v4-2026-08-23:off_peak",
+      },
+      unitPrices: { output: { status: "single", price_per_million: 1.98 } },
+    });
+    expect(persisted.estimatedApiOutputCost).toBe(1.98);
+    expect(enriched.pricing_snapshot_json).toMatchObject({
+      pricing_schedule_id: "deepseek-v4-2026-08-23",
+      pricing_schedule_period_id: "off_peak",
+      pricing_schedule_effective_from: "2026-08-22T16:00:00Z",
+      pricing_schedule_window_timezone: "UTC",
+      pricing_schedule_peak_days: [1, 2, 3, 4, 5],
+      pricing_schedule_peak_days_timezone: "Asia/Shanghai",
+    });
   });
 });

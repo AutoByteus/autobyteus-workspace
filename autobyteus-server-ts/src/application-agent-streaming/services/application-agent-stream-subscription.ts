@@ -18,7 +18,7 @@ import {
 } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentEventMapper } from "./application-agent-stream-event-mapper.js";
 import { ApplicationAgentStreamProjectionError } from "./application-agent-stream-event-projector.js";
-import { ApplicationAgentStreamRuntimeSource } from "./application-agent-stream-runtime-source.js";
+import type { ApplicationExecutionStreaming } from "../../application-platform/execution/application-execution-scope-contracts.js";
 
 type State =
   | "ESTABLISHING"
@@ -45,7 +45,7 @@ export class ApplicationAgentStreamSubscription {
     applicationId: string;
     address: ApplicationAgentTargetAddress;
     orchestration: Pick<ApplicationOrchestrationHostService, "openAgentEventStreamLease">;
-    runtimeSource: ApplicationAgentStreamRuntimeSource;
+    runtimeSource: ApplicationExecutionStreaming;
     mapper: ApplicationAgentEventMapper;
     emitter: ApplicationAgentStreamEmitter;
     onPreReadyTerminal: () => void;
@@ -66,7 +66,7 @@ export class ApplicationAgentStreamSubscription {
       }
       this.lease = lease;
       this.descriptor = lease.descriptor;
-      const releaseSource = this.input.runtimeSource.attach(lease.descriptor, (event) => this.onSourceEvent(event));
+      const releaseSource = this.input.runtimeSource.attach(lease.descriptor.runtime, (event) => this.onSourceEvent(event));
       if (this.state !== "ESTABLISHING") {
         try { releaseSource(); } catch { /* idempotent cleanup */ }
         this.releaseAcquisitions();
@@ -144,8 +144,8 @@ export class ApplicationAgentStreamSubscription {
       }
       const common = {
         applicationId: this.input.applicationId,
-        address: structuredClone(this.input.address),
-        runtimeSubject: this.descriptor.runtimeSubject,
+        address: structuredClone(this.descriptor.address),
+        runtimeSubject: this.descriptor.runtime.subject,
         producer: mapped.producer,
         event: mapped.event,
       };

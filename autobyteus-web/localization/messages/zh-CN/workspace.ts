@@ -1,6 +1,31 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.runModelConfig.loading": "正在加载运行配置…",
+  "workspace.runModelConfig.runUnavailable": "此运行已不可用。",
+  "workspace.runModelConfig.save": "保存",
+  "workspace.runModelConfig.saving": "正在保存…",
+  "workspace.runModelConfig.verifying": "正在验证…",
+  "workspace.runModelConfig.loadingModels": "正在加载模型选项…",
+  "workspace.runModelConfig.catalogError": "无法加载模型选项。已保存的设置未更改。",
+  "workspace.runModelConfig.retry": "重试",
+  "workspace.runModelConfig.refreshRequired": "编辑前必须刷新已保存的模型设置。",
+  "workspace.runModelConfig.noAdjustableSettings": "此模型没有可调整的设置。",
+  "workspace.runModelConfig.schemaUnavailable": "当前架构无法表示已保存的模型设置。",
+  "workspace.runModelConfig.agentStopped": "此运行已停止。下次恢复时将使用已保存的模型设置。",
+  "workspace.runModelConfig.agentActive": "请先停止此运行，再更改模型设置。",
+  "workspace.runModelConfig.teamStopped": "此团队已停止。下次恢复时将使用已保存的模型设置。",
+  "workspace.runModelConfig.teamActive": "请先停止此团队，再更改模型设置。",
+  "workspace.runModelConfig.fixedIdentity": "此现有运行的运行时和模型已固定。",
+  "workspace.runModelConfig.fixedWorkspace": "现有运行的工作区已固定。",
+  "workspace.runModelConfig.validation.required": "此项为必填项。",
+  "workspace.runModelConfig.validation.type": "请输入 {expected} 类型的值。",
+  "workspace.runModelConfig.validation.enum": "请选择支持的选项。",
+  "workspace.runModelConfig.validation.minimum": "值不得小于 {expected}。",
+  "workspace.runModelConfig.validation.maximum": "值不得大于 {expected}。",
+  "workspace.runModelConfig.validation.pattern": "值不符合所需格式。",
+  "workspace.runModelConfig.validation.schema_pattern": "当前模型架构包含无效的格式规则。",
+  "workspace.runModelConfig.thinkingAdvancedOnly": "请使用下方的模型设置来控制思考。",
   "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
     "团队实时更新已不同步。请等待团队完成当前工作，然后再次选择此团队成员以重新加载完整对话。",
   "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
@@ -233,6 +258,16 @@ const messages = {
     "更新于 {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "临时任务执行",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_running":
+    "团队状态：运行中",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_initializing":
+    "团队状态：正在初始化",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_error":
+    "团队状态：错误",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_idle":
+    "团队状态：空闲",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline":
+    "团队状态：离线",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

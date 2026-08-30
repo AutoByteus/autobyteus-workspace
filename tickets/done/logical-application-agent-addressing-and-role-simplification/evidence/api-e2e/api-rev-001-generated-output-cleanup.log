@@ -1,0 +1,13 @@
+$ generated-output restoration
+applications/brief-studio/dist=ABSENT_PASS
+applications/socratic-math-teacher/dist=ABSENT_PASS
+autobyteus-application-backend-sdk/dist=ABSENT_PASS
+autobyteus-application-devkit/.tmp-tests=ABSENT_PASS
+autobyteus-application-devkit/dist=ABSENT_PASS
+autobyteus-application-frontend-sdk/dist=ABSENT_PASS
+autobyteus-application-sdk-contracts/dist=ABSENT_PASS
+autobyteus-web/.nuxt=ABSENT_PASS
+autobyteus-web/.output=ABSENT_PASS
+$ retained entry outputs
+autobyteus-ts/dist=PRESENT_PASS
+autobyteus-server-ts/dist=PRESENT_PASS

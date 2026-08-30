@@ -5,16 +5,11 @@ import type {
   ApplicationRouteRequest,
   ApplicationWebSocketRequest,
 } from "@autobyteus/application-sdk-contracts";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
-import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
-import {
-  ApplicationEngineHostService,
-  getApplicationEngineHostService,
-} from "../../application-engine/services/application-engine-host-service.js";
-import {
-  ApplicationBackendNotificationHub,
-  getApplicationBackendNotificationHub,
-} from "../notifications/application-backend-notification-hub.js";
+import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
+import type { ApplicationEngineController } from "../../application-engine/services/application-engine-controller.js";
+import type { ApplicationEngineLauncher } from "../../application-engine/services/application-engine-launcher.js";
+import type { ApplicationBackendNotificationHub } from "../notifications/application-backend-notification-hub.js";
 import {
   ApplicationBackendWebSocketSessionService,
   type ApplicationBackendNetworkWebSocket,
@@ -34,69 +29,55 @@ const normalizeRequestContext = (
 };
 
 export class ApplicationBackendApiGatewayService {
-  private static instance: ApplicationBackendApiGatewayService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationBackendApiGatewayService>[0] = {},
-  ): ApplicationBackendApiGatewayService {
-    if (!ApplicationBackendApiGatewayService.instance) {
-      ApplicationBackendApiGatewayService.instance = new ApplicationBackendApiGatewayService(dependencies);
-    }
-    return ApplicationBackendApiGatewayService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationBackendApiGatewayService.instance = null;
-  }
-
   private subscribedToEngineNotifications = false;
-  private webSocketSessionServiceInstance: ApplicationBackendWebSocketSessionService | null = null;
+  private unsubscribeEngineNotifications: (() => void) | null = null;
 
   constructor(
     private readonly dependencies: {
-      applicationBundleService?: ApplicationBundleService;
-      availabilityService?: ApplicationAvailabilityService;
-      engineHostService?: ApplicationEngineHostService;
-      notificationHub?: ApplicationBackendNotificationHub;
-      webSocketSessionService?: ApplicationBackendWebSocketSessionService;
-    } = {},
+      applicationBundleService: ApplicationBundleService;
+      availabilityService: ApplicationAvailabilityService;
+      engineController: ApplicationEngineController;
+      engineLauncher: ApplicationEngineLauncher;
+      notificationHub: ApplicationBackendNotificationHub;
+      webSocketSessionService: ApplicationBackendWebSocketSessionService;
+    },
   ) {
     this.ensureNotificationBridge();
   }
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService;
   }
 
   private get availabilityService(): ApplicationAvailabilityService {
-    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
+    return this.dependencies.availabilityService;
   }
 
-  private get engineHostService(): ApplicationEngineHostService {
-    return this.dependencies.engineHostService ?? getApplicationEngineHostService();
+  private get engineController(): ApplicationEngineController {
+    return this.dependencies.engineController;
+  }
+
+  private get engineLauncher(): ApplicationEngineLauncher {
+    return this.dependencies.engineLauncher;
   }
 
   private get notificationHub(): ApplicationBackendNotificationHub {
-    return this.dependencies.notificationHub ?? getApplicationBackendNotificationHub();
+    return this.dependencies.notificationHub;
   }
 
   private get webSocketSessionService(): ApplicationBackendWebSocketSessionService {
-    if (this.dependencies.webSocketSessionService) return this.dependencies.webSocketSessionService;
-    this.webSocketSessionServiceInstance ??= new ApplicationBackendWebSocketSessionService({
-      engineHostService: this.engineHostService,
-    });
-    return this.webSocketSessionServiceInstance;
+    return this.dependencies.webSocketSessionService;
   }
 
   private ensureNotificationBridge(): void {
     if (this.subscribedToEngineNotifications) {
       return;
     }
-    if (typeof (this.engineHostService as { onNotification?: unknown }).onNotification !== "function") {
+    if (typeof (this.engineController as { onNotification?: unknown }).onNotification !== "function") {
       return;
     }
     this.subscribedToEngineNotifications = true;
-    this.engineHostService.onNotification(({ applicationId, message }) => {
+    this.unsubscribeEngineNotifications = this.engineController.onNotification(({ applicationId, message }) => {
       this.notificationHub.publish({
         applicationId,
         topic: message.topic,
@@ -124,12 +105,12 @@ export class ApplicationBackendApiGatewayService {
 
   async getApplicationEngineStatus(applicationId: string): Promise<ApplicationEngineStatus> {
     await this.requireApplication(applicationId);
-    return this.engineHostService.getApplicationEngineStatus(applicationId);
+    return this.engineController.getStatus(applicationId);
   }
 
   async ensureApplicationReady(applicationId: string): Promise<ApplicationEngineStatus> {
     await this.requireApplication(applicationId);
-    return this.engineHostService.ensureApplicationEngine(applicationId);
+    return this.engineLauncher.ensureReady(applicationId);
   }
 
   async invokeApplicationQuery(
@@ -139,7 +120,8 @@ export class ApplicationBackendApiGatewayService {
     input: unknown,
   ): Promise<unknown> {
     await this.requireApplication(applicationId);
-    return this.engineHostService.invokeApplicationQuery(applicationId, {
+    await this.engineLauncher.ensureReady(applicationId);
+    return this.engineController.invokeApplicationQuery(applicationId, {
       queryName,
       requestContext: normalizeRequestContext(applicationId, requestContext),
       input,
@@ -153,7 +135,8 @@ export class ApplicationBackendApiGatewayService {
     input: unknown,
   ): Promise<unknown> {
     await this.requireApplication(applicationId);
-    return this.engineHostService.invokeApplicationCommand(applicationId, {
+    await this.engineLauncher.ensureReady(applicationId);
+    return this.engineController.invokeApplicationCommand(applicationId, {
       commandName,
       requestContext: normalizeRequestContext(applicationId, requestContext),
       input,
@@ -166,7 +149,8 @@ export class ApplicationBackendApiGatewayService {
     request: ApplicationRouteRequest,
   ): Promise<unknown> {
     await this.requireApplication(applicationId);
-    return this.engineHostService.routeApplicationRequest(applicationId, {
+    await this.engineLauncher.ensureReady(applicationId);
+    return this.engineController.routeApplicationRequest(applicationId, {
       requestContext: normalizeRequestContext(applicationId, requestContext),
       request,
     });
@@ -178,7 +162,8 @@ export class ApplicationBackendApiGatewayService {
     request: ApplicationGraphqlRequest,
   ): Promise<unknown> {
     await this.requireApplication(applicationId);
-    return this.engineHostService.executeApplicationGraphql(applicationId, {
+    await this.engineLauncher.ensureReady(applicationId);
+    return this.engineController.executeApplicationGraphql(applicationId, {
       requestContext: normalizeRequestContext(applicationId, requestContext),
       request,
     });
@@ -194,13 +179,11 @@ export class ApplicationBackendApiGatewayService {
       requireApplication: () => this.requireApplicationWebSocketExposure(input.applicationId),
     });
   }
-}
 
-let cachedApplicationBackendApiGatewayService: ApplicationBackendApiGatewayService | null = null;
-
-export const getApplicationBackendApiGatewayService = (): ApplicationBackendApiGatewayService => {
-  if (!cachedApplicationBackendApiGatewayService) {
-    cachedApplicationBackendApiGatewayService = ApplicationBackendApiGatewayService.getInstance();
+  dispose(): void {
+    this.unsubscribeEngineNotifications?.();
+    this.unsubscribeEngineNotifications = null;
+    this.subscribedToEngineNotifications = false;
+    this.dependencies.webSocketSessionService.dispose();
   }
-  return cachedApplicationBackendApiGatewayService;
-};
+}

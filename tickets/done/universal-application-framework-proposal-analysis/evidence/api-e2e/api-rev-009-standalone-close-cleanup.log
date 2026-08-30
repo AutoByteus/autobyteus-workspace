@@ -1,0 +1,13 @@
+# API-REV-009 standalone graceful close cleanup
+UTC=2026-07-30T09:03:00Z
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+token_usage_after_close=32
+new_run_token_events:
+[{"root_team_run_id":"brief_studio_team_76f329e1b2954dc9a50ea9d85951b1d1","event_count":15,"first_observed":1785402032796,"last_observed":1785402103953}]
+old_run_token_events:
+[{"root_team_run_id":"brief_studio_team_9811caab500d41deaf1ccb55d26cc203","event_count":17,"first_observed":1785401903390,"last_observed":1785401979991}]
+owned processes:
+run-specific codex:

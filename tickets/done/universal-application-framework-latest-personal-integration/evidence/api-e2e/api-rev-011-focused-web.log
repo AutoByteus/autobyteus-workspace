@@ -1,0 +1,122 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (22 tests) 83ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (11 tests) 105ms
+ ✓ components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts (5 tests) 36ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (6 tests) 32ms
+ ✓ composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts (1 test) 110ms
+ ✓ components/workspace/config/__tests__/StoredTeamScopeHistoricalFields.spec.ts (2 tests) 71ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (8 tests) 255ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (31 tests) 268ms
+ ✓ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (2 tests) 78ms
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useDefinitionLaunchDefaults.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (2 tests) 21ms
+stdout | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts (5 tests) 26ms
+stdout | composables/__tests__/useDefinitionLaunchDefaults.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts (3 tests) 4ms
+ ✓ composables/__tests__/useDefinitionLaunchDefaults.spec.ts (2 tests) 10ms
+
+ Test Files  13 passed (13)
+      Tests  100 passed (100)
+   Start at  19:51:13
+   Duration  9.67s (transform 4.90s, setup 62.56s, collect 4.69s, tests 1.10s, environment 4.02s, prepare 2.75s)
+

@@ -12,7 +12,10 @@ export type AgentDefinitionPersistenceProviderContract = {
 };
 
 export class AgentDefinitionPersistenceProvider {
-  private readonly provider: AgentDefinitionPersistenceProviderContract = new FileAgentDefinitionProvider();
+  constructor(
+    private readonly provider: AgentDefinitionPersistenceProviderContract =
+      new FileAgentDefinitionProvider(),
+  ) {}
 
   async create(domainObj: AgentDefinition): Promise<AgentDefinition> {
     return this.provider.create(domainObj);

@@ -1,0 +1,106 @@
+{
+  "briefs": [
+    {
+      "brief_id": "brief-2dafe927-849d-4403-9138-049845d28066",
+      "title": "API REV 013 standalone retained business path 1785502894364",
+      "status": "in_review",
+      "latest_binding_id": "16404c0a-6455-4661-996a-48c8662c9a96",
+      "latest_run_id": "brief_studio_team_201034b898bd4f26a78b3beac99b3428",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-07-31T13:01:40.215Z",
+      "updated_at": "2026-07-31T13:03:11.648Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "artifacts": [
+    {
+      "brief_id": "brief-2dafe927-849d-4403-9138-049845d28066",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "50e14176-fb94-408f-bdba-a0ccaa0616ab",
+      "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+      "description": "Concise research checkpoint for the retained standalone API REV 013 path.",
+      "body": "# API REV 013 standalone retained business path 1785502894364\n\n## Key findings\n- The brief should preserve a standalone business path: API REV 013 must remain independently reviewable and usable without unrelated workflow branches.\n- Retained implies continuity: existing consumers, contracts, identifiers, and operational context should survive unless an explicit migration decision is approved.\n- Separate stable API contract behavior from implementation details so request/response semantics, ownership, and compatibility can be reviewed.\n- Use a concise decision record: state the retained path, rationale, changes, and intentional non-changes.\n- Treat 1785502894364 as traceability metadata, not as a behavioral requirement.\n\n## Risks or open questions\n- Source contract, current implementation, and acceptance criteria are not provided; endpoint and schema claims need confirmation.\n- Standalone may mean deployment isolation, user-journey isolation, or documentation scope; define it explicitly.\n- Retention can preserve deprecated behavior without an owner, sunset rule, or tests.\n\n## Recommendations / next steps\n- Set explicit in-scope/out-of-scope boundaries and compatibility checkpoints.\n- Require a contract diff, owner, validation plan, and rollback or migration note before approval.\n- Track existing-path pass rate, unintended contract breaks, review decision, and follow-up owners.\n",
+      "producer_member_route_key": "researcher",
+      "updated_at": "2026-07-31T13:02:31.882Z"
+    },
+    {
+      "brief_id": "brief-2dafe927-849d-4403-9138-049845d28066",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "c613a073-983a-4d9a-b5d4-550b5964ac54",
+      "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+      "description": "Concise writer checkpoint and final brief for API REV 013 standalone retention.",
+      "body": "# Preserve API REV 013 as a standalone retained path\n\nRecommendation: retain API REV 013 as an independently reviewable and usable business path, while treating retention as continuity for existing consumers, contracts, identifiers, and operational context. Define the stable contract explicitly and keep implementation choices separate. Record `1785502894364` as traceability metadata only—not as behavior. Approval should wait for a confirmed contract, acceptance criteria, and a precise definition of “standalone.”\n\n## Key evidence\n- The path should remain usable without reliance on unrelated workflow branches.\n- Continuity protects existing consumers and compatibility commitments unless an explicit migration decision is approved.\n- A concise decision record should distinguish retained behavior, rationale, changes, and intentional non-changes.\n- Review should cover request/response semantics, ownership, compatibility, and operational context—not just implementation structure.\n\n## Risks or cautions\n- The source contract, current implementation, endpoint/schema details, and acceptance criteria are not yet supplied.\n- “Standalone” could mean deployment isolation, user-journey isolation, or documentation scope; ambiguity risks conflicting implementations.\n- Retaining deprecated behavior without an owner, tests, sunset rule, or rollback plan can create ongoing support risk.\n\n## Next actions\n- Define in-scope/out-of-scope boundaries and acceptance tests for standalone use.\n- Produce a contract diff covering compatibility, identifiers, request/response behavior, and intentional non-changes.\n- Name an owner; add validation, monitoring, rollback or migration guidance, and a follow-up review date.\n- Track existing-path pass rate, unintended contract breaks, approval decision, and follow-up owners.\n",
+      "producer_member_route_key": "writer",
+      "updated_at": "2026-07-31T13:03:11.648Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "50e14176-fb94-408f-bdba-a0ccaa0616ab",
+      "brief_id": "brief-2dafe927-849d-4403-9138-049845d28066",
+      "binding_id": "16404c0a-6455-4661-996a-48c8662c9a96",
+      "run_id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "published_at": "2026-07-31T13:02:31.882Z",
+      "projected_at": "2026-07-31T13:02:31.890Z"
+    },
+    {
+      "revision_id": "c613a073-983a-4d9a-b5d4-550b5964ac54",
+      "brief_id": "brief-2dafe927-849d-4403-9138-049845d28066",
+      "binding_id": "16404c0a-6455-4661-996a-48c8662c9a96",
+      "run_id": "brief_studio_writer_e6099da190404152aa32ce5e01a61a79",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "path": "/private/tmp/api-rev013-standalone-data-1785502826/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "published_at": "2026-07-31T13:03:11.648Z",
+      "projected_at": "2026-07-31T13:03:11.654Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "16404c0a-6455-4661-996a-48c8662c9a96",
+      "launch_request_id": "brief-launch-request-1a69f16c-bd24-4ba2-8429-a29c4ead9fbc",
+      "status": "ATTACHED",
+      "runtime_subject": "TEAM_RUN",
+      "run_id": "brief_studio_team_201034b898bd4f26a78b3beac99b3428",
+      "definition_id": "bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "resource_owner": "bundle",
+      "resource_kind": "AGENT_TEAM",
+      "resource_local_id": "brief-studio-team",
+      "resource_definition_id": null,
+      "created_at": "2026-07-31T13:01:40.641Z",
+      "updated_at": "2026-07-31T13:01:40.641Z",
+      "terminated_at": null,
+      "last_error_message": null,
+      "summary_json": "{\"bindingId\":\"16404c0a-6455-4661-996a-48c8662c9a96\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-1a69f16c-bd24-4ba2-8429-a29c4ead9fbc\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"runtime\":{\"subject\":\"TEAM_RUN\",\"runId\":\"brief_studio_team_201034b898bd4f26a78b3beac99b3428\",\"definitionId\":\"bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberName\":\"researcher\",\"memberRouteKey\":\"researcher\",\"displayName\":\"researcher\",\"teamPath\":[],\"runId\":\"brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberName\":\"writer\",\"memberRouteKey\":\"writer\",\"displayName\":\"writer\",\"teamPath\":[],\"runId\":\"brief_studio_writer_e6099da190404152aa32ce5e01a61a79\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]},\"createdAt\":\"2026-07-31T13:01:40.641Z\",\"updatedAt\":\"2026-07-31T13:01:40.641Z\",\"terminatedAt\":null,\"lastErrorMessage\":null}"
+    }
+  ],
+  "members": [
+    {
+      "binding_id": "16404c0a-6455-4661-996a-48c8662c9a96",
+      "member_name": "researcher",
+      "member_route_key": "researcher",
+      "display_name": "researcher",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_researcher_9b6c8a866c994de2b68f1113c1d86a97",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    },
+    {
+      "binding_id": "16404c0a-6455-4661-996a-48c8662c9a96",
+      "member_name": "writer",
+      "member_route_key": "writer",
+      "display_name": "writer",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_writer_e6099da190404152aa32ce5e01a61a79",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    }
+  ]
+}

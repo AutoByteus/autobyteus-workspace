@@ -1,0 +1,20 @@
+# DR-002 post-reconciliation base refresh and integrated-state check
+timestamp_utc=2026-08-26T14:06:49Z
+recorded_bootstrap_base=codex/application-execution-scope-boundary-hardening
+tracked_remote_base=origin/personal
+latest_tracked_remote_base=b52fe5aebdb962ce361529f9e797affeb30d719a
+semantic_integration_commit=f6d3e52d0
+reviewed_source_head=2625f2b7d053e1b8e8009d21f5583b32fc55ba34
+delivery_checkpoint=4fe758a5819662a180efbd1d17f299316c890b73
+divergence_base_vs_checkpoint=0/21
+merge_base=b52fe5aebdb962ce361529f9e797affeb30d719a
+base_is_ancestor=yes
+base_advanced_since_reviewed_integration=no
+new_base_commits_integrated_by_delivery=no
+integration_method=already-current-after-reviewed-semantic-merge
+unmerged_paths=0
+non_ticket_delta_reviewed_to_checkpoint=0
+post_integration_source_rerun=not-required
+no_rerun_rationale=Latest origin/personal is already an ancestor of reviewed HEAD 2625f2b7d and the delivery checkpoint adds ticket artifacts only; CRR-006, API-REV-003, and CRR-007 remain exact for production/test source.
+delivery_owned_electron_gate=required-next
+result=Pass

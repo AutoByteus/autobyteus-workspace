@@ -1,0 +1,34 @@
+{
+  "head": "ffbdb5959a26a24a40ce3ee4dbb8614fd7132be3",
+  "title": "API REV 009 studio publication 1785402356",
+  "chrome": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "stages": [
+    {
+      "stage": "setup",
+      "exactPackageTeam": false,
+      "lunaMembers": 0,
+      "enterEnabled": false
+    },
+    {
+      "stage": "entered",
+      "iframeCount": 1,
+      "firstSrc": "http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000",
+      "frameTitle": "Brief Studio"
+    },
+    {
+      "stage": "explicit-remount",
+      "iframeCount": 1,
+      "srcChanged": true,
+      "secondSrc": "http://127.0.0.1:8000/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-2&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3000"
+    },
+    {
+      "stage": "real-run",
+      "done": true,
+      "elapsedMs": 83389,
+      "inReview": true,
+      "twoOutputs": true,
+      "oneFinal": true,
+      "bodyExcerpt": "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.\n\nWHAT YOU CAN DO HERE\n\nStay focused on the brief work itself.\nCreate the brief record that anchors the work.\nGenerate fresh drafts when the brief is ready.\nReview outputs, notes, and approval state together.\nSTEP 1\nCreate\n\nStart with the business brief record and keep the work anchored to one brief.\n\nSTEP 2\nGenerate\n\nLaunch new drafting runs over time as the brief evolves and needs another pass.\n\nSTEP 3\nReview\n\nKeep draft outputs, review notes, and approval decisions together on the same record.\n\nCreate a brief\n\nStart the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.\n\nBRIEF TITLE\nCreate brief\nGraphQL stays the primary brief API while the host supplies runtime and workspace defaults.\nBriefs\n\nTrack each brief, its latest draft state, and its review outcome.\n\nRefresh\nAPI REV 009 studio publication 1785402356\nIn_review\nBrief brief-1bc0588f-f5b4-4737-98db-2713e9525cac\nUpdated 30.7.2026, 11:07:22\nBrief detail\n\nReview generated drafts, notes, and approval state for the selected brief.\n\nAPI REV 009 studio publication 1785402356\n\nbriefId brief-1bc0588f-f5b4-4737-98db-2713e9525cac\n\nIn_review\nCreated 30.7.2026, 11:05:59\nUpdated 30.7.2026, 11:07:22\nBRIEF RECORD\nbrief-1bc0588f-f5b4-4737-98db-2713e9525cac\nStatus in_review\nDRAFT OUTPUTS\n2\n1 final\nREVIEW\n0 notes\nApproved — · Rejected —\nGenerate draft\nApprove\nReject\nDraft outputs\n\nGenerated drafts stay attached to the same brief record for review.\n\nresearcher\nResearch\n\n/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md\n\nConcise research checkpoint for API REV 009\n\n# API REV 009 studio publication 1785402356 — Research Checkpoint\n\n## Key findings\n- The brief should frame API REV 009 as a reviewable publication artifact, "
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+API-REV-003 owned cleanup verification
+UTC=2026-07-29T13:24:56Z
+LISTENERS_3000_8000:
+PORT_3000=CLEAN
+PORT_8000=CLEAN
+WORKTREE_PROCESS_SCAN:
+CLEAN
+OWNED_PATHS:
+ABSENT .autobyteus
+ABSENT applications/brief-studio/.autobyteus
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-devkit/.tmp-tests
+ABSENT autobyteus-server-ts/tests/.tmp
+ABSENT .api-e2e-round3-brief-run.mjs
+ABSENT .api-e2e-round3-studio-gate.mjs
+TRACKED_GENERATED_README_DIFF:
+CLEAN
+DIFF_CHECK:
+PASS

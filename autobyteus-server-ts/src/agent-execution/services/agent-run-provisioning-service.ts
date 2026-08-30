@@ -276,6 +276,5 @@ const createApplicationExecutionContext = (
   producer: Object.freeze({
     agentRunId,
     displayName: binding.displayName?.trim() || null,
-    runtimeKind: binding.runtimeKind,
   }),
 });

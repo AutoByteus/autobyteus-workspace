@@ -1,0 +1,18 @@
+APIE2E-BRIEF-003 / APIE2E-F005 real standalone Luna execution
+capturedAt=2026-07-29T21:01:54.062Z
+elapsedSinceCreatedSeconds=381
+applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f
+briefId=brief-c0a864c9-bc3a-4522-9798-b97bf16b82df
+bindingId=0d8ed907-78ec-49ef-b692-7bd53f429858
+runId=brief_studio_team_f902a8f9031147ec9f5fc743e26b6e8e
+status=not_started
+bindingStatus=ATTACHED
+artifactCount=0
+configuredDefaultLaunchConfig={"llmModelIdentifier": "gpt-5.6-luna", "runtimeKind": "codex_app_server"}
+configuredToolNames=["write_file", "publish_artifacts", "send_message_to"]
+observedToolCallCounts={"run_bash": 36}
+requiredToolsObserved={"publish_artifacts": 0, "send_message_to": 0, "write_file": 0}
+traceEventCount=107
+lastTraceSequence=107
+Observed: clean standalone readiness and package-owned Codex/Luna binding/run allocation succeeded; researcher could call only run_bash, repeatedly searched for missing configured tools, and produced no publication/handoff/artifact before the bounded 381-second stall snapshot.
+Expected: configured write_file, publish_artifacts, and send_message_to callable tools; researcher publication, writer handoff, writer publication, and in_review state.

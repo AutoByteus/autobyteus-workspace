@@ -167,6 +167,35 @@ describe("AgentRunHistoryCatalogService", () => {
     await expect(fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8")).resolves.toBe(before);
   });
 
+  it("commits only llmConfig through the serialized catalog", async () => {
+    const service = await buildService();
+    const metadata = buildMetadata("run-1", {
+      memoryDir: path.join(memoryDir, "agents", "run-1"),
+      llmConfig: { effort: "low" },
+    });
+    await service.recordPreparedRun({
+      runId: "run-1",
+      metadata,
+      createdAt: "2026-03-26T10:00:00.000Z",
+    });
+    const metadataPath = path.join(memoryDir, "agents", "run-1", "run_metadata.json");
+    const storedBefore = JSON.parse(await fs.readFile(metadataPath, "utf-8"));
+
+    await expect(service.commitRunModelConfig({
+      runId: "run-1",
+      llmConfig: { effort: "high" },
+    })).resolves.toMatchObject({
+      kind: "committed",
+      metadata: {
+        ...storedBefore,
+        llmConfig: { effort: "high" },
+      },
+    });
+
+    const stored = JSON.parse(await fs.readFile(metadataPath, "utf-8"));
+    expect(stored).toEqual({ ...storedBefore, llmConfig: { effort: "high" } });
+  });
+
   it("updates first summary only and does not rewrite on ordinary later activity", async () => {
     const { service, indexStore, getPersistedIndex } = await buildServiceWithIndexStore([
       buildIndexRow({ summary: "" }),

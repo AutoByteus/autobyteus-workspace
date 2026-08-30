@@ -1,0 +1,10 @@
+52c224466c5685946e80ab91bcc349eceb0ff53becf48c5ae410569066fad014  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-finalization-refresh.md
+12e7310d57847e039cc392e8335b1a73805b457793e6df9349254147b3d65c4d  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-finalization-cleanup.md
+39d491d98b0e51d231148af93a3cc348b1f872a39446296c111c10bcac196d92  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh-command.log
+1b778b38b731f44819cf2ed0ed38265e8171694d2603fed1e22797adf716a941  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/token-statistics-browser-result.json
+4d3e5edcab99f334c52c38a001b308fc7c1249e2eb20db6218202ecca37eccdb  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/analytics-desktop.png
+fdb239c49c5e4877d84bc06ad7bd0a5916b30c1ac607fd1c3d76d9d4bff7653a  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/analytics-partial-cost.png
+7ca035cecef14e42fd8dacd20cf70ab644bc6c1f9489f57da7298abd72f4fe79  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/detailed-usage-desktop.png
+37be253b7efbc2edbdf348865b5ffb33e248405e30becdf4fccbfd619cd68047  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/run-details-desktop.png
+159a782ce8fd8ddefdfaea0e62f1b2f74a935f22be9c8d21d9d1047362aa6554  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/analytics-narrow.png
+ef47167beb9c7d6132de4c22da6348799a56625bf13ac0783298283d2be4fd7c  tickets/done/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/analytics-narrow-zh-CN.png

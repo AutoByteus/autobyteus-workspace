@@ -24,11 +24,13 @@ import type {
 import { ConfiguredMcpRegistryToolAdapter } from "./configured-mcp/configured-mcp-registry-tool-adapter.js";
 import {
   AGENT_TOOL_MCP_CONFIGURED_MCP_ROUTE_KIND,
+  AGENT_TOOL_MCP_APPLICATION_TOOL_ROUTE_KIND,
   AGENT_TOOL_MCP_STATIC_ADAPTER_ROUTE_KIND,
   toConfiguredMcpToolRoute,
   toStaticAdapterToolRoute,
   type AgentToolMcpToolRouteTable,
 } from "./agent-tool-mcp-tool-route.js";
+import { createApplicationAgentToolMcpAdapter } from "./application-agent-tool-mcp-adapter.js";
 
 export type AgentToolsMcpToolDefinition = {
   name: string;
@@ -89,8 +91,9 @@ export class AgentToolMcpCatalog {
     }
   }
 
-  listSupportedToolNames(): string[] {
-    return Array.from(this.adaptersByName.keys());
+  listStaticAdapterToolNames(): string[] {
+    return [...this.adaptersByName.keys()]
+      .sort((left, right) => left.localeCompare(right));
   }
 
   resolveConfiguredSupportedToolNames(
@@ -104,14 +107,28 @@ export class AgentToolMcpCatalog {
   ): AgentToolMcpSessionToolExposure {
     const context = this.normalizeAvailabilityContext(input);
     const requestedToolNames = normalizeToolNames(context.runtimeExposure.requestedToolNames);
-    const activeStaticAdapters = this.resolveActiveStaticAdapters(requestedToolNames, context);
-    const protectedStaticAdapters = this.resolveProtectedStaticAdapters(requestedToolNames);
+    const registeredStaticAdapters = this.resolveRegisteredStaticAdapters(requestedToolNames);
+    const activeStaticAdapters = this.resolveActiveStaticAdapters(
+      registeredStaticAdapters,
+      context,
+    );
+    const configuredProtectedStaticAdapters = this.resolveConfiguredProtectedStaticAdapters(
+      registeredStaticAdapters,
+    );
     const configuredMcpResolution = this.configuredMcpSourceResolver.resolve({
       requestedToolNames,
     });
     const configuredMcpSourcesByName = new Map(
       configuredMcpResolution.sources.map((source) => [source.registeredToolName, source]),
     );
+    const applicationExecutionContext = context.executionContext.applicationExecutionContext ?? null;
+    const applicationRoutes = applicationExecutionContext && context.sender && context.applicationAgentTools
+      ? context.applicationAgentTools.resolveSelectedRoutes({
+          executionContext: applicationExecutionContext,
+          sender: context.sender,
+          requestedToolNames,
+        })
+      : new Map();
 
     const toolRoutes: AgentToolMcpToolRouteTable = {};
     const configuredMcpToolSources: ConfiguredMcpAgentToolSource[] = [];
@@ -121,11 +138,24 @@ export class AgentToolMcpCatalog {
 
     for (const toolName of requestedToolNames) {
       const mcpSource = configuredMcpSourcesByName.get(toolName) ?? null;
+      const registeredStaticAdapter = registeredStaticAdapters.get(toolName) ?? null;
       const activeStaticAdapter = activeStaticAdapters.get(toolName) ?? null;
-      const protectedStaticAdapter = protectedStaticAdapters.get(toolName) ?? null;
+      const configuredProtectedStaticAdapter =
+        configuredProtectedStaticAdapters.get(toolName) ?? null;
+      const applicationRoute = applicationRoutes.get(toolName) ?? null;
+
+      if (applicationRoute) {
+        if (registeredStaticAdapter) {
+          throw new Error(
+            `Application tool '${toolName}' collides with a registered Agent Tools MCP static adapter.`,
+          );
+        }
+        toolRoutes[toolName] = applicationRoute;
+        continue;
+      }
 
       if (mcpSource) {
-        if (protectedStaticAdapter) {
+        if (configuredProtectedStaticAdapter) {
           if (activeStaticAdapter) {
             toolRoutes[toolName] = toStaticAdapterToolRoute(toolName);
           }
@@ -167,6 +197,13 @@ export class AgentToolMcpCatalog {
         if (route.kind === AGENT_TOOL_MCP_STATIC_ADAPTER_ROUTE_KIND) {
           return this.buildStaticMcpToolDefinition(route.toolName);
         }
+        if (route.kind === AGENT_TOOL_MCP_APPLICATION_TOOL_ROUTE_KIND) {
+          return {
+            name: route.declarationSnapshot.declaration.name,
+            description: route.declarationSnapshot.declaration.description,
+            inputSchema: structuredClone(route.declarationSnapshot.declaration.inputSchema),
+          };
+        }
         return this.buildConfiguredMcpToolDefinition(route);
       })
       .filter((definition): definition is AgentToolsMcpToolDefinition => Boolean(definition));
@@ -191,6 +228,13 @@ export class AgentToolMcpCatalog {
       if (!adapter) {
         return { ok: false, reason: "unknown_tool" };
       }
+      return { ok: true, definition: adapter.definition, adapter };
+    }
+
+    if (route.kind === AGENT_TOOL_MCP_APPLICATION_TOOL_ROUTE_KIND) {
+      const capability = session.executionCapabilities.applicationAgentTools;
+      if (!capability) return { ok: false, reason: "unknown_tool" };
+      const adapter = createApplicationAgentToolMcpAdapter({ capability, route });
       return { ok: true, definition: adapter.definition, adapter };
     }
 
@@ -222,32 +266,40 @@ export class AgentToolMcpCatalog {
       runtimeExposure: input,
       sender: null,
       executionContext: {},
+      applicationAgentTools: null,
     };
   }
 
   private resolveActiveStaticAdapters(
-    requestedToolNames: string[],
+    registeredStaticAdapters: ReadonlyMap<string, AgentToolMcpToolAdapter>,
     context: AgentToolMcpAvailabilityContext,
   ): Map<string, AgentToolMcpToolAdapter> {
     const activeAdapters = new Map<string, AgentToolMcpToolAdapter>();
-    for (const toolName of requestedToolNames) {
-      const adapter = this.adaptersByName.get(toolName);
-      if (adapter?.isAvailable(context)) {
+    for (const [toolName, adapter] of registeredStaticAdapters) {
+      if (adapter.isAvailable(context)) {
         activeAdapters.set(toolName, adapter);
       }
     }
     return activeAdapters;
   }
 
-  private resolveProtectedStaticAdapters(
+  private resolveRegisteredStaticAdapters(
     requestedToolNames: string[],
   ): Map<string, AgentToolMcpToolAdapter> {
-    const protectedAdapters = new Map<string, AgentToolMcpToolAdapter>();
+    const registeredAdapters = new Map<string, AgentToolMcpToolAdapter>();
     for (const toolName of requestedToolNames) {
       const adapter = this.adaptersByName.get(toolName);
-      if (adapter && this.isStaticAdapterProtected(adapter)) {
-        protectedAdapters.set(toolName, adapter);
-      }
+      if (adapter) registeredAdapters.set(toolName, adapter);
+    }
+    return registeredAdapters;
+  }
+
+  private resolveConfiguredProtectedStaticAdapters(
+    registeredStaticAdapters: ReadonlyMap<string, AgentToolMcpToolAdapter>,
+  ): Map<string, AgentToolMcpToolAdapter> {
+    const protectedAdapters = new Map<string, AgentToolMcpToolAdapter>();
+    for (const [toolName, adapter] of registeredStaticAdapters) {
+      if (this.isStaticAdapterProtected(adapter)) protectedAdapters.set(toolName, adapter);
     }
     return protectedAdapters;
   }

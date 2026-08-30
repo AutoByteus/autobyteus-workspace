@@ -1,12 +1,18 @@
 # Token Statistics Task-Cost UI Prototype Spec
 
-## Purpose
+## Purpose And Current Scope
 
-Redesign Settings > Token Statistics so the primary view answers:
+This retained specification now governs the **Run details** sibling inside
+Settings > Token Statistics. Analytics is the page default and is documented in
+`autobyteus-web/docs/settings.md`; the task table is primary only within Run
+details and answers:
 
 > "How much did this standalone agent run or agent team run cost?"
 
 The model table remains available as a secondary diagnostic view for runtime/model spending.
+Any instruction below that forbids a "separate lower tab row" refers to a
+duplicate Task/Model tab row inside Run details, not to the required outer
+Analytics/Run details semantic tablist.
 
 ## Platform / Fidelity
 

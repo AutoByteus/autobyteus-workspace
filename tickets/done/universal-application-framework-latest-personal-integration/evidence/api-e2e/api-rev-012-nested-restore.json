@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-08-25T19:01:31.544557+00:00",
+  "response": {
+    "data": {
+      "restoreAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "nested_classroom_test_team_4028c98d091643b792ce174c0c4d8fd7"
+      }
+    }
+  }
+}

@@ -3,11 +3,13 @@ import type {
   ApplicationAgentExecution,
   ApplicationAgentBinding,
   ApplicationAgentTeamBinding,
-  ApplicationConfiguredExecutionResource,
+  ApplicationEffectiveLaunchConfiguration,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactSummary,
   ApplicationStorageContext,
   ApplicationExecutionResourceSummary,
+  ApplicationAgentToolCaller,
+  ApplicationAgentToolContext,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationAgentEventStreamSubscribeError } from "@autobyteus/application-sdk-contracts";
 import type {
@@ -37,9 +39,9 @@ export class ApplicationHandlerContextFactory {
         listAvailable: async (filter) => this.input.invokeContextCapability({
           capability: "agentResources", operation: "listAvailable", input: filter ?? null,
         }) as Promise<ApplicationExecutionResourceSummary[]>,
-        getConfigured: async (slotKey) => this.input.invokeContextCapability({
-          capability: "agentResources", operation: "getConfigured", input: { slotKey },
-        }) as Promise<ApplicationConfiguredExecutionResource | null>,
+        requireRunnable: async (slotKey) => this.input.invokeContextCapability({
+          capability: "agentResources", operation: "requireRunnable", input: { slotKey },
+        }) as Promise<ApplicationEffectiveLaunchConfiguration>,
       },
       publishedArtifacts: {
         list: async (runId) => this.input.invokeContextCapability({
@@ -58,6 +60,13 @@ export class ApplicationHandlerContextFactory {
 
   createLifecycle(): Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null } {
     return this.create(null) as Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null };
+  }
+
+  createAgentTool(caller: ApplicationAgentToolCaller): ApplicationAgentToolContext {
+    return Object.freeze({
+      ...this.create(null),
+      caller: Object.freeze({ ...caller }),
+    });
   }
 
   private createAgentExecution(): ApplicationAgentExecution {

@@ -84,11 +84,17 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `sendMessageToFocusedMember()`: uses the focused exact
     `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
     `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
-    necessary, requires an exact Agent execution, begins one local submission,
+    necessary and resolves the focused AgentRun through the canonical execution
+    view to an exact attachment location (`containingTeamRunId` plus rooted
+    `memberAddress`) before local admission. Draft attachment ownership remains
+    launch/root scoped, while the `team_member_final` owner uses that containing
+    TeamRun; a configured or task-Team Agent nested below the root must not
+    substitute the root TeamRun id. It then begins one local submission,
     finalizes attachments, and emits `SEND_MESSAGE` with `execution_address`,
-    required `message_id`, and required `dedupe_key`. Invalid, stale, non-Agent,
-    or cross-root identity fails closed; there is no structural-template,
-    route-key, display-name, or generated-id fallback.
+    required `message_id`, and required `dedupe_key`. Missing execution location
+    and invalid, stale, non-Agent, or cross-root identity fail closed; there is
+    no root-id, structural-template, route-key, display-name, or generated-id
+    fallback.
   - `interruptFocusedMemberGeneration()`: emits `INTERRUPT_GENERATION` with a
     fresh command id and the exact execution address. `TeamStreamingService`
     completes the pending command only when `AGENT_COMMAND_ACK` matches both.
@@ -218,6 +224,25 @@ last active child becomes inactive, and is not a persisted/transported
 definition field. Representative ordering, leaf-agent status, socket
 subscription, and Stop/pending state must not influence either the exact-run
 cue or the group projection.
+
+Stable configured nested-Team rows inside one concrete TeamRun may also render a
+presentation-only five-state summary in the Workspaces history tree. The
+summary folds the exact Agent statuses already present in that Team's flattened
+`executionRows` descendant scope with the precedence `running > initializing >
+error > idle > offline`. Configured descendants, task Agents, and task-Team
+children inside the nested Team contribute; the parent container itself,
+ancestors, adjacent siblings, and rows after the nested subtree do not. Unknown,
+missing, or empty status input normalizes to `offline`. The dot remains visible
+when the nested Team is collapsed and reacts to the existing execution-row
+projection, so it performs no request or polling of its own.
+
+This nested-row summary does not change status authority. It is neither a Team
+status model nor a replacement for exact leaf `AGENT_STATUS` or binary root
+`TEAM_RUN_LIFECYCLE`. It is not persisted or transported and must not influence
+TeamRun liveness, focus, readiness, command admission, interrupt/Stop, archive,
+delete, or lifecycle decisions. Root TeamRun rows and definition groups retain
+the binary activity cues described above; transient task-Team rows do not gain
+the aggregate dot.
 
 Delegated task executions are task-scoped execution projections rather than
 structural topology. Every Team Agent event carries one `agent_execution`
@@ -694,7 +719,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. A missing exact Team location fails before local admission or finalization. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
@@ -751,52 +776,54 @@ explicit preload when the pending path and the rest of the launch config are
 valid. The bound server remains authoritative for interpreting and
 canonicalizing the supplied absolute path.
 
-### Existing Run Configuration Inspection
+### Existing Run Model Configuration
 
-`components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
-editable new-run launch configuration and inspect-only configuration for an
-already selected run. When `selectionStore.selectedRunId` is present, the panel
-passes read-only mode to the Agent form or projects the Team V2
-`STORED_SNAPSHOT` through `projectStoredTeamRunFormModel(...)` instead of
-treating the selected run's config as a launch buffer. Editable Team drafts use
-`projectEditableTeamRunFormModel(...)`. Both enter the same
-`TeamRunConfigForm.vue` visual composition through a discriminated
-`TeamRunFormModel`, while editable and stored capabilities remain distinct at
-the root, recursive Team, and Agent boundaries.
+`RunConfigPanel.vue` routes a selected persisted Agent or Team to
+`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer. The
+editor and `existingRunModelConfigStore` own a Settings-scoped canonical network
+load, local draft, schema readiness, mutation state, and reconciliation. Cached
+history lifecycle state may conservatively relock the current target but cannot
+unlock it or supersede the Settings-owned read.
 
-Selected existing single-agent and team run configuration is intentionally
-inspect-only:
+Existing-run editing is intentionally narrow. Runtime kind, model identifier,
+workspace, automatic-tool policy, definition/provider identity, concrete run
+IDs, Team topology, and addresses are fixed presentation. Only schema-backed
+`llmConfig` controls are writable when the canonical editability contract says
+the persisted run is available, unarchived, and inactive. Locked forms keep
+their disclosures operable, but expose no launch action, workspace authoring,
+runtime/model selection, or stopped-run Reset.
 
-- runtime, model, workspace, auto-approve, and team-member override controls
-  render disabled;
-- the member, nested-Team, and model-detail disclosures remain operable so the
-  stored hierarchy can be inspected through the same layout used before launch;
-- stored nodes carry only neutral display facts and stored workspace display;
-  they do not import or fabricate `TeamLaunchDraft`, editable overrides,
-  inherited editing baselines, workspace authoring state, runtime-catalog
-  operation state, or mutation commands;
-- form update handlers and shared runtime/model normalization emissions no-op in
-  read-only mode so historical context is not locally mutated;
-- **Reset** and the launch/run button are absent while an existing run is
-  selected;
-- localized read-only notices explain that the selected run can be inspected but
-  not edited; and
-- stored topology/order and exact root, nested-Team, and Agent effective values
-  come from V2 and do not depend on the current Team definition.
+The server composes General Process liveness with the separate Application
+ownership lease. `ATTACHED`, `TERMINATING`, and `FAILED` Application bindings
+lock the exact Agent/Team identity; `TERMINATED` and `ORPHANED` release it.
+Startup recovery, lookup/provenance disagreement, or unreadable binding evidence
+fails closed. The user journey is sequential: complete Stop/terminalization,
+enter Settings for a fresh read, edit, Save, then let a later message restore the
+same identity with the saved model settings.
 
-The frontend consumes historical model configuration exactly as provided by the
-backend. `projectHistoricalModelConfigFields(...)` is the single pure classifier
-for stored model fields. In current-schema order it sends exactly representable
-explicit values to disabled normal controls and sends stale/unrepresentable
-explicit values to a compact historical residual. Persisted keys absent from
-the current schema are appended in stable key order. Whole-schema absence uses
-the same algorithm; no explicit key is normalized through an editable default,
-duplicated, or mutated. The accepted exactness boundary is producer-backed
-history from a named supported current/released catalog and normal launch path;
-the classifier remains generic rather than embedding provider or provenance
-branches. If model configuration is genuinely absent, the UI may show a
-localized `Not recorded for this historical run` state, but it must not infer a
-current default, recover a runtime value, or materialize metadata.
+For Team runs, `existingTeamModelConfigDraft.ts` projects the exact V2 configured
+topology. A parent scope edit propagates only through descendants that shared its
+starting value; divergent descendants and directly edited scopes remain stable.
+The resulting mutation contains exact configured-Team/configured-Agent patches
+only. Task nodes and fixed launch identity are not patch targets, and no Reset is
+offered because historical snapshots do not preserve definition-override
+provenance.
+
+`projectHistoricalModelConfigFields(...)` still owns residual safety. Explicit
+values that current controls can represent remain normal fields; stale, removed,
+or unrepresentable values remain visible once as historical residuals. Catalog
+or schema unavailability keeps Save locked, and the server validates every
+submitted scope against its own fixed runtime/model before persistence.
+
+Save requires a stopped, editable, schema-ready, changed draft. The
+revision-free Agent/Team mutations return canonical state, editability, outcome,
+and field errors. A supported restore that wins the General lifecycle lane
+relocks the client with `RUN_ACTIVE`; a persistence-indeterminate response forces
+canonical verification before another Save. Navigation discards unsaved values.
+There is no configuration revision, retained-draft rebase, or browser
+multi-writer merge policy. A successful update changes only persisted
+`llmConfig` and is applied by AutoByteus, Codex, or Claude when the same run is
+next restored; it never hot-mutates the active backend.
 
 The model-config surface is schema-driven, not thinking-only. It renders
 explicit `llmConfig` values first and valid schema defaults second; showing a
@@ -909,10 +936,12 @@ the UI must not imply improver completion proves downstream improvement.
 
 When the user clicks the workspace header add/new-run action while an existing
 single-agent or team run is selected, the frontend treats that selected run as a
-launch template for the new editable draft. The selected run itself remains
-inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
-the selected run config, including runtime kind, model identifier, workspace,
-auto-approve settings, `llmConfig`, and team member overrides.
+launch template for the new editable draft. The selected run itself remains a
+persisted existing-run context whose eligible model settings can be edited only
+through Settings; the add/new-run action instead seeds a separate editable
+launch buffer from a deep-cloned copy of the selected run config, including
+runtime kind, model identifier, workspace, auto-approve settings, `llmConfig`,
+and team member overrides.
 
 That source-copy path must preserve backend-provided model-thinking fields such
 as `reasoning_effort: "xhigh"` even when the runtime model catalog is still
@@ -1210,19 +1239,21 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 5.  **Settings Token Statistics (`tokenUsageAnalytics` and `tokenUsageRunStatistics`)**:
     - Owns Settings > Token Statistics separately from the live/focused Token Meter. The page exposes sibling `Analytics` and `Run details` views and defaults to Analytics.
     - The view switcher is a semantic tablist. The selected Analytics or Run-details tab keeps a transparent background with blue text and a visible 2px blue bottom border; inactive tabs remain transparent, keyboard focus stays visible, and the former dark filled selected state is not part of this surface.
-    - `tokenUsageAnalytics` owns one coherent latest-request state. It defaults to the current UTC month through today; supports This month, Last month, Last 3 months, Last 12 months, and Custom; and sends inclusive date inputs as an exact half-open UTC range. Runtime, Provider, and Model filters use backend-provided opaque keys and update every analytical surface consistently.
-    - The server result, not the frontend, owns applied/comparison ranges, day/week/month granularity, tracking coverage, filter options, active-day count, accounting reconciliation, and cost quality. Stale responses cannot partially replace the current cards/charts/tables.
-    - Analytics renders total tokens, captured estimated API cost, average tokens per active day, prior-comparable change, a chronological usage trend, aligned cumulative consumption pace, and a ranked driver breakdown. Tokens and Estimated cost are selectable metrics; Runtime + model is the default breakdown with Runtime, Provider, and Model alternatives.
-    - Trend, pace, and breakdown charts have exact accessible tables. Token totals use normalized accounting input/output/total values; cache input remains a subset of input and reasoning remains a subset of output. Cost views preserve complete, partial, missing/local, and mixed-currency states and omit unsafe monetary plots with visible explanation instead of treating unknown amounts as zero.
-    - Coverage states distinguish full tracking, partial tracking, ranges before tracking, and covered ranges with no admitted usage. Pre-feature lifetime totals are never allocated across days or presented as historical analytics. The UI describes observed application usage only; it does not claim provider quota, entitlement, invoice, or misconduct evidence.
-    - CSV export is deterministic and local-only. It exports the applied UTC boundaries, selected filters/grouping, exact runtime/provider/model identity snapshots, token components, captured estimated cost/currency/status, missing-price and coverage metadata, and initiates no upload.
-    - `Run details` preserves the prior current-run-record investigation path under the renamed `tokenUsageRunStatistics` store/query/type boundary. Its date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and selected rows retain lifetime cumulative totals.
-    - Run-details Task rows are standalone agent runs or root Team runs with backend-provided concrete member `children`; exact `rootTeamRunId`/`runId` identity prevents double-counting. Model remains the secondary runtime/model diagnostic. Sorting, expansion, created-time fallback, cost disclosure, mixed identity summaries, and history-migration guidance remain intact.
+    - `tokenUsageAnalytics` owns one coherent latest-request state. It defaults to the current UTC month through today; supports This month, Last month, Last 3 months, Last 12 months, and Custom; and sends inclusive date inputs as an exact half-open UTC range. Runtime, Provider, and Model filters use backend-provided opaque keys. Filter edits remain draft-only until Apply; changing the Tokens/Cost presentation or Detailed-usage grouping does not refetch.
+    - The server result, not the frontend, owns applied/comparison ranges, day/week/month granularity, tracking coverage, filter options, active-day count, accounting reconciliation, and cost quality. Comparison fields remain in the server contract but are intentionally not presented. Stale responses cannot partially replace the current cards, daily line, or evidence table.
+    - Analytics starts with six equal summary peers in this order: Total tokens, Uncached input (`standardInputTokens`), Cached input, Output, Estimated API cost, and Cache hit rate. The responsive grid reflows from six to three or two columns without making Total visually dominant. Input/Output ratio, prior-period comparison, ranked contributor/driver content, and cumulative pace are not part of the current presentation.
+    - Tokens and Cost switch one chronological open-top daily line. The line uses visible point markers, explicit left/bottom axes, restrained UTC date guides, one midpoint guide, locale-aware labels, and an exact on-page daily-bucket disclosure. Unsafe monetary buckets stay null and split the path; they are never plotted as zero. Partial known cost remains numeric while unpriced buckets retain `MISSING`/`price_missing` evidence.
+    - `Detailed usage` remains visibly present below the line. It defaults to Runtime + model and supports Runtime, Provider, and Model grouping. Rows show authoritative tokens, estimated-cost state/currency, share when safe, and expandable uncached/cache-read/cache-write/gross-input/output/reasoning evidence; the table owns its horizontal scrolling on narrow layouts.
+    - Coverage states distinguish full tracking, partial tracking, ranges before tracking, and covered ranges with no admitted usage. Cache states distinguish positive, reported zero, not reported, unsupported/local, and unknown. Pre-feature lifetime totals are never allocated across days or presented as historical analytics, and application-observed estimates never claim provider quota, entitlement, invoice, or misconduct evidence.
+    - There is no CSV/export action or replacement download/share workflow. The removed CSV helper, Blob/object-URL/download path, pace chart, and separate exact-breakdown component must not be reintroduced implicitly; exact evidence stays on page in the daily disclosure and Detailed usage.
+    - Visible numbers, currency, percentages, and UTC dates use the active locale while exact token/accounting evidence remains available. English and Simplified Chinese layouts must avoid document-level overflow; keyboard focus and disclosure restoration remain visible.
+    - `Run details` preserves the current-run-record investigation path under `tokenUsageRunStatistics`. Its date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and selected rows retain lifetime cumulative totals.
+    - Run-details Task rows are standalone agent runs or root Team runs with backend-provided concrete member `children`; exact `rootTeamRunId`/`runId` identity prevents double-counting. Model remains the secondary runtime/model diagnostic. Sorting, expansion, created-time fallback, cost disclosure, mixed identity summaries, retained loading/error/empty states, and history-migration guidance remain intact.
     - Run-details labels use token-usage-owned display fields. Model rows show server-owned `modelDisplayName` beside raw `llmModel`; Task rows keep positional `modelDisplayNames` beside raw models. Custom-provider labels prefer persisted provider-name snapshots, with current metadata only as the established no-snapshot fallback.
     - The Task table retains its nine-column scan view (`Task / Run`, `Runtime`, `Model(s)`, `Input`, `Output`, `Input Cost`, `Output Cost`, `Total Cost`, `Created Time`), accessible sortable headers, and the value-plus-disclosure control for detailed cost status. Complete estimates stay quiet in main rows while non-complete states remain visible.
-    - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology.
+    - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology, and changing Task/Model presentation does not refetch.
     - Frontend code must not reconstruct Team topology, parse opaque identity keys, infer pricing/coverage/comparison facts, reprice captured costs, or round unsafe primary token totals. Generated GraphQL types must stay synchronized with the matching server schema.
-    - Durable coverage includes real-SQLite rollback/suppression/contention, populated GraphQL and preserved Run-details queries, analytics store/state/chart/accessibility tests, exact CSV escaping/download, production builds/guards, and a live Chrome default/custom/coverage/download/navigation journey at desktop and mobile widths. Browser proof does not imply packaged Electron execution.
+    - Durable coverage includes real-SQLite policy/GraphQL reconciliation, preserved Run-details queries, focused component/store/state/accessibility/localization checks, a strict negative export/file boundary, and a self-starting built-server/Nuxt/Chromium journey covering default/custom/filter/retry/partial-pricing/Detailed-usage/Run-details behavior at desktop and 390px widths. Browser proof does not imply packaged Electron execution.
 6.  **Backend-owned TODO progress (`AgentTodoStore`)**:
     - Maintains backend-provided plan/progress TODO updates separately from the chat history; native `autobyteus-ts` no longer emits this event.
 

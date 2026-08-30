@@ -1,0 +1,87 @@
+Delivery revision: DR-002
+Date: 2026-08-25 UTC
+Repository: /home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis
+HEAD=15690131bad92553d95057ca9d8a06153fdd2826
+origin/personal=306de420ca8830478529b40bd6dfda6694b742a9
+merge_base=306de420ca8830478529b40bd6dfda6694b742a9
+divergence_ahead_behind=14/0
+PASS origin/personal is an ancestor of HEAD
+
+CHECK git diff --check
+PASS git diff --check
+
+CHECK obsolete durable-doc contract scan
+PASS no obsolete durable-doc contract found
+
+CHECK current owner/source symbols
+PASS class StudioRunModelConfigService in autobyteus-server-ts/src/run-history/services/studio-run-model-config-service.ts
+PASS class ApplicationRunOwnershipService in autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts
+PASS class StandaloneAgentRunLifecycleService in autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+PASS updateStoppedModelConfigs in autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+PASS class ModelConfigValidationService in autobyteus-server-ts/src/llm-management/services/model-config-validation-service.ts
+PASS export const projectExistingTeamRunFormModel in autobyteus-web/services/runConfigEditing/existingTeamRunFormModel.ts
+PASS export const useExistingRunModelConfigStore in autobyteus-web/stores/existingRunModelConfigStore.ts
+
+CHECK relative Markdown links, fence balance, and trailing whitespace
+PASS 14 changed/canonical Markdown artifacts
+
+CHECK canonical artifact package
+PASS requirements.md
+PASS investigation-notes.md
+PASS design-spec.md
+PASS ui-ux-spec.md
+PASS solution-revision-record.md
+PASS design-review-report.md
+PASS architecture-review-revision-record.md
+PASS implementation-handoff.md
+PASS implementation-revision-record.md
+PASS code-review-report.md
+PASS code-review-revision-record.md
+PASS api-e2e-coverage-investigation.md
+PASS api-e2e-execution-coverage-report.md
+PASS api-e2e-revision-record.md
+PASS api-e2e-test-review-report.md
+PASS docs-sync-report.md
+PASS handoff-summary.md
+PASS release-deployment-report.md
+PASS release-notes.md
+PASS delivery-revision-record.md
+PASS application-owned-studio-run-model-config.integration.test.ts
+PASS browser-sr005 evidence JSON
+
+CHECK release-note format
+1:## What's New
+4:## Improvements
+9:## Fixes
+PASS release-note format
+
+CURRENT WORKTREE STATUS
+## codex/live-agent-definition-refresh-analysis...origin/personal [ahead 14]
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/application_orchestration.md
+ M autobyteus-server-ts/docs/modules/llm_management.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/delivery-revision-record.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/docs-sync-report.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/latest-base-integration-conflict-report.md
+ M tickets/in-progress/live-agent-definition-refresh-analysis/release-deployment-report.md
+?? tickets/in-progress/live-agent-definition-refresh-analysis/evidence/delivery/dr-002-base-refresh-and-docs-sync.log
+?? tickets/in-progress/live-agent-definition-refresh-analysis/handoff-summary.md
+?? tickets/in-progress/live-agent-definition-refresh-analysis/release-notes.md
+
+RESULT: PASS — base current, durable docs synchronized, handoff artifacts complete.
+
+FINAL PRE-HANDOFF REMOTE REFRESH
+Command: git fetch origin personal --prune
+before=306de420ca8830478529b40bd6dfda6694b742a9
+after=306de420ca8830478529b40bd6dfda6694b742a9
+divergence_ahead_behind=14/0
+PASS origin/personal remains an ancestor of HEAD; handoff base is current.
+
+FINAL CHRONOLOGY CHECK
+PASS DR-001 historical blocker text now explicitly distinguishes the superseding DR-002 canonical artifacts.
+PASS git diff --check after final artifact edits.

@@ -1,0 +1,15 @@
+Brief context: {"briefId":"brief-6e01ee36-3707-416c-9270-9a8e9f8e8838","title":"API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC","observedStatus":"not_started"}
+
+# API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC
+
+## Key findings
+- A reviewable production proof should connect the API revision to a reproducible request, response, environment, timestamp, and outcome rather than relying on an assertion that the deployment succeeded.
+- The strongest evidence package combines automated checks for contract shape, authentication behavior, error handling, latency, and backward compatibility with a small set of human-readable examples.
+- Clean evidence separates facts observed in production from expectations, test fixtures, and unresolved assumptions, making it easier for reviewers to distinguish shipped behavior from planned follow-up.
+- A concise change record should identify the endpoint or schema surface affected, the compatibility impact, the rollback path, and the owner responsible for monitoring after release.
+
+## Risks or open questions
+The available brief context establishes the review title and a not-started status but does not provide endpoint-specific telemetry, schema diffs, incident history, or an explicit acceptance checklist. Reviewers should therefore verify that captured examples are from the intended production binding and that sensitive headers, tokens, and customer data are redacted. A passing smoke test may not expose rate-limit, timeout, regional, or dependency failures. It also remains open whether the revision changes undocumented behavior consumed by existing clients, and whether dashboards and alerts cover the new or modified paths.
+
+## Recommendations or next steps
+Create a compact evidence matrix with one row per acceptance criterion and columns for source, timestamp, expected result, observed result, and reviewer disposition. Attach sanitized request/response examples and link each automated result to a durable run or commit identifier. Before sign-off, execute representative success and failure cases, validate authentication and authorization boundaries, compare latency and error rates with the prior revision, and rehearse rollback ownership. Record any gaps explicitly as follow-up items with owners and due dates; do not treat missing telemetry as proof of absence.

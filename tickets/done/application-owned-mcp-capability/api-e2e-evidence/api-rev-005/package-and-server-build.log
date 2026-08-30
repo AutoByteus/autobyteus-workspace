@@ -1,0 +1,69 @@
+Scope: 2 of 12 workspace projects
+autobyteus-application-frontend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-frontend-sdk build: Done
+autobyteus-application-devkit build$ tsc -p tsconfig.build.json
+autobyteus-application-devkit build: Done
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/brief-studio-authoring@ build /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio
+> autobyteus-app pack
+
+AgentFactory (Singleton) initialized.
+(node:8352) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T11:35:44.801Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T11:35:44.802Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-28T11:35:44.804Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/dist/importable-package
+Generated application root at /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/dist/importable-package/applications/brief-studio
+
+> @autobyteus-example/brief-studio-authoring@ validate /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+AgentFactory (Singleton) initialized.
+(node:8401) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T11:35:49.218Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T11:35:49.218Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-28T11:35:49.220Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Package is valid: /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/applications/brief-studio/dist/importable-package
+
+> autobyteus-server-ts@0.1.1 prebuild /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 239ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

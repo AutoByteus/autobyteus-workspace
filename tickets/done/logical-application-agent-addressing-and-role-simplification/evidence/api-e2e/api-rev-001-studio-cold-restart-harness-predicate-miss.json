@@ -1,0 +1,17 @@
+{
+  "scenario": "APIE2E-STUDIO-COLD-RESTART-001",
+  "failureId": "APIE2E-F001",
+  "startedAt": "2026-08-26T16:24:23.799Z",
+  "responses": [],
+  "assertions": {
+    "sameDataRecovered": true
+  },
+  "beforeCount": 6,
+  "result": "Fail",
+  "error": {
+    "message": "page.waitForResponse: Timeout 120000ms exceeded while waiting for event \"response\"",
+    "stack": "page.waitForResponse: Timeout 120000ms exceeded while waiting for event \"response\"\n    at /private/tmp/api-rev-001-logical-addressing/studio-cold-restart-probe.mjs:1:1671\n    at async file:///private/tmp/api-rev-001-logical-addressing/studio-cold-restart-probe.mjs:1:1882"
+  },
+  "failureBody": "",
+  "completedAt": "2026-08-26T16:28:26.195Z"
+}

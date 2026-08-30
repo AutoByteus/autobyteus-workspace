@@ -1,0 +1,51 @@
+{
+  "scenario": "APIE2E-PUBLICATION-001",
+  "rootTeamRunId": "brief_studio_team_8496a29ea9fe42dbb368ec2cdf273b79",
+  "successfulToolResults": [
+    {
+      "agentRunId": "brief_studio_writer_a609602cf99b42c5bdcc3675a595a58f",
+      "tool": "publish_artifacts",
+      "success": true,
+      "revisions": [
+        {
+          "revisionId": "5d485ef3-bbbd-4763-8b7e-2f8c0a68a079",
+          "file": "final-brief.md",
+          "status": "available"
+        }
+      ]
+    },
+    {
+      "agentRunId": "brief_studio_researcher_0def58fb2931484494852171e7d7ddb7",
+      "tool": "publish_artifacts",
+      "success": true,
+      "revisions": [
+        {
+          "revisionId": "861e3b94-f6bf-4425-b7f6-540a5e9e3100",
+          "file": "research.md",
+          "status": "available"
+        }
+      ]
+    },
+    {
+      "agentRunId": "brief_studio_researcher_0def58fb2931484494852171e7d7ddb7",
+      "tool": "send_message_to",
+      "success": true,
+      "code": "DELIVERED",
+      "accepted": true
+    }
+  ],
+  "namedHandoff": [
+    {
+      "sender": "brief_studio_researcher_0def58fb2931484494852171e7d7ddb7",
+      "receiver": "brief_studio_writer_a609602cf99b42c5bdcc3675a595a58f",
+      "messageType": "handoff",
+      "referenceFileNames": [
+        "research.md"
+      ]
+    }
+  ],
+  "projectedFiles": [
+    "final-brief.md",
+    "research.md"
+  ]
+}

@@ -6,7 +6,6 @@ import type {
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
-import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-run-fixtures.js";
 
 const applicationId = "app-1";
 const runId = "run-1";
@@ -65,7 +64,6 @@ const buildTeamBinding = (): ApplicationAgentBindingRecord => ({
         memberAddress: "/Researcher",
         displayName: "Researcher",
         agentRunId: "researcher-member-run-1",
-        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     ],
   },
@@ -130,15 +128,13 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       }),
     };
 
-    const dispatchService = {
-      schedule: vi.fn(),
+    const dispatchQueue = {
+      enqueue: vi.fn(),
     };
 
     const ingressService = new ApplicationExecutionEventIngressService({
-      bindingStore: bindingStore as never,
-      lookupStore: lookupStore as never,
       journalStore: journalStore as never,
-      dispatchService: dispatchService as never,
+      dispatchQueue: dispatchQueue as never,
     });
 
     const lifecycleGateway = {
@@ -158,6 +154,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
       ingressService,
+      terminalTransitionService: {
+        transition: vi.fn(async () => null),
+      } as never,
     });
 
     const fakeRun = {
@@ -165,7 +164,10 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     };
 
     const agentRunService = {
-      resolveAgentRun: vi.fn(async () => fakeRun),
+      postAgentInput: vi.fn(async (_runId, message) => {
+        await fakeRun.postUserMessage(message);
+        return { kind: "ACCEPTED" };
+      }),
     };
 
     const binding = buildBinding();
@@ -188,7 +190,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
       runObserverService,
-      agentRunService: agentRunService as never,
+      agentExecution: agentRunService as never,
     });
 
     const startAgentPromise = hostService.startAgent(applicationId, {
@@ -258,25 +260,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     const bindingStore = {
       listBindings: vi.fn(async () => [cloneBinding(binding)]),
     };
-    const teamRunMetadataService = {
-      readMetadata: vi.fn(async () => ({
-        schemaVersion: 3 as const,
-        teamDefinitionName: "Brief Team",
-        createdAt: "2026-04-19T09:10:00.000Z",
-        archivedAt: null,
-        rootTeam: testAgentTeamNode({
-          address: "/",
-          teamRunId: "team-run-1",
-          teamDefinitionId: "team-def-1",
-          coordinatorAddress: "/Researcher",
-          children: [testAgentNode("/Researcher", {
-            agentRunId: "researcher-member-run-1",
-            agentDefinitionId: "agent-def-1",
-            llmModelIdentifier: "gpt-test",
-            workspaceRootPath: "/tmp/workspace",
-          })],
-        }),
-        handoffs: [],
+    const memoryLocationService = {
+      resolveTeamMemberLocation: vi.fn(async () => ({
+        memoryDir: "/tmp/memory/agent_teams/team-run-1/researcher-member-run-1",
       })),
     };
     const publishedArtifactProjectionService = {
@@ -306,8 +292,8 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         requireApplicationActive: vi.fn(async () => undefined),
       } as never,
       bindingStore: bindingStore as never,
-      teamRunMetadataService: teamRunMetadataService as never,
-      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+      artifacts: publishedArtifactProjectionService as never,
+      memory: memoryLocationService as never,
     });
 
     await expect(
@@ -348,7 +334,6 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
           memberAddress: "/ReviewSquad/Reviewer",
           displayName: "Reviewer",
           agentRunId: "reviewer-member-run-1",
-          runtimeKind: "AGENT_TEAM_MEMBER",
         }],
       },
     };
@@ -368,37 +353,12 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: {
         listBindings: vi.fn(async () => [cloneBinding(binding)]),
       } as never,
-      teamRunMetadataService: {
-        readMetadata: vi.fn(async () => ({
-          schemaVersion: 3 as const,
-          teamDefinitionName: "Brief Team",
-          createdAt: "2026-04-19T09:10:00.000Z",
-          archivedAt: null,
-          rootTeam: testAgentTeamNode({
-            address: "/",
-            teamRunId: "team-run-1",
-            teamDefinitionId: "team-def-1",
-            coordinatorAddress: "/RootLead",
-            children: [
-              testAgentNode("/RootLead", { agentRunId: "root-lead-run-1" }),
-              testAgentTeamNode({
-                address: "/ReviewSquad",
-                teamDefinitionId: "review-team",
-                teamRunId: "child-review-team-run",
-                coordinatorAddress: "/ReviewSquad/Reviewer",
-                children: [testAgentNode("/ReviewSquad/Reviewer", {
-                  agentRunId: "reviewer-member-run-1",
-                  agentDefinitionId: "agent-def-reviewer",
-                  llmModelIdentifier: "gpt-test",
-                  workspaceRootPath: "/tmp/workspace",
-                })],
-              }),
-            ],
-          }),
-          handoffs: [],
+      artifacts: publishedArtifactProjectionService as never,
+      memory: {
+        resolveTeamMemberLocation: vi.fn(async () => ({
+          memoryDir: "/tmp/memory/agent_teams/team-run-1/child-review-team-run/reviewer-member-run-1",
         })),
       } as never,
-      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
     });
 
     await hostService.listRunPublishedArtifacts(applicationId, "reviewer-member-run-1");
@@ -408,7 +368,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     );
   });
 
-  it("posts application team input with exact member-address target identity", async () => {
+  it("posts addressed application team input with the exact bound agentRunId", async () => {
     const binding = buildTeamBinding();
     const postMessage = vi.fn(async () => ({ accepted: true }));
     const hostService = new ApplicationOrchestrationHostService({
@@ -421,22 +381,38 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: {
         getBinding: vi.fn(async () => cloneBinding(binding)),
       } as never,
-      teamRunService: {
-        resolveActiveTeamRun: vi.fn(async () => ({ postMessage })),
+      teamExecution: {
+        postTeamInput: vi.fn(async (_teamRunId, message, targetAgentRunId) => {
+          await postMessage(message, targetAgentRunId);
+          return { kind: "ACCEPTED" };
+        }),
+      } as never,
+      agentTargetAuthorizationService: {
+        authorizeTarget: vi.fn(async (_applicationId, address) => ({
+          applicationId,
+          address,
+          binding,
+          runtime: {
+            subject: "TEAM_RUN",
+            teamRunId: "team-run-1",
+            targetAgentRunId: "researcher-member-run-1",
+            producers: [{ agentRunId: "researcher-member-run-1", displayName: "Researcher" }],
+          },
+        })),
       } as never,
     });
 
     await hostService.sendRunInput(applicationId, {
       address: {
         bindingId,
-        target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
+        memberAddress: "/Researcher",
       },
       input: { text: "please research" },
     });
 
     expect(postMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: "please research" }),
-      "/Researcher",
+      "researcher-member-run-1",
     );
   });
 
@@ -453,8 +429,24 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: {
         getBinding: vi.fn(async () => cloneBinding(binding)),
       } as never,
-      teamRunService: {
-        resolveActiveTeamRun: vi.fn(async () => ({ postMessage })),
+      teamExecution: {
+        postTeamInput: vi.fn(async (_teamRunId, message, targetAgentRunId) => {
+          await postMessage(message, targetAgentRunId);
+          return { kind: "ACCEPTED" };
+        }),
+      } as never,
+      agentTargetAuthorizationService: {
+        authorizeTarget: vi.fn(async (_applicationId, address) => ({
+          applicationId,
+          address,
+          binding,
+          runtime: {
+            subject: "TEAM_RUN",
+            teamRunId: "team-run-1",
+            targetAgentRunId: "researcher-member-run-1",
+            producers: [{ agentRunId: "researcher-member-run-1", displayName: "Researcher" }],
+          },
+        })),
       } as never,
     });
 
@@ -462,7 +454,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       hostService.sendRunInput(applicationId, {
         address: {
           bindingId,
-          target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
+          memberAddress: "/Researcher",
         },
         input: {
           text: "please research",
@@ -472,4 +464,34 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     ).rejects.toThrow("targetMemberName is not supported");
     expect(postMessage).not.toHaveBeenCalled();
   });
+
+  it.each(["TERMINATED", "ORPHANED"] as const)(
+    "rejects normal input for a %s binding before runtime resolution",
+    async (status) => {
+      const terminalBinding = {
+        ...buildBinding(),
+        status,
+        terminatedAt: "2026-08-25T10:05:00.000Z",
+      };
+      const resolveAgentRun = vi.fn();
+      const hostService = new ApplicationOrchestrationHostService({
+        startupGate: { awaitReady: vi.fn(async () => undefined) } as never,
+        bindingStore: {
+          getBinding: vi.fn(async () => cloneBinding(terminalBinding)),
+        } as never,
+        agentRunService: { resolveAgentRun } as never,
+        agentTargetAuthorizationService: {
+          authorizeTarget: vi.fn(async () => {
+            throw new Error(`Application binding '${bindingId}' is not live.`);
+          }),
+        } as never,
+      });
+
+      await expect(hostService.sendRunInput(applicationId, {
+        address: { bindingId, memberAddress: null },
+        input: { text: "must not dispatch" },
+      })).rejects.toThrow("is not live");
+      expect(resolveAgentRun).not.toHaveBeenCalled();
+    },
+  );
 });

@@ -1,0 +1,67 @@
+HEAD=5df709c89855231e26c6f7dafb6a73dda10cf4c0
+BASE=a5a6131531658e8a8a323989b1863b7202464f11
+
+== ancestry/commits ==
+base_is_ancestor=yes
+5df709c89 (HEAD -> codex/universal-application-framework-latest-personal-integration) docs(ticket): hand off canonical run authorities
+2d76ea493 fix(server): bind host definitions to general run services
+3a02f19b2 fix(server): bind task delegation to exact team root
+\n== diff check ==
+diff_check=pass
+\n== unmerged ==
+unmerged=none
+\n== retired task paths/symbols ==
+retired_context_source=absent
+retired_context_test=absent
+retired_symbols=absent
+\n== task execution ambient service lookup ==
+task_ambient_lookup=absent
+\n== process binding consumers ==
+autobyteus-server-ts/src/compositions/build-studio-server.ts:150:  const hostDefinitionServices = createHostDefinitionServices({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:174:    generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
+autobyteus-server-ts/src/compositions/build-studio-server.ts:188:    studioApiHandle = configureStudioApplicationApiServices({
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:224:    hostDefinitionServices = createHostDefinitionServices({
+autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts:234:      createGeneralProcessRunSupervisor({
+\n== changed implementation sizes (effective/physical) ==
+ 285  319 autobyteus-server-ts/src/agent-definition/services/agent-definition-service.ts
+ 119  127 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.ts
+ 240  251 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+ 272  310 autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+ 229  258 autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts
+ 482  509 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+  86   93 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-configured-member-registry.ts
+ 186  196 autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+ 403  433 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts
+ 151  161 autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts
+  28   30 autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts
+ 314  342 autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  51   56 autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts
+ 256  265 autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+  13   15 autobyteus-server-ts/src/agent-team-execution/task-delegation/member-task-root-resolver.ts
+ 171  194 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-registry.ts
+ 177  195 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts
+ 175  197 autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts
+ 137  147 autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts
+  59   61 autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts
+  61   64 autobyteus-server-ts/src/agent-tools/mcp/providers/task-delegation-tools-mcp-adapter-provider.ts
+  52   59 autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts
+  52   59 autobyteus-server-ts/src/agent-tools/task-delegation/review-task-result.ts
+  52   59 autobyteus-server-ts/src/agent-tools/task-delegation/submit-task-result.ts
+  77   88 autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts
+   8    9 autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-run-router.ts
+  24   27 autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-service.ts
+  72   84 autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts
+ 263  307 autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+ 152  184 autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts
+ 354  385 autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts
+ 490  526 autobyteus-server-ts/src/app-data-migrations/migrations/team-run-history-index-v2-migration.ts
+  37   39 autobyteus-server-ts/src/application-platform/definitions/create-bundle-backed-definition-services.ts
+ 129  134 autobyteus-server-ts/src/application-platform/launch-configuration/application-standalone-package-validator.ts
+ 216  221 autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+ 249  257 autobyteus-server-ts/src/compositions/build-studio-server.ts
+  45   48 autobyteus-server-ts/src/compositions/host-definition-services.ts
+ 318  325 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+  36   43 autobyteus-server-ts/src/startup/cache-preloader.ts
+size_hard_limit=pass
+\n== production TypeScript ==
+production_typescript=pass

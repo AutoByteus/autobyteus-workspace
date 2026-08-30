@@ -1,0 +1,44 @@
+# Delivery Integration Evidence — DR-001
+
+Recorded at: 2026-08-27T08:25:14+0200
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400
+Branch: codex/docker-node-image-upload-400
+Bootstrap base: origin/personal at fd9b33e20ace3e7c221f931dbbcd5f4acf1df65f
+
+## Refresh command
+$ git fetch origin personal
+
+## Revisions
+HEAD=0e12a099cbdba62c5b53f38a7fd495d758b63749
+origin/personal=fd9b33e20ace3e7c221f931dbbcd5f4acf1df65f
+FETCH_HEAD=fd9b33e20ace3e7c221f931dbbcd5f4acf1df65f
+merge-base(HEAD,origin/personal)=fd9b33e20ace3e7c221f931dbbcd5f4acf1df65f
+
+## Divergence (HEAD...origin/personal; left=ahead, right=behind)
+2	0
+
+## Base ancestry
+PASS: origin/personal is an ancestor of HEAD.
+
+## Base advancement since bootstrap
+NO: refreshed origin/personal equals the recorded bootstrap base.
+
+## Integration decision
+Already current. No merge/rebase was needed, and no checkpoint commit was needed because no integration operation could disturb the reviewed candidate.
+No executable test rerun was required: zero base commits were integrated and reviewed source HEAD remained 0e12a099cbdba62c5b53f38a7fd495d758b63749.
+
+## Delivery-state patch hygiene
+$ git diff --check
+PASS: git diff --check
+
+## Current status (includes delivery-owned docs/artifacts)
+## codex/docker-node-image-upload-400...origin/personal [ahead 2]
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M tickets/in-progress/docker-node-image-upload-400/code-review-report.md
+ M tickets/in-progress/docker-node-image-upload-400/code-review-revision-record.md
+?? tickets/in-progress/docker-node-image-upload-400/api-e2e-coverage-investigation.md
+?? tickets/in-progress/docker-node-image-upload-400/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/docker-node-image-upload-400/api-e2e-revision-record.md
+?? tickets/in-progress/docker-node-image-upload-400/api-e2e-test-review-report.md
+?? tickets/in-progress/docker-node-image-upload-400/delivery-integration-evidence.log
+?? tickets/in-progress/docker-node-image-upload-400/test-results/

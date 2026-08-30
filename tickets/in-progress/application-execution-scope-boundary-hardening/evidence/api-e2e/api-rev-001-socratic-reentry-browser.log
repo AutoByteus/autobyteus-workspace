@@ -1,0 +1,605 @@
+RETAINED_BEFORE_REENTRY true true
+FOLLOWUP_SENT
+STATE 0 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Sending your follow-up…
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 4x + 7 = 31 and explain the reasoning.
+Active
+Lesson lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Updated 26.8.2026, 00:45:44
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+lessonId lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+
+Active
+Created 26.8.2026, 00:45:20
+Updated 26.8.2026, 00:45:44
+LESSON RECORD
+lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Status active
+CONVERSATION
+2 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor is responding…
+
+Live text appears here while the tutor responds. Completed turns remain in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:45:20
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+tutor
+Lesson_response
+26.8.2026, 00:45:44
+
+To solve \(4x + 7 = 31\), undo the operations around \(x\) in reverse order:
+
+1. Subtract 7 from both sides:
+   \[
+   4x = 24
+   \]
+2. Divide both sides by 4:
+   \[
+   x = 6
+   \]
+
+Check: \(4(6)+7=24+7=31\). Therefore, **\(x=6\)**.
+
+Send follow-up
+
+Wait for the current tutor response to be saved before sending another.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+No notifications yet.
+STATE 1 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 4x + 7 = 31 and explain the reasoning.
+Active
+Lesson lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Updated 26.8.2026, 00:47:23
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+lessonId lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+
+Active
+Created 26.8.2026, 00:45:20
+Updated 26.8.2026, 00:47:23
+LESSON RECORD
+lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Status active
+CONVERSATION
+3 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor is responding…
+
+Live text appears here while the tutor responds. Completed turns remain in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:45:20
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+tutor
+Lesson_response
+26.8.2026, 00:45:44
+
+To solve \(4x + 7 = 31\), undo the operations around \(x\) in reverse order:
+
+1. Subtract 7 from both sides:
+   \[
+   4x = 24
+   \]
+2. Divide both sides by 4:
+   \[
+   x = 6
+   \]
+
+Check: \(4(6)+7=24+7=31\). Therefore, **\(x=6\)**.
+
+student
+Follow_up
+26.8.2026, 00:47:23
+
+If the equation is 4x + 7 = 39, what is x? Answer clearly.
+
+Send follow-up
+
+Wait for the current tutor response to be saved before sending another.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+No notifications yet.
+STATE 3 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 4x + 7 = 31 and explain the reasoning.
+Active
+Lesson lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Updated 26.8.2026, 00:47:32
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+lessonId lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+
+Active
+Created 26.8.2026, 00:45:20
+Updated 26.8.2026, 00:47:32
+LESSON RECORD
+lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Status active
+CONVERSATION
+4 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor is responding…
+
+Live text appears here while the tutor responds. Completed turns remain in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:45:20
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+tutor
+Lesson_response
+26.8.2026, 00:45:44
+
+To solve \(4x + 7 = 31\), undo the operations around \(x\) in reverse order:
+
+1. Subtract 7 from both sides:
+   \[
+   4x = 24
+   \]
+2. Divide both sides by 4:
+   \[
+   x = 6
+   \]
+
+Check: \(4(6)+7=24+7=31\). Therefore, **\(x=6\)**.
+
+student
+Follow_up
+26.8.2026, 00:47:23
+
+If the equation is 4x + 7 = 39, what is x? Answer clearly.
+
+Send follow-up
+
+Wait for the current tutor response to be saved before sending another.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 00:47:32
+{
+  "lessonId": "lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790",
+  "bindingId": "b8b615c5-3871-4333-936b-d4b38675e9dc",
+  "revisionId": "8f79c767-ec77-4e84-916d-637284dd85e6",
+  "runId": "socratic_math_tutor_c66baceddc2940b69364066aa9408872"
+}
+STATE 4 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 4x + 7 = 31 and explain the reasoning.
+Active
+Lesson lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Updated 26.8.2026, 00:47:32
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+lessonId lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+
+Active
+Created 26.8.2026, 00:45:20
+Updated 26.8.2026, 00:47:32
+LESSON RECORD
+lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Status active
+CONVERSATION
+4 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor is responding…
+
+\[
+4x+7=39 \Right
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:45:20
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+tutor
+Lesson_response
+26.8.2026, 00:45:44
+
+To solve \(4x + 7 = 31\), undo the operations around \(x\) in reverse order:
+
+1. Subtract 7 from both sides:
+   \[
+   4x = 24
+   \]
+2. Divide both sides by 4:
+   \[
+   x = 6
+   \]
+
+Check: \(4(6)+7=24+7=31\). Therefore, **\(x=6\)**.
+
+student
+Follow_up
+26.8.2026, 00:47:23
+
+If the equation is 4x + 7 = 39, what is x? Answer clearly.
+
+Send follow-up
+
+Wait for the current tutor response to be saved before sending another.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 00:47:32
+{
+  "lessonId": "lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790",
+  "bindingId": "b8b615c5-3871-4333-936b-d4b38675e9dc",
+  "revisionId": "8f79c767-ec77-4e84-916d-637284dd85e6",
+  "runId": "socratic_math_tutor_c66baceddc2940b69364066aa9408872"
+}
+STATE 5 BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 4x + 7 = 31 and explain the reasoning.
+Active
+Lesson lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Updated 26.8.2026, 00:47:32
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+lessonId lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+
+Active
+Created 26.8.2026, 00:45:20
+Updated 26.8.2026, 00:47:32
+LESSON RECORD
+lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Status active
+CONVERSATION
+4 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor response saved
+
+The authoritative tutor response is shown in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:45:20
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+tutor
+Lesson_response
+26.8.2026, 00:45:44
+
+To solve \(4x + 7 = 31\), undo the operations around \(x\) in reverse order:
+
+1. Subtract 7 from both sides:
+   \[
+   4x = 24
+   \]
+2. Divide both sides by 4:
+   \[
+   x = 6
+   \]
+
+Check: \(4(6)+7=24+7=31\). Therefore, **\(x=6\)**.
+
+student
+Follow_up
+26.8.2026, 00:47:23
+
+If the equation is 4x + 7 = 39, what is x? Answer clearly.
+
+tutor
+Lesson_response
+26.8.2026, 00:47:32
+
+Subtract 7 from both sides:
+\[
+4x = 32
+\]
+
+Divide by 4:
+\[
+\boxed{x=8}
+\]
+
+Send follow-up
+
+Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 00:47:32
+{
+  "lessonId": "lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790",
+  "bindingId": "b8b615c5-3871-4333-936b-d4b38675e9dc",
+  "revisionId": "8f79c767-ec77-4e84-916d-637284dd85e6",
+  "runId": "socratic_math_tutor_c66baceddc2940b69364066aa9408872"
+}
+REENTRY_FINAL BUILT-IN TEACHING SAMPLE
+Socratic Math Teacher
+
+Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable lesson transcript.
+
+Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.
+Advanced app details
+Start lesson
+
+Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.
+
+MATH PROBLEM
+Start lesson
+The first response streams live, then the published tutor turn becomes the durable transcript.
+Lessons
+
+Track each lesson, its current tutoring status, and the latest activity.
+
+Refresh
+Solve 4x + 7 = 31 and explain the reasoning.
+Active
+Lesson lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Updated 26.8.2026, 00:47:32
+Lesson detail
+
+Review the tutoring conversation, current lesson status, and next student action.
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+lessonId lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+
+Active
+Created 26.8.2026, 00:45:20
+Updated 26.8.2026, 00:47:32
+LESSON RECORD
+lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790
+Status active
+CONVERSATION
+4 messages
+Closed —
+NEXT STEP
+Ask a follow-up question or request a hint to continue this lesson.
+Request hint
+Close lesson
+LIVE TUTOR
+Tutor response saved
+
+The authoritative tutor response is shown in the transcript below.
+
+Transcript
+
+The lesson keeps the tutoring conversation and student follow-ups together in one record.
+
+student
+Prompt
+26.8.2026, 00:45:20
+
+Solve 4x + 7 = 31 and explain the reasoning.
+
+tutor
+Lesson_response
+26.8.2026, 00:45:44
+
+To solve \(4x + 7 = 31\), undo the operations around \(x\) in reverse order:
+
+1. Subtract 7 from both sides:
+   \[
+   4x = 24
+   \]
+2. Divide both sides by 4:
+   \[
+   x = 6
+   \]
+
+Check: \(4(6)+7=24+7=31\). Therefore, **\(x=6\)**.
+
+student
+Follow_up
+26.8.2026, 00:47:23
+
+If the equation is 4x + 7 = 39, what is x? Answer clearly.
+
+tutor
+Lesson_response
+26.8.2026, 00:47:32
+
+Subtract 7 from both sides:
+\[
+4x = 32
+\]
+
+Divide by 4:
+\[
+\boxed{x=8}
+\]
+
+Send follow-up
+
+Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.
+
+Advanced runtime details
+Backend notifications
+
+Optional app notifications fan out through the platform-owned application backend stream.
+
+lesson.response_received
+26.8.2026, 00:47:32
+{
+  "lessonId": "lesson-d04f8527-edbb-423b-ba8f-d6af4a7b7790",
+  "bindingId": "b8b615c5-3871-4333-936b-d4b38675e9dc",
+  "revisionId": "8f79c767-ec77-4e84-916d-637284dd85e6",
+  "runId": "socratic_math_tutor_c66baceddc2940b69364066aa9408872"
+}

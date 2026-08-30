@@ -1,0 +1,89 @@
+API-REV-006 current-state executable-boundary verification
+HEAD:
+4994980aa7db1d56c1fd5fe31c32d0052329642e
+BASELINE:
+d26ad181ed5334d3a40a412a39e5f8e4ef7e250e
+
+Committed files d26ad181e..HEAD:
+M	tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/backend.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/before-launch-db.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/brief-package-publication-matrix.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/capture-clean-browser-evidence.mjs
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-before-launch-db.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-evidence-synthesis.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-brief-iframe-full.png
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-brief-iframe.png
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-brief.md
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-browser-in-review-detail.png
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-browser-in-review-summary.png
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-browser-in-review.png
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-browser-observation.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-final-db.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-identity-trace-artifact-ui-join.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-research.md
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-researcher-codex-native-session-events.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-researcher-published-artifacts.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-researcher-raw-trace.jsonl
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-shipped-instruction-and-config-snapshot.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-team-communication-messages.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-team-run-execution-tree.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-writer-codex-native-session-events.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-writer-published-artifacts.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/clean-writer-raw-trace.jsonl
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/codex-live-default-gate-after-repair.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/codex-live-default-gate.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/codex-live-events/codex-backend-edit-file.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/codex-live-exact-luna-after-repair.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/codex-live-exact-luna.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/codex-live-tokenless-open-tab.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/current-lifecycle-topology-matrix.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/db-observer.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/db-observer.py
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/db-state-transitions.jsonl
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/durable-test-change.diff
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/before-launch-db.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/db-state-transitions.jsonl
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/final-brief.md
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/final-db.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/research.md
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/researcher-raw-trace.jsonl
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/team_communication_messages.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/team_run_execution_tree.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/failed-observer-shell-run/writer-raw-trace.jsonl
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/frontend.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/git-diff-check.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/observer-contaminated-run-termination.json
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/package-and-server-build.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/proxy.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/same-origin-proxy.mjs
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/sensitive-pattern-audit.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/sha256sums.txt
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/stale-fixture-current-contract.log
+A	tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-005/synthesize-clean-evidence.py
+M	tickets/in-progress/application-owned-mcp-capability/api-e2e-execution-coverage-report.md
+M	tickets/in-progress/application-owned-mcp-capability/api-e2e-revision-record.md
+M	tickets/in-progress/application-owned-mcp-capability/application-owned-mcp-intended-behavior.md
+M	tickets/in-progress/application-owned-mcp-capability/architecture-review-revision-record.md
+M	tickets/in-progress/application-owned-mcp-capability/code-review-report.md
+M	tickets/in-progress/application-owned-mcp-capability/code-review-revision-record.md
+M	tickets/in-progress/application-owned-mcp-capability/design-review-report.md
+M	tickets/in-progress/application-owned-mcp-capability/design-spec.md
+M	tickets/in-progress/application-owned-mcp-capability/implementation-handoff.md
+M	tickets/in-progress/application-owned-mcp-capability/implementation-revision-record.md
+M	tickets/in-progress/application-owned-mcp-capability/investigation-notes.md
+M	tickets/in-progress/application-owned-mcp-capability/requirements.md
+M	tickets/in-progress/application-owned-mcp-capability/solution-revision-record.md
+
+Committed non-ticket files d26ad181e..HEAD (must be empty):
+
+Uncommitted files:
+ M autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
+ M tickets/in-progress/application-owned-mcp-capability/api-e2e-coverage-investigation.md
+ M tickets/in-progress/application-owned-mcp-capability/code-review-report.md
+ M tickets/in-progress/application-owned-mcp-capability/code-review-revision-record.md
+?? tickets/in-progress/application-owned-mcp-capability/api-e2e-evidence/api-rev-006/
+
+Uncommitted production src and maintained Brief inputs (must be empty):

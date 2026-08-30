@@ -1,0 +1,144 @@
+
+> autobyteus@1.4.28 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (1 test | 1 failed) 19ms
+   × ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides 18ms
+     → expected undefined to deeply equal { kind: 'AGENT_TEAM', …(2) }
+ ❯ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (2 tests | 2 failed) 24ms
+   × ApplicationLaunchSetupPanel > loads host-managed setup and saves launchProfile payloads without starting a run 17ms
+     → expected { phase: 'error', …(2) } to match object { Object (phase, isLaunchReady) }
+(1 matching property omitted from actual)
+   × ApplicationLaunchSetupPanel > mounts the real execution-resource slot editor with available resources from the parent 7ms
+     → Unable to get select within: <section data-testid="application-launch-setup-panel" data-presentation="page" class="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+  <div data-testid="application-launch-setup-header" class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div class="min-w-0 space-y-2">
+      <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"><span class="i-heroicons-adjustments-horizontal-20-solid h-4 w-4"></span><span>Title</span></div>
+      <h2 class="text-xl font-semibold text-slate-900">Heading</h2>
+      <p class="max-w-3xl text-sm leading-6 text-slate-600">Description</p>
+    </div><button type="button" class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">Refresh</button>
+  </div>
+  <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <p class="font-semibold">Unable to load</p>
+    <p class="mt-1">Cannot read properties of undefined (reading 'map')</p>
+  </div>
+</section>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > loads host-managed setup and saves launchProfile payloads without starting a run
+AssertionError: expected { phase: 'error', …(2) } to match object { Object (phase, isLaunchReady) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "isLaunchReady": false,
+-   "phase": "ready",
++   "phase": "error",
+  }
+
+ ❯ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts:267:64
+    265|     )
+    266|     expect(wrapper.get('[data-testid="application-launch-setup-panel"]…
+    267|     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatch…
+       |                                                                ^
+    268|       phase: 'ready',
+    269|       isLaunchReady: false,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > mounts the real execution-resource slot editor with available resources from the parent
+Error: Unable to get select within: <section data-testid="application-launch-setup-panel" data-presentation="page" class="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+  <div data-testid="application-launch-setup-header" class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div class="min-w-0 space-y-2">
+      <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"><span class="i-heroicons-adjustments-horizontal-20-solid h-4 w-4"></span><span>Title</span></div>
+      <h2 class="text-xl font-semibold text-slate-900">Heading</h2>
+      <p class="max-w-3xl text-sm leading-6 text-slate-600">Description</p>
+    </div><button type="button" class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">Refresh</button>
+  </div>
+  <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+    <p class="font-semibold">Unable to load</p>
+    <p class="mt-1">Cannot read properties of undefined (reading 'map')</p>
+  </div>
+</section>
+ ❯ VueWrapper.BaseWrapper.get ../node_modules/.pnpm/@vue+test-utils@2.4.6/node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7279:15
+    7277|             return result;
+    7278|         }
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+       |               ^
+    7280|     };
+    7281|     BaseWrapper.prototype.getComponent = function (selector) {
+ ❯ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts:379:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts > ApplicationTeamLaunchProfileEditor > repairs stale saved member overrides by exact route/id match and drops stale carry-forward overrides
+AssertionError: expected undefined to deeply equal { kind: 'AGENT_TEAM', …(2) }
+
+- Expected: 
+{
+  "defaults": {
+    "llmModelIdentifier": "gpt-5",
+    "runtimeKind": "autobyteus",
+    "workspaceRootPath": "/tmp/workspace",
+  },
+  "kind": "AGENT_TEAM",
+  "memberProfiles": [
+    {
+      "agentDefinitionId": "bundle-agent__researcher",
+      "llmModelIdentifier": "claude-sonnet",
+      "memberName": "researcher",
+      "memberRouteKey": "researcher",
+      "runtimeKind": "claude_agent_sdk",
+    },
+    {
+      "agentDefinitionId": "bundle-agent__writer-new",
+      "llmModelIdentifier": "",
+      "memberName": "writer",
+      "memberRouteKey": "writer",
+      "runtimeKind": "",
+    },
+  ],
+}
+
++ Received: 
+undefined
+
+ ❯ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts:182:32
+    180|       .find((payload) => payload.memberProfiles?.length === 2 && paylo…
+    181| 
+    182|     expect(repairedDraftEvent).toEqual({
+       |                                ^
+    183|       kind: 'AGENT_TEAM',
+    184|       defaults: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed (3)
+   Start at  21:48:49
+   Duration  5.80s (transform 3.26s, setup 9.81s, collect 367ms, tests 44ms, environment 395ms, prepare 324ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,19 @@
+DR-002 packaged Electron isolation verification
+UTC: 2026-08-26T18:09:26Z
+== Ordinary application listener before ==
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 94487 normy   26u  IPv4 0xc0597f8d50338a75      0t0  TCP *:29695 (LISTEN)
+
+== Isolation command ==
+env -u ELECTRON_RUN_AS_NODE pnpm -C autobyteus-web test:e2e:electron:isolation --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation
+
+> autobyteus@1.4.58 test:e2e:electron:isolation /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web
+> node tests/e2e/electron-launch-profile-probe.mjs --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation
+
+[electron-launch-profile-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/tickets/in-progress/logical-application-agent-addressing-and-role-simplification/evidence/delivery/dr-002-electron-isolation/electron-launch-profile-evidence.json
+
+== Ordinary application listener after ==
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 94487 normy   26u  IPv4 0xc0597f8d50338a75      0t0  TCP *:29695 (LISTEN)
+
+RESULT: PASS

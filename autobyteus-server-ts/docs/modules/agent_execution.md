@@ -8,12 +8,15 @@ Manages runtime agent runs and message execution flow.
 
 - `src/agent-execution/services/agent-run-manager.ts` (`AgentRunManager`)
 - `src/agent-execution/services/agent-run-activation-candidate.ts`
-- `src/agent-execution/services/standalone-agent-run-activation-service.ts`
+- `src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
 - `src/agent-execution/services/agent-run-command-coordinator.ts`
 - `src/agent-execution/services/agent-run-command-registry.ts`
 - `src/agent-execution/services/agent-run-command-status-overlay-store.ts`
 - `src/agent-execution/services/agent-run-provisioning-service.ts`
 - `src/agent-execution/services/agent-run-status-projection-service.ts`
+- `src/agent-execution/providers/agent-provider-factory-builder.ts`
+- `src/agent-execution/input/agent-run-provider-input-normalizer.ts`
+- `src/agent-execution/runtime/general-process-run-supervisor.ts`
 - `src/api/graphql/types/agent-run.ts`
 - `src/services/agent-streaming/agent-stream-handler.ts`
 - `src/api/websocket/agent.ts`
@@ -21,6 +24,30 @@ Manages runtime agent runs and message execution flow.
 ## Notes
 
 Runtime managers compose definitions, prompts, tools, processors, and workspace context.
+
+## Execution Family Composition
+
+`AgentProviderFactoryBuilder` freezes process-wide provider primitives and
+creates AutoByteus, Codex, and Claude backend factories only from an explicit
+execution-family `AgentDefinitionService` and
+`AgentToolMcpRunSessionActivator`.
+Provider construction does not read a process-global application manager or
+session scope. Codex and Claude materializers therefore receive the exact
+activation boundary owned by the General Process or Application execution
+family that created the run.
+
+`GeneralProcessRunSupervisor` owns the General Process Agent/Team managers,
+history services, task identity, context-file normalization, run resources, and
+its independent scoped Agent Tools authority. Application execution constructs
+the same provider backends beneath a private `ApplicationExecutionScope` with
+application-local definition services and publication capability. The families
+share provider implementation but not manager identity, active-run registries,
+session authority, definition graph, or publication authority.
+
+`AgentRunProviderInputNormalizer` is injected into each manager and resolves
+current-turn context-file locators against that family's explicit path
+environment before provider dispatch. This normalization is not a static or
+process-global provider lookup.
 
 ## Carpenter Runtime Instructions
 
@@ -135,7 +162,7 @@ publish events until its governing owner has durably committed the metadata or
 Team execution-tree state that makes the run discoverable. Cleanup uncertainty
 quarantines the run ID in-process instead of permitting a replacement runtime.
 
-`StandaloneAgentRunActivationService` owns one activation attempt per run ID
+`StandaloneAgentRunLifecycleService` owns one activation attempt per run ID
 across command, prepared-run activation, and history restore callers. It
 reactivates the persisted workspace, reconstructs the exact stored run config,
 prepares the private candidate, commits `startedAt` and the external provider ID
@@ -149,6 +176,47 @@ falls back to `thread/start`. Claude reserves one valid UUID before first input:
 the first SDK query receives only `sessionId`, later and restored queries receive
 only `resume`, and every provider-reported session ID must confirm the same UUID.
 The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
+
+## Published-Run Termination And Resource Finalization
+
+`AgentRunManager.prepareAgentRunTermination(expectedRun)` is the only
+termination preparation entrypoint for a published `AgentRun`. Direct stop,
+Mixed Team-member stop, and `stopAllAgentRuns()` all use the same exact-instance
+wrapper around `AgentRun.prepareTermination()`. Concurrent preparation and
+finish calls coalesce per exact run.
+
+Cancellation reopens the underlying run and removes the reusable preparation.
+A committed finish that returns `accepted: false` keeps the run current and the
+finish retryable. An accepted provider/runtime finish is not returned to the
+caller until the run is inactive, exact-current removal succeeds, and the
+activation registry's cleanup result is successful. That removal releases the
+same run's resources once: it deactivates the deterministic Agent Tools MCP
+run-session and detaches file-change, artifact-relay, and memory observers.
+Replacement runs are never released by stale cleanup. Thrown finalization,
+identity mismatch, or accepted-but-active outcomes are terminal for the
+committed attempt rather than being converted into success.
+
+## Stopped Model Configuration And Restore Serialization
+
+`StandaloneAgentRunLifecycleService` also owns the narrow stopped-run
+`llmConfig` update. Update and restore share the same per-run transition lane,
+so the supported General Process orders are deterministic: Save can commit
+before restore reads the config, or restore can make the run active before Save
+rechecks and returns `RUN_ACTIVE`. This lane is not a browser multi-writer or
+revision protocol.
+
+The update keeps runtime kind, model identifier, workspace, provider
+conversation identity, tool policy, and local run ID fixed. It requires a
+current, cataloged, unarchived, manager-inactive run; validates the submitted
+`llmConfig` against the current schema for the persisted runtime/model; and
+writes/rereads only the metadata configuration. A successful value is consumed
+when the same run is next prepared or restored. It does not mutate a live
+backend or replace its provider conversation.
+
+Studio adds a separate owner-aware guard before this General lane. A live
+Application binding locks configuration without exposing Application managers
+to General execution. See [Run History](./run_history.md) and
+[Application Orchestration](./application_orchestration.md).
 
 ## Standalone Command Lifecycle
 
@@ -451,8 +519,8 @@ Runtime converters must canonicalize all Agent Tools MCP provider identities
 before emitting application-facing events. Provider/server-qualified names such
 as `autobyteus_agent_tools` and
 `mcp__autobyteus_agent_tools__delegate_task` normalize to canonical tool names
-such as `delegate_task`; bearer tokens, session ids, `Authorization`, and
-`http_headers` are sanitized from events, run history, and memory traces.
+such as `delegate_task`; internal run-session IDs and provider configuration
+details are not projected into events, run history, or memory traces.
 
 Source-confirmed MCP terminal result lanes use the general MCP effective-result
 projector before Activity, run history, and memory traces consume the result.

@@ -7,11 +7,17 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 ## TS Source
 
 - `src/application-engine`
-- `src/server-runtime.ts`
+- `src/application-platform/runtime`
+- `src/compositions/build-studio-server.ts`
+- `src/compositions/build-standalone-application-server.ts`
 
 ## Main Service And Supporting Owners
 
-- `src/application-engine/services/application-engine-host-service.ts`
+- `src/application-engine/services/application-engine-controller.ts`
+- `src/application-engine/services/application-engine-launcher.ts`
+- `src/application-engine/services/application-engine-control-request.ts`
+- `src/application-engine/services/application-engine-state-registry.ts`
+- `src/application-engine/services/application-engine-context-capability-handler.ts`
 - `src/application-engine/runtime/application-worker-supervisor.ts`
 - `src/application-engine/runtime/application-engine-client.ts`
 - `src/application-engine/runtime/protocol.ts`
@@ -34,7 +40,7 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 
 ## Startup Contract
 
-For a given `applicationId`, the host service:
+For a given `applicationId`, `ApplicationEngineLauncher`:
 
 1. validates the bundle exists,
 2. prepares per-app storage through `ApplicationStorageLifecycleService.ensureStoragePrepared(...)`,
@@ -44,21 +50,23 @@ For a given `applicationId`, the host service:
 6. writes `engine-status.json`, and
 7. exposes the ready status plus exposure summary to callers.
 
-Startup is de-duplicated per application so concurrent callers share one in-flight startup promise.
+Startup is de-duplicated per application so concurrent callers share one in-flight startup promise. Definition loading is a lifecycle-control request rather than application work: `ApplicationEngineControlRequest` owns its bounded response/close state, and a timeout is observable only after the worker has been terminated and its close has been awaited.
 
 ## Worker Contract
 
 - The worker loads a self-contained ESM backend module.
-- The backend definition contract version must be `"4"`; stale definitions are rejected before any handler or lifecycle hook runs.
+- The backend definition contract version must be `"6"`; unsupported definitions are rejected before any handler or lifecycle hook runs.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Custom `webSocketRoutes` run in the worker-owned `ApplicationBackendHost`; standard application-agent communication never traverses the engine or worker.
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.
 - Worker notifications flow back to the host over the engine protocol and are re-published by the backend API gateway.
 - Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
+- Accepted application work is completion-coupled in both JSON-line RPC directions. Host-to-worker queries, commands, routes, GraphQL, WebSocket callbacks, lifecycle/event/artifact handlers, and worker-to-host context-capability calls remain pending until the remote handler returns its actual result or domain error, or until transport/worker close makes completion impossible. There is no independent live-work deadline that may report failure while the remote operation continues.
+- Bounded deadlines remain lifecycle controls only. Startup definition loading and stop/close may time out, but those paths abort the worker and await closure before exposing the timeout.
 
 ## Invocation Boundary
 
-Once ready, the engine is the only owner used to invoke:
+Once ready, `ApplicationEngineController` is the only owner used to invoke:
 
 - application queries,
 - application commands,
@@ -70,6 +78,8 @@ Once ready, the engine is the only owner used to invoke:
 - worker-originated context-capability requests.
 
 The gateway and orchestration owners both depend on this boundary instead of reaching into worker details directly.
+
+Because the public backend surface is synchronous, `ApplicationEngineClient` and `ApplicationWorkerHostBridgeClient` retain each correlation entry until the corresponding result/error or connection close. Callers must not add a local work timeout unless the same path first cancels or terminates the remote owner and proves the operation can no longer commit.
 
 ## Operational Artifacts
 
@@ -83,11 +93,40 @@ Unexpected worker exit clears the in-memory runtime handle and moves engine stat
 
 ## Startup Resume Hook
 
-After the HTTP/WebSocket stack is listening, `server-runtime.ts` runs application-orchestration startup recovery:
+After the HTTP/WebSocket stack is listening, each server assembly root runs
+application-orchestration startup recovery:
 
 - `ApplicationOrchestrationRecoveryService.resumeBindings()` rebuilds durable lookups and reattaches observers,
 - `ApplicationExecutionEventDispatchService.resumePendingEvents()` reschedules pending event journals,
 - none of that eagerly starts every application worker, but pending event dispatch or live backend traffic may lazily start a worker when needed.
+
+## Application Platform Runtime Shutdown
+
+The Studio and standalone servers place each application engine inside one
+`ApplicationPlatformRuntime`. Building that runtime prepares its services and
+managers but starts no new run. Business launch requests create new runs;
+post-listen recovery may restore recorded runs. Runtime shutdown is ordered so
+no new work can enter while owned capabilities are being dismantled:
+
+1. block new application Agent Tools run-session activation;
+2. stop execution-event dispatch and close application communication, backend
+   gateway/socket, and notification ingress;
+3. stop artifact-delivery intake and drain every accepted command through
+   launcher ensure plus controller invoke;
+4. dispose remaining run observers and stop application workers;
+5. quiesce the runtime's `ApplicationExecutionScope`, then use
+   `ApplicationExecutionShutdownCoordinator` to stop runtime-owned team runs
+   before remaining runtime-owned agent runs; exact run removal also revokes
+   run sessions and detaches file/artifact/memory observers;
+6. close the scope's `ScopedAgentToolMcpSessionAuthority`; and
+7. stop remaining streaming surfaces.
+
+The process-level `AgentToolsMcpHost` closes only after the application runtime
+and separate General Process run supervisor have stopped. There is no deferred
+publisher or handler state.
+This ordering prevents a stopped application from retaining a publication
+capability, accepting new runtime-scoped work, or abandoning accepted artifact
+delivery after a worker exit.
 
 ## Related Docs
 

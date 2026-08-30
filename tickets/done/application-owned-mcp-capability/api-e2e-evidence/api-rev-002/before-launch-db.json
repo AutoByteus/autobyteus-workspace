@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-08-27T19:28:31.492Z",
+  "databasePath": ".autobyteus/api-e2e-002/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/db/app.sqlite",
+  "briefs": [
+    {
+      "brief_id": "brief-94b0d173-d106-49a9-8f70-654c29aeb403",
+      "title": "API E2E \"Agent-to-UI\" \\ 2026-08-27T19:28Z",
+      "status": "not_started",
+      "latest_binding_id": null,
+      "latest_run_id": null,
+      "latest_binding_status": null,
+      "last_error_message": null,
+      "created_at": "2026-08-27T19:28:16.125Z",
+      "updated_at": "2026-08-27T19:28:16.125Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "bindings": [],
+  "artifacts": [],
+  "revisions": []
+}

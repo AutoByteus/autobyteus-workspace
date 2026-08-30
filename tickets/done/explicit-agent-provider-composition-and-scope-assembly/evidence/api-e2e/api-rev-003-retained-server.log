@@ -1,0 +1,294 @@
+command: retained application/MCP/Team/history matrix
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts (7 tests) 14257ms
+     ✓ persists root, nested-Team, and exact-Agent configurations and restores them after process restart  3618ms
+     ✓ rejects a 'missing' 'Team' runtime before workspace or run side effects  1767ms
+     ✓ rejects a 'blank' 'Team' runtime before workspace or run side effects  1767ms
+     ✓ rejects a 'unsupported' 'Team' runtime before workspace or run side effects  1773ms
+     ✓ rejects a 'missing' 'Agent' runtime before workspace or run side effects  1815ms
+     ✓ rejects a 'blank' 'Agent' runtime before workspace or run side effects  1775ms
+     ✓ rejects a 'unsupported' 'Agent' runtime before workspace or run side effects  1741ms
+ ✓ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts (2 tests) 5195ms
+     ✓ moves released flat configured/task memory before public reads and remains canonical after process restart  3410ms
+     ✓ keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action  1784ms
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts (6 tests) 546ms
+(node:29362) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts (3 tests) 239ms
+(node:29366) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-rest-ws.integration.test.ts (2 tests) 182ms
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts (9 tests | 9 failed) 9ms
+     × validates the real Brief package with exact token tuning and typed pricing 3ms
+     × rejects a real Brief package containing nested server_url without echoing its value 1ms
+     × rejects a real Brief package containing nested api_url without echoing its value 1ms
+     × rejects a real Brief package containing nested connection_string without echoing its value 0ms
+     × rejects a real Brief package containing nested access_key without echoing its value 1ms
+     × rejects a real Brief package containing nested baseUri without echoing its value 0ms
+     × rejects a real Brief package containing nested service_address without echoing its value 0ms
+     × rejects a real Brief package containing nested client_key without echoing its value 0ms
+     × rejects a real Brief package containing nested auth_config without echoing its value 1ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests) 143ms
+(node:29374) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts (1 test) 88ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests | 2 failed) 9ms
+     × selects one current package, exposes only its confined surface, and leaves package bytes immutable 3ms
+     × fails before server construction for invalid roots and missing explicit selections 5ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 4ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 3ms
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests | 4 failed) 7ms
+     × ships source and packaged team configs with the research-first coordinator handoff 3ms
+     × ships source and packaged agent configs with the intended research-first tool split 1ms
+     × ships source and packaged prompts that require publish-after-write and research-first handoff ordering 1ms
+     × ships source and packaged team/launch guidance that preserves the research-first handoff order 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 16 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+Error: Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package
+ ❯ StandaloneApplicationSelectionService.resolve src/standalone-application-host/services/standalone-application-selection-service.ts:56:13
+     54|     const packageStat = await fs.stat(config.packageRoot).catch(() => …
+     55|     if (!packageStat?.isDirectory()) {
+     56|       throw new Error(`Standalone package root is not a directory: ${c…
+       |             ^
+     57|     }
+     58|     const provider = new SelectedApplicationBundleProvider(config.loca…
+ ❯ validateStandaloneApplicationPackage src/application-platform/launch-configuration/application-standalone-package-validator.ts:66:27
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:25:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team configs with the research-first coordinator handoff
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json'
+ ❯ readJson tests/integration/application-backend/brief-studio-team-config.integration.test.ts:24:14
+     22| 
+     23| const readJson = async <T>(filePath: string): Promise<T> =>
+     24|   JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+       |              ^
+     25| 
+     26| const readText = async (filePath: string): Promise<string> => fs.readF…
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:49:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json'
+ ❯ readJson tests/integration/application-backend/brief-studio-team-config.integration.test.ts:24:14
+     22| 
+     23| const readJson = async <T>(filePath: string): Promise<T> =>
+     24|   JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+       |              ^
+     25| 
+     26| const readText = async (filePath: string): Promise<string> => fs.readF…
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:65:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged prompts that require publish-after-write and research-first handoff ordering
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md'
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:90:38
+     88|       path.join(applicationRoot, "agent-teams", "brief-studio-team", "…
+     89|     );
+     90|     const packagedResearcherPrompt = await readText(
+       |                                      ^
+     91|       path.join(packagedApplicationRoot, "agent-teams", "brief-studio-…
+     92|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch guidance that preserves the research-first handoff order
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md'
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:131:32
+    129|       path.join(applicationRoot, "agent-teams", "brief-studio-team", "…
+    130|     );
+    131|     const packagedTeamPrompt = await readText(
+       |                                ^
+    132|       path.join(packagedApplicationRoot, "agent-teams", "brief-studio-…
+    133|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Error: ENOENT: no such file or directory, scandir '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package'
+ ❯ visit tests/integration/application-backend/standalone-application-server.integration.test.ts:24:21
+     22|   const hash = createHash("sha256");
+     23|   const visit = async (directory: string): Promise<void> => {
+     24|     const entries = await fs.readdir(directory, { withFileTypes: true …
+       |                     ^
+     25|     entries.sort((left, right) => left.name.localeCompare(right.name));
+     26|     for (const entry of entries) {
+ ❯ hashTree tests/integration/application-backend/standalone-application-server.integration.test.ts:37:3
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:75:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+AssertionError: expected [Function] to throw error including 'Standalone application \'missing-app\…' but got 'Standalone package root is not a dire…'
+
+Expected: "Standalone application 'missing-app' was not found"
+Received: "Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package"
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:284:5
+    282|     ).rejects.toThrow("Standalone package root is not a directory");
+    283| 
+    284|     await expect(
+       |     ^
+    285|       new StandaloneApplicationSelectionService().resolve(
+    286|         resolveStandaloneApplicationHostConfig({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯
+
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package'
+ ❯ copyBriefPackage tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:36:5
+     34|     tempRoots.push(root);
+     35|     const packageRoot = path.join(root, "package");
+     36|     await fs.cp(sourcePackageRoot, packageRoot, { recursive: true });
+       |     ^
+     37|     return {
+     38|       packageRoot,
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:59:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package'
+ ❯ copyBriefPackage tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:36:5
+     34|     tempRoots.push(root);
+     35|     const packageRoot = path.join(root, "package");
+     36|     await fs.cp(sourcePackageRoot, packageRoot, { recursive: true });
+       |     ^
+     37|     return {
+     38|       packageRoot,
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:109:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+
+
+ Test Files  4 failed | 7 passed (11)
+      Tests  16 failed | 32 passed (48)
+   Start at  15:25:53
+   Duration  30.38s (transform 2.75s, setup 57ms, import 8.31s, tests 20.68s, environment 1ms)
+
+command_exit=1

@@ -1,0 +1,1932 @@
+{
+  "token": "API-E2E-docker-node-image-upload-400-1787810888392",
+  "backendBaseUrl": "http://127.0.0.1:29695",
+  "frontendBaseUrl": "http://127.0.0.1:49664",
+  "backendHealth": {
+    "status": 200,
+    "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+  },
+  "preexistingDefinition": {
+    "id": "nested-classroom-test",
+    "name": "Nested Classroom Test Team",
+    "coordinatorMemberName": "Teacher",
+    "nodes": [
+      {
+        "memberName": "Teacher",
+        "ref": "teacher",
+        "refType": "AGENT",
+        "refScope": "TEAM_LOCAL"
+      },
+      {
+        "memberName": "StudentStudyGroup",
+        "ref": "student-study-group",
+        "refType": "AGENT_TEAM",
+        "refScope": "TEAM_LOCAL"
+      }
+    ]
+  },
+  "preexistingRunBefore": {
+    "teamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "isActive": false,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-25T09:55:33.294Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+          ]
+        },
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_two",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "nested-classroom-test",
+        "team_definition_name": "Nested Classroom Test Team",
+        "team_run_id": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "coordinator_address": "/Teacher",
+        "default_launch_configuration": {
+          "runtime_kind": "autobyteus",
+          "llm_model_identifier": "deepseek-v4-flash",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/Teacher",
+            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+            "role": null,
+            "description": null,
+            "agent_run_id": "test_teacher_9022aa44ce9b457e8797c691c0230351",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_team",
+            "address": "/StudentStudyGroup",
+            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+            "role": null,
+            "description": null,
+            "team_run_id": "student_study_group_6db89380b8824257a7529752bd51c523",
+            "coordinator_address": "/StudentStudyGroup/student_one",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+                "platform_agent_run_id": "01a03859-435d-78d0-851f-db992c051b78",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_two_901aa1413a154e19a5bf41092bf7f2b7",
+                "platform_agent_run_id": "01a03859-29b9-79e1-8956-8ab94a96c652",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        ],
+        "task_executions": [
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a1dff1c50ccc4922bb2c596ffe39279b",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7ce225c5861f4f1e9e67dcbc33fb9ceb",
+                "platform_agent_run_id": "01a03858-e0bc-7e61-a6c4-9706cb70a692"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4eef6194ab7447debfc928034b27c2e7",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T09:55:43.422Z",
+            "settled_at": "2026-08-25T09:56:19.023Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_838ba70cbe474257863a2f117b51ef7f",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_c824e8aa9a91413ab73bb46028cfa1fd",
+                "platform_agent_run_id": "01a03a61-c0b2-77d3-b30e-a89fa9ee0a3d"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_85805d311a91463abc39f52c8a746262",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:24:39.792Z",
+            "settled_at": "2026-08-25T19:24:49.747Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a5e1c30af93c480786d3f5fe4b9cb090",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7805962eb81445b681300bb8b8a096b8",
+                "platform_agent_run_id": "01a03a62-e6af-76d2-bcb7-a50a74375619"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_59666492210349929e2f4d6b2540700b",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:25:55.038Z",
+            "settled_at": "2026-08-25T19:26:08.101Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_c55fb66303ca4f0b99e176758a798c67",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_1d065f77a98d4d5eb1486ee763bfe0c6",
+                "platform_agent_run_id": "01a03ead-83a5-7490-a49e-f80fa8806773"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4e1934fb1bab4bcf8112e538013cb215",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T15:25:53.766Z",
+            "settled_at": "2026-08-26T15:26:07.610Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_b9e65ddcefa74a0d80b0dc3cdda408e2",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_3fcef6bf60d84cc7afa9cb091ead45bf",
+                "platform_agent_run_id": "01a03f53-4c86-7582-b007-0d7b500b14d8"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_d2b4467f6b22428683a8ec899387c54e",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T18:26:58.637Z",
+            "settled_at": "2026-08-26T18:27:20.697Z"
+          }
+        ]
+      }
+    }
+  },
+  "preexistingRunAfter": {
+    "teamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "isActive": false,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-25T09:55:33.294Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+          ]
+        },
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_two",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "nested-classroom-test",
+        "team_definition_name": "Nested Classroom Test Team",
+        "team_run_id": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "coordinator_address": "/Teacher",
+        "default_launch_configuration": {
+          "runtime_kind": "autobyteus",
+          "llm_model_identifier": "deepseek-v4-flash",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/Teacher",
+            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+            "role": null,
+            "description": null,
+            "agent_run_id": "test_teacher_9022aa44ce9b457e8797c691c0230351",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "autobyteus",
+              "llm_model_identifier": "deepseek-v4-flash",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/.autobyteus/server-data/temp_workspace"
+            }
+          },
+          {
+            "kind": "configured_team",
+            "address": "/StudentStudyGroup",
+            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+            "role": null,
+            "description": null,
+            "team_run_id": "student_study_group_6db89380b8824257a7529752bd51c523",
+            "coordinator_address": "/StudentStudyGroup/student_one",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+                "platform_agent_run_id": "01a03859-435d-78d0-851f-db992c051b78",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_two_901aa1413a154e19a5bf41092bf7f2b7",
+                "platform_agent_run_id": "01a03859-29b9-79e1-8956-8ab94a96c652",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-agents"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        ],
+        "task_executions": [
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a1dff1c50ccc4922bb2c596ffe39279b",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7ce225c5861f4f1e9e67dcbc33fb9ceb",
+                "platform_agent_run_id": "01a03858-e0bc-7e61-a6c4-9706cb70a692"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4eef6194ab7447debfc928034b27c2e7",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T09:55:43.422Z",
+            "settled_at": "2026-08-25T09:56:19.023Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_838ba70cbe474257863a2f117b51ef7f",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_c824e8aa9a91413ab73bb46028cfa1fd",
+                "platform_agent_run_id": "01a03a61-c0b2-77d3-b30e-a89fa9ee0a3d"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_85805d311a91463abc39f52c8a746262",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:24:39.792Z",
+            "settled_at": "2026-08-25T19:24:49.747Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a5e1c30af93c480786d3f5fe4b9cb090",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_7805962eb81445b681300bb8b8a096b8",
+                "platform_agent_run_id": "01a03a62-e6af-76d2-bcb7-a50a74375619"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_59666492210349929e2f4d6b2540700b",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-25T19:25:55.038Z",
+            "settled_at": "2026-08-25T19:26:08.101Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_c55fb66303ca4f0b99e176758a798c67",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_1d065f77a98d4d5eb1486ee763bfe0c6",
+                "platform_agent_run_id": "01a03ead-83a5-7490-a49e-f80fa8806773"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4e1934fb1bab4bcf8112e538013cb215",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T15:25:53.766Z",
+            "settled_at": "2026-08-26T15:26:07.610Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_b9e65ddcefa74a0d80b0dc3cdda408e2",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_3fcef6bf60d84cc7afa9cb091ead45bf",
+                "platform_agent_run_id": "01a03f53-4c86-7582-b007-0d7b500b14d8"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_d2b4467f6b22428683a8ec899387c54e",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-26T18:26:58.637Z",
+            "settled_at": "2026-08-26T18:27:20.697Z"
+          }
+        ]
+      }
+    }
+  },
+  "testRun": {
+    "teamRunId": "nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+    "schemaVersion": 2,
+    "rootTeamRunId": "nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+    "childTeamRunId": "student_study_group_d2e5e3327df2478c9d6ebe31a84c8b35",
+    "teacherAgentRunId": "test_teacher_7c579426fbe04fe4982f32f7a17a48fa",
+    "studentOneAgentRunId": "student_one_2f440b2175bb4d949c8c03fe917a5eeb",
+    "teacherAddress": "/Teacher",
+    "studentOneAddress": "/StudentStudyGroup/student_one",
+    "teamRunDirectory": "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+    "createInput": {
+      "teamDefinitionId": "nested-classroom-test",
+      "teamConfigs": [
+        {
+          "teamAddress": "/",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        },
+        {
+          "teamAddress": "/StudentStudyGroup",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        }
+      ],
+      "memberConfigs": [
+        {
+          "memberAddress": "/Teacher",
+          "agentDefinitionId": "team-local-agent:nested-classroom-test:teacher",
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash",
+          "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        },
+        {
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentDefinitionId": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY"
+        }
+      ]
+    }
+  },
+  "nestedImage": {
+    "inputName": "API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+    "message": "API-E2E-docker-node-image-upload-400-1787810888392 nested image upload-finalize-read-dispatch proof. Reply only RECEIVED.",
+    "upload": {
+      "url": "http://127.0.0.1:29695/rest/context-files/upload",
+      "status": 200,
+      "body": {
+        "storedFilename": "ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+        "displayName": "API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+        "locator": "/rest/drafts/team-runs/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc/members/%2FStudentStudyGroup%2Fstudent_one/context-files/ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+        "phase": "draft"
+      }
+    },
+    "finalizeRequest": {
+      "draftOwner": {
+        "kind": "team_member_draft",
+        "teamDraftId": "nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+        "memberAddress": "/StudentStudyGroup/student_one"
+      },
+      "finalOwner": {
+        "kind": "team_member_final",
+        "teamRunId": "student_study_group_d2e5e3327df2478c9d6ebe31a84c8b35",
+        "memberAddress": "/StudentStudyGroup/student_one"
+      },
+      "attachments": [
+        {
+          "storedFilename": "ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+          "displayName": "API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png"
+        }
+      ]
+    },
+    "finalizeResponse": {
+      "status": 200,
+      "body": {
+        "attachments": [
+          {
+            "storedFilename": "ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+            "displayName": "API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+            "locator": "/rest/team-runs/student_study_group_d2e5e3327df2478c9d6ebe31a84c8b35/members/%2FStudentStudyGroup%2Fstudent_one/context-files/ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png",
+            "phase": "final"
+          }
+        ]
+      }
+    },
+    "finalLocatorRead": {
+      "status": 200,
+      "sha256": "6f7ffeeb88929a8a2e34ea973c871f069be70cbaf1459fff345db59453934435",
+      "byteLength": 132
+    },
+    "physicalPaths": [
+      "/Users/normy/.autobyteus/server-data/memory/agent_teams/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc/student_study_group_d2e5e3327df2478c9d6ebe31a84c8b35/student_one_2f440b2175bb4d949c8c03fe917a5eeb/context_files/ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png"
+    ],
+    "websocketFrame": {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "payload": "{\"type\":\"SEND_MESSAGE\",\"payload\":{\"content\":\"API-E2E-docker-node-image-upload-400-1787810888392 nested image upload-finalize-read-dispatch proof. Reply only RECEIVED.\",\"context_file_paths\":[],\"image_urls\":[\"/rest/team-runs/student_study_group_d2e5e3327df2478c9d6ebe31a84c8b35/members/%2FStudentStudyGroup%2Fstudent_one/context-files/ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png\"],\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"message_id\":\"client_3678ef06-6749-4884-b128-908e1ba95ce5\",\"dedupe_key\":\"member_input:nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc:student_one_2f440b2175bb4d949c8c03fe917a5eeb:client_3678ef06-6749-4884-b128-908e1ba95ce5\"}}"
+    },
+    "domUserMessageVisible": true,
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/tickets/in-progress/docker-node-image-upload-400/test-results/api-e2e/browser/nested-image-send.png"
+  },
+  "nestedText": null,
+  "directRootImage": null,
+  "mismatch": null,
+  "cleanup": {
+    "browserClosed": true,
+    "frontendStopped": true,
+    "teamTerminated": true,
+    "teamDeleted": true,
+    "failedDraftDeleted": false,
+    "testRunAbsent": true,
+    "testRunDirectoryAbsent": true
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "websocketFramesSent": [
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "payload": "{\"type\":\"SEND_MESSAGE\",\"payload\":{\"content\":\"API-E2E-docker-node-image-upload-400-1787810888392 nested image upload-finalize-read-dispatch proof. Reply only RECEIVED.\",\"context_file_paths\":[],\"image_urls\":[\"/rest/team-runs/student_study_group_d2e5e3327df2478c9d6ebe31a84c8b35/members/%2FStudentStudyGroup%2Fstudent_one/context-files/ctx_57d1a840ba33__API-E2E-docker-node-image-upload-400-1787810888392-nested-image.png\"],\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"message_id\":\"client_3678ef06-6749-4884-b128-908e1ba95ce5\",\"dedupe_key\":\"member_input:nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc:student_one_2f440b2175bb4d949c8c03fe917a5eeb:client_3678ef06-6749-4884-b128-908e1ba95ce5\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "payload": "{\"type\":\"ping\"}"
+    }
+  ],
+  "websocketFramesReceivedSummary": [
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:49664/_nuxt/?token=ZAfBISVFB4YY",
+      "type": "connected",
+      "payloadPreview": "{\"type\":\"connected\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "CONNECTED",
+      "payloadPreview": "{\"type\":\"CONNECTED\",\"payload\":{\"session_id\":\"7c1fd375-ac0a-4589-a899-f8ba8336481f\",\"root_team_run_id\":\"nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "payloadPreview": "{\"type\":\"TEAM_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_team_run_id\":\"nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc\",\"base_change_sequence\":0,\"execution_tree\":{\"schema_version\":2,\"created_at\":\"2026-08-27T06:08:08.735Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[{\"from\":\""
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "TEAM_RUN_LIFECYCLE",
+      "payloadPreview": "{\"type\":\"TEAM_RUN_LIFECYCLE\",\"payload\":{\"is_active\":true}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/terminal/29c3b58f-08f5-40f8-89e4-37090ff712d5",
+      "type": "output",
+      "payloadPreview": "{\"type\":\"output\",\"data\":\"DQpUaGUgZGVmYXVsdCBpbnRlcmFjdGl2ZSBzaGVsbCBpcyBub3cgenNoLg0KVG8gdXBkYXRlIHlvdXIgYWNjb3VudCB0byB1c2UgenNoLCBwbGVhc2UgcnVuIGBjaHNoIC1zIC9iaW4venNoYC4NCkZvciBtb3JlIGRldGFpbHMsIHBsZWFzZSB2aXNpdCBodHRwczovL3N1cHBvcnQuYXBwbGUuY29tL2tiL0hUMjA4MDUwLg0K\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/terminal/29c3b58f-08f5-40f8-89e4-37090ff712d5",
+      "type": "output",
+      "payloadPreview": "{\"type\":\"output\",\"data\":\"G1s/MTAzNGg=\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/terminal/29c3b58f-08f5-40f8-89e4-37090ff712d5",
+      "type": "output",
+      "payloadPreview": "{\"type\":\"output\",\"data\":\"fiAkIA==\"}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":1,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"initializing\",\"trigger\":\"member_command\",\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_73d7eea58c94493b96e8c7076afa564b",
+      "type": "CONNECTED",
+      "payloadPreview": "{\"type\":\"CONNECTED\",\"payload\":{\"session_id\":\"fcb55a71-b66b-45aa-8799-02e143cb0f0b\",\"root_team_run_id\":\"software_engineering_team_73d7eea58c94493b96e8c7076afa564b\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_73d7eea58c94493b96e8c7076afa564b",
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "payloadPreview": "{\"type\":\"TEAM_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_team_run_id\":\"software_engineering_team_73d7eea58c94493b96e8c7076afa564b\",\"base_change_sequence\":6410,\"execution_tree\":{\"schema_version\":2,\"created_at\":\"2026-07-18T09:23:10.108Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_73d7eea58c94493b96e8c7076afa564b",
+      "type": "TEAM_RUN_LIFECYCLE",
+      "payloadPreview": "{\"type\":\"TEAM_RUN_LIFECYCLE\",\"payload\":{\"is_active\":true}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "CONNECTED",
+      "payloadPreview": "{\"type\":\"CONNECTED\",\"payload\":{\"session_id\":\"37ab13bf-676d-46a2-9fce-6b3b2ba220f9\",\"root_team_run_id\":\"software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "payloadPreview": "{\"type\":\"TEAM_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_team_run_id\":\"software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc\",\"base_change_sequence\":7652,\"execution_tree\":{\"schema_version\":2,\"created_at\":\"2026-08-27T04:53:24.414Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[{\"from\""
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "TEAM_RUN_LIFECYCLE",
+      "payloadPreview": "{\"type\":\"TEAM_RUN_LIFECYCLE\",\"payload\":{\"is_active\":true}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_7ba8ebf5a164417e94f8cf33ce819899",
+      "type": "CONNECTED",
+      "payloadPreview": "{\"type\":\"CONNECTED\",\"payload\":{\"session_id\":\"45f3ce10-6a68-4005-9c35-a7f5d1251a29\",\"root_team_run_id\":\"software_engineering_team_7ba8ebf5a164417e94f8cf33ce819899\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "CONNECTED",
+      "payloadPreview": "{\"type\":\"CONNECTED\",\"payload\":{\"session_id\":\"fcc24b2e-0da8-4206-91d6-39f24b150c01\",\"root_team_run_id\":\"software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "payloadPreview": "{\"type\":\"TEAM_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_team_run_id\":\"software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37\",\"base_change_sequence\":5456,\"execution_tree\":{\"schema_version\":2,\"created_at\":\"2026-08-27T05:30:08.815Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[{\"from\""
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TEAM_RUN_LIFECYCLE",
+      "payloadPreview": "{\"type\":\"TEAM_RUN_LIFECYCLE\",\"payload\":{\"is_active\":true}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_7ba8ebf5a164417e94f8cf33ce819899",
+      "type": "TEAM_EXECUTION_VIEW_SNAPSHOT",
+      "payloadPreview": "{\"type\":\"TEAM_EXECUTION_VIEW_SNAPSHOT\",\"payload\":{\"root_team_run_id\":\"software_engineering_team_7ba8ebf5a164417e94f8cf33ce819899\",\"base_change_sequence\":4591,\"execution_tree\":{\"schema_version\":2,\"created_at\":\"2026-07-26T06:03:17.041Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_7ba8ebf5a164417e94f8cf33ce819899",
+      "type": "TEAM_RUN_LIFECYCLE",
+      "payloadPreview": "{\"type\":\"TEAM_RUN_LIFECYCLE\",\"payload\":{\"is_active\":true}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5457,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5458,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:1\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5459,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5460,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-6fe99b91-3df2-4643-b882-a167ad83f1f5\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5461,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5462,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-6fe99b91-3df2-4643-b882-a167ad83f1f5\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5463,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5464,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-6fe99b91-3df2-4643-b882-a167ad83f1f5\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5465,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5466,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-6fe99b91-3df2-4643-b882-a167ad83f1f5\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"cat .cod"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5467,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5468,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"564db2cf-ca80-4153-8933-72f4d03de2b5\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":2,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"initializing\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "MEMBER_INPUT_MESSAGE",
+      "payloadPreview": "{\"type\":\"MEMBER_INPUT_MESSAGE\",\"payload\":{\"change_sequence\":3,\"recipient_agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"message_id\":\"client_3678ef06-6749-4884-b128-908e1ba95ce5\",\"dedupe_key\":\"member_input:nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc:student_one_2f440b21"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":4,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"initializing\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "payloadPreview": "{\"type\":\"SYSTEM_INSTRUCTIONS_SUPPLIED\",\"payload\":{\"change_sequence\":5,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"trace_id\":\"rt_1787810911297_41fb3e47-2b57-4456-9762-acdb2b0cd266\",\"content\":\"## Agent Identity\\n\\n- Name: Student One\\n- Description: Coordinator student for the neste"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":6,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":8,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "TURN_STARTED",
+      "payloadPreview": "{\"type\":\"TURN_STARTED\",\"payload\":{\"change_sequence\":9,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\"}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5469,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5470,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:2\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5471,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5472,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:2\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Planning branch"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":10,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":11,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"segment_id\":\"reasoning-block:9c6d776c-fc54-4090-ab46-b8f3632e9cff:1\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":12,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":13,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"segment_id\":\"reasoning-block:9c6d776c-fc54-4090-ab46-b8f3632e9cff:1\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"segment_type\":\"reasoning\",\"delta\":\"**Confirming exact acknow"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":14,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":15,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"usage_event_id\":\"f530662b-7f08-4245-8e87-d36f0d679878\",\"idempotency_key\":\"codex_token_usage:student_one_2f440b2175bb4d949c8c03fe917a5eeb:01a041d5-95ab-78f3-a1c5-4f7c0336dec3:0"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5473,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5474,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"18869df7-896a-4fc6-9065-9d9765301712\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":16,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":17,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"segment_id\":\"reasoning-block:9c6d776c-fc54-4090-ab46-b8f3632e9cff:1\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Preparing to send R"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":18,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":19,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"segment_id\":\"reasoning-block:9c6d776c-fc54-4090-ab46-b8f3632e9cff:1\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":20,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":21,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"segment_id\":\"exec-0b43b487-8c28-4f16-a808-bb1ace9672c8\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"send_message_to\",\"argume"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":22,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":23,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"invocation_id\":\"exec-0b43b487-8c28-4f16-a808-bb1ace9672c8\",\"tool_name\":\"send_message_to\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"arguments\":{\"recipient_address\":\""
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":24,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":25,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_79901e2ba9ee4410a6c1e786e62f3acc",
+      "type": "TOOL_APPROVAL_REQUESTED",
+      "payloadPreview": "{\"type\":\"TOOL_APPROVAL_REQUESTED\",\"payload\":{\"change_sequence\":26,\"agent_run_id\":\"student_one_2f440b2175bb4d949c8c03fe917a5eeb\",\"invocation_id\":\"exec-0b43b487-8c28-4f16-a808-bb1ace9672c8\",\"tool_name\":\"send_message_to\",\"turn_id\":\"01a041d5-a427-7772-9c3a-98322b8bef20\",\"arguments\":{\"recipient_address\":"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7653,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":7654,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"usage_event_id\":\"032f3e8b-7251-4e04-b9a7-d6a7c7e10a1f\",\"idempotency_key\":\"codex_token_usage:api_e2e_engineer_f646069b19394b7a86c604f610aabfed:01a041c6-1241-7090-90f5-7f"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5475,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5476,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:2\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Inspecting "
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7655,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":7656,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"segment_id\":\"reasoning-block:384dd4d6-36ea-4dfd-8b7b-0944c6dac42b:47\",\"turn_id\":\"01a041c9-f319-7132-be3e-61305c933cea\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7657,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":7658,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"segment_id\":\"reasoning-block:384dd4d6-36ea-4dfd-8b7b-0944c6dac42b:47\",\"turn_id\":\"01a041c9-f319-7132-be3e-61305c933cea\",\"segment_type\":\"reasoning\",\"delta\":\"**Confirming nest"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5477,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5478,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:2\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5479,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5480,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-4483874d-6513-4b25-8830-5740f27dc006\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5481,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5482,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-4483874d-6513-4b25-8830-5740f27dc006\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5483,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5484,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-4483874d-6513-4b25-8830-5740f27dc006\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5485,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5486,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-4483874d-6513-4b25-8830-5740f27dc006\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"printf '"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5487,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5488,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"adaf5c50-cfef-42cf-9687-511c1afe8fb8\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5489,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5490,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:3\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5491,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5492,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:3\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Inspecting spec"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5493,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5494,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:3\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5495,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5496,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-f7d3970f-962f-45f8-9b38-1acb48717334\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5497,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5498,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-f7d3970f-962f-45f8-9b38-1acb48717334\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5499,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5500,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-f7d3970f-962f-45f8-9b38-1acb48717334\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5501,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5502,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-f7d3970f-962f-45f8-9b38-1acb48717334\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"printf '"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5503,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5504,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"d17ae53e-6700-4cfc-9bb1-301ee87ed5ef\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5505,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5506,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:4\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5507,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5508,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:4\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Verifying branc"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5509,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5510,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:4\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5511,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5512,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-19083144-bd9f-49a9-b846-d775369fd9dc\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5513,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5514,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-19083144-bd9f-49a9-b846-d775369fd9dc\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5515,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5516,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-19083144-bd9f-49a9-b846-d775369fd9dc\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5517,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5518,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-19083144-bd9f-49a9-b846-d775369fd9dc\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"git fetc"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5519,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5520,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"ccc4cd8a-daf4-4a7d-b71d-66abd05bd160\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5521,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5522,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:5\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5523,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5524,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:5\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Creating initia"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5525,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5526,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:5\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5527,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5528,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-8845aff1-0014-4257-b711-fa53b7021be1\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5529,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5530,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-8845aff1-0014-4257-b711-fa53b7021be1\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5531,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5532,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-8845aff1-0014-4257-b711-fa53b7021be1\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5533,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5534,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-8845aff1-0014-4257-b711-fa53b7021be1\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"printf '"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5535,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5536,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"45ca0d5f-a94d-4146-8501-a60ac992296d\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5537,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5538,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:6\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5539,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5540,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:6\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Reviewing docum"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5541,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5542,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:6\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5543,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5544,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-3e2ff8f6-a7e7-4007-8857-72e790a49f52\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5545,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5546,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-3e2ff8f6-a7e7-4007-8857-72e790a49f52\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5547,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5548,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-3e2ff8f6-a7e7-4007-8857-72e790a49f52\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5549,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5550,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-3e2ff8f6-a7e7-4007-8857-72e790a49f52\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"printf '"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5551,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5552,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"b17733f5-f4a9-402b-9101-2f77050d141d\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5553,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5554,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:7\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5555,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5556,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:7\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Inspecting proj"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7659,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":7660,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"usage_event_id\":\"9ef4cfed-357c-440f-873c-3dc5a1ccf341\",\"idempotency_key\":\"codex_token_usage:api_e2e_engineer_f646069b19394b7a86c604f610aabfed:01a041c6-1241-7090-90f5-7f"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5557,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5558,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:7\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5559,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5560,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-3a86f01d-44cb-4ca9-a18a-d856dc0a645c\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5561,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5562,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-3a86f01d-44cb-4ca9-a18a-d856dc0a645c\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5563,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5564,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-3a86f01d-44cb-4ca9-a18a-d856dc0a645c\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5565,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5566,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-3a86f01d-44cb-4ca9-a18a-d856dc0a645c\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc \\\"find . -"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5567,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5568,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"bd1934e5-1cec-4bf3-a5f9-6d5f6ab1bedd\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7661,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":7662,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"segment_id\":\"reasoning-block:384dd4d6-36ea-4dfd-8b7b-0944c6dac42b:47\",\"turn_id\":\"01a041c9-f319-7132-be3e-61305c933cea\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Implementin"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5569,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5570,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:8\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5571,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5572,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:8\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Planning ticket"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5573,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5574,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:8\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5575,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5576,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-3a6d5662-afcd-465d-a7eb-f092f398be94\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"comman"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5577,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_STARTED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_STARTED\",\"payload\":{\"change_sequence\":5578,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-3a6d5662-afcd-465d-a7eb-f092f398be94\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/bash"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5579,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "payloadPreview": "{\"type\":\"TOOL_EXECUTION_SUCCEEDED\",\"payload\":{\"change_sequence\":5580,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"invocation_id\":\"exec-3a6d5662-afcd-465d-a7eb-f092f398be94\",\"tool_name\":\"run_bash\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"arguments\":{\"command\":\"/bin/ba"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5581,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5582,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"exec-3a6d5662-afcd-465d-a7eb-f092f398be94\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc 'for f in "
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5583,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":5584,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"usage_event_id\":\"f0895bf3-7131-425e-a7d0-6acd3d4f0f1c\",\"idempotency_key\":\"codex_token_usage:delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf:01a041d5-7cf1-7b10-b26f-"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5585,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_START",
+      "payloadPreview": "{\"type\":\"SEGMENT_START\",\"payload\":{\"change_sequence\":5586,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:9\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"metadata\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5587,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5588,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:9\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"**Planning in-pro"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5589,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5590,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:9\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Planning co"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5591,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5592,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:9\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Clarifying "
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7663,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "TOKEN_USAGE_UPDATED",
+      "payloadPreview": "{\"type\":\"TOKEN_USAGE_UPDATED\",\"payload\":{\"change_sequence\":7664,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"usage_event_id\":\"a0403b13-e5f4-429a-9583-82808bab3b24\",\"idempotency_key\":\"codex_token_usage:api_e2e_engineer_f646069b19394b7a86c604f610aabfed:01a041c6-1241-7090-90f5-7f"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5593,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":5594,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:9\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Verifying p"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":7665,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_f6d1310e9fc34d75957f0cf45c5dc2fc",
+      "type": "SEGMENT_CONTENT",
+      "payloadPreview": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"change_sequence\":7666,\"agent_run_id\":\"api_e2e_engineer_f646069b19394b7a86c604f610aabfed\",\"segment_id\":\"reasoning-block:384dd4d6-36ea-4dfd-8b7b-0944c6dac42b:47\",\"turn_id\":\"01a041c9-f319-7132-be3e-61305c933cea\",\"segment_type\":\"reasoning\",\"delta\":\"\\n\\n**Planning st"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5595,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "SEGMENT_END",
+      "payloadPreview": "{\"type\":\"SEGMENT_END\",\"payload\":{\"change_sequence\":5596,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"segment_id\":\"reasoning-block:3f20d660-5b1f-4fbd-b6d9-8c67e78f2439:9\",\"turn_id\":\"01a041d5-7e82-7792-a6cd-211580ef7f83\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed"
+    },
+    {
+      "label": "nested",
+      "url": "ws://127.0.0.1:29695/ws/agent-team/software_engineering_team_96b6e16f5ae24a50b7ddda67420c6a37",
+      "type": "AGENT_STATUS",
+      "payloadPreview": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"change_sequence\":5597,\"agent_run_id\":\"delivery_engineer_5bf7afc024ca4aaa8011ee7b88381aaf\",\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null}}"
+    }
+  ],
+  "passed": false,
+  "failure": {
+    "message": "Timed out waiting for same nested Agent ready for text-only send",
+    "stack": "Error: Timed out waiting for same nested Agent ready for text-only send\n    at waitUntil (file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/tests/e2e/.docker-node-image-upload-400-live-probe.mjs:84:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-image-upload-400/autobyteus-web/tests/e2e/.docker-node-image-upload-400-live-probe.mjs:399:3",
+    "details": null,
+    "graphqlPayload": null
+  }
+}

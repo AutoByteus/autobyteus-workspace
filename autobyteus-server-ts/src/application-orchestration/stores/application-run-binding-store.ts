@@ -5,6 +5,9 @@ import type {
   ApplicationExecutionResourceRef,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
+import { ApplicationRunBindingRecordCodec } from "../domain/application-run-binding-record-codec.js";
+
+export const APPLICATION_AGENT_TEAM_MEMBER_STORAGE_RUNTIME_KIND = "AGENT_TEAM_MEMBER" as const;
 
 const ensureTables = (db: DatabaseSync): void => {
   db.exec(`
@@ -42,10 +45,18 @@ const ensureTables = (db: DatabaseSync): void => {
   `);
 };
 
+const hasBindingState = (db: DatabaseSync): boolean => Boolean(db.prepare(
+  `SELECT 1
+     FROM sqlite_master
+    WHERE type = 'table'
+      AND name = '__autobyteus_run_bindings'
+    LIMIT 1`,
+).get());
+
 const cloneSummary = (summary: ApplicationAgentBindingRecord): ApplicationAgentBindingRecord => structuredClone(summary);
 
 const hydrateSummary = (row: { summary_json: string }): ApplicationAgentBindingRecord =>
-  JSON.parse(row.summary_json) as ApplicationAgentBindingRecord;
+  ApplicationRunBindingRecordCodec.decode(JSON.parse(row.summary_json));
 
 const normalizeResourceColumns = (executionResourceRef: ApplicationExecutionResourceRef) => ({
   source: executionResourceRef.source,
@@ -68,7 +79,7 @@ export class ApplicationRunBindingStore {
   async listKnownApplicationIds(): Promise<string[]> {
     const applicationIds = new Set<string>();
     for (const databasePath of this.platformStateStore.listExistingPlatformDatabasePaths()) {
-      const db = new DatabaseSync(databasePath);
+      const db = new DatabaseSync(databasePath, { readOnly: true });
       try {
         const tables = db.prepare(`SELECT name FROM sqlite_master WHERE type = 'table'`).all() as Array<{ name: string }>;
         if (!tables.some((table) => table.name === "__autobyteus_run_bindings")) {
@@ -88,9 +99,10 @@ export class ApplicationRunBindingStore {
   }
 
   async persistBinding(summary: ApplicationAgentBindingRecord): Promise<ApplicationAgentBindingRecord> {
-    return this.platformStateStore.withTransaction(summary.applicationId, (db) => {
+    const current = ApplicationRunBindingRecordCodec.decode(summary);
+    return this.platformStateStore.withTransaction(current.applicationId, (db) => {
       ensureTables(db);
-      const resourceColumns = normalizeResourceColumns(summary.executionResourceRef);
+      const resourceColumns = normalizeResourceColumns(current.executionResourceRef);
       db.prepare(
         `INSERT INTO __autobyteus_run_bindings (
            binding_id,
@@ -127,25 +139,25 @@ export class ApplicationRunBindingStore {
            last_error_message = excluded.last_error_message,
            summary_json = excluded.summary_json`,
       ).run(
-        summary.bindingId,
-        summary.launchRequestId,
-        summary.status,
-        summary.runtime.subject,
-        summary.runtime.subject === "AGENT_RUN" ? summary.runtime.agentRunId : null,
-        summary.runtime.subject === "TEAM_RUN" ? summary.runtime.teamRunId : null,
-        summary.runtime.definitionId,
+        current.bindingId,
+        current.launchRequestId,
+        current.status,
+        current.runtime.subject,
+        current.runtime.subject === "AGENT_RUN" ? current.runtime.agentRunId : null,
+        current.runtime.subject === "TEAM_RUN" ? current.runtime.teamRunId : null,
+        current.runtime.definitionId,
         resourceColumns.source,
         resourceColumns.kind,
         resourceColumns.localId,
         resourceColumns.definitionId,
-        summary.createdAt,
-        summary.updatedAt,
-        summary.terminatedAt,
-        summary.lastErrorMessage,
-        JSON.stringify(summary),
+        current.createdAt,
+        current.updatedAt,
+        current.terminatedAt,
+        current.lastErrorMessage,
+        JSON.stringify(current),
       );
 
-      db.prepare(`DELETE FROM __autobyteus_run_binding_members WHERE binding_id = ?`).run(summary.bindingId);
+      db.prepare(`DELETE FROM __autobyteus_run_binding_members WHERE binding_id = ?`).run(current.bindingId);
       const insertMember = db.prepare(
         `INSERT INTO __autobyteus_run_binding_members (
            binding_id,
@@ -155,16 +167,16 @@ export class ApplicationRunBindingStore {
            runtime_kind
          ) VALUES (?, ?, ?, ?, ?)`,
       );
-      for (const member of summary.runtime.members) {
+      for (const member of current.runtime.members) {
         insertMember.run(
-          summary.bindingId,
+          current.bindingId,
           member.memberAddress,
           member.displayName,
           member.agentRunId,
-          member.runtimeKind,
+          APPLICATION_AGENT_TEAM_MEMBER_STORAGE_RUNTIME_KIND,
         );
       }
-      return cloneSummary(summary);
+      return cloneSummary(current);
     });
   }
 
@@ -172,21 +184,22 @@ export class ApplicationRunBindingStore {
     applicationId: string,
     bindingId: string,
   ): Promise<ApplicationAgentBindingRecord | null> {
-    return this.platformStateStore.withDatabase(applicationId, (db) => {
-      ensureTables(db);
+    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+      if (!hasBindingState(db)) return null;
       const row = db
         .prepare(`SELECT summary_json FROM __autobyteus_run_bindings WHERE binding_id = ? LIMIT 1`)
         .get(bindingId) as { summary_json: string } | undefined;
       return row ? cloneSummary(hydrateSummary(row)) : null;
     });
+    return result ?? null;
   }
 
   async findBindingByLaunchRequestId(
     applicationId: string,
     launchRequestId: string,
   ): Promise<ApplicationAgentBindingRecord | null> {
-    return this.platformStateStore.withDatabase(applicationId, (db) => {
-      ensureTables(db);
+    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+      if (!hasBindingState(db)) return null;
       const row = db
         .prepare(
           `SELECT summary_json
@@ -197,14 +210,15 @@ export class ApplicationRunBindingStore {
         .get(launchRequestId.trim()) as { summary_json: string } | undefined;
       return row ? cloneSummary(hydrateSummary(row)) : null;
     });
+    return result ?? null;
   }
 
   async listBindings(
     applicationId: string,
     filter?: ApplicationAgentBindingListFilter | null,
   ): Promise<ApplicationAgentBindingRecord[]> {
-    return this.platformStateStore.withDatabase(applicationId, (db) => {
-      ensureTables(db);
+    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+      if (!hasBindingState(db)) return [];
       const conditions = ["1 = 1"];
       const params: Array<string> = [];
       if (filter?.status?.trim()) {
@@ -221,11 +235,12 @@ export class ApplicationRunBindingStore {
         .all(...params) as Array<{ summary_json: string }>;
       return rows.map((row) => cloneSummary(hydrateSummary(row)));
     });
+    return result ?? [];
   }
 
   async listNonterminalBindings(applicationId: string): Promise<ApplicationAgentBindingRecord[]> {
-    return this.platformStateStore.withDatabase(applicationId, (db) => {
-      ensureTables(db);
+    const result = await this.platformStateStore.withExistingDatabase(applicationId, (db) => {
+      if (!hasBindingState(db)) return [];
       const rows = db
         .prepare(
           `SELECT summary_json
@@ -236,5 +251,6 @@ export class ApplicationRunBindingStore {
         .all() as Array<{ summary_json: string }>;
       return rows.map((row) => cloneSummary(hydrateSummary(row)));
     });
+    return result ?? [];
   }
 }

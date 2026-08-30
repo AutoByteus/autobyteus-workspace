@@ -2,12 +2,16 @@ import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import type { ApplicationStoragePathConfig } from "../utils/application-storage-paths.js";
 
-const resolveGlobalDatabasePath = (): string =>
-  path.join(appConfigProvider.config.getAppDataDir(), "applications", "_global", "db", "orchestration.sqlite");
-
-const ensureGlobalDatabasePrepared = (): string => {
-  const databasePath = resolveGlobalDatabasePath();
+const ensureGlobalDatabasePrepared = (appConfig: ApplicationStoragePathConfig): string => {
+  const databasePath = path.join(
+    appConfig.getAppDataDir(),
+    "applications",
+    "_global",
+    "db",
+    "orchestration.sqlite",
+  );
   fs.mkdirSync(path.dirname(databasePath), { recursive: true });
   const db = new DatabaseSync(databasePath);
   try {
@@ -28,8 +32,12 @@ const ensureGlobalDatabasePrepared = (): string => {
 };
 
 export class ApplicationGlobalPlatformStateStore {
+  constructor(
+    private readonly appConfig: ApplicationStoragePathConfig = appConfigProvider.config,
+  ) {}
+
   withDatabase<T>(fn: (db: DatabaseSync) => T): T {
-    const db = new DatabaseSync(ensureGlobalDatabasePrepared());
+    const db = new DatabaseSync(ensureGlobalDatabasePrepared(this.appConfig));
     try {
       return fn(db);
     } finally {

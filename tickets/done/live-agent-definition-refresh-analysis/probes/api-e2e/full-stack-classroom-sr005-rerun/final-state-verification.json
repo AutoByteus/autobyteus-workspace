@@ -1,0 +1,116 @@
+{
+  "checkedAt": "2026-08-26T05:04:25.067Z",
+  "runId": "classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3",
+  "backendHealth": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "graphqlHttpStatus": 200,
+  "graphql": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3",
+        "isActive": false,
+        "executionTree": {
+          "schema_version": 2,
+          "created_at": "2026-08-26T05:03:40.079Z",
+          "archived_at": null,
+          "application_binding": null,
+          "handoffs": [],
+          "root_team": {
+            "address": "/",
+            "team_definition_id": "classroom-simulation-team",
+            "team_definition_name": "Classroom Simulation Team",
+            "team_run_id": "classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3",
+            "coordinator_address": "/professor",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.4",
+              "llm_config": {
+                "reasoning_effort": "low"
+              },
+              "auto_execute_tools": false,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/professor",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                "role": null,
+                "description": null,
+                "agent_run_id": "professor_06bd625955ee406c876a03f07fcb8043",
+                "platform_agent_run_id": "01a03c73-e162-7da2-955a-31fca17e2cee",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.4",
+                  "llm_config": {
+                    "reasoning_effort": "low"
+                  },
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/student",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_e032871202c54a7a819c96ba53bcd49e",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.4",
+                  "llm_config": {
+                    "reasoning_effort": "low"
+                  },
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/temp-workspace"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        },
+        "modelConfigEditability": {
+          "editable": true,
+          "reason": null
+        }
+      }
+    }
+  },
+  "persistedTree": {
+    "path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3/team_run_execution_tree.json",
+    "sha256": "7f707afcd7d43d4042685880cf997a316b1e08f7e720b5d647779430d2861b7d",
+    "runtimeKind": "codex_app_server",
+    "modelIdentifier": "gpt-5.4",
+    "rootReasoningEffort": "low",
+    "memberReasoningEfforts": [
+      {
+        "address": "/professor",
+        "reasoningEffort": "low"
+      },
+      {
+        "address": "/student",
+        "reasoningEffort": "low"
+      }
+    ]
+  },
+  "providerTrace": {
+    "path": "/home/autobyteus/workspace/autobyteus-workspace-live-agent-definition-refresh-analysis/.autobyteus/development/server-data/memory/agent_teams/classroom_simulation_team_5ae5bdc7cc1a4aa0a847fb0022802ed3/professor_06bd625955ee406c876a03f07fcb8043/raw_traces_active.jsonl",
+    "sha256": "8ead2733a0f8028d44e0978d477e2a1c2a0217510c48073448b2c6eb0c4909a5",
+    "assistantTrace": {
+      "id": "rt_1787720626291_a86f2c7c-3f2f-4229-9cd1-ac78fe55a46d",
+      "ts": 1787720626.291,
+      "turn_id": "01a03c73-e1d0-7321-abad-2277666e7a82",
+      "seq": 2,
+      "trace_type": "assistant",
+      "content": "CLASSROOM_E2E_LOW_OK",
+      "source_event": "SEGMENT_END"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+# DR-001 Evidence SHA-256
+
+2073bbafb11d47264154ae2f36de44dfd9efa9e0272f62498d37d3bac9289dce  dr-001-analytics-desktop.png
+741fb91430d240bf73f6b66a09901fa09db94e2b590de11a651b18bb05ff4333  dr-001-analytics-narrow.png
+3b447dde5384e6966777591128f6b833576d37652cdb845c5fd5b8c57e465288  dr-001-analytics-narrow-zh-CN.png
+abe162b1b8a56b446e4b68a1f78337ca1bbd95eaea1e5c8889b85f3db0ecf255  dr-001-analytics-partial-cost.png
+fdb97327c834ac0107d73de9fdb31eed5905a1de095c27d8438a6ba4818b8740  dr-001-delivery-artifact-audit.log
+33e1b7c78d2bbbcd97095d12885772f89283b8e55af29f8d3422cfd6d910b53b  dr-001-detailed-usage-desktop.png
+379ef635d3f7f5dd3ce5ae6723c507e5cea43ccfc8ac7e4cf085820b3ef63185  dr-001-integration-and-validation.md
+7a82d3f637ab58756653f6a4a8b2040c23effb3ee5bac2e458e3f5ee9d0c4538  dr-001-post-integration-attempt-1-result.json
+c787514d6ee22d4b0e4e12e3fa6393639945d78fdbd502688b8085ce5a65c8c4  dr-001-post-integration-attempt-1-server-build.log
+2d067beae5c01c85f98d87760149f1d7f5f7e0b2c8b7c06d79879e6ac6290ea3  dr-001-post-integration-backend.log
+14926495110bf2d45232d64c5f4281bbbadf7be76a3172c746539e3218b6be4c  dr-001-post-integration-browser-probe.log
+d41b6c9ce615744935c88498274fa297421b3f97d66a3fae61bc48968f5d2d12  dr-001-post-integration-browser-result.json
+3b62df0b1ebbfc949fb44e05b7ebe40163026d8dc89758ae520cd6e98a84356c  dr-001-post-integration-database-migrate.log
+1badf1a7d4be5c6de8adfd5b47056c9976d50c054217d4dd43fa9a99a573eea6  dr-001-post-integration-frontend.log
+5726032df842bb825ee97187b013fa5a78ae36d466d280f152f8565cfd15e4f6  dr-001-post-integration-server-build.log
+4af6e8b3e78a85800c5ef8b9ba7bd6ec9d859e2da1c9f946bb9df97294d96a62  dr-001-run-details-desktop.png

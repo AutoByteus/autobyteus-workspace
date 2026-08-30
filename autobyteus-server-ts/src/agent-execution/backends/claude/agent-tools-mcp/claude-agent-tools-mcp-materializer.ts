@@ -8,21 +8,19 @@ import {
 export type ClaudeAgentToolsMcpHttpServerConfig = {
   type: "http";
   url: string;
-  headers: AgentToolMcpDescriptor["headers"];
   alwaysLoad: true;
 };
 
-export type ClaudeAgentToolsMcpServerMap = {
+export type ClaudeAgentToolsMcpConfig = {
   [AGENT_TOOLS_MCP_SERVER_NAME]: ClaudeAgentToolsMcpHttpServerConfig;
 };
 
 export const materializeClaudeAgentToolsMcpServers = (
   descriptor: AgentToolMcpDescriptor,
-): ClaudeAgentToolsMcpServerMap => ({
+): ClaudeAgentToolsMcpConfig => ({
   [AGENT_TOOLS_MCP_SERVER_NAME]: {
     type: "http",
     url: descriptor.serverUrl,
-    headers: { ...descriptor.headers },
     alwaysLoad: true,
   },
 });

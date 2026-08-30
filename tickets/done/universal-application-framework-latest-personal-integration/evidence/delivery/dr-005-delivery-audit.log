@@ -1,0 +1,50 @@
+DR-005 DELIVERY AUDIT
+timestamp_utc=2026-08-23T06:58:07Z
+branch=codex/universal-application-framework-latest-personal-integration
+head=a2756b28d7e72ec49acca0753194eeb1775c11de
+base=7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+integration_merge=5cf9b8eb22a3b83c114dbb4199341a65aaee8cea
+integration_merge_parents=663f44d31deb05bf47f0eda780de4d754187a51b 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+delivery_checkpoint=a2756b28d7e72ec49acca0753194eeb1775c11de
+divergence=144	0
+origin_personal_ancestor=PASS
+unmerged_path_count=0
+build_marker=FINAL=PASS
+isolation_marker=FINAL=PASS
+verification_marker=FINAL=PASS
+base_refresh_marker=FINAL=PASS
+isolation_scenario_count=5
+isolation_scenario_pass_count=5
+cleanup_entry_count=9
+cleanup_pass_count=9
+ordinary_identity_preserved=true
+ordinary_before_pid=80842
+ordinary_after_pid=80842
+ordinary_before_fingerprint=c67b3dd4b323ba3096c09c66bd306cf34b5d61a0fd29ceb0e60c25e341e86bc9
+ordinary_after_fingerprint=c67b3dd4b323ba3096c09c66bd306cf34b5d61a0fd29ceb0e60c25e341e86bc9
+isolation_evidence=PASS
+delivery_doc_sha256[docs-sync-report.md]=44d450be12228b4d4ebbeae4854eb2ca95943ba8abfedeba09ccb97c6537454c
+delivery_doc_sha256[electron-test-build-report.md]=a81ff09391e82b8270a9655d57844d86253839a76f0bcfebfc5fb3f95664b038
+delivery_doc_sha256[handoff-summary.md]=2d6fc0fec44f4e4b08f45dea90e490cea4fa36d57d559b21aad680c5b79bf801
+delivery_doc_sha256[release-deployment-report.md]=3bddd8a2bba98d589dded4877d2d544f0e735ad6083ae55fbdc93bbe4beb25eb
+delivery_doc_sha256[delivery-revision-record.md]=fa66f8db98ca835292312d6b153540dcc3ad15c5ee0fd4c085ba1db412207120
+dmg_size=466868232
+dmg_sha256=3dff6c644b46ce7603f5e64ca32a9283dc1328f4912d93a16f9674e4ea411562
+zip_size=461512085
+zip_sha256=f2d9c3bfe6f8b53f59a7fbf7e82bc81394c07cbd8ab192202e97d6d4b771c0b0
+generated_sdk_dist_absent=PASS
+git_diff_check=PASS
+--- git status ---
+## codex/universal-application-framework-latest-personal-integration...origin/personal [ahead 144]
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-005-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-005-delivery-audit.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-005-electron-isolation.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-005-electron-isolation/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-005-electron-macos-arm64-build.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-005-electron-macos-arm64-verification.log
+FINAL=PASS

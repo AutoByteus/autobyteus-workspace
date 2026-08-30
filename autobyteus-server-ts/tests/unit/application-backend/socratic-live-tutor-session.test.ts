@@ -3,7 +3,7 @@ import { createSocraticTutorSession } from "../../../../applications/socratic-ma
 
 const address = {
   bindingId: "binding-lesson-1",
-  target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+  memberAddress: "/tutor",
 };
 
 const buildLesson = (overrides: Record<string, unknown> = {}) => ({
@@ -65,12 +65,8 @@ const buildConnectionHarness = () => {
         address,
         runtimeSubject: "TEAM_RUN",
         producer: {
-          runId: "team-run-1::tutor",
-          memberRouteKey: "tutor",
-          memberName: "tutor",
+          agentRunId: "team-run-1::tutor",
           displayName: "Tutor",
-          runtimeKind: "AGENT_TEAM_MEMBER",
-          teamPath: [],
         },
         event,
       });
@@ -281,7 +277,7 @@ describe("Socratic live tutor session", () => {
         lessonId: "lesson-2",
         tutorTargetAddress: {
           bindingId: "binding-lesson-2",
-          target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+          memberAddress: "/tutor",
         },
       }),
     });

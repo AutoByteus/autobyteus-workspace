@@ -1,0 +1,155 @@
+
+> autobyteus@1.4.28 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/applications/__tests__ components/applications/setup/__tests__ composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts components/launch-config/__tests__ components/workspace/config/__tests__ --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationSurface.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (19 tests) 82ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (17 tests) 64ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (10 tests) 95ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 125ms
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps the iframe canvas hidden behind an opaque host reveal gate until bootstrap delivery succeeds
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+[ApplicationSurface] accepted ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > ignores stale ready signals that do not match the active launch descriptor
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+stderr | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] launch failed applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Bootstrap bridge failed
+
+stdout | components/applications/__tests__/ApplicationSurface.spec.ts > ApplicationSurface > keeps bootstrap failures inside the transition state and allows retry without revealing the canvas
+[ApplicationSurface] committed launch descriptor applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 entryHtmlUrl=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html
+
+ ✓ components/applications/__tests__/ApplicationSurface.spec.ts (4 tests) 21ms
+ ✓ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (2 tests) 46ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (12 tests) 124ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (16 tests) 82ms
+ ✓ components/applications/__tests__/ApplicationShell.spec.ts (3 tests) 251ms
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/__tests__/ApplicationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (2 tests) 23ms
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] iframe loaded applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 src=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=file%3A%2F%2F
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] received ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1
+
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits a bridge error when the bootstrap payload cannot be cloned into postMessage
+[ApplicationIframeHost] bridge error applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned.
+
+ ✓ components/applications/__tests__/ApplicationIframeHost.spec.ts (2 tests) 13ms
+ ✓ components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts (5 tests) 39ms
+stdout | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts (3 tests) 5ms
+stdout | components/applications/__tests__/ApplicationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/__tests__/ApplicationCard.spec.ts (1 test) 6ms
+
+ Test Files  14 passed (14)
+      Tests  111 passed (111)
+   Start at  22:01:26
+   Duration  8.15s (transform 4.76s, setup 53.11s, collect 4.17s, tests 976ms, environment 3.82s, prepare 2.51s)
+

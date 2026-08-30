@@ -1,0 +1,8 @@
+{
+  "scenario": "APIE2E-CONTEXT-001",
+  "rootTeamRunId": "nested_classroom_test_team_051cdced90f544a8a002caa7abffb77a",
+  "inputPrompt": "Read the attached context file. Respond with only the exact marker stored inside it, with no explanation.",
+  "normalizedContextFileBasename": "ctx_832e38b1dd8c__api-rev-002-context-input.txt",
+  "toolSucceeded": true,
+  "assistantMarker": "CONTEXT_PROVIDER_COMPOSITION_8F3D2A"
+}

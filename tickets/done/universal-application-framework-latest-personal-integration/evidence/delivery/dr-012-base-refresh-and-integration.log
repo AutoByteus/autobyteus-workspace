@@ -1,0 +1,17 @@
+DR-012 final supplemental-gate latest-base refresh
+timestamp=2026-08-25T19:14:03Z
+checkpoint=cbe2cdfc23d600f5d393a2fcbb0d8289e5500f0b
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+fetched_origin_personal=9d0fd7c570d58da1af2c7a40279327c8a20a8093
+head=cbe2cdfc23d600f5d393a2fcbb0d8289e5500f0b
+merge_base=9d0fd7c570d58da1af2c7a40279327c8a20a8093
+divergence=0/176
+base_ancestor=yes
+new_merge_required=no
+executable_source_change_since_dr011=no
+electron_rebuild_required=no
+basis=API-REV-012/CRR-023 changed ticket evidence/reviewer artifacts only; DR-011 package source remains exact
+post_head=cbe2cdfc23d600f5d393a2fcbb0d8289e5500f0b
+post_base_ancestor=yes
+unmerged_path_count=0

@@ -102,6 +102,7 @@ export class ClaudeSessionBootstrapper {
       workingDirectory,
       permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
       autoExecuteTools: runContext.config.autoExecuteTools,
+      llmConfig: runContext.config.llmConfig,
     });
     return new AgentRunContext({
       runId: runContext.runId,

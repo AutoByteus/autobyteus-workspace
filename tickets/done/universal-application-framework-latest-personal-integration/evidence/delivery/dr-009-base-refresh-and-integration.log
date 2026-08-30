@@ -1,0 +1,329 @@
+DR-009 LATEST BASE REFRESH AND INTEGRATION
+timestamp_utc=2026-08-24T11:43:31Z
+branch=codex/universal-application-framework-latest-personal-integration
+delivery_checkpoint=d6d3b040b33a9ad070ad3047783514470cd0aece
+reviewed_personal_base=389748b0b9f0dea051aaed18641de131cf0adbbb
+pre_fetch_origin_personal=8d6b06b8cf15d1f355be86b02ef233a111998f07
+command=git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+   8d6b06b8c..8a4c3868c  personal   -> origin/personal
+fetched_origin_personal=8a4c3868c7c54a46991f45be22a68151076412b1
+pre_integration_divergence=11	158
+new_base_commits_since_reviewed=11
+new_base_log_begin
+8a4c3868c (origin/personal, origin/HEAD) docs(requirements): close personal prototype integration
+0100f78d3 prototype: prepare approved package for personal integration
+bd82e3056 docs(requirements): authorize personal prototype integration
+fac327fdc docs(requirements): accept agent team run parity
+232fc4c0e prototype: finalize RER-009 team launch parity
+89b76166d fix(prototype): preserve launched team member focus
+afc83eb1a fix(prototype): complete agent team launch parity
+aeb9d2cfc docs(requirements): reopen agent team run parity
+8d6b06b8c (personal) docs(delivery): finalize v1.4.57 handoff
+b5ba89144 chore(delivery): complete v1.4.57 cleanup
+d2ab2ef2b chore(delivery): record v1.4.57 rollout
+new_base_log_end
+new_base_diff_stat_begin
+ autobyteus-web-prototype/README.md                 |   32 +-
+ autobyteus-web-prototype/comparison-report.md      |   24 +-
+ autobyteus-web-prototype/evidence-index.md         |   59 +-
+ .../gap-009/direct-browser-tool-replay.txt         |   32 +
+ .../evidence/gap-009/gap-009-results.json          |  363 +++++
+ .../evidence/gap-009/gap-009-summary.json          |   11 +
+ .../gap-009/manual-prototype-complete-journey.png  |  Bin 0 -> 57680 bytes
+ .../gap-009/manual-source-complete-journey.png     |  Bin 0 -> 57680 bytes
+ .../evidence/gap-009/prototype/JRN-050-A.png       |  Bin 0 -> 49942 bytes
+ .../evidence/gap-009/prototype/JRN-050-B.png       |  Bin 0 -> 71583 bytes
+ .../evidence/gap-009/prototype/JRN-050-C.png       |  Bin 0 -> 82480 bytes
+ .../evidence/gap-009/prototype/JRN-050-D.png       |  Bin 0 -> 58235 bytes
+ .../evidence/gap-009/source/JRN-050-A.png          |  Bin 0 -> 49942 bytes
+ .../evidence/gap-009/source/JRN-050-B.png          |  Bin 0 -> 71583 bytes
+ .../evidence/gap-009/source/JRN-050-C.png          |  Bin 0 -> 82480 bytes
+ .../evidence/gap-009/source/JRN-050-D.png          |  Bin 0 -> 58235 bytes
+ .../gap-010/direct-browser-tool-replay.txt         |   41 +
+ .../evidence/gap-010/gap-010-results.json          |  515 +++++++
+ .../evidence/gap-010/gap-010-summary.json          |   14 +
+ .../gap-010/manual-prototype-writer-focus.png      |  Bin 0 -> 57328 bytes
+ .../gap-010/manual-source-writer-focus.png         |  Bin 0 -> 57328 bytes
+ .../evidence/gap-010/prototype/JRN-050-A.png       |  Bin 0 -> 49942 bytes
+ .../evidence/gap-010/prototype/JRN-050-B.png       |  Bin 0 -> 71583 bytes
+ .../evidence/gap-010/prototype/JRN-050-C.png       |  Bin 0 -> 82480 bytes
+ .../evidence/gap-010/prototype/JRN-050-D.png       |  Bin 0 -> 58235 bytes
+ .../evidence/gap-010/prototype/JRN-050-E.png       |  Bin 0 -> 58043 bytes
+ .../evidence/gap-010/source/JRN-050-A.png          |  Bin 0 -> 49942 bytes
+ .../evidence/gap-010/source/JRN-050-B.png          |  Bin 0 -> 71583 bytes
+ .../evidence/gap-010/source/JRN-050-C.png          |  Bin 0 -> 82480 bytes
+ .../evidence/gap-010/source/JRN-050-D.png          |  Bin 0 -> 58235 bytes
+ .../evidence/gap-010/source/JRN-050-E.png          |  Bin 0 -> 58043 bytes
+ ...er-011-final-rebase-prepromotion-validation.txt |  549 ++++++++
+ .../rer-011-initial-candidate-validation.txt       |  577 ++++++++
+ ...-011-initial-rebase-prepromotion-validation.txt |  402 ++++++
+ .../integration/rer-011-rebase-preservation.json   |  330 +++++
+ .../presentation-code-parity-summary.json          |    4 +-
+ .../presentation-code-parity.json                  | 1482 ++++++++++----------
+ .../rer-009-direct-review.txt                      |   39 +
+ .../evidence/runtime/boundary-validation.json      |    4 +-
+ .../validation/final-reference-capture.txt         |    6 +-
+ .../evidence/validation/pp-gap-009-boundaries.txt  |   17 +
+ .../validation/pp-gap-009-browser-regression.txt   |    5 +
+ .../evidence/validation/pp-gap-009-build.txt       |  239 ++++
+ .../pp-gap-009-correction-regression.txt           |    6 +
+ .../evidence/validation/pp-gap-009-gap-009.txt     |    8 +
+ .../evidence/validation/pp-gap-009-lint.txt        |    3 +
+ .../evidence/validation/pp-gap-009-package.txt     |   26 +
+ .../evidence/validation/pp-gap-009-test.txt        |   14 +
+ .../evidence/validation/pp-gap-009-typecheck.txt   |   15 +
+ .../evidence/validation/pp-gap-010-boundaries.txt  |   17 +
+ .../evidence/validation/pp-gap-010-build.txt       |  239 ++++
+ .../pp-gap-010-correction-regression.txt           |    7 +
+ .../evidence/validation/pp-gap-010-gap-010.txt     |    9 +
+ .../evidence/validation/pp-gap-010-lint.txt        |    4 +
+ .../evidence/validation/pp-gap-010-package.txt     |   31 +
+ .../evidence/validation/pp-gap-010-test.txt        |   15 +
+ .../evidence/validation/pp-gap-010-typecheck.txt   |   15 +
+ ...roduct-prototyper-final-package-consistency.txt |   21 +-
+ .../product-prototyper-final-validation.txt        |   99 +-
+ .../validation/rer-009-terminal-validation.txt     |  165 +++
+ .../final-reference-screenshots/README.md          |    6 +-
+ .../VIS-016-team-launch-ready-desktop-en.png       |  Bin 0 -> 82480 bytes
+ ...017-team-launched-writer-focused-desktop-en.png |  Bin 0 -> 58044 bytes
+ .../final-reference-screenshots/manifest.json      |   46 +-
+ autobyteus-web-prototype/mock-boundaries.md        |    6 +-
+ autobyteus-web-prototype/package.json              |    7 +-
+ autobyteus-web-prototype/parity-inventory.md       |   17 +-
+ .../personal-integration-record.md                 |   72 +
+ .../plugins/00.prototype-state.client.ts           |   55 +-
+ autobyteus-web-prototype/pp-gap-009-correction.md  |   94 ++
+ autobyteus-web-prototype/pp-gap-010-correction.md  |   84 ++
+ .../product-prototyper-baseline-review.md          |  118 +-
+ .../prototype-bootstrap-report.md                  |  171 ++-
+ autobyteus-web-prototype/prototype-runbook.md      |  134 +-
+ autobyteus-web-prototype/prototype-scenarios.md    |    7 +-
+ .../prototype/scripts/capture-final-references.mjs |   39 +-
+ .../prototype/scripts/validate-final-package.mjs   |   27 +-
+ .../prototype/scripts/validate-gap-009-package.mjs |   92 ++
+ .../prototype/scripts/validate-gap-009.mjs         |  212 +++
+ .../prototype/scripts/validate-gap-010-package.mjs |  108 ++
+ .../prototype/scripts/validate-gap-010.mjs         |  230 +++
+ .../scripts/validate-personal-integration.mjs      |   92 ++
+ .../prototype/shared/apply-experience-scenario.js  |  113 +-
+ .../prototype/source-observation/fixtures.mjs      |   42 +-
+ .../prototype/tests/fixture-contract.test.ts       |   41 +
+ .../repository-placement-correction.md             |   19 +-
+ autobyteus-web-prototype/ui-ux-spec.md             |   96 +-
+ .../delivery-revision-record.md                    |   39 +-
+ .../docs-sync-report.md                            |    8 +-
+ .../final-cleanup.log                              |   31 +
+ .../handoff-summary.md                             |   55 +-
+ .../release-deployment-report.md                   |   64 +-
+ .../release-v1.4.57-verification.log               |   64 +
+ .../agent-team-run-parity-analysis.md              |   96 ++
+ .../agent-team-run-prototype-after-click.png       |  Bin 0 -> 49198 bytes
+ .../agent-team-run-prototype-reproduction.json     |   21 +
+ .../investigation-notes.md                         |   96 +-
+ .../initial-prototype-baseline/requirements-doc.md |  101 +-
+ .../requirements-revision-record.md                |   64 +
+ 99 files changed, 6814 insertions(+), 1192 deletions(-)
+new_base_diff_stat_end
+merge_base=389748b0b9f0dea051aaed18641de131cf0adbbb
+ticket_changed_path_count=2045
+base_changed_path_count=99
+changed_both_path_count=0
+changed_both_paths_begin
+changed_both_paths_end
+command=git merge-tree --write-tree HEAD origin/personal
+merge_tree_exit=0
+merge_tree_output_lines=1
+merge_tree_output_begin
+8f8779a491b423b802badcdefbf331546a7ec426
+merge_tree_output_end
+actual_integration_begin
+command=git merge --no-edit origin/personal
+Merge made by the 'ort' strategy.
+ autobyteus-web-prototype/README.md                 |   32 +-
+ autobyteus-web-prototype/comparison-report.md      |   24 +-
+ autobyteus-web-prototype/evidence-index.md         |   59 +-
+ .../gap-009/direct-browser-tool-replay.txt         |   32 +
+ .../evidence/gap-009/gap-009-results.json          |  363 +++++
+ .../evidence/gap-009/gap-009-summary.json          |   11 +
+ .../gap-009/manual-prototype-complete-journey.png  |  Bin 0 -> 57680 bytes
+ .../gap-009/manual-source-complete-journey.png     |  Bin 0 -> 57680 bytes
+ .../evidence/gap-009/prototype/JRN-050-A.png       |  Bin 0 -> 49942 bytes
+ .../evidence/gap-009/prototype/JRN-050-B.png       |  Bin 0 -> 71583 bytes
+ .../evidence/gap-009/prototype/JRN-050-C.png       |  Bin 0 -> 82480 bytes
+ .../evidence/gap-009/prototype/JRN-050-D.png       |  Bin 0 -> 58235 bytes
+ .../evidence/gap-009/source/JRN-050-A.png          |  Bin 0 -> 49942 bytes
+ .../evidence/gap-009/source/JRN-050-B.png          |  Bin 0 -> 71583 bytes
+ .../evidence/gap-009/source/JRN-050-C.png          |  Bin 0 -> 82480 bytes
+ .../evidence/gap-009/source/JRN-050-D.png          |  Bin 0 -> 58235 bytes
+ .../gap-010/direct-browser-tool-replay.txt         |   41 +
+ .../evidence/gap-010/gap-010-results.json          |  515 +++++++
+ .../evidence/gap-010/gap-010-summary.json          |   14 +
+ .../gap-010/manual-prototype-writer-focus.png      |  Bin 0 -> 57328 bytes
+ .../gap-010/manual-source-writer-focus.png         |  Bin 0 -> 57328 bytes
+ .../evidence/gap-010/prototype/JRN-050-A.png       |  Bin 0 -> 49942 bytes
+ .../evidence/gap-010/prototype/JRN-050-B.png       |  Bin 0 -> 71583 bytes
+ .../evidence/gap-010/prototype/JRN-050-C.png       |  Bin 0 -> 82480 bytes
+ .../evidence/gap-010/prototype/JRN-050-D.png       |  Bin 0 -> 58235 bytes
+ .../evidence/gap-010/prototype/JRN-050-E.png       |  Bin 0 -> 58043 bytes
+ .../evidence/gap-010/source/JRN-050-A.png          |  Bin 0 -> 49942 bytes
+ .../evidence/gap-010/source/JRN-050-B.png          |  Bin 0 -> 71583 bytes
+ .../evidence/gap-010/source/JRN-050-C.png          |  Bin 0 -> 82480 bytes
+ .../evidence/gap-010/source/JRN-050-D.png          |  Bin 0 -> 58235 bytes
+ .../evidence/gap-010/source/JRN-050-E.png          |  Bin 0 -> 58043 bytes
+ ...er-011-final-rebase-prepromotion-validation.txt |  549 ++++++++
+ .../rer-011-initial-candidate-validation.txt       |  577 ++++++++
+ ...-011-initial-rebase-prepromotion-validation.txt |  402 ++++++
+ .../integration/rer-011-rebase-preservation.json   |  330 +++++
+ .../presentation-code-parity-summary.json          |    4 +-
+ .../presentation-code-parity.json                  | 1482 ++++++++++----------
+ .../rer-009-direct-review.txt                      |   39 +
+ .../evidence/runtime/boundary-validation.json      |    4 +-
+ .../validation/final-reference-capture.txt         |    6 +-
+ .../evidence/validation/pp-gap-009-boundaries.txt  |   17 +
+ .../validation/pp-gap-009-browser-regression.txt   |    5 +
+ .../evidence/validation/pp-gap-009-build.txt       |  239 ++++
+ .../pp-gap-009-correction-regression.txt           |    6 +
+ .../evidence/validation/pp-gap-009-gap-009.txt     |    8 +
+ .../evidence/validation/pp-gap-009-lint.txt        |    3 +
+ .../evidence/validation/pp-gap-009-package.txt     |   26 +
+ .../evidence/validation/pp-gap-009-test.txt        |   14 +
+ .../evidence/validation/pp-gap-009-typecheck.txt   |   15 +
+ .../evidence/validation/pp-gap-010-boundaries.txt  |   17 +
+ .../evidence/validation/pp-gap-010-build.txt       |  239 ++++
+ .../pp-gap-010-correction-regression.txt           |    7 +
+ .../evidence/validation/pp-gap-010-gap-010.txt     |    9 +
+ .../evidence/validation/pp-gap-010-lint.txt        |    4 +
+ .../evidence/validation/pp-gap-010-package.txt     |   31 +
+ .../evidence/validation/pp-gap-010-test.txt        |   15 +
+ .../evidence/validation/pp-gap-010-typecheck.txt   |   15 +
+ ...roduct-prototyper-final-package-consistency.txt |   21 +-
+ .../product-prototyper-final-validation.txt        |   99 +-
+ .../validation/rer-009-terminal-validation.txt     |  165 +++
+ .../final-reference-screenshots/README.md          |    6 +-
+ .../VIS-016-team-launch-ready-desktop-en.png       |  Bin 0 -> 82480 bytes
+ ...017-team-launched-writer-focused-desktop-en.png |  Bin 0 -> 58044 bytes
+ .../final-reference-screenshots/manifest.json      |   46 +-
+ autobyteus-web-prototype/mock-boundaries.md        |    6 +-
+ autobyteus-web-prototype/package.json              |    7 +-
+ autobyteus-web-prototype/parity-inventory.md       |   17 +-
+ .../personal-integration-record.md                 |   72 +
+ .../plugins/00.prototype-state.client.ts           |   55 +-
+ autobyteus-web-prototype/pp-gap-009-correction.md  |   94 ++
+ autobyteus-web-prototype/pp-gap-010-correction.md  |   84 ++
+ .../product-prototyper-baseline-review.md          |  118 +-
+ .../prototype-bootstrap-report.md                  |  171 ++-
+ autobyteus-web-prototype/prototype-runbook.md      |  134 +-
+ autobyteus-web-prototype/prototype-scenarios.md    |    7 +-
+ .../prototype/scripts/capture-final-references.mjs |   39 +-
+ .../prototype/scripts/validate-final-package.mjs   |   27 +-
+ .../prototype/scripts/validate-gap-009-package.mjs |   92 ++
+ .../prototype/scripts/validate-gap-009.mjs         |  212 +++
+ .../prototype/scripts/validate-gap-010-package.mjs |  108 ++
+ .../prototype/scripts/validate-gap-010.mjs         |  230 +++
+ .../scripts/validate-personal-integration.mjs      |   92 ++
+ .../prototype/shared/apply-experience-scenario.js  |  113 +-
+ .../prototype/source-observation/fixtures.mjs      |   42 +-
+ .../prototype/tests/fixture-contract.test.ts       |   41 +
+ .../repository-placement-correction.md             |   19 +-
+ autobyteus-web-prototype/ui-ux-spec.md             |   96 +-
+ .../delivery-revision-record.md                    |   39 +-
+ .../docs-sync-report.md                            |    8 +-
+ .../final-cleanup.log                              |   31 +
+ .../handoff-summary.md                             |   55 +-
+ .../release-deployment-report.md                   |   64 +-
+ .../release-v1.4.57-verification.log               |   64 +
+ .../agent-team-run-parity-analysis.md              |   96 ++
+ .../agent-team-run-prototype-after-click.png       |  Bin 0 -> 49198 bytes
+ .../agent-team-run-prototype-reproduction.json     |   21 +
+ .../investigation-notes.md                         |   96 +-
+ .../initial-prototype-baseline/requirements-doc.md |  101 +-
+ .../requirements-revision-record.md                |   64 +
+ 99 files changed, 6814 insertions(+), 1192 deletions(-)
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/direct-browser-tool-replay.txt
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/gap-009-results.json
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/gap-009-summary.json
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/manual-prototype-complete-journey.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/manual-source-complete-journey.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/prototype/JRN-050-A.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/prototype/JRN-050-B.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/prototype/JRN-050-C.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/prototype/JRN-050-D.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/source/JRN-050-A.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/source/JRN-050-B.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/source/JRN-050-C.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-009/source/JRN-050-D.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/direct-browser-tool-replay.txt
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/gap-010-results.json
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/gap-010-summary.json
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/manual-prototype-writer-focus.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/manual-source-writer-focus.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-A.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-B.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-C.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-D.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/prototype/JRN-050-E.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/source/JRN-050-A.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/source/JRN-050-B.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/source/JRN-050-C.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/source/JRN-050-D.png
+ create mode 100644 autobyteus-web-prototype/evidence/gap-010/source/JRN-050-E.png
+ create mode 100644 autobyteus-web-prototype/evidence/integration/rer-011-final-rebase-prepromotion-validation.txt
+ create mode 100644 autobyteus-web-prototype/evidence/integration/rer-011-initial-candidate-validation.txt
+ create mode 100644 autobyteus-web-prototype/evidence/integration/rer-011-initial-rebase-prepromotion-validation.txt
+ create mode 100644 autobyteus-web-prototype/evidence/integration/rer-011-rebase-preservation.json
+ create mode 100644 autobyteus-web-prototype/evidence/product-prototyper-review/rer-009-direct-review.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-boundaries.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-browser-regression.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-build.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-correction-regression.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-gap-009.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-lint.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-package.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-test.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-009-typecheck.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-boundaries.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-build.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-correction-regression.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-gap-010.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-lint.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-package.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-test.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/pp-gap-010-typecheck.txt
+ create mode 100644 autobyteus-web-prototype/evidence/validation/rer-009-terminal-validation.txt
+ create mode 100644 autobyteus-web-prototype/final-reference-screenshots/VIS-016-team-launch-ready-desktop-en.png
+ create mode 100644 autobyteus-web-prototype/final-reference-screenshots/VIS-017-team-launched-writer-focused-desktop-en.png
+ create mode 100644 autobyteus-web-prototype/personal-integration-record.md
+ create mode 100644 autobyteus-web-prototype/pp-gap-009-correction.md
+ create mode 100644 autobyteus-web-prototype/pp-gap-010-correction.md
+ create mode 100644 autobyteus-web-prototype/prototype/scripts/validate-gap-009-package.mjs
+ create mode 100644 autobyteus-web-prototype/prototype/scripts/validate-gap-009.mjs
+ create mode 100755 autobyteus-web-prototype/prototype/scripts/validate-gap-010-package.mjs
+ create mode 100755 autobyteus-web-prototype/prototype/scripts/validate-gap-010.mjs
+ create mode 100644 autobyteus-web-prototype/prototype/scripts/validate-personal-integration.mjs
+ create mode 100644 tickets/done/remote-node-new-workspace-team-run-visibility/final-cleanup.log
+ create mode 100644 tickets/done/remote-node-new-workspace-team-run-visibility/release-v1.4.57-verification.log
+ create mode 100644 tickets/in-progress/initial-prototype-baseline/agent-team-run-parity-analysis.md
+ create mode 100644 tickets/in-progress/initial-prototype-baseline/evidence/agent-team-run-prototype-after-click.png
+ create mode 100644 tickets/in-progress/initial-prototype-baseline/evidence/agent-team-run-prototype-reproduction.json
+merge_head=26ea0891d80caf6edc1a6e9b92e7cadeff7fa6b9
+merge_parents=d6d3b040b33a9ad070ad3047783514470cd0aece 8a4c3868c7c54a46991f45be22a68151076412b1
+merge_subject=Merge remote-tracking branch 'origin/personal' into codex/universal-application-framework-latest-personal-integration
+divergence_after_integration=159	0
+unmerged_path_count=0
+origin_personal_is_ancestor=PASS
+integration_result=PASS
+actual_integration_end
+
+POST_BUILD_REMOTE_STABILITY_CHECK
+timestamp_utc=2026-08-24T11:52:40Z
+command=git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_build_origin_personal=8a4c3868c7c54a46991f45be22a68151076412b1
+ticket_head=26ea0891d80caf6edc1a6e9b92e7cadeff7fa6b9
+post_build_base_is_ancestor=YES
+post_build_divergence=0	159
+post_build_base_stable=PASS
+POST_BUILD_FINAL=PASS

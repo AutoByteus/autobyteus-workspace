@@ -1,0 +1,204 @@
+=== API-REV-001 changed server unit/architecture selection after canonical backend SDK build ===
+FILES=25
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:98980) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts (14 tests) 135ms
+(node:98981) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/application-backend/brief-artifact-startup-catchup.test.ts (1 test) 26ms
+ ✓ tests/unit/application-backend/socratic-lesson-target-address.test.ts (2 tests) 2ms
+ ✓ tests/unit/application-backend/socratic-lesson-target-projection.test.ts (3 tests) 4ms
+ ✓ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts (12 tests) 1293ms
+(node:98986) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts (6 tests) 293ms
+(node:98987) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-run-binding-store.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-run-binding-store.test.ts (3 tests) 132ms
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts > PublishedArtifactPublicationService > serves revision text from the snapshot after the outside source file is deleted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+
+ ✓ tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts (18 tests) 109ms
+ ✓ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (8 tests) 61ms
+ ✓ tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts (2 tests) 58ms
+ ✓ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests) 55ms
+(node:98992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > rebuilds global lookups and reattaches nonterminal bindings during recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-7DFfyY
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-wtsJ5s
+
+stdout | tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts > ApplicationOrchestrationRecoveryService > marks bindings orphaned and removes lookups when reattachment is unavailable
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/logical-application-agent-addressing-and-role-simplification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-aor-recovery-aq7PZB
+
+ ✓ tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts (3 tests) 31ms
+ ✓ tests/unit/run-history/store/agent-run-metadata-store.test.ts (3 tests) 25ms
+ ✓ tests/unit/application-agent-streaming/application-agent-stream-subscription.test.ts (7 tests) 17ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 8ms
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts (4 tests) 7ms
+ ✓ tests/unit/application-backend/socratic-live-tutor-session.test.ts (8 tests) 8ms
+ ✓ tests/unit/application-agent-communication/application-agent-communication-session.test.ts (6 tests) 7ms
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > describes one-item artifact arrays and workspace-relative or absolute paths
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes one workspace file through the plural array contract
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > publishes multiple workspace files in the requested order
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects the old top-level single-file payload before publishing
+Overwriting existing tool definition for name: 'publish_artifacts'
+Invalid arguments for tool 'publish_artifacts': Required parameter 'artifacts' is missing.
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > rejects removed rich artifact fields at the item boundary
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > requires an agent runtime context
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Successfully registered tool definition: 'publish_artifacts'
+
+stderr | tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts > publishArtifactsTool > uses the team-member runtime fallback context when publishing from an AutoByteus team member
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+ ✓ tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts (7 tests) 7ms
+ ✓ tests/unit/application-orchestration/application-run-ownership-service.test.ts (10 tests) 5ms
+ ✓ tests/unit/run-history/services/studio-run-model-config-service.test.ts (5 tests) 6ms
+ ✓ tests/unit/application-engine/application-handler-context-factory.test.ts (2 tests) 5ms
+ ✓ tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts (3 tests) 5ms
+ ✓ tests/unit/application-engine/application-agent-stream-observer-activation-barrier.test.ts (1 test) 4ms
+ ✓ tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts (2 tests) 2ms
+
+ Test Files  25 passed (25)
+      Tests  138 passed (138)
+   Start at  17:55:24
+   Duration  10.43s (transform 2.38s, setup 109ms, import 5.42s, tests 2.30s, environment 231ms)
+
+RESULT=PASS

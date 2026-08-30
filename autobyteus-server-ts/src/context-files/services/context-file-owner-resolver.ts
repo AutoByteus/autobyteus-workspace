@@ -1,4 +1,4 @@
-import { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import type { TeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import type {
   ContextFileFinalOwnerDescriptor,
   ContextFileResolvedFinalOwnerDescriptor,
@@ -6,8 +6,24 @@ import type {
 
 export class ContextFileOwnerResolver {
   constructor(
-    private readonly locations = new TeamRunExecutionTreeLocationService(),
-  ) {}
+    input: {
+      locations: Pick<TeamRunExecutionTreeLocationService, "findAgent" | "findAgentSync">;
+    },
+  ) {
+    if (
+      !input?.locations
+      || typeof input.locations.findAgent !== "function"
+      || typeof input.locations.findAgentSync !== "function"
+    ) {
+      throw new Error("ContextFileOwnerResolver locations are required.");
+    }
+    this.locations = input.locations;
+  }
+
+  private readonly locations: Pick<
+    TeamRunExecutionTreeLocationService,
+    "findAgent" | "findAgentSync"
+  >;
 
   async resolveFinalOwner(
     owner: ContextFileFinalOwnerDescriptor,

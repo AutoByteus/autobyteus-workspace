@@ -1,0 +1,26 @@
+{
+  "dataRoot": "/tmp/api-rev014-studio-isolated-1786616773",
+  "records": [
+    {
+      "migration_id": "20260803_custom_provider_readable_identity",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary_json": {
+        "scannedCount": 1,
+        "migratedCount": 0,
+        "skippedCount": 1,
+        "failedCount": 0,
+        "details": [
+          {
+            "itemId": "readable-provider-reset",
+            "status": "SKIPPED",
+            "message": "CUSTOM_PROVIDER_READABLE_ID_NOT_REQUIRED",
+            "filePath": "/tmp/api-rev014-studio-isolated-1786616773/llm/custom-llm-providers.json"
+          }
+        ]
+      },
+      "error_message": null,
+      "log_path": "/tmp/api-rev014-studio-isolated-1786616773/logs/app-data-migrations/20260803_custom_provider_readable_identity-2026-08-13T10-26-16-606Z.log"
+    }
+  ]
+}

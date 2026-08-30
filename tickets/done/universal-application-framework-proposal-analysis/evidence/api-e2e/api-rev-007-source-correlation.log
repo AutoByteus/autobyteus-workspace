@@ -1,0 +1,168 @@
+# API-REV-007 source correlation
+HEAD: 83b24e88217032943b52f640f3d799e4054345c8
+
+## Default MCP provider binds the process-global publication service
+    28	export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterProvider {
+    29	  constructor(
+    30	    private readonly publicationService: PublishedArtifactPublicationService = getPublishedArtifactPublicationService(),
+    31	  ) {}
+    32	
+    33	  getAdapters(): AgentToolMcpToolAdapter[] {
+    34	    return [
+    35	      {
+    36	        definition: {
+    37	          name: PUBLISH_ARTIFACTS_TOOL_NAME,
+    38	          description: PUBLISH_ARTIFACTS_TOOL_DESCRIPTION,
+    39	          inputSchema: buildPublishArtifactsParameterSchema(),
+    40	        },
+    41	        configuredMcpCollisionPolicy: "protect_static_adapter",
+    42	        isAvailable: () => true,
+    43	        execute: async ({ session, rawArguments }) => {
+    44	          try {
+    45	            const input = normalizePublishArtifactsToolInput(rawArguments);
+    46	            const artifacts = await this.publicationService.publishManyForRun({
+    47	              runId: session.owner.runId,
+    48	              artifacts: input.artifacts,
+    49	              fallbackRuntimeContext: {
+    50	                memoryDir: session.executionContext.memoryDir ?? null,
+    51	                workspaceRootPath: session.executionContext.workingDirectory ?? null,
+    52	                applicationExecutionContext:
+    53	                  session.executionContext.applicationExecutionContext ?? null,
+    54	              },
+    55	            });
+    56	            return createAgentToolsMcpSuccessResult(toJsonString({ success: true, artifacts }));
+    57	          } catch (error) {
+    58	            return createAgentToolsMcpErrorResult(
+    59	              toJsonString(buildErrorPayload(error)),
+    60	              "publish_artifacts_failed",
+    61	            );
+    62	          }
+    63	        },
+
+     8	export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterProvider[] => [
+     9	  new SendMessageToMcpAdapterProvider(),
+    10	  new BrowserToolsMcpAdapterProvider(),
+    11	  new MediaToolsMcpAdapterProvider(),
+    12	  new TaskDelegationToolsMcpAdapterProvider(),
+    13	  new PublishArtifactsMcpAdapterProvider(),
+    14	];
+
+## Process-global publication service resolves process-global AgentRunManager
+    60	export class PublishedArtifactPublicationService {
+    61	  constructor(
+    62	    private readonly dependencies: {
+    63	      agentRunManager?: AgentRunManager;
+    64	      workspaceManager?: WorkspaceManager;
+    65	      publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
+    66	      projectionStore?: PublishedArtifactProjectionStore;
+    67	      snapshotStore?: PublishedArtifactSnapshotStore;
+    68	    } = {},
+    69	  ) {}
+    70	
+    71	  private get agentRunManager(): AgentRunManager {
+    72	    return this.dependencies.agentRunManager ?? AgentRunManager.getInstance();
+    73	  }
+    74	
+    75	  private get workspaceManager(): WorkspaceManager {
+    76	    return this.dependencies.workspaceManager ?? getWorkspaceManager();
+    77	  }
+    78	
+    79	  private get publishedArtifactRelayService(): ApplicationPublishedArtifactRelayService {
+    80	    return this.dependencies.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
+    81	  }
+    82	
+    83	  private get projectionStore(): PublishedArtifactProjectionStore {
+    84	    return this.dependencies.projectionStore ?? getPublishedArtifactProjectionStore();
+    85	  }
+    86	
+    87	  private get snapshotStore(): PublishedArtifactSnapshotStore {
+    88	    return this.dependencies.snapshotStore ?? getPublishedArtifactSnapshotStore();
+    89	  }
+    90	
+    91	  async publishForRun(input: {
+    92	    runId: string;
+    93	    path: string;
+    94	    description?: string | null;
+    95	    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
+    96	  }): Promise<PublishedArtifactSummary> {
+    97	    const run = this.agentRunManager.getActiveRun(input.runId);
+    98	    const fallbackRuntimeContext = input.fallbackRuntimeContext ?? null;
+    99	    const emitArtifactPersisted = fallbackRuntimeContext?.emitArtifactPersisted ?? null;
+   100	    if (!run && !emitArtifactPersisted) {
+   101	      throw new Error(`Run '${input.runId}' is not active.`);
+   102	    }
+   103	
+   104	    const memoryDir = run?.config.memoryDir?.trim()
+   105	      || normalizeOptionalNonEmptyString(fallbackRuntimeContext?.memoryDir)
+   269	let cachedPublishedArtifactPublicationService: PublishedArtifactPublicationService | null = null;
+   270	
+   271	export const getPublishedArtifactPublicationService = (): PublishedArtifactPublicationService => {
+   272	  if (!cachedPublishedArtifactPublicationService) {
+   273	    cachedPublishedArtifactPublicationService = new PublishedArtifactPublicationService();
+   274	  }
+   275	  return cachedPublishedArtifactPublicationService;
+   276	};
+
+## Application graph owns a separate publication service bound to its graph-local manager
+    48	  const codexThreadBootstrapper = new CodexThreadBootstrapper(
+    49	    undefined,
+    50	    undefined,
+    51	    input.agentDefinitionService,
+    52	  );
+    53	  const agentRunManager = new AgentRunManager({
+    54	    autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
+    55	      agentDefinitionService: input.agentDefinitionService,
+    56	    }),
+    57	    codexBackendFactory: new CodexAgentRunBackendFactory(
+    58	      undefined,
+    59	      codexThreadBootstrapper,
+    60	    ),
+    61	    publishedArtifactRelayService: artifactRelay,
+    62	    runFileChangeService,
+    63	    memoryRecorder: new AgentRunMemoryRecorder(),
+    64	  });
+    65	  const agentTeamRunManager = new AgentTeamRunManager({
+    66	    mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+   103	  const publicationService = new PublishedArtifactPublicationService({
+   104	    agentRunManager,
+   105	    publishedArtifactRelayService: artifactRelay,
+   106	  });
+   107	  const publishedArtifactProjectionService = new PublishedArtifactProjectionService({
+   108	    agentRunManager,
+   109	    metadataService: agentRunMetadataService,
+   110	  });
+   111	  return {
+   112	    agentRunService,
+   113	    teamRunService,
+   114	    teamRunMetadataService,
+   115	    publicationService,
+   116	    publishedArtifactProjectionService,
+   117	    memoryLocationService,
+   118	  };
+
+## Search for publication-service wiring
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts:23:import { PublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts:103:  const publicationService = new PublishedArtifactPublicationService({
+autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts:115:    publicationService,
+autobyteus-server-ts/src/application-platform/runtime/create-application-platform-runtime-graph.ts:86:        publishedArtifactPublicationService: authorities.publicationService,
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-authorities.ts:190:    publicationService: runAuthorities.publicationService,
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:7:  getPublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:8:  type PublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:28:export class PublishArtifactsMcpAdapterProvider implements AgentToolMcpAdapterProvider {
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:30:    private readonly publicationService: PublishedArtifactPublicationService = getPublishedArtifactPublicationService(),
+autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts:46:            const artifacts = await this.publicationService.publishManyForRun({
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:17:  getPublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:18:  type PublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:136:  publicationService: PublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:150:    ReturnType<typeof getPublishedArtifactPublicationService>["publishManyForRun"]
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:160:  const artifacts = await publicationService.publishManyForRun(publicationRequest);
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:172:    private readonly publicationService: PublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:198:    return publishArtifacts(this.publicationService, context, rawArguments);
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:205:  publicationService: PublishedArtifactPublicationService =
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:206:    getPublishedArtifactPublicationService(),
+autobyteus-server-ts/src/agent-tools/published-artifacts/publish-artifacts-tool.ts:217:        new PublishArtifactsTool(publicationService, config),
+autobyteus-server-ts/src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts:4:import { PublishArtifactsMcpAdapterProvider } from "./publish-artifacts-mcp-adapter-provider.js";
+autobyteus-server-ts/src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts:13:  new PublishArtifactsMcpAdapterProvider(),
+autobyteus-server-ts/src/agent-tools/published-artifacts/register-published-artifact-tools.ts:2:import type { PublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
+autobyteus-server-ts/src/agent-tools/published-artifacts/register-published-artifact-tools.ts:5:  publicationService?: PublishedArtifactPublicationService,
+autobyteus-server-ts/src/agent-tools/published-artifacts/register-published-artifact-tools.ts:7:  registerPublishArtifactsTool(publicationService);

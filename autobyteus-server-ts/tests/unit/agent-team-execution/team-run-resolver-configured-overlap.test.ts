@@ -1,6 +1,7 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentConversationActivityInspector } from "../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 import { MixedSubTeamRunFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
@@ -10,7 +11,9 @@ import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execut
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { TeamRunResolver } from "../../../src/agent-team-execution/services/team-run-resolver.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
+import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { testAgentNode, testAgentTeamNode, testMemberTaskRootResolver, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 const deferred = <T = void>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -63,16 +66,30 @@ describe("TeamRunResolver configured child overlap", () => {
       prepareRestoreAgentRun: vi.fn(),
       prepareRestoreAgentRunFromPlatformState: vi.fn(),
     };
+    const memoryDir = "/tmp/configured-overlap";
+    const memoryLocationService = new AgentMemoryLocationService({
+      memoryDir,
+      locationService: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+    });
+    const activityInspector = new AgentConversationActivityInspector();
+    const memberTeamContextBuilder = new MemberTeamContextBuilder();
+    const workspaceManager = WorkspaceManager.getInstance();
     const backendFactory = new MixedTeamRunBackendFactory({
-      createTeamManager: (context, subTeamRunFactory, callbacks) => new MixedTeamManager(context, {
-        subTeamRunFactory,
+      createTeamManager: (input) => new MixedTeamManager(input.context, {
+        subTeamRunFactory: input.subTeamRunFactory,
         agentRunManager: agentRunManager as never,
-        publish: callbacks.publish,
-        deliverInterAgentMessage: callbacks.deliverInterAgentMessage,
-        acceptPlatformBinding: callbacks.acceptPlatformBinding,
+        memoryLocationService,
+        activityInspector,
+        memberTeamContextBuilder,
+        workspaceManager,
+        taskRootResolver: input.callbacks.taskRootResolver,
+        publish: input.callbacks.publish,
+        deliverInterAgentMessage: input.callbacks.deliverInterAgentMessage,
+        acceptPlatformBinding: input.callbacks.acceptPlatformBinding,
       }),
     });
     const callbacks = {
+      taskRootResolver: testMemberTaskRootResolver(),
       publish: vi.fn(),
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true as const })),
       acceptPlatformBinding: vi.fn(async () => undefined),

@@ -1,0 +1,33 @@
+DR-003 DELIVERY AUDIT
+timestamp_utc=2026-08-22T20:20:46Z
+head=f8d0bf67a9cdb89da8e3cb24b8331744d9f61865
+base=d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+branch=codex/universal-application-framework-latest-personal-integration
+merge_parents=0b607a5844f66e19ffb55162e91150a7383c030a d7d4eace46dc6534d50e9150c3e84d4bd41fedfb
+divergence=139/0
+latest_base_ancestor=PASS
+unmerged_paths=NONE_PASS
+dr003_evidence_final_markers=PASS
+electron_isolation_json=PASS
+electron_scenarios=E2E-PKG-001,E2E-PKG-002,E2E-PKG-003,E2E-PKG-004,E2E-PKG-005
+latest_base_analytics_migration=PASS
+latest_base_absolute_cwd_contract=PASS
+delivery_artifacts_current=PASS
+prior_provider_evidence_boundary=PASS
+git_diff_check=PASS
+generated_sdk_dist_cleanup=PASS
+electron_artifact_identity=PASS
+status:
+## codex/universal-application-framework-latest-personal-integration...origin/personal [ahead 139]
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/delivery-revision-record.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/docs-sync-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/electron-test-build-report.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/handoff-summary.md
+ M tickets/in-progress/universal-application-framework-latest-personal-integration/release-deployment-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-base-refresh-and-integration.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-delivery-audit.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-isolation.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-isolation/
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-macos-arm64-build.log
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-003-electron-macos-arm64-verification.log
+FINAL=PASS

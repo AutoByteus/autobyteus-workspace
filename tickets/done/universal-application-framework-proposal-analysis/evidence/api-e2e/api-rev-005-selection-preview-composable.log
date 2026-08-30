@@ -1,0 +1,23 @@
+
+> autobyteus@1.4.28 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web
+
+stderr | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts (3 tests) 4ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:48:34
+   Duration  6.68s (transform 3.32s, setup 5.94s, collect 32ms, tests 4ms, environment 249ms, prepare 195ms)
+

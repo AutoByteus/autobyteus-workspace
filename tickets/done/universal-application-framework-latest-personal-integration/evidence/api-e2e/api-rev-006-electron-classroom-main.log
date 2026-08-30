@@ -1,0 +1,340 @@
+[2026-08-22T19:11:58.500Z] [INFO] [electron] Application started
+[2026-08-22T19:11:58.634Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-08-22T19:11:58.709Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:56254
+[2026-08-22T19:11:58.724Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-08-22T19:11:58.725Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-08-22T19:11:58.725Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-22T19:11:58.725Z] [INFO] [electron.server.base-server-manager] App data directory: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data
+[2026-08-22T19:11:58.725Z] [INFO] [electron.server.base-server-manager] Port 55889 is free.
+[2026-08-22T19:11:58.725Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-08-22T19:11:59.432Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-08-22T19:11:59.432Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.149.0-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0NSJYKV:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-08-22T19:11:59.432Z] [INFO] [electron] Using PATH from login shell
+[2026-08-22T19:11:59.433Z] [INFO] [electron] Starting server with port: 55889
+[2026-08-22T19:11:59.433Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:55889
+[2026-08-22T19:11:59.433Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-22T19:11:59.433Z] [INFO] [electron] App data directory: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data
+[2026-08-22T19:11:59.433Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 55889 --data-dir /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data
+[2026-08-22T19:11:59.434Z] [INFO] [electron] Server process spawned with PID: 8227
+[2026-08-22T19:11:59.558Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/.env
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/.env
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../../private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+[2026-08-22T19:11:59.559Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:55889
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:55889
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/db
+[2026-08-22T19:11:59.561Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/logs
+[2026-08-22T19:11:59.562Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/download
+[2026-08-22T19:11:59.562Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/memory
+[2026-08-22T19:11:59.562Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-08-22T19:11:59.562Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-08-22T19:12:00.941Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-08-22T19:12:01.207Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-08-22T19:12:01.209Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-08-22T19:12:01.487Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-08-22T19:12:01.491Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/db/production.db"
+[2026-08-22T19:12:01.536Z] [INFO] [electron.embedded-server.stdout] 23 migrations found in prisma/migrations
+[2026-08-22T19:12:01.546Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-08-22T19:12:01.567Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-08-22T19:12:01.590Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-08-22T19:12:01.622Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T19:12:01.623Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-08-22T19:12:01.623Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.623Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T19:12:01.623Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 20 predefined settings
+[2026-08-22T19:12:01.624Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T19:12:01.624Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.623Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-22T19:12:01.624Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-08-22T19:12:01.624Z] [INFO] [electron.embedded-server.stdout] CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] AutobyteusModelCatalog initialized.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] CachedAudioModelProvider initialized.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] AudioModelService initialized.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] CachedImageModelProvider initialized.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] ImageModelService initialized.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] CachedVideoModelProvider initialized.
+[2026-08-22T19:12:01.625Z] [INFO] [electron.embedded-server.stdout] VideoModelService initialized.
+[2026-08-22T19:12:01.685Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-08-22T19:12:01.686Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-08-22T19:12:01.686Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace
+[2026-08-22T19:12:01.686Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace.
+[2026-08-22T19:12:01.686Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-08-22T19:12:01.686Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-08-22T19:12:01.686Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-08-22T19:12:01.687Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-08-22T19:12:01.688Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-08-22T19:12:01.688Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-08-22T19:12:01.688Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-08-22T19:12:01.688Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-08-22T19:12:01.688Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-08-22T19:12:01.699Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-08-22T19:12:01.699Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-08-22T19:12:01.699Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-08-22T19:12:01.699Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-08-22T19:12:01.699Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-08-22T19:12:01.700Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-08-22T19:12:01.701Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-08-22T19:12:01.701Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-08-22T19:12:01.701Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-08-22T19:12:01.701Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-08-22T19:12:01.701Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-08-22T19:12:01.702Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-08-22T19:12:01.702Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-08-22T19:12:01.702Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-08-22T19:12:01.713Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-08-22T19:12:01.717Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 9 items.
+[2026-08-22T19:12:01.717Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-08-22T19:12:01.717Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.717Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-22T19:12:01.720Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 9 items.
+[2026-08-22T19:12:01.731Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.731Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 18 items.
+[2026-08-22T19:12:01.761Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1787425921760,"pid":8227,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:55889"}
+[2026-08-22T19:12:01.761Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.761Z] [INFO] [server.runtime] Server listening on 0.0.0.0:55889
+[2026-08-22T19:12:01.766Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.765Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:55889
+[2026-08-22T19:12:01.769Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-08-22T19:12:01.772Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-08-22T19:12:01.773Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-08-22T19:12:01.773Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-08-22T19:12:01.773Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-08-22T19:12:01.773Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-08-22T19:12:01.773Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-08-22T19:12:01.782Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 9 items.
+[2026-08-22T19:12:01.783Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 9 agent definitions into cache.
+[2026-08-22T19:12:01.783Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.783Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-08-22T19:12:01.787Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:12:01.787Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 18 items.
+[2026-08-22T19:12:01.787Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 18 agent team definitions into cache.
+[2026-08-22T19:12:01.787Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-08-22T19:12:01.787Z] [INFO] [electron.embedded-server.stdout] Populating LLM models cache for the first time...
+[2026-08-22T19:12:01.787Z] [INFO] [electron.embedded-server.stdout] Fetching list of available LLM models from LLMFactory...
+[2026-08-22T19:12:01.788Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://127.0.0.1:11434
+[2026-08-22T19:12:01.793Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+[2026-08-22T19:12:01.793Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://127.0.0.1:1234
+[2026-08-22T19:12:01.802Z] [INFO] [electron.embedded-server.stdout] Finished LM Studio discovery. Total models registered: 15
+[2026-08-22T19:12:01.806Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 46 models from LLMFactory.
+[2026-08-22T19:12:01.806Z] [INFO] [electron.embedded-server.stdout] LLM models cache populated with 46 items.
+[2026-08-22T19:12:01.948Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-08-22T19:12:01.948Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-08-22T19:12:01.948Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:02.064Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-08-22T19:12:02.203Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 46 LLM models into cache.
+[2026-08-22T19:12:02.203Z] [INFO] [electron.embedded-server.stdout] Populating Image models cache for the first time...
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Image models from ImageClientFactory...
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 7 image models from ImageClientFactory.
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Image models by provider: OPENAI=2, GEMINI=5
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Image models by runtime: api=7
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Image models cache populated with 7 items.
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Populating Audio models cache for the first time...
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Audio models from AudioClientFactory...
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 4 audio models from AudioClientFactory.
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Audio models by provider: OPENAI=1, GEMINI=3
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Audio models by runtime: api=4
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Audio models cache populated with 4 items.
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-08-22T19:12:02.204Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-08-22T19:12:02.205Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-08-22T19:12:02.283Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-22T19:12:02.285Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:02.449Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-22T19:12:02.450Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:02.568Z] [INFO] [electron.embedded-server.stdout] Populating Video models cache for the first time...
+[2026-08-22T19:12:02.568Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Video models from VideoClientFactory...
+[2026-08-22T19:12:02.568Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 1 video models from VideoClientFactory.
+[2026-08-22T19:12:02.568Z] [INFO] [electron.embedded-server.stdout] Video models by provider: GEMINI=1
+[2026-08-22T19:12:02.568Z] [INFO] [electron.embedded-server.stdout] Video models by runtime: api=1
+[2026-08-22T19:12:02.568Z] [INFO] [electron.embedded-server.stdout] Video models cache populated with 1 items.
+[2026-08-22T19:12:04.432Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-22T19:12:04.433Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:04.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-22T19:12:04.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:07.469Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-08-22T19:12:07.612Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/memory/agent_teams/classroom_simulation_team_9693a92160e241adbe8243054b6d5701/professor_920a447540dd41ad9c421a237f874226/raw_traces_active.jsonl
+[2026-08-22T19:12:07.615Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/memory/agent_teams/classroom_simulation_team_9693a92160e241adbe8243054b6d5701/student_5ebfe51298bb44baba0915b61bf245d5/raw_traces_active.jsonl
+[2026-08-22T19:12:07.630Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-22T19:12:07.646Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:07.745Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-08-22T19:12:07.747Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-08-22T19:12:07.753Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run classroom_simulation_team_9693a92160e241adbe8243054b6d5701
+[2026-08-22T19:12:07.753Z] [INFO] [electron.embedded-server.stdout] Created agent session 5a91cba4-3404-42d8-a308-ec5a313f5b7f for run classroom_simulation_team_9693a92160e241adbe8243054b6d5701
+[2026-08-22T19:12:07.758Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=5a91cba4-3404-42d8-a308-ec5a313f5b7f, run=classroom_simulation_team_9693a92160e241adbe8243054b6d5701
+[2026-08-22T19:12:07.808Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-08-22T19:12:09.171Z] [INFO] [electron.embedded-server.stdout] Published codex_app_server agent run 'professor_920a447540dd41ad9c421a237f874226'.
+[2026-08-22T19:12:35.414Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-08-22T19:12:35.417Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/tmp/api-rev006-electron-classroom-20260822210950-99567/server-data/media
+[2026-08-22T19:12:35.426Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-08-22T19:12:35.426Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'. Config and State linked.
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'student_5ebfe51298bb44baba0915b61bf245d5' with config: 'Student'.
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'.
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'. Total registered contexts: 1
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'. Context registered.
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'.
+[2026-08-22T19:12:35.427Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5' created and stored successfully.
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5' requesting runtime to start.
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'student_5ebfe51298bb44baba0915b61bf245d5': Starting worker.
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'student_5ebfe51298bb44baba0915b61bf245d5': Starting...
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'student_5ebfe51298bb44baba0915b61bf245d5' asyncRun(): Starting.
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Runtime init completed (event store initialized).
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Runtime init completed (status deriver initialized).
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Runtime init completed (AgentEventInbox initialized).
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Runtime init completed (AgentEventScheduler initialized).
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'student_5ebfe51298bb44baba0915b61bf245d5' to become idle (timeout: 30s)...
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 39751253-4a73-4b88-8ce5-1343b52bb830) initialized for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'. Subscribed to notifier.
+[2026-08-22T19:12:35.428Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Starting direct runtime bootstrap lifecycle.
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Bootstrapper starting direct lifecycle execution.
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Executing McpServerPrewarmingStep.
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Executing SystemPromptProcessingStep.
+[2026-08-22T19:12:35.429Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': No configured skills. Skipping skill catalog.
+[2026-08-22T19:12:35.430Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Final processed system prompt configured and captured. Trace ID: rt_1787425955429_6f208960-e8f8-44b6-9347-610afcf82a2f. Final length: 13868.
+[2026-08-22T19:12:35.430Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-08-22T19:12:35.430Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:35.430Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'student_5ebfe51298bb44baba0915b61bf245d5' initialized successfully. Entering main event scheduler loop.
+[2026-08-22T19:12:35.440Z] [INFO] [electron.embedded-server.stdout] Agent 'student_5ebfe51298bb44baba0915b61bf245d5' has become idle.
+[2026-08-22T19:12:35.440Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 39751253-4a73-4b88-8ce5-1343b52bb830) for 'student_5ebfe51298bb44baba0915b61bf245d5': close() called. Unsubscribing all listeners and signaling.
+[2026-08-22T19:12:35.440Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 26a3027a-0c30-4970-8530-d0f546db7fc9) initialized for agent_id 'student_5ebfe51298bb44baba0915b61bf245d5'. Subscribed to notifier.
+[2026-08-22T19:12:35.440Z] [INFO] [electron.embedded-server.stdout] Published autobyteus agent run 'student_5ebfe51298bb44baba0915b61bf245d5'.
+[2026-08-22T19:12:35.465Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:35.465Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:35.466Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 702
+[2026-08-22T19:12:35.466Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.356Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 2 tool invocations.
+[2026-08-22T19:12:37.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.362Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.363Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.364Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.517Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.518Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.518Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.521Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 69
+[2026-08-22T19:12:37.521Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:37.522Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.233Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-08-22T19:12:39.234Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.236Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.236Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.236Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.237Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.237Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.237Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.237Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.238Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 48
+[2026-08-22T19:12:39.239Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:39.239Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.137Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-08-22T19:12:41.137Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.139Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.139Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.139Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.164Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.164Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.164Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.164Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.168Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 53
+[2026-08-22T19:12:41.168Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:41.169Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:42.300Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:42.304Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:42.305Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-08-22T19:12:42.305Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:42.305Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:12:42.305Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:04.079Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:04.079Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:04.079Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 489
+[2026-08-22T19:13:04.080Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.625Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-08-22T19:13:05.626Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.629Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.629Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.629Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.632Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.632Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.632Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.632Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.633Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 47
+[2026-08-22T19:13:05.634Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:05.634Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.861Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-08-22T19:13:07.861Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.864Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.864Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.864Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.865Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.865Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.865Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.865Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.866Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 48
+[2026-08-22T19:13:07.866Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:07.866Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.814Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-08-22T19:13:09.814Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.818Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.818Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.818Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.840Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.840Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.840Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.840Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.842Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': UserInputContextBuildingProcessor completed. Final content length: 53
+[2026-08-22T19:13:09.842Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:09.842Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:11.058Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:11.063Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:11.063Z] [INFO] [electron.embedded-server.stdout] Agent run 'student_5ebfe51298bb44baba0915b61bf245d5': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-08-22T19:13:11.063Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:11.064Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:11.064Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 7db4bd8e-c16f-44bc-9ee0-0cd77e7d912a, AgentID: student_5ebfe51298bb44baba0915b61bf245d5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-08-22T19:13:23.287Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-08-22T19:13:23.287Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-08-22T19:13:23.297Z] [INFO] [electron.embedded-server.stdout] [2026-08-22T19:13:23.287Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-08-22T19:13:23.297Z] [INFO] [electron.embedded-server.stdout] Closed agent session 5a91cba4-3404-42d8-a308-ec5a313f5b7f

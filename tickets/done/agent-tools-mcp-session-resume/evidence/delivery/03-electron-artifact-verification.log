@@ -1,0 +1,64 @@
+Electron macOS artifact verification
+Recorded at: 2026-08-28T09:46:39Z
+Commit: 7f6d2d4cb1010001e27e5a1685b922165c10d954
+Host: Darwin 25.5.0 arm64
+
+== Presence and sizes ==
+PASS app bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+PASS dmg: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.dmg
+PASS zip: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.zip
+-rw-r--r--@ 1 normy  staff   445M Aug 28 11:43 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.dmg
+-rw-r--r--@ 1 normy  staff   440M Aug 28 11:45 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.zip
+
+== Bundle identity ==
+CFBundleIdentifier=com.autobyteus.app
+CFBundleShortVersionString=1.4.60
+CFBundleExecutable=AutoByteus
+PASS executable bit
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+== Packaged change ==
+PASS packaged file: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-tools/mcp/agent-tools-mcp-local-server.js
+PASS packaged/source byte match: agent-tools-mcp-local-server.js
+PASS packaged file: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-tools/mcp/agent-tool-mcp-run-session-id.js
+PASS packaged/source byte match: agent-tool-mcp-run-session-id.js
+
+== DMG verification ==
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $78AC735A
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $0DBA9396
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $23831D16
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $B016E1AD
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $23831D16
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $E653C6C7
+Die überprüfte CRC32-Prüfsumme ist $FEB0E985
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.dmg" is VALID
+
+== ZIP verification ==
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.zip.
+
+== SHA-256 ==
+bcc64450903e6ff65a76c21dae6ddccd9240248032f2cc9d1915e2663d75ef86  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.dmg
+f49fa5b850300d1e847fe7ca49ee6c6c330521bc2e1735d5b10bf7e579babd95  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.60.zip
+
+== Signing posture ==
+Expected local-build posture: signing, notarization, and timestamping were intentionally skipped.
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+codesign inspection exit=0 (the Mach-O carries an ad hoc linker signature; no distribution identity or team is present)

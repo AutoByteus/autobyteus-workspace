@@ -10,7 +10,6 @@ import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.j
 import type { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { PromptContextBuilder } from "./prompt-context-builder.js";
 import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
-import { ContextFileLocalPathResolver } from "../../../context-files/services/context-file-local-path-resolver.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -20,8 +19,6 @@ const logger = {
 };
 
 export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessageProcessor {
-  private readonly contextFileLocalPathResolver = new ContextFileLocalPathResolver();
-
   constructor() {
     super();
     logger.debug("UserInputContextBuildingProcessor initialized.");
@@ -61,13 +58,6 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
 
     for (const contextFile of message.contextFiles) {
       if (typeof contextFile.uri !== "string") {
-        processed.push(contextFile);
-        continue;
-      }
-
-      const resolvedContextFilePath = this.contextFileLocalPathResolver.resolve(contextFile.uri);
-      if (resolvedContextFilePath) {
-        contextFile.uri = resolvedContextFilePath;
         processed.push(contextFile);
         continue;
       }

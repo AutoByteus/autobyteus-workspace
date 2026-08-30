@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "result": "FAIL",
+  "failureOriginCandidate": "implementation_or_requirement_design: the shipped operation-neutral business prompt leaves Codex/Luna automatic shell execution eligible, and both actual members selected it; AC-039 explicitly disqualifies shell-created artifacts",
+  "brief": {
+    "briefId": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+    "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+    "status": "in_review",
+    "bindingId": "e6aa7750-a3e7-4741-b468-8c8fef5a7b23",
+    "teamRunId": "brief_studio_team_4c9fad8bea574281bf65a7c35cfad92a"
+  },
+  "runtime": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "configuredToolNames": [
+      "get_brief_context",
+      "publish_artifacts",
+      "send_message_to"
+    ],
+    "providerSessions": [
+      "01a04838-3d52-7353-bb81-b11e20c03e7b",
+      "01a04838-cc03-75e0-96b2-933cd33e5c9b"
+    ]
+  },
+  "members": {
+    "researcher": {
+      "agentRunId": "brief_studio_researcher_e85b68996cc9463ea0208cb15548d71f",
+      "platformAgentRunId": "01a04838-3d52-7353-bb81-b11e20c03e7b",
+      "contextCallId": "exec-1fec777b-1490-4f58-b6bc-b9b6cdf19fa5",
+      "contextResult": {
+        "briefId": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+        "status": "not_started",
+        "latestBindingStatus": "ATTACHED",
+        "updatedAt": "2026-08-28T11:54:00.368Z"
+      },
+      "shellCallIds": [
+        "exec-1520ef2c-dee7-4fe7-8544-58cc04e2561e"
+      ],
+      "publishCallId": "exec-fefbc6fa-9b30-4e01-942c-b9956ac3bf61",
+      "revisionId": "034f9046-aa1a-453f-b208-fd68c13c9bf8"
+    },
+    "writer": {
+      "agentRunId": "brief_studio_writer_c9494bbaeecc49229efe7e52ac7f132e",
+      "platformAgentRunId": "01a04838-cc03-75e0-96b2-933cd33e5c9b",
+      "contextCallId": "exec-e32cfb48-15b4-4d68-be66-b99ebc3076fd",
+      "contextResult": {
+        "briefId": "brief-6e01ee36-3707-416c-9270-9a8e9f8e8838",
+        "title": "API REV 005 CLEAN PRODUCTION PROOF 2026-08-28 11:53 UTC",
+        "status": "researching",
+        "latestBindingStatus": "ATTACHED",
+        "updatedAt": "2026-08-28T11:54:25.734Z"
+      },
+      "shellCallIds": [
+        "exec-f4bcd9ea-2a42-4054-b837-f18247e028af"
+      ],
+      "publishCallId": "exec-f150cb03-3c79-4e9e-9f4a-82526667c458",
+      "revisionId": "5004a302-335b-407b-99a1-6b3080869629"
+    }
+  },
+  "content": {
+    "researchWords": 300,
+    "writerWords": 336,
+    "handoffMessageId": "teammsg_s_Te__-J0vTe0YjYra7tjI9-0nIkU54O",
+    "handoffBodyVerbatim": true,
+    "writerVerbatimBullet": "- A reviewable production proof should connect the API revision to a reproducible request, response, environment, timestamp, and outcome rather than relying on an assertion that the deployment succeeded."
+  },
+  "browser": {
+    "capturedAt": "2026-08-28T11:55:38.745Z",
+    "hostUrl": "http://127.0.0.1:3016/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "frameUrl": "http://127.0.0.1:3016/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3016",
+    "assertions": {
+      "selectedBriefVisible": true,
+      "statusInReview": true,
+      "draftOutputCountTwo": true,
+      "researcherVisible": true,
+      "exactlyOneFinalSummary": true,
+      "writerVisible": true,
+      "researchPathVisible": true,
+      "finalPathVisible": true,
+      "writerMarkerVisible": true,
+      "verbatimFindingVisible": true
+    }
+  },
+  "assertions": {
+    "AC-032_researcher_context_first_once_business_prompt_artifact_publication_handoff": true,
+    "AC-033_writer_context_first_once_handoff_only_artifact_publication": true,
+    "AC-034_exact_identity_join_no_secret": true,
+    "AC-035_supported_browser_same_brief_in_review_two_one_final": true,
+    "AC-036_context_read_only_publication_reconciliation_causes_change": true,
+    "AC-037_exact_codex_luna_business_prompts_no_named_foundation": true,
+    "AC-038_complete_handoff_verbatim_use_relative_publication": true,
+    "AC-039_zero_shell_and_no_ordinary_registry_file_calls": false
+  },
+  "evidenceFiles": [
+    "clean-team-run-execution-tree.json",
+    "clean-team-communication-messages.json",
+    "clean-researcher-raw-trace.jsonl",
+    "clean-writer-raw-trace.jsonl",
+    "clean-researcher-codex-native-session-events.json",
+    "clean-writer-codex-native-session-events.json",
+    "clean-final-db.json",
+    "clean-before-launch-db.json",
+    "clean-final-browser-observation.json",
+    "clean-final-browser-in-review.png",
+    "clean-final-brief-iframe.png"
+  ]
+}

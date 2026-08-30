@@ -3,11 +3,13 @@ import {
   APPLICATION_EVENT_DELIVERY_SEMANTICS,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
-import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
+import { toPublicApplicationAgentBinding } from "../domain/models.js";
 import type {
   ApplicationExecutionEventJournalEvent,
   ApplicationExecutionEventJournalRecord,
 } from "../domain/models.js";
+import { ApplicationRunBindingRecordCodec } from "../domain/application-run-binding-record-codec.js";
+import { ApplicationExecutionProducerProjector } from "../domain/application-execution-producer-projector.js";
 
 const ensureTables = (db: DatabaseSync): void => {
   db.exec(`
@@ -43,6 +45,21 @@ const ensureTables = (db: DatabaseSync): void => {
   ).run(new Date().toISOString());
 };
 
+const hasInitializedJournalState = (db: DatabaseSync): boolean => {
+  const rows = db.prepare(
+    `SELECT name
+       FROM sqlite_master
+      WHERE type = 'table'
+        AND name IN (
+          '__autobyteus_execution_event_journal',
+          '__autobyteus_execution_event_dispatch_cursor'
+        )`,
+  ).all() as Array<{ name: string }>;
+  const tableNames = new Set(rows.map((row) => row.name));
+  return tableNames.has("__autobyteus_execution_event_journal")
+    && tableNames.has("__autobyteus_execution_event_dispatch_cursor");
+};
+
 const hydrateJournalRecord = (row: Record<string, unknown>): ApplicationExecutionEventJournalRecord => ({
   event: {
     eventId: String(row.event_id),
@@ -51,9 +68,11 @@ const hydrateJournalRecord = (row: Record<string, unknown>): ApplicationExecutio
     family: row.family as ApplicationExecutionEventJournalEvent["family"],
     publishedAt: String(row.published_at),
     binding: toPublicApplicationAgentBinding(
-      JSON.parse(String(row.binding_json)) as ApplicationAgentBindingRecord,
+      ApplicationRunBindingRecordCodec.decode(JSON.parse(String(row.binding_json))),
     ),
-    producer: row.producer_json ? JSON.parse(String(row.producer_json)) as ApplicationExecutionEventJournalEvent["producer"] : null,
+    producer: row.producer_json
+      ? ApplicationExecutionProducerProjector.project(JSON.parse(String(row.producer_json)))
+      : null,
     payload: JSON.parse(String(row.payload_json)) as ApplicationExecutionEventJournalEvent["payload"],
   },
   ackedAt: row.acked_at ? String(row.acked_at) : null,
@@ -102,6 +121,12 @@ export class ApplicationExecutionEventJournalStore {
     event: Omit<ApplicationExecutionEventJournalEvent, "journalSequence">,
   ): ApplicationExecutionEventJournalRecord {
     ensureTables(db);
+    const binding = toPublicApplicationAgentBinding(
+      ApplicationRunBindingRecordCodec.decode(event.binding),
+    );
+    const producer = event.producer
+      ? ApplicationExecutionProducerProjector.project(event.producer)
+      : null;
     const result = db.prepare(
       `INSERT INTO __autobyteus_execution_event_journal (
          event_id,
@@ -119,14 +144,16 @@ export class ApplicationExecutionEventJournalStore {
       event.binding.launchRequestId,
       event.family,
       event.publishedAt,
-      JSON.stringify(event.binding),
-      event.producer ? JSON.stringify(event.producer) : null,
+      JSON.stringify(binding),
+      producer ? JSON.stringify(producer) : null,
       JSON.stringify(event.payload),
     ) as { lastInsertRowid?: number | bigint };
 
     return {
       event: {
         ...event,
+        binding,
+        producer,
         journalSequence: Number(result.lastInsertRowid ?? 0),
       },
       ackedAt: null,
@@ -237,7 +264,9 @@ export class ApplicationExecutionEventJournalStore {
     db: DatabaseSync,
     applicationId: string,
   ): ApplicationExecutionEventJournalRecord | null {
-    ensureTables(db);
+    if (!hasInitializedJournalState(db)) {
+      return null;
+    }
     const cursorRow = db
       .prepare(
         `SELECT last_acked_journal_sequence
@@ -245,7 +274,10 @@ export class ApplicationExecutionEventJournalStore {
           WHERE singleton_id = 1`,
       )
       .get() as { last_acked_journal_sequence: number } | undefined;
-    const lastAckedJournalSequence = cursorRow?.last_acked_journal_sequence ?? 0;
+    if (!cursorRow) {
+      return null;
+    }
+    const lastAckedJournalSequence = cursorRow.last_acked_journal_sequence;
     const row = db
       .prepare(
         `SELECT journal_sequence,

@@ -12,8 +12,13 @@ export class ContextFileReadService {
   constructor(
     private readonly layout: ContextFileLayout,
     private readonly cleanupService: ContextFileDraftCleanupService,
-    private readonly ownerResolver: ContextFileOwnerResolver = new ContextFileOwnerResolver(),
-  ) {}
+    private readonly ownerResolver: ContextFileOwnerResolver,
+  ) {
+    if (!layout || !cleanupService || !ownerResolver ||
+        typeof ownerResolver.resolveFinalOwner !== "function") {
+      throw new Error("ContextFileReadService requires layout, cleanup, and owner resolver dependencies.");
+    }
+  }
 
   async getDraftFilePath(
     owner: ContextFileDraftOwnerDescriptor,

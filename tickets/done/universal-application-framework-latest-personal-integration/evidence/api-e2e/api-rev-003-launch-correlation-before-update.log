@@ -1,0 +1,269 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+
+(node:37062) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts (14 tests | 14 failed) 129ms
+     × fails Brief Studio launch before startAgentTeam when configured-resource readback rejects an invalid slot selection 30ms
+     × reconciles Brief Studio launch failures through findByLaunchRequestId 11ms
+     × launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided 13ms
+     × launches Brief Studio from explicit per-member team profiles when defaults are null 10ms
+     × reconciles Brief Studio early events through launchRequestId without event.executionRef 10ms
+     × preserves Brief Studio early same-binding final artifacts when startAgentTeam succeeds after projection 10ms
+     × reconciles Socratic startLesson failures through findByLaunchRequestId 6ms
+     × keeps askFollowUp on the inline whole-team DTO without a pre-send binding fetch 6ms
+     × keeps requestHint on the inline whole-team DTO without a pre-send binding fetch 6ms
+     × launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided 6ms
+     × launches Socratic lessons from explicit per-member team profiles when defaults are null 5ms
+     × reconciles Socratic early tutor events through launchRequestId without event.executionRef 6ms
+     × preserves Socratic early same-binding failure state when startLesson succeeds after projection 5ms
+     × fails Socratic startLesson before startAgentTeam when configured-resource readback rejects an invalid slot selection 5ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > fails Brief Studio launch before startAgentTeam when configured-resource readback rejects an invalid slot selection
+AssertionError: expected [Function] to throw error including 'Application execution resource slot \…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "Application execution resource slot 'draftingTeam' has invalid persisted override"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Brief Studio launch failures through findByLaunchRequestId
+AssertionError: expected [Function] to throw error including 'startAgentTeam failed after binding c…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "startAgentTeam failed after binding creation"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.launchDraftRun ../applications/brief-studio/backend-src/services/brief-run-launch-service.ts:155:55
+    153|     const launchedAt = new Date().toISOString();
+    154|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    155|     const draftingTeam = await context.agentResources.requireRunnable(…
+       |                                                       ^
+    156| 
+    157|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:508:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Brief Studio from explicit per-member team profiles when defaults are null
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.launchDraftRun ../applications/brief-studio/backend-src/services/brief-run-launch-service.ts:155:55
+    153|     const launchedAt = new Date().toISOString();
+    154|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    155|     const draftingTeam = await context.agentResources.requireRunnable(…
+       |                                                       ^
+    156| 
+    157|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:581:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Brief Studio early events through launchRequestId without event.executionRef
+Error: Brief Studio artifact projection requires producer.agentRunId.
+ ❯ Object.projectArtifactRevision ../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts:161:13
+    159|   }): Promise<void> {
+    160|     if (!input.producer?.agentRunId) {
+    161|       throw new Error("Brief Studio artifact projection requires produ…
+       |             ^
+    162|     }
+    163|     const producer = input.producer;
+ ❯ Object.handlePersistedArtifact ../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts:91:16
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:642:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > preserves Brief Studio early same-binding final artifacts when startAgentTeam succeeds after projection
+AssertionError: promise rejected "TypeError: context.agentResources.require…" instead of resolving
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:720:7
+    718|       briefId: createdBrief.briefId,
+    719|       llmModelIdentifier: "gpt-test",
+    720|     })).resolves.toEqual({
+       |       ^
+    721|       briefId: createdBrief.briefId,
+    722|       bindingId: "binding-brief-1",
+
+Caused by: TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.launchDraftRun ../applications/brief-studio/backend-src/services/brief-run-launch-service.ts:155:55
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:717:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Socratic startLesson failures through findByLaunchRequestId
+AssertionError: expected [Function] to throw error including 'lesson start failed after binding cre…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "lesson start failed after binding creation"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > keeps askFollowUp on the inline whole-team DTO without a pre-send binding fetch
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > keeps requestHint on the inline whole-team DTO without a pre-send binding fetch
+Error: Socratic tutor binding must contain configured memberAddress '/tutor'.
+ ❯ deriveTutorTargetAddress ../applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:56:11
+     54|   );
+     55|   if (!tutorMember) {
+     56|     throw new Error(
+       |           ^
+     57|       `Socratic tutor binding must contain configured memberAddress '$…
+     58|     );
+ ❯ Object.getLesson ../applications/socratic-math-teacher/backend-src/services/lesson-read-service.ts:41:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.startLesson ../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:108:52
+    106|     });
+    107|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    108|     const tutorTeam = await context.agentResources.requireRunnable(LES…
+       |                                                    ^
+    109| 
+    110|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:936:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > launches Socratic lessons from explicit per-member team profiles when defaults are null
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.startLesson ../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:108:52
+    106|     });
+    107|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    108|     const tutorTeam = await context.agentResources.requireRunnable(LES…
+       |                                                    ^
+    109| 
+    110|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:1003:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > reconciles Socratic early tutor events through launchRequestId without event.executionRef
+TypeError: Provided value cannot be bound to SQLite parameter 2.
+ ❯ Object.attachBinding ../applications/socratic-math-teacher/backend-src/repositories/lesson-repository.ts:132:7
+    130|               artifact_catchup_completed_at = NULL
+    131|         WHERE lesson_id = ?`,
+    132|     ).run(
+       |       ^
+    133|       input.bindingId,
+    134|       input.runId,
+ ❯ ../applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts:108:26
+ ❯ withTransaction ../applications/socratic-math-teacher/backend-src/repositories/app-database.ts:15:20
+ ❯ ../applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts:93:7
+ ❯ withAppDatabase ../applications/socratic-math-teacher/backend-src/repositories/app-database.ts:6:12
+ ❯ Object.resolveLessonIdForBinding ../applications/socratic-math-teacher/backend-src/services/run-binding-correlation-service.ts:92:12
+ ❯ Object.projectArtifactRevision ../applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts:127:66
+ ❯ Object.handlePersistedArtifact ../applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts:69:16
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:1078:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > preserves Socratic early same-binding failure state when startLesson succeeds after projection
+TypeError: context.agentResources.requireRunnable is not a function
+ ❯ Object.startLesson ../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:108:52
+    106|     });
+    107|     const pendingLaunchRequest = correlationService.createPendingLaunc…
+    108|     const tutorTeam = await context.agentResources.requireRunnable(LES…
+       |                                                    ^
+    109| 
+    110|     try {
+ ❯ tests/unit/application-backend/app-owned-launch-request-correlation.test.ts:1178:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/unit/application-backend/app-owned-launch-request-correlation.test.ts > App-owned launchRequestId correlation > fails Socratic startLesson before startAgentTeam when configured-resource readback rejects an invalid slot selection
+AssertionError: expected [Function] to throw error including 'Application execution resource slot \…' but got 'context.agentResources.requireRunnabl…'
+
+Expected: "Application execution resource slot 'lessonTutorTeam' has invalid manifest default"
+Received: "context.agentResources.requireRunnable is not a function"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed (14)
+   Start at  12:30:21
+   Duration  814ms (transform 122ms, setup 14ms, import 140ms, tests 129ms, environment 0ms)
+

@@ -17,7 +17,11 @@ const writeDefinition = async (source: string): Promise<string> => {
   return entryModulePath;
 };
 
-const inputFor = (entryModulePath: string, webSockets = true) => ({
+const inputFor = (
+  entryModulePath: string,
+  webSockets = true,
+  declaredAgentToolNames: string[] = [],
+) => ({
   applicationId: "app-1",
   entryModulePath,
   supportedExposures: {
@@ -37,12 +41,13 @@ const inputFor = (entryModulePath: string, webSockets = true) => ({
     appDatabaseUrl: "file:/tmp/app/app.sqlite",
     assetsPath: null,
   },
+  declaredAgentToolNames,
 });
 
 describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
-  it("derives the v4 WebSocket exposure summary from exact valid routes", async () => {
+  it("derives the current WebSocket exposure summary from exact valid routes", async () => {
     const entry = await writeDefinition(`export default {
-      definitionContractVersion: "5",
+      definitionContractVersion: "7",
       webSocketRoutes: [{ path: "/rooms/:roomId", open() {} }],
     };`);
     const loaded = await new ApplicationBackendDefinitionLoader().load(inputFor(entry));
@@ -51,13 +56,13 @@ describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
     expect(loaded.exposures.supportedExposures.webSockets).toBe(true);
   });
 
-  it("rejects stale v3 definitions and routes disabled by the bundle authority", async () => {
-    const stale = await writeDefinition(`export default { definitionContractVersion: "3" };`);
+  it("rejects retired v6 definitions and routes disabled by the bundle authority", async () => {
+    const stale = await writeDefinition(`export default { definitionContractVersion: "6" };`);
     await expect(new ApplicationBackendDefinitionLoader().load(inputFor(stale))).rejects.toThrow(
-      "exports definitionContractVersion '3', but '5' is required",
+      "exports definitionContractVersion '6', but '7' is required",
     );
     const disabled = await writeDefinition(`export default {
-      definitionContractVersion: "5",
+      definitionContractVersion: "7",
       webSocketRoutes: [{ path: "/rooms", open() {} }],
     };`);
     await expect(new ApplicationBackendDefinitionLoader().load(inputFor(disabled, false))).rejects.toThrow(
@@ -67,9 +72,9 @@ describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
 
   it("rejects malformed, duplicate-parameter, and ambiguous route declarations", async () => {
     const sources = [
-      `export default { definitionContractVersion: "5", webSocketRoutes: [{ path: "/rooms" }] };`,
-      `export default { definitionContractVersion: "5", webSocketRoutes: [{ path: "/:room/:room", open() {} }] };`,
-      `export default { definitionContractVersion: "5", webSocketRoutes: [
+      `export default { definitionContractVersion: "7", webSocketRoutes: [{ path: "/rooms" }] };`,
+      `export default { definitionContractVersion: "7", webSocketRoutes: [{ path: "/:room/:room", open() {} }] };`,
+      `export default { definitionContractVersion: "7", webSocketRoutes: [
         { path: "/rooms/:room", open() {} },
         { path: "/rooms/public", open() {} },
       ] };`,
@@ -77,5 +82,53 @@ describe("ApplicationBackendDefinitionLoader WebSocket validation", () => {
     for (const source of sources) {
       await expect(new ApplicationBackendDefinitionLoader().load(inputFor(await writeDefinition(source)))).rejects.toThrow();
     }
+  });
+
+  it("loads the exact current application agent-tool handler set", async () => {
+    const entry = await writeDefinition(`export default {
+      definitionContractVersion: "7",
+      agentToolHandlers: {
+        get_context: async () => ({ content: [{ type: "text", text: "ok" }] }),
+      },
+    };`);
+
+    const loaded = await new ApplicationBackendDefinitionLoader().load(
+      inputFor(entry, true, ["get_context"]),
+    );
+
+    expect(loaded.exposures.agentTools).toEqual(["get_context"]);
+    expect(loaded.definition.agentToolHandlers?.get_context).toBeTypeOf("function");
+  });
+
+  it.each([
+    {
+      label: "missing",
+      source: `export default { definitionContractVersion: "7", agentToolHandlers: {} };`,
+      declared: ["get_context"],
+      message: "handler 'get_context' was not found",
+    },
+    {
+      label: "extra",
+      source: `export default {
+        definitionContractVersion: "7",
+        agentToolHandlers: { get_context: async () => ({ content: [] }) },
+      };`,
+      declared: [],
+      message: "undeclared agent tool handler 'get_context'",
+    },
+    {
+      label: "non-function",
+      source: `export default {
+        definitionContractVersion: "7",
+        agentToolHandlers: { get_context: "not-a-handler" },
+      };`,
+      declared: ["get_context"],
+      message: "handler 'get_context' must be a function",
+    },
+  ])("rejects a $label application agent-tool handler map", async ({ source, declared, message }) => {
+    const entry = await writeDefinition(source);
+    await expect(
+      new ApplicationBackendDefinitionLoader().load(inputFor(entry, true, declared)),
+    ).rejects.toThrow(message);
   });
 });

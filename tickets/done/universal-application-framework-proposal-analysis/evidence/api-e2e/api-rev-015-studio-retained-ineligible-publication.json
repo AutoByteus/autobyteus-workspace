@@ -1,0 +1,39 @@
+{
+  "url": "ws://127.0.0.1:8013/ws/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/agent-communication/64369c65-33aa-40bb-8c3c-03d0ab641857/targets/agent-team-member/<member>",
+  "requestId": "api-rev015-ineligible-1786619424787",
+  "accepted": true,
+  "summaryCount": 2,
+  "finalPathRetained": true,
+  "summaries": [
+    {
+      "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "description": "Concise research checkpoint for the API REV 015 studio restart brief.",
+      "revisionId": "4b4c2f45-ddf6-41c0-a7e2-94e4ba07cde5",
+      "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0"
+    },
+    {
+      "path": "/private/tmp/api-rev015-studio-1786618978/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "description": "Retained generic publication used to validate Brief startup eligibility filtering.",
+      "revisionId": "8085564f-fd0f-48d9-bdd9-6ec1bebdb4a8",
+      "runId": "brief_studio_researcher_40d8997b140b4f1888fcc029597a13f0"
+    }
+  ],
+  "frames": [
+    {
+      "protocol": "autobyteus.application-agent-communication.v1",
+      "type": "READY",
+      "address": {
+        "bindingId": "64369c65-33aa-40bb-8c3c-03d0ab641857",
+        "target": {
+          "kind": "AGENT_TEAM_MEMBER",
+          "memberRouteKey": "researcher"
+        }
+      }
+    },
+    {
+      "protocol": "autobyteus.application-agent-communication.v1",
+      "type": "INPUT_ACCEPTED",
+      "requestId": "api-rev015-ineligible-1786619424787"
+    }
+  ]
+}

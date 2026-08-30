@@ -21,6 +21,8 @@
           :value="selectValue(key, paramSchema)"
           :disabled="disabled"
           :class="advancedSelectClass"
+          :aria-invalid="Boolean(validationErrors[key])"
+          :aria-describedby="validationErrors[key] ? errorId(String(key)) : undefined"
           @change="handleSelectChange(key, ($event.target as HTMLSelectElement).value)"
         >
           <option v-if="shouldRenderDefaultOption(paramSchema)" :value="DEFAULT_OPTION">{{ $t('workspace.components.workspace.config.ModelConfigAdvanced.default') }}</option>
@@ -36,6 +38,8 @@
             :disabled="disabled"
             class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
             :class="configValue(key) === true ? 'bg-blue-600' : 'bg-gray-200'"
+            :aria-invalid="Boolean(validationErrors[key])"
+            :aria-describedby="validationErrors[key] ? errorId(String(key)) : undefined"
             @click="handleBooleanChange(key, configValue(key) !== true)"
           >
             <span 
@@ -53,6 +57,8 @@
           :value="configValue(key) as number | ''"
           :disabled="disabled"
           :class="advancedInputClass"
+          :aria-invalid="Boolean(validationErrors[key])"
+          :aria-describedby="validationErrors[key] ? errorId(String(key)) : undefined"
           @input="handleNumberChange(key, ($event.target as HTMLInputElement).value)"
         />
 
@@ -63,8 +69,13 @@
           :value="configValue(key) as string | ''"
           :disabled="disabled"
           :class="advancedInputClass"
+          :aria-invalid="Boolean(validationErrors[key])"
+          :aria-describedby="validationErrors[key] ? errorId(String(key)) : undefined"
           @input="handleTextChange(key, ($event.target as HTMLInputElement).value)"
         />
+        <p v-if="validationErrors[key]" :id="errorId(String(key))" role="alert" class="mt-1 text-xs text-red-700">
+          {{ validationErrors[key] }}
+        </p>
       </div>
     </div>
   </div>
@@ -89,6 +100,7 @@ const props = defineProps<{
   missingHistoricalConfig?: boolean;
   missingHistoricalConfigLabel?: string;
   controlVariant?: 'default' | 'quiet';
+  validationErrors?: Readonly<Record<string, string>>;
 }>();
 
 const emit = defineEmits<{
@@ -100,6 +112,7 @@ const missingHistoricalConfigLabel = computed(() =>
   props.missingHistoricalConfigLabel ?? '',
 );
 const controlVariant = computed(() => props.controlVariant ?? 'default');
+const validationErrors = computed(() => props.validationErrors ?? {});
 const advancedListClass = computed(() => [
   props.compact ? 'space-y-3 pt-1' : 'space-y-3 pt-1.5',
 ]);
@@ -138,6 +151,7 @@ const inputId = (key: string) => {
   }
   return `config-${key}`;
 };
+const errorId = (key: string) => `${inputId(key)}-error`;
 
 const configValue = (key: string) => normalizedConfig.value[key];
 

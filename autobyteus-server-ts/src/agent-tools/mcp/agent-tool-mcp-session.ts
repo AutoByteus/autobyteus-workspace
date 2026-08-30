@@ -2,10 +2,16 @@ import type { AgentRunMessageSenderContext } from "../../agent-communication/dom
 import type { RuntimeAgentToolExposure } from "../../agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type {
+  PublishedArtifactPublisher,
+} from "../../services/published-artifacts/published-artifact-publisher.js";
 import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
 import type { TeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
 import { cloneTeamMemberExecutionIdentity } from "../../agent-team-execution/domain/team-member-execution-identity.js";
+import type { MemberTaskRootResolver } from "../../agent-team-execution/task-delegation/member-task-root-resolver.js";
+import type { AgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
+import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
 export const AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools";
 export const AGENT_TOOLS_MCP_TRANSPORT = "streamable_http";
@@ -16,19 +22,6 @@ export type AgentToolMcpDescriptor = {
   name: typeof AGENT_TOOLS_MCP_SERVER_NAME;
   transport: AgentToolMcpTransport;
   serverUrl: string;
-  headers: {
-    Authorization: string;
-  };
-  enabledTools: string[];
-};
-
-export type RedactedAgentToolMcpDescriptor = {
-  name: typeof AGENT_TOOLS_MCP_SERVER_NAME;
-  transport: AgentToolMcpTransport;
-  serverUrl: string;
-  headers: {
-    Authorization: "Bearer <redacted>";
-  };
   enabledTools: string[];
 };
 
@@ -60,27 +53,52 @@ export type AgentToolMcpExecutionContext = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
 };
 
+export type AgentToolMcpSessionBaseExecutionCapabilities = Readonly<{
+  publishedArtifactPublisher: PublishedArtifactPublisher;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
+}>;
+
+export type AgentSessionExecutionCapabilities = Readonly<{
+  kind: "agent";
+  publishedArtifactPublisher: PublishedArtifactPublisher;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
+}>;
+
+export type TeamMemberSessionExecutionCapabilities = Readonly<{
+  kind: "team_member";
+  publishedArtifactPublisher: PublishedArtifactPublisher;
+  applicationAgentTools: ApplicationAgentToolCapability | null;
+  taskDelegation: Readonly<{
+    identity: TeamMemberExecutionIdentity;
+    rootResolver: MemberTaskRootResolver;
+  }>;
+}>;
+
+export type AgentToolMcpSessionExecutionCapabilities =
+  | AgentSessionExecutionCapabilities
+  | TeamMemberSessionExecutionCapabilities;
+
 export type AgentToolMcpSession = {
-  sessionId: string;
-  tokenHash: Buffer;
+  sessionId: AgentToolMcpRunSessionId;
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
   runtimeKind: RuntimeKind | string | null;
   runtimeExposure: RuntimeAgentToolExposure;
   executionContext: AgentToolMcpExecutionContext;
+  executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources: ConfiguredMcpAgentToolSource[];
   createdAt: Date;
-  revokedAt: Date | null;
   toolExecutionObserver: AgentToolMcpToolExecutionObserver | null;
 };
 
-export type AgentToolMcpCreateSessionInput = {
+export type AgentToolMcpActivateSessionInput = {
   owner: AgentToolMcpSessionOwnerIdentity;
   sender: AgentRunMessageSenderContext;
   runtimeExposure: RuntimeAgentToolExposure;
   executionContext?: AgentToolMcpExecutionContext | null;
+  executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources?: ConfiguredMcpAgentToolSource[];
@@ -88,15 +106,7 @@ export type AgentToolMcpCreateSessionInput = {
   toolExecutionObserver?: AgentToolMcpToolExecutionObserver | null;
 };
 
-export type AgentToolMcpSessionResolveInput = {
-  sessionId: string;
-  bearerToken: string;
-};
-
-export type AgentToolMcpSessionResolveFailureReason =
-  | "missing_session"
-  | "revoked"
-  | "token_mismatch";
+export type AgentToolMcpSessionResolveFailureReason = "missing_session";
 
 export type AgentToolMcpSessionResolveResult =
   | { ok: true; session: AgentToolMcpSession }
@@ -120,31 +130,23 @@ export const cloneAgentToolMcpExecutionContext = (
     : null,
 });
 
-export const redactAgentToolMcpDescriptor = (
-  descriptor: AgentToolMcpDescriptor,
-): RedactedAgentToolMcpDescriptor => ({
-  name: descriptor.name,
-  transport: descriptor.transport,
-  serverUrl: redactSessionUrl(descriptor.serverUrl),
-  headers: { Authorization: "Bearer <redacted>" },
-  enabledTools: [...descriptor.enabledTools],
-});
-
-const redactSessionUrl = (serverUrl: string): string => {
-  try {
-    const parsed = new URL(serverUrl);
-    const pathParts = parsed.pathname.split("/");
-    const lastSegmentIndex = pathParts.length - 1;
-    if (lastSegmentIndex >= 0 && pathParts[lastSegmentIndex]) {
-      pathParts[lastSegmentIndex] = "<redacted>";
-      parsed.pathname = pathParts.join("/");
-    } else {
-      parsed.pathname = "/mcp/agent-tools/<redacted>";
-    }
-    parsed.search = "";
-    parsed.hash = "";
-    return parsed.toString();
-  } catch {
-    return "<redacted>";
+export const cloneAgentToolMcpSessionExecutionCapabilities = (
+  capabilities: AgentToolMcpSessionExecutionCapabilities,
+): AgentToolMcpSessionExecutionCapabilities => {
+  if (capabilities.kind === "agent") {
+    return Object.freeze({
+      kind: "agent",
+      publishedArtifactPublisher: capabilities.publishedArtifactPublisher,
+      applicationAgentTools: capabilities.applicationAgentTools,
+    });
   }
+  return Object.freeze({
+    kind: "team_member",
+    publishedArtifactPublisher: capabilities.publishedArtifactPublisher,
+    applicationAgentTools: capabilities.applicationAgentTools,
+    taskDelegation: Object.freeze({
+      identity: cloneTeamMemberExecutionIdentity(capabilities.taskDelegation.identity),
+      rootResolver: capabilities.taskDelegation.rootResolver,
+    }),
+  });
 };

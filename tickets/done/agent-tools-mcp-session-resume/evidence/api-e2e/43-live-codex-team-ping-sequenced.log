@@ -1,0 +1,332 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:55390) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/.env
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-session-resume/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-28T07:29:45.169Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-JEdYdh/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Populating agent definition cache for the first time...
+[2026-08-28T07:29:45.308Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+[2026-08-28T07:29:45.320Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+In-memory cache: Added new agent definition with ID codex-ping-754fcdba-daf4-43e3-80d7-da92a5412d7c.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Definition created successfully with ID: codex-ping-754fcdba-daf4-43e3-80d7-da92a5412d7c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+In-memory cache: Added new agent definition with ID codex-pong-754fcdba-daf4-43e3-80d7-da92a5412d7c.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Definition created successfully with ID: codex-pong-754fcdba-daf4-43e3-80d7-da92a5412d7c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+[2026-08-28T07:29:45.810Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-roundtrip-team-754fcdba-daf4-43e3-80d7-da92a5412d7c.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Team Definition created successfully with ID: codex-roundtrip-team-754fcdba-daf4-43e3-80d7-da92a5412d7c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-3qUbqT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-3qUbqT.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Created and registered workspace ID: agent_ws_492baa1132777fb44e6338a68b71b8c2895613dd9a3957d8b15d9eda158a1fd8
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent team websocket attached for team run codex_roundtrip_team_754fcdba_daf4_43e3_80d7_da9_a4c8da3e9e974e26be7197f19400594f
+Created agent session 473ac5c2-6def-43f3-99de-6277a9d4ff51 for run codex_roundtrip_team_754fcdba_daf4_43e3_80d7_da9_a4c8da3e9e974e26be7197f19400594f
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Team WebSocket connected: session=473ac5c2-6def-43f3-99de-6277a9d4ff51, run=codex_roundtrip_team_754fcdba_daf4_43e3_80d7_da9_a4c8da3e9e974e26be7197f19400594f
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-3qUbqT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-3qUbqT.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Reusing registered workspace ID: agent_ws_492baa1132777fb44e6338a68b71b8c2895613dd9a3957d8b15d9eda158a1fd8
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Published codex_app_server agent run 'codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-3qUbqT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-roundtrip-e2e-3qUbqT.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Reusing registered workspace ID: agent_ws_492baa1132777fb44e6338a68b71b8c2895613dd9a3957d8b15d9eda158a1fd8
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Published codex_app_server agent run 'codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100'.
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+[CodexAppServerClient] stderr: 2026-08-28T07:30:35.159322Z ERROR codex_core::tools::router: error=absolute agent paths must start with `/root` or be `/morpheus`
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Closed agent session 473ac5c2-6def-43f3-99de-6277a9d4ff51
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+[2026-08-28T07:33:05.112Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-roundtrip-team-754fcdba-daf4-43e3-80d7-da92a5412d7c.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Team Definition with ID codex-roundtrip-team-754fcdba-daf4-43e3-80d7-da92a5412d7c deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+In-memory cache: Removed agent definition with ID codex-ping-754fcdba-daf4-43e3-80d7-da92a5412d7c.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Definition with ID codex-ping-754fcdba-daf4-43e3-80d7-da92a5412d7c deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+In-memory cache: Removed agent definition with ID codex-pong-754fcdba-daf4-43e3-80d7-da92a5412d7c.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Agent Definition with ID codex-pong-754fcdba-daf4-43e3-80d7-da92a5412d7c deleted successfully.
+
+ ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 1 failed | 4 skipped) 199967ms
+     × preserves send_message_to ping->pong->ping invariants with ultra reasoning 199408ms
+     ↓ creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+     ↓ streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+     ↓ preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath
+     ↓ serves every team member projection after terminate, restore, and continue in codex team runtime
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+Error: Timed out waiting for team websocket event 'pong send_message_to TOOL_EXECUTION_SUCCEEDED'. preview='AGENT_STATUS:{"change_sequence":213,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | SEGMENT_END:{"change_sequence":214,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"msg_04e6e1535ced1cd1016a91393afb5087d29711d61b86722420","turn_id" | AGENT_STATUS:{"change_sequence":215,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | TOKEN_USAGE_UPDATED:{"change_sequence":216,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","usage_event_id":"0f3be9a1-17a0-4605-b1a2-74a63e497022","idempotency_key":"code | AGENT_STATUS:{"change_sequence":217,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | TURN_COMPLETED:{"change_sequence":218,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","turn_id":"01a04747-8440-7e71-8971-844135c9fdfd","reason":null} | AGENT_STATUS:{"change_sequence":219,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","status":"idle","trigger":null,"tool_name":null,"error_message":null,"error_det | AGENT_STATUS:{"change_sequence":220,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | SEGMENT_START:{"change_sequence":221,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a91393b701487d29814d0d34532414c","turn_id" | AGENT_STATUS:{"change_sequence":222,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | SEGMENT_CONTENT:{"change_sequence":223,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a91393b701487d29814d0d34532414c","turn_id" | AGENT_STATUS:{"change_sequence":224,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | SEGMENT_CONTENT:{"change_sequence":225,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a91393b701487d29814d0d34532414c","turn_id" | AGENT_STATUS:{"change_sequence":226,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | SEGMENT_END:{"change_sequence":227,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a91393b701487d29814d0d34532414c","turn_id" | AGENT_STATUS:{"change_sequence":228,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | TOKEN_USAGE_UPDATED:{"change_sequence":229,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","usage_event_id":"57227f2a-edd9-4627-9998-4afa7594c5c8","idempotency_key":"code | AGENT_STATUS:{"change_sequence":230,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"running","trigger":null,"tool_name":null,"error_message":null,"error_ | TURN_COMPLETED:{"change_sequence":231,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","turn_id":"01a04747-6226-7170-9912-c15e8d8599f3","reason":null} | AGENT_STATUS:{"change_sequence":232,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","status":"idle","trigger":null,"tool_name":null,"error_message":null,"error_det'. lifecycle='MEMBER_INPUT_MESSAGE:{"change_sequence":3,"recipient_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","message_id":"e2e-c30dea11-895b-4791-b313-0bbc64735097","dedupe_key":"agent_run_input:e2e:e2e-c30dea11-895b-4791-b313-0bbc64735097","content":"Reply with exactly READY and nothing else.","input_origin":"user_message","received_at":"2026-08-28T07:29:48.925Z","context_file_paths":[],"sender_agent_run_id":null,"parent_communication_message_id":null} | SEGMENT_START:{"change_sequence":11,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"msg_04e6e1535ced1cd1016a9138eee75487d2b4cfb192a43fb192","turn_id":"01a04746-5d80-7d22-b053-10a278e40832","segment_type":"text","metadata":null} | MEMBER_INPUT_MESSAGE:{"change_sequence":23,"recipient_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","message_id":"e2e-65679ba2-27a3-4fdf-856f-35d788794f23","dedupe_key":"agent_run_input:e2e:e2e-65679ba2-27a3-4fdf-856f-35d788794f23","content":"Reply with exactly READY and nothing else.","input_origin":"user_message","received_at":"2026-08-28T07:29:51.557Z","context_file_paths":[],"sender_agent_run_id":null,"parent_communication_message_id":null} | SEGMENT_START:{"change_sequence":31,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a9138f2f3b887d2be2e4aea7e5a7753","turn_id":"01a04746-67c8-79f2-aebe-387ef04612a1","segment_type":"text","metadata":null} | MEMBER_INPUT_MESSAGE:{"change_sequence":42,"recipient_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","message_id":"e2e-cf4e16c4-76a9-4ba6-a772-e58388fa26ac","dedupe_key":"agent_run_input:e2e:e2e-cf4e16c4-76a9-4ba6-a772-e58388fa26ac","content":"Call send_message_to exactly once now with these exact JSON arguments: {\"target_agent_run_id\":\"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100\",\"content\":\"PING-TO-PONG ROUNDTRIP_PING:754fcdba-daf4-43e3-80d7-da92a5412d7c\",\"message_type\":\"roundtrip_ping\"}. Do not call any other tool.","input_origin":"user_message","received_at":"2026-08-28T07:29:55.413Z","context_file_paths":[],"sender_agent_run_id":null,"parent_communication_message_id":null} | SEGMENT_START:{"change_sequence":48,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"reasoning-block:4b8d1502-951f-4ebe-98fe-3f7206396db5:1","turn_id":"01a04746-76d7-7030-a981-6af1f916e5e4","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":56,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"exec-a5f56328-c4aa-4baf-b7ad-0a761b3489a4","turn_id":"01a04746-76d7-7030-a981-6af1f916e5e4","segment_type":"tool_call","metadata":{"tool_name":"send_message_to","arguments":{"target_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","content":"PING-TO-PONG ROUNDTRIP_PING:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_ping"}}} | TOOL_EXECUTION_STARTED:{"change_sequence":58,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","invocation_id":"exec-a5f56328-c4aa-4baf-b7ad-0a761b3489a4","tool_name":"send_message_to","turn_id":"01a04746-76d7-7030-a981-6af1f916e5e4","arguments":{"target_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","content":"PING-TO-PONG ROUNDTRIP_PING:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_ping"}} | TEAM_COMMUNICATION_MESSAGE:{"change_sequence":59,"message":{"message_id":"teammsg_BiIpLqq992rbDV3ZLIX7sd5k3oCClMeF","sender_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","receiver_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","content":"PING-TO-PONG ROUNDTRIP_PING:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_ping","reference_files":[],"created_at":"2026-08-28T07:30:15.318Z"}} | MEMBER_INPUT_MESSAGE:{"change_sequence":60,"recipient_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","message_id":"memberinput_VKpyxxl2BXmXGBoBpwWnj_HQXxhQQYqZ","dedupe_key":"member_input:codex_roundtrip_team_754fcdba_daf4_43e3_80d7_da9_a4c8da3e9e974e26be7197f19400594f:codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100:memberinput_VKpyxxl2BXmXGBoBpwWnj_HQXxhQQYqZ","content":"You received a message from sender name: ping, sender id: codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3\nmessage:\nPING-TO-PONG ROUNDTRIP_PING:754fcdba-daf4-43e3-80d7-da92a5412d7c","input_origin":"inter_agent_delivery","received_at":"2026-08-28T07:30:15.318Z","context_file_paths":[],"sender_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","parent_communication_message_id":"teammsg_BiIpLqq992rbDV3ZLIX7sd5k3oCClMeF"} | TOOL_EXECUTION_SUCCEEDED:{"change_sequence":63,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","invocation_id":"exec-a5f56328-c4aa-4baf-b7ad-0a761b3489a4","tool_name":"send_message_to","turn_id":"01a04746-76d7-7030-a981-6af1f916e5e4","arguments":{"target_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","content":"PING-TO-PONG ROUNDTRIP_PING:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_ping"},"result":{"accepted":true,"code":"DELIVERED","message":"Message delivered.","result":null}} | SEGMENT_START:{"change_sequence":73,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"reasoning-block:4b8d1502-951f-4ebe-98fe-3f7206396db5:2","turn_id":"01a04746-76d7-7030-a981-6af1f916e5e4","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":79,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"msg_04e6e1535ced1cd1016a91390ae83887d2ae4d242a07610d90","turn_id":"01a04746-76d7-7030-a981-6af1f916e5e4","segment_type":"text","metadata":null} | SEGMENT_START:{"change_sequence":92,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"reasoning-block:8b6cc747-b1be-4610-be9b-5a842f6d8ad2:1","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":104,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"exec-58761b4e-aaac-4a4c-97ee-f73fed96ed3c","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","segment_type":"tool_call","metadata":{"tool_name":"send_message_to","arguments":{"recipient_address":"/ping","message":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c"}}} | TOOL_EXECUTION_STARTED:{"change_sequence":106,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","invocation_id":"exec-58761b4e-aaac-4a4c-97ee-f73fed96ed3c","tool_name":"send_message_to","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","arguments":{"recipient_address":"/ping","message":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c"}} | TOOL_EXECUTION_FAILED:{"change_sequence":108,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","invocation_id":"exec-58761b4e-aaac-4a4c-97ee-f73fed96ed3c","tool_name":"send_message_to","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","arguments":{"recipient_address":"/ping","message":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c"},"error":"send_message_to requires a non-empty content field."} | SEGMENT_START:{"change_sequence":114,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"reasoning-block:8b6cc747-b1be-4610-be9b-5a842f6d8ad2:2","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":120,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"exec-49a93b53-b135-4ada-a37f-81112a50a24c","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","segment_type":"tool_call","metadata":{"tool_name":"send_message_to","arguments":{"recipient_address":"/ping","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c"}}} | TOOL_EXECUTION_STARTED:{"change_sequence":122,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","invocation_id":"exec-49a93b53-b135-4ada-a37f-81112a50a24c","tool_name":"send_message_to","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","arguments":{"recipient_address":"/ping","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c"}} | TEAM_COMMUNICATION_MESSAGE:{"change_sequence":123,"message":{"message_id":"teammsg_GwbtagGdhPyspVf1ioQd-2VoSbZhW_Gr","sender_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","receiver_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"agent_message","reference_files":[],"created_at":"2026-08-28T07:30:50.774Z"}} | MEMBER_INPUT_MESSAGE:{"change_sequence":124,"recipient_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","message_id":"memberinput__tt_tVVB98tB3BA5trNL4hTi8CU9aNZq","dedupe_key":"member_input:codex_roundtrip_team_754fcdba_daf4_43e3_80d7_da9_a4c8da3e9e974e26be7197f19400594f:codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3:memberinput__tt_tVVB98tB3BA5trNL4hTi8CU9aNZq","content":"You received a message from sender name: pong, sender id: codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100\nmessage:\nPONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","input_origin":"inter_agent_delivery","received_at":"2026-08-28T07:30:50.774Z","context_file_paths":[],"sender_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","parent_communication_message_id":"teammsg_GwbtagGdhPyspVf1ioQd-2VoSbZhW_Gr"} | TOOL_EXECUTION_SUCCEEDED:{"change_sequence":127,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","invocation_id":"exec-49a93b53-b135-4ada-a37f-81112a50a24c","tool_name":"send_message_to","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","arguments":{"recipient_address":"/ping","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c"},"result":{"accepted":true,"code":"DELIVERED","message":"Delivered message to /ping.","result":null}} | SEGMENT_START:{"change_sequence":137,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"reasoning-block:4b8d1502-951f-4ebe-98fe-3f7206396db5:3","turn_id":"01a04747-4f25-7cf1-8c6f-6fc4cf7f66b9","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":143,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"msg_04e6e1535ced1cd1016a91392e455087d2bc7f37d5a932b3f8","turn_id":"01a04747-4f25-7cf1-8c6f-6fc4cf7f66b9","segment_type":"text","metadata":null} | SEGMENT_START:{"change_sequence":156,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"reasoning-block:8b6cc747-b1be-4610-be9b-5a842f6d8ad2:3","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":162,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a91392f2fe087d293b41c9ac4fa9083","turn_id":"01a04746-c4a5-79a0-b03d-53f3ac95e5b8","segment_type":"text","metadata":null} | MEMBER_INPUT_MESSAGE:{"change_sequence":179,"recipient_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","message_id":"e2e-88354cb8-706c-4c74-b414-6c3f6751426d","dedupe_key":"agent_run_input:e2e:e2e-88354cb8-706c-4c74-b414-6c3f6751426d","content":"Call send_message_to exactly once now with these exact JSON arguments: {\"target_agent_run_id\":\"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3\",\"content\":\"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c\",\"message_type\":\"roundtrip_pong\"}. Do not call any other tool.","input_origin":"user_message","received_at":"2026-08-28T07:30:55.652Z","context_file_paths":[],"sender_agent_run_id":null,"parent_communication_message_id":null} | SEGMENT_START:{"change_sequence":185,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"reasoning-block:8b6cc747-b1be-4610-be9b-5a842f6d8ad2:4","turn_id":"01a04747-6226-7170-9912-c15e8d8599f3","segment_type":"reasoning","metadata":null} | SEGMENT_START:{"change_sequence":191,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"exec-9f084057-29c8-450a-a1c7-1b2aaf37d569","turn_id":"01a04747-6226-7170-9912-c15e8d8599f3","segment_type":"tool_call","metadata":{"tool_name":"send_message_to","arguments":{"target_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_pong"}}} | TOOL_EXECUTION_STARTED:{"change_sequence":193,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","invocation_id":"exec-9f084057-29c8-450a-a1c7-1b2aaf37d569","tool_name":"send_message_to","turn_id":"01a04747-6226-7170-9912-c15e8d8599f3","arguments":{"target_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_pong"}} | TEAM_COMMUNICATION_MESSAGE:{"change_sequence":194,"message":{"message_id":"teammsg_-4j5mrMxAmnoROkXFZdRzB4lQPHI63mP","sender_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","receiver_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_pong","reference_files":[],"created_at":"2026-08-28T07:31:04.367Z"}} | MEMBER_INPUT_MESSAGE:{"change_sequence":195,"recipient_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","message_id":"memberinput_I4ENkQGNB8jzjTBhDYdG88ENXeGG0epu","dedupe_key":"member_input:codex_roundtrip_team_754fcdba_daf4_43e3_80d7_da9_a4c8da3e9e974e26be7197f19400594f:codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3:memberinput_I4ENkQGNB8jzjTBhDYdG88ENXeGG0epu","content":"You received a message from sender name: pong, sender id: codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100\nmessage:\nPONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","input_origin":"inter_agent_delivery","received_at":"2026-08-28T07:31:04.367Z","context_file_paths":[],"sender_agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","parent_communication_message_id":"teammsg_-4j5mrMxAmnoROkXFZdRzB4lQPHI63mP"} | TOOL_EXECUTION_SUCCEEDED:{"change_sequence":198,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","invocation_id":"exec-9f084057-29c8-450a-a1c7-1b2aaf37d569","tool_name":"send_message_to","turn_id":"01a04747-6226-7170-9912-c15e8d8599f3","arguments":{"target_agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","content":"PONG-TO-PING ROUNDTRIP_PONG:754fcdba-daf4-43e3-80d7-da92a5412d7c","message_type":"roundtrip_pong"},"result":{"accepted":true,"code":"DELIVERED","message":"Message delivered.","result":null}} | SEGMENT_START:{"change_sequence":208,"agent_run_id":"codex_ping_754fcdba_daf4_43e3_80d7_da92a5412d7c_12eab092931f4ad6b2d1198d3bf5efe3","segment_id":"msg_04e6e1535ced1cd1016a91393afb5087d29711d61b86722420","turn_id":"01a04747-8440-7e71-8971-844135c9fdfd","segment_type":"text","metadata":null} | SEGMENT_START:{"change_sequence":221,"agent_run_id":"codex_pong_754fcdba_daf4_43e3_80d7_da92a5412d7c_e75204479bea43c299df47f14a633100","segment_id":"msg_0b6f22bd49289bc6016a91393b701487d29814d0d34532414c","turn_id":"01a04747-6226-7170-9912-c15e8d8599f3","segment_type":"text","metadata":null}'
+ ❯ waitForTeamStreamEvent tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:566:15
+    564|           .map((entry) => `${entry.type}:${JSON.stringify(entry.payloa…
+    565|           .join(" | ");
+    566|         throw new Error(
+       |               ^
+    567|           `Timed out waiting for team websocket event '${label}'. prev…
+    568|         );
+ ❯ waitForSendMessageLifecycleAndReceipt tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:686:9
+ ❯ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts:787:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  09:29:38
+   Duration  206.42s (transform 4.41s, setup 14ms, import 5.95s, tests 199.97s, environment 0ms)
+

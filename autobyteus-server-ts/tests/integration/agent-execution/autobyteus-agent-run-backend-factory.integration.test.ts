@@ -14,6 +14,8 @@ import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/b
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
+import { registerTools } from "autobyteus-ts/tools/register-tools.js";
+import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -43,6 +45,7 @@ const waitFor = async (
 };
 
 describe("AutoByteusAgentRunBackendFactory integration", () => {
+  const toolRegistrySnapshot = defaultToolRegistry.snapshot();
   let memoryDir = "";
   let workspaceDir = "";
   let previousMemoryDir: string | undefined;
@@ -61,6 +64,8 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     });
 
   beforeEach(async () => {
+    defaultToolRegistry.clear();
+    registerTools();
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-backend-memory-"));
     workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-backend-workspace-"));
@@ -118,6 +123,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     } else {
       process.env.AUTOBYTEUS_MEMORY_DIR = previousMemoryDir;
     }
+    defaultToolRegistry.restore(toolRegistrySnapshot);
   });
 
   it("creates a live backend that can process a turn and terminate cleanly", async () => {
@@ -143,6 +149,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       });
     expect(compactionAgentRunnerFactory).toHaveBeenCalledOnce();
 
+    const unsubscribe = backend.subscribeToSourceEventBatches(async () => undefined);
     const commandResult = await backend.dispatchUserInput({
       kind: "start_turn",
       message: new AgentInputUserMessage("hello backend integration"),
@@ -152,6 +159,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await backend.terminate();
+    unsubscribe();
     expect(terminateResult.accepted).toBe(true);
     expect(backend.isActive()).toBe(false);
     expect(agentFactory.getAgent(backend.runId)).toBeUndefined();
@@ -186,6 +194,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       ?.getAutomaticCompactionConfiguration()).toEqual({ kind: "disabled" });
     expect(compactionAgentRunnerFactory).not.toHaveBeenCalled();
 
+    const unsubscribe = backend.subscribeToSourceEventBatches(async () => undefined);
     const commandResult = await backend.dispatchUserInput({
       kind: "start_turn",
       message: new AgentInputUserMessage("persist one compactor task before restore"),
@@ -194,6 +203,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await backend.terminate();
+    unsubscribe();
     expect(terminateResult.accepted).toBe(true);
     expect(agentFactory.getAgent(runId)).toBeUndefined();
 
@@ -230,6 +240,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       fs.access(path.join(memoryDir, "agents", preferredRunId)),
     ).resolves.toBeUndefined();
 
+    const unsubscribe = backend.subscribeToSourceEventBatches(async () => undefined);
     const commandResult = await backend.dispatchUserInput({
       kind: "start_turn",
       message: new AgentInputUserMessage("hello explicit memory"),
@@ -246,6 +257,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
         return false;
       }
     });
+    unsubscribe();
   });
 
   it("restores a terminated run with the same run id", async () => {
@@ -255,6 +267,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       runId,
     );
 
+    const unsubscribeCreated = created.subscribeToSourceEventBatches(async () => undefined);
     const firstResult = await created.dispatchUserInput({
       kind: "start_turn",
       message: new AgentInputUserMessage("first restoreable turn"),
@@ -263,6 +276,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     await waitFor(() => created.getLifecycleSnapshot().phase === "idle");
 
     const terminateResult = await created.terminate();
+    unsubscribeCreated();
     expect(terminateResult.accepted).toBe(true);
 
     const restored = await backendFactory.restoreBackend(
@@ -294,12 +308,14 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       });
     expect(compactionAgentRunnerFactory).toHaveBeenCalledTimes(2);
 
+    const unsubscribeRestored = restored.subscribeToSourceEventBatches(async () => undefined);
     const secondResult = await restored.dispatchUserInput({
       kind: "start_turn",
       message: new AgentInputUserMessage("second restoreable turn"),
     });
     expect(secondResult.forwarded).toBe(true);
     await waitFor(() => restored.getLifecycleSnapshot().phase === "idle");
+    unsubscribeRestored();
   });
 
   it("rejects fresh create when the standalone run is not fully prepared", async () => {

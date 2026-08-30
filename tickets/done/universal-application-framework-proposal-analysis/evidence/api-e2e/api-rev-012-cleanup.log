@@ -1,0 +1,17 @@
+2026-07-31T09:39:30Z
+--- owned ports ---
+port=43126
+port=8010
+port=3010
+--- owned processes ---
+--- unrelated protected processes retained ---
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+Python  28743 normy    5u  IPv6 0xe239c045833a1b37      0t0  TCP *:8000 (LISTEN)
+84973 96773    01:47:01 codex app-server
+97114 96773    04:34:15 codex app-server
+--- owned data/probe roots after cleanup ---
+absent /tmp/api-rev012-standalone-data
+absent /tmp/api-rev012-studio-data
+absent /tmp/api-rev012-studio-data2
+absent autobyteus-application-devkit/.tmp-api-rev012
+--- package scratch after cleanup ---

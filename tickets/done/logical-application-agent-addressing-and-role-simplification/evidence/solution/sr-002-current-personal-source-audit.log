@@ -1,0 +1,204 @@
+# SR-002 current-Personal source audit
+
+## Bootstrap refs
+9e0f16975f5fbe9fcb84c924b8c75b2d9ac88a1d
+4108786f4058ca83fd036df84666a2c846fd6401
+4108786f4058ca83fd036df84666a2c846fd6401
+  codex/logical-application-agent-addressing-and-role-simplification-pre-current-personal-refresh
+
+## Commits since current Personal
+9e0f16975 docs(ticket): design logical application agent addressing
+
+## Old-base to current-Personal relevant path delta
+A	autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts
+M	autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts
+A	autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+M	autobyteus-server-ts/src/application-platform/execution/application-execution-scope.ts
+M	autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts
+M	autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+M	autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+M	autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+M	autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts
+A	autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+A	autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-terminal-transition-service.test.ts
+A	autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts
+M	autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts
+A	autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+M	autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts
+M	autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+A	autobyteus-server-ts/tests/unit/run-history/services/studio-run-model-config-service.test.ts
+
+## Current public contract and URL literals
+autobyteus-application-backend-sdk/src/application-agent-target-address.ts:3:  ApplicationAgentTargetAddress,
+autobyteus-application-backend-sdk/src/application-agent-target-address.ts:34:export const createApplicationAgentTargetAddress = (
+autobyteus-application-backend-sdk/src/application-agent-target-address.ts:36:): ApplicationAgentTargetAddress => {
+autobyteus-application-backend-sdk/src/application-agent-target-address.ts:47:): ApplicationAgentTargetAddress => {
+autobyteus-application-backend-sdk/src/application-agent-target-address.ts:59:): ApplicationAgentTargetAddress => {
+autobyteus-application-backend-sdk/src/application-agent-target-address.ts:78:      kind: "AGENT_TEAM_MEMBER",
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:31:export type ApplicationAgentTeamBindingMember = {
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:35:  runtimeKind: "AGENT" | "AGENT_TEAM_MEMBER";
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:43:    members: ApplicationAgentTeamBindingMember[];
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:51:export type ApplicationAgentTarget =
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:54:  | { kind: "AGENT_TEAM_MEMBER"; agentRunId: string };
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:56:export type ApplicationAgentTargetAddress = {
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:58:  target: ApplicationAgentTarget;
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:74:export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:76:export type ApplicationExecutionProducer = {
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:79:  runtimeKind: ApplicationExecutionProducerRuntimeKind;
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:85:  producer: ApplicationExecutionProducer;
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:1:import type { ApplicationAgentTargetAddress } from "./application-agent-bindings.js";
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:12:export const getApplicationAgentTargetUrlSegments = (address: ApplicationAgentTargetAddress): string[] => {
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:15:  if (address.target.kind === "AGENT_RUN") return [bindingId, "targets", "agent-run"];
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:16:  if (address.target.kind === "AGENT_TEAM_RUN") return [bindingId, "targets", "agent-team-run"];
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:19:  return [bindingId, "targets", "agent-team-member", agentRunId];
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:22:export const encodeApplicationAgentTargetUrl = (address: ApplicationAgentTargetAddress): string =>
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:23:  `/${getApplicationAgentTargetUrlSegments(address).map(encodeURIComponent).join("/")}`;
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:25:export const decodeApplicationAgentTargetUrl = (path: string): ApplicationAgentTargetAddress | null => {
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:34:  if (segments.length === 3 && segments[2] === "agent-run") {
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:37:  if (segments.length === 3 && segments[2] === "agent-team-run") {
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:40:  if (segments.length === 4 && segments[2] === "agent-team-member") {
+autobyteus-application-sdk-contracts/src/application-agent-target-url.ts:43:      ? { bindingId, target: { kind: "AGENT_TEAM_MEMBER", agentRunId } }
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:3:  ApplicationAgentTargetAddress,
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:23:export const isApplicationAgentTargetAddress = (value: unknown): value is ApplicationAgentTargetAddress => {
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:30:  return target.kind === "AGENT_TEAM_MEMBER" && exact(target, {
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:31:    kind: isOneOf("AGENT_TEAM_MEMBER"),
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:39:  runtimeKind: isOneOf("AGENT", "AGENT_TEAM_MEMBER"),
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:69:    address: isApplicationAgentTargetAddress,
+autobyteus-application-frontend-sdk/src/application-agent-event-validator.ts:74:  const address = value.address as ApplicationAgentTargetAddress;
+
+## Current authorization/input/stream interpretation points
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:318:    const binding = await this.requireBinding(applicationId, descriptor.address.bindingId);
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:319:    await this.postAddressedRunInputInternal(binding, input.address, input.input);
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:362:  private async requireBinding(
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:450:  private async postAddressedRunInputInternal(
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:458:      if (address.target.kind !== "AGENT_RUN") {
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:466:    if (address.target.kind === "AGENT_RUN") {
+autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:469:    const targetAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:18:  runtimeSubject: "AGENT_RUN" | "TEAM_RUN";
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:19:  runtimeRunId: string;
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:25:const validateAddress = (address: ApplicationAgentTargetAddress): void => {
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:27:  if (!address.target || typeof address.target !== "object") fail("INVALID_TARGET");
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:28:  if (address.target.kind === "AGENT_TEAM_MEMBER") {
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:29:    if (!exact(address.target, ["kind", "agentRunId"]) || !address.target.agentRunId?.trim()) fail("INVALID_TARGET");
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:30:  } else if ((address.target.kind !== "AGENT_RUN" && address.target.kind !== "AGENT_TEAM_RUN") || !exact(address.target, ["kind"])) fail("INVALID_TARGET");
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:54:    await this.requireApplication(applicationId); return this.readAuthorizedTarget(applicationId, address);
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:57:    await this.requireApplication(applicationId); validateAddress(address);
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:61:    try { return { descriptor: await this.readAuthorizedTarget(applicationId, address), release }; } catch (error) { release(); throw error; }
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:67:  private async readAuthorizedTarget(applicationId: string, address: ApplicationAgentTargetAddress): Promise<AuthorizedApplicationAgentTargetDescriptor> {
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:68:    validateAddress(address);
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:73:      if (address.target.kind !== "AGENT_RUN") fail("INVALID_TARGET");
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:74:      return { applicationId, address: structuredClone(address), runtimeSubject: "AGENT_RUN", runtimeRunId: binding.runtime.agentRunId, producers: producers(binding) };
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:76:    if (address.target.kind === "AGENT_RUN") fail("INVALID_TARGET");
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:78:    const selectedAgentRunId = address.target.kind === "AGENT_TEAM_MEMBER" ? address.target.agentRunId : null;
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:83:    return { applicationId, address: structuredClone(address), runtimeSubject: "TEAM_RUN", runtimeRunId: binding.runtime.teamRunId, producers: selected };
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:25:    if (descriptor.runtimeSubject === "AGENT_RUN") {
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:26:      const run = this.dependencies.agentRunManager.getActiveRun(descriptor.runtimeRunId);
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:27:      const producer = descriptor.producers[0];
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:36:      .getActiveTeamRun(descriptor.runtimeRunId);
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:38:    const selectedAgentRunId = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:39:      ? descriptor.address.target.agentRunId
+autobyteus-server-ts/src/application-agent-streaming/services/application-agent-stream-runtime-source.ts:61:  return descriptor.producers.find((producer) =>
+
+## Current application-role construction/use points
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:35:  runtimeKind: "AGENT" | "AGENT_TEAM_MEMBER";
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:74:export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
+autobyteus-application-sdk-contracts/src/application-agent-bindings.ts:79:  runtimeKind: ApplicationExecutionProducerRuntimeKind;
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts:15:import type { ApplicationExecutionProducerRuntimeKind } from "@autobyteus/application-sdk-contracts";
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts:37:    runtimeKind: ApplicationExecutionProducerRuntimeKind;
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts:471:        runtimeKind: "AGENT_TEAM_MEMBER" as const,
+applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts:41:    runtimeKind: member.runtimeKind,
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:132:        runtimeKind: "AGENT",
+autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts:175:      runtimeKind: "AGENT_TEAM_MEMBER",
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:36:    runtimeKind: "AGENT",
+autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts:42:    runtimeKind: member.runtimeKind,
+applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts:55:      runtimeKind: member.runtimeKind,
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:164:          member.runtimeKind,
+
+## Current persisted boundaries
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:22:      producer_json TEXT,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:69:      JSON.parse(String(row.binding_json)) as ApplicationAgentBindingRecord,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:71:    producer: row.producer_json ? JSON.parse(String(row.producer_json)) as ApplicationExecutionEventJournalEvent["producer"] : null,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:72:    payload: JSON.parse(String(row.payload_json)) as ApplicationExecutionEventJournalEvent["payload"],
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:128:         producer_json,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:137:      JSON.stringify(event.binding),
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:138:      event.producer ? JSON.stringify(event.producer) : null,
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:139:      JSON.stringify(event.payload),
+autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts:278:                producer_json,
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:27:      summary_json TEXT NOT NULL
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:39:      runtime_kind TEXT NOT NULL,
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:47:const hydrateSummary = (row: { summary_json: string }): ApplicationAgentBindingRecord =>
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:48:  JSON.parse(row.summary_json) as ApplicationAgentBindingRecord;
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:77:        const rows = db.prepare(`SELECT DISTINCT json_extract(summary_json, '$.applicationId') AS application_id FROM __autobyteus_run_bindings`).all() as Array<{ application_id: string | null }>;
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:111:           summary_json
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:128:           summary_json = excluded.summary_json`,
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:145:        JSON.stringify(summary),
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:155:           runtime_kind
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:178:        .prepare(`SELECT summary_json FROM __autobyteus_run_bindings WHERE binding_id = ? LIMIT 1`)
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:179:        .get(bindingId) as { summary_json: string } | undefined;
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:192:          `SELECT summary_json
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:197:        .get(launchRequestId.trim()) as { summary_json: string } | undefined;
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:216:          `SELECT summary_json
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:221:        .all(...params) as Array<{ summary_json: string }>;
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:231:          `SELECT summary_json
+autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts:236:        .all() as Array<{ summary_json: string }>;
+autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts:25:const normalizeApplicationExecutionContext = (
+autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts:54:  applicationExecutionContext: normalizeApplicationExecutionContext(
+autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts:55:    metadata.applicationExecutionContext,
+autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts:89:      const parsed: unknown = JSON.parse(raw);
+
+## Current maintained-application logical-to-physical mapping
+applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:166:            latestRunId: reconciled ? (reconciled.binding.runtime.subject === "AGENT_RUN" ? reconciled.binding.runtime.agentRunId : reconciled.binding.runtime.teamRunId) : null,
+applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:211:      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts:256:      address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:2:  createApplicationAgentTeamMemberTargetAddress,
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:32:const TUTOR_MEMBER_ADDRESS = "/tutor";
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:53:    (member) => member.memberAddress === TUTOR_MEMBER_ADDRESS,
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:57:      `Socratic tutor binding must contain configured memberAddress '${TUTOR_MEMBER_ADDRESS}'.`,
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:60:  return createApplicationAgentTeamMemberTargetAddress(binding, tutorMember.agentRunId);
+
+## Newly relevant current-Personal test occurrences
+autobyteus-server-ts/tests/unit/run-history/services/studio-run-model-config-service.test.ts:27:        runtimeKind: "AGENT" as const,
+autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:33:      runtimeKind: "AGENT_TEAM_MEMBER",
+autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:160:        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: researcherAgentRunId },
+autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts:225:        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "unknown-member-run" },
+autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts:107:          runtimeKind: "AGENT";
+autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts:374:              producer: { agentRunId: runId, runtimeKind: "AGENT" },
+autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts:432:        ? { bindingId: binding.bindingId, target: { kind: "AGENT_RUN" as const } }
+autobyteus-server-ts/tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts:435:            target: { kind: "AGENT_TEAM_MEMBER" as const, agentRunId: binding.runtime.members[0]!.agentRunId },
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts:67:        runtimeKind: "AGENT_TEAM_MEMBER",
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts:338:          runtimeKind: "AGENT_TEAM_MEMBER",
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts:406:        target: { kind: "AGENT_TEAM_MEMBER", agentRunId: "researcher-member-run-1" },
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts:451:          target: { kind: "AGENT_TEAM_MEMBER", memberAddress: "/Researcher" },
+autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts:489:        address: { bindingId, target: { kind: "AGENT_RUN" } },
+autobyteus-server-ts/tests/unit/application-orchestration/application-run-ownership-service.test.ts:29:          runtimeKind: "AGENT_TEAM_MEMBER",
+
+## Physical binding-member column reads/writes
+39:      runtime_kind TEXT NOT NULL,
+155:           runtime_kind
+
+## Public target durability search
+applications/socratic-math-teacher/backend-src/services/lesson-read-service.ts:41:      tutorTargetAddress: deriveTutorTargetAddress(lessonDetail.lesson, binding),
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:4:  type ApplicationAgentTargetAddress,
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:28:  tutorTargetAddress: ApplicationAgentTargetAddress | null;
+applications/socratic-math-teacher/backend-src/domain/lesson-model.ts:41:>, binding: ApplicationAgentBinding | ApplicationAgentTeamBinding | null): ApplicationAgentTargetAddress | null => {
+
+## Provider/scope baseline preserved
+autobyteus-server-ts/src/application-orchestration/services/application-run-ownership-service.ts:61:export class ApplicationRunOwnershipService implements ApplicationRunOwnershipReader {
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:11:import type { AgentProviderFactoryBuilder } from "../../agent-execution/providers/agent-provider-factory-builder.js";
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:12:import type { AgentToolMcpSessionAuthorityFactory } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:24:import type { RunModelConfigValidator } from "../../llm-management/services/model-config-validation-service.js";
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:34:  agentToolMcpSessionAuthorities: AgentToolMcpSessionAuthorityFactory;
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:35:  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:39:  modelConfigValidator: RunModelConfigValidator;
+autobyteus-server-ts/src/application-platform/execution/application-execution-scope-contracts.ts:93:export interface ApplicationExecutionStreaming {
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts:25:import { ApplicationRunOwnershipService } from "../../application-orchestration/services/application-run-ownership-service.js";
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts:44:  ApplicationExecutionStreaming,
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts:73:  streaming: ApplicationExecutionStreaming;
+autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts:90:  const runOwnershipService = new ApplicationRunOwnershipService({
+
+## Pre-handoff remote revalidation
+origin/personal=4108786f4058ca83fd036df84666a2c846fd6401
+merge-base=4108786f4058ca83fd036df84666a2c846fd6401
+pre-SR-002-commit-head=9e0f16975f5fbe9fcb84c924b8c75b2d9ac88a1d
+ahead-behind-before-SR-002-commit=1 0

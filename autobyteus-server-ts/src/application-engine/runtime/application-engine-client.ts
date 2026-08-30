@@ -11,7 +11,6 @@ type JsonRpcId = string | number;
 type PendingRequest = {
   resolve: (value: unknown) => void;
   reject: (error: Error) => void;
-  timeoutHandle: NodeJS.Timeout;
 };
 
 type JsonRpcRequestHandler = (params: Record<string, unknown>) => Promise<unknown> | unknown;
@@ -108,25 +107,13 @@ export class ApplicationEngineClient {
     };
   }
 
-  async request<T = unknown>(method: string, params?: Record<string, unknown>, timeoutMs = 30_000): Promise<T> {
+  async request<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T> {
     this.ensureAttached();
     const id = this.nextRequestId++;
     const promise = new Promise<T>((resolve, reject) => {
-      const timeoutHandle = setTimeout(() => {
-        this.pendingRequests.delete(id);
-        reject(new Error(`Application worker request timed out: ${method}`));
-      }, timeoutMs);
-
       this.pendingRequests.set(id, {
-        resolve: (value) => {
-          clearTimeout(timeoutHandle);
-          resolve(value as T);
-        },
-        reject: (error) => {
-          clearTimeout(timeoutHandle);
-          reject(error);
-        },
-        timeoutHandle,
+        resolve: (value) => resolve(value as T),
+        reject,
       });
     });
 
@@ -139,7 +126,6 @@ export class ApplicationEngineClient {
       const pending = this.pendingRequests.get(id);
       if (!pending) return;
       this.pendingRequests.delete(id);
-      clearTimeout(pending.timeoutHandle);
       pending.reject(error instanceof Error ? error : new Error(String(error)));
     });
     return promise;
@@ -162,7 +148,6 @@ export class ApplicationEngineClient {
 
   private failAllPending(error: Error): void {
     for (const pending of this.pendingRequests.values()) {
-      clearTimeout(pending.timeoutHandle);
       pending.reject(error);
     }
     this.pendingRequests.clear();

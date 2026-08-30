@@ -1,0 +1,144 @@
+CRR-022 / API-REV-011 proportional durable-test review
+Date: 2026-08-25
+Reviewed implementation/API base HEAD: 16a6772a04ef8a0f75f0a11044f9fca8192a4df8
+Durable review surface: autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+
+--- changed durable paths ---
+M	autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+
+--- durable diff size ---
+29	0	autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+
+--- diff check ---
+PASS
+
+--- scenario names ---
+254:describe("nested TeamRun history startup/restart hydration", () => {
+255:  it("moves released flat configured/task memory before public reads and remains canonical after process restart", async () => {
+363:  it("keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action", async () => {
+
+--- added requirement proof ---
+diff --git a/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts b/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+index 2cb94ecd4..be53e40a1 100644
+--- a/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+@@ -25,24 +25,25 @@ type MigrationStatus = {
+
+ type Projection = {
+   agentRunId: string;
+   conversation: Array<Record<string, unknown>>;
+   activities: Array<Record<string, unknown>>;
+   summary: string | null;
+   lastActivityAt: string | null;
+   hasEarlierActiveTraceEvents: boolean;
+ };
+
+ const ROOT_TEAM_RUN_ID = "team-run-root";
+ const LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
++const EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
+ const EXTERNAL_SNAPSHOT_MIGRATION_ID = "20260731_remove_external_runtime_working_context_snapshots";
+ const NATIVE_SNAPSHOT_MIGRATION_ID = "20260731_migrate_native_working_context_snapshots_v5";
+ const FIXTURE_ROOT = path.resolve(
+   import.meta.dirname,
+   "../../fixtures/app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team",
+ );
+
+ const ownedServers = new Set<RunningTestServer>();
+ const ownedTargets: Array<{ runtimeRoot: string; database: DatabaseLocation }> = [];
+
+ const makeTarget = (label: string) => {
+   const suffix = `${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+@@ -371,24 +372,28 @@ describe("nested TeamRun history startup/restart hydration", () => {
+
+     const server = await startServer(target);
+     await expectHealthy(server.serverUrl);
+     expect(server.output()).toContain("Server listening on");
+     expect(await requireStatus(server.serverUrl, LAYOUT_MIGRATION_ID)).toMatchObject({
+       status: "FAILED",
+       attempts: 1,
+       recoveryAction: "MANUAL_RETRY",
+       canRetry: true,
+       summary: expect.stringMatching(/^Scanned \d+; migrated 1; skipped \d+; failed 1\.$/),
+       errorMessage: "1 Team Agent memory location could not be established.",
+     });
++    expect(await requireStatus(server.serverUrl, EXECUTION_TREE_V2_MIGRATION_ID)).toMatchObject({
++      status: "NOT_RUN",
++      attempts: 0,
++    });
+     expect(fs.existsSync(alreadyMovable.memberDir)).toBe(false);
+     expect(fs.readFileSync(path.join(movedCanonical, "restart-owned-sentinel.bin"))).toEqual(alreadyMovable.sentinelBytes);
+     expect(fs.existsSync(blocked.memberDir)).toBe(true);
+     expect(fs.statSync(blockedCanonical).isFile()).toBe(true);
+     expect(await requireStatus(server.serverUrl, EXTERNAL_SNAPSHOT_MIGRATION_ID)).toMatchObject({
+       status: "NOT_RUN",
+       attempts: 0,
+     });
+     expect(await requireStatus(server.serverUrl, NATIVE_SNAPSHOT_MIGRATION_ID)).toMatchObject({
+       status: "NOT_RUN",
+       attempts: 0,
+     });
+@@ -415,24 +420,48 @@ describe("nested TeamRun history startup/restart hydration", () => {
+       migration: {
+         migrationId: LAYOUT_MIGRATION_ID,
+         status: "SUCCEEDED",
+         attempts: 2,
+         recoveryAction: "NONE",
+         canRetry: false,
+         summary: expect.stringMatching(/^Scanned \d+; migrated 1; skipped \d+; failed 0\.$/),
+         errorMessage: null,
+       },
+     });
+     expect(fs.existsSync(blocked.memberDir)).toBe(false);
+     expect(fs.readFileSync(path.join(blockedCanonical, "raw_traces_active.jsonl"))).toEqual(blocked.traceBytes);
++
++    const v2Admission = await executeGraphql<{
++      runAppDataMigration: {
++        success: boolean;
++        migration: MigrationStatus | null;
++      };
++    }>(server.serverUrl, `
++      mutation AdmitRetriedNestedHistoryV2($migrationId: String!) {
++        runAppDataMigration(migrationId: $migrationId) {
++          success
++          migration { migrationId status recoveryAction canRetry attempts summary errorMessage }
++        }
++      }
++    `, { migrationId: EXECUTION_TREE_V2_MIGRATION_ID });
++    expect(v2Admission.runAppDataMigration).toMatchObject({
++      success: true,
++      migration: {
++        migrationId: EXECUTION_TREE_V2_MIGRATION_ID,
++        status: "SUCCEEDED",
++        attempts: 1,
++        recoveryAction: "NONE",
++        canRetry: false,
++      },
++    });
+     expectProjectionTokenSet(await projection(server.serverUrl, "agent-run-architect"), "BLOCKED_UNTIL_RETRY", false);
+
+     const dependent = await executeGraphql<{
+       runAppDataMigration: { success: boolean; migration: MigrationStatus | null };
+     }>(server.serverUrl, `
+       mutation RunUnblockedDependent($migrationId: String!) {
+         runAppDataMigration(migrationId: $migrationId) {
+           success
+           migration { migrationId status recoveryAction canRetry attempts summary errorMessage }
+         }
+       }
+     `, { migrationId: EXTERNAL_SNAPSHOT_MIGRATION_ID });
+
+--- API-REV-011 focused execution result ---
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts (2 tests) 6055ms
+     ✓ moves released flat configured/task memory before public reads and remains canonical after process restart  4108ms
+     ✓ keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action  1946ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:46:19
+   Duration  6.86s (transform 34ms, setup 17ms, import 30ms, tests 6.06s, environment 0ms)
+
+
+Reviewer conclusion: PASS. The only durable delta explicitly proves memory retry -> V2 admission -> current V2 projection through public APIs, retains the original failure and retry assertions, adds no sleep/fallback/disabled coverage, reuses existing helpers, and preserves isolated process/SQLite cleanup.

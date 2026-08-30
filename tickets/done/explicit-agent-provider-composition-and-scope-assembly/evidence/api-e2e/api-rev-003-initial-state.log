@@ -1,0 +1,41 @@
+=== API-REV-003 initial state
+Wed Aug 26 13:21:48 UTC 2026
+HEAD=2625f2b7d053e1b8e8009d21f5583b32fc55ba34
+v22.23.1
+10.28.2
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+=== baseline generated outputs
+PRESENT autobyteus-server-ts/dist
+PRESENT autobyteus-application-backend-sdk/dist
+PRESENT autobyteus-application-sdk-contracts/dist
+ABSENT autobyteus-application-devkit/dist
+ABSENT autobyteus-application-frontend-sdk/dist
+ABSENT applications/brief-studio/dist
+ABSENT applications/socratic-math-teacher/dist
+PRESENT autobyteus-web/.nuxt
+ABSENT autobyteus-web/.output
+=== candidate ports
+PORT 43651 FREE
+PORT 43660 FREE
+PORT 31660 FREE
+=== status
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/architecture-review-revision-record.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-report.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/code-review-revision-record.md
+ M tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/design-review-report.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/delivery-revision-record.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/docs-sync-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/api-e2e/api-rev-003-initial-state.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-build-config-typecheck.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-focused-server.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-focused-web.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-frontend-render-review.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/code-review/crr-006-merge-source-audit.log
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/evidence/delivery/
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/handoff-summary.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/latest-base-integration-conflict-report.md
+?? tickets/in-progress/explicit-agent-provider-composition-and-scope-assembly/release-deployment-report.md

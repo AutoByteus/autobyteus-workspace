@@ -1,0 +1,74 @@
+CRR-018 merge/source audit
+current_head=43a76ea6adb9d935ec245938253644e06114e90f
+expected_artifact_head=43a76ea6adb9d935ec245938253644e06114e90f
+merge=52ab1fe6f8dfd347b84283370d7c3e76c2f90393
+parents=c6d74710ad30b680f853fba0e90a68255f112955 fb1335867a4223b2499e4513f58c609b6ac33ab4
+merge_base=8a4c3868c7c54a46991f45be22a68151076412b1
+origin_personal=fb1335867a4223b2499e4513f58c609b6ac33ab4
+checkpoint_is_ancestor=yes
+personal_is_ancestor=yes
+merge_tree_exit=1
+merge_tree_content_conflicts=13
+merge_tree_modify_delete_conflicts=30
+personal_delta_paths=633
+checkpoint_delta_paths=2052
+changed_both_paths=50
+parsed_conflict_paths=43
+auto_merged_changed_both=7
+merge_vs_checkpoint_paths=623
+auto_merged_changed_both_paths:
+  autobyteus-application-devkit/templates/basic/application.json
+  autobyteus-application-devkit/tests/application-devkit.test.mjs
+  autobyteus-application-sdk-contracts/README.md
+  autobyteus-application-sdk-contracts/src/index.ts
+  autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+  autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+  autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue
+generated_modify_delete_checked=30
+generated_present_in_merge=0
+generated_absent_in_merge=30
+
+unmerged_entries:
+
+
+artifact_vs_merge_diff:
+ .../implementation-handoff.md                      | 123 +++++++++++----------
+ .../implementation-revision-record.md              |  21 ++++
+ 2 files changed, 87 insertions(+), 57 deletions(-)
+
+scoped_diff_check:
+
+scoped_diff_check_exit=0
+
+changed_source_conflict_markers:
+count=0
+
+retired_authority_scan:
+
+retired_authority_scan_exit=1
+
+source_size_and_delta_pressure:
+eff= 503 add=   5 del=   2 delta=   7 autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts
+eff= 499 add= 410 del= 254 delta= 664 autobyteus-web/stores/teamRunConfigStore.ts
+eff= 469 add=   1 del=   1 delta=   2 autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+eff= 434 add=   9 del=   4 delta=  13 autobyteus-web/stores/workspace.ts
+eff= 432 add=  80 del=  80 delta= 160 autobyteus-web/components/workspace/config/RunConfigPanel.vue
+eff= 312 add= 193 del= 291 delta= 484 autobyteus-web/components/workspace/config/MemberOverrideItem.vue
+eff= 306 add= 318 del=   0 delta= 318 autobyteus-web/components/workspace/config/TeamScopeConfigEditor.vue
+eff= 295 add= 318 del=   0 delta= 318 autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.ts
+eff= 287 add= 181 del=  58 delta= 239 autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts
+eff= 272 add= 302 del=   0 delta= 302 autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-execution-v1-index.ts
+eff= 265 add= 288 del=   0 delta= 288 autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts
+eff= 215 add= 231 del=   0 delta= 231 autobyteus-web/utils/teamRunLaunchHierarchy.ts
+eff= 151 add= 130 del= 101 delta= 231 autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts
+eff= 124 add=  64 del= 170 delta= 234 autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+hard_limit_violations:
+  autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts: 503
+
+maintained_team_defaults:
+-- applications/brief-studio/agent-teams/brief-studio-team/team-config.json
+18:    "runtimeKind": "codex_app_server",
+19:    "llmModelIdentifier": "gpt-5.6-luna"
+-- applications/socratic-math-teacher/agent-teams/socratic-math-team/team-config.json
+12:    "runtimeKind": "codex_app_server",
+13:    "llmModelIdentifier": "gpt-5.6-luna"

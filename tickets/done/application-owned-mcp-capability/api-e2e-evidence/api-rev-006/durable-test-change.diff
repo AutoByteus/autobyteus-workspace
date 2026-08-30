@@ -1,0 +1,643 @@
+diff --git a/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts b/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+index 0c62686b4..3d774d6a2 100644
+--- a/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+@@ -25,7 +25,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import type { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
+ import { SkillService } from "../../../src/skills/services/skill-service.js";
+-import type { AgentToolMcpSessionIssuer } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
++import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+ 
+ const createAgentMd = (name: string, description: string, instructions: string): string =>
+   ["---", `name: ${name}`, `description: ${description}`, "---", "", instructions].join("\n");
+@@ -268,27 +268,16 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
+     })),
+     releaseClient: vi.fn(async () => undefined),
+   } as unknown as CodexAppServerClientManager;
+-  const agentToolMcpSessionIssuer = {
+-    issueForRun: vi.fn((input) => ({
+-      sessionId: "private-skills-no-tools",
+-      owner: input.owner,
+-      descriptor: {
+-        name: "autobyteus_agent_tools",
+-        transport: "streamable_http",
+-        serverUrl: "http://127.0.0.1:1/mcp/agent-tools/private-skills-no-tools",
+-        headers: { Authorization: "Bearer private-skills-test" },
+-        enabledTools: [],
+-      },
+-      redactedDescriptor: {} as never,
+-    })),
+-  } as AgentToolMcpSessionIssuer;
++  const agentToolMcpRunSessions = {
++    activateForRun: vi.fn(() => ({ kind: "not_exposed" as const })),
++  } satisfies AgentToolMcpRunSessionActivator;
+   return new CodexThreadBootstrapper(
++    agentToolMcpRunSessions,
+     new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE),
+     workspaceResolver,
+     AgentDefinitionService.getInstance(),
+     SkillService.getInstance(),
+     clientManager,
+-    agentToolMcpSessionIssuer,
+   );
+ };
+ 
+diff --git a/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts b/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+index 56bbf5103..9e52b2425 100644
+--- a/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+@@ -27,6 +27,12 @@ import { PublishedArtifactProjectionStore } from "../../../src/services/publishe
+ import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
+ import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+ import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
++import { createAgentToolsMcpHost, type AgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
++import type {
++  AgentToolMcpRunSessionActivator,
++  ScopedAgentToolMcpSessionAuthority,
++} from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
++import { PublishedArtifactPublicationService } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
+ import {
+   BrowserBridgeLiveTestServer,
+   buildOpenBrowserToolPrompt,
+@@ -43,6 +49,14 @@ const describeCodexBackendIntegration =
+ const FLOW_TEST_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_FLOW_TIMEOUT_MS || 120_000);
+ const EVENT_WAIT_TIMEOUT_MS = Number(process.env.CODEX_BACKEND_EVENT_TIMEOUT_MS || 90_000);
+ const BACKEND_EVENT_LOG_DIR = process.env.CODEX_BACKEND_EVENT_LOG_DIR?.trim() || null;
++const activeAgentToolsMcpHosts: AgentToolsMcpHost[] = [];
++const activeAgentToolsMcpAuthorities: ScopedAgentToolMcpSessionAuthority[] = [];
++const testLoggingConfig = {
++  pinoLogLevel: "silent" as const,
++  httpAccessLogMode: "off" as const,
++  includeNoisyHttpAccessRoutes: false,
++  scopedLogLevelOverrides: [],
++};
+ const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
+   createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+   restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+@@ -159,11 +173,20 @@ const writeBackendEventLog = async (
+ const fetchCodexModelIdentifier = async (
+   clientManager: CodexAppServerClientManager,
+   cwd: string,
++  requiredModelIdentifier?: string,
+ ): Promise<string> => {
+   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
+   const availableModelIdentifiers = models
+     .map((model) => model.model_identifier)
+     .filter((identifier): identifier is string => identifier.length > 0);
++  if (requiredModelIdentifier) {
++    if (!availableModelIdentifiers.includes(requiredModelIdentifier)) {
++      throw new Error(
++        `Codex model catalog did not return required model ${requiredModelIdentifier}. Available models: ${availableModelIdentifiers.join(", ")}`,
++      );
++    }
++    return requiredModelIdentifier;
++  }
+   const preferredOrder = [
+     process.env.CODEX_BACKEND_MODEL?.trim(),
+     "gpt-5.3-codex",
+@@ -182,7 +205,7 @@ const fetchCodexModelIdentifier = async (
+   return preferredIdentifier;
+ };
+ 
+-const createFactory = (input: {
++const createFactory = async (input: {
+   clientManager: CodexAppServerClientManager;
+   threadManager: CodexThreadManager;
+   workspaceRoot: string;
+@@ -191,6 +214,26 @@ const createFactory = (input: {
+   toolNames?: string[];
+ }) => {
+   const inert = Object.freeze({}) as never;
++  let agentToolMcpRunSessions: AgentToolMcpRunSessionActivator = {
++    activateForRun: () => ({ kind: "not_exposed" as const }),
++  };
++  if (input.toolNames?.length) {
++    const host = createAgentToolsMcpHost({ loggingConfig: testLoggingConfig });
++    const authority = host.sessionAuthorities.begin({
++      scopeIdentity: `codex-live:${input.runId}`,
++    }).complete({
++      executionCapabilities: {
++        publishedArtifactPublisher: new PublishedArtifactPublicationService(),
++        applicationAgentTools: null,
++      },
++      assertExecutionCapabilitiesReady: () => undefined,
++    });
++    await host.listen();
++    activeAgentToolsMcpHosts.push(host);
++    activeAgentToolsMcpAuthorities.push(authority);
++    agentToolMcpRunSessions = authority.runSessions;
++  }
++
+   const builder = createAgentProviderFactoryBuilder({
+     workspaceManager: getWorkspaceManager(),
+     skillService: {
+@@ -230,13 +273,14 @@ const createFactory = (input: {
+   return builder.createForExecution({
+     agentDefinitionService: {
+       getAgentDefinitionById: async () => ({
++        name: "Live Codex integration agent",
+         instructions: input.instructions ?? "Reply briefly.",
+         description: "Fallback description.",
+         skillNames: [],
+         toolNames: input.toolNames ?? [],
+       }),
+     } as never,
+-    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }) },
++    agentToolMcpRunSessions,
+     applicationAgentTools: null,
+   }).codex;
+ };
+@@ -270,6 +314,12 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+       await browserBridgeServer.stop();
+       browserBridgeServer = null;
+     }
++    for (const authority of activeAgentToolsMcpAuthorities.splice(0)) {
++      authority.close();
++    }
++    for (const host of activeAgentToolsMcpHosts.splice(0)) {
++      await host.close();
++    }
+     if (typeof originalBrowserBridgeBaseUrl === "string") {
+       process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
+     } else {
+@@ -304,7 +354,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = "run-codex-backend-events";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -318,8 +368,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: false,
+         workspaceId: "workspace-codex-live-events",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -328,19 +380,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     await waitForStartupReady(thread!.startup.waitForReady);
+ 
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           "Without using tools, reason carefully about whether 29 multiplied by 31 is greater than 850, then answer with only YES or NO.",
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       await waitForEvent(
+         events,
+@@ -406,7 +457,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = "run-codex-backend-approve";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -420,8 +471,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: false,
+         workspaceId: "workspace-codex-approve",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -435,19 +488,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     await fsPromises.writeFile(sourcePath, `${expectedToken}\n`, "utf8");
+ 
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           `Your next action must be a single terminal tool invocation that requests approval.\nRun this exact command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not answer in natural language before requesting approval. Do not simulate execution. If approval is denied, briefly acknowledge the denial and stop.`,
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       const approvalRequested = await waitForEvent(
+         events,
+@@ -517,7 +569,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = "run-codex-backend-fail";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -531,8 +583,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: true,
+         workspaceId: "workspace-codex-fail",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -542,19 +596,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+ 
+     const missingPath = path.join(workspaceRoot, `missing-${randomUUID()}.txt`);
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           `Your next action must be a single terminal tool invocation.\nRun this exact command once:\ncat '${escapeForSingleQuotedShell(missingPath)}'\nDo not ask for approval. Do not answer in natural language before executing the command. Do not simulate failure. If the command fails, briefly report the failure and stop.`,
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       const started = await waitForEvent(
+         events,
+@@ -604,7 +657,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = "run-codex-backend-deny";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -618,8 +671,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: false,
+         workspaceId: "workspace-codex-deny",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -632,19 +687,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     await fsPromises.writeFile(sourcePath, `CODEX_BACKEND_DENY_${randomUUID()}\n`, "utf8");
+ 
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       const approvalRequested = await waitForEvent(
+         events,
+@@ -701,7 +755,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = "run-codex-backend-auto-exec";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -715,8 +769,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: true,
+         workspaceId: "workspace-codex-auto-exec",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -730,19 +786,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     await fsPromises.writeFile(sourcePath, `${expectedToken}\n`, "utf8");
+ 
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not ask for approval.`,
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       await waitForEvent(
+         events,
+@@ -791,7 +846,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+       "gpt-5.4",
+     );
+     const runId = "run-codex-backend-multi-reasoning";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -805,8 +860,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: true,
+         workspaceId: "workspace-codex-multi-reasoning",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "xhigh" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -820,19 +877,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     const secondToken = `SECOND_${randomUUID().replace(/-/g, "_")}`;
+ 
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           `Think carefully before the first tool call. Then use the terminal tool exactly twice and do not combine the commands. Do not use edit_file. Do not ask for approval. Do not simulate execution. First, think carefully about step 1 and then run exactly this command once: printf '${firstToken}\\n' > '${escapeForSingleQuotedShell(firstPath)}'. After that command completes, think carefully again about step 2 as a separate decision and then run exactly this second command once: printf '${secondToken}\\n' > '${escapeForSingleQuotedShell(secondPath)}'. Do not decide both commands in a single planning step. Only after both commands finish, reply DONE.`,
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       await waitFor(
+         () =>
+@@ -897,9 +953,13 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+       undefined,
+       new CodexClientThreadRouter(),
+     );
+-    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
++    const modelIdentifier = await fetchCodexModelIdentifier(
++      clientManager,
++      workspaceRoot,
++      "gpt-5.6-luna",
++    );
+     const runId = "run-codex-backend-edit-file";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -913,8 +973,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: true,
+         workspaceId: "workspace-codex-edit-file",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -926,19 +988,18 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     const targetPath = path.join(workspaceRoot, fileName);
+ 
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
+-          `Use the edit_file tool and do not use run_bash. Create a Python file named ${fileName} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`,
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
++          `Do not use run_bash or any shell command. Create a Python file named ${fileName} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`,
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       const editSegmentStart = await waitForEvent(
+         events,
+@@ -963,13 +1024,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+           resolveInvocationId(event.payload) === invocationId &&
+           event.payload.tool_name === "edit_file",
+       );
+-      await waitForEvent(
+-        events,
+-        (event) =>
+-          event.eventType === AgentRunEventType.TOOL_LOG &&
+-          resolveInvocationId(event.payload) === invocationId &&
+-          event.payload.tool_name === "edit_file",
+-      );
+       await waitForEvent(
+         events,
+         (event) =>
+@@ -1020,7 +1074,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = "run-codex-backend-browser-tool";
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -1037,8 +1091,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: true,
+         workspaceId: "workspace-codex-browser-live",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -1049,22 +1105,21 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
+     const browserTitle = `Browser ${randomUUID()}`;
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           buildOpenBrowserToolPrompt({
+             url: browserUrl,
+             title: browserTitle,
+           }),
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       const browserSuccessEvent = await waitForEvent(
+         events,
+@@ -1126,7 +1181,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     );
+     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+     const runId = `run-codex-backend-publish-artifacts-${randomUUID()}`;
+-    const factory = createFactory({
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+@@ -1291,11 +1346,12 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     await browserBridgeServer.start();
+     Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
+ 
+-    const factory = createFactory({
++    const runId = `run-codex-browser-surface-${randomUUID()}`;
++    const factory = await createFactory({
+       clientManager,
+       threadManager,
+       workspaceRoot,
+-      runId: `run-codex-browser-surface-${randomUUID()}`,
++      runId,
+       toolNames: [
+         "open_tab",
+         "navigate_to",
+@@ -1318,8 +1374,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+         llmModelIdentifier: modelIdentifier,
+         autoExecuteTools: true,
+         workspaceId: "workspace-codex-browser-surface-live",
++        memoryDir: path.join(workspaceRoot, ".memory", runId),
+         llmConfig: { reasoning_effort: "medium" },
+       }),
++      runId,
+     );
+     createdRunIds.add(backend.runId);
+ 
+@@ -1331,23 +1389,22 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
+     const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
+     const browserTitle = `Browser ${randomUUID()}`;
+     const events: AgentRunEvent[] = [];
+-    const unsubscribe = backend.subscribeToEvents((event) => {
+-      if (event && typeof event === "object") {
+-        events.push(event as AgentRunEvent);
+-      }
++    const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
++      events.push(...batch);
+     });
+ 
+     try {
+-      const sendResult = await backend.postUserMessage(
+-        new AgentInputUserMessage(
++      const sendResult = await backend.dispatchUserInput({
++        kind: "start_turn",
++        message: new AgentInputUserMessage(
+           buildBrowserToolSurfacePrompt({
+             openUrl,
+             navigateUrl,
+             title: browserTitle,
+           }),
+         ),
+-      );
+-      expect(sendResult.accepted).toBe(true);
++      });
++      expect(sendResult.forwarded).toBe(true);
+ 
+       await waitForEvent(
+         events,
+diff --git a/autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts b/autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
+index 62d5d1e29..3442a8dff 100644
+--- a/autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
+@@ -166,7 +166,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
+     await fs.rm(tempRoot, { recursive: true, force: true });
+   });
+ 
+-  it("lists and executes the shipped Brief Studio handler over authenticated MCP with exact Team binding isolation", async () => {
++  it("lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation", async () => {
+     await expect(fs.stat(IMPORTABLE_PACKAGE_ROOT)).resolves.toBeDefined();
+     const builtInRoot = path.join(tempRoot, "built-in");
+     const appDataRoot = path.join(tempRoot, "app-data");

@@ -1,7 +1,6 @@
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
@@ -13,13 +12,13 @@ import {
 import {
   AgentRunHistoryCatalogService,
 } from "../../run-history/services/agent-run-history-catalog-service.js";
-import type { ApplicationExecutionProducerRuntimeKind } from "@autobyteus/application-sdk-contracts";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
 import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
-import { StandaloneAgentRunActivationService } from "./standalone-agent-run-activation-service.js";
+import { StandaloneAgentRunLifecycleService } from "./standalone-agent-run-lifecycle-service.js";
+import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -34,7 +33,6 @@ export interface CreateAgentRunInput {
     applicationId: string;
     bindingId: string;
     displayName: string | null;
-    runtimeKind: ApplicationExecutionProducerRuntimeKind;
   } | null;
 }
 
@@ -77,7 +75,7 @@ export class AgentRunService {
   private metadataService: AgentRunMetadataService;
   private historyCatalogService: AgentRunHistoryCatalogService;
   private readonly provisioningService: AgentRunProvisioningService;
-  private readonly activationService: StandaloneAgentRunActivationService;
+  private readonly lifecycleService: StandaloneAgentRunLifecycleService;
 
   constructor(
     memoryDir: string,
@@ -87,28 +85,27 @@ export class AgentRunService {
       historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
-      activationService?: StandaloneAgentRunActivationService;
-    } = {},
+      provisioningService?: AgentRunProvisioningService;
+      lifecycleService: StandaloneAgentRunLifecycleService;
+    },
   ) {
+    if (!deps?.lifecycleService) {
+      throw new Error("lifecycleService is required.");
+    }
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService =
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService =
       deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     const workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.provisioningService = new AgentRunProvisioningService(memoryDir, {
+    this.provisioningService = deps.provisioningService ?? new AgentRunProvisioningService(memoryDir, {
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
       historyCatalogService: this.historyCatalogService,
       workspaceManager,
       agentRunIdentityAllocator: deps.agentRunIdentityAllocator,
     });
-    this.activationService = deps.activationService ?? new StandaloneAgentRunActivationService(memoryDir, {
-      agentRunManager: this.agentRunManager,
-      metadataService: this.metadataService,
-      historyCatalogService: this.historyCatalogService,
-      workspaceManager,
-    });
+    this.lifecycleService = deps.lifecycleService;
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
@@ -212,7 +209,7 @@ export class AgentRunService {
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
     const prepared = await this.provisioningService.prepareAgentRun(input);
-    const activeRun = await this.activationService.activatePreparedRun(prepared.runId);
+    const activeRun = await this.lifecycleService.activatePreparedRun(prepared.runId);
     return { runId: activeRun.runId };
   }
 
@@ -223,11 +220,11 @@ export class AgentRunService {
   }
 
   async activatePreparedRun(runId: string): Promise<AgentRun> {
-    return this.activationService.activatePreparedRun(runId);
+    return this.lifecycleService.activatePreparedRun(runId);
   }
 
   resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
-    return this.activationService.resolveCommandReadyAgentRun(runId);
+    return this.lifecycleService.resolveCommandReadyAgentRun(runId);
   }
 
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {
@@ -259,7 +256,14 @@ export class AgentRunService {
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
-    return this.activationService.restorePersistedRun(normalizeRequiredRunId(runId));
+    return this.lifecycleService.restorePersistedRun(normalizeRequiredRunId(runId));
+  }
+
+  updateStoppedModelConfig(input: {
+    agentRunId: string;
+    llmConfig: Readonly<Record<string, unknown>> | null;
+  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    return this.lifecycleService.updateStoppedModelConfig(input);
   }
 
   private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {
@@ -283,11 +287,25 @@ const normalizeRequiredRunId = (runId: string): string => {
 
 let cachedAgentRunService: AgentRunService | null = null;
 
+export const bindProcessAgentRunService = (service: AgentRunService): void => {
+  if (!service) {
+    throw new Error("A process AgentRunService instance is required.");
+  }
+  if (cachedAgentRunService) {
+    throw new Error("The process AgentRunService is already initialized.");
+  }
+  cachedAgentRunService = service;
+};
+
+export const releaseProcessAgentRunService = (service: AgentRunService): void => {
+  if (cachedAgentRunService === service) {
+    cachedAgentRunService = null;
+  }
+};
+
 export const getAgentRunService = (): AgentRunService => {
   if (!cachedAgentRunService) {
-    cachedAgentRunService = new AgentRunService(
-      appConfigProvider.config.getMemoryDir(),
-    );
+    throw new Error("The process AgentRunService is not initialized.");
   }
   return cachedAgentRunService;
 };

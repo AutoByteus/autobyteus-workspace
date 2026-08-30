@@ -1,0 +1,114 @@
+{
+  "scenarioId": "APIE2E-STANDALONE-BUSINESS-015",
+  "briefs": [
+    {
+      "brief_id": "brief-4f9af42e-a170-40c3-9e4c-1b63db179187",
+      "title": "API REV 015 standalone current-base 1786619985168",
+      "status": "in_review",
+      "latest_binding_id": "cdc5d5ca-9b4c-4267-b17e-8761b2ee5193",
+      "latest_run_id": "brief_studio_team_145dbe01b9ff4b5a95ec33629549e710",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-08-13T11:19:47.476Z",
+      "updated_at": "2026-08-13T11:20:58.010Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "artifacts": [
+    {
+      "brief_id": "brief-4f9af42e-a170-40c3-9e4c-1b63db179187",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "43d0d083-a0d9-4619-9352-f911f24d0c57",
+      "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+      "description": "Concise research checkpoint for the standalone API revision brief.",
+      "body": "# Research checkpoint \u2014 API REV 015 standalone current-base 1786619985168\n\n## Key findings\n- The supplied title is the only substantive project input; no source documents, API specification, endpoint inventory, audience definition, or acceptance criteria are present in the workspace.\n- \u201cAPI REV 015\u201d strongly suggests a revision checkpoint, while \u201cstandalone\u201d and \u201ccurrent-base\u201d suggest the brief should be self-contained and anchored to the current baseline rather than a historical comparison.\n- The numeric suffix `1786619985168` should be preserved exactly as an identifier; its meaning (timestamp, build/run ID, or record key) is unverified.\n- A reviewable brief should therefore separate confirmed metadata from assumptions and make validation items explicit instead of inventing technical details.\n- The writer can still produce a useful decision document by defining purpose, scope boundaries, review questions, evidence needed, and a next-step path.\n\n## Risks / open questions\n- No API behavior, breaking-change list, compatibility policy, owner, target consumers, or rollout date is provided.\n- \u201cCurrent-base\u201d is ambiguous: it may mean current production, current branch, or a named baseline that is not included here.\n- The identifier\u2019s provenance and required audience are unknown, so reviewers may disagree on context or success criteria.\n\n## Recommendations / next steps\n- Draft a concise standalone brief with an \u201cAssumptions to validate\u201d section and no unsupported endpoint or performance claims.\n- Ask the owner to supply the baseline reference, revision delta, affected consumers, compatibility expectations, and approval criteria.\n- Use the title and exact identifier as stable metadata, then revise the brief once authoritative API materials are available.\n",
+      "producer_member_route_key": "researcher",
+      "updated_at": "2026-08-13T11:20:20.292Z"
+    },
+    {
+      "brief_id": "brief-4f9af42e-a170-40c3-9e4c-1b63db179187",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "1bf85b77-8dc1-483a-9c48-6a466a54c7ce",
+      "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+      "description": "Writer checkpoint for API REV 015 standalone current-base 1786619985168",
+      "body": "# API REV 015 standalone current-base 1786619985168\n\n## Recommendation summary\nTreat this checkpoint as a concise definition-and-validation brief, not as approval to implement or release an API change. Preserve the supplied title and identifier exactly, anchor all future decisions to an explicitly named current baseline, and avoid asserting endpoint behavior, compatibility, ownership, timing, or performance details that have not been provided. The brief is ready for review once the assumptions below are confirmed.\n\n## Key evidence\n- The title is the only substantive project input; no API specification, source documents, endpoint inventory, consumer list, or acceptance criteria are available.\n- \u201cAPI REV 015\u201d indicates a revision checkpoint; \u201cstandalone\u201d and \u201ccurrent-base\u201d support a self-contained brief tied to the current baseline rather than an assumed historical comparison.\n- The identifier `1786619985168` is stable metadata and must be preserved exactly. Its provenance is unverified.\n- A useful interim brief can define scope boundaries, review questions, evidence needs, and a validation path without inventing technical details.\n\n## Risks or cautions\n- \u201cCurrent-base\u201d could mean production, a branch, a release, or another named baseline; the authoritative reference is unknown.\n- The revision delta, affected consumers, compatibility expectations, rollout constraints, owner, and approval criteria are unspecified.\n- Reviewers may misinterpret `1786619985168` as a timestamp, build/run ID, or record key unless its meaning is confirmed.\n- Do not treat this checkpoint as a breaking-change assessment or implementation plan until authoritative API materials are supplied.\n\n## Next actions\n- Confirm the baseline reference, accountable owner, intended audience, and the meaning of `1786619985168`.\n- Supply the current API contract and a precise revision delta, including affected endpoints or schemas where applicable.\n- Identify consumers and define compatibility, migration, rollout, and rollback expectations.\n- Agree on measurable acceptance and approval criteria, then revise this brief against the confirmed evidence.\n",
+      "producer_member_route_key": "writer",
+      "updated_at": "2026-08-13T11:20:58.010Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "43d0d083-a0d9-4619-9352-f911f24d0c57",
+      "brief_id": "brief-4f9af42e-a170-40c3-9e4c-1b63db179187",
+      "binding_id": "cdc5d5ca-9b4c-4267-b17e-8761b2ee5193",
+      "run_id": "brief_studio_researcher_ebc699e81c424412b556a9e341fc185c",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "published_at": "2026-08-13T11:20:20.292Z",
+      "projected_at": "2026-08-13T11:20:20.302Z"
+    },
+    {
+      "revision_id": "1bf85b77-8dc1-483a-9c48-6a466a54c7ce",
+      "brief_id": "brief-4f9af42e-a170-40c3-9e4c-1b63db179187",
+      "binding_id": "cdc5d5ca-9b4c-4267-b17e-8761b2ee5193",
+      "run_id": "brief_studio_writer_8c11c09a18824623b3ee7566c26ae062",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "path": "/private/tmp/api-rev015-standalone-1786619934/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "published_at": "2026-08-13T11:20:58.010Z",
+      "projected_at": "2026-08-13T11:20:58.016Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "cdc5d5ca-9b4c-4267-b17e-8761b2ee5193",
+      "brief_id": "brief-4f9af42e-a170-40c3-9e4c-1b63db179187",
+      "launch_request_id": "brief-launch-request-2031ed8a-2371-498f-9e59-c66d57e8a9bc",
+      "run_id": "brief_studio_team_145dbe01b9ff4b5a95ec33629549e710",
+      "created_at": "2026-08-13T11:19:47.801Z",
+      "updated_at": "2026-08-13T11:19:47.561Z",
+      "artifact_catchup_completed_at": null
+    }
+  ],
+  "platformPublicationJournal": [],
+  "platformExecutionEvents": [
+    {
+      "journal_sequence": 1,
+      "event_id": "171b918b-2d48-4822-8eda-5a0d93d696c9",
+      "application_id": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+      "launch_request_id": "brief-launch-request-2031ed8a-2371-498f-9e59-c66d57e8a9bc",
+      "family": "RUN_STARTED",
+      "published_at": "2026-08-13T11:19:47.813Z",
+      "binding_json": "{\"bindingId\":\"cdc5d5ca-9b4c-4267-b17e-8761b2ee5193\",\"applicationId\":\"bundle-app__7374616e64616c6f6e65__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-2031ed8a-2371-498f-9e59-c66d57e8a9bc\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"createdAt\":\"2026-08-13T11:19:47.801Z\",\"updatedAt\":\"2026-08-13T11:19:47.801Z\",\"terminatedAt\":null,\"lastErrorMessage\":null,\"runtime\":{\"subject\":\"TEAM_RUN\",\"runId\":\"brief_studio_team_145dbe01b9ff4b5a95ec33629549e710\",\"definitionId\":\"bundle-team__7374616e64616c6f6e65__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberName\":\"researcher\",\"memberRouteKey\":\"researcher\",\"displayName\":\"researcher\",\"teamPath\":[],\"runId\":\"brief_studio_researcher_ebc699e81c424412b556a9e341fc185c\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberName\":\"writer\",\"memberRouteKey\":\"writer\",\"displayName\":\"writer\",\"teamPath\":[],\"runId\":\"brief_studio_writer_8c11c09a18824623b3ee7566c26ae062\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]}}",
+      "producer_json": null,
+      "payload_json": "{}",
+      "acked_at": "2026-08-13T11:19:47.825Z",
+      "last_dispatch_attempt_number": 1,
+      "last_dispatched_at": "2026-08-13T11:19:47.818Z",
+      "last_error_kind": null,
+      "last_error_message": null,
+      "next_attempt_after": null
+    }
+  ],
+  "assertions": {
+    "latestBriefInReview": true,
+    "twoProjectedArtifacts": true,
+    "twoDurableRevisions": true,
+    "producerRoutesExact": true,
+    "platformExecutionJournalDurable": true,
+    "publicationJournalDrainedAfterDispatch": true
+  },
+  "platformPublicationDispatchCursor": [
+    {
+      "singleton_id": 1,
+      "last_acked_journal_sequence": 0,
+      "updated_at": "2026-08-13T11:18:57.001Z"
+    }
+  ]
+}

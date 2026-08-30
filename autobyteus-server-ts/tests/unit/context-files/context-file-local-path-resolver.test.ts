@@ -37,11 +37,15 @@ describe('ContextFileLocalPathResolver', () => {
     const filePath = path.join(tempDir, 'ctx_token__notes.txt');
     await fs.writeFile(filePath, 'hello');
 
-    const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any, stubOwnerResolver);
+    const resolver = new ContextFileLocalPathResolver({
+      layout: new StubLayout(filePath) as any,
+      ownerResolver: stubOwnerResolver,
+      baseUrl: "http://localhost:8000",
+    });
 
     expect(resolver.resolve('/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(
-      resolver.resolve('/rest/team-runs/team-1/members/solution_designer/context-files/ctx_token__notes.txt'),
+      resolver.resolve('/rest/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_token__notes.txt'),
     ).toBe(filePath);
   });
 
@@ -51,11 +55,15 @@ describe('ContextFileLocalPathResolver', () => {
     const filePath = path.join(tempDir, 'ctx_token__notes.txt');
     await fs.writeFile(filePath, 'hello');
 
-    const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any, stubOwnerResolver);
+    const resolver = new ContextFileLocalPathResolver({
+      layout: new StubLayout(filePath) as any,
+      ownerResolver: stubOwnerResolver,
+      baseUrl: "http://localhost:8000",
+    });
 
     expect(resolver.resolve('/rest/drafts/agent-runs/temp-run/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(
-      resolver.resolve('/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_token__notes.txt'),
+      resolver.resolve('/rest/drafts/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_token__notes.txt'),
     ).toBe(filePath);
     expect(resolver.resolve('https://example.com/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBeNull();
   });

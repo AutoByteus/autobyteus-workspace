@@ -12,12 +12,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
           applicationId: "app-1",
           bindingId: "binding-1",
           producer: {
-            runId: "run-1",
-            memberRouteKey: "writer",
-            memberName: "writer",
+            agentRunId: "run-1",
             displayName: "Writer",
-            runtimeKind: "AGENT_TEAM_MEMBER",
-            teamPath: [],
           },
         },
       },
@@ -40,16 +36,13 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         },
         runtime: {
           subject: "TEAM_RUN",
-          runId: "team-run-1",
+          teamRunId: "team-run-1",
           definitionId: "team-def-1",
           members: [
             {
-              memberName: "writer",
-              memberRouteKey: "writer",
+              memberAddress: "/writer",
               displayName: "Writer",
-              teamPath: [],
-              runId: "run-1",
-              runtimeKind: "AGENT_TEAM_MEMBER",
+              agentRunId: "run-1",
             },
           ],
         },
@@ -59,12 +52,12 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         lastErrorMessage: null,
       }),
     };
-    const engineHostService = {
-      invokeApplicationArtifactHandler: vi.fn().mockResolvedValue({ status: "acknowledged" }),
+    const deliveryQueue = {
+      accept: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ApplicationPublishedArtifactRelayService({
-      bindingStore: bindingStore as any,
-      engineHostService: engineHostService as any,
+      bindingReader: bindingStore as any,
+      artifactDeliverySink: deliveryQueue as any,
     });
 
     service.attachToRun(run);
@@ -89,7 +82,11 @@ describe("ApplicationPublishedArtifactRelayService", () => {
     }
 
     await vi.waitFor(() => {
-      expect(engineHostService.invokeApplicationArtifactHandler).toHaveBeenCalledWith("app-1", {
+      expect(deliveryQueue.accept).toHaveBeenCalledWith({
+        runId: "run-1",
+        applicationId: "app-1",
+        bindingId: "binding-1",
+        revisionId: "revision-1",
         event: {
           runId: "run-1",
           artifactId: "run-1:brief-studio/final-brief.md",
@@ -103,12 +100,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
             applicationId: "app-1",
           }),
           producer: {
-            runId: "run-1",
-            memberRouteKey: "writer",
-            memberName: "writer",
+            agentRunId: "run-1",
             displayName: "Writer",
-            runtimeKind: "AGENT_TEAM_MEMBER",
-            teamPath: [],
           },
         },
       });
@@ -129,16 +122,13 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         },
         runtime: {
           subject: "TEAM_RUN",
-          runId: "team-run-1",
+          teamRunId: "team-run-1",
           definitionId: "team-def-1",
           members: [
             {
-              memberName: "researcher",
-              memberRouteKey: "researcher",
+              memberAddress: "/researcher",
               displayName: "Researcher",
-              teamPath: [],
-              runId: "researcher_member_run",
-              runtimeKind: "AGENT_TEAM_MEMBER",
+              agentRunId: "researcher_member_run",
             },
           ],
         },
@@ -148,12 +138,12 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         lastErrorMessage: null,
       }),
     };
-    const engineHostService = {
-      invokeApplicationArtifactHandler: vi.fn().mockResolvedValue({ status: "acknowledged" }),
+    const deliveryQueue = {
+      accept: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ApplicationPublishedArtifactRelayService({
-      bindingStore: bindingStore as any,
-      engineHostService: engineHostService as any,
+      bindingReader: bindingStore as any,
+      artifactDeliverySink: deliveryQueue as any,
     });
 
     await service.relayArtifactForExecutionContext({
@@ -162,12 +152,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
         applicationId: "app-1",
         bindingId: "binding-1",
         producer: {
-          runId: "team-run-1",
-          memberRouteKey: "researcher",
-          memberName: "researcher",
+          agentRunId: "researcher_member_run",
           displayName: "Researcher",
-          runtimeKind: "AGENT_TEAM_MEMBER",
-          teamPath: [],
         },
       },
       artifact: {
@@ -183,7 +169,11 @@ describe("ApplicationPublishedArtifactRelayService", () => {
       },
     });
 
-    expect(engineHostService.invokeApplicationArtifactHandler).toHaveBeenCalledWith("app-1", {
+    expect(deliveryQueue.accept).toHaveBeenCalledWith({
+      runId: "researcher_member_run",
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      revisionId: "revision-1",
       event: {
         runId: "researcher_member_run",
         artifactId: "researcher_member_run:brief-studio/research.md",
@@ -197,12 +187,8 @@ describe("ApplicationPublishedArtifactRelayService", () => {
           applicationId: "app-1",
         }),
         producer: {
-          runId: "team-run-1",
-          memberRouteKey: "researcher",
-          memberName: "researcher",
+          agentRunId: "researcher_member_run",
           displayName: "Researcher",
-          runtimeKind: "AGENT_TEAM_MEMBER",
-          teamPath: [],
         },
       },
     });

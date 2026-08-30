@@ -13,10 +13,20 @@ import {
 } from "../../../src/agent-team-execution/task-delegation/task-delegation-ownership.js";
 import type { TaskDelegationRecordV1 } from "../../../src/agent-team-execution/task-delegation/task-delegation-record-v1.js";
 import { TaskDelegationService } from "../../../src/agent-team-execution/task-delegation/task-delegation-service.js";
+import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "../../../src/agent-team-execution/services/team-run-persistence-contract.js";
 
 const at = (value: string) => createAgentTeamAddress(value.split("/").filter(Boolean));
 const createdAt = "2020-01-01T00:00:00.000Z";
+
+const defaultLaunchConfiguration = Object.freeze({
+  runtimeKind: "autobyteus" as const,
+  llmModelIdentifier: "test-model",
+  llmConfig: null,
+  autoExecuteTools: true,
+  skillAccessMode: SkillAccessMode.NONE,
+  workspaceRootPath: null,
+});
 
 const configuredAgent = (address: string, agentRunId: string) => Object.freeze({
   address: at(address),
@@ -25,14 +35,7 @@ const configuredAgent = (address: string, agentRunId: string) => Object.freeze({
   description: null,
   agentRunId,
   platformAgentRunId: null,
-  launchConfiguration: Object.freeze({
-    runtimeKind: "AUTOBYTEUS" as const,
-    llmModelIdentifier: "test-model",
-    llmConfig: null,
-    autoExecuteTools: true,
-    skillAccessMode: SkillAccessMode.NONE,
-    workspaceRootPath: null,
-  }),
+  launchConfiguration: defaultLaunchConfiguration,
 });
 
 const parent: TaskDelegationRecordV1 = Object.freeze({
@@ -60,16 +63,18 @@ const child: TaskDelegationRecordV1 = Object.freeze({
 });
 
 const tree: TeamRunExecutionTreeSnapshot = Object.freeze({
-  schemaVersion: 1,
+  schemaVersion: 2,
   createdAt,
   archivedAt: null,
   applicationBinding: null,
   handoffs: Object.freeze([]),
   rootTeam: Object.freeze({
+    address: "/",
     teamDefinitionId: "root-definition",
     teamDefinitionName: "Root",
     teamRunId: "root-team-run",
     coordinatorAddress: at("/coordinator"),
+    defaultLaunchConfiguration,
     members: Object.freeze([
       configuredAgent("/coordinator", "root-coordinator"),
       configuredAgent("/researcher", "configured-researcher"),
@@ -80,6 +85,7 @@ const tree: TeamRunExecutionTreeSnapshot = Object.freeze({
         description: null,
         teamRunId: "configured-study-group-run",
         coordinatorAddress: at("/study-group/coordinator"),
+        defaultLaunchConfiguration,
         members: Object.freeze([
           configuredAgent("/study-group/coordinator", "configured-study-group-coordinator"),
         ]),
@@ -210,7 +216,9 @@ const createSettlementHarness = (input: {
     },
     publish: () => undefined,
     deliverSystemMessage: async () => ({ accepted: true }),
-    agentRunIdentityAllocator: { allocateForAgentDefinition: async () => "unused-agent-run" },
+    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+      allocateForAgentDefinition: async () => "unused-agent-run",
+    }),
   });
   return {
     service,
@@ -259,7 +267,9 @@ describe("current task delegation invariants", () => {
       replaceState: vi.fn(),
       publish: vi.fn(),
       deliverSystemMessage: async () => ({ accepted: true }),
-      agentRunIdentityAllocator: { allocateForAgentDefinition },
+      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+        allocateForAgentDefinition,
+      }),
       tokenUsageMigrationReadiness: { assertCurrentSchemaReady },
     });
     const context = { identity: createTeamMemberExecutionIdentity({
@@ -522,7 +532,9 @@ describe("current task delegation invariants", () => {
         },
         publish: vi.fn(),
         deliverSystemMessage: async () => ({ accepted: true }),
-        agentRunIdentityAllocator: { allocateForAgentDefinition: async () => "task-agent-new" },
+        taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
+          allocateForAgentDefinition: async () => "task-agent-new",
+        }),
       });
       return {
         service,

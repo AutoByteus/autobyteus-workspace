@@ -1,0 +1,55 @@
+# API-REV-009 topology and retired-seam audit
+HEAD=f389358e70054a9e249dd0f06623c1c154c130a5
+IMPLEMENTATION_ARTIFACT=8a7955e9455eadc1be689aa4802384381f2107d8
+SEMANTIC_MERGE=53dd98b53490947ed96d4dda9fb45d9c80719740
+parents:
+53dd98b53490947ed96d4dda9fb45d9c80719740 95c63b5a982ba90ccbb8c6345af66a9485fa5a78 389748b0b9f0dea051aaed18641de131cf0adbbb
+ancestor 95c63b5a982ba90ccbb8c6345af66a9485fa5a78 rc=0
+ancestor 389748b0b9f0dea051aaed18641de131cf0adbbb rc=0
+unmerged_entries=0
+exact conflict markers in governed production:
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:2:==========================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:28:===========================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:94:================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:111:===========================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:195:===============================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:223:==================================
+autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt:227:==================================
+retired workspace selector seam in affected production:
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:172:const resolveWorkspacePath = (config: Pick<AgentRunConfig | TeamRunConfig, 'workspaceId' | 'workspaceMetadata'> | null): string => {
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:174:  if (!config?.workspaceId) return ''
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:175:  const workspace = workspaceStore.workspaces[config.workspaceId]
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:222:const applyExistingWorkspaceSelection = (workspaceId: string) => {
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:226:  const selectedWorkspace = workspaceStore.workspaces[workspaceId] || null
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:227:  const workspaceMetadata = workspaceStore.workspaceMetadataById[workspaceId]
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:232:    teamRunConfigStore.applyConfigEdit({ kind: 'set_workspace', workspaceId, workspaceMetadata })
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:235:    runConfigStore.updateAgentConfig({ workspaceId, workspaceMetadata })
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:263:const setActiveWorkspaceLoaded = (workspaceId: string, fallbackPath: string) => {
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:264:  const workspace = workspaceStore.workspaces[workspaceId] || null
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:265:  const workspaceMetadata = workspaceStore.workspaceMetadataById[workspaceId]
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:274:  activeWorkspaceConfigStore()?.setWorkspaceLoaded(workspaceId, loadedPath, workspaceMetadata)
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:277:    existingWorkspaceId: workspaceId,
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:299:  if (activeConfig?.workspaceId && normalizeRootPath(currentWorkspacePath) === normalizeRootPath(pendingPath)) {
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:302:      existingWorkspaceId: activeConfig.workspaceId,
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:310:    const workspaceId = await workspaceStore.createWorkspace({ root_path: pendingPath })
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:311:    setActiveWorkspaceLoaded(workspaceId, pendingPath)
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:355:  return Boolean(config.workspaceId)
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:400:        if (!effectiveAgentConfig.value.workspaceId) {
+autobyteus-web/components/workspace/config/RunConfigPanel.vue:419:  const existingWorkspaceId = config?.workspaceId || null
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:174:    .filter(ws => ws.workspaceId !== tempId)
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:176:      id: ws.workspaceId,
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:276:watch(() => props.modelValue.existingWorkspaceId, (workspaceId) => {
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:277:  if (workspaceId) {
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:311:const handleExistingSelect = (workspaceId: string) => {
+autobyteus-web/components/workspace/config/WorkspaceSelector.vue:313:  proposeSelection({ mode: 'existing', existingWorkspaceId: workspaceId });
+diff check:
+affected blobs match reviewed implementation artifact:
+MATCH autobyteus-web/types/workspace/WorkspaceSelectionState.ts
+MATCH autobyteus-web/components/workspace/config/WorkspaceSelector.vue
+MATCH autobyteus-web/components/workspace/config/AgentRunConfigForm.vue
+MATCH autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+MATCH autobyteus-web/components/workspace/config/RunConfigPanel.vue
+
+# Corrected exact-marker and retired-prop audit (first broad regex included notices/current config fields)
+exact 7-character conflict marker prefixes:
+retired selector props/events only:

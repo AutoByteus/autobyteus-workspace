@@ -1,0 +1,793 @@
+# API-REV-002 exact affected 28-file rerun 2026-08-26T11:17:17Z
+tests/integration/agent-execution/agent-run-manager.integration.test.ts tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts tests/integration/agent-execution/claude-session-manager.integration.test.ts tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts tests/integration/application-backend/application-agent-communication-ws.integration.test.ts tests/integration/application-backend/application-context-capabilities.integration.test.ts tests/integration/application-backend/brief-package-team-prompt.integration.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/integration/application-backend/standalone-application-server.integration.test.ts tests/unit/agent-execution/agent-run-resource-manager.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts tests/unit/application-orchestration/application-run-binding-launch-service.test.ts tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts tests/unit/application-platform/application-execution-scope.test.ts tests/unit/application-platform/application-execution-shutdown-coordinator.test.ts tests/unit/application-platform/application-platform-lifecycle.test.ts tests/unit/application-platform/application-platform-runtime-isolation.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts 
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:44281) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-b7elpI/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-Md7feK/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-BdsWZI/app-data
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests | 3 failed) 12ms
+     × discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS 7ms
+     × preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount 2ms
+     × rejects unexpected Brief Studio producers without committing projection state 2ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests | 2 failed) 8ms
+     × selects one current package, exposes only its confined surface, and leaves package bytes immutable 3ms
+     × fails before server construction for invalid roots and missing explicit selections 4ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 4ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 3ms
+(node:44595) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/application-context-capabilities.integration.test.ts > Application context capability integration > executes all named capabilities and both explicit starts through the real worker/host boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ✓ tests/integration/application-backend/application-context-capabilities.integration.test.ts (2 tests) 156ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP route > handles authenticated initialize, tools/list, resources, ping, notification, and SSE
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (11 tests) 136ms
+stdout | tests/integration/agent-execution/claude-session-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-execution/claude-session-manager.integration.test.ts (9 tests | 8 skipped) 259ms
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent definition cache populated with 50 items.
+
+stderr | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Tool 'run_bash' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentRuntimeState initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': No tools provided in config.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'real_memory_layout_agent_00000000000000000000000000000001' with config: 'RealMemoryLayoutAgent'.
+AgentWorker initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'.
+Registered AgentContext for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Context registered.
+Agent facade initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' created and stored successfully.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' requesting runtime to start.
+AgentRuntime for 'real_memory_layout_agent_00000000000000000000000000000001': Starting worker.
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Starting...
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001' asyncRun(): Starting.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (event store initialized).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (status deriver initialized).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (AgentEventInbox initialized).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'real_memory_layout_agent_00000000000000000000000000000001' to become idle (timeout: 30s)...
+AgentEventStream (ID: c6a940ed-e486-4207-9f50-021a1ed2ab3b) initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Subscribed to notifier.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Bootstrapper starting direct lifecycle execution.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Executing SystemPromptProcessingStep.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': No configured skills. Skipping skill catalog.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Final processed system prompt configured and captured. Trace ID: rt_1787743048531_3c514048-390f-400e-b015-3c2b83b42b6e. Final length: 2551.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' has become idle.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentEventStream (ID: c6a940ed-e486-4207-9f50-021a1ed2ab3b) for 'real_memory_layout_agent_00000000000000000000000000000001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentEventStream (ID: 9987bc4f-7aea-4f31-b4e2-8e574a886d69) initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Subscribed to notifier.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Published autobyteus agent run 'real_memory_layout_agent_00000000000000000000000000000001'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+compaction_budget_skipped_no_usage {
+  agent_id: 'real_memory_layout_agent_00000000000000000000000000000001',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentEventStream (ID: 9987bc4f-7aea-4f31-b4e2-8e574a886d69) for 'real_memory_layout_agent_00000000000000000000000000000001': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'real_memory_layout_agent_00000000000000000000000000000001'. Attempting graceful shutdown.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Stop requested.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 2eee1411-7e3d-44d6-8076-9671844ba59e, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001' asyncRun() loop has finished.
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Shutdown resource cleanup completed successfully.
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Unregistered AgentContext for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'.
+AgentRuntime for 'real_memory_layout_agent_00000000000000000000000000000001': Context unregistered.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentRuntime for 'real_memory_layout_agent_00000000000000000000000000000001' stop() method completed.
+
+stderr | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Tool 'run_bash' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'RealMemoryLayoutAgent' not found in registry. Skipping.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentRuntimeState initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': No tools provided in config.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'real_memory_layout_agent_00000000000000000000000000000001' with config: 'RealMemoryLayoutAgent'.
+AgentWorker initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'.
+Registered AgentContext for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Context registered.
+Agent facade initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' restored and stored successfully.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' requesting runtime to start.
+AgentRuntime for 'real_memory_layout_agent_00000000000000000000000000000001': Starting worker.
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Starting...
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001' asyncRun(): Starting.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (event store initialized).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (status deriver initialized).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (AgentEventInbox initialized).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'real_memory_layout_agent_00000000000000000000000000000001' to become idle (timeout: 30s)...
+AgentEventStream (ID: d997fb19-0904-4277-aeb1-124b0108d9b0) initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Subscribed to notifier.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Bootstrapper starting direct lifecycle execution.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Executing SystemPromptProcessingStep.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': No configured skills. Skipping skill catalog.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Final processed system prompt configured and captured. Trace ID: rt_1787743048531_3c514048-390f-400e-b015-3c2b83b42b6e. Final length: 2551.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' has become idle.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentEventStream (ID: d997fb19-0904-4277-aeb1-124b0108d9b0) for 'real_memory_layout_agent_00000000000000000000000000000001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentEventStream (ID: 544b492e-5a8e-4695-8814-c6cbfd23898f) initialized for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'. Subscribed to notifier.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Published autobyteus agent run 'real_memory_layout_agent_00000000000000000000000000000001'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+compaction_budget_skipped_no_usage {
+  agent_id: 'real_memory_layout_agent_00000000000000000000000000000001',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentEventStream (ID: 544b492e-5a8e-4695-8814-c6cbfd23898f) for 'real_memory_layout_agent_00000000000000000000000000000001': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'real_memory_layout_agent_00000000000000000000000000000001'. Attempting graceful shutdown.
+Agent 'real_memory_layout_agent_00000000000000000000000000000001' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Stop requested.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentExternalEventNotifier (NotifierID: 4b040f1b-3c93-4a68-b62f-3db959437921, AgentID: real_memory_layout_agent_00000000000000000000000000000001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001' asyncRun() loop has finished.
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Shutdown resource cleanup completed successfully.
+AgentWorker 'real_memory_layout_agent_00000000000000000000000000000001': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+Unregistered AgentContext for agent_id 'real_memory_layout_agent_00000000000000000000000000000001'.
+AgentRuntime for 'real_memory_layout_agent_00000000000000000000000000000001': Context unregistered.
+
+stdout | tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts > AgentRunService real memory layout integration > persists single-agent traces only under memory/agents/<runId> for create + restore
+AgentRuntime for 'real_memory_layout_agent_00000000000000000000000000000001' stop() method completed.
+
+ ✓ tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts (1 test) 227ms
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Agent Definition created successfully with ID: fresh-agent-fresh-1787743049494-4fd17f
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Agent definition cache populated with 51 items.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Agent definition cache populated with 51 items.
+
+stderr | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Tool 'run_bash' defined in agent definition 'Fresh Agent fresh_1787743049494_4fd17f' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'Fresh Agent fresh_1787743049494_4fd17f' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'Fresh Agent fresh_1787743049494_4fd17f' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'Fresh Agent fresh_1787743049494_4fd17f' not found in registry. Skipping.
+
+stderr | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+AgentEventStream for 'fresh-agent-fresh-1787743049494-4fd17f-run': Notifier not available. No events will be streamed.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+Published autobyteus agent run 'fresh-agent-fresh-1787743049494-4fd17f-run'.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Agent Definition created successfully with ID: blank-instructions-agent-blank-1787743049577-2d6bbe
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Populating agent definition cache for the first time...
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Agent definition cache populated with 51 items.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Tool 'run_bash' defined in agent definition 'Blank Instructions Agent blank_1787743049577_2d6bbe' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'Blank Instructions Agent blank_1787743049577_2d6bbe' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'Blank Instructions Agent blank_1787743049577_2d6bbe' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'Blank Instructions Agent blank_1787743049577_2d6bbe' not found in registry. Skipping.
+
+stderr | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+AgentEventStream for 'blank-instructions-agent-blank-1787743049577-2d6bbe-run': Notifier not available. No events will be streamed.
+
+stdout | tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+Published autobyteus agent run 'blank-instructions-agent-blank-1787743049577-2d6bbe-run'.
+
+ ✓ tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts (2 tests) 148ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > closes the usable query without iteration when post-handoff persistence fails
+Claude runtime turn failed for run 'run-1': Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:299:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:435:7)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Claude runtime turn failed for run 'run-1': Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:495:13)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:475:17)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:513:37)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a turn when Claude reports a conflicting provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:74:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:461:41)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a successful-looking turn that never confirms the provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:513:37)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:164:9)
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (24 tests) 48ms
+ ✓ tests/integration/application-backend/application-agent-communication-ws.integration.test.ts (1 test) 61ms
+ ✓ tests/unit/application-orchestration/application-orchestration-host-service.test.ts (6 tests) 62ms
+ ✓ tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts (2 tests) 56ms
+stdout | tests/unit/application-platform/application-execution-scope.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > owns one complete graph-local kernel and freezes every outward capability
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects configured Team members depth-first, excludes task nodes, and deep-freezes
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects Agent launch identity without leaking the service result
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > maps restore-aware Agent and Team input without changing target or errors
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > quiesces issue admission and closes run graph before authority exactly once
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > continues authority close after shutdown failure and aggregates both failures
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > delegates construction abort exactly once after kernel transfer
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-execution-scope.test.ts (7 tests) 17ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (26 tests) 15ms
+(node:44644) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts (2 tests) 13ms
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+Published autobyteus agent run 'run-auto'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'run-codex' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+Published codex_app_server agent run 'run-codex'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'run-claude' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+Published claude_agent_sdk agent run 'run-claude'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+Published autobyteus agent run 'restored-autobyteus'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'restored-codex_app_server' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+Published codex_app_server agent run 'restored-codex_app_server'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'restored-claude_agent_sdk' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+Published claude_agent_sdk agent run 'restored-claude_agent_sdk'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+[AgentRunMemoryRecorder] skipping run 'run-restore-claude-platform' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+Published claude_agent_sdk agent run 'run-restore-claude-platform'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+Published autobyteus agent run 'run-active'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+[AgentRunMemoryRecorder] skipping run 'run-terminate-ok' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+Published codex_app_server agent run 'run-terminate-ok'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+[AgentRunMemoryRecorder] skipping run 'run-terminate-no' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+Published claude_agent_sdk agent run 'run-terminate-no'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+Published autobyteus agent run 'run-terminate-error'.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+Failed to terminate agent run 'run-terminate-error': Error: boom
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore
+AgentRunManager initialized.
+
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts (12 tests) 11ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts (12 tests) 12ms
+(node:44679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts (4 tests) 10ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (13 tests) 10ms
+ ✓ tests/unit/application-orchestration/application-run-binding-launch-service.test.ts (11 tests) 11ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts (8 tests) 10ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (11 tests) 10ms
+ ✓ tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts (4 tests) 7ms
+ ✓ tests/unit/agent-execution/agent-run-resource-manager.test.ts (3 tests) 4ms
+ ✓ tests/unit/application-platform/application-execution-shutdown-coordinator.test.ts (2 tests) 3ms
+stdout | tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts (8 tests | 8 skipped)
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts (10 tests | 10 skipped)
+stdout | tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts (3 tests | 3 skipped)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+Error: Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package
+ ❯ StandaloneApplicationSelectionService.resolve src/standalone-application-host/services/standalone-application-selection-service.ts:56:13
+     54|     const packageStat = await fs.stat(config.packageRoot).catch(() => …
+     55|     if (!packageStat?.isDirectory()) {
+     56|       throw new Error(`Standalone package root is not a directory: ${c…
+       |             ^
+     57|     }
+     58|     const provider = new SelectedApplicationBundleProvider(config.loca…
+ ❯ validateStandaloneApplicationPackage src/application-platform/launch-configuration/application-standalone-package-validator.ts:66:27
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:25:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Error: Expected Brief Studio bundle to be discoverable from the importable package root.
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:486:13
+    484|     const [bundle] = await bundleService.listApplications();
+    485|     if (!bundle) {
+    486|       throw new Error("Expected Brief Studio bundle to be discoverable…
+       |             ^
+    487|     }
+    488|     applicationId = bundle.id;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+TypeError: Cannot read properties of undefined (reading 'stop')
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:881:21
+    879|       await engineRuntime.engineLauncher.stop(applicationId);
+    880|     }
+    881|     dispatchService.stop();
+       |                     ^
+    882|     engineRuntime.backendGateway.dispose();
+    883|     if (app) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Error: ENOENT: no such file or directory, scandir '/Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package'
+ ❯ visit tests/integration/application-backend/standalone-application-server.integration.test.ts:24:21
+     22|   const hash = createHash("sha256");
+     23|   const visit = async (directory: string): Promise<void> => {
+     24|     const entries = await fs.readdir(directory, { withFileTypes: true …
+       |                     ^
+     25|     entries.sort((left, right) => left.name.localeCompare(right.name));
+     26|     for (const entry of entries) {
+ ❯ hashTree tests/integration/application-backend/standalone-application-server.integration.test.ts:37:3
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:75:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+AssertionError: expected [Function] to throw error including 'Standalone application \'missing-app\…' but got 'Standalone package root is not a dire…'
+
+Expected: "Standalone application 'missing-app' was not found"
+Received: "Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/explicit-agent-provider-composition-and-scope-assembly/applications/brief-studio/dist/importable-package"
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:284:5
+    282|     ).rejects.toThrow("Standalone package root is not a directory");
+    283| 
+    284|     await expect(
+       |     ^
+    285|       new StandaloneApplicationSelectionService().resolve(
+    286|         resolveStandaloneApplicationHostConfig({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+
+ Test Files  3 failed | 22 passed | 3 skipped (28)
+      Tests  6 failed | 165 passed | 29 skipped (200)
+   Start at  13:17:17
+   Duration  23.35s (transform 4.21s, setup 122ms, import 19.01s, tests 1.31s, environment 2ms)
+
+command_exit=1

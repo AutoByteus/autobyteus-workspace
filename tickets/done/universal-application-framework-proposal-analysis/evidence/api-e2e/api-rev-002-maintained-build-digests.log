@@ -1,0 +1,43 @@
+=== brief-studio build ===
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> autobyteus-app pack
+
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/dist/importable-package/applications/brief-studio
+=== brief-studio validate ===
+
+> @autobyteus-example/brief-studio-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> autobyteus-app validate --package-root dist/importable-package
+
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/dist/importable-package
+=== brief-studio backend typecheck ===
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+=== socratic-math-teacher build ===
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher
+> autobyteus-app pack
+
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher
+=== socratic-math-teacher validate ===
+
+> @autobyteus-example/socratic-math-teacher-authoring@ validate /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher
+> autobyteus-app validate --package-root dist/importable-package
+
+Package is valid: /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher/dist/importable-package
+=== socratic-math-teacher backend typecheck ===
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+=== maintained package baseline digests ===
+{"root":"applications/brief-studio/dist/importable-package","files":22,"treeSha256":"52a6084719c32f4eac53db86ec3bab67af0ddf9d13b6a7359d353160818e8093"}
+{"file":"applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs","sha256":"0f6e4ae0860b3eb9e5b8efb00a9ab96cfae72ff8ca458b2ba8094b9b43260f01"}
+{"file":"applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js","sha256":"4530448ebfb7d26efb409ccd6e674e91d9cb885b8deeb8de97383d5fb59dda07"}
+{"root":"applications/socratic-math-teacher/dist/importable-package","files":19,"treeSha256":"f1e7ac39d3f57692df9ae297620dd6e4c335d9ec68a51bbcf4d9ea3f0d711b7d"}
+{"file":"applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/dist/entry.mjs","sha256":"494ffbcb89a8c5fb1c54310c78efc8bb3ba29b4760717731f0437282265d57bd"}
+{"file":"applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ui/app.js","sha256":"523dd6e75f810b397df8b9aec4c4987db55571499b8a5b23ced1c206f1a5e962"}

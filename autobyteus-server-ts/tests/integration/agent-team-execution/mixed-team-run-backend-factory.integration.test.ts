@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
+import {
+  MixedTeamRunBackendFactory,
+  type MixedTeamManagerConstructionInput,
+} from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import { MixedTeamRunContext } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
@@ -7,6 +10,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import {
   testAgentNode,
   testAgentTeamNode,
+  testMemberTaskRootResolver,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -14,6 +18,13 @@ const createManagerStub = () => ({
   isActive: vi.fn(() => true),
   getLeafAgentStatusSnapshots: vi.fn(() => []),
   hasOpenExecutionWork: vi.fn(() => false),
+}) as never;
+
+const callbacks = () => ({
+  taskRootResolver: testMemberTaskRootResolver(),
+  publish: vi.fn(),
+  deliverInterAgentMessage: vi.fn(async () => ({ accepted: true as const })),
+  acceptPlatformBinding: vi.fn(async () => undefined),
 });
 
 const createConfig = () => {
@@ -51,16 +62,19 @@ afterEach(() => vi.clearAllMocks());
 describe("MixedTeamRunBackendFactory current execution identity integration", () => {
   it("hydrates exact AgentRun and configured child TeamRun contexts from the immutable TeamRunConfig", async () => {
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
+    const managerInputs: MixedTeamManagerConstructionInput[] = [];
     const manager = createManagerStub();
     const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: ((context: TeamRunContext<MixedTeamRunContext>) => {
-        contexts.push(context);
+      createTeamManager: (input) => {
+        managerInputs.push(input);
+        expect(input).not.toHaveProperty("agentToolMcpRunSessionDeactivator");
+        contexts.push(input.context);
         return manager;
-      }) as never,
+      },
     });
 
     const config = createConfig();
-    const backend = await factory.createBackend(config, config.rootTeam.teamRunId);
+    const backend = await factory.createBackend(config, config.rootTeam.teamRunId, callbacks());
 
     expect(contexts).toHaveLength(1);
     const context = contexts[0]!;
@@ -97,14 +111,37 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     expect(backend.teamRunId).toBe("team-mixed-run-1");
     expect(backend.getTeamRunContext()).toBe(context);
     expect(backend.isActive()).toBe(true);
+
+    const child = config.rootTeam.children.find((node) => node.kind === "agent_team");
+    if (!child || child.kind !== "agent_team") {
+      throw new Error("Configured child Team fixture is required.");
+    }
+    await managerInputs[0]!.subTeamRunFactory.materializeConfiguredChild({
+      parentContext: context,
+      teamNode: child,
+      configuredMemberActivationMode: "fresh",
+    });
+    await managerInputs[0]!.subTeamRunFactory.prepareFreshTaskTeam({
+      parentContext: context,
+      handoffs: [],
+      teamNode: { ...child, teamRunId: "task-build-squad-run" },
+    });
+    expect(managerInputs).toHaveLength(3);
+    for (const input of managerInputs) {
+      expect(input).not.toHaveProperty("agentToolMcpRunSessionDeactivator");
+      expect(input.subTeamRunFactory).toBe(managerInputs[0]!.subTeamRunFactory);
+      expect(input.callbacks).toBe(managerInputs[0]!.callbacks);
+    }
   });
 
   it("rejects a root allocation mismatch before manager construction", async () => {
     const createTeamManager = vi.fn(() => createManagerStub());
-    const factory = new MixedTeamRunBackendFactory({ createTeamManager: createTeamManager as never });
+    const factory = new MixedTeamRunBackendFactory({
+      createTeamManager,
+    });
     const config = createConfig();
 
-    await expect(factory.createBackend(config, "foreign-root-run")).rejects.toThrow(
+    await expect(factory.createBackend(config, "foreign-root-run", callbacks())).rejects.toThrow(
       "Root TeamRun id 'team-mixed-run-1' does not match 'foreign-root-run'",
     );
     expect(createTeamManager).not.toHaveBeenCalled();
@@ -114,10 +151,11 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
     const contexts: Array<TeamRunContext<MixedTeamRunContext>> = [];
     const manager = createManagerStub();
     const factory = new MixedTeamRunBackendFactory({
-      createTeamManager: ((context: TeamRunContext<MixedTeamRunContext>) => {
-        contexts.push(context);
+      createTeamManager: (input) => {
+        expect(input).not.toHaveProperty("agentToolMcpRunSessionDeactivator");
+        contexts.push(input.context);
         return manager;
-      }) as never,
+      },
     });
     const base = createConfig();
     const config = testTeamRunConfig({
@@ -143,7 +181,7 @@ describe("MixedTeamRunBackendFactory current execution identity integration", ()
       }),
     });
 
-    const backend = await factory.restoreBackend(config, config.rootTeam.teamRunId);
+    const backend = await factory.restoreBackend(config, config.rootTeam.teamRunId, callbacks());
 
     const runtime = contexts[0]!.runtimeContext;
     expect(runtime.configuredMemberActivationMode).toBe("restore");

@@ -1,0 +1,122 @@
+cleanup_start_utc=2026-08-24T08:59:18Z
+owned_port_8038=FREE
+owned_port_3038=FREE
+owned_port_43281=FREE
+owned_port_43282=FREE
+owned_port_43283=FREE
+owned_port_43284=FREE
+ordinary_app_29695=PRESERVED_LISTENING
+owned_process_scan:
+48823 /bin/bash -lc set -e
+OUT=tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-008-cleanup.log
+{
+ echo "cleanup_start_utc=$(date -u +%FT%TZ)"
+ for p in 8038 3038 43281 43282 43283 43284; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then echo "owned_port_$p=LISTENING"; else echo "owned_port_$p=FREE"; fi; done
+ if lsof -nP -iTCP:29695 -sTCP:LISTEN >/dev/null 2>&1; then echo "ordinary_app_29695=PRESERVED_LISTENING"; else echo "ordinary_app_29695=NOT_LISTENING"; fi
+ echo 'owned_process_scan:'
+ pgrep -fal 'api-rev008|applications/(brief-studio|socratic-math-teacher)/\.autobyteus/dev|127\.0\.0\.1:(8038|3038|4328[1-4])' || true
+} | tee "$OUT"
+python3 - <<'PY'
+import os,glob,shutil
+paths=[
+ '/private/tmp/api-rev008-socratic-root-path',
+ '/private/tmp/api-rev008-brief-root-path',
+ '/private/tmp/api-rev008-studio-root-path',
+ '/private/tmp/api-rev008-studio-clean-1787560810',
+ 'applications/brief-studio/.autobyteus',
+ 'applications/socratic-math-teacher/.autobyteus',
+ 'applications/brief-studio/dist',
+ 'applications/socratic-math-teacher/dist',
+ 'autobyteus-application-backend-sdk/dist',
+ 'autobyteus-application-frontend-sdk/dist',
+ 'autobyteus-application-sdk-contracts/dist',
+ 'autobyteus-application-devkit/dist',
+ 'autobyteus-application-devkit/.tmp-tests',
+ 'autobyteus-server-ts/dist',
+ 'autobyteus-web/.nuxt',
+ 'autobyteus-web/.output',
+]
+paths += glob.glob('/private/tmp/api-rev008-stale-nuxt-*')
+removed=[]
+for p in paths:
+ if os.path.isdir(p) and not os.path.islink(p): shutil.rmtree(p); removed.append(p)
+ elif os.path.exists(p): os.unlink(p); removed.append(p)
+with open('tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-008-cleanup.log','a') as f:
+ for p in removed:f.write('removed='+p+'\n')
+print('removed',len(removed),'owned paths')
+PY
+{
+ sleep 2
+ for p in 8038 3038 43281 43282 43283 43284; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then echo "post_cleanup_owned_port_$p=LISTENING"; else echo "post_cleanup_owned_port_$p=FREE"; fi; done
+ if lsof -nP -iTCP:29695 -sTCP:LISTEN >/dev/null 2>&1; then echo "post_cleanup_ordinary_app_29695=PRESERVED_LISTENING"; else echo "post_cleanup_ordinary_app_29695=NOT_LISTENING"; fi
+ echo "cleanup_end_utc=$(date -u +%FT%TZ)"
+} | tee -a "$OUT"
+49127 /bin/bash -lc set -e
+OUT=tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-008-cleanup.log
+{
+ echo "cleanup_start_utc=$(date -u +%FT%TZ)"
+ for p in 8038 3038 43281 43282 43283 43284; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then echo "owned_port_$p=LISTENING"; else echo "owned_port_$p=FREE"; fi; done
+ if lsof -nP -iTCP:29695 -sTCP:LISTEN >/dev/null 2>&1; then echo "ordinary_app_29695=PRESERVED_LISTENING"; else echo "ordinary_app_29695=NOT_LISTENING"; fi
+ echo 'owned_process_scan:'
+ pgrep -fal 'api-rev008|applications/(brief-studio|socratic-math-teacher)/\.autobyteus/dev|127\.0\.0\.1:(8038|3038|4328[1-4])' || true
+} | tee "$OUT"
+python3 - <<'PY'
+import os,glob,shutil
+paths=[
+ '/private/tmp/api-rev008-socratic-root-path',
+ '/private/tmp/api-rev008-brief-root-path',
+ '/private/tmp/api-rev008-studio-root-path',
+ '/private/tmp/api-rev008-studio-clean-1787560810',
+ 'applications/brief-studio/.autobyteus',
+ 'applications/socratic-math-teacher/.autobyteus',
+ 'applications/brief-studio/dist',
+ 'applications/socratic-math-teacher/dist',
+ 'autobyteus-application-backend-sdk/dist',
+ 'autobyteus-application-frontend-sdk/dist',
+ 'autobyteus-application-sdk-contracts/dist',
+ 'autobyteus-application-devkit/dist',
+ 'autobyteus-application-devkit/.tmp-tests',
+ 'autobyteus-server-ts/dist',
+ 'autobyteus-web/.nuxt',
+ 'autobyteus-web/.output',
+]
+paths += glob.glob('/private/tmp/api-rev008-stale-nuxt-*')
+removed=[]
+for p in paths:
+ if os.path.isdir(p) and not os.path.islink(p): shutil.rmtree(p); removed.append(p)
+ elif os.path.exists(p): os.unlink(p); removed.append(p)
+with open('tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-008-cleanup.log','a') as f:
+ for p in removed:f.write('removed='+p+'\n')
+print('removed',len(removed),'owned paths')
+PY
+{
+ sleep 2
+ for p in 8038 3038 43281 43282 43283 43284; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then echo "post_cleanup_owned_port_$p=LISTENING"; else echo "post_cleanup_owned_port_$p=FREE"; fi; done
+ if lsof -nP -iTCP:29695 -sTCP:LISTEN >/dev/null 2>&1; then echo "post_cleanup_ordinary_app_29695=PRESERVED_LISTENING"; else echo "post_cleanup_ordinary_app_29695=NOT_LISTENING"; fi
+ echo "cleanup_end_utc=$(date -u +%FT%TZ)"
+} | tee -a "$OUT"
+removed=/private/tmp/api-rev008-socratic-root-path
+removed=/private/tmp/api-rev008-brief-root-path
+removed=/private/tmp/api-rev008-studio-root-path
+removed=/private/tmp/api-rev008-studio-clean-1787560810
+removed=applications/brief-studio/.autobyteus
+removed=applications/socratic-math-teacher/.autobyteus
+removed=applications/brief-studio/dist
+removed=applications/socratic-math-teacher/dist
+removed=autobyteus-application-backend-sdk/dist
+removed=autobyteus-application-frontend-sdk/dist
+removed=autobyteus-application-sdk-contracts/dist
+removed=autobyteus-application-devkit/dist
+removed=autobyteus-application-devkit/.tmp-tests
+removed=autobyteus-server-ts/dist
+removed=autobyteus-web/.nuxt
+removed=/private/tmp/api-rev008-stale-nuxt-1787560876
+post_cleanup_owned_port_8038=FREE
+post_cleanup_owned_port_3038=FREE
+post_cleanup_owned_port_43281=FREE
+post_cleanup_owned_port_43282=FREE
+post_cleanup_owned_port_43283=FREE
+post_cleanup_owned_port_43284=FREE
+post_cleanup_ordinary_app_29695=PRESERVED_LISTENING
+cleanup_end_utc=2026-08-24T08:59:26Z
+post_cleanup_ordinary_app_rest_health=200

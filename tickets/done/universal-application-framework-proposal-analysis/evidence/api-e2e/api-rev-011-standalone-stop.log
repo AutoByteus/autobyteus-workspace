@@ -1,0 +1,36 @@
+PORT43125:
+CLEAR
+OWNED_PROCESSES:
+67697
+68004
+ENGINE_STATUS:
+{
+  "applicationId": "bundle-app__7374616e64616c6f6e65__62726965662d73747564696f",
+  "state": "ready",
+  "ready": true,
+  "startedAt": "2026-07-30T18:37:25.865Z",
+  "lastFailure": null,
+  "exposures": {
+    "supportedExposures": {
+      "queries": false,
+      "commands": false,
+      "routes": false,
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": true,
+      "webSockets": false
+    },
+    "queries": [],
+    "commands": [],
+    "routes": [],
+    "webSocketRoutes": [],
+    "graphql": true,
+    "notifications": true,
+    "eventHandlers": [
+      "RUN_STARTED",
+      "RUN_TERMINATED",
+      "RUN_FAILED",
+      "RUN_ORPHANED"
+    ]
+  }
+}

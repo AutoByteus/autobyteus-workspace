@@ -5,8 +5,20 @@ const mocks = vi.hoisted(() => ({
   history: {},
   getProjection: vi.fn(),
   getActiveTeamRun: vi.fn(),
+  getTeamRunResumeConfig: vi.fn(),
+  projectExecutionTree: vi.fn((tree: unknown) => tree),
 }));
 
+vi.mock(
+  "../../../../../src/services/agent-streaming/team-execution-view-projector.js",
+  () => ({ projectExecutionTree: mocks.projectExecutionTree }),
+);
+vi.mock(
+  "../../../../../src/api/graphql/studio-application-api-services.js",
+  () => ({ getStudioRunModelConfigService: () => ({
+    getTeamRunResumeConfig: mocks.getTeamRunResumeConfig,
+  }) }),
+);
 vi.mock(
   "../../../../../src/run-history/services/team-run-history-service.js",
   () => ({ getTeamRunHistoryService: () => mocks.history }),
@@ -26,6 +38,26 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
   beforeEach(() => {
     mocks.getActiveTeamRun.mockReset();
     mocks.getProjection.mockReset();
+    mocks.getTeamRunResumeConfig.mockReset();
+    mocks.projectExecutionTree.mockClear();
+  });
+
+  it("routes the resume-config query through the owner-aware Studio service", async () => {
+    mocks.getTeamRunResumeConfig.mockResolvedValue({
+      teamRunId: "team-run-1",
+      isActive: true,
+      executionTree: { rootTeam: { address: "/", members: [] } },
+      modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
+    });
+
+    await expect(new TeamRunHistoryResolver().getTeamRunResumeConfig("team-run-1"))
+      .resolves.toMatchObject({
+        teamRunId: "team-run-1",
+        isActive: true,
+        modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
+      });
+    expect(mocks.getTeamRunResumeConfig).toHaveBeenCalledWith("team-run-1");
+    expect(mocks.projectExecutionTree).toHaveBeenCalledTimes(1);
   });
 
   it("exposes one exact RootTeamRun-owned checkpoint", () => {

@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "result": "PASS",
+  "brief": {
+    "briefId": "brief-2263879a-640f-4606-8e92-d01e53a18dd5",
+    "title": "API E2E Luna Patch Proof 2026-08-27T21:31Z",
+    "finalStatus": "in_review",
+    "bindingId": "7afc3330-cff3-457a-b22b-948487a3b3be",
+    "teamRunId": "brief_studio_team_3fcc38699ad44130b20eb4149a19cdff"
+  },
+  "runtime": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "workspaceRootPath": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-004/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime",
+    "configuredToolNames": [
+      "get_brief_context",
+      "publish_artifacts",
+      "send_message_to"
+    ]
+  },
+  "members": {
+    "researcher": {
+      "agentRunId": "brief_studio_researcher_bef570119a744cd9a182403c0887fb7f",
+      "platformAgentRunId": "01a04523-a49a-7120-818b-6f8fb03f24b2",
+      "contextToolCallId": "exec-828d4468-c376-4877-9bbe-9deab42cca9e",
+      "nativePatchCallId": "exec-72319685-3bad-4e41-ad8c-cdf99438f3ef",
+      "normalizedEditToolCallId": "exec-72319685-3bad-4e41-ad8c-cdf99438f3ef",
+      "publishToolCallId": "exec-35bcae80-1d0c-4175-88f0-71f2489e2b60",
+      "publicationRevisionId": "cd1e4c77-351c-4b50-925c-cb16b5ea81b7",
+      "publishedRelativePath": "brief-studio/research.md",
+      "resolvedAbsolutePath": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-004/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/research.md",
+      "bodyWordCount": 307
+    },
+    "writer": {
+      "agentRunId": "brief_studio_writer_0985ae6e8c1943e89f3e4d6d4f3b0afc",
+      "platformAgentRunId": "01a04524-4851-7db2-9a4d-2dbbf43a1fac",
+      "contextToolCallId": "exec-d18e28ec-0e2f-44e5-a528-5f24fe3ffe43",
+      "nativePatchCallId": "exec-78a17e6e-64a4-49df-b03d-3a8c9d95413d",
+      "normalizedEditToolCallId": "exec-78a17e6e-64a4-49df-b03d-3a8c9d95413d",
+      "publishToolCallId": "exec-f11a0a4d-ff2d-44b4-a57d-c0ff94727373",
+      "publicationRevisionId": "529c3ca8-3cf1-424d-aeda-3f642b44e8ef",
+      "publishedRelativePath": "brief-studio/final-brief.md",
+      "resolvedAbsolutePath": "/home/autobyteus/workspace/autobyteus-workspace-application-owned-mcp-capability/.autobyteus/api-e2e-004/applications/bundle-app__brief-studio__308117954720f6e58a3b1422c1b93a2dadc96910ab03e466aad2a63f78ff5bd8/runtime/brief-studio/final-brief.md",
+      "bodyWordCount": 323
+    }
+  },
+  "handoff": {
+    "messageId": "teammsg_dgNX5VpVi2vNRgMuTAIXLXMegqVp-w0U",
+    "createdAt": "2026-08-27T21:33:20.834Z",
+    "markerExact": true,
+    "relativePathExact": true,
+    "completeResearchBodyVerbatimExcludingFileTerminalNewline": true,
+    "writerContainsCompleteResearchFindingVerbatim": true
+  },
+  "stateTransitionEvidence": {
+    "contextReadWindow": {
+      "researcherContextSucceededAtEpochSeconds": 1787866365.245,
+      "writerContextSucceededAtEpochSeconds": 1787866412.07,
+      "statusBeforeResearchPublication": "researching",
+      "statusAfterResearchPublication": "researching"
+    },
+    "finalPublication": {
+      "publishedAt": "2026-08-27T21:33:47.470Z",
+      "projectedAt": "2026-08-27T21:33:47.484Z",
+      "statusAfterProjection": "in_review"
+    }
+  },
+  "browser": {
+    "capturedAt": "2026-08-27T21:34:50.407Z",
+    "hostUrl": "http://127.0.0.1:3016/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "frameUrl": "http://127.0.0.1:3016/rest/application-bundles/bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f&autobyteusIframeLaunchId=bundle-app__6170706c69636174696f6e2d6c6f63616c3a253246686f6d652532466175746f627974657573253246776f726b73706163652532466175746f6279746575732d776f726b73706163652d6170706c69636174696f6e2d6f776e65642d6d63702d6361706162696c6974792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A3016",
+    "assertions": {
+      "selectedBriefVisible": true,
+      "statusInReview": true,
+      "draftOutputCountTwo": true,
+      "researcherVisible": true,
+      "exactlyOneFinalSummary": true,
+      "writerVisible": true,
+      "researchPathVisible": true,
+      "finalPathVisible": true,
+      "writerMarkerVisible": true,
+      "verbatimFindingVisible": true
+    }
+  },
+  "assertions": {
+    "AC-032_actual_shipped_team_model_and_tools": true,
+    "AC-033_exactly_once_first_context_per_member": true,
+    "AC-034_exact_brief_binding_member_agentRun_toolCall_join": true,
+    "AC-035_context_read_alone_does_not_mutate_business_or_ui_state": true,
+    "AC-036_native_patch_normalized_edit_and_provider_success": true,
+    "AC-037_zero_shell_or_ordinary_file_calls_and_no_trace_feedback": true,
+    "AC-038_complete_verbatim_handoff_and_relative_publication": true,
+    "AC-039_publication_reconciliation_and_same_brief_browser_outcome": true
+  },
+  "evidenceFiles": [
+    "shipped-instruction-and-config-snapshot.json",
+    "researcher-codex-native-session-events.json",
+    "writer-codex-native-session-events.json",
+    "researcher-raw-trace.jsonl",
+    "writer-raw-trace.jsonl",
+    "team-run-execution-tree.json",
+    "team-communication-messages.json",
+    "research.md",
+    "final-brief.md",
+    "final-db.json",
+    "db-state-transitions.jsonl",
+    "final-browser-observation.json",
+    "final-browser-in-review.png"
+  ]
+}

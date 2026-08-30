@@ -24,10 +24,7 @@ import type { CompactionAgentRunner } from "autobyteus-ts/memory/compaction/comp
 import { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
-import {
-  RuntimeKind,
-  runtimeKindFromString,
-} from "../../../runtime-management/runtime-kind-enum.js";
+import { RuntimeKind, runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
@@ -44,10 +41,11 @@ import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
 import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
 import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
-import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../built-in-agents/built-in-agent-registry.js";
 import { createAvailableLlm } from "./available-llm-construction.js";
+import type { ApplicationAgentToolCapability } from "../../../application-agent-tools/services/application-agent-tool-capability.js";
+import { resolveApplicationAwareAgentTools } from "./application-agent-tools/application-agent-tool-composer.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -55,7 +53,17 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentFactoryLike = typeof defaultAgentFactory;
+export type AutoByteusAgentFactoryLike = typeof defaultAgentFactory;
+
+export type AutoByteusLlmFactory = (
+  modelIdentifier: string,
+  configInput?: LLMFactoryConfigInput,
+) => Promise<BaseLLM>;
+
+export type AutoByteusAgentIdleWaiter = (
+  agent: Agent,
+  timeout?: number,
+) => Promise<void>;
 
 type ProcessorOption = { name: string; isMandatory: boolean };
 
@@ -95,7 +103,7 @@ export type CompactionAgentRunnerFactory = (
   input: CompactionAgentRunnerFactoryInput,
 ) => Promise<CompactionAgentRunner | null> | CompactionAgentRunner | null;
 
-const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async ({
+export const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async ({
   agentDefinitionId,
   workspaceRootPath,
   runtimeKind,
@@ -113,18 +121,19 @@ const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async (
 };
 
 export type AutoByteusAgentRunBackendFactoryOptions = {
-  agentFactory?: AgentFactoryLike;
+  agentFactory?: AutoByteusAgentFactoryLike;
   agentDefinitionService?: AgentDefinitionService;
-  createLLM?: (modelIdentifier: string, configInput?: LLMFactoryConfigInput) => Promise<BaseLLM>;
+  createLLM?: AutoByteusLlmFactory;
   workspaceManager?: WorkspaceManager;
   skillService?: SkillService;
   registries?: Partial<ProcessorRegistries>;
-  waitForIdle?: (agent: Agent, timeout?: number) => Promise<void>;
+  waitForIdle?: AutoByteusAgentIdleWaiter;
   compactionAgentRunnerFactory?: CompactionAgentRunnerFactory;
+  applicationAgentTools?: ApplicationAgentToolCapability | null;
 };
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
-  private readonly agentFactory: AgentFactoryLike;
+  private readonly agentFactory: AutoByteusAgentFactoryLike;
   private readonly agentDefinitionService: AgentDefinitionService;
   private readonly createLLM: (
     modelIdentifier: string,
@@ -135,6 +144,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private readonly registries: ProcessorRegistries;
   private readonly waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
   private readonly compactionAgentRunnerFactory: CompactionAgentRunnerFactory;
+  private readonly applicationAgentTools: ApplicationAgentToolCapability | null;
 
   constructor(options: AutoByteusAgentRunBackendFactoryOptions = {}) {
     this.agentFactory = options.agentFactory ?? defaultAgentFactory;
@@ -157,6 +167,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     this.waitForIdle = options.waitForIdle ?? waitForAgentToBeIdle;
     this.compactionAgentRunnerFactory =
       options.compactionAgentRunnerFactory ?? createDefaultCompactionAgentRunner;
+    this.applicationAgentTools = options.applicationAgentTools ?? null;
   }
 
   async createBackend(
@@ -191,7 +202,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
     });
     const createAgentWithId = (
-      this.agentFactory as AgentFactoryLike & {
+    this.agentFactory as AutoByteusAgentFactoryLike & {
         createAgentWithId?: (agentId: string, config: AgentConfig) => AgentLike;
       }
     ).createAgentWithId;
@@ -316,13 +327,14 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       options.memberTeamContext,
     );
 
-    const { tools } = resolveAutoByteusAgentTools({
+    const { tools } = resolveApplicationAwareAgentTools({
       agentDefinition: agentDef,
       runtimeToolExposure,
       senderRunId: runId,
-      senderName: agentDef.name,
       runtimeKind: options.runtimeKind,
       memberTeamContext: options.memberTeamContext,
+      applicationExecutionContext: options.applicationExecutionContext,
+      capability: this.applicationAgentTools,
       logger,
     });
     const resolvedPrompt = composeNativeAutoByteusPrompt({

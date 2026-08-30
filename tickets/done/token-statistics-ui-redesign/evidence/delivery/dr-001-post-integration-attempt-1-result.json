@@ -1,0 +1,53 @@
+{
+  "startedAt": "2026-08-29T20:14:25.400Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/usr/bin/chromium",
+  "workspaceDir": "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements",
+  "webDir": "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web",
+  "serverDir": "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts",
+  "scenarios": {},
+  "graphql": {
+    "requests": [],
+    "responses": []
+  },
+  "browserEvents": [],
+  "sourceBoundary": {
+    "removedPathsAbsent": [
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/utils/tokenUsageAnalyticsCsv.ts",
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/utils/__tests__/tokenUsageAnalyticsCsv.spec.ts",
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage/analytics/TokenUsagePaceChart.vue",
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage/analytics/TokenUsageExactBreakdownTable.vue"
+    ],
+    "scannedFiles": [
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsControls.vue",
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage/analytics/TokenUsageAnalyticsView.vue",
+      "/home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/components/settings/token-usage/analytics/TokenUsageTrendChart.vue"
+    ],
+    "forbiddenPatternsAbsent": [
+      "downloadTokenUsageAnalyticsCsv",
+      "serializeTokenUsageAnalyticsCsv",
+      "URL.createObjectURL",
+      "new Blob(",
+      "TokenUsagePaceChart",
+      "TokenUsageExactBreakdownTable"
+    ]
+  },
+  "fixture": null,
+  "cleanup": {
+    "frontend": {
+      "status": "not-started"
+    },
+    "backend": {
+      "status": "not-started"
+    }
+  },
+  "failures": [
+    {
+      "message": "corepack pnpm -C /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts build exited code=2 signal=null",
+      "stack": "Error: corepack pnpm -C /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-server-ts build exited code=2 signal=null\n    at ChildProcess.<anonymous> (file:///home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web/tests/e2e/token-statistics-ui-probe.mjs:95:17)\n    at Object.onceWrapper (node:events:634:26)\n    at ChildProcess.emit (node:events:519:28)\n    at maybeClose (node:internal/child_process:1101:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:304:5)"
+    }
+  ],
+  "completedAt": "2026-08-29T20:14:52.167Z",
+  "result": "Fail"
+}

@@ -32,13 +32,9 @@ export interface RunHistoryWorkspaceGroup {
   teamDefinitions: TeamRunHistoryDefinitionGroup[];
 }
 
-export interface RunEditableFieldFlags {
-  llmModelIdentifier: boolean;
-  llmConfig: boolean;
-  autoExecuteTools: boolean;
-  skillAccessMode: boolean;
-  workspaceRootPath: boolean;
-  runtimeKind: boolean;
+export interface RunModelConfigEditability {
+  editable: boolean;
+  reason?: string | null;
 }
 
 export interface RunMetadataConfigPayload {
@@ -61,7 +57,7 @@ export interface RunResumeConfigPayload {
   runId: string;
   isActive: boolean;
   metadataConfig: RunMetadataConfigPayload;
-  editableFields: RunEditableFieldFlags;
+  modelConfigEditability: RunModelConfigEditability;
 }
 
 export type TeamRunDeleteLifecycle = 'READY' | 'CLEANUP_PENDING';
@@ -106,6 +102,7 @@ export interface TeamRunResumeConfigPayload {
   teamRunId: string;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeDto;
+  modelConfigEditability: RunModelConfigEditability;
 }
 
 export interface TeamRunExecutionCheckpointPayload {
@@ -206,6 +203,7 @@ export interface GetTeamRunResumeConfigQueryData {
     teamRunId: string;
     isActive: boolean;
     executionTree: unknown;
+    modelConfigEditability: RunModelConfigEditability;
   };
 }
 

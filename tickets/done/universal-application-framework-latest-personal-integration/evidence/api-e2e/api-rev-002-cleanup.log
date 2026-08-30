@@ -1,0 +1,41 @@
+# API-REV-002 cleanup audit
+UTC 2026-08-22T10:06:56Z
+
+ownedDataRoot=/private/tmp/api-rev002-socratic-standalone.vwoaip
+ownedDataRootRemoved=yes
+dataPathMarkerRemoved=yes
+generatedOutputRemoved=applications/brief-studio/dist
+generatedOutputRemoved=applications/socratic-math-teacher/dist
+generatedOutputRemoved=autobyteus-application-backend-sdk/dist
+generatedOutputRemoved=autobyteus-application-devkit/dist
+generatedOutputRemoved=autobyteus-application-frontend-sdk/dist
+generatedOutputRemoved=autobyteus-application-sdk-contracts/dist
+generatedOutputRemoved=autobyteus-server-ts/dist
+
+$ lsof -nP -iTCP:43141 -sTCP:LISTEN
+port43141Free=yes
+
+$ git diff --check
+gitDiffCheck=pass
+
+$ git status --short
+ M autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+ D autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/unit/application-agent-streaming/application-agent-runtime-source.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/app-published-artifact-semantic-path-resolvers.test.ts
+ M autobyteus-server-ts/tests/unit/application-backend/socratic-lesson-target-projection.test.ts
+ M autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-agent-target-authorization-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts
+ M autobyteus-server-ts/tests/unit/application-orchestration/application-run-binding-launch-service.test.ts
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/

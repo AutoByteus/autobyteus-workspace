@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.62 test:e2e:token-statistics-ui /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/autobyteus-web
+> node tests/e2e/token-statistics-ui-probe.mjs -- --output-dir /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh
+
+Pass: /home/autobyteus/workspace/autobyteus-workspace-token-statistics-ui-requirements/tickets/token-statistics-ui-redesign/evidence/delivery/dr-003-post-finalization-refresh/token-statistics-browser-result.json

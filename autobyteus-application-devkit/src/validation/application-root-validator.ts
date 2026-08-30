@@ -1,7 +1,8 @@
 import path from 'node:path';
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6,
-  APPLICATION_MANIFEST_VERSION_V4,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
+  APPLICATION_MANIFEST_VERSION,
+  parseApplicationAgentToolDeclarations,
 } from '@autobyteus/application-sdk-contracts';
 import { validateBackendManifestIfPresent } from './backend-manifest-validator.js';
 import { getLocalApplicationIdValidationError } from './local-application-id.js';
@@ -32,7 +33,7 @@ const validateUiManifestSection = async (input: {
     fieldName: 'ui.entryHtml',
     requiredPrefix: 'ui/',
   });
-  pushVersionDiagnostic(input.diagnostics, input.ui.frontendSdkContractVersion, APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V6, 'ui.frontendSdkContractVersion');
+  pushVersionDiagnostic(input.diagnostics, input.ui.frontendSdkContractVersion, APPLICATION_FRONTEND_SDK_CONTRACT_VERSION, 'ui.frontendSdkContractVersion');
   if (entryHtml) {
     await pushExistingPathDiagnostic({
       diagnostics: input.diagnostics,
@@ -103,12 +104,12 @@ export const validateApplicationRoot = async (input: {
   pushUnknownKeyDiagnostics(
     input.diagnostics,
     rawManifest,
-    ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots"],
+    ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots", "agentTools"],
     "",
     "INVALID_MANIFEST",
   );
 
-  pushVersionDiagnostic(input.diagnostics, rawManifest.manifestVersion, APPLICATION_MANIFEST_VERSION_V4, 'manifestVersion');
+  pushVersionDiagnostic(input.diagnostics, rawManifest.manifestVersion, APPLICATION_MANIFEST_VERSION, 'manifestVersion');
   const manifestId = pushRequiredStringDiagnostic(input.diagnostics, rawManifest, 'id', 'id');
   pushRequiredStringDiagnostic(input.diagnostics, rawManifest, 'name', 'name');
   if (manifestId) {
@@ -119,6 +120,16 @@ export const validateApplicationRoot = async (input: {
   }
   if (manifestId && manifestId !== input.localApplicationId) {
     input.diagnostics.push(errorDiagnostic('APPLICATION_ID_MISMATCH', `application folder id '${input.localApplicationId}' must match manifest id '${manifestId}'.`, 'id'));
+  }
+
+  try {
+    parseApplicationAgentToolDeclarations(rawManifest.agentTools);
+  } catch (error) {
+    input.diagnostics.push(errorDiagnostic(
+      'INVALID_MANIFEST',
+      error instanceof Error ? error.message : String(error),
+      'agentTools',
+    ));
   }
 
   await validateUiManifestSection({

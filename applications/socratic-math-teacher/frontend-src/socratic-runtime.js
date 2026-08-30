@@ -12,7 +12,7 @@ import {
 
 export const mountSocraticMathTeacher = ({
   applicationClient,
-  bootstrap,
+  runtimeBootstrap,
   browserWindow,
   createSocraticMathGraphqlClient,
   rootElement,
@@ -21,7 +21,7 @@ export const mountSocraticMathTeacher = ({
 
   const client = createSocraticMathGraphqlClient(applicationClient);
   const state = {
-    bootstrap,
+    runtimeBootstrap,
     closingLessonId: null,
     detail: null,
     lessons: [],
@@ -36,8 +36,8 @@ export const mountSocraticMathTeacher = ({
   const elements = {
     applicationName: rootElement.querySelector("#application-name"),
     applicationIds: rootElement.querySelector("#application-ids"),
-    iframeLaunchId: rootElement.querySelector("#iframe-launch-id"),
-    requestContext: rootElement.querySelector("#request-context"),
+    contractVersion: rootElement.querySelector("#runtime-contract-version"),
+    canonicalApplicationId: rootElement.querySelector("#canonical-application-id"),
     backendBaseUrl: rootElement.querySelector("#backend-base-url"),
     backendNotificationsUrl: rootElement.querySelector("#backend-notifications-url"),
     workspaceStatus: rootElement.querySelector("#workspace-status"),
@@ -207,7 +207,7 @@ export const mountSocraticMathTeacher = ({
       && (!closeClaim || activeCloseClaim === closeClaim)
     );
     if (!isPendingStartCurrent() && !closeOwnsLifecycle) {
-      setStatus("Loading lessons through the hosted GraphQL backend mount…");
+      setStatus("Loading lessons through the application GraphQL backend…");
     }
     let lessons;
     try {

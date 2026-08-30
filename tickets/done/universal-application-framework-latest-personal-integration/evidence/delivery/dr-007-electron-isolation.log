@@ -1,0 +1,8 @@
+COMMAND=env -u ELECTRON_RUN_AS_NODE pnpm -C autobyteus-web test:e2e:electron:isolation --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-007-electron-isolation
+
+> autobyteus@1.4.56 test:e2e:electron:isolation /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web
+> node tests/e2e/electron-launch-profile-probe.mjs --skip-build --executable /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-007-electron-isolation
+
+[electron-launch-profile-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/delivery/dr-007-electron-isolation/electron-launch-profile-evidence.json
+exit_code=0
+FINAL=PASS

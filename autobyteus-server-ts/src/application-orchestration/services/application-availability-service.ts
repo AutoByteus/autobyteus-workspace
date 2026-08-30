@@ -1,18 +1,9 @@
 import type { ApplicationCatalogSnapshot } from "../../application-bundles/domain/application-catalog-snapshot.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
-import {
-  ApplicationEngineHostService,
-  getApplicationEngineHostService,
-} from "../../application-engine/services/application-engine-host-service.js";
-import {
-  ApplicationExecutionEventDispatchService,
-  getApplicationExecutionEventDispatchService,
-} from "./application-execution-event-dispatch-service.js";
-import {
-  ApplicationOrchestrationRecoveryService,
+import type {
   ApplicationRecoveryOutcome,
-  getApplicationOrchestrationRecoveryService,
 } from "./application-orchestration-recovery-service.js";
+import { ApplicationAvailabilityStateRegistry } from "../../application-platform/runtime/application-availability-state-registry.js";
 
 export type ApplicationAvailabilityState = "ACTIVE" | "QUARANTINED" | "REENTERING";
 export type ApplicationStartupPresence = "CATALOG_ACTIVE" | "CATALOG_QUARANTINED" | "PERSISTED_ONLY";
@@ -48,47 +39,19 @@ const buildPersistedOnlyDetail = (applicationId: string): string =>
   `Persisted platform state still exists for application '${applicationId}', but the application is not present in the current catalog.`;
 
 export class ApplicationAvailabilityService {
-  private static instance: ApplicationAvailabilityService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationAvailabilityService>[0] = {},
-  ): ApplicationAvailabilityService {
-    if (!ApplicationAvailabilityService.instance) {
-      ApplicationAvailabilityService.instance = new ApplicationAvailabilityService(dependencies);
-    }
-    return ApplicationAvailabilityService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationAvailabilityService.instance = null;
-    cachedApplicationAvailabilityService = null;
-  }
-
-  private readonly availabilityByApplicationId = new Map<string, ApplicationAvailabilityRecord>();
-
   constructor(
     private readonly dependencies: {
-      applicationBundleService?: ApplicationBundleService;
-      engineHostService?: ApplicationEngineHostService;
-      recoveryService?: ApplicationOrchestrationRecoveryService;
-      dispatchService?: ApplicationExecutionEventDispatchService;
-    } = {},
+      applicationBundleService: ApplicationBundleService;
+      stateRegistry: ApplicationAvailabilityStateRegistry;
+    },
   ) {}
 
+  private get stateRegistry(): ApplicationAvailabilityStateRegistry {
+    return this.dependencies.stateRegistry;
+  }
+
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
-  }
-
-  private get recoveryService(): ApplicationOrchestrationRecoveryService {
-    return this.dependencies.recoveryService ?? getApplicationOrchestrationRecoveryService();
-  }
-
-  private get engineHostService(): ApplicationEngineHostService {
-    return this.dependencies.engineHostService ?? getApplicationEngineHostService();
-  }
-
-  private get dispatchService(): ApplicationExecutionEventDispatchService {
-    return this.dependencies.dispatchService ?? getApplicationExecutionEventDispatchService();
+    return this.dependencies.applicationBundleService;
   }
 
   synchronizeWithCatalogSnapshot(snapshot: ApplicationCatalogSnapshot): void {
@@ -96,7 +59,7 @@ export class ApplicationAvailabilityService {
     const nextAvailabilityByApplicationId = new Map<string, ApplicationAvailabilityRecord>();
 
     for (const application of snapshot.applications) {
-      const existing = this.availabilityByApplicationId.get(application.id);
+      const existing = this.stateRegistry.getAvailability(application.id);
       if (existing?.state === "REENTERING") {
         nextAvailabilityByApplicationId.set(application.id, { ...existing });
         continue;
@@ -116,10 +79,9 @@ export class ApplicationAvailabilityService {
         detail: diagnostic.message,
         updatedAt: diagnostic.discoveredAt || now,
       });
-      this.dispatchService.suspendApplication(diagnostic.applicationId);
     }
 
-    for (const [applicationId, record] of this.availabilityByApplicationId.entries()) {
+    for (const [applicationId, record] of this.stateRegistry.entries()) {
       if (nextAvailabilityByApplicationId.has(applicationId)) {
         continue;
       }
@@ -128,10 +90,7 @@ export class ApplicationAvailabilityService {
       }
     }
 
-    this.availabilityByApplicationId.clear();
-    for (const [applicationId, record] of nextAvailabilityByApplicationId.entries()) {
-      this.availabilityByApplicationId.set(applicationId, record);
-    }
+    this.stateRegistry.replaceAll(nextAvailabilityByApplicationId.values());
   }
 
   reconcileCatalogSnapshotWithKnownApplications(
@@ -184,7 +143,7 @@ export class ApplicationAvailabilityService {
     startupPresence: ApplicationStartupPresence,
     outcome: ApplicationRecoveryOutcome,
   ): ApplicationAvailabilityRecord {
-    const currentDetail = this.availabilityByApplicationId.get(applicationId)?.detail ?? null;
+    const currentDetail = this.stateRegistry.getAvailability(applicationId)?.detail ?? null;
 
     switch (startupPresence) {
       case "CATALOG_ACTIVE":
@@ -223,7 +182,7 @@ export class ApplicationAvailabilityService {
   }
 
   async getAvailability(applicationId: string): Promise<ApplicationAvailabilityRecord | null> {
-    const existing = this.availabilityByApplicationId.get(applicationId);
+    const existing = this.stateRegistry.getAvailability(applicationId);
     if (existing) {
       return { ...existing };
     }
@@ -255,35 +214,16 @@ export class ApplicationAvailabilityService {
     throw new ApplicationUnavailableError(applicationId, availability.state, availability.detail);
   }
 
-  async reloadAndReenter(applicationId: string): Promise<ApplicationAvailabilityRecord> {
-    this.setAvailability(applicationId, "REENTERING", null);
+  quarantineApplication(applicationId: string, detail: string): ApplicationAvailabilityRecord {
+    return this.setAvailability(applicationId, "QUARANTINED", detail);
+  }
 
-    try {
-      await this.engineHostService.stopApplicationEngine(applicationId);
-      await this.applicationBundleService.reloadApplication(applicationId);
-      const snapshot = await this.applicationBundleService.getCatalogSnapshot();
-      this.synchronizeWithCatalogSnapshot(snapshot);
-      const reloadedApplication = snapshot.applications.find((application) => application.id === applicationId) ?? null;
-      const diagnostic = snapshot.diagnostics.find((entry) => entry.applicationId === applicationId) ?? null;
+  beginReentry(applicationId: string): ApplicationAvailabilityRecord {
+    return this.setAvailability(applicationId, "REENTERING", null);
+  }
 
-      if (!reloadedApplication) {
-        return this.setAvailability(
-          applicationId,
-          "QUARANTINED",
-          diagnostic?.message ?? "Application bundle is currently unavailable.",
-        );
-      }
-
-      await this.recoveryService.resumeApplication(applicationId);
-      await this.dispatchService.resumePendingEventsForApplication(applicationId);
-      return this.setAvailability(applicationId, "ACTIVE", null);
-    } catch (error) {
-      return this.setAvailability(
-        applicationId,
-        "QUARANTINED",
-        error instanceof Error ? error.message : String(error),
-      );
-    }
+  activateApplication(applicationId: string): ApplicationAvailabilityRecord {
+    return this.setAvailability(applicationId, "ACTIVE", null);
   }
 
   private setAvailability(
@@ -297,19 +237,12 @@ export class ApplicationAvailabilityService {
       detail,
       updatedAt: new Date().toISOString(),
     };
-    this.availabilityByApplicationId.set(applicationId, record);
-    if (state !== "ACTIVE") {
-      this.dispatchService.suspendApplication(applicationId);
-    }
+    this.stateRegistry.writer.setAvailability(
+      applicationId,
+      record.state,
+      record.detail,
+      record.updatedAt,
+    );
     return record;
   }
 }
-
-let cachedApplicationAvailabilityService: ApplicationAvailabilityService | null = null;
-
-export const getApplicationAvailabilityService = (): ApplicationAvailabilityService => {
-  if (!cachedApplicationAvailabilityService) {
-    cachedApplicationAvailabilityService = ApplicationAvailabilityService.getInstance();
-  }
-  return cachedApplicationAvailabilityService;
-};

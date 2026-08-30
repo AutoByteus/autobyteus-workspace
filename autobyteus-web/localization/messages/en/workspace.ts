@@ -1,6 +1,31 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.runModelConfig.loading": "Loading run configuration…",
+  "workspace.runModelConfig.runUnavailable": "This run is no longer available.",
+  "workspace.runModelConfig.save": "Save",
+  "workspace.runModelConfig.saving": "Saving…",
+  "workspace.runModelConfig.verifying": "Verifying…",
+  "workspace.runModelConfig.loadingModels": "Loading model options…",
+  "workspace.runModelConfig.catalogError": "Model options could not be loaded. Saved settings were not changed.",
+  "workspace.runModelConfig.retry": "Retry",
+  "workspace.runModelConfig.refreshRequired": "Saved model settings must be refreshed before editing.",
+  "workspace.runModelConfig.noAdjustableSettings": "This model has no adjustable settings.",
+  "workspace.runModelConfig.schemaUnavailable": "Saved model settings cannot be represented by the current schema.",
+  "workspace.runModelConfig.agentStopped": "This run is stopped. Saved model settings will be used when it resumes.",
+  "workspace.runModelConfig.agentActive": "Stop this run before changing model settings.",
+  "workspace.runModelConfig.teamStopped": "This team is stopped. Saved model settings will be used when it resumes.",
+  "workspace.runModelConfig.teamActive": "Stop this team before changing model settings.",
+  "workspace.runModelConfig.fixedIdentity": "Runtime and model are fixed for this existing run.",
+  "workspace.runModelConfig.fixedWorkspace": "Workspace is fixed for existing runs.",
+  "workspace.runModelConfig.validation.required": "A value is required.",
+  "workspace.runModelConfig.validation.type": "Enter a value of type {expected}.",
+  "workspace.runModelConfig.validation.enum": "Choose one of the supported options.",
+  "workspace.runModelConfig.validation.minimum": "Value must be at least {expected}.",
+  "workspace.runModelConfig.validation.maximum": "Value must be at most {expected}.",
+  "workspace.runModelConfig.validation.pattern": "Value does not match the required format.",
+  "workspace.runModelConfig.validation.schema_pattern": "The current model schema contains an invalid format rule.",
+  "workspace.runModelConfig.thinkingAdvancedOnly": "Use the model settings below to control thinking.",
   "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
     "Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.",
   "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
@@ -234,6 +259,16 @@ const messages = {
     "Updated {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "Temporary task execution",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_running":
+    "Team status: Running",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_initializing":
+    "Team status: Initializing",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_error":
+    "Team status: Error",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_idle":
+    "Team status: Idle",
+  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.nested_team_status_offline":
+    "Team status: Offline",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

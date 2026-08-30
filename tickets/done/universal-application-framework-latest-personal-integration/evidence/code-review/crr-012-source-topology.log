@@ -1,0 +1,17 @@
+CRR-012 source/topology review corrected 2026-08-23T05:34:07Z
+HEAD 5cf9b8eb22a3b83c114dbb4199341a65aaee8cea
+PARENTS 663f44d31deb05bf47f0eda780de4d754187a51b 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+checkpoint ancestor: PASS
+newest Personal ancestor: PASS
+unmerged index: PASS
+retired/generated paths:
+absent autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts
+absent autobyteus-server-ts/src/application-orchestration/services/application-execution-resource-configuration-service.ts
+absent autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+absent autobyteus-application-sdk-contracts/dist/execution-resources.d.ts
+absent autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map
+retired reference scan: PASS
+conflict marker scan: PASS
+newest-Personal exact retained native scopes diff (expected empty):
+scoped current implementation diff check:
+scoped diff check: PASS

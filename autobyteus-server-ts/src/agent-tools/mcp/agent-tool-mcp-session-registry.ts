@@ -1,111 +1,79 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { normalizeStoredAgentRunId } from "../../agent-execution/identity/agent-run-id.js";
 import {
   cloneAgentToolMcpExecutionContext,
+  cloneAgentToolMcpSessionExecutionCapabilities,
   cloneAgentToolMcpSessionOwnerIdentity,
-  type AgentToolMcpCreateSessionInput,
+  type AgentToolMcpActivateSessionInput,
   type AgentToolMcpSession,
   type AgentToolMcpSessionOwnerIdentity,
-  type AgentToolMcpSessionResolveInput,
   type AgentToolMcpSessionResolveResult,
 } from "./agent-tool-mcp-session.js";
-import { cloneConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
+import {
+  deriveAgentToolMcpRunSessionId,
+  type AgentToolMcpRunSessionId,
+} from "./agent-tool-mcp-run-session-id.js";
+import {
+  cloneConfiguredMcpAgentToolSource,
+  type ConfiguredMcpAgentToolSource,
+} from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import { cloneAgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
-
-const SESSION_ID_RANDOM_BYTES = 18;
-const TOKEN_RANDOM_BYTES = 32;
-
-export type AgentToolMcpSessionRegistryCreateResult = {
-  session: AgentToolMcpSession;
-  capabilityToken: string;
-};
 
 type AgentToolMcpSessionRegistryDeps = {
   now?: () => Date;
-  randomBytes?: (size: number) => Buffer;
 };
 
 export class AgentToolMcpSessionRegistry {
-  private static instance: AgentToolMcpSessionRegistry | null = null;
-  private readonly sessions = new Map<string, AgentToolMcpSession>();
+  private readonly sessions = new Map<AgentToolMcpRunSessionId, AgentToolMcpSession>();
   private readonly now: () => Date;
-  private readonly generateRandomBytes: (size: number) => Buffer;
-
-  static getInstance(): AgentToolMcpSessionRegistry {
-    if (!AgentToolMcpSessionRegistry.instance) {
-      AgentToolMcpSessionRegistry.instance = new AgentToolMcpSessionRegistry();
-    }
-    return AgentToolMcpSessionRegistry.instance;
-  }
-
-  static resetInstance(): void {
-    AgentToolMcpSessionRegistry.instance = null;
-  }
 
   constructor(deps: AgentToolMcpSessionRegistryDeps = {}) {
     this.now = deps.now ?? (() => new Date());
-    this.generateRandomBytes = deps.randomBytes ?? randomBytes;
   }
 
-  createSession(input: AgentToolMcpCreateSessionInput): AgentToolMcpSessionRegistryCreateResult {
-    const createdAt = this.now();
-    const sessionId = this.createUniqueSessionId();
-    const capabilityToken = this.createCapabilityToken();
+  activateSession(input: AgentToolMcpActivateSessionInput): AgentToolMcpSession {
+    const owner = normalizeOwner(input.owner);
+    const sessionId = deriveAgentToolMcpRunSessionId(owner.runId);
+    if (this.sessions.has(sessionId)) {
+      throw new Error(
+        `Agent Tools MCP run session '${sessionId}' is already active.`,
+      );
+    }
     const session: AgentToolMcpSession = {
       sessionId,
-      tokenHash: hashBearerToken(capabilityToken),
-      owner: normalizeOwner(input.owner),
+      owner,
       sender: input.sender,
       runtimeKind: input.runtimeKind ?? input.sender.runtimeKind ?? null,
       runtimeExposure: cloneRuntimeExposure(input.runtimeExposure),
       executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
-      enabledTools: [...input.enabledTools],
+      executionCapabilities: cloneAgentToolMcpSessionExecutionCapabilities(
+        input.executionCapabilities,
+      ),
+      enabledTools: Object.freeze([...input.enabledTools]) as string[],
       toolRoutes: cloneAgentToolMcpToolRouteTable(input.toolRoutes),
-      configuredMcpToolSources: (input.configuredMcpToolSources ?? []).map(cloneConfiguredMcpAgentToolSource),
-      createdAt,
-      revokedAt: null,
+      configuredMcpToolSources: Object.freeze(
+        (input.configuredMcpToolSources ?? [])
+          .map((source) => Object.freeze(cloneConfiguredMcpAgentToolSource(source))),
+      ) as ConfiguredMcpAgentToolSource[],
+      createdAt: this.now(),
       toolExecutionObserver: input.toolExecutionObserver ?? null,
     };
     this.sessions.set(sessionId, session);
-    return { session, capabilityToken };
+    return session;
   }
 
-  resolveSession(input: AgentToolMcpSessionResolveInput): AgentToolMcpSessionResolveResult {
-    const session = this.sessions.get(input.sessionId) ?? null;
-    if (!session) {
-      return { ok: false, reason: "missing_session" };
-    }
-    if (session.revokedAt) {
-      return { ok: false, reason: "revoked" };
-    }
-    if (!doesBearerTokenMatch(input.bearerToken, session.tokenHash)) {
-      return { ok: false, reason: "token_mismatch" };
-    }
-    return { ok: true, session };
+  resolveSession(sessionId: string): AgentToolMcpSessionResolveResult {
+    const session = this.sessions.get(sessionId as AgentToolMcpRunSessionId) ?? null;
+    return session
+      ? { ok: true, session }
+      : { ok: false, reason: "missing_session" };
   }
 
   getSession(sessionId: string): AgentToolMcpSession | null {
-    return this.sessions.get(sessionId) ?? null;
+    return this.sessions.get(sessionId as AgentToolMcpRunSessionId) ?? null;
   }
 
-  revokeSession(sessionId: string): boolean {
-    const session = this.sessions.get(sessionId) ?? null;
-    if (!session || session.revokedAt) {
-      return false;
-    }
-    session.revokedAt = this.now();
-    return true;
-  }
-
-  revokeSessionsForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number {
-    let revokedCount = 0;
-    for (const session of this.sessions.values()) {
-      if (session.revokedAt || !doesOwnerMatch(session.owner, owner)) {
-        continue;
-      }
-      session.revokedAt = this.now();
-      revokedCount += 1;
-    }
-    return revokedCount;
+  deactivateSession(sessionId: string): boolean {
+    return this.sessions.delete(sessionId as AgentToolMcpRunSessionId);
   }
 
   clear(): void {
@@ -115,50 +83,18 @@ export class AgentToolMcpSessionRegistry {
   listSessions(): AgentToolMcpSession[] {
     return Array.from(this.sessions.values());
   }
-
-  private createUniqueSessionId(): string {
-    for (let attempt = 0; attempt < 8; attempt += 1) {
-      const sessionId = `agtmcp_${this.generateRandomBytes(SESSION_ID_RANDOM_BYTES).toString("base64url")}`;
-      if (!this.sessions.has(sessionId)) {
-        return sessionId;
-      }
-    }
-    throw new Error("Failed to allocate a unique Agent Tools MCP session id.");
-  }
-
-  private createCapabilityToken(): string {
-    return this.generateRandomBytes(TOKEN_RANDOM_BYTES).toString("base64url");
-  }
 }
-
-export const getAgentToolMcpSessionRegistry = (): AgentToolMcpSessionRegistry =>
-  AgentToolMcpSessionRegistry.getInstance();
-
-export const resetAgentToolMcpSessionRegistryForTests = (): void => {
-  AgentToolMcpSessionRegistry.resetInstance();
-};
-
-export const hashBearerToken = (token: string): Buffer =>
-  createHash("sha256").update(token, "utf8").digest();
-
-const doesBearerTokenMatch = (token: string, expectedHash: Buffer): boolean => {
-  const actualHash = hashBearerToken(token);
-  return actualHash.length === expectedHash.length && timingSafeEqual(actualHash, expectedHash);
-};
 
 const normalizeOwner = (
   owner: AgentToolMcpSessionOwnerIdentity,
-): AgentToolMcpSessionOwnerIdentity => {
-  const runId = owner.runId.trim();
-  if (!runId) {
-    throw new Error("AgentToolMcpSession owner.runId is required.");
-  }
-  return cloneAgentToolMcpSessionOwnerIdentity({ ...owner, runId });
-};
+): AgentToolMcpSessionOwnerIdentity => cloneAgentToolMcpSessionOwnerIdentity({
+  ...owner,
+  runId: normalizeStoredAgentRunId(owner.runId),
+});
 
 const cloneRuntimeExposure = (
-  exposure: AgentToolMcpCreateSessionInput["runtimeExposure"],
-): AgentToolMcpCreateSessionInput["runtimeExposure"] => ({
+  exposure: AgentToolMcpActivateSessionInput["runtimeExposure"],
+): AgentToolMcpActivateSessionInput["runtimeExposure"] => ({
   requestedToolNames: [...exposure.requestedToolNames],
   enabledBrowserToolNames: [...exposure.enabledBrowserToolNames],
   enabledMediaToolNames: [...exposure.enabledMediaToolNames],
@@ -167,24 +103,3 @@ const cloneRuntimeExposure = (
   getHandoffRulesEnabled: exposure.getHandoffRulesEnabled,
   publishArtifactsEnabled: exposure.publishArtifactsEnabled,
 });
-
-const doesOwnerMatch = (
-  sessionOwner: AgentToolMcpSessionOwnerIdentity,
-  candidate: Partial<AgentToolMcpSessionOwnerIdentity>,
-): boolean => {
-  if (candidate.runId !== undefined && sessionOwner.runId !== candidate.runId) {
-    return false;
-  }
-  if (candidate.displayName !== undefined && sessionOwner.displayName !== candidate.displayName) {
-    return false;
-  }
-  if (candidate.teamIdentity !== undefined) {
-    const actual = sessionOwner.teamIdentity;
-    const expected = candidate.teamIdentity;
-    if (!actual || !expected || actual.rootTeamRunId !== expected.rootTeamRunId ||
-      actual.memberAddress !== expected.memberAddress || actual.agentRunId !== expected.agentRunId) {
-      return false;
-    }
-  }
-  return Object.keys(candidate).length > 0;
-};

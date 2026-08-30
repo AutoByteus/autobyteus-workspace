@@ -1,0 +1,16 @@
+Sat Aug 22 12:23:08 UTC 2026
+ROOT=/private/tmp/api-rev004-studio.xkprY3
+== app roots ==
+== team memory ==
+/private/tmp/api-rev004-studio.xkprY3/memory/agent_teams/socratic_math_team_ce81fa6c73ce4caa877a65d3b950861c/team_run_execution_tree.json
+/private/tmp/api-rev004-studio.xkprY3/memory/agent_teams/brief_studio_team_4f4a2a03ea094345bf53080b0f896c33/team_run_execution_tree.json
+== likely provider children ==
+92501 47458 /bin/bash -lc ROOT=$(cat /private/tmp/api-rev004-studio-root); E=tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-004-studio-pre-restart-state.log\012{\012 date -u; echo ROOT=$ROOT; echo '== app roots =='; find "$ROOT/applications" -maxdepth 2 -name engine-status.json -o -path '*/runtime/engine-status.json' -print -exec cat {} \;; echo '== team memory =='; find "$ROOT/memory/agent_teams" -maxdepth 2 -type f -name team_run_execution_tree.json -print; echo '== likely provider children =='; ps ax -o pid,ppid,command | grep -E 'codex app-server|application-worker-entry' | grep -E '71980|api-rev004-studio|socratic_math|brief_studio' || true; echo '== ports =='; lsof -nP -iTCP:8015 -sTCP:LISTEN;\012} | tee "$E"
+92808 92501 /bin/bash -lc ROOT=$(cat /private/tmp/api-rev004-studio-root); E=tickets/in-progress/universal-application-framework-latest-personal-integration/evidence/api-e2e/api-rev-004-studio-pre-restart-state.log\012{\012 date -u; echo ROOT=$ROOT; echo '== app roots =='; find "$ROOT/applications" -maxdepth 2 -name engine-status.json -o -path '*/runtime/engine-status.json' -print -exec cat {} \;; echo '== team memory =='; find "$ROOT/memory/agent_teams" -maxdepth 2 -type f -name team_run_execution_tree.json -print; echo '== likely provider children =='; ps ax -o pid,ppid,command | grep -E 'codex app-server|application-worker-entry' | grep -E '71980|api-rev004-studio|socratic_math|brief_studio' || true; echo '== ports =='; lsof -nP -iTCP:8015 -sTCP:LISTEN;\012} | tee "$E"
+77054 71980 /Applications/Codex.app/Contents/Resources/codex app-server
+84338 71980 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+90146 71980 /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/dist/application-engine/worker/application-worker-entry.js
+90151 71980 /Applications/Codex.app/Contents/Resources/codex app-server
+== ports ==
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    71980 normy   23u  IPv4 0xfac71e739424bcd5      0t0  TCP 127.0.0.1:8015 (LISTEN)

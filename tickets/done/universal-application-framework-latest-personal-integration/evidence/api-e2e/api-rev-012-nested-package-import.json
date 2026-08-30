@@ -1,0 +1,306 @@
+{
+  "status": "PASS",
+  "roots": [
+    "/Users/normy/autobyteus_org/autobyteus-agents",
+    "/Users/normy/autobyteus_org/autobyteus-private-agents"
+  ],
+  "imports": [
+    {
+      "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+      "packages": [
+        {
+          "packageId": "built-in:default",
+          "displayName": "Built-in Storage",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1",
+          "sourceKind": "BUILT_IN",
+          "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1",
+          "sharedAgentCount": 2,
+          "teamLocalAgentCount": 0,
+          "agentTeamCount": 0,
+          "applicationCount": 0,
+          "isDefault": true,
+          "isRemovable": false
+        },
+        {
+          "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+          "displayName": "autobyteus-agents",
+          "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "sourceKind": "LOCAL_PATH",
+          "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "sharedAgentCount": 7,
+          "teamLocalAgentCount": 50,
+          "agentTeamCount": 12,
+          "applicationCount": 0,
+          "isDefault": false,
+          "isRemovable": true
+        },
+        {
+          "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-private-agents",
+          "displayName": "autobyteus-private-agents",
+          "path": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+          "sourceKind": "LOCAL_PATH",
+          "source": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+          "sharedAgentCount": 40,
+          "teamLocalAgentCount": 25,
+          "agentTeamCount": 9,
+          "applicationCount": 0,
+          "isDefault": false,
+          "isRemovable": true
+        }
+      ]
+    },
+    {
+      "source": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+      "packages": [
+        {
+          "packageId": "built-in:default",
+          "displayName": "Built-in Storage",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1",
+          "sourceKind": "BUILT_IN",
+          "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1",
+          "sharedAgentCount": 2,
+          "teamLocalAgentCount": 0,
+          "agentTeamCount": 0,
+          "applicationCount": 0,
+          "isDefault": true,
+          "isRemovable": false
+        },
+        {
+          "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+          "displayName": "autobyteus-agents",
+          "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "sourceKind": "LOCAL_PATH",
+          "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "sharedAgentCount": 7,
+          "teamLocalAgentCount": 50,
+          "agentTeamCount": 12,
+          "applicationCount": 0,
+          "isDefault": false,
+          "isRemovable": true
+        },
+        {
+          "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-private-agents",
+          "displayName": "autobyteus-private-agents",
+          "path": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+          "sourceKind": "LOCAL_PATH",
+          "source": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+          "sharedAgentCount": 40,
+          "teamLocalAgentCount": 25,
+          "agentTeamCount": 9,
+          "applicationCount": 0,
+          "isDefault": false,
+          "isRemovable": true
+        }
+      ]
+    }
+  ],
+  "ids": {
+    "root": "nested-classroom-test",
+    "child": "team-local-team:nested-classroom-test:student-study-group",
+    "teacher": "team-local-agent:nested-classroom-test:teacher",
+    "studentOne": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+    "studentTwo": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two"
+  },
+  "definitions": {
+    "root": {
+      "id": "nested-classroom-test",
+      "name": "Nested Classroom Test Team",
+      "description": "Minimal nested-team fixture for independently testing team messaging, direct-member messaging, and task-team delegation.",
+      "instructions": "This is a deliberately tiny nested-team package for validating three independent nested-team routes:\n\n1. ordinary `send_message_to` addressed to `/StudentStudyGroup`;\n2. ordinary `send_message_to` addressed directly to `/StudentStudyGroup/student_one`;\n3. lifecycle `delegate_task` addressed to `/StudentStudyGroup`.\n\nTests use distinct markers. Never substitute one route or tool for another.\n\n## Members\n\n- `/Teacher` is the top-level coordinator.\n- `/StudentStudyGroup` is a nested agent team with two students.\n  - Its coordinator is `/StudentStudyGroup/student_one`.\n  - `/StudentStudyGroup/student_two` is available for ordinary teammate communication inside the nested team.\n\n## Intended Delegation Test Flow\n\nUse a prompt like:\n\n> Please test nested team delegation. Delegate one task to `/StudentStudyGroup` and ask the students to return exactly NESTED_CLASSROOM_OK. Accept the result if it matches.\n\nExpected behavior:\n\n1. `/Teacher` calls `delegate_task` with the exact rooted team address:\n   `delegate_task({\"recipient_address\":\"/StudentStudyGroup\",\"description\":\"...\"})`.\n2. The runtime creates a task-team execution for `/StudentStudyGroup`.\n3. `/StudentStudyGroup/student_one`, as the nested team coordinator, submits the result with `submit_task_result`.\n4. `/Teacher` reviews the result with `review_task_result` and accepts it when the expected token is present.\n\n## Tool Contract Notes\n\n- `/Teacher` has `delegate_task`, `review_task_result`, and `send_message_to`.\n- `/StudentStudyGroup/student_one` has `submit_task_result` and `send_message_to`.\n- `/StudentStudyGroup/student_two` has `send_message_to` only.\n- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization. Task lifecycle must use `delegate_task`, `submit_task_result`, and `review_task_result`.\n- Ordinary classroom messages to the team address or direct student address must use `send_message_to`, never `delegate_task`.\n- For ordinary messages, `student_one` replies to `/Teacher` with `send_message_to` and preserves the exact requested marker.\n- After a cold restart, each scenario may issue a second distinct marker through the same original route/tool to prove continuation.\n",
+      "coordinatorMemberName": "Teacher",
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group.",
+            "When an ordinary classroom test message must be sent to the nested team address exactly as /StudentStudyGroup."
+          ]
+        },
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When an ordinary classroom test message must be sent directly to Student One at the exact member address."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle.",
+            "When Student One must reply to an ordinary team-address or direct-member classroom message from Teacher."
+          ]
+        }
+      ],
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "ownerPackageId": null,
+      "nodes": [
+        {
+          "memberName": "Teacher",
+          "ref": "teacher",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "StudentStudyGroup",
+          "ref": "student-study-group",
+          "refType": "AGENT_TEAM",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    "child": {
+      "id": "team-local-team:nested-classroom-test:student-study-group",
+      "name": "Student Study Group",
+      "description": "Two-student nested team used as a task-team target in delegation tests.",
+      "instructions": "This nested team is intentionally simple.\n\n`student_one` coordinates the study group. `student_two` is a supporting student.\n\nWhen this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.\n\nIf the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.\n\nUse `send_message_to` only for ordinary communication. Do not use it for final task result submission.\n\nWhen an ordinary message is addressed to `/StudentStudyGroup`, routing reaches coordinator `student_one`. The coordinator replies to `/Teacher` with `send_message_to` using the exact requested acknowledgment marker. A direct message to `/StudentStudyGroup/student_one` follows the same reply protocol while remaining a distinct addressed route.\n",
+      "coordinatorMemberName": "student_one",
+      "handoffs": [
+        {
+          "from": "/student_one",
+          "to": "/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/student_two",
+          "to": "/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "ownerTeamName": "Nested Classroom Test Team",
+      "ownerPackageId": null,
+      "nodes": [
+        {
+          "memberName": "student_one",
+          "ref": "student-one",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        },
+        {
+          "memberName": "student_two",
+          "ref": "student-two",
+          "refType": "AGENT",
+          "refScope": "TEAM_LOCAL"
+        }
+      ]
+    },
+    "teacher": {
+      "id": "team-local-agent:nested-classroom-test:teacher",
+      "name": "Test Teacher",
+      "description": "Top-level teacher coordinator for nested task-team delegation tests.",
+      "instructions": "You are `Teacher`, the coordinator of a tiny classroom test team.\n\nYour purpose is to test three independent nested-team interactions. Follow the user's requested route exactly; never replace it with another available tool or address.\n\n## Ordinary Team-Address Message Behavior\n\nWhen the user explicitly asks for an ordinary message to the nested team address:\n\n1. Call `send_message_to` with `recipient_address: \"/StudentStudyGroup\"`.\n2. Put the user's exact marker in the message.\n3. Ask the receiving coordinator to reply to `/Teacher` with `send_message_to` and include the requested acknowledgment marker.\n4. If the user supplies a reference-file path, pass that exact path in `reference_files` on the same `send_message_to` call.\n5. Do not call `delegate_task` and do not address the message directly to `student_one`.\n\n## Ordinary Direct-Member Message Behavior\n\nWhen the user explicitly asks for an ordinary direct message to Student One:\n\n1. Call `send_message_to` with `recipient_address: \"/StudentStudyGroup/student_one\"`.\n2. Put the user's exact marker in the message.\n3. Ask Student One to reply to `/Teacher` with `send_message_to` and include the requested acknowledgment marker.\n4. If the user supplies a reference-file path, pass that exact path in `reference_files` on the same `send_message_to` call.\n5. Do not call `delegate_task` and do not use the `/StudentStudyGroup` team address.\n\n## Mandatory Nested-Team Delegation Behavior\n\nWhen the user asks you to test nested delegation, delegate one bounded task to the nested team by calling:\n\n`delegate_task({\"recipient_address\":\"/StudentStudyGroup\",\"description\":\"...\"})`\n\nThe task description should be complete and should tell the students what exact answer or token to return.\n\nAfter the task-team submits a result:\n\n- If the result satisfies the user's requested answer/token, call `review_task_result` with `decision: \"accept\"`.\n- If the result is missing or incorrect, call `review_task_result` with `decision: \"request_revision\"` and a short correction message.\n- After acceptance, reply briefly to the user with what happened.\n\n## Tool Rules\n\n- Use `delegate_task` with `recipient_address` set to an exact canonical rooted address.\n- For this fixture, use the team target `{ \"recipient_address\": \"/StudentStudyGroup\" }`.\n- Use `review_task_result` for accepting or requesting revision of task results.\n- Do not use `send_message_to` for task result submission, revision requests, acceptance, or finalization.\n- Use `send_message_to` for the two ordinary message cases exactly as directed above.\n- A post-restart continuation marker must use the same route/tool as the corresponding pre-restart marker.\n",
+      "toolNames": [
+        "delegate_task",
+        "review_task_result",
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "nested-classroom-test",
+      "ownerTeamName": "Nested Classroom Test Team",
+      "ownerPackageId": null
+    },
+    "studentOne": {
+      "id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+      "name": "Student One",
+      "description": "Coordinator student for the nested Student Study Group test team.",
+      "instructions": "You are `student_one`, coordinator of the nested `/StudentStudyGroup` team.\n\nYour job is to complete delegated classroom test tasks and to answer ordinary classroom messages from `Teacher` through the exact requested protocol.\n\n## Ordinary Message Behavior\n\nWhen you receive an ordinary message from `/Teacher`, whether it was addressed to `/StudentStudyGroup` or directly to `/StudentStudyGroup/student_one`:\n\n1. Read the exact acknowledgment marker requested in the message.\n2. Call `send_message_to` with `recipient_address: \"/Teacher\"`.\n3. Include that exact acknowledgment marker in the reply.\n4. Do not call `submit_task_result`; ordinary messages are not task lifecycle packets.\n\n## Delegated Task Behavior\n\nWhen you receive a delegated task packet:\n\n1. Read the requested answer format carefully.\n2. If the task asks for an exact token or exact phrase, prepare exactly that token or phrase.\n3. Call `submit_task_result` with a non-empty `message` containing the final result.\n\nFor the standard smoke test, if asked to return `NESTED_CLASSROOM_OK`, submit exactly:\n\n`NESTED_CLASSROOM_OK`\n\n## Collaboration\n\nYou may use `send_message_to` with `recipient_address: \"/StudentStudyGroup/student_two\"` to ask `/StudentStudyGroup/student_two` for ordinary help, but you remain responsible for submitting the final result.\n\n## Tool Rules\n\n- Use `submit_task_result` for final task result submission.\n- Do not use `send_message_to` as the task result protocol.\n- Do not accept or reject results; that is `Teacher`'s job through `review_task_result`.\n- Use `send_message_to` for ordinary replies to `/Teacher`, including post-restart continuation markers.\n",
+      "toolNames": [
+        "submit_task_result",
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "team-local-team:nested-classroom-test:student-study-group",
+      "ownerTeamName": "Student Study Group",
+      "ownerPackageId": null
+    },
+    "studentTwo": {
+      "id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+      "name": "Student Two",
+      "description": "Supporting student for the nested Student Study Group test team.",
+      "instructions": "You are `student_two`, a supporting member of `/StudentStudyGroup`.\n\nWhen `/StudentStudyGroup/student_one` asks for help, respond concisely using `send_message_to` with `recipient_address: \"/StudentStudyGroup/student_one\"`.\n\nFor smoke-test tasks involving an exact token such as `NESTED_CLASSROOM_OK`, confirm that the requested token is the answer.\n\nDo not attempt to submit final task results. `student_one` owns `submit_task_result` for this nested team fixture.\n",
+      "toolNames": [
+        "send_message_to",
+        "run_bash"
+      ],
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamId": "team-local-team:nested-classroom-test:student-study-group",
+      "ownerTeamName": "Student Study Group",
+      "ownerPackageId": null
+    },
+    "packages": [
+      {
+        "packageId": "built-in:default",
+        "displayName": "Built-in Storage",
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-server-ts/tests/.tmp/api-rev-012-nested-20260825-1",
+        "sourceKind": "BUILT_IN",
+        "sharedAgentCount": 2,
+        "teamLocalAgentCount": 0,
+        "agentTeamCount": 0
+      },
+      {
+        "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+        "displayName": "autobyteus-agents",
+        "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+        "sourceKind": "LOCAL_PATH",
+        "sharedAgentCount": 7,
+        "teamLocalAgentCount": 50,
+        "agentTeamCount": 12
+      },
+      {
+        "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-private-agents",
+        "displayName": "autobyteus-private-agents",
+        "path": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+        "sourceKind": "LOCAL_PATH",
+        "sharedAgentCount": 40,
+        "teamLocalAgentCount": 25,
+        "agentTeamCount": 9
+      }
+    ],
+    "runtimeAvailabilities": [
+      {
+        "runtimeKind": "autobyteus",
+        "enabled": true,
+        "reason": null
+      },
+      {
+        "runtimeKind": "codex_app_server",
+        "enabled": true,
+        "reason": null
+      },
+      {
+        "runtimeKind": "claude_agent_sdk",
+        "enabled": true,
+        "reason": null
+      }
+    ]
+  },
+  "models": {
+    "codexLuna": true,
+    "autobyteusDeepseekFlash": true
+  },
+  "catalogSummary": {
+    "autobyteus": {
+      "providers": 13,
+      "models": 28
+    },
+    "codex_app_server": {
+      "providers": 1,
+      "models": 7
+    },
+    "claude_agent_sdk": {
+      "providers": 1,
+      "models": 4
+    }
+  }
+}

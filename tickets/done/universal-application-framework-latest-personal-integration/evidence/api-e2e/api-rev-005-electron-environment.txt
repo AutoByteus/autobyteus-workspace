@@ -1,0 +1,8 @@
+ROOT=/private/tmp/api-rev005-electron-classroom-20260822194413
+PORT=53054
+EXE=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+source_secret_file=/Users/normy/.autobyteus/server-data/.env mode=-rw------- owner=normy size=3522
+agent_package=/Users/normy/autobyteus_org/autobyteus-agents mode=drwxr-xr-x owner=normy
+artifact=/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-latest-personal-integration/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus mode=-rwxr-xr-x owner=normy size=33968
+ordinary_29695_listeners_before=37991
+ordinary_health_before=200

@@ -8,10 +8,23 @@ import {
   isAgentRunEvent,
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
-import { ApplicationEngineHostService, getApplicationEngineHostService } from "../../application-engine/services/application-engine-host-service.js";
+import {
+  ApplicationPublishedArtifactDeliveryQueue,
+  type ApplicationPublishedArtifactDeliveryCommand,
+} from "./application-published-artifact-delivery-queue.js";
 import type { ApplicationExecutionContext } from "../domain/models.js";
-import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import type { PublishedArtifactSummary } from "../../services/published-artifacts/published-artifact-types.js";
+
+export interface ApplicationPublishedArtifactBindingReader {
+  getBinding(
+    applicationId: string,
+    bindingId: string,
+  ): Promise<ApplicationAgentBindingRecord | null>;
+}
+
+export interface ApplicationPublishedArtifactDeliverySink {
+  accept(command: ApplicationPublishedArtifactDeliveryCommand): Promise<void>;
+}
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -33,21 +46,19 @@ const isPublishedArtifactSummary = (value: unknown): value is PublishedArtifactS
 };
 
 export class ApplicationPublishedArtifactRelayService {
-  private readonly operationQueueByRunId = new Map<string, Promise<void>>();
-
   constructor(
     private readonly dependencies: {
-      bindingStore?: ApplicationRunBindingStore;
-      engineHostService?: ApplicationEngineHostService;
-    } = {},
+      bindingReader: ApplicationPublishedArtifactBindingReader;
+      artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
+    },
   ) {}
 
-  private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+  private get bindingReader(): ApplicationPublishedArtifactBindingReader {
+    return this.dependencies.bindingReader;
   }
 
-  private get engineHostService(): ApplicationEngineHostService {
-    return this.dependencies.engineHostService ?? getApplicationEngineHostService();
+  private get artifactDeliverySink(): ApplicationPublishedArtifactDeliverySink {
+    return this.dependencies.artifactDeliverySink;
   }
 
   attachToRun(run: AgentRun): () => void {
@@ -55,13 +66,14 @@ export class ApplicationPublishedArtifactRelayService {
       if (!isAgentRunEvent(event) || event.eventType !== AgentRunEventType.ARTIFACT_PERSISTED) {
         return;
       }
-      void this.enqueueRelay(run, event);
+      void this.relayIfBound(run, event).catch((error: unknown) => {
+        logger.warn(
+          `ApplicationPublishedArtifactRelayService: live artifact relay failed for run '${run.runId}': ${String(error)}`,
+        );
+      });
     });
 
-    return () => {
-      unsubscribe();
-      this.operationQueueByRunId.delete(run.runId);
-    };
+    return unsubscribe;
   }
 
   async relayIfBound(run: AgentRun, event: AgentRunEvent): Promise<void> {
@@ -89,7 +101,7 @@ export class ApplicationPublishedArtifactRelayService {
     applicationExecutionContext: ApplicationExecutionContext;
     artifact: PublishedArtifactSummary;
   }): Promise<void> {
-    const binding = await this.bindingStore.getBinding(
+    const binding = await this.bindingReader.getBinding(
       input.applicationExecutionContext.applicationId,
       input.applicationExecutionContext.bindingId,
     );
@@ -106,29 +118,13 @@ export class ApplicationPublishedArtifactRelayService {
       input.artifact,
     );
 
-    try {
-      await this.engineHostService.invokeApplicationArtifactHandler(binding.applicationId, {
-        event: artifactEvent,
-      });
-    } catch (error) {
-      logger.warn(
-        `ApplicationPublishedArtifactRelayService: live artifact relay failed for binding '${binding.bindingId}' revision '${artifactEvent.revisionId}': ${String(error)}`,
-      );
-    }
-  }
-
-  private enqueueRelay(run: AgentRun, event: AgentRunEvent): Promise<void> {
-    const previous = this.operationQueueByRunId.get(run.runId) ?? Promise.resolve();
-    const next = previous
-      .catch(() => undefined)
-      .then(async () => this.relayIfBound(run, event));
-    this.operationQueueByRunId.set(run.runId, next);
-    void next.finally(() => {
-      if (this.operationQueueByRunId.get(run.runId) === next) {
-        this.operationQueueByRunId.delete(run.runId);
-      }
+    await this.artifactDeliverySink.accept({
+      runId: input.runId,
+      applicationId: binding.applicationId,
+      bindingId: binding.bindingId,
+      revisionId: artifactEvent.revisionId,
+      event: artifactEvent,
     });
-    return next;
   }
 
   private buildArtifactEvent(
@@ -150,11 +146,14 @@ export class ApplicationPublishedArtifactRelayService {
   }
 }
 
-let cachedApplicationPublishedArtifactRelayService: ApplicationPublishedArtifactRelayService | null = null;
-
-export const getApplicationPublishedArtifactRelayService = (): ApplicationPublishedArtifactRelayService => {
-  if (!cachedApplicationPublishedArtifactRelayService) {
-    cachedApplicationPublishedArtifactRelayService = new ApplicationPublishedArtifactRelayService();
-  }
-  return cachedApplicationPublishedArtifactRelayService;
+export const createGeneralProcessPublishedArtifactRelayService =
+(): ApplicationPublishedArtifactRelayService => {
+  const deliveryQueue = new ApplicationPublishedArtifactDeliveryQueue();
+  deliveryQueue.stopAccepting();
+  return new ApplicationPublishedArtifactRelayService({
+    bindingReader: {
+      getBinding: async () => null,
+    },
+    artifactDeliverySink: deliveryQueue,
+  });
 };

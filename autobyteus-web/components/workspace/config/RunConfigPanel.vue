@@ -17,7 +17,12 @@
       </button>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-4 py-4">
+    <ExistingRunConfigEditor
+      v-if="isSelectionMode"
+      :key="`existing:${selectionStore.selectedType}:${selectionStore.selectedRunId}`"
+    />
+
+    <div v-else class="flex-1 overflow-y-auto px-4 py-4">
       <div v-if="!effectiveAgentConfig && !teamRunFormModel" class="flex h-full flex-col items-center justify-center text-center text-gray-500">
         <span class="i-heroicons-cursor-arrow-rays-20-solid mb-2 h-12 w-12 text-gray-300"></span>
         <p>{{ $t('workspace.components.workspace.config.RunConfigPanel.select_an_agent_or_team_to') }}</p>
@@ -30,9 +35,6 @@
         :agent-definition="activeAgentDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :workspace-selection="workspaceSelection"
-        :workspace-locked="isWorkspaceLockedForSelectedAgentRun"
-        :runtime-locked="isRuntimeLockedForSelectedAgentRun"
-        :read-only="isSelectionMode"
         @update:workspace-selection="handleWorkspaceSelectionChange"
       />
 
@@ -75,23 +77,22 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { useExistingRunModelConfigStore } from '~/stores/existingRunModelConfigStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useRightSideTabs } from '~/composables/useRightSideTabs'
 import AgentRunConfigForm from './AgentRunConfigForm.vue'
 import TeamRunConfigForm from './TeamRunConfigForm.vue'
+import ExistingRunConfigEditor from './ExistingRunConfigEditor.vue'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
-import type { StoredTeamRunConfigurationView, TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { TeamRunFormModel } from '~/types/agent/TeamRunFormModel'
 import { isTeamLaunchRepairRequiredError, type TeamLaunchConfigEdit } from '~/types/agent/TeamLaunchDraft'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
-import { projectStoredTeamRunFormModel } from '~/services/teamExecution/storedTeamRunFormModel'
 import { projectEditableTeamRunFormModel } from '~/utils/editableTeamRunFormModel'
 import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
 
@@ -99,12 +100,11 @@ const selectionStore = useAgentSelectionStore()
 const runConfigStore = useAgentRunConfigStore()
 const teamRunConfigStore = useTeamRunConfigStore()
 const contextsStore = useAgentContextsStore()
-const teamContextsStore = useAgentTeamContextsStore()
 const teamRunStore = useAgentTeamRunStore()
 const definitionStore = useAgentDefinitionStore()
 const teamDefinitionStore = useAgentTeamDefinitionStore()
 const workspaceStore = useWorkspaceStore()
-const runHistoryStore = useRunHistoryStore()
+const existingRunModelConfigStore = useExistingRunModelConfigStore()
 const workspaceCenterViewStore = useWorkspaceCenterViewStore()
 const { setActiveTab } = useRightSideTabs()
 const { t: $t } = useLocalization()
@@ -115,9 +115,6 @@ const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
 const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchPending(teamRunConfigStore.selectedDraft?.draftId ?? null))
 
 const effectiveAgentConfig = computed((): AgentRunConfig | null => {
-  if (selectionStore.isAgentSelected && selectionStore.selectedRunId) {
-    return contextsStore.activeRun?.config || null
-  }
   if (!isSelectionMode.value && runConfigStore.config?.agentDefinitionId) {
     return runConfigStore.config
   }
@@ -130,12 +127,6 @@ const effectiveTeamConfig = computed((): TeamRunConfig | null => {
   }
   return null
 })
-const storedTeamConfiguration = computed((): Readonly<StoredTeamRunConfigurationView> | null => {
-  if (!selectionStore.isTeamSelected || !selectionStore.selectedRunId) return null
-  const view = teamContextsStore.activeTeamContext?.view.getConfigurationView() ?? null
-  return view?.source === 'STORED_SNAPSHOT' ? view : null
-})
-
 const isTeamActive = computed(() => !!effectiveTeamConfig.value)
 const teamLaunchReadiness = computed(() => teamRunConfigStore.launchReadiness)
 
@@ -150,23 +141,10 @@ const activeTeamDefinition = computed(() => {
 })
 const { reloadRuntimeKind: retryTeamRuntimeCatalog } = useTeamRunRuntimeCatalogSync(effectiveTeamConfig)
 
-const isWorkspaceLockedForSelectedAgentRun = computed(() => {
-  if (!selectionStore.isAgentSelected || !selectionStore.selectedRunId) {
-    return false
-  }
-  return runHistoryStore.isWorkspaceLockedForRun(selectionStore.selectedRunId)
-})
-
-const isRuntimeLockedForSelectedAgentRun = computed(() => {
-  if (!selectionStore.isAgentSelected || !selectionStore.selectedRunId) {
-    return false
-  }
-  return runHistoryStore.isRuntimeLockedForRun(selectionStore.selectedRunId)
-})
-
 const configTitle = computed(() => {
-  if (effectiveAgentConfig.value) return isSelectionMode.value ? $t('workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration') : $t('workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration')
-  if (storedTeamConfiguration.value) return $t('workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration')
+  if (selectionStore.isAgentSelected) return $t('workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration')
+  if (selectionStore.isTeamSelected) return $t('workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration')
+  if (effectiveAgentConfig.value) return $t('workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration')
   if (effectiveTeamConfig.value) return $t('workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration')
   return $t('workspace.components.workspace.config.RunConfigPanel.title.configuration')
 })
@@ -250,9 +228,6 @@ const handleTeamWorkspaceSelectionChange = (address: AgentTeamAddress, selection
 }
 
 const teamRunFormModel = computed((): Readonly<TeamRunFormModel> | null => {
-  if (storedTeamConfiguration.value) {
-    return projectStoredTeamRunFormModel(storedTeamConfiguration.value)
-  }
   const config = effectiveTeamConfig.value
   const definition = activeTeamDefinition.value
   if (!config || !definition) return null
@@ -409,6 +384,7 @@ const handleRun = async () => {
 }
 
 const showConversationView = () => {
+  existingRunModelConfigStore.clear()
   workspaceCenterViewStore.showChat()
 }
 
@@ -437,7 +413,7 @@ const selectedRunContextIdentity = computed(() => {
     return `agent-run:${subject.runId}:${effectiveAgentConfig.value ? 'ready' : 'pending'}`
   }
   if (subject?.kind === 'team_run') {
-    return `team-run:${subject.rootTeamRunId}:${storedTeamConfiguration.value ? 'ready' : 'pending'}`
+    return `team-run:${subject.rootTeamRunId}:ready`
   }
   return null
 })

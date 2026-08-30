@@ -125,6 +125,22 @@ export class AgentTeamDefinitionService {
     return AgentTeamDefinitionService.instance;
   }
 
+  static bindProcessInstance(instance: AgentTeamDefinitionService): void {
+    if (!instance) {
+      throw new Error("A process AgentTeamDefinitionService instance is required.");
+    }
+    if (AgentTeamDefinitionService.instance) {
+      throw new Error("The process AgentTeamDefinitionService is already initialized.");
+    }
+    AgentTeamDefinitionService.instance = instance;
+  }
+
+  static releaseProcessInstance(instance: AgentTeamDefinitionService): void {
+    if (AgentTeamDefinitionService.instance === instance) {
+      AgentTeamDefinitionService.instance = null;
+    }
+  }
+
   readonly provider: AgentTeamDefinitionProvider;
   private readonly freshProvider: AgentTeamDefinitionFreshProvider;
   private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;

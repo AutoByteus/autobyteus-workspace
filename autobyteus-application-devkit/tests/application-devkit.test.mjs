@@ -4,7 +4,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  createDevBootstrapSession,
   materializeApplicationTemplate,
   packApplicationProject,
   validateApplicationPackage,
@@ -60,11 +59,11 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   assert.equal(validation.valid, true);
   const applicationManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'application.json'), 'utf8'));
   const backendManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'backend/bundle.json'), 'utf8'));
-  assert.equal(applicationManifest.manifestVersion, '4');
+  assert.equal(applicationManifest.manifestVersion, '5');
   assert.equal(applicationManifest.ui.frontendSdkContractVersion, '6');
   assert.deepEqual(Object.keys(applicationManifest.backend), ['bundleManifest']);
   assert.deepEqual(backendManifest.sdkCompatibility, {
-    backendDefinitionContractVersion: '6',
+    backendDefinitionContractVersion: '7',
     frontendSdkContractVersion: '6',
   });
   assert.deepEqual(Object.keys(backendManifest.supportedExposures).sort(), [
@@ -72,11 +71,124 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   ]);
 });
 
+test('standalone pack requires complete Team-scope defaults in addition to Agent leaves', async () => {
+  const target = path.join(await createTempDirectory('team-scope-defaults'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  await rewriteApplicationManifest(target, {
+    executionResourceSlots: [{
+      slotKey: 'team',
+      name: 'Team',
+      allowedExecutionResourceKinds: ['AGENT_TEAM'],
+      allowedExecutionResourceSources: ['bundle'],
+      required: true,
+      supportedLaunchConfig: {
+        AGENT_TEAM: {
+          runtimeKind: true,
+          llmModelIdentifier: true,
+          llmConfig: true,
+          workspaceRootPath: true,
+          memberOverrides: {
+            runtimeKind: true,
+            llmModelIdentifier: true,
+            llmConfig: true,
+          },
+        },
+      },
+      defaultExecutionResourceRef: {
+        source: 'bundle',
+        kind: 'AGENT_TEAM',
+        localId: 'sample-team',
+      },
+    }],
+  });
+
+  const teamRoot = path.join(target, 'src/agent-teams/sample-team');
+  const agentRoot = path.join(teamRoot, 'agents/lead');
+  await fs.mkdir(agentRoot, { recursive: true });
+  await fs.writeFile(
+    path.join(teamRoot, 'team.md'),
+    '---\nname: Sample Team\ndescription: Validates complete Team launch defaults.\ncategory: Testing\n---\nCoordinate the sample Agent.\n',
+    'utf8',
+  );
+  await fs.writeFile(
+    path.join(agentRoot, 'agent.md'),
+    '---\nname: Lead\ndescription: Leads the sample Team.\ncategory: Testing\nrole: Lead\n---\nLead the sample Team.\n',
+    'utf8',
+  );
+  await fs.writeFile(path.join(agentRoot, 'agent-config.json'), `${JSON.stringify({
+    toolNames: [],
+    skillNames: [],
+    defaultLaunchConfig: {
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-test',
+    },
+  }, null, 2)}\n`, 'utf8');
+  const teamConfigPath = path.join(teamRoot, 'team-config.json');
+  const teamConfig = {
+    coordinatorMemberName: 'lead',
+    members: [{
+      memberName: 'lead',
+      ref: 'lead',
+      refType: 'agent',
+      refScope: 'team_local',
+    }],
+  };
+  await fs.writeFile(teamConfigPath, `${JSON.stringify(teamConfig, null, 2)}\n`, 'utf8');
+
+  await assert.rejects(
+    () => packApplicationProject({ projectRoot: target }),
+    /slot 'team' has unknown package runtime 'null'/,
+  );
+
+  await fs.writeFile(teamConfigPath, `${JSON.stringify({
+    ...teamConfig,
+    defaultLaunchConfig: {
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-test',
+    },
+  }, null, 2)}\n`, 'utf8');
+  const result = await packApplicationProject({ projectRoot: target });
+  assert.equal(result.validation.valid, true);
+  assert.equal(
+    await fileExists(path.join(
+      result.applicationRoot,
+      'agent-teams/sample-team/team-config.json',
+    )),
+    true,
+  );
+});
+
+test('atomic development pack keeps generated package metadata canonical after staging rename', async () => {
+  const { packApplicationProjectAtomically } = await import(
+    '../dist/development/atomic-application-pack.js'
+  );
+  const target = path.join(await createTempDirectory('atomic-pack-metadata'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  const canonicalPackageRoot = path.join(target, 'dist/importable-package');
+
+  await packApplicationProjectAtomically({
+    projectRoot: target,
+    packageRoot: canonicalPackageRoot,
+  });
+
+  const readme = await fs.readFile(path.join(canonicalPackageRoot, 'README.md'), 'utf8');
+  assert.match(readme, new RegExp(`- ${escapeRegExp(canonicalPackageRoot)}(?:\\r?\\n)`));
+  assert.doesNotMatch(readme, /[/\\]\.pack-staging-[^/\\\r\n]+/);
+});
+
 test('validator rejects stale manifests, nested exposure authority, and six-flag backend bundles', async (t) => {
   const cases = [
     {
-      name: 'stale-application-v3',
-      mutate: (applicationManifest) => { applicationManifest.manifestVersion = '3'; },
+      name: 'stale-application-v4',
+      mutate: (applicationManifest) => { applicationManifest.manifestVersion = '4'; },
       expectedPath: 'manifestVersion',
     },
     {
@@ -128,8 +240,8 @@ test('validator reports actionable diagnostics for missing generated files', asy
   )), true);
 });
 
-test('validator rejects an explicit v3 backend-definition compatibility fixture', async () => {
-  const target = path.join(await createTempDirectory('backend-v3-rejection'), 'sample-app');
+test('validator rejects an explicit v6 backend-definition compatibility fixture', async () => {
+  const target = path.join(await createTempDirectory('backend-v6-rejection'), 'sample-app');
   await materializeApplicationTemplate({
     targetDirectory: target,
     applicationId: 'sample-app',
@@ -141,7 +253,7 @@ test('validator rejects an explicit v3 backend-definition compatibility fixture'
     'applications/sample-app/backend/bundle.json',
   );
   const backendManifest = JSON.parse(await fs.readFile(backendManifestPath, 'utf8'));
-  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '3';
+  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '6';
   await fs.writeFile(
     backendManifestPath,
     `${JSON.stringify(backendManifest, null, 2)}\n`,
@@ -153,7 +265,7 @@ test('validator rejects an explicit v3 backend-definition compatibility fixture'
   assert.equal(validation.diagnostics.some((diagnostic) => (
     diagnostic.code === 'UNSUPPORTED_CONTRACT_VERSION'
     && diagnostic.path === 'sdkCompatibility.backendDefinitionContractVersion'
-    && diagnostic.message.includes('must be "6"')
+    && diagnostic.message.includes('must be "7"')
   )), true);
 });
 
@@ -253,28 +365,200 @@ test('validator reports unsafe local application ids in generated packages', asy
   )), true);
 });
 
-test('dev bootstrap session uses v4 launch hints, direct WebSocket bases, and one real-backend application identity', () => {
-  const session = createDevBootstrapSession({
-    hostOrigin: 'http://127.0.0.1:43124',
-    iframeLaunchId: 'application-local:%2Fworkspace__sample-app::dev-launch',
-    localApplicationId: 'sample-app',
-    applicationId: 'application-local:%2Fworkspace__sample-app',
-    applicationName: 'Sample App',
-    backendBaseUrl: 'http://127.0.0.1:43123/rest/applications/application-local:%2Fworkspace__sample-app/backend',
-    backendNotificationsUrl: null,
-    backendWebSocketBaseUrl: 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/backend/routes',
-    agentCommunicationWebSocketBaseUrl: 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/agent-communication',
-  });
+test('controlled development browser retains and explicitly reloads the active page', async () => {
+  const { PlaywrightDevelopmentBrowserSession } = await import(
+    '../dist/development/development-browser-session.js'
+  );
+  const calls = [];
+  const page = {
+    isClosed: () => false,
+    reload: async (options) => { calls.push(['reload', options]); },
+    goto: async (url, options) => { calls.push(['goto', url, options]); },
+  };
+  let contextCloseCount = 0;
+  let browserCloseCount = 0;
+  const session = new PlaywrightDevelopmentBrowserSession(
+    { close: async () => { browserCloseCount += 1; } },
+    { close: async () => { contextCloseCount += 1; } },
+    page,
+    'http://127.0.0.1:43124',
+  );
 
-  assert.match(session.iframePath, /autobyteusContractVersion=4/);
-  assert.match(session.iframePath, /autobyteusApplicationId=application-local/);
-  assert.match(session.iframePath, /autobyteusIframeLaunchId=/);
-  assert.match(session.iframePath, /autobyteusHostOrigin=http/);
-  assert.equal(session.bootstrapEnvelope.payload.application.applicationId, 'application-local:%2Fworkspace__sample-app');
-  assert.equal(session.bootstrapEnvelope.payload.requestContext.applicationId, 'application-local:%2Fworkspace__sample-app');
-  assert.equal(session.bootstrapEnvelope.payload.iframeLaunchId, 'application-local:%2Fworkspace__sample-app::dev-launch');
-  assert.equal(session.bootstrapEnvelope.payload.transport.backendWebSocketBaseUrl, 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/backend/routes');
-  assert.equal(session.bootstrapEnvelope.payload.transport.agentCommunicationWebSocketBaseUrl, 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/agent-communication');
+  await session.reload('http://127.0.0.1:43124/');
+  await session.reload('http://127.0.0.1:43125');
+  await session.close();
+  await session.close();
+
+  assert.deepEqual(calls, [
+    ['reload', { waitUntil: 'domcontentloaded' }],
+    ['goto', 'http://127.0.0.1:43125', { waitUntil: 'domcontentloaded' }],
+  ]);
+  assert.equal(contextCloseCount, 1);
+  assert.equal(browserCloseCount, 1);
+});
+
+test('project watcher replaces resolved input subscriptions after config changes', async () => {
+  const {
+    resolveApplicationProjectWatchPaths,
+    watchApplicationProject,
+  } = await import('../dist/development/application-project-watch.js');
+  const {
+    resolveApplicationDevelopmentProjectState,
+  } = await import('../dist/development/application-development-project-state.js');
+  const target = path.join(await createTempDirectory('dynamic-watch'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  const alternateFrontend = path.join(target, 'alternate/frontend');
+  const alternateBackend = path.join(target, 'alternate/backend');
+  const alternateAgents = path.join(target, 'alternate/agents');
+  const alternateTeams = path.join(target, 'alternate/agent-teams');
+  await Promise.all([
+    fs.mkdir(alternateFrontend, { recursive: true }),
+    fs.mkdir(alternateBackend, { recursive: true }),
+    fs.mkdir(alternateAgents, { recursive: true }),
+    fs.mkdir(alternateTeams, { recursive: true }),
+  ]);
+
+  const observedPaths = [];
+  const watcher = await watchApplicationProject({
+    projectRoot: target,
+    onChange: async (changedPath) => { observedPaths.push(path.resolve(changedPath)); },
+  });
+  try {
+    await writeDevkitConfig(target, {
+      source: {
+        frontendDir: 'alternate/frontend',
+        backendDir: 'alternate/backend',
+        agentsDir: 'alternate/agents',
+        agentTeamsDir: 'alternate/agent-teams',
+      },
+      output: { packageRoot: 'alternate-output/importable-package' },
+      dev: { port: 43199 },
+    });
+    await waitForCondition(
+      () => watcher.getWatchedPaths().includes(alternateFrontend),
+      'watcher to subscribe to the reconfigured frontend path',
+    );
+
+    const changedFrontendPath = path.join(alternateFrontend, 'changed.js');
+    await fs.writeFile(changedFrontendPath, 'export {};\n', 'utf8');
+    await waitForCondition(
+      () => observedPaths.includes(changedFrontendPath),
+      'watcher to observe the reconfigured frontend input',
+    );
+    await rewriteApplicationManifest(target, { id: 'renamed-app' });
+    await waitForCondition(
+      () => observedPaths.includes(path.join(target, 'application.json')),
+      'watcher to observe the changed source manifest',
+    );
+
+    const state = await resolveApplicationDevelopmentProjectState(target);
+    const resolvedPaths = await resolveApplicationProjectWatchPaths(target);
+    assert.equal(state.manifest.id, 'renamed-app');
+    assert.equal(state.config.config.dev.port, 43199);
+    assert.equal(
+      state.outputPackageRoot,
+      path.join(target, 'alternate-output/importable-package'),
+    );
+    assert.equal(resolvedPaths.includes(alternateFrontend), true);
+    assert.equal(resolvedPaths.includes(path.join(target, 'src/frontend')), false);
+  } finally {
+    await watcher.close();
+  }
+});
+
+test('Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend', async () => {
+  const { StudioApplicationClient } = await import(
+    '../dist/development/studio-application-client.js'
+  );
+  const originalFetch = globalThis.fetch;
+  const operations = [];
+  let registered = false;
+  let refreshed = false;
+  globalThis.fetch = async (url, init) => {
+    if (!String(url).endsWith('/graphql')) {
+      const applicationId = decodeURIComponent(String(url).match(
+        /\/rest\/applications\/([^/]+)\/backend\/reload$/,
+      )?.[1] ?? '');
+      operations.push(`backend-reload:${applicationId}`);
+      return new Response(null, { status: 204 });
+    }
+    const body = JSON.parse(init.body);
+    if (body.query.includes('query DevkitApplicationPackages')) {
+      operations.push('list-packages');
+      return Response.json({
+        data: {
+          applicationPackages: registered ? [{ packageId: 'pkg-current' }] : [],
+        },
+      });
+    }
+    if (body.query.includes('mutation DevkitImportApplicationPackage')) {
+      operations.push('import-package');
+      assert.equal(registered, false);
+      registered = true;
+      return Response.json({ data: { importApplicationPackage: [{ packageId: 'pkg-current' }] } });
+    }
+    if (body.query.includes('query DevkitApplicationPackageDetails')) {
+      operations.push('package-details');
+      return Response.json({
+        data: { applicationPackageDetails: { rootPath: '/tmp/current-package' } },
+      });
+    }
+    if (body.query.includes('mutation DevkitReloadApplicationPackage')) {
+      operations.push('reload-package');
+      assert.equal(registered, true);
+      refreshed = true;
+      return Response.json({
+        data: { reloadApplicationPackage: [{ packageId: 'pkg-current' }] },
+      });
+    }
+    if (body.query.includes('query DevkitApplications')) {
+      operations.push('list-applications');
+      return Response.json({
+        data: {
+          listApplications: [{
+            id: refreshed ? 'canonical-current' : 'canonical-initial',
+            localApplicationId: refreshed ? 'renamed-app' : 'initial-app',
+            packageId: 'pkg-current',
+          }],
+        },
+      });
+    }
+    throw new Error(`Unexpected query: ${body.query}`);
+  };
+  try {
+    const client = new StudioApplicationClient('http://127.0.0.1:8000');
+    const initial = await client.ensureLocalPackage('/tmp/current-package', 'initial-app');
+    await client.reloadApplication(initial.applicationId);
+    const current = await client.ensureLocalPackage('/tmp/current-package', 'renamed-app');
+    await client.reloadApplication(current.applicationId);
+    assert.deepEqual(initial, {
+      packageId: 'pkg-current',
+      applicationId: 'canonical-initial',
+    });
+    assert.deepEqual(current, {
+      packageId: 'pkg-current',
+      applicationId: 'canonical-current',
+    });
+    assert.deepEqual(operations, [
+      'list-packages',
+      'import-package',
+      'list-packages',
+      'package-details',
+      'list-applications',
+      'backend-reload:canonical-initial',
+      'list-packages',
+      'package-details',
+      'reload-package',
+      'list-applications',
+      'backend-reload:canonical-current',
+    ]);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 const rewriteApplicationManifest = async (projectRoot, overrides) => {
@@ -299,3 +583,16 @@ const fileExists = async (targetPath) => {
     return false;
   }
 };
+
+const waitForCondition = async (condition, label, timeoutMs = 5000) => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (condition()) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  assert.fail(`Timed out waiting for ${label}.`);
+};
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

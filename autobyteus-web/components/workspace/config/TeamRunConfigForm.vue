@@ -13,9 +13,12 @@
       :scope="model.root"
       :is-root="true"
       :disabled="isFormReadOnly"
+      :model-config-field-errors="modelConfigFieldErrorsByAddress[model.root.address]"
       @update-root="handleRootUpdate"
       @update:workspace-selection="forwardWorkspaceSelection"
       @retry-runtime-catalog="retryRuntimeCatalog"
+      @update-existing-model-config="forwardExistingModelConfig"
+      @schema-state="forwardSchemaState"
     />
 
     <div v-if="model.members.length" class="mt-4">
@@ -59,17 +62,21 @@
         <TeamMemberConfigTree
           :member-nodes="model.members"
           :disabled="isFormReadOnly"
+          :model-config-field-errors-by-address="modelConfigFieldErrorsByAddress"
           @update-team="handleTeamUpdate"
           @reset-team="handleTeamReset"
           @update-agent="handleAgentUpdate"
           @update:workspace-selection="forwardWorkspaceSelection"
           @retry-runtime-catalog="retryRuntimeCatalog"
+          @update-existing-model-config="forwardExistingModelConfig"
+          @schema-state="forwardSchemaState"
         />
       </div>
     </div>
 
-    <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600" data-test="team-run-read-only-notice">
-      <span aria-hidden="true" class="mr-1">◉</span><span>{{ t('workspace.components.workspace.config.TeamRunConfigForm.selected_team_run_configuration_read_only') }}</span>
+    <div v-if="model.mode === 'existing'" class="flex items-center rounded p-2 text-xs" :class="model.modelConfigEditable ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'" data-test="team-run-existing-notice">
+      <span aria-hidden="true" class="mr-1">{{ model.modelConfigEditable ? '●' : '🔒' }}</span>
+      <span>{{ existingRunStatusMessage }}</span>
     </div>
     <div v-else-if="model.mode === 'editable' && model.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-700">
       <span aria-hidden="true" class="mr-1">🔒</span><span>{{ t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
@@ -88,18 +95,30 @@ import TeamScopeConfigEditor from './TeamScopeConfigEditor.vue'
 import TeamMemberConfigTree from './TeamMemberConfigTree.vue'
 import { useLocalization } from '~/composables/useLocalization'
 
-const props = defineProps<{ model: Readonly<TeamRunFormModel> }>()
+const props = defineProps<{
+  model: Readonly<TeamRunFormModel>
+  modelConfigFieldErrorsByAddress?: Readonly<Record<string, Readonly<Record<string, string>>>>
+}>()
 const emit = defineEmits<{
   (e: 'update:workspaceSelection', address: AgentTeamAddress, selection: WorkspaceSelectionState): void
   (e: 'edit-config', edit: TeamLaunchConfigEdit): void
   (e: 'retry-runtime-catalog', runtimeKind: string): void
+  (e: 'update-existing-model-config', address: string, config: Record<string, unknown> | null): void
+  (e: 'schema-state', address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }): void
 }>()
 const { t } = useLocalization()
 const membersExpanded = ref(false)
 const memberOverridesPanelId = 'team-member-overrides-panel'
 const model = computed(() => props.model)
-const readOnlyMode = computed(() => model.value.mode === 'stored')
-const isFormReadOnly = computed(() => readOnlyMode.value || (model.value.mode === 'editable' && model.value.isLocked))
+const modelConfigFieldErrorsByAddress = computed(() => props.modelConfigFieldErrorsByAddress ?? {})
+const isFormReadOnly = computed(() => model.value.mode === 'existing'
+  ? model.value.saving || !model.value.modelConfigEditable
+  : model.value.isLocked)
+const existingRunStatusMessage = computed(() => model.value.mode === 'existing' && model.value.modelConfigReason === 'REFRESH_REQUIRED'
+  ? t('workspace.runModelConfig.refreshRequired')
+  : model.value.mode === 'existing' && model.value.modelConfigEditable
+    ? t('workspace.runModelConfig.teamStopped')
+    : t('workspace.runModelConfig.teamActive'))
 const countAgents = (nodes: readonly TeamRunFormMemberNode[]): number => nodes.reduce(
   (count, node) => count + (node.kind === 'agent' ? 1 : countAgents(node.children)),
   0,
@@ -127,5 +146,11 @@ const forwardWorkspaceSelection = (address: AgentTeamAddress, selection: Workspa
 }
 const retryRuntimeCatalog = (runtimeKind: string) => {
   if (model.value.mode === 'editable' && !isFormReadOnly.value) emit('retry-runtime-catalog', runtimeKind)
+}
+const forwardExistingModelConfig = (address: string, config: Record<string, unknown> | null) => {
+  if (model.value.mode === 'existing' && !isFormReadOnly.value) emit('update-existing-model-config', address, config)
+}
+const forwardSchemaState = (address: string, state: { status: 'loading' | 'ready' | 'invalid' | 'unavailable'; message: string | null }) => {
+  if (model.value.mode === 'existing') emit('schema-state', address, state)
 }
 </script>

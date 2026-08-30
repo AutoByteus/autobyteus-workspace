@@ -25,6 +25,7 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
+import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const createAgentMd = (name: string, description: string, instructions: string): string =>
   ["---", `name: ${name}`, `description: ${description}`, "---", "", instructions].join("\n");
@@ -267,7 +268,11 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
     })),
     releaseClient: vi.fn(async () => undefined),
   } as unknown as CodexAppServerClientManager;
+  const agentToolMcpRunSessions = {
+    activateForRun: vi.fn(() => ({ kind: "not_exposed" as const })),
+  } satisfies AgentToolMcpRunSessionActivator;
   return new CodexThreadBootstrapper(
+    agentToolMcpRunSessions,
     new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE),
     workspaceResolver,
     AgentDefinitionService.getInstance(),
@@ -336,7 +341,9 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
       listActiveAgentIds: vi.fn(() => Array.from(activeAgents.keys())),
     } as any,
     waitForIdle: vi.fn(async () => undefined),
-    compactionAgentRunnerFactory: vi.fn(async () => null),
+    compactionAgentRunnerFactory: vi.fn(async () => ({
+      runCompactionTask: vi.fn(async () => ({ outputText: "unused in config probe" })),
+    })),
   });
 
   return { factory, capturedConfigs };

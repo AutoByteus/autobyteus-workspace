@@ -1,0 +1,14 @@
+# Changed-both inventory from merge base 7edfb162559ec5a6eb4c00c23a929920eabe3dc1
+# Protected HEAD: a23849f165879050e2c9b676a2e9652d8a593c93
+# Latest Personal: c5b87df4d6db15969ba70adee9dfd8394b1e7385
+# Changed-both count: 10
+autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-agent-tools-mcp-cleanup.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-memory-invariant.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-termination.test.ts
+autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+autobyteus-web/composables/useRuntimeScopedModelSelection.ts

@@ -1,0 +1,63 @@
+ROOT SELECT {
+  id: 'team-scope-root-runtime-kind',
+  value: 'autobyteus',
+  options: [
+    { text: 'AutoByteus', value: 'autobyteus', disabled: false },
+    {
+      text: 'Codex App Server',
+      value: 'codex_app_server',
+      disabled: false
+    },
+    {
+      text: 'Claude Agent SDK',
+      value: 'claude_agent_sdk',
+      disabled: false
+    }
+  ]
+}
+ROOT BODY Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+ROOT BUTTONS [
+  'Select a model',
+  '📁 Temp Workspace (Default)Default temporary workspace'
+]
+MODEL BTN 1
+SEARCHES 1
+OPTIONS [
+  'Agents',
+  'Agent Teams',
+  'Applications',
+  'Skills',
+  'Memory',
+  'Nodes',
+  'GPT-5.3-Codex-Spark (default reasoning: high)',
+  'GPT-5.4 (default reasoning: medium)',
+  'GPT-5.4-Mini (default reasoning: medium)',
+  'GPT-5.5 (default reasoning: medium)',
+  'GPT-5.6-Luna (default reasoning: medium)',
+  'GPT-5.6-Sol (default reasoning: low)',
+  'GPT-5.6-Terra (default reasoning: medium)'
+]

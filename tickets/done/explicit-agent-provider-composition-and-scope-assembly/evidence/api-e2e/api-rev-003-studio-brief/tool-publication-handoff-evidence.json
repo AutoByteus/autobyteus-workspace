@@ -1,0 +1,76 @@
+{
+  "scenario": "APIE2E-PUBLICATION-003-TOOL-CORRELATION",
+  "result": "PASS",
+  "rootTeamRunId": "brief_studio_team_7c47765d11b1436eba6b41e31219e462",
+  "applicationBinding": {
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466578706c696369742d6167656e742d70726f76696465722d636f6d706f736974696f6e2d616e642d73636f70652d617373656d626c792532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "bindingId": "507c5640-9ede-4ccb-9e78-ff979edd07f0"
+  },
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "successfulToolResults": [
+    {
+      "agentRunId": "brief_studio_writer_1f6ded50dd274ee3b440ab74f007a8cb",
+      "tool": "publish_artifacts",
+      "success": true,
+      "artifacts": [
+        {
+          "file": "final-brief.md",
+          "status": "available",
+          "revisionId": "5f628574-3ccb-49b4-a65b-e63395707350"
+        }
+      ]
+    },
+    {
+      "agentRunId": "brief_studio_researcher_4423b449ea9f419683329c6f4903c179",
+      "tool": "publish_artifacts",
+      "success": true,
+      "artifacts": [
+        {
+          "file": "research.md",
+          "status": "available",
+          "revisionId": "9387b7a1-6d4e-40c1-a7db-89cdfd68a071"
+        }
+      ]
+    },
+    {
+      "agentRunId": "brief_studio_researcher_4423b449ea9f419683329c6f4903c179",
+      "tool": "send_message_to",
+      "success": true,
+      "code": "DELIVERED",
+      "accepted": true
+    }
+  ],
+  "namedHandoff": [
+    {
+      "senderAgentRunId": "brief_studio_researcher_4423b449ea9f419683329c6f4903c179",
+      "receiverAgentRunId": "brief_studio_writer_1f6ded50dd274ee3b440ab74f007a8cb",
+      "messageType": "research_handoff",
+      "referenceFileNames": [
+        "research.md"
+      ]
+    }
+  ],
+  "projectedArtifacts": [
+    {
+      "agentRunId": "brief_studio_writer_1f6ded50dd274ee3b440ab74f007a8cb",
+      "file": "final-brief.md",
+      "status": "available",
+      "revisionId": "5f628574-3ccb-49b4-a65b-e63395707350"
+    },
+    {
+      "agentRunId": "brief_studio_researcher_4423b449ea9f419683329c6f4903c179",
+      "file": "research.md",
+      "status": "available",
+      "revisionId": "9387b7a1-6d4e-40c1-a7db-89cdfd68a071"
+    }
+  ],
+  "assertions": {
+    "publishArtifactsResearch": true,
+    "publishArtifactsFinal": true,
+    "sendMessageToSucceeded": true,
+    "namedResearcherToWriter": true,
+    "twoAvailableProjections": true,
+    "exactPackageDefaults": true
+  }
+}

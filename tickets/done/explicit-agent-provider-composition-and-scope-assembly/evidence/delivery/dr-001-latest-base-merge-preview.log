@@ -1,0 +1,40 @@
+12096ac669e6c2522e417f8cd74693a3d0e9252f
+100644 30828891394dcff098cb8cb3ba703313fa16c8b5 1	autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+100644 65885802bdcf38fb7d32b72b8f51233b09be6517 2	autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+100644 b4d42bef04a7b2132fb1052437b23101f3da3dce 3	autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+100644 ea107b1c363334151cd08cc5eac421827af82e62 1	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+100644 7b4824d17ceb0d62992432c22bb8c07c5f85e8f4 2	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+100644 618020fca35f56e04db726ccf97fa03b9be9155b 3	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+100644 34ffaa3a48c754e4f49f5267520b5179b62c7dcb 1	autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+100644 064ab74c1fae6573d432e92b1624d3531f25f040 2	autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+100644 ad0db7c2e0920bee3e04a68ad4e04ad9e9cc274d 3	autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+100644 22150808fabab530bd84bc6582f8d344b12c51c9 1	autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+100644 d1cb45e3f925b3e582bb6c4541ecd55abfca972b 3	autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts
+100644 39b13e7fef578ff8a6f420eb6d988b2998624e0a 1	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+100644 497d5b13e3d39784e39b7e01c63990723984ef05 2	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+100644 a2741a81d05e50d5199563c7e3b98e6cc7bf9123 3	autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+100644 991c0745f91d4f2c6db3b8eab6448a5c82885e6a 1	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+100644 9e15914a09038cc8c8d76116c1a5d6727b02c6f4 2	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+100644 dfc294980a595cdf4f8f9c8ef4f47e44fe57a6ed 3	autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+100644 628922991e1b7bf4630fd555647546ec4314f5e1 1	autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts
+100644 f30bab8e1472282b0f1df435d4226a6a5f6ff95a 3	autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts
+
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+Auto-merging autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts
+Auto-merging autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts left in tree.
+Auto-merging autobyteus-server-ts/src/compositions/build-studio-server.ts
+Auto-merging autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-host-service.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts left in tree.
