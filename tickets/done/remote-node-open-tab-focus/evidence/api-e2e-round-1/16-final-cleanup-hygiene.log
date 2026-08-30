@@ -1,0 +1,66 @@
+--- git diff check ---
+--- status ---
+## codex/remote-node-open-tab-focus...origin/personal [ahead 1]
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-coverage-investigation.md
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-revision-record.md
+?? tickets/in-progress/remote-node-open-tab-focus/code-review-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/code-review-revision-record.md
+?? tickets/in-progress/remote-node-open-tab-focus/evidence/
+--- tracked diff vs implementation HEAD ---
+--- temporary route ---
+removed
+--- owned Docker residue ---
+--- owned current-worktree Electron/Nuxt residue ---
+--- known generated output cleanup ---
+absent autobyteus-web/electron-dist
+absent autobyteus-web/resources/server
+absent autobyteus-web/dist-mobile
+absent autobyteus-application-sdk-contracts/dist
+absent autobyteus-application-backend-sdk/dist
+--- ticket artifacts ---
+tickets/in-progress/remote-node-open-tab-focus/api-e2e-coverage-investigation.md
+tickets/in-progress/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md
+tickets/in-progress/remote-node-open-tab-focus/api-e2e-revision-record.md
+tickets/in-progress/remote-node-open-tab-focus/architecture-review-revision-record.md
+tickets/in-progress/remote-node-open-tab-focus/code-review-report.md
+tickets/in-progress/remote-node-open-tab-focus/code-review-revision-record.md
+tickets/in-progress/remote-node-open-tab-focus/design-review-report.md
+tickets/in-progress/remote-node-open-tab-focus/design-spec.md
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/01-handler-focused.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/02-related-nuxt.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/03-related-electron.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/04-full-nuxt.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/05-workspace-contract-builds.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/06-full-nuxt-retry.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/07-full-electron.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/08-web-boundary.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/09-production-build.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/10-typecheck.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/11-hygiene.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe-nuxt.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe.json
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe.png
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/13-electron-mac-build.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-desktop-docker-probe.json
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-desktop-docker-probe.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-embedded-window.png
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-owned-docker.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-owned-electron.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-remote-window.png
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-setup-adjustments.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14a-electron-direct-launch.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14b-electron-adhoc-sign.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14c-electron-direct-launch-retry.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14d-electron-direct-launch-clean-env.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/15-package-inspection.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/16-final-cleanup-hygiene.log
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/desktop-docker-boundary-probe.mjs
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/open-tab-projection-probe.mjs
+tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/open-tab-projection-probe.page.vue
+tickets/in-progress/remote-node-open-tab-focus/implementation-handoff.md
+tickets/in-progress/remote-node-open-tab-focus/implementation-revision-record.md
+tickets/in-progress/remote-node-open-tab-focus/investigation-notes.md
+tickets/in-progress/remote-node-open-tab-focus/requirements.md
+tickets/in-progress/remote-node-open-tab-focus/solution-revision-record.md

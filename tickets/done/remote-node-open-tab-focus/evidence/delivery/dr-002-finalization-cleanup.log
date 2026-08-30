@@ -1,0 +1,31 @@
+# DR-002 repository finalization and cleanup
+recorded_at=2026-08-30T06:11:16Z
+user_acceptance=the task is done. lets finalize no need to release a new version
+ticket_commit=e15a168e9b37b56fac3b30e46a381ee5f1c52d9d
+ticket_branch_push=completed
+finalization_target=origin/personal
+target_base_before_merge=d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea
+target_update=fast-forward completed
+target_merge=a1a69d8aa6cb9d233e2fbd4cf1ebe5c1b0da8154
+target_push=completed
+release_version_tag_deployment=not required by explicit user instruction
+target_contains_ticket_commit=yes
+worktree_remove_command=git worktree remove /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus
+worktree_remove=completed
+worktree_prune=completed
+Deleted branch codex/remote-node-open-tab-focus (was e15a168e9).
+local_ticket_branch_cleanup=completed
+remote: 
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/remote-node-open-tab-focus
+remote_ticket_branch_cleanup=completed
+worktree_path_absent=yes
+local_ticket_branch_absent=yes
+remote_ticket_branch_tracking_ref_absent=yes
+personal_head=a1a69d8aa6cb9d233e2fbd4cf1ebe5c1b0da8154
+origin_personal=a1a69d8aa6cb9d233e2fbd4cf1ebe5c1b0da8154
+personal_matches_origin_personal=yes
+preexisting_untracked_primary_paths_preserved=.article-work/; applications/brief-studio/dist/; applications/socratic-math-teacher/dist/

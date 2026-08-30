@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.62 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --hold-ms 1000
+
+[electron-e2e] Electron E2E process exited before readiness
+ ELIFECYCLE  Command failed with exit code 1.

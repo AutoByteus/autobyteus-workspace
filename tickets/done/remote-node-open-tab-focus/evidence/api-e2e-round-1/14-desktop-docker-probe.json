@@ -1,0 +1,275 @@
+{
+  "generatedAt": "2026-08-30T05:03:17.553Z",
+  "executionMode": "Owned published Docker node plus project E2E-profile packaged Electron launched with Playwright",
+  "result": "Pass",
+  "docker": {
+    "containerName": "autobyteus-api-e2e-open-tab-63219-1788066197553",
+    "image": "autobyteus/autobyteus-server:latest",
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-remote-37Ym9U",
+    "ports": {
+      "backendPort": 64706,
+      "vncPort": 64707,
+      "noVncPort": 64708,
+      "debugPort": 64709
+    },
+    "baseUrl": "http://127.0.0.1:64706",
+    "containerId": "c43811789212d71fa2a53919af79205fe8b5f8fd09578dff15b7b36385e60187",
+    "health": {
+      "status": "ok",
+      "message": "Server is running"
+    },
+    "chromeDebugVersion": {
+      "Browser": "Chrome/149.0.7827.196",
+      "Protocol-Version": "1.3",
+      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "V8-Version": "14.9.207.35",
+      "WebKit-Version": "537.36 (@43eb30368c6ca3d14d540487954abb2780aeae3a)",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:64709/devtools/browser/5a7caf3d-590b-4df7-aa1e-addf9fbc312e"
+    },
+    "browserToolAttempt": {
+      "status": "Not Tested — clean published node has no configured BrowserServer MCP",
+      "explanation": "Docker/remote browser tools are supplied by a user-configured BrowserServer MCP, not the Electron embedded adapter. The disposable clean node intentionally contains no user MCP checkout/configuration.",
+      "observedError": "open_tab failed for agent run api-e2e-open-tab-probe: Browser tools are unavailable because the local Electron browser bridge is not configured.\nfile:///app/autobyteus-server-ts/dist/agent-tools/browser/open-tab.js:30\n        throw new Error(toBrowserJsonString(payload));\n              ^\n\nError: {\n  \"error\": {\n    \"code\": \"browser_unsupported_in_current_environment\",\n    \"message\": \"Browser tools are unavailable because the local Electron browser bridge is not configured.\"\n  }\n}\n    at openTab (file:///app/autobyteus-server-ts/dist/agent-tools/browser/open-tab.js:30:15)\n    at async file:///app/[eval1]:3:27\n\nNode.js v22.23.1\n\nCommand failed: docker exec autobyteus-api-e2e-open-tab-63219-1788066197553 node --input-type=module -e const { openTab } = await import('/app/autobyteus-server-ts/dist/agent-tools/browser/open-tab.js');\nconst { readPage } = await import('/app/autobyteus-server-ts/dist/agent-tools/browser/read-page.js');\nconst opened = JSON.parse(await openTab({agentId:'api-e2e-open-tab-probe'}, process.argv[1], 'API/E2E remote target', false, 'load'));\nconst page = JSON.parse(await readPage({agentId:'api-e2e-open-tab-probe'}, opened.tab_id, 'thorough'));\nconsole.log('API_E2E_BROWSER_RESULT=' + JSON.stringify({opened, page})); http://host.docker.internal:64710/remote-target\nopen_tab failed for agent run api-e2e-open-tab-probe: Browser tools are unavailable because the local Electron browser bridge is not configured.\nfile:///app/autobyteus-server-ts/dist/agent-tools/browser/open-tab.js:30\n        throw new Error(toBrowserJsonString(payload));\n              ^\n\nError: {\n  \"error\": {\n    \"code\": \"browser_unsupported_in_current_environment\",\n    \"message\": \"Browser tools are unavailable because the local Electron browser bridge is not configured.\"\n  }\n}\n    at openTab (file:///app/autobyteus-server-ts/dist/agent-tools/browser/open-tab.js:30:15)\n    at async file:///app/[eval1]:3:27\n\nNode.js v22.23.1\n"
+    },
+    "cdpOpenedTarget": {
+      "description": "",
+      "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@43eb30368c6ca3d14d540487954abb2780aeae3a/inspector.html?ws=127.0.0.1:64709/devtools/page/7A5858015134D871564D18E508EA5AFA",
+      "id": "7A5858015134D871564D18E508EA5AFA",
+      "title": "REMOTE_OPEN_TAB_TARGET_63219-1788066197553",
+      "type": "page",
+      "url": "http://host.docker.internal:64710/remote-target",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:64709/devtools/page/7A5858015134D871564D18E508EA5AFA"
+    },
+    "openTabResult": {
+      "tab_id": "7A5858015134D871564D18E508EA5AFA",
+      "status": "opened",
+      "url": "http://host.docker.internal:64710/remote-target",
+      "title": "REMOTE_OPEN_TAB_TARGET_63219-1788066197553"
+    },
+    "closeTarget": {
+      "status": 200,
+      "body": "Target is closing"
+    }
+  },
+  "electron": {
+    "environmentCorrection": "Removed host-only ELECTRON_RUN_AS_NODE for the documented desktop launch semantics.",
+    "prepared": {
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "port": 64770,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-hMwDji",
+      "ownsDataRoot": true,
+      "clientBaseUrl": "http://127.0.0.1:64770",
+      "healthUrl": "http://127.0.0.1:64770/rest/health"
+    },
+    "rootPid": 63561,
+    "logFilePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-hMwDji/logs/app.log"
+  },
+  "targetServer": {
+    "requests": [
+      {
+        "method": "GET",
+        "url": "/remote-target",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "at": "2026-08-30T05:03:26.028Z"
+      },
+      {
+        "method": "GET",
+        "url": "/favicon.ico",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "at": "2026-08-30T05:03:26.055Z"
+      },
+      {
+        "method": "GET",
+        "url": "/embedded-target",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.62 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36",
+        "at": "2026-08-30T05:03:29.573Z"
+      }
+    ],
+    "port": 64710
+  },
+  "scenarios": {
+    "API-E2E-008": {
+      "result": "Pass",
+      "expected": "The owned remote Docker node has a healthy backend plus independent Chromium runtime that opens and owns the destination URL; no host Electron browser is involved.",
+      "actual": {
+        "remoteBrowserOutcome": {
+          "tab_id": "7A5858015134D871564D18E508EA5AFA",
+          "status": "opened",
+          "url": "http://host.docker.internal:64710/remote-target",
+          "title": "REMOTE_OPEN_TAB_TARGET_63219-1788066197553"
+        },
+        "destinationRequestObserved": true,
+        "chromeProduct": "Chrome/149.0.7827.196",
+        "browserToolAttempt": "Not Tested — clean published node has no configured BrowserServer MCP"
+      }
+    },
+    "API-E2E-006-DESKTOP": {
+      "result": "Pass",
+      "expected": "The isolated current-worktree package starts with an embedded node-bound window, real Browser preload API, and a focusable local session.",
+      "actual": {
+        "embeddedContext": {
+          "windowId": 1,
+          "nodeId": "embedded-local"
+        },
+        "initialBrowserSnapshot": {
+          "activeTabId": null,
+          "sessions": []
+        },
+        "openedBrowserSnapshot": {
+          "activeTabId": "29b804",
+          "sessions": [
+            {
+              "tab_id": "29b804",
+              "title": "API/E2E embedded target",
+              "url": "http://127.0.0.1:64710/embedded-target",
+              "deviceEmulation": {
+                "mode": "desktop",
+                "profile": null
+              }
+            }
+          ]
+        },
+        "focusedBrowserSnapshot": {
+          "activeTabId": "29b804",
+          "sessions": [
+            {
+              "tab_id": "29b804",
+              "title": "API/E2E embedded target",
+              "url": "http://127.0.0.1:64710/embedded-target",
+              "deviceEmulation": {
+                "mode": "desktop",
+                "profile": null
+              }
+            }
+          ]
+        },
+        "destinationRequestObserved": true
+      }
+    },
+    "API-E2E-005-DESKTOP-REMOTE": {
+      "result": "Pass",
+      "expected": "The actual Node Registry opens the owned Docker backend in an immutable remote node-bound Electron window with Browser preload available; a real Docker tab id is not a local Electron session and cannot mutate either shell snapshot.",
+      "actual": {
+        "registryNode": {
+          "id": "api-e2e-owned-docker-node",
+          "name": "API/E2E Owned Docker Node",
+          "baseUrl": "http://127.0.0.1:64706",
+          "nodeType": "remote",
+          "capabilities": {
+            "terminal": true,
+            "fileExplorerStreaming": true
+          },
+          "capabilityProbeState": "ready",
+          "isSystem": false,
+          "createdAt": "2026-08-30T05:03:30.492Z",
+          "updatedAt": "2026-08-30T05:03:30.494Z"
+        },
+        "openNodeWindowResult": {
+          "windowId": 3,
+          "created": true
+        },
+        "remoteContext": {
+          "windowId": 3,
+          "nodeId": "api-e2e-owned-docker-node"
+        },
+        "remoteBrowserApiAvailable": true,
+        "remoteBrowserSnapshotBefore": {
+          "activeTabId": null,
+          "sessions": []
+        },
+        "invalidRemoteFocus": {
+          "accepted": false,
+          "error": "Error invoking remote method 'browser-shell:focus-session': BrowserTabError: Browser session '7A5858015134D871564D18E508EA5AFA' was not found."
+        },
+        "remoteBrowserSnapshotAfter": {
+          "activeTabId": null,
+          "sessions": []
+        },
+        "embeddedSnapshotAfterInvalidRemoteFocus": {
+          "activeTabId": "29b804",
+          "sessions": [
+            {
+              "tab_id": "29b804",
+              "title": "API/E2E embedded target",
+              "url": "http://127.0.0.1:64710/embedded-target",
+              "deviceEmulation": {
+                "mode": "desktop",
+                "profile": null
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "electron": {
+      "processTreeCompletion": {
+        "status": "complete",
+        "identity": "posix-process-group:63561",
+        "forced": false,
+        "gracefulError": null
+      },
+      "portObservation": {
+        "status": "available",
+        "port": 64770,
+        "detail": null
+      }
+    },
+    "electronDataRootExistsAfterCleanup": false,
+    "dockerContainer": "removed",
+    "targetServer": "closed",
+    "dockerTempRoot": "removed",
+    "productionAppProcessListUnchanged": true,
+    "preExistingContainerIdentitiesUnchanged": true
+  },
+  "safetyBefore": {
+    "productionAutoByteusProcesses": [
+      "26492 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=gpu-process --user-data-dir=/Users/normy/Library/Application Support/autobyteus --gpu-preferences=SAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708998493415531 --seatbelt-client=42",
+      "42420 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus --input-type=module --eval \\012import { createRequire } from 'node:module';\\012\\012const requireFrom = process.env.AUTOBYTEUS_PTY_BRIDGE_REQUIRE_FROM || import.meta.url;\\012const require = createRequire(requireFrom);\\012const { spawn } = require('node-pty');\\012\\012let ptyProcess = null;\\012let closing = false;\\012let closeTimer = null;\\012const disposables = [];\\012\\012const send = (payload) => {\\012  if (typeof process.send === 'function' && process.connected !== false) {\\012    try { process.send(payload); } catch {}\\012  }\\012};\\012\\012const remember = (disposable) => {\\012  if (disposable && typeof disposable.dispose === 'function') {\\012    disposables.push(disposable);\\012  }\\012};\\012\\012const disposeListeners = () => {\\012  while (disposables.length > 0) {\\012    try { disposables.pop()?.dispose?.(); } catch {}\\012  }\\012};\\012\\012const closePty = (exitCode = 0) => {\\012  if (closing) return;\\012  closing = true;\\012  disposeListeners();\\012\\012  const pty = ptyProcess;\\012  ptyProcess = null;\\012  if (pty) {\\012    try { pty.kill('SIGHUP'); } catch {}\\012    try { pty.destroy?.(); } catch {}\\012  }\\012\\012  if (closeTimer) clearTimeout(closeTimer);\\012  closeTimer = setTimeout(() => process.exit(exitCode), 25);\\012  closeTimer.unref?.();\\012};\\012\\012try {\\012  const cwd = process.cwd();\\012  const env = {\\012    ...process.env,\\012    TERM: process.env.TERM || 'xterm-256color',\\012    PS1: process.env.PS1 || '\\\\w $ '\\012  };\\012\\012  ptyProcess = spawn('bash', ['--norc', '--noprofile', '-i'], {\\012    name: 'xterm-256color',\\012    cwd,\\012    env,\\012    cols: Number(process.env.AUTOBYTEUS_PTY_BRIDGE_COLS || 80),\\012    rows: Number(process.env.AUTOBYTEUS_PTY_BRIDGE_ROWS || 24)\\012  });\\012\\012  remember(ptyProcess.onData((data) => {\\012    if (closing) return;\\012    process.stdout.write(data);\\012  }));\\012\\012  remember(ptyProcess.onExit((event = {}) => {\\012    send({ type: 'exit', exitCode: event.exitCode, signal: event.signal });\\012    closePty(0);\\012  }));\\012\\012  process.stdin.on('data', (chunk) => {\\012    if (closing || !ptyProcess) return;\\012    try { ptyProcess.write(Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk)); } catch {}\\012  });\\012  process.stdin.on('end', () => closePty(0));\\012  process.stdin.on('error', () => closePty(0));\\012\\012  process.on('message', (message) => {\\012    if (!message || typeof message !== 'object') return;\\012    if (message.type === 'resize' && ptyProcess) {\\012      const rows = Number(message.rows || 24);\\012      const cols = Number(message.cols || 80);\\012      try { ptyProcess.resize(cols, rows); } catch {}\\012      return;\\012    }\\012    if (message.type === 'close') {\\012      closePty(0);\\012    }\\012  });\\012\\012  process.once('SIGTERM', () => closePty(0));\\012  process.once('SIGINT', () => closePty(0));\\012  process.once('SIGHUP', () => closePty(0));\\012\\012  process.stdin.resume();\\012  send({ type: 'ready' });\\012} catch (error) {\\012  send({ type: 'error', message: error instanceof Error ? error.message : String(error) });\\012  console.error(error);\\012  process.exit(1);\\012}\\012",
+      "52526 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "52531 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=31",
+      "52532 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1785127786461695 --launch-time-ticks=2846147651815 --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=57",
+      "53135 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data",
+      "53682 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1785127786461695 --launch-time-ticks=2846726875176 --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=63",
+      "53685 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=audio.mojom.AudioService --lang=de --service-sandbox-type=audio --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708991934122588 --seatbelt-client=63",
+      "53686 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=de --service-sandbox-type=none --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708992871164437",
+      "53737 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=9 --time-ticks-at-unix-epoch=-1785127786461695 --launch-time-ticks=2846834397535 --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708994745248135 --seatbelt-client=63"
+    ],
+    "existingAutoByteusContainers": [
+      "autobyteus-server-6|c77226e09a21|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-5|69dfb7879636|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-4|94fa421886bc|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-2|644e0441ee02|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-1|a89a20380221|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-0|949e7ba9a82d|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-3|b5f5b097c703|Up 3 days|autobyteus/autobyteus-server:latest-zh",
+      "llm-server-0|540d4b5d7b73|Up 3 days|autobyteus/llm-server:latest-arm64"
+    ]
+  },
+  "safetyAfter": {
+    "productionAutoByteusProcesses": [
+      "26492 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=gpu-process --user-data-dir=/Users/normy/Library/Application Support/autobyteus --gpu-preferences=SAAAAAAAAAAgAQAEAAAAAAAAAAAAAGAAAwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708998493415531 --seatbelt-client=42",
+      "42420 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus --input-type=module --eval \\012import { createRequire } from 'node:module';\\012\\012const requireFrom = process.env.AUTOBYTEUS_PTY_BRIDGE_REQUIRE_FROM || import.meta.url;\\012const require = createRequire(requireFrom);\\012const { spawn } = require('node-pty');\\012\\012let ptyProcess = null;\\012let closing = false;\\012let closeTimer = null;\\012const disposables = [];\\012\\012const send = (payload) => {\\012  if (typeof process.send === 'function' && process.connected !== false) {\\012    try { process.send(payload); } catch {}\\012  }\\012};\\012\\012const remember = (disposable) => {\\012  if (disposable && typeof disposable.dispose === 'function') {\\012    disposables.push(disposable);\\012  }\\012};\\012\\012const disposeListeners = () => {\\012  while (disposables.length > 0) {\\012    try { disposables.pop()?.dispose?.(); } catch {}\\012  }\\012};\\012\\012const closePty = (exitCode = 0) => {\\012  if (closing) return;\\012  closing = true;\\012  disposeListeners();\\012\\012  const pty = ptyProcess;\\012  ptyProcess = null;\\012  if (pty) {\\012    try { pty.kill('SIGHUP'); } catch {}\\012    try { pty.destroy?.(); } catch {}\\012  }\\012\\012  if (closeTimer) clearTimeout(closeTimer);\\012  closeTimer = setTimeout(() => process.exit(exitCode), 25);\\012  closeTimer.unref?.();\\012};\\012\\012try {\\012  const cwd = process.cwd();\\012  const env = {\\012    ...process.env,\\012    TERM: process.env.TERM || 'xterm-256color',\\012    PS1: process.env.PS1 || '\\\\w $ '\\012  };\\012\\012  ptyProcess = spawn('bash', ['--norc', '--noprofile', '-i'], {\\012    name: 'xterm-256color',\\012    cwd,\\012    env,\\012    cols: Number(process.env.AUTOBYTEUS_PTY_BRIDGE_COLS || 80),\\012    rows: Number(process.env.AUTOBYTEUS_PTY_BRIDGE_ROWS || 24)\\012  });\\012\\012  remember(ptyProcess.onData((data) => {\\012    if (closing) return;\\012    process.stdout.write(data);\\012  }));\\012\\012  remember(ptyProcess.onExit((event = {}) => {\\012    send({ type: 'exit', exitCode: event.exitCode, signal: event.signal });\\012    closePty(0);\\012  }));\\012\\012  process.stdin.on('data', (chunk) => {\\012    if (closing || !ptyProcess) return;\\012    try { ptyProcess.write(Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk)); } catch {}\\012  });\\012  process.stdin.on('end', () => closePty(0));\\012  process.stdin.on('error', () => closePty(0));\\012\\012  process.on('message', (message) => {\\012    if (!message || typeof message !== 'object') return;\\012    if (message.type === 'resize' && ptyProcess) {\\012      const rows = Number(message.rows || 24);\\012      const cols = Number(message.cols || 80);\\012      try { ptyProcess.resize(cols, rows); } catch {}\\012      return;\\012    }\\012    if (message.type === 'close') {\\012      closePty(0);\\012    }\\012  });\\012\\012  process.once('SIGTERM', () => closePty(0));\\012  process.once('SIGINT', () => closePty(0));\\012  process.once('SIGHUP', () => closePty(0));\\012\\012  process.stdin.resume();\\012  send({ type: 'ready' });\\012} catch (error) {\\012  send({ type: 'error', message: error instanceof Error ? error.message : String(error) });\\012  console.error(error);\\012  process.exit(1);\\012}\\012",
+      "52526 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "52531 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=network.mojom.NetworkService --lang=de --service-sandbox-type=network --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=31",
+      "52532 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1785127786461695 --launch-time-ticks=2846147651815 --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=57",
+      "53135 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data",
+      "53682 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1785127786461695 --launch-time-ticks=2846726875176 --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=63",
+      "53685 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=audio.mojom.AudioService --lang=de --service-sandbox-type=audio --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708991934122588 --seatbelt-client=63",
+      "53686 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper --type=utility --utility-sub-type=video_capture.mojom.VideoCaptureService --lang=de --service-sandbox-type=none --message-loop-type-ui --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708992871164437",
+      "53737 /Applications/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Applications/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=9 --time-ticks-at-unix-epoch=-1785127786461695 --launch-time-ticks=2846834397535 --shared-files --field-trial-handle=1718379636,r,11345070528929966842,16163580475434802011,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,14891262522121128833,10392238745327819854,4 --trace-process-track-uuid=3190708994745248135 --seatbelt-client=63"
+    ],
+    "existingAutoByteusContainers": [
+      "autobyteus-server-6|c77226e09a21|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-5|69dfb7879636|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-4|94fa421886bc|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-2|644e0441ee02|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-1|a89a20380221|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-0|949e7ba9a82d|Up 36 hours|autobyteus/autobyteus-server:latest",
+      "autobyteus-server-3|b5f5b097c703|Up 3 days|autobyteus/autobyteus-server:latest-zh",
+      "llm-server-0|540d4b5d7b73|Up 3 days|autobyteus/llm-server:latest-arm64"
+    ],
+    "ownedContainerExists": false
+  }
+}
