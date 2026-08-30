@@ -9,7 +9,7 @@
 - Base or reference revision: `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Dedicated task worktree and branch created successfully; canonical draft artifacts created under `tickets/in-progress/send-message-delegate-task-semantics/`.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-008`
+- Current requirements revision ID: `RER-009`
 - Investigation status: Requirements visualization returned and integrated; package ready for user decision and approval
 
 ## Initial Request And Clarifications
@@ -24,6 +24,7 @@
 - Return-contract question: On 2026-08-30 the user asked whether `send_message_to` returns the exact existing receiver AgentRun ID and whether `delegate_task` returns the new task Agent identity, because symmetric results could reinforce the two-mode explanation.
 - Return-contract decision: On 2026-08-30 the user selected the existing generic `send_message_to.result` slot to carry the exact receiving `target_agent_run_id`, aligning successful feedback with the identity returned by `delegate_task` while preserving existing-versus-spawned semantics.
 - AgentTeam clarity request: On 2026-08-30 the user asked for a clearer prompt explanation that delegating to an AgentTeam spawns a fresh task Team instance while its coordinator Agent receives the task packet.
+- Flat-result clarification: On 2026-08-30 the user clarified that `target_agent_run_id` should replace the top-level `result` field rather than be nested as `result.target_agent_run_id`.
 
 ## Product And Domain Understanding
 
@@ -67,6 +68,7 @@
 | SRC-024 | 2026-08-30 | Code / Test | `task-delegation-record.ts`; `task-delegation-service.ts`; `task-delegation-tool-manifest.ts`; `task-delegation-tools-mcp-adapter-provider.ts`; `task-delegation-tool-lifecycle.integration.test.ts` | Verify the exact model-facing delegation result | Successful `delegate_task` returns top-level `{task_id,status:"active",target_agent_run_id}` through native/MCP serialization. Agent delegation returns the new task AgentRun ID; AgentTeam delegation returns the new task Team coordinator AgentRun ID. It does not return the task TeamRun ID. | Use this fact in prompt/result requirements; distinguish task ID, task ingress AgentRun ID, and TeamRun ID |
 | SRC-025 | 2026-08-30 | User | “Why don't we just replace that result with task agent runID, just like a dedicated task?” | Resolve DEC-002 and interpret the existing result slot | User selected returning identity through the existing `result` field. Requirements correct the proposed label: messaging returns the exact existing receiving AgentRun ID, not a task Agent ID; delegation returns the newly spawned task ingress AgentRun ID | Add REQ-014/AC-014 and route the approved public contract change through architecture after full requirements approval |
 | SRC-026 | 2026-08-30 | User / Code | User AgentTeam clarification plus `mixed-task-team-execution-registry.ts`, `task-team-run-identity-factory.ts`, `task-delegation-service.ts`, and `root-team-run.ts` | Verify and sharpen AgentTeam packet-receiver semantics | Logical messaging to a Team resolves its existing configured coordinator. Team delegation materializes a complete fresh task Team subtree with new TeamRun/AgentRun IDs, binds its new coordinator, and releases the work packet by posting it to that coordinator AgentRun. The delegation result returns that fresh coordinator as `target_agent_run_id` | Require one explicit four-case Agent/AgentTeam contrast in the LLM-facing guidance |
+| SRC-027 | 2026-08-30 | User / Code | User correction plus `agent-communication-tool-result.ts` usage scan | Resolve message success schema shape | User explicitly rejected nested dot notation. The `AgentCommunicationToolResultEnvelope` and its always-null `result` are used only by `send_message_to` native/MCP mapping in current source, so replacing that field with flat `target_agent_run_id` loses no existing successful payload while still requiring contract migration and parity updates | Refine REQ-014/AC-014 and DEC-002 to the flat field; require `null` on rejection |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -182,7 +184,7 @@
 5. Provider parity and active documentation alignment are part of the requirement because ambiguous or stale secondary cues can undo a central prompt fix.
 6. Prompt structure is part of correctness for this change: begin with the two-mode choice in plain language, keep parallel cause-and-effect descriptions together, then add only the edge cases needed to prevent misuse. Internal requirement IDs and approval placeholders belong in requirements artifacts, never in the production collaboration block.
 7. `Spawned` is a useful plain-language reinforcement because delegation creates a new concrete execution identity. `Forked` is not safe as the canonical term: it conventionally suggests a branch or copy of the existing live run's state, while the current implementation performs fresh activation/materialization from configuration with new run IDs.
-8. The current public tools are asymmetric: `delegate_task` exposes its fresh task ingress ID, while `send_message_to` exposes only delivery status/message and `result:null`. The user has approved using the existing generic message `result` slot for the exact receiving existing AgentRun ID. This remains a public output-contract change and must be designed and verified proportionately rather than treated as prose only.
+8. The current public tools are asymmetric: `delegate_task` exposes its fresh task ingress ID, while `send_message_to` exposes only delivery status/message and `result:null`. The user has approved replacing—not populating—the uninformative message `result` field with flat `target_agent_run_id`. This remains a public output-contract change and must be designed and verified proportionately rather than treated as prose only.
 9. AgentTeam wording must distinguish the created ownership boundary from the initial packet ingress: delegating to a Team spawns the whole fresh task Team instance/subtree, while that new Team's configured coordinator AgentRun receives the task packet and is returned as `target_agent_run_id`.
 
 ## Notes For Downstream Architecture Design

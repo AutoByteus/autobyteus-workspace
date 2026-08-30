@@ -14,6 +14,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-006 | User requested verification of message/delegation returned instance identities | Ready for Approval | Ready for Approval — Scope Decision Needed | BEH-008; DEC-002 | Confirmed current public asymmetry: message result discards resolved existing AgentRun ID while delegation exposes fresh task ingress ID; optional output-contract expansion awaits user decision |
 | RER-007 | User selected the existing message `result` slot for exact receiving AgentRun identity | Ready for Approval — Scope Decision Needed | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | DEC-002 Option A approved: successful message output returns the exact existing receiver while delegation continues returning the spawned task ingress |
 | RER-008 | User requested an explicit AgentTeam delegation/packet-ingress explanation | Ready for Approval | Ready for Approval | REQ-015; AC-015 | Four outcomes made mandatory: existing Agent, existing Team coordinator, fresh task Agent, and fresh task Team coordinator |
+| RER-009 | User clarified that `target_agent_run_id` replaces `result` rather than nesting beneath it | Ready for Approval | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | Message output contract refined to flat top-level identity with no dot notation; rejection returns a null identity |
 
 ## Revision Entries
 
@@ -136,3 +137,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: Exact prompt format remains downstream-owned, but it must preserve all four observable outcomes and the distinction between spawned Team ownership and coordinator packet ingress.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
 - Next action or recipient: Present the refined prompt text and obtain remaining user decision/approval.
+
+### RER-009 — Flat Message Target Identity
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user clarified that they meant replacing the always-null top-level `result` field with `target_agent_run_id`, not returning `result.target_agent_run_id` through dot notation.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-008.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-008; REQ-014; AC-014; DEC-002.
+- Why this baseline or revision was recorded: Preserve the simplest LLM-facing result shape and make message and delegation identity fields directly comparable.
+- Canonical artifact sections changed: Status/approval reference, current/desired behavior, scope, requirements, acceptance criteria, compatibility constraint, decision record, architecture input, investigation intake/source log, and requirement implications.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: None; this is a wire/result contract clarification.
+- User approval impact: DEC-002 remains decided as Option A with its exact flat shape now confirmed. DEC-001 and explicit complete-package approval remain pending.
+- Downstream architecture impact: The structural public-contract trigger remains; design must address removal of `result`, stable failure shape, native/MCP parity, and any strict consumers.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
+- Next action or recipient: Present the corrected flat schema and continue the remaining requirements approval loop.
