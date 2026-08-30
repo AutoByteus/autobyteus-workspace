@@ -12,7 +12,7 @@ The latest `design-review-report.md` remains authoritative. This record preserve
 
 ### ARCH-REV-001 — Initial embedded-only Browser-projection review baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-review-report.md`
 - Review round and trigger: Round 1; initial solution package ready after user approval of the requirements basis on 2026-08-30
 - Triggering role, report path, and finding IDs: `/solution_designer`; initial baseline with no prior design review report; no finding IDs
 - Relevant solution revision IDs: `SR-001`

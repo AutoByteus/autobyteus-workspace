@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Embedded-only automatic Browser projection implementation
 
-- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/design-review-report.md`; Round 1 / `ARCH-REV-001`
+- Triggering role, report path, and round: `/architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus/design-review-report.md`; Round 1 / `ARCH-REV-001`
 - Triggering finding IDs: N/A
 - Classification: Initial Baseline
 - Prior authoritative result: N/A

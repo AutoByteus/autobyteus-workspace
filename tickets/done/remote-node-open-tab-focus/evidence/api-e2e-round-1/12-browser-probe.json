@@ -1,0 +1,281 @@
+{
+  "generatedAt": "2026-08-30T05:04:03.795Z",
+  "executionMode": "Temporary Nuxt route with real projector, Pinia stores, activity state, and right-panel composables; only Electron preload Browser API emulated",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "platform": "darwin",
+  "scenarios": {
+    "API-E2E-005A": {
+      "id": "API-E2E-005A",
+      "result": "Pass",
+      "nodeId": "configured-remote-node",
+      "browserAvailable": true,
+      "activeTab": "terminal",
+      "panelVisible": false,
+      "focusCalls": [],
+      "activityStatus": "success",
+      "activityResult": {
+        "tab_id": "7A5858015134D871564D18E508EA5AFA",
+        "status": "opened",
+        "url": "http://host.docker.internal:64710/remote-target",
+        "title": "REMOTE_OPEN_TAB_TARGET_63219-1788066197553"
+      },
+      "conversationSegmentStatus": "success",
+      "executionEvents": [],
+      "notes": [
+        "Real window-node store classified the configured node as remote.",
+        "Real projector preserved success/activity while the Electron focus API and Browser selection remained untouched.",
+        "Collapsed panel preference remained collapsed.",
+        "The projected payload was the retained outcome from the owned Docker Chromium execution."
+      ]
+    },
+    "API-E2E-005B": {
+      "id": "API-E2E-005B",
+      "result": "Pass",
+      "nodeId": "configured-remote-node",
+      "browserAvailable": true,
+      "activeTab": "terminal",
+      "panelVisible": true,
+      "focusCalls": [],
+      "activityStatus": "success",
+      "activityResult": {
+        "tab_id": "remote-team-tab",
+        "status": "opened",
+        "url": "http://probe.local/remote-team-tab",
+        "title": "Probe target"
+      },
+      "conversationSegmentStatus": "success",
+      "executionEvents": [],
+      "notes": [
+        "The team-member projector target used the same real success projector and browser owner.",
+        "Visible panel state and non-Browser selection remained unchanged."
+      ]
+    },
+    "API-E2E-006": {
+      "id": "API-E2E-006",
+      "result": "Pass",
+      "nodeId": "embedded-local",
+      "browserAvailable": true,
+      "activeTab": "browser",
+      "panelVisible": false,
+      "focusCalls": [
+        "embedded-tab"
+      ],
+      "activityStatus": "success",
+      "activityResult": {
+        "tab_id": "embedded-tab",
+        "status": "opened",
+        "url": "http://probe.local/embedded-tab",
+        "title": "Probe target"
+      },
+      "conversationSegmentStatus": "success",
+      "executionEvents": [
+        "focus-called:embedded-tab",
+        "focus-resolved:embedded-tab",
+        "browser-selected:embedded-tab"
+      ],
+      "notes": [
+        "The real Browser-shell store awaited the emulated preload focus promise before the real right-tab state changed.",
+        "Resolved focus snapshot selected the embedded session; collapsed panel preference remained unchanged."
+      ]
+    },
+    "API-E2E-007": {
+      "id": "API-E2E-007",
+      "result": "Pass",
+      "nodeId": "embedded-local",
+      "browserAvailable": false,
+      "activeTab": "terminal",
+      "panelVisible": true,
+      "focusCalls": [],
+      "activityStatus": "success",
+      "activityResult": {
+        "tab_id": "unavailable-tab",
+        "status": "opened",
+        "url": "http://probe.local/unavailable-tab",
+        "title": "Probe target"
+      },
+      "conversationSegmentStatus": "success",
+      "executionEvents": [],
+      "notes": [
+        "Authoritative embedded identity alone did not enable projection when the Browser shell was unavailable.",
+        "Generic success/activity remained truthful."
+      ]
+    }
+  },
+  "dom": {
+    "before": {
+      "readiness": "ready=true",
+      "activeTab": "activeTab=terminal",
+      "panelVisible": "panelVisible=true",
+      "nodeId": "nodeId=embedded-local",
+      "browserAvailable": "browserAvailable=false"
+    },
+    "after": {
+      "readiness": "ready=true",
+      "activeTab": "activeTab=terminal",
+      "panelVisible": "panelVisible=true",
+      "nodeId": "nodeId=embedded-local",
+      "browserAvailable": "browserAvailable=false",
+      "renderedResult": "{\n  \"result\": \"Pass\",\n  \"scenarios\": {\n    \"API-E2E-005A\": {\n      \"id\": \"API-E2E-005A\",\n      \"result\": \"Pass\",\n      \"nodeId\": \"configured-remote-node\",\n      \"browserAvailable\": true,\n      \"activeTab\": \"terminal\",\n      \"panelVisible\": false,\n      \"focusCalls\": [],\n      \"activityStatus\": \"success\",\n      \"activityResult\": {\n        \"tab_id\": \"7A5858015134D871564D18E508EA5AFA\",\n        \"status\": \"opened\",\n        \"url\": \"http://host.docker.internal:64710/remote-target\",\n        \"title\": \"REMOTE_OPEN_TAB_TARGET_63219-1788066197553\"\n      },\n      \"conversationSegmentStatus\": \"success\",\n      \"executionEvents\": [],\n      \"notes\": [\n        \"Real window-node store classified the configured node as remote.\",\n        \"Real projector preserved success/activity while the Electron focus API and Browser selection remained untouched.\",\n        \"Collapsed panel preference remained collapsed.\",\n        \"The projected payload was the retained outcome from the owned Docker Chromium execution.\"\n      ]\n    },\n    \"API-E2E-005B\": {\n      \"id\": \"API-E2E-005B\",\n      \"result\": \"Pass\",\n      \"nodeId\": \"configured-remote-node\",\n      \"browserAvailable\": true,\n      \"activeTab\": \"terminal\",\n      \"panelVisible\": true,\n      \"focusCalls\": [],\n      \"activityStatus\": \"success\",\n      \"activityResult\": {\n        \"tab_id\": \"remote-team-tab\",\n        \"status\": \"opened\",\n        \"url\": \"http://probe.local/remote-team-tab\",\n        \"title\": \"Probe target\"\n      },\n      \"conversationSegmentStatus\": \"success\",\n      \"executionEvents\": [],\n      \"notes\": [\n        \"The team-member projector target used the same real success projector and browser owner.\",\n        \"Visible panel state and non-Browser selection remained unchanged.\"\n      ]\n    },\n    \"API-E2E-006\": {\n      \"id\": \"API-E2E-006\",\n      \"result\": \"Pass\",\n      \"nodeId\": \"embedded-local\",\n      \"browserAvailable\": true,\n      \"activeTab\": \"browser\",\n      \"panelVisible\": false,\n      \"focusCalls\": [\n        \"embedded-tab\"\n      ],\n      \"activityStatus\": \"success\",\n      \"activityResult\": {\n        \"tab_id\": \"embedded-tab\",\n        \"status\": \"opened\",\n        \"url\": \"http://probe.local/embedded-tab\",\n        \"title\": \"Probe target\"\n      },\n      \"conversationSegmentStatus\": \"success\",\n      \"executionEvents\": [\n        \"focus-called:embedded-tab\",\n        \"focus-resolved:embedded-tab\",\n        \"browser-selected:embedded-tab\"\n      ],\n      \"notes\": [\n        \"The real Browser-shell store awaited the emulated preload focus promise before the real right-tab state changed.\",\n        \"Resolved focus snapshot selected the embedded session; collapsed panel preference remained unchanged.\"\n      ]\n    },\n    \"API-E2E-007\": {\n      \"id\": \"API-E2E-007\",\n      \"result\": \"Pass\",\n      \"nodeId\": \"embedded-local\",\n      \"browserAvailable\": false,\n      \"activeTab\": \"terminal\",\n      \"panelVisible\": true,\n      \"focusCalls\": [],\n      \"activityStatus\": \"success\",\n      \"activityResult\": {\n        \"tab_id\": \"unavailable-tab\",\n        \"status\": \"opened\",\n        \"url\": \"http://probe.local/unavailable-tab\",\n        \"title\": \"Probe target\"\n      },\n      \"conversationSegmentStatus\": \"success\",\n      \"executionEvents\": [],\n      \"notes\": [\n        \"Authoritative embedded identity alone did not enable projection when the Browser shell was unavailable.\",\n        \"Generic success/activity remained truthful.\"\n      ]\n    }\n  }\n}"
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 64868,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "temporaryRoute": "removed"
+  },
+  "result": "Pass",
+  "remoteResultSource": "/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-desktop-docker-probe.json",
+  "nuxt": {
+    "port": 64838,
+    "route": "http://127.0.0.1:64838/__api_e2e_open_tab_projection"
+  },
+  "finalSnapshot": {
+    "ready": true,
+    "nodeId": "embedded-local",
+    "isEmbeddedWindow": true,
+    "browserAvailable": false,
+    "activeBrowserTabId": null,
+    "activeTab": "terminal",
+    "panelVisible": true,
+    "focusCalls": [],
+    "executionEvents": [],
+    "result": {
+      "result": "Pass",
+      "scenarios": {
+        "API-E2E-005A": {
+          "id": "API-E2E-005A",
+          "result": "Pass",
+          "nodeId": "configured-remote-node",
+          "browserAvailable": true,
+          "activeTab": "terminal",
+          "panelVisible": false,
+          "focusCalls": [],
+          "activityStatus": "success",
+          "activityResult": {
+            "tab_id": "7A5858015134D871564D18E508EA5AFA",
+            "status": "opened",
+            "url": "http://host.docker.internal:64710/remote-target",
+            "title": "REMOTE_OPEN_TAB_TARGET_63219-1788066197553"
+          },
+          "conversationSegmentStatus": "success",
+          "executionEvents": [],
+          "notes": [
+            "Real window-node store classified the configured node as remote.",
+            "Real projector preserved success/activity while the Electron focus API and Browser selection remained untouched.",
+            "Collapsed panel preference remained collapsed.",
+            "The projected payload was the retained outcome from the owned Docker Chromium execution."
+          ]
+        },
+        "API-E2E-005B": {
+          "id": "API-E2E-005B",
+          "result": "Pass",
+          "nodeId": "configured-remote-node",
+          "browserAvailable": true,
+          "activeTab": "terminal",
+          "panelVisible": true,
+          "focusCalls": [],
+          "activityStatus": "success",
+          "activityResult": {
+            "tab_id": "remote-team-tab",
+            "status": "opened",
+            "url": "http://probe.local/remote-team-tab",
+            "title": "Probe target"
+          },
+          "conversationSegmentStatus": "success",
+          "executionEvents": [],
+          "notes": [
+            "The team-member projector target used the same real success projector and browser owner.",
+            "Visible panel state and non-Browser selection remained unchanged."
+          ]
+        },
+        "API-E2E-006": {
+          "id": "API-E2E-006",
+          "result": "Pass",
+          "nodeId": "embedded-local",
+          "browserAvailable": true,
+          "activeTab": "browser",
+          "panelVisible": false,
+          "focusCalls": [
+            "embedded-tab"
+          ],
+          "activityStatus": "success",
+          "activityResult": {
+            "tab_id": "embedded-tab",
+            "status": "opened",
+            "url": "http://probe.local/embedded-tab",
+            "title": "Probe target"
+          },
+          "conversationSegmentStatus": "success",
+          "executionEvents": [
+            "focus-called:embedded-tab",
+            "focus-resolved:embedded-tab",
+            "browser-selected:embedded-tab"
+          ],
+          "notes": [
+            "The real Browser-shell store awaited the emulated preload focus promise before the real right-tab state changed.",
+            "Resolved focus snapshot selected the embedded session; collapsed panel preference remained unchanged."
+          ]
+        },
+        "API-E2E-007": {
+          "id": "API-E2E-007",
+          "result": "Pass",
+          "nodeId": "embedded-local",
+          "browserAvailable": false,
+          "activeTab": "terminal",
+          "panelVisible": true,
+          "focusCalls": [],
+          "activityStatus": "success",
+          "activityResult": {
+            "tab_id": "unavailable-tab",
+            "status": "opened",
+            "url": "http://probe.local/unavailable-tab",
+            "title": "Probe target"
+          },
+          "conversationSegmentStatus": "success",
+          "executionEvents": [],
+          "notes": [
+            "Authoritative embedded identity alone did not enable projection when the Browser shell was unavailable.",
+            "Generic success/activity remained truthful."
+          ]
+        }
+      }
+    }
+  },
+  "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/12-browser-probe.png"
+}

@@ -1,0 +1,143 @@
+# DR-001 initial delivery integration refresh and executable check
+recorded_at=2026-08-30T05:12:13Z
+bootstrap_base=origin/personal@e664db7cfd725bc6fa1633b71c53954a3fe66e44
+reviewed_implementation=8118e68e6c11fad541bf8b5bdd42e23da8b3ba91
+refresh_command=git fetch origin personal
+refreshed_base=origin/personal@d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea
+base_advanced=yes (33 commits beyond bootstrap base)
+checkpoint_commit=not needed (reviewed implementation already committed at 8118e68e6; no delivery edits had begun)
+integration_command=git merge --no-edit origin/personal
+integration_method=merge
+integration_head=305c4509172c0c719ca3db44bbab94a56631b764
+integration_head_parents=8118e68e6c11fad541bf8b5bdd42e23da8b3ba91 d7ad96ab1f24ea6602745b5ee59efe8ebc9852ea
+base_ancestry=pass (origin/personal is an ancestor of HEAD)
+integration_conflicts=none
+
+post_integration_check_command=pnpm test:nuxt services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --run
+post_integration_check_workdir=autobyteus-web
+--- check output ---
+
+> autobyteus@1.4.62 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts (6 tests) 4ms
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > becomes ready only after the exact connected root and complete authoritative snapshot
+Team WebSocket transport connected
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > acts on the first rejected gap effect once and cannot revive the failed instance
+Rejected Team execution message (TEAM_EXECUTION_CHANGE_SEQUENCE_GAP): Expected change sequence 1, received 2.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > rejects and stops a candidate whose snapshot base does not match
+Rejected invalid Team WebSocket message: Error: TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected 7, received 8.
+    at TeamStreamingService.dispatchMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:257:15)
+    at handleMessage (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:212:16)
+    at emit (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:63:31)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:378:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (12 tests) 43ms
+ ✓ services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts (3 tests) 8ms
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:258:38
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > serializes and exactly matches an admitted standalone interrupt
+Ignoring unmatched interrupt command acknowledgement. {
+  command_type: 'INTERRUPT_GENERATION',
+  command_id: 'client_interrupt_1',
+  state: 'accepted',
+  target: { target_kind: 'standalone_run', run_id: 'wrong-run' }
+}
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > completes reentrant disconnect-plus-send-throw exactly once
+Agent WebSocket disconnected: socket closed
+Agent WebSocket disconnected: again
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > keeps immediately projected content on each context across replacement and remote disconnect
+Agent WebSocket disconnected: remote closed
+
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts (34 tests) 42ms
+
+ Test Files  4 passed (4)
+      Tests  55 passed (55)
+   Start at  07:12:17
+   Duration  7.12s (transform 3.28s, setup 23.82s, collect 545ms, tests 97ms, environment 1.24s, prepare 885ms)
+
+--- check result ---
+post_integration_check_exit=0
+post_integration_check=pass (4 files, 55 tests)
+
+--- delivery docs and handoff audit ---
+docs_sync_path=autobyteus-web/docs/browser_sessions.md
+docs_sync_rule=automatic local Browser focus/selection is embedded-Electron-only; canonical success/activity projection remains universal
+git_diff_check=pass
+ticket_state=tickets/in-progress/remote-node-open-tab-focus
+user_verification=pending
+archive_push_merge_release_deploy_cleanup=not started
+--- expected working-tree paths ---
+ M autobyteus-web/docs/browser_sessions.md
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-coverage-investigation.md
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-revision-record.md
+?? tickets/in-progress/remote-node-open-tab-focus/api-e2e-test-review-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/code-review-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/code-review-revision-record.md
+?? tickets/in-progress/remote-node-open-tab-focus/delivery-release-deployment-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/delivery-revision-record.md
+?? tickets/in-progress/remote-node-open-tab-focus/docs-sync-report.md
+?? tickets/in-progress/remote-node-open-tab-focus/evidence/
+?? tickets/in-progress/remote-node-open-tab-focus/handoff-summary.md
+?? tickets/in-progress/remote-node-open-tab-focus/release-notes.md

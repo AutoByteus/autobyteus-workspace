@@ -1,0 +1,36 @@
+$ pnpm exec nuxt typecheck
+started=2026-08-30T04:42:20Z
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+/Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/vue-tsc/index.js:68
+                throw err;
+                ^
+
+Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tsc' is not defined by "exports" in /Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/typescript/package.json
+    at exportsNotFound (node:internal/modules/esm/resolve:314:10)
+    at packageExportsResolve (node:internal/modules/esm/resolve:661:9)
+    at resolveExports (node:internal/modules/cjs/loader:664:36)
+    at Function._findPath (node:internal/modules/cjs/loader:731:31)
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1415:27)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at resolveTscPath (/Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/vue-tsc/index.js:73:43)
+    at main (/Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/vue-tsc/index.js:44:45)
+    at Object.run (/Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/vue-tsc/index.js:64:20)
+    at Object.<anonymous> (/Users/normy/.npm/_npx/cb6709e40eb1fb08/node_modules/vue-tsc/bin/vue-tsc.js:2:24) {
+  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+
+Node.js v22.23.1
+
+ ERROR  Process exited with non-zero status (1)
+
+    at G._waitForOutput (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/tinyexec@1.0.2/node_modules/tinyexec/dist/main.js:574:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.run (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/typecheck-C8wVgBzd.mjs:66:3)
+    at async runCommand (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:188:47)
+    at async runCommand (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:185:21)
+    at async runMain (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10) 
+
+
+finished=2026-08-30T04:42:33Z
+exit_code=1

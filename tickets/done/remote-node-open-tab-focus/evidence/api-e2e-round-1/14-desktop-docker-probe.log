@@ -1,0 +1,9 @@
+result=Pass
+scenarios=API-E2E-008:Pass,API-E2E-006-DESKTOP:Pass,API-E2E-005-DESKTOP-REMOTE:Pass
+docker=autobyteus-api-e2e-open-tab-63219-1788066197553
+electronPort=64770
+electronDataRoot=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-hMwDji
+cleanup={"electron":{"processTreeCompletion":{"status":"complete","identity":"posix-process-group:63561","forced":false,"gracefulError":null},"portObservation":{"status":"available","port":64770,"detail":null}},"electronDataRootExistsAfterCleanup":false,"dockerContainer":"removed","targetServer":"closed","dockerTempRoot":"removed","productionAppProcessListUnchanged":true,"preExistingContainerIdentitiesUnchanged":true}
+productionAppUnaffected=true
+preExistingContainersUnaffected=true
+evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus/evidence/api-e2e-round-1/14-desktop-docker-probe.json

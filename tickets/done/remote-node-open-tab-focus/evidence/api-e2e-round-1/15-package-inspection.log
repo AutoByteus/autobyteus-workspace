@@ -1,0 +1,49 @@
+--- source ---
+8118e68e6c11fad541bf8b5bdd42e23da8b3ba91
+8118e68e6c11fad541bf8b5bdd42e23da8b3ba91 2026-08-30T06:16:28+02:00 fix(web): gate automatic browser projection
+--- artifact files ---
+-rw-r--r--@ 1 normy  staff   446M Aug 30 06:53 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.dmg
+-rw-r--r--@ 1 normy  staff   475K Aug 30 06:53 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   441M Aug 30 06:56 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.zip
+-rw-r--r--@ 1 normy  staff   465K Aug 30 06:56 electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B Aug 30 06:56 electron-dist/builder-debug.yml
+-rw-r--r--@ 1 normy  staff   561B Aug 30 06:56 electron-dist/latest-mac.yml
+--- sha256 ---
+30e2972a34a769cde6934de2e018102dd8c191d4869add70159f90521376ba40  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.dmg
+9fc321c63daee2cdf9df90e2fce9773efdb0f48edc444e5ee955eeb6a53736d6  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.zip
+4ee28f590db69aef9d8ddcae5754ebb7b1383d63179926ea8c8df17d7c53a707  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.dmg.blockmap
+6a67ede07cb66d52933330b4a53c291d900f199ab32f168def0d3bb3db14217e  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.62.zip.blockmap
+--- app executable ---
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+com.autobyteus.app
+1.4.62
+--- ad-hoc runtime-validation signature after local remediation ---
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=com.autobyteus.app
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=299 flags=0x2(adhoc) hashes=3+3 location=embedded
+Signature=adhoc
+Info.plist entries=32
+TeamIdentifier=not set
+Sealed Resources version=2 rules=13 files=32435
+Internal requirements count=0 size=12
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+electron-dist/mac-arm64/AutoByteus.app: valid on disk
+electron-dist/mac-arm64/AutoByteus.app: satisfies its Designated Requirement

@@ -28,7 +28,7 @@ Reference screenshots supplied by the user:
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/in-progress/remote-node-open-tab-focus`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus/tickets/done/remote-node-open-tab-focus`
 - Current Branch: `codex/remote-node-open-tab-focus`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-open-tab-focus`
 - Bootstrap Base Branch: `origin/personal` at `e664db7cfd725bc6fa1633b71c53954a3fe66e44`
