@@ -8,6 +8,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | --- | --- | --- | --- | --- | --- |
 | RER-001 | Initial user request plus current backend/task-message contract investigation | N/A | Ready for Approval | BEH-001–BEH-007; REQ-001–REQ-011; AC-001–AC-011; DEC-001 | Coherent requirements baseline and orchestration decision table created; user decision/approval pending |
 | RER-002 | User explicitly requested a visualized requirement | Ready for Approval | Draft — Requirements Visualization Needed | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Focused exploratory visualizer brief added; cross-team Product Prototyper handoff required before user decision/approval |
+| RER-003 | Product Design & Prototyping returned review-ready `SMDS-RV-001` / `VIS-R04` | Draft — Requirements Visualization Needed | Ready for Approval | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Exploratory visualizer evidence reconciled and review URL presented; DEC-001 and explicit approval remain pending |
 
 ## Revision Entries
 
@@ -40,3 +41,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: Architecture handoff remains blocked until visualization review and explicit approval are complete.
 - Remaining gaps, assumptions, or blocked decisions: Product Prototyper visualizer return; DEC-001; user approval.
 - Next action or recipient: Dynamic handoff to Product Design & Prototyping using the returned `Requirements Visualization Needed` rule.
+
+### RER-003 — Requirements Visualization Return
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: Product Design & Prototyping returned `SMDS-RV-001` / `VIS-R04` in its separate repository with a runnable review URL, scenario coverage, visual references, and validation evidence.
+- Prior authoritative status (`N/A` for `RER-001`): Draft — Requirements Visualization Needed under RER-002.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-001–REQ-007, REQ-010; BEH-001–BEH-005; AC-001–AC-008; SCN-001–SCN-006; DEC-001.
+- Why this baseline or revision was recorded: Reconcile the externally owned exploratory evidence into the canonical package before user review while preserving the boundary between requirements clarification and final UI/UX specification.
+- Canonical artifact sections changed: Requirements document status, interaction evidence, supplemental artifacts, traceability, and readiness; investigation status, source log, prototype findings, and supplement inventory.
+- Supplemental artifacts added, changed, or removed: Linked the Product-owned `requirements-visualization-review.md`, prototype ticket, validation evidence, and non-normative visual-reference directory; no Product artifact was copied into the requirements workspace.
+- Prototype evidence or product decisions incorporated: VIS-R04 visually distinguishes mounted/configured execution messaging, fresh task execution creation, incorrect duplicate logical-address resend, exact-run clarification, formal lifecycle, and delegation failure. It compares DEC-001 Option A and Option B but does not choose between them.
+- User approval impact: No approval inferred. The user must choose DEC-001 and explicitly approve the intended behavior and behavior-defining decision table.
+- Downstream architecture impact: No architecture handoff until user decision and approval. The visualizer adds explanatory evidence only and does not change architecture scope.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit requirements approval.
+- Next action or recipient: User review at `http://127.0.0.1:4179`, followed by Requirements Engineering integration of the decision and approval status.
