@@ -327,7 +327,16 @@
 
                     <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
                       <div class="flex min-w-0 items-center">
-                        <StatusDot v-if="displayRow.row.row.kind === 'agent'" class="mr-1.5" :status="displayRow.row.row.currentStatus" />
+                        <StatusDot
+                          v-if="displayRow.row.row.kind === 'agent'"
+                          class="mr-1.5"
+                          :status="displayRow.row.row.currentStatus"
+                        />
+                        <NestedTeamAggregateStatusDot
+                          v-else
+                          class="mr-1.5"
+                          :status="nestedTeamStatus(team, displayRow.row)"
+                        />
                         <span
                           class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                         >
@@ -377,6 +386,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
+import NestedTeamAggregateStatusDot from '~/components/workspace/history/NestedTeamAggregateStatusDot.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import type {
   WorkspaceHistoryAvatarBindings,
@@ -391,6 +401,7 @@ import {
   formatRunLabel,
   formatTeamRunLabel,
 } from '~/components/workspace/history/workspaceHistoryRunLabels';
+import { aggregateNestedTeamAgentStatus } from '~/components/workspace/history/workspaceHistoryNestedTeamStatus';
 import type {
   RunHistoryTeamExecutionRow,
   TeamRunHistoryDefinitionGroup,
@@ -481,6 +492,11 @@ const isSelectedTeamMember = (
   && row.agentRunId === team.focusedAgentRunId;
 
 const teamExecutionRowStyle = (row: RunHistoryTeamExecutionRow): Record<string, string> => ({ marginLeft: `${row.depth * 12}px` });
+
+const nestedTeamStatus = (
+  team: TeamTreeNode,
+  row: RunHistoryTeamExecutionRow,
+) => aggregateNestedTeamAgentStatus(team.executionRows, row);
 
 const selectTeamDisplayRow = (
   team: TeamTreeNode,

@@ -1,0 +1,536 @@
+{
+  "startedAt": "2026-08-29T19:08:46.718Z",
+  "baseUrl": "http://127.0.0.1:33335",
+  "backendBaseUrl": "http://127.0.0.1:8000",
+  "browser": "/usr/bin/chromium",
+  "viewport": {
+    "width": 1512,
+    "height": 900
+  },
+  "existingData": {
+    "workspace": "autobyteus-workspace",
+    "teamDefinition": "Software Development Department",
+    "currentRun": "software_development_department_fccba22e6afe4135adc5f291e40d0c11",
+    "referenceRun": "software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62"
+  },
+  "scenarios": {
+    "NTAS-LIVE-001": {
+      "result": "Pass",
+      "health": {
+        "status": 200,
+        "body": {
+          "status": "ok",
+          "message": "Server is running"
+        }
+      },
+      "backendProxyApiRequestCountAtReady": 13,
+      "websocketCountAtReady": 2
+    },
+    "NTAS-LIVE-002": {
+      "result": "Pass",
+      "currentCollapsed": {
+        "/requirements_engineering_team": {
+          "status": "idle",
+          "ariaLabel": "Team status: Idle",
+          "title": "Team status: Idle",
+          "role": "img",
+          "tabindex": null,
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+          "innerWidth": 8,
+          "innerHeight": 8,
+          "gapToAvatar": 6,
+          "afterDisclosure": true,
+          "beforeAvatar": true,
+          "expanded": "false"
+        },
+        "/product_design_prototyping_team": {
+          "status": "offline",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "role": "img",
+          "tabindex": null,
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "innerWidth": 8,
+          "innerHeight": 8,
+          "gapToAvatar": 6,
+          "afterDisclosure": true,
+          "beforeAvatar": true,
+          "expanded": "false"
+        },
+        "/software_engineering_team": {
+          "status": "offline",
+          "ariaLabel": "Team status: Offline",
+          "title": "Team status: Offline",
+          "role": "img",
+          "tabindex": null,
+          "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "innerWidth": 8,
+          "innerHeight": 8,
+          "gapToAvatar": 6,
+          "afterDisclosure": true,
+          "beforeAvatar": true,
+          "expanded": "false"
+        }
+      },
+      "screenshot": "/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-003/live-browser/live-current-collapsed-sidebar.png"
+    },
+    "NTAS-LIVE-003": {
+      "result": "Pass",
+      "softwareExpanded": {
+        "status": "offline",
+        "ariaLabel": "Team status: Offline",
+        "title": "Team status: Offline",
+        "role": "img",
+        "tabindex": null,
+        "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+        "innerWidth": 8,
+        "innerHeight": 8,
+        "gapToAvatar": 6,
+        "afterDisclosure": true,
+        "beforeAvatar": true,
+        "expanded": "true"
+      },
+      "softwareDescendants": [
+        {
+          "address": "workspace-team-member-software_development_department_fccba22e6afe4135adc5f291e40d0c11-/software_engineering_team/architecture_designer",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        },
+        {
+          "address": "workspace-team-member-software_development_department_fccba22e6afe4135adc5f291e40d0c11-/software_engineering_team/architecture_reviewer",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        },
+        {
+          "address": "workspace-team-member-software_development_department_fccba22e6afe4135adc5f291e40d0c11-/software_engineering_team/implementation_engineer",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        },
+        {
+          "address": "workspace-team-member-software_development_department_fccba22e6afe4135adc5f291e40d0c11-/software_engineering_team/code_reviewer",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        },
+        {
+          "address": "workspace-team-member-software_development_department_fccba22e6afe4135adc5f291e40d0c11-/software_engineering_team/api_e2e_engineer",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        },
+        {
+          "address": "workspace-team-member-software_development_department_fccba22e6afe4135adc5f291e40d0c11-/software_engineering_team/delivery_engineer",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        }
+      ],
+      "softwareStatuses": [
+        "offline",
+        "offline",
+        "offline",
+        "offline",
+        "offline",
+        "offline"
+      ],
+      "softwareRecollapsed": {
+        "status": "offline",
+        "ariaLabel": "Team status: Offline",
+        "title": "Team status: Offline",
+        "role": "img",
+        "tabindex": null,
+        "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+        "innerWidth": 8,
+        "innerHeight": 8,
+        "gapToAvatar": 6,
+        "afterDisclosure": true,
+        "beforeAvatar": true,
+        "expanded": "false"
+      },
+      "referenceProductCollapsed": {
+        "status": "idle",
+        "ariaLabel": "Team status: Idle",
+        "title": "Team status: Idle",
+        "role": "img",
+        "tabindex": null,
+        "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500",
+        "innerWidth": 8,
+        "innerHeight": 8,
+        "gapToAvatar": 6,
+        "afterDisclosure": true,
+        "beforeAvatar": true,
+        "expanded": "false"
+      },
+      "referenceProductExpanded": {
+        "status": "offline",
+        "ariaLabel": "Team status: Offline",
+        "title": "Team status: Offline",
+        "role": "img",
+        "tabindex": null,
+        "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+        "innerWidth": 8,
+        "innerHeight": 8,
+        "gapToAvatar": 6,
+        "afterDisclosure": true,
+        "beforeAvatar": true,
+        "expanded": "true"
+      },
+      "productDescendants": [
+        {
+          "address": "workspace-team-member-software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62-/product_design_prototyping_team/product_prototyper",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        },
+        {
+          "address": "workspace-team-member-software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62-/product_design_prototyping_team/prototype_bootstrapper",
+          "classes": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5"
+        }
+      ],
+      "productStatuses": [
+        "offline",
+        "offline"
+      ],
+      "referenceProductRecollapsed": {
+        "status": "offline",
+        "ariaLabel": "Team status: Offline",
+        "title": "Team status: Offline",
+        "role": "img",
+        "tabindex": null,
+        "innerClass": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+        "innerWidth": 8,
+        "innerHeight": 8,
+        "gapToAvatar": 6,
+        "afterDisclosure": true,
+        "beforeAvatar": true,
+        "expanded": "false"
+      },
+      "nestedToggleRequests": [],
+      "screenshots": [
+        "/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-003/live-browser/live-current-software-expanded-sidebar.png",
+        "/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements/tickets/in-progress/subteam-aggregate-status/api-e2e-evidence/api-rev-003/live-browser/live-reference-product-expanded-sidebar.png"
+      ]
+    },
+    "NTAS-LIVE-004": {
+      "result": "Pass",
+      "aggregateNamedRequests": [],
+      "apiRequestCount": 41,
+      "websocketCount": 4,
+      "failedRequestCount": 0,
+      "badResponseCount": 0,
+      "consoleErrorCount": 0,
+      "pageErrorCount": 0
+    }
+  },
+  "apiRequests": [
+    {
+      "at": "2026-08-29T19:08:47.911Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:47.930Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:47.930Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:47.930Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:47.930Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:47.957Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetApplicationsCapability"
+    },
+    {
+      "at": "2026-08-29T19:08:47.961Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetServerSettings"
+    },
+    {
+      "at": "2026-08-29T19:08:47.962Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetAllWorkspaces"
+    },
+    {
+      "at": "2026-08-29T19:08:47.962Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetAgentDefinitions"
+    },
+    {
+      "at": "2026-08-29T19:08:47.965Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetAgentTeamDefinitions"
+    },
+    {
+      "at": "2026-08-29T19:08:48.372Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:33335/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:48.402Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetWorkspaceRunHistory"
+    },
+    {
+      "at": "2026-08-29T19:08:48.441Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:48.790Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamRunResumeConfig"
+    },
+    {
+      "at": "2026-08-29T19:08:48.802Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTaskDelegationRecords"
+    },
+    {
+      "at": "2026-08-29T19:08:48.803Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamCommunicationMessages"
+    },
+    {
+      "at": "2026-08-29T19:08:48.815Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.815Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:48.817Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.043Z",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/rest/health",
+      "resourceType": "fetch",
+      "operationName": null
+    },
+    {
+      "at": "2026-08-29T19:08:49.049Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetSkillImprovementCapability"
+    },
+    {
+      "at": "2026-08-29T19:08:49.470Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamRunResumeConfig"
+    },
+    {
+      "at": "2026-08-29T19:08:49.479Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTaskDelegationRecords"
+    },
+    {
+      "at": "2026-08-29T19:08:49.480Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamCommunicationMessages"
+    },
+    {
+      "at": "2026-08-29T19:08:49.486Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.487Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    },
+    {
+      "at": "2026-08-29T19:08:49.488Z",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/graphql",
+      "resourceType": "fetch",
+      "operationName": "GetTeamMemberRunProjection"
+    }
+  ],
+  "websockets": [
+    {
+      "url": "ws://127.0.0.1:33335/_nuxt/?token=Kk7pSojemi9x",
+      "openedAt": "2026-08-29T19:08:46.962Z",
+      "closed": false,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8000/ws/terminal/c2e7f5ec-0ca8-4106-a040-e6bc6fa05d32",
+      "openedAt": "2026-08-29T19:08:47.966Z",
+      "closed": false,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8000/ws/agent-team/software_development_department_fccba22e6afe4135adc5f291e40d0c11",
+      "openedAt": "2026-08-29T19:08:49.045Z",
+      "closed": false,
+      "errors": []
+    },
+    {
+      "url": "ws://127.0.0.1:8000/ws/agent-team/software_development_department_644a2f0d9ee84a458ee6bbd9d586ac62",
+      "openedAt": "2026-08-29T19:08:49.561Z",
+      "closed": false,
+      "errors": []
+    }
+  ],
+  "failedRequests": [],
+  "badResponses": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failures": [],
+  "result": "Pass",
+  "finishedAt": "2026-08-29T19:08:49.758Z"
+}

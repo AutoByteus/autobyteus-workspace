@@ -1,0 +1,34 @@
+# DR-004 Terminal Documentation Correction Audit
+
+Timestamp (UTC): 2026-08-30T04:08:33Z
+Correction base: ffa427d2352ae66a5d9a36385227c8a54b30802d
+Correction scope: documentation/evidence only
+
+## Changed paths relative to correction base
+tickets/done/subteam-aggregate-status/delivery-release-deployment-report.md
+tickets/done/subteam-aggregate-status/delivery-revision-record.md
+tickets/done/subteam-aggregate-status/docs-sync-report.md
+tickets/done/subteam-aggregate-status/handoff-summary.md
+tickets/done/subteam-aggregate-status/investigation-notes.md
+
+## Diff check
+PASS: git diff --check
+
+## Historical Requirements evidence
+6:- Workspace root: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements`
+8:- Task worktree / branch: `/home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements` / `requirements/subteam-aggregate-status`
+39:| 2026-08-29 | Command | `git worktree add -b requirements/subteam-aggregate-status /home/autobyteus/workspace/.codex/worktrees/subteam-aggregate-status-requirements 9d0fd7c...` | Bootstrap isolated requirements workspace. | Worktree created; final status clean. | Use only this worktree for task artifacts. |
+PASS: historical dedicated-worktree path and exact bootstrap target restored; false root-checkout target absent
+
+## Validation-boundary statement
+94:- Actual Electron shell execution was intentionally not run because no
+96:  backend through normal REST/GraphQL requests and Team-run WebSockets from the
+PASS: only actual Electron shell is excluded; API-REV-003 real-backend REST/GraphQL/WebSocket execution is retained
+
+## Executable-scope audit
+PASS: no product source, configuration, or test path changed
+
+## Verification decision
+Renewed user verification: Not required.
+Reason: factual documentation/evidence correction only; no executable, behavior, acceptance, release, or deployment delta.
+Original user approval and explicit no-release decision remain authoritative.
