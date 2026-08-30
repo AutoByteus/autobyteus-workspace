@@ -1,0 +1,45 @@
+
+✓ v1.4.63 Desktop Release · 33324816957
+Triggered via push about 18 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 23s (ID 99292975189)
+✓ Build Linux ARM64 in 3m39s (ID 99293029302)
+✓ Build Linux x64 in 4m10s (ID 99293029324)
+✓ Build Windows x64 in 13m50s (ID 99293029330)
+✓ Build macOS Intel x64 in 16m11s (ID 99293029335)
+✓ Build macOS ARM64 in 16m16s (ID 99293029339)
+✓ Publish GitHub Release in 1m14s (ID 99295044813)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux x64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Windows x64: .github#3
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build macOS Intel x64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build macOS ARM64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, softprops/action-gh-release@v2. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Publish GitHub Release: .github#2
+
+
+ARTIFACTS
+macos-x64
+macos-arm64
+windows-x64
+linux-x64
+linux-arm64
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33324816957

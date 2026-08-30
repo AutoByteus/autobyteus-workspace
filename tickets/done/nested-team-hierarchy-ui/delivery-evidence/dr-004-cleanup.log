@@ -1,0 +1,24 @@
+cleanup_started=2026-08-30T17:35:45Z
+primary_head=9e5efe7c859d14bbddce399f0ad05355e58e3bcc
+origin_personal=9e5efe7c859d14bbddce399f0ad05355e58e3bcc
+release_tag_commit=9e5efe7c859d14bbddce399f0ad05355e58e3bcc
+ticket_contained_by_origin_personal=yes
+merge_contained_by_origin_personal=yes
+merge_contained_by_release_tag=yes
+dedicated_worktree_present_before=yes
+## requirements/nested-team-hierarchy-ui...origin/requirements/nested-team-hierarchy-ui
+worktree_remove=completed
+worktree_prune=completed
+Deleted branch requirements/nested-team-hierarchy-ui (was 75f73b79e).
+local_branch_delete=completed
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ - [deleted]             requirements/nested-team-hierarchy-ui
+remote_branch_delete=completed
+worktree_absent_after=yes
+local_branch_absent_after=yes
+remote_branch_absent_after=yes
+cleanup_completed=2026-08-30T17:37:07Z
