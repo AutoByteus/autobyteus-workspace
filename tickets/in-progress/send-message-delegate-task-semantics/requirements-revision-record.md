@@ -9,6 +9,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-001 | Initial user request plus current backend/task-message contract investigation | N/A | Ready for Approval | BEH-001–BEH-007; REQ-001–REQ-011; AC-001–AC-011; DEC-001 | Coherent requirements baseline and orchestration decision table created; user decision/approval pending |
 | RER-002 | User explicitly requested a visualized requirement | Ready for Approval | Draft — Requirements Visualization Needed | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Focused exploratory visualizer brief added; cross-team Product Prototyper handoff required before user decision/approval |
 | RER-003 | Product Design & Prototyping returned review-ready `SMDS-RV-001` / `VIS-R04` | Draft — Requirements Visualization Needed | Ready for Approval | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Exploratory visualizer evidence reconciled and review URL presented; DEC-001 and explicit approval remain pending |
+| RER-004 | User emphasized intuitive, straightforward, ambiguity-free LLM instruction design | Ready for Approval | Ready for Approval | REQ-012; AC-012; QR-005 | Cognitive clarity and production-copy hygiene made explicit and testable; DEC-001 and complete-package approval remain pending |
 
 ## Revision Entries
 
@@ -56,3 +57,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: No architecture handoff until user decision and approval. The visualizer adds explanatory evidence only and does not change architecture scope.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit requirements approval.
 - Next action or recipient: User review at `http://127.0.0.1:4179`, followed by Requirements Engineering integration of the decision and approval status.
+
+### RER-004 — LLM Prompt Clarity Requirement
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user emphasized that the Team collaboration system prompt is an LLM decision interface and must be intuitive, understandable, straightforward, and unambiguous.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-003.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-012; AC-012; QR-005; all existing tool-choice scenarios remain relevant.
+- Why this baseline or revision was recorded: Make cognitive salience and prompt hygiene verifiable requirements rather than informal editorial preferences.
+- Canonical artifact sections changed: Requirements, acceptance criteria, quality requirements, traceability, investigation intake/source log, and requirement implications.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: VIS-R04's cognition-first actor story remains supporting evidence; no visualization revision is needed because the feedback governs production prompt wording.
+- User approval impact: The clarity direction is captured as authoritative user feedback, but DEC-001 and explicit approval of the complete intended behavior remain pending.
+- Downstream architecture impact: Architecture/design must preserve a concise two-mode mental model and validate readability/model choice behavior, while owning exact source placement and edit boundaries.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
+- Next action or recipient: Present the simplified candidate collaboration block and obtain the user's DEC-001 choice and approval or revision feedback.

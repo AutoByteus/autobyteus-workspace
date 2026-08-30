@@ -9,7 +9,7 @@
 - Base or reference revision: `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Dedicated task worktree and branch created successfully; canonical draft artifacts created under `tickets/in-progress/send-message-delegate-task-semantics/`.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-003`
+- Current requirements revision ID: `RER-004`
 - Investigation status: Requirements visualization returned and integrated; package ready for user decision and approval
 
 ## Initial Request And Clarifications
@@ -19,6 +19,7 @@
 - User-supplied facts and constraints: `send_message_to` and `delegate_task` are distinct orchestration modes; `delegate_task` creates a task Agent or task AgentTeam instance; using delegation and then sending the same assignment again to the original mounted recipient is semantically wrong because that recipient definition/configured execution is not the task execution that owns the delegated work.
 - Initial ambiguity: The word “synchronous” may mean communication with an already existing/live recipient rather than blocking request/response timing. The phrase “first delegate task, later send a message again doesn't make sense” may mean (A) forbid redundant re-dispatch of the same work to the logical recipient, or (B) forbid every delegator-to-task-assignee ordinary follow-up. Current authoritative behavior explicitly permits genuine follow-up by exact run ID, so the distinction is material.
 - Later user request: On 2026-08-26 the user explicitly asked Requirements Engineering to send the requirement to Product Prototyper so they can review a visualized requirement before deciding/approving it.
+- Prompt-quality clarification: On 2026-08-30 the user emphasized that this system prompt is a decision interface for an LLM and must therefore be intuitive, straightforward, and free of ambiguity, rather than merely technically complete.
 
 ## Product And Domain Understanding
 
@@ -55,6 +56,7 @@
 | SRC-017 | 2026-08-26 | User | “Can you send a message to the product prototype? I want to see the visualized requirement.” | Apply the Product Experience Evidence Gate | User explicitly requests an interactive requirements visualization before approval | Classify `Requirements Visualization Needed` and send the focused cumulative package through dynamic handoff rules |
 | SRC-018 | 2026-08-26 | Product-owned artifact | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-review.md`; `prototype-ticket.md`; `validation-evidence.md` | Reconcile the returned requirements visualizer with the canonical package | `VIS-R04` covers existing-execution messaging, fresh-task delegation, wrong logical-address duplicate dispatch, DEC-001 Option A/B, identifier separation, formal lifecycle, and delegation failure; all content is illustrative and DEC-001 remains unapproved | Link the review package and present its URL to the user without inferring approval |
 | SRC-019 | 2026-08-30 | Command / Runtime | `npm run dev -- --host 0.0.0.0 --port 4179`; `http://127.0.0.1:4179` | Make returned exploratory evidence reviewable | Vite visualizer started successfully at the Product-owned review URL | Ask user to review and decide DEC-001 |
+| SRC-020 | 2026-08-30 | User | “This system prompt is very important for LLM... intuitive and understandable and straightforward... no ambiguity.” | Establish the required cognition and clarity standard for final Agent-facing copy | The contract must teach the tool-choice mental model directly; correctness hidden in technical or scattered prose is not sufficient | Add REQ-012, AC-012, and QR-005; keep requirements-process notation out of production copy |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -168,6 +170,7 @@
 3. The safe default is not “these tools can never both appear in one task lifecycle.” The current approved model deliberately composes them for genuine later clarification through `target_agent_run_id`. The required prohibition is dispatching the same work through both or treating logical-address messaging as task/failure/lifecycle fallback.
 4. Task submission/review separation must remain prominent because prior product history already showed agents confuse free-form lifecycle wording with formal actions.
 5. Provider parity and active documentation alignment are part of the requirement because ambiguous or stale secondary cues can undo a central prompt fix.
+6. Prompt structure is part of correctness for this change: begin with the two-mode choice in plain language, keep parallel cause-and-effect descriptions together, then add only the edge cases needed to prevent misuse. Internal requirement IDs and approval placeholders belong in requirements artifacts, never in the production collaboration block.
 
 ## Notes For Downstream Architecture Design
 

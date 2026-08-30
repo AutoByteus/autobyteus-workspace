@@ -3,11 +3,11 @@
 ## Document Status
 
 - Status: `Ready for Approval`
-- Current requirements revision ID: `RER-003`
+- Current requirements revision ID: `RER-004`
 - Request / ticket: Clarify and enforce the distinct orchestration semantics of `send_message_to` and `delegate_task`
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-30
-- Approval state and reference: Requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001 and explicit approval of the intended behavior remain pending
+- Approval state and reference: User confirmed on 2026-08-30 that the LLM-facing contract must be intuitive, straightforward, and unambiguous; requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001 and explicit approval of the complete intended behavior remain pending
 
 ## Problem And Desired Outcome
 
@@ -95,6 +95,7 @@
 | REQ-009 | Authoritative documentation and verification shall not contradict the current absolute-address, universal same-root, exact-run, fresh-execution, and task-lifecycle contracts. | BEH-006, BEH-007 | Should | Stale adjacent wording can reintroduce the same confusion for maintainers and prompt authors. | SRC-014 |
 | REQ-010 | The canonical distinction shall be expressed as existing-execution communication versus fresh task-execution creation/lifecycle, not as synchronous versus asynchronous transport timing. | BEH-002, BEH-003 | Must | The user's “synchronous” phrasing describes organizational intent; it is not established as an API timing contract. | User request; technical evidence |
 | REQ-011 | No provider-specific forced-tool selection, hidden fallback, combined orchestration tool, message-text classifier, or automatic duplicate call shall be introduced to compensate for ambiguous guidance. | BEH-001, BEH-006 | Must | Keeps intended behavior explicit and avoids adding an unapproved orchestration policy. | Scope decision |
+| REQ-012 | The collaboration block shall teach one intuitive two-mode mental model before selector or lifecycle detail: talk to an existing Agent/Team with `send_message_to`, or create a fresh task worker with `delegate_task`. It shall use plain, direct, parallel wording; keep each consequence and prohibition adjacent to the relevant tool; avoid internal requirement IDs, unresolved placeholders, and unexplained implementation jargon; and remain concise enough that the primary choice is immediately salient. | BEH-001–BEH-006 | Must | The system prompt is an LLM decision interface. Correct facts are insufficient if the model must infer the choice boundary from scattered or overly technical prose. | User clarification on 2026-08-30; SRC-020 |
 
 ## Acceptance Criteria
 
@@ -111,6 +112,7 @@
 | AC-009 | REQ-008 | Equivalent Team-member contexts are composed for AutoByteus, Codex, and Claude | Each receives one semantically identical Addressing/Collaboration contract and matching tool descriptions | No provider supplies a contradictory legacy instruction or alternate decision rule | Provider parity tests |
 | AC-010 | REQ-009 | Authoritative docs and tests are scanned after the change | Active docs and exact prompt/tool assertions agree with the approved semantic distinction and current selector/runtime behavior | Historical ticket evidence may remain historical when clearly marked; active contradictory guidance fails review | Documentation audit and targeted test review |
 | AC-011 | REQ-011 | Approved guidance is implemented | Existing tool names, inputs, outputs, routing, task states, and exposure remain unchanged; no auto-classifier/combined tool/forced provider policy appears | Any proposed runtime prohibition or schema change returns as a requirement gap | Diff/contract review |
+| AC-012 | REQ-001–REQ-005, REQ-012 | A Team-bound LLM receives only the collaboration block and representative ordinary-message, bounded-task, duplicate-dispatch, and task-lifecycle scenarios | From the block alone, the LLM can state the two modes, choose the correct tool, explain the execution/lifecycle consequence, and reject sending the same assignment through both; the visible prompt contains no internal decision IDs or unresolved placeholders | A prompt that is technically correct but requires inference across scattered paragraphs, leads to mixed-tool dispatch, or exposes requirements-process notation fails review | Exact-copy readability review plus representative configured-runtime evaluation |
 
 ## Relevant Scenarios And Journeys
 
@@ -146,6 +148,7 @@
 | QR-002 | Reliability | One bounded assignment scenario results in exactly one task activation and no redundant logical-address work delivery. | Representative planner/coordinator behavior | Task and message event evidence |
 | QR-003 | Other | Provider-shared wording is semantically identical and appears exactly once per Team-member system prompt. | AutoByteus, Codex, Claude | Exact parity assertions |
 | QR-004 | Operability | Active documentation contains no contradictory current guidance on relative/direct-child targeting or message-as-task behavior. | Current docs, excluding clearly historical ticket records | Documentation scan/review |
+| QR-005 | Other | The collaboration block exposes the core two-mode choice before edge cases and is independently sufficient for the representative tool-choice scenarios in AC-012. | All Team-bound LLM prompts | Prompt readability review and configured-runtime evaluation |
 
 ## Data Continuity And Acceptable Loss
 
@@ -202,6 +205,7 @@
 | REQ-009 | BEH-006, BEH-007 | AC-010 | SCN-007 | Investigation notes |
 | REQ-010 | BEH-002, BEH-003 | AC-001 | SCN-001–SCN-003 | Decision table terminology guardrail |
 | REQ-011 | BEH-001, BEH-006 | AC-011 | SCN-007 | Scope guardrail |
+| REQ-012 | BEH-001–BEH-006 | AC-001–AC-006, AC-012 | SCN-001–SCN-007 | User clarity direction; decision table; VIS-R04 cognition-first actor story |
 
 ## Downstream Architecture Input
 
