@@ -9,7 +9,7 @@
 - Base or reference revision: `personal` at `9d0fd7c570d58da1af2c7a40279327c8a20a8093`
 - Bootstrap result: Dedicated task worktree and branch created successfully; canonical draft artifacts created under `tickets/in-progress/send-message-delegate-task-semantics/`.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-011`
+- Current requirements revision ID: `RER-012`
 - Investigation status: Requirements visualization returned and integrated; package ready for user decision and approval
 
 ## Initial Request And Clarifications
@@ -27,6 +27,7 @@
 - Flat-result clarification: On 2026-08-30 the user clarified that `target_agent_run_id` should replace the top-level `result` field rather than be nested as `result.target_agent_run_id`.
 - Contract request: On 2026-08-30 the user requested a dedicated contract file that includes the exact proposed collaboration prompt.
 - Schema-alignment question: On 2026-08-30 the user asked whether the `send_message_to` and `delegate_task` schemas should be updated along with the prompt/result clarification.
+- Description-alignment clarification: On 2026-08-30 the user clarified that both the schemas and Agent-facing tool descriptions must be updated.
 
 ## Product And Domain Understanding
 
@@ -73,6 +74,7 @@
 | SRC-027 | 2026-08-30 | User / Code | User correction plus `agent-communication-tool-result.ts` usage scan | Resolve message success schema shape | User explicitly rejected nested dot notation. The `AgentCommunicationToolResultEnvelope` and its always-null `result` are used only by `send_message_to` native/MCP mapping in current source, so replacing that field with flat `target_agent_run_id` loses no existing successful payload while still requiring contract migration and parity updates | Refine REQ-014/AC-014 and DEC-002 to the flat field; require `null` on rejection |
 | SRC-028 | 2026-08-30 | User | “I think now you can create a contract file... add this exact prompt in the contract file as well.” | Establish the requested approval artifact | User wants one consolidated normative contract containing the exact LLM-facing copy rather than reconstructing it from requirements tables | Create `agent-team-collaboration-contract.md`, link it into the approval basis, and preserve architecture boundaries |
 | SRC-029 | 2026-08-30 | User / Code | User schema question plus `send-message-to-parameter-schema.ts`, `task-delegation-tool-parameter-schemas.ts`, `agent-tool-mcp-definition-provider.ts`, public result types, and MCP result mappers | Determine which schema surfaces must change | Input schemas already express distinct operations and should remain different. Public TypeScript result types/serialization must change for flat message identity. Current MCP definitions expose `inputSchema` only, while results flow through text/structured content without a declared output-schema field | Require one authoritative machine-readable result contract and identical native/MCP projection; leave exact output-schema owner/seam to architecture |
+| SRC-030 | 2026-08-30 | User | “I mean schema and also description... description as well.” | Confirm the complete LLM-facing contract surface | User requires both machine-readable schema/result alignment and updated tool/field descriptions; prompt-only or schema-only change is insufficient | Add exact tool descriptions to ATC-001 and require native/MCP/provider parity |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -164,7 +166,7 @@
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/orchestration-decision-table.md` | Requirements Engineering | Make the message/delegation/result/review choice concrete with examples | Contract semantics only | REQ-001–REQ-007, REQ-010; AC-001–AC-008 | Proposed | Behavior-defining; awaiting user approval |
-| `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/agent-team-collaboration-contract.md` | Requirements Engineering | Consolidate exact prompt copy, public result schemas, the four-case matrix, and normative invariants | Complete collaboration contract | REQ-001–REQ-016; AC-001–AC-016; DEC-001–DEC-002 | Proposed — Ready for User Approval | Primary behavior-defining exact-copy supplement; user approval required |
+| `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/agent-team-collaboration-contract.md` | Requirements Engineering | Consolidate exact prompt copy, exact tool descriptions, public result schemas, the four-case matrix, and normative invariants | Complete collaboration contract | REQ-001–REQ-017; AC-001–AC-017; DEC-001–DEC-002 | Proposed — Ready for User Approval | Primary behavior-defining exact-copy supplement; user approval required |
 | `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-brief.md` | Requirements Engineering | Define the focused exploratory question, scenarios, and review objective for Product Prototyper | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Delivered | Request brief; user approval applies to decisions later clarified, not to this brief as a final UI/UX spec |
 | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/requirements-visualization-review.md` | Product Design & Prototyping | Record the review-ready `VIS-R04` journey, evidence, and limitations | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Ready for user review | Exploratory evidence; does not itself approve behavior |
 | `/home/autobyteus/workspace/send-message-delegate-task-semantics-prototype/tickets/in-progress/send-message-delegate-task-semantics/visual-references` | Product Design & Prototyping | Preserve supporting screenshots of the explanatory states | Requirements Visualization only | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Available | Non-normative evidence; no final UI/UX approval applies |
@@ -192,6 +194,7 @@
 8. The current public tools are asymmetric: `delegate_task` exposes its fresh task ingress ID, while `send_message_to` exposes only delivery status/message and `result:null`. The user has approved replacing—not populating—the uninformative message `result` field with flat `target_agent_run_id`. This remains a public output-contract change and must be designed and verified proportionately rather than treated as prose only.
 9. AgentTeam wording must distinguish the created ownership boundary from the initial packet ingress: delegating to a Team spawns the whole fresh task Team instance/subtree, while that new Team's configured coordinator AgentRun receives the task packet and is returned as `target_agent_run_id`.
 10. Schema alignment applies to outputs and tool metadata, not artificial input unification. `send_message_to` and `delegate_task` intentionally require different inputs because one sends content and the other creates independently tracked work. The new message result and existing delegation result must share an authoritative machine-readable identity contract across native and MCP surfaces.
+11. Tool descriptions are a first-class LLM decision surface, not secondary documentation. Their summary and relevant field descriptions must repeat the same existing-instance/spawned-instance, Agent/Team coordinator, assignment-delivery, duplicate-dispatch, and returned-identity rules as the shared system prompt.
 
 ## Notes For Downstream Architecture Design
 

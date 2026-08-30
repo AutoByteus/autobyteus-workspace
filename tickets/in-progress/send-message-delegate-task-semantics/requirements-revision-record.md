@@ -17,6 +17,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-009 | User clarified that `target_agent_run_id` replaces `result` rather than nesting beneath it | Ready for Approval | Ready for Approval | BEH-008; REQ-014; AC-014; DEC-002 | Message output contract refined to flat top-level identity with no dot notation; rejection returns a null identity |
 | RER-010 | User requested one contract file containing the exact proposed prompt | Ready for Approval | Ready for Approval | REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002 | Added contract `ATC-001` as the primary exact-copy approval supplement |
 | RER-011 | User asked whether tool schemas should be updated with the clarified result contract | Ready for Approval | Ready for Approval | REQ-016; AC-016 | Required authoritative machine-readable result schemas/types and native/MCP/tool-description parity while preserving distinct input schemas |
+| RER-012 | User clarified that tool descriptions must update together with schemas | Ready for Approval | Ready for Approval | REQ-017; AC-017 | Added exact send/delegate summary and field-description semantics to ATC-001 and required provider parity |
 
 ## Revision Entries
 
@@ -184,3 +185,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: Architecture Designer must choose the authoritative result-schema/type owner and determine whether/how MCP output schema support is introduced, while preserving provider parity.
 - Remaining gaps, assumptions, or blocked decisions: Explicit approval or revision of contract `ATC-001`, including the exact-run clarification rule.
 - Next action or recipient: Explain that result schemas/tool descriptions must update while input schemas remain distinct, then obtain contract approval or revisions.
+
+### RER-012 — Exact Tool Description Alignment
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user clarified that Agent-facing descriptions must be updated in addition to schema/result contracts.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-011.
+- Current authoritative status: Ready for Approval.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: REQ-017; AC-017; REQ-008, REQ-012, and REQ-015–REQ-016 traceability.
+- Why this baseline or revision was recorded: Tool descriptions are shown to the LLM at selection time, so stale terse descriptions could override or weaken an otherwise clear system prompt.
+- Canonical artifact sections changed: Requirements, acceptance criteria, traceability, supplemental inventory, investigation intake/source log, supplement inventory, and requirement implications; ATC-001 exact tool descriptions and approval basis.
+- Supplemental artifacts added, changed, or removed: Updated `agent-team-collaboration-contract.md`; no new file added.
+- Prototype evidence or product decisions incorporated: None; this concerns textual tool contracts.
+- User approval impact: Exact proposed tool and field descriptions are now directly included in ATC-001's approval basis; full contract approval remains pending.
+- Downstream architecture impact: Architecture must preserve one authoritative description source and provider parity; implementation must update current shared description constants/manifests and their exact assertions.
+- Remaining gaps, assumptions, or blocked decisions: Explicit approval or revision of contract `ATC-001`, including the exact-run clarification rule.
+- Next action or recipient: Present the description additions and obtain contract approval or further wording revisions.

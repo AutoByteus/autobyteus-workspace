@@ -4,7 +4,7 @@
 
 - Contract ID: `ATC-001`
 - Status: `Proposed — Ready for User Approval`
-- Requirements revision: `RER-011`
+- Requirements revision: `RER-012`
 - Owner: Requirements Engineering
 - Scope: LLM-facing collaboration semantics, public success/failure identity results, and exact provider-shared collaboration prompt
 - Runtime architecture: Not defined by this contract
@@ -96,6 +96,48 @@ No fresh contactable task execution or `target_agent_run_id` exists when delegat
 - The input schemas remain intentionally different and must not be made artificially identical: `send_message_to` accepts exactly one message target selector plus message content; `delegate_task` accepts one logical `recipient_address` plus a complete task description and optional references.
 - Agent-facing tool descriptions must state the successful returned identity semantics so the tool metadata does not contradict or underspecify the system prompt.
 - The current MCP adapter definition type exposes only `inputSchema`. Downstream architecture must determine the authoritative machine-readable output-schema seam, but the result contract must not remain prose-only.
+
+## Exact Agent-Facing Tool Descriptions
+
+The shared tool descriptions and their native/MCP projections must use the following exact semantic content. Provider formatting may escape characters as required but must not change the meaning.
+
+### `send_message_to`
+
+```text
+Send one self-contained ordinary message to an already existing AgentRun. Use
+exactly one selector: recipient_address for one canonical absolute non-root
+logical Agent-or-AgentTeam address in the same rooted AgentTeam, or
+target_agent_run_id for one exact currently active AgentRun. An Agent address
+resolves to its mounted Agent execution; an AgentTeam address resolves to its
+mounted configured coordinator. This call creates no task or new execution.
+On success, it returns the exact existing AgentRun that accepted the message as
+flat target_agent_run_id; on rejection, target_agent_run_id is null.
+```
+
+Required selector descriptions:
+
+- `recipient_address`: `Canonical absolute non-root logical Agent-or-AgentTeam address beginning with '/'. Messaging an Agent reaches its existing mounted execution; messaging an AgentTeam reaches its existing mounted configured coordinator. This selector creates no new execution. Provide either recipient_address or target_agent_run_id, never both.`
+- `target_agent_run_id`: `Exact currently active AgentRun.runId to receive an ordinary message. This selector is live-only: inactive, preallocated, recoverable, lazy-startable, or unknown run IDs are rejected. Provide either target_agent_run_id or recipient_address, never both.`
+
+### `delegate_task`
+
+```text
+Spawn one fresh, independently tracked task execution for one mounted Agent or
+AgentTeam in the same rooted AgentTeam. recipient_address identifies the
+Agent or AgentTeam definition from which the task instance is spawned. An
+Agent target spawns one fresh task Agent and delivers the complete task packet
+to it. An AgentTeam target spawns one fresh task Team and delivers the complete
+task packet to that new Team's configured coordinator. The delegation call is
+both the task-creation and assignment step; do not resend the same work through
+send_message_to. On success, it returns task_id, status, and the fresh task
+ingress as target_agent_run_id.
+```
+
+Required task-field descriptions:
+
+- `recipient_address`: `Exact canonical absolute non-root address beginning with '/' for the mounted Agent or AgentTeam definition from which a fresh task instance will be spawned. Agent targets spawn a fresh task Agent. AgentTeam targets spawn a fresh task Team whose configured coordinator receives the task packet.`
+- `description`: `Complete ready-to-run task packet: objective, context, scope, constraints, done conditions, expected output, and reference guidance. delegate_task itself delivers this packet to the spawned task execution; do not resend it with send_message_to.`
+- `reference_files`: `Optional absolute local file paths the spawned task execution should inspect. Use full filesystem paths; relative paths and URLs are rejected.`
 
 ## Exact Provider-Shared Collaboration Prompt
 
@@ -212,6 +254,7 @@ Approval of this contract approves:
 - flat `send_message_to.target_agent_run_id` replacing the always-null `result` field;
 - preservation of `delegate_task.task_id`, `status`, and `target_agent_run_id` semantics;
 - authoritative machine-readable result schemas/types and identical native/MCP/tool-description projections while preserving distinct input schemas;
+- the exact Agent-facing tool descriptions and field-description semantics above;
 - genuinely new exact-run clarification after delegation as written in `Additional Task Clarification`;
 - the duplicate-dispatch and formal-lifecycle prohibitions.
 
