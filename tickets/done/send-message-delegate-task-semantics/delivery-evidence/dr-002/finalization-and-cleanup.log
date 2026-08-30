@@ -5,13 +5,13 @@ ticket_finalization_commit=b3e54e7d2b1952e9c9e7bf68b720e9023690c452
 + git status --short --branch
 ## codex/send-message-delegate-task-semantics
 + git push -u origin codex/send-message-delegate-task-semantics
-remote: 
-remote: Create a pull request for 'codex/send-message-delegate-task-semantics' on GitHub by visiting:        
-remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/send-message-delegate-task-semantics        
-remote: 
-remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:        
-remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
-remote: 
+remote:
+remote: Create a pull request for 'codex/send-message-delegate-task-semantics' on GitHub by visiting:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/send-message-delegate-task-semantics
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
 To https://github.com/AutoByteus/autobyteus-workspace.git
  * [new branch]          codex/send-message-delegate-task-semantics -> codex/send-message-delegate-task-semantics
 Branch 'codex/send-message-delegate-task-semantics' set up to track remote branch 'codex/send-message-delegate-task-semantics' from 'origin'.
@@ -286,10 +286,10 @@ Merge made by the 'ort' strategy.
 target_merge_commit=e24f4d17356b5f2a2b913a48596fee06e0b51af0
 + git diff-tree --check HEAD
 + git push origin personal
-remote: 
-remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:        
-remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
-remote: 
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
 To https://github.com/AutoByteus/autobyteus-workspace.git
    d1a399a59..e24f4d173  personal -> personal
 origin_personal_after_push=e24f4d17356b5f2a2b913a48596fee06e0b51af0
@@ -306,10 +306,10 @@ target_containment=yes
 + git branch -d codex/send-message-delegate-task-semantics
 Deleted branch codex/send-message-delegate-task-semantics (was b3e54e7d2).
 + git push origin --delete codex/send-message-delegate-task-semantics
-remote: 
-remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:        
-remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
-remote: 
+remote:
+remote: GitHub found 826 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 66 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
 To https://github.com/AutoByteus/autobyteus-workspace.git
  - [deleted]             codex/send-message-delegate-task-semantics
 + cleanup verification
