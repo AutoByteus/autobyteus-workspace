@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed behavior-defining supplement for user review. This table clarifies intent selection; it does not change the current tool input/output contracts or task lifecycle.
+Approved behavior-defining supplement. This table clarifies intent selection and must be read with contract `ATC-001`, which preserves the current tool inputs and task lifecycle while approving the narrow `send_message_to` output replacement of `result` with flat `target_agent_run_id`.
 
 ## Core Distinction
 
@@ -32,7 +32,7 @@ Proposed behavior-defining supplement for user review. This table clarifies inte
 ```json
 {
   "recipient_address": "/reviewer",
-  "content": "The requirements draft is ready at /workspace/requirements-doc.md. Please inspect the open decision."
+  "content": "The approved requirements package is ready at /workspace/requirements-doc.md. Please inspect it before the next stage."
 }
 ```
 

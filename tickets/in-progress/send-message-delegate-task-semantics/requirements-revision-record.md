@@ -18,6 +18,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-010 | User requested one contract file containing the exact proposed prompt | Ready for Approval | Ready for Approval | REQ-001–REQ-015; AC-001–AC-015; DEC-001–DEC-002 | Added contract `ATC-001` as the primary exact-copy approval supplement |
 | RER-011 | User asked whether tool schemas should be updated with the clarified result contract | Ready for Approval | Ready for Approval | REQ-016; AC-016 | Required authoritative machine-readable result schemas/types and native/MCP/tool-description parity while preserving distinct input schemas |
 | RER-012 | User clarified that tool descriptions must update together with schemas | Ready for Approval | Ready for Approval | REQ-017; AC-017 | Added exact send/delegate summary and field-description semantics to ATC-001 and required provider parity |
+| RER-013 | User explicitly approved the requirements and affirmed prompt/tool/schema-description consistency | Ready for Approval | Approved | REQ-001–REQ-017; AC-001–AC-017; DEC-001–DEC-002 | Approved ATC-001 and the complete package; selected DEC-001 Option A; readiness passed; classified `Approved Architecture-Ready` |
 
 ## Revision Entries
 
@@ -200,3 +201,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: Architecture must preserve one authoritative description source and provider parity; implementation must update current shared description constants/manifests and their exact assertions.
 - Remaining gaps, assumptions, or blocked decisions: Explicit approval or revision of contract `ATC-001`, including the exact-run clarification rule.
 - Next action or recipient: Present the description additions and obtain contract approval or further wording revisions.
+
+### RER-013 — Final Requirements Approval And Architecture Routing
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user stated, “I approve now the requirement,” and affirmed that combining the shared prompt with consistent individual-tool and schema descriptions would improve LLM understanding.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-012.
+- Current authoritative status: Approved; outcome `Approved Architecture-Ready`.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: Complete package BEH-001–BEH-008; REQ-001–REQ-017; AC-001–AC-017; SCN-001–SCN-007; DEC-001–DEC-002.
+- Why this baseline or revision was recorded: Capture explicit approval, resolve the remaining clarification policy, pass the readiness gate, and record the required downstream routing assessment.
+- Canonical artifact sections changed: Document status and approval reference; preserved behavior; REQ-004/AC-004 decision references; UI/visualizer evidence; supplemental statuses; assumptions; decision record; downstream input; readiness; Architecture Design Routing Assessment; corresponding investigation status, source log, evidence, risks, and downstream notes.
+- Supplemental artifacts added, changed, or removed: Marked `agent-team-collaboration-contract.md` (`ATC-001`) and `orchestration-decision-table.md` approved; no artifact added or removed.
+- Prototype evidence or product decisions incorporated: DEC-001 Option A selected—genuinely new clarification may use the returned exact active task ingress, while duplicate packet delivery and logical-address aliasing remain prohibited. `VIS-R04` remains exploratory evidence rather than a normative final UI/UX artifact.
+- User approval impact: The complete intended behavior, exact prompt, exact tool/field descriptions, flat message identity result, and schema/result parity requirements are approved. No material product decision remains open.
+- Downstream architecture impact: Preliminary size `Medium`, preliminary architectural risk `High`, and a confirmed external-contract structural trigger require the Architecture Designer route. Architecture owns the authoritative result-schema seam, target structure, and final size/risk classification.
+- Remaining gaps, assumptions, or blocked decisions: No requirements blocker. Implementation/design risks include provider parity, public result compatibility, prompt salience, and configured-runtime behavioral verification.
+- Next action or recipient: Persist the approved package, obtain dynamic handoff rules, and route `ATC-001` to Architecture Designer as `Approved Architecture-Ready`.

@@ -3,12 +3,12 @@
 ## Contract Status
 
 - Contract ID: `ATC-001`
-- Status: `Proposed — Ready for User Approval`
-- Requirements revision: `RER-012`
+- Status: `Approved`
+- Requirements revision: `RER-013`
 - Owner: Requirements Engineering
 - Scope: LLM-facing collaboration semantics, public success/failure identity results, and exact provider-shared collaboration prompt
 - Runtime architecture: Not defined by this contract
-- Open approval item: The exact prompt below uses the recommended rule that genuinely new clarification may be sent to the exact active task ingress returned by successful delegation. This behavior remains subject to the user's final package approval.
+- Approval reference: Explicitly approved by the user on 2026-08-30 together with the complete requirements package. The approval includes the exact prompt, exact tool and field descriptions, schema/result alignment, flat message receiver identity, and genuinely new clarification through the returned exact active task ingress.
 
 ## Purpose
 
