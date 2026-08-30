@@ -1,0 +1,9 @@
+timestamp_utc=2026-08-30T13:04:23Z
++ git cat-file --batch-check
+efc0e81d1567e4658f15dac8896de1807825db4b tree 1310
++ git cat-file -p | git hash-object -t tree --stdin
+recalculated_tree_oid=efc0e81d1567e4658f15dac8896de1807825db4b
++ git rev-list --objects --all --reflog (reachability search)
+efc0e81d1567e4658f15dac8896de1807825db4b tickets/in-progress
++ git fsck --strict --no-dangling <object>
+object_health_exit=0

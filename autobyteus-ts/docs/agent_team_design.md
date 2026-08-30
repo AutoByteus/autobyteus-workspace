@@ -18,11 +18,16 @@ team-scoped communication rosters, or team stream rebroadcasting.
   the server with `MemberTeamContext`-derived instructions and primitive
   `customData.teamContext` fields.
 - The public agent communication tool name remains `send_message_to`, but the
-  implementation is server-owned. `recipient_name` delivery runs through
-  `TeamRun` / `MixedTeamManager`; exact active-run `target_agent_run_id`
-  delivery runs through the server `agent-communication` direct route. Neither
-  path is implemented by native AutoByteus team classes.
+  implementation is server-owned. Canonical absolute non-root
+  `recipient_address` delivery contacts an existing mounted Agent or mounted
+  AgentTeam coordinator through `TeamRun` / `MixedTeamManager`; exact active-run
+  `target_agent_run_id` delivery runs through the server `agent-communication`
+  direct route. Accepted delivery returns that exact existing receiver as flat
+  `target_agent_run_id`; rejection returns null identity. Neither path is
+  implemented by native AutoByteus team classes.
 - Server-managed task delegation (`delegate_task`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
+  `delegate_task` spawns one fresh task execution and returns its exact ingress;
+  it is not an alias for or fallback form of ordinary messaging.
   Native personal ToDo tools are not part of `autobyteus-ts`; agents that need
   personal task tracking can use existing file tools and skills to maintain a
   workspace task file.

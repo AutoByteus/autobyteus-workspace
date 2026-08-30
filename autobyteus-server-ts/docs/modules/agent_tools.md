@@ -94,11 +94,12 @@ send-message wrappers/handlers.
 
 `send_message_to` accepts exactly one target selector:
 
-- `recipient_address` for a rooted `/...` or immediate-Team-relative `./...`
-  logical Agent-or-Team address. Bare names are invalid. This selector requires
-  a current `MemberTeamContext`, routes through root Team placement/delivery,
-  and is the path that creates Team Communication projection and message-owned
-  `reference_files`. A Team address targets its exact coordinator ingress.
+- `recipient_address` for one canonical absolute non-root `/...` logical
+  Agent-or-AgentTeam address. Relative addresses, the structural root `/`, and
+  bare names are invalid. This selector requires a current `MemberTeamContext`,
+  routes through root Team placement/delivery, and is the path that creates Team
+  Communication projection and message-owned `reference_files`. An AgentTeam
+  address targets its mounted configured coordinator ingress.
 - `target_agent_run_id` for an exact currently active `AgentRun.runId`. This
   selector routes through `AgentRunManager.getActiveRun(...)`, rejects inactive,
   unknown, preallocated-only, recoverable-only, or lazy-startable-only ids, posts
@@ -126,8 +127,11 @@ Agent with collaboration context. It returns `{ handoffs }`, where every entry
 is one ordered `{ when, recipient_address }` rule. It succeeds with an empty
 list when no edge exists, does not authorize delivery, and rejects missing Team
 context. `send_message_to` separately returns the canonical
-`{accepted,code,message,result}` operation envelope. The AutoByteus and MCP
-surfaces preserve each tool's own result shape.
+`{accepted,code,message,target_agent_run_id}` operation result. Accepted calls
+return the exact existing AgentRun that accepted the message; rejected calls
+return `target_agent_run_id:null`. The removed generic `result` field is not a
+compatibility surface. AutoByteus JSON and MCP text/structured results preserve
+the same strict shape.
 
 ## Server-Hosted Agent Tools MCP Server
 
@@ -204,8 +208,9 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   framework-driven auto-acceptance to compensate for model/prompt behavior.
 
 All task-delegation tool calls must be bound to an active team run and current
-member identity. `delegate_task` resolves required `recipient_address` through the
-same `/...` / `./...` logical placement authority as `send_message_to`, then
+member identity. `delegate_task` resolves required canonical absolute non-root
+`recipient_address` through the same logical placement authority as
+`send_message_to`, then
 applies task-owned eligibility before reserving a task id. The resolved target
 must be a direct Agent or AgentTeam child of the caller's immediate Team; self,
 deeper, and cross-branch placements are rejected for task activation even though
@@ -224,6 +229,23 @@ are delegated through additional `delegate_task` calls. Bound task-agents and
 task-team ingress contexts submit reviewable output with `submit_task_result`;
 the tool accepts only `message` and optional `reference_files` because the task
 is inferred from the caller's bound execution context.
+
+The two collaboration modes are intentionally not interchangeable.
+`send_message_to` contacts an already existing mounted Agent execution or
+mounted AgentTeam coordinator and creates no task. `delegate_task` spawns one
+fresh independently tracked task execution and delivers the complete task packet
+as the creation/assignment call. The same work packet must not be resent through
+`send_message_to`.
+
+Successful `delegate_task` returns
+`{task_id,status:"active",target_agent_run_id}`, where
+`target_agent_run_id` is the fresh task Agent or fresh task Team coordinator
+ingress. A `not_started` result returns `{task_id,status:"not_started",message}`
+and omits `target_agent_run_id` because no contactable task execution exists.
+The original logical `recipient_address` remains the mounted definition, not an
+alias for the fresh task execution. Genuinely new clarification can target the
+returned exact active run; formal output and review still use
+`submit_task_result` and `review_task_result`.
 
 `reference_files` on `delegate_task`, `submit_task_result`, and
 `review_task_result` are explicit absolute local filesystem paths only. Callers

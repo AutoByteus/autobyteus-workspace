@@ -224,6 +224,13 @@ Malformed JSON, invalid JSON-RPC envelopes, unsupported protocol versions, bad
 content negotiation, failed local admission, and unavailable sessions fail
 before tool execution.
 
+The supported MCP protocol versions are `2025-03-26`, `2025-06-18`, and
+`2025-11-25`. For `2025-03-26`, `tools/list` omits `outputSchema`. For the two
+later revisions, operation-owned Zod result contracts are projected as legal
+object-root output schemas. When an output schema is advertised, the tool call
+returns matching object `structuredContent`; its MCP text item is JSON for that
+exact same object.
+
 ## Supported Tool Families
 
 `AgentToolMcpCatalog` is adapter-backed for server-owned tool families and
@@ -255,8 +262,8 @@ Family-specific behavior remains owned by the existing family services and
 manifests:
 
 - `send_message_to` delegates to the shared `SendMessageToDispatcher`.
-  `recipient_address` requires an active `MemberTeamContext` and a rooted `/...` or
-  immediate-Team-relative `./...` logical Agent-or-Team address;
+  `recipient_address` requires an active `MemberTeamContext` and one canonical
+  absolute non-root `/...` logical Agent-or-AgentTeam address;
   `target_agent_run_id` is a live-only exact active-run selector.
 - `get_handoff_rules` delegates to the shared read-only service, takes no
   arguments, and is available only when the sender has active member
@@ -283,18 +290,22 @@ manifests:
   run id and uses session execution context as fallback runtime context for
   workspace, memory, and application-scoped publication.
 
-The MCP result mapper returns standard MCP text content and sets `isError` when
-the shared `AgentOperationResult` is not accepted. Configured MCP-origin tools
-may also return raw MCP tool results; their `content`, `isError`,
-`structuredContent`, and `_meta` fields are preserved for the provider runtime.
-This raw envelope behavior is the MCP protocol boundary and must not be changed
-by application-facing result projection.
+Server-owned structured-JSON adapters validate their operation result first,
+serialize it once, parse that serialization into object `structuredContent`, and
+return the same JSON in MCP text. `send_message_to` exposes
+`{accepted,code,message,target_agent_run_id}`: success contains the exact
+existing AgentRun receiver, while rejection uses `target_agent_run_id:null` and
+sets `isError:true`. `delegate_task` exposes either the active
+`{task_id,status,target_agent_run_id}` branch for the fresh task ingress or the
+`{task_id,status:"not_started",message}` branch with no target identity.
+`get_handoff_rules` retains its own `{handoffs}` object. The removed generic
+communication-result envelope/mapper is not retained as a compatibility path,
+and exact operation codes are not collapsed into provider-specific prose.
 
-Agent communication adapters use their dedicated mapper so `send_message_to`
-and `get_handoff_rules` expose the exact same
-`{accepted,code,message,result}` object in MCP text and `structuredContent`.
-Their `isError` flag is `true` only for rejected outcomes, and exact operation
-codes are not collapsed into provider-specific prose.
+Configured MCP-origin tools may also return raw MCP tool results; their
+`content`, `isError`, `structuredContent`, and `_meta` fields are preserved for
+the provider runtime. This raw envelope behavior is the MCP protocol boundary
+and must not be changed by application-facing result projection.
 
 For Codex App Server and Claude Agent SDK, route-backed Agent Tools MCP
 lifecycle events are normalized to canonical application-facing tool names such

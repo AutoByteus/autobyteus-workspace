@@ -32,10 +32,17 @@ import {
 } from "../helpers/live-runtime-secret-vault-helpers.js";
 
 const codexBinaryReady = process.env.RUN_CODEX_E2E === "1" || spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
+const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
 const liveMixedTaskDelegationEnabled =
   process.env.RUN_MIXED_TASK_DELEGATION_E2E === "1" ||
   (process.env.RUN_LMSTUDIO_E2E === "1" && process.env.RUN_CODEX_E2E === "1");
 const describeLive = codexBinaryReady && liveMixedTaskDelegationEnabled ? describe : describe.skip;
+const liveThreeProviderChoiceEnabled =
+  claudeBinaryReady &&
+  process.env.RUN_LMSTUDIO_E2E === "1" &&
+  process.env.RUN_CODEX_E2E === "1" &&
+  process.env.RUN_CLAUDE_E2E === "1";
+const itThreeProviderChoice = liveThreeProviderChoiceEnabled ? it : it.skip;
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
 
@@ -70,8 +77,13 @@ const waitForMessageAfter = async (
 ): Promise<WsMessage> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const match = messages.slice(startIndex).find(predicate);
+    const window = messages.slice(startIndex);
+    const match = window.find(predicate);
     if (match) return match;
+    const runtimeError = window.find((message) => message.type === "ERROR");
+    if (runtimeError) {
+      throw new Error(`Runtime error while waiting for '${label}': ${JSON.stringify(runtimeError.payload)}`);
+    }
     await wait(500);
   }
   const preview = messages.slice(-30).map((message) => `${message.type}:${JSON.stringify(message.payload).slice(0, 220)}`).join(" | ");
@@ -117,10 +129,72 @@ const sendToolApproval = (
 };
 
 const resolveToolArguments = (payload: Record<string, unknown>): Record<string, unknown> => {
-  const value = payload.arguments;
+  const metadata = payload.metadata && typeof payload.metadata === "object" && !Array.isArray(payload.metadata)
+    ? payload.metadata as Record<string, unknown>
+    : null;
+  const value = metadata?.arguments ?? payload.arguments;
   return value && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
     : {};
+};
+
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;
+
+const resolveToolResult = (payload: Record<string, unknown>): Record<string, unknown> | null => {
+  if (typeof payload.result === "string") {
+    try {
+      return asRecord(JSON.parse(payload.result));
+    } catch {
+      return null;
+    }
+  }
+  const result = asRecord(payload.result);
+  if (!result) return null;
+  const structuredContent = asRecord(result.structuredContent);
+  if (structuredContent) return structuredContent;
+  const content = Array.isArray(result.content) ? result.content : [];
+  for (const item of content) {
+    const record = asRecord(item);
+    if (typeof record?.text !== "string") continue;
+    try {
+      const parsed = asRecord(JSON.parse(record.text));
+      if (parsed) return parsed;
+    } catch {
+      // Continue to any remaining content item.
+    }
+  }
+  return "status" in result || "accepted" in result ? result : null;
+};
+
+const canonicalToolName = (payload: Record<string, unknown>): string => {
+  const value = typeof payload.tool_name === "string"
+    ? payload.tool_name
+    : typeof asRecord(payload.metadata)?.tool_name === "string"
+      ? String(asRecord(payload.metadata)?.tool_name)
+      : "";
+  return value.toLowerCase().split("__").at(-1) ?? value.toLowerCase();
+};
+
+const waitForAgentIdle = async (
+  messages: WsMessage[],
+  startIndex: number,
+  agentRunId: string,
+  label: string,
+  timeoutMs = 240_000,
+): Promise<void> => {
+  await waitForMessageAfter(
+    messages,
+    startIndex,
+    (message) =>
+      message.type === "AGENT_STATUS" &&
+      message.payload.agent_run_id === agentRunId &&
+      message.payload.status === "idle",
+    label,
+    timeoutMs,
+  );
 };
 
 const approveToolAndWait = async (
@@ -404,9 +478,12 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     expect(toolNames).not.toContain("delegate_tasks");
 
     const delegateTool = result.tools.find((tool) => tool.name === "delegate_task");
-    expect(delegateTool?.description).toContain("Delegate one ready-to-run task");
-    expect(delegateTool?.description).toContain("one exact canonical absolute non-root address");
-    expect(delegateTool?.description).toContain("fresh task Team through its configured coordinator");
+    expect(delegateTool?.description).toContain("Spawn one fresh, independently tracked task execution");
+    expect(delegateTool?.description).toContain("recipient_address identifies the");
+    expect(delegateTool?.description).toContain("fresh task Team");
+    expect(delegateTool?.description).toContain("new Team's configured coordinator");
+    expect(delegateTool?.description).toContain("do not resend the same work through");
+    expect(delegateTool?.description).toContain("target_agent_run_id");
     expect(JSON.stringify(delegateTool)).not.toContain("Do not pass");
     expect(JSON.stringify(delegateTool)).not.toContain("completion_criteria");
     expect(delegateTool?.argumentSchema?.parameters.map((parameter) => parameter.name)).toEqual([
@@ -431,6 +508,35 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     const models = result.providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels.map((model) => model.modelIdentifier).filter(Boolean));
     const selected = selector(models);
     if (!selected) throw new Error(`No matching model for ${runtimeKind}. Available models: ${models.join(", ")}`);
+    return selected;
+  };
+
+  const fetchLmStudioModelIdentifier = async (): Promise<string> => {
+    const result = await execGraphql<{
+      ensureProviderModelCatalog: {
+        llmModels: Array<{ modelIdentifier: string }>;
+      };
+    }>(
+      `mutation EnsureLmStudio($providerId: String!, $runtimeKind: String) {
+        ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) {
+          llmModels { modelIdentifier }
+        }
+      }`,
+      { providerId: "LMSTUDIO", runtimeKind: RuntimeKind.AUTOBYTEUS },
+    );
+    const models = result.ensureProviderModelCatalog.llmModels
+      .map((model) => model.modelIdentifier)
+      .filter(Boolean);
+    const exact = process.env.LMSTUDIO_MODEL_ID?.trim();
+    const fragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || DEFAULT_LMSTUDIO_TEXT_MODEL;
+    const selected = exact && models.includes(exact)
+      ? exact
+      : models.find((model) => model.includes(fragment)) ??
+        models.find((model) => !model.toLowerCase().includes("vl")) ??
+        null;
+    if (!selected) {
+      throw new Error(`No matching LM Studio model. Available models: ${models.join(", ")}`);
+    }
     return selected;
   };
 
@@ -459,12 +565,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   it("AutoByteus coordinator delegates work and reviews a concrete task-agent result/revision cycle", async () => {
     const unique = randomUUID();
     await assertDelegateTaskCatalogExposure();
-    const autoByteusModel = await fetchModelIdentifier(RuntimeKind.AUTOBYTEUS, (models) => {
-      const exact = process.env.LMSTUDIO_MODEL_ID?.trim();
-      if (exact && models.includes(exact)) return exact;
-      const fragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || DEFAULT_LMSTUDIO_TEXT_MODEL;
-      return models.find((model) => model.includes(fragment) && model.includes("lmstudio")) ?? models.find((model) => model.toLowerCase().includes("qwen"));
-    });
+    const autoByteusModel = await fetchLmStudioModelIdentifier();
     const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "mixed-task-delegation-e2e-"));
     createdWorkspaceRoots.add(workspaceRootPath);
     const initialResultToken = `LIVE_MIXED_TASK_DELEGATION_INITIAL_RESULT_${unique}`;
@@ -575,7 +676,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
             !Object.prototype.hasOwnProperty.call(args, "tasks"),
         timeoutMs: 240_000,
       });
-      await waitForMessageAfter(connection.messages, startIndex, (message) =>
+      const delegateSucceeded = await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_run_id === coordinatorMember?.agentRunId && message.payload.tool_name === "delegate_task",
         "coordinator delegate_task success", 240_000,
       );
@@ -586,6 +687,11 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       const activationPayload = requireTaskEventPayload(activation, "TASK_AGENT_ACTIVATED");
       const taskId = activationPayload.task.task_id;
       const taskAgentRunId = activationPayload.execution.agent_run_id;
+      expect(resolveToolResult(delegateSucceeded.payload)).toEqual({
+        task_id: taskId,
+        status: "active",
+        target_agent_run_id: taskAgentRunId,
+      });
       expect(activationPayload).toMatchObject({
         parent_team_run_id: teamRunId,
         execution: {
@@ -731,12 +837,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   it("AutoByteus coordinator delegates to an agent-team target with the same visible activation copy", async () => {
     const unique = randomUUID();
     await assertDelegateTaskCatalogExposure();
-    const autoByteusModel = await fetchModelIdentifier(RuntimeKind.AUTOBYTEUS, (models) => {
-      const exact = process.env.LMSTUDIO_MODEL_ID?.trim();
-      if (exact && models.includes(exact)) return exact;
-      const fragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || DEFAULT_LMSTUDIO_TEXT_MODEL;
-      return models.find((model) => model.includes(fragment) && model.includes("lmstudio")) ?? models.find((model) => model.toLowerCase().includes("qwen"));
-    });
+    const autoByteusModel = await fetchLmStudioModelIdentifier();
     const requestedCodexModel = process.env.CODEX_E2E_TASK_DELEGATION_MODEL?.trim() || "gpt-5.5";
     const codexModel = await fetchModelIdentifier(RuntimeKind.CODEX_APP_SERVER, (models) =>
       models.includes(requestedCodexModel) ? requestedCodexModel : null,
@@ -750,8 +851,8 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     const coordinatorAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-team-coordinator-${unique}`,
       description: "AutoByteus coordinator for live task-team target activation E2E.",
-      toolNames: ["delegate_task"],
-      instructions: "If the user asks you to call delegate_task with exact JSON arguments, call delegate_task exactly once with those exact arguments and do not call any other tool. Do not explore the environment.",
+      toolNames: ["send_message_to", "delegate_task"],
+      instructions: "If the user asks you to call send_message_to or delegate_task with exact JSON arguments, call only that requested tool exactly once with those exact arguments. Do not explore the environment.",
     });
     const teamLeadAgentDefinitionId = await createAgentDefinition({
       name: `mixed-task-team-lead-${unique}`,
@@ -863,6 +964,52 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     };
     const connection = await openTeamSocket(teamRunId);
     try {
+      const logicalMessageStartIndex = connection.messages.length;
+      const logicalMessageArgs = {
+        recipient_address: `/${teamTargetRouteKey}`,
+        content: `Mounted Team ingress identity check ${unique}. No task is requested.`,
+      };
+      sendTeamMessageOverSocket(connection.socket, {
+        agentRunId: coordinatorMember?.agentRunId as string,
+        content: `Call send_message_to exactly once now with these exact JSON arguments: ${JSON.stringify(logicalMessageArgs)}. Do not call any other tool.`,
+      });
+      await approveToolAndWait(connection.socket, connection.messages, logicalMessageStartIndex, {
+        agentRunId: coordinatorMember?.agentRunId as string,
+        toolName: "send_message_to",
+        reason: "approved by mounted AgentTeam ingress e2e",
+        label: "coordinator send_message_to to mounted AgentTeam",
+        argumentPredicate: (args) =>
+          args.recipient_address === logicalMessageArgs.recipient_address &&
+          args.content === logicalMessageArgs.content &&
+          !Object.prototype.hasOwnProperty.call(args, "target_agent_run_id"),
+        timeoutMs: 240_000,
+      });
+      const logicalMessageSucceeded = await waitForMessageAfter(
+        connection.messages,
+        logicalMessageStartIndex,
+        (message) =>
+          message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+          message.payload.agent_run_id === coordinatorMember?.agentRunId &&
+          canonicalToolName(message.payload) === "send_message_to",
+        "mounted AgentTeam send_message_to success",
+        240_000,
+      );
+      const logicalMessageResult = resolveToolResult(logicalMessageSucceeded.payload);
+      expect(logicalMessageResult).toMatchObject({
+        accepted: true,
+        target_agent_run_id: teamLeadMember?.agentRunId,
+      });
+      expect(logicalMessageResult).not.toHaveProperty("result");
+      await waitForAgentIdle(
+        connection.messages,
+        logicalMessageStartIndex,
+        coordinatorMember?.agentRunId as string,
+        "coordinator idle after mounted AgentTeam message",
+      );
+      expect(connection.messages.slice(logicalMessageStartIndex).filter((message) =>
+        taskEventPayload(message) !== null,
+      )).toEqual([]);
+
       const startIndex = connection.messages.length;
       sendTeamMessageOverSocket(connection.socket, {
         agentRunId: coordinatorMember?.agentRunId as string,
@@ -882,7 +1029,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
             !Object.prototype.hasOwnProperty.call(args, "tasks"),
         timeoutMs: 240_000,
       });
-      await waitForMessageAfter(connection.messages, startIndex, (message) =>
+      const delegateSucceeded = await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_run_id === coordinatorMember?.agentRunId && message.payload.tool_name === "delegate_task",
         "coordinator delegate_task team-target success", 240_000,
       );
@@ -904,6 +1051,13 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         ? taskTeamLeadExecution.agent_run_id
         : null;
       expect(taskTeamLeadRunId).toBeTruthy();
+      expect(resolveToolResult(delegateSucceeded.payload)).toEqual({
+        task_id: taskId,
+        status: "active",
+        target_agent_run_id: taskTeamLeadRunId,
+      });
+      expect(taskTeamLeadRunId).not.toBe(taskTeamRunId);
+      expect(taskTeamLeadRunId).not.toBe(teamLeadMember?.agentRunId);
       expect(activationPayload).toMatchObject({
         parent_team_run_id: teamRunId,
         execution: {
@@ -920,28 +1074,333 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
           updates: [],
         },
       });
-      await waitForSingleTaskNotificationSurface(connection.messages, startIndex, {
-        agentRunId: taskTeamLeadRunId as string,
-        contentSnippets: [
-          "You have a new task.",
-          `Task ID: ${taskId}`,
-          teamTaskDescription,
-          "Reference files:",
-          "- None specified",
-        ],
-        duplicateContentSnippets: [`Task ID: ${taskId}`, teamTaskDescription],
-        forbiddenContentSnippets: [
-          ...TASK_NOTIFICATION_FORBIDDEN_VISIBLE_SNIPPETS,
-          taskTeamRunId,
-          "coordinator",
-          teamTargetRouteKey,
-          "team_lead",
-        ],
-        label: "task-team target activation",
-        timeoutMs: 180_000,
-      });
+      // The root Team stream owns the durable TASK_TEAM_ACTIVATED projection above;
+      // the fresh task Team lead has its own run stream, so a synthetic SYSTEM_TASK
+      // copy is neither emitted nor observable on this parent connection.
     } finally {
       connection.socket.close();
     }
   }, 480_000);
+
+  itThreeProviderChoice(
+    "uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch",
+    async () => {
+      const unique = randomUUID();
+      const autoByteusModel = await fetchLmStudioModelIdentifier();
+      const codexModel = await fetchModelIdentifier(RuntimeKind.CODEX_APP_SERVER, (models) => {
+        const override = process.env.CODEX_E2E_TOOL_MODEL?.trim();
+        if (override && models.includes(override)) return override;
+        return ["gpt-5.4-mini", "gpt-5.5", "gpt-5.3-codex", "gpt-5.2-codex"]
+          .find((candidate) => models.includes(candidate)) ??
+          models.find((model) => model.toLowerCase().includes("codex")) ?? null;
+      });
+      const claudeModel = await fetchModelIdentifier(RuntimeKind.CLAUDE_AGENT_SDK, (models) => {
+        const override = process.env.CLAUDE_E2E_TOOL_MODEL?.trim();
+        if (override && models.includes(override)) return override;
+        return ["haiku", "sonnet", "opus"].find((candidate) => models.includes(candidate)) ?? models[0] ?? null;
+      });
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "collaboration-intent-choice-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+      const coordinatorInstructions = [
+        "Act only on the user's current collaboration intent.",
+        "Use only the collaboration tools exposed to you and make at most one collaboration tool call per user request.",
+        "Do not explore the environment, run diagnostics, or invent a second dispatch.",
+        "After a tool call, report its outcome briefly without making another tool call.",
+      ].join("\n");
+      const coordinatorSpecs = [
+        { name: "auto_coordinator", runtimeKind: RuntimeKind.AUTOBYTEUS, model: autoByteusModel },
+        { name: "codex_coordinator", runtimeKind: RuntimeKind.CODEX_APP_SERVER, model: codexModel },
+        { name: "claude_coordinator", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, model: claudeModel },
+      ] as const;
+      const coordinatorDefinitionIds = new Map<string, string>();
+      for (const spec of coordinatorSpecs) {
+        coordinatorDefinitionIds.set(spec.name, await createAgentDefinition({
+          name: `intent-${spec.name}-${unique}`,
+          description: `${spec.runtimeKind} coordinator for shared collaboration intent evaluation.`,
+          toolNames: ["send_message_to", "delegate_task"],
+          instructions: coordinatorInstructions,
+        }));
+      }
+      const workerDefinitionId = await createAgentDefinition({
+        name: `intent-worker-${unique}`,
+        description: "Passive worker for collaboration intent and exact clarification evaluation.",
+        toolNames: [],
+        instructions: [
+          "When a delegated task arrives, remain available for genuinely new clarification.",
+          "Do not call submit_task_result, send_message_to, delegate_task, or any other tool.",
+          "Do not claim the task is complete. Reply briefly and wait.",
+        ].join("\n"),
+      });
+
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        `mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }`,
+        { input: {
+          name: `collaboration-intent-choice-${unique}`,
+          description: "Configured AutoByteus, Codex, and Claude collaboration intent evaluation.",
+          instructions: "Each coordinator independently follows the provider-shared AgentTeam collaboration contract.",
+          coordinatorMemberName: "auto_coordinator",
+          nodes: [
+            ...coordinatorSpecs.map((spec) => ({
+              memberName: spec.name,
+              ref: coordinatorDefinitionIds.get(spec.name),
+              refType: "AGENT",
+              refScope: "SHARED",
+            })),
+            { memberName: "worker", ref: workerDefinitionId, refType: "AGENT", refScope: "SHARED" },
+          ],
+        } },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const runResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(
+        `mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }`,
+        { input: {
+          teamDefinitionId,
+          teamConfigs: [{
+            teamAddress: "/",
+            llmModelIdentifier: autoByteusModel,
+            autoExecuteTools: true,
+            skillAccessMode: "NONE",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            workspaceRootPath,
+          }],
+          memberConfigs: [
+            ...coordinatorSpecs.map((spec) => ({
+              memberAddress: `/${spec.name}`,
+              agentDefinitionId: coordinatorDefinitionIds.get(spec.name),
+              llmModelIdentifier: spec.model,
+              autoExecuteTools: true,
+              skillAccessMode: "NONE",
+              runtimeKind: spec.runtimeKind,
+              workspaceRootPath,
+              ...(spec.runtimeKind === RuntimeKind.AUTOBYTEUS
+                ? { llmConfig: buildCoordinatorLlmConfig(spec.model) }
+                : {}),
+            })),
+            {
+              memberAddress: "/worker",
+              agentDefinitionId: workerDefinitionId,
+              llmModelIdentifier: autoByteusModel,
+              autoExecuteTools: false,
+              skillAccessMode: "NONE",
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+              workspaceRootPath,
+              llmConfig: { temperature: 0 },
+            },
+          ],
+        } },
+      );
+      expect(runResult.createAgentTeamRun.success, runResult.createAgentTeamRun.message).toBe(true);
+      const teamRunId = runResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+      const resume = await execGraphql<{ getTeamRunResumeConfig: { executionTree: Record<string, unknown> } }>(
+        E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT,
+        { teamRunId },
+      );
+      const members = flattenE2eConfiguredAgentExecutions(resume.getTeamRunResumeConfig.executionTree);
+      const memberByAddress = new Map(members.map((member) => [member.memberAddress, member]));
+      const worker = memberByAddress.get("/worker");
+      expect(worker?.agentRunId).toBeTruthy();
+      for (const spec of coordinatorSpecs) {
+        expect(memberByAddress.get(`/${spec.name}`)).toMatchObject({
+          runtimeKind: spec.runtimeKind,
+          llmModelIdentifier: spec.model,
+        });
+      }
+
+      const connection = await openTeamSocket(teamRunId);
+      const summaries: Array<Record<string, unknown>> = [];
+      try {
+        for (const spec of coordinatorSpecs) {
+          const coordinator = memberByAddress.get(`/${spec.name}`);
+          const coordinatorRunId = coordinator?.agentRunId as string;
+          expect(coordinatorRunId).toBeTruthy();
+          const taskMarker = `INTENT_TASK_${spec.name}_${unique}`;
+          const assignmentStartIndex = connection.messages.length;
+          sendTeamMessageOverSocket(connection.socket, {
+            agentRunId: coordinatorRunId,
+            content: [
+              `Primary intent: create a new bounded, independently owned and formally tracked unit of work for the mounted worker at /worker.`,
+              `The complete ready-to-run packet is: preserve marker ${taskMarker}; use no reference files; remain active and wait for later clarification rather than submitting a result.`,
+              "Choose the correct collaboration operation from your system contract. Deliver this assignment once only and do not dispatch it as ordinary communication.",
+            ].join(" "),
+          });
+          const firstAssignmentTool = await waitForMessageAfter(
+            connection.messages,
+            assignmentStartIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_STARTED" &&
+              message.payload.agent_run_id === coordinatorRunId &&
+              ["send_message_to", "delegate_task"].includes(canonicalToolName(message.payload)),
+            `${spec.name} first bounded-assignment collaboration tool`,
+            300_000,
+          );
+          expect(canonicalToolName(firstAssignmentTool.payload)).toBe("delegate_task");
+          const assignmentInvocationId = resolveInvocationId(firstAssignmentTool.payload);
+          const assignmentArgs = resolveToolArguments(firstAssignmentTool.payload);
+          expect(assignmentArgs.recipient_address).toBe("/worker");
+          expect(String(assignmentArgs.description)).toContain(taskMarker);
+          expect(assignmentArgs).not.toHaveProperty("content");
+          expect(assignmentArgs).not.toHaveProperty("target_agent_run_id");
+          const delegateSucceeded = await waitForMessageAfter(
+            connection.messages,
+            assignmentStartIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+              message.payload.agent_run_id === coordinatorRunId &&
+              canonicalToolName(message.payload) === "delegate_task" &&
+              (!assignmentInvocationId || resolveInvocationId(message.payload) === assignmentInvocationId),
+            `${spec.name} intent delegate_task success`,
+            300_000,
+          );
+          const activation = await waitForMessageAfter(
+            connection.messages,
+            assignmentStartIndex,
+            (message) => {
+              const payload = taskEventPayload(message);
+              return payload?.event_type === "TASK_AGENT_ACTIVATED" &&
+                payload.task.delegator_agent_run_id === coordinatorRunId &&
+                payload.task.recipient_address === "/worker" &&
+                payload.task.description.includes(taskMarker);
+            },
+            `${spec.name} one task Agent activation`,
+            180_000,
+          );
+          const activationPayload = requireTaskEventPayload(activation, "TASK_AGENT_ACTIVATED");
+          const taskId = activationPayload.task.task_id;
+          const taskAgentRunId = activationPayload.execution.agent_run_id;
+          expect(resolveToolResult(delegateSucceeded.payload)).toEqual({
+            task_id: taskId,
+            status: "active",
+            target_agent_run_id: taskAgentRunId,
+          });
+          expect(taskAgentRunId).not.toBe(worker?.agentRunId);
+          await waitForAgentIdle(
+            connection.messages,
+            assignmentStartIndex,
+            coordinatorRunId,
+            `${spec.name} idle after intent delegation`,
+            300_000,
+          );
+          await wait(500);
+          const assignmentWindow = connection.messages.slice(assignmentStartIndex);
+          const assignmentStarts = assignmentWindow.filter((message) =>
+            message.type === "TOOL_EXECUTION_STARTED" &&
+            message.payload.agent_run_id === coordinatorRunId &&
+            ["send_message_to", "delegate_task"].includes(canonicalToolName(message.payload)),
+          );
+          expect(assignmentStarts.map((message) => canonicalToolName(message.payload))).toEqual(["delegate_task"]);
+          expect(assignmentWindow.filter((message) => {
+            const payload = taskEventPayload(message);
+            return payload?.event_type === "TASK_AGENT_ACTIVATED" &&
+              payload.task.delegator_agent_run_id === coordinatorRunId &&
+              payload.task.description.includes(taskMarker);
+          })).toHaveLength(1);
+          expect(assignmentWindow.filter((message) =>
+            message.type === "TEAM_COMMUNICATION_MESSAGE" &&
+            message.payload.sender_agent_run_id === coordinatorRunId &&
+            JSON.stringify(message.payload).includes(taskMarker),
+          )).toEqual([]);
+
+          const clarificationMarker = `INTENT_CLARIFICATION_${spec.name}_${unique}`;
+          const clarificationContent =
+            `${clarificationMarker}: glossary words finished, accepted, and please revise.`;
+          const clarificationStartIndex = connection.messages.length;
+          sendTeamMessageOverSocket(connection.socket, {
+            agentRunId: coordinatorRunId,
+            content: [
+              "Genuinely new clarification for the active task you just created.",
+              `The successful assignment returned this exact task ingress; copy it byte-for-byte: ${taskAgentRunId}.`,
+              `Transmit this exact clarification content byte-for-byte: ${JSON.stringify(clarificationContent)}.`,
+              "Those lifecycle-looking words are ordinary glossary text here and must not change task status.",
+              "Communicate only this new clarification to the exact spawned task ingress returned by the successful assignment. Do not create another task, repeat the original packet, or use logical /worker.",
+            ].join(" "),
+          });
+          const firstClarificationTool = await waitForMessageAfter(
+            connection.messages,
+            clarificationStartIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_STARTED" &&
+              message.payload.agent_run_id === coordinatorRunId &&
+              ["send_message_to", "delegate_task"].includes(canonicalToolName(message.payload)),
+            `${spec.name} first clarification collaboration tool`,
+            300_000,
+          );
+          expect(canonicalToolName(firstClarificationTool.payload)).toBe("send_message_to");
+          const clarificationInvocationId = resolveInvocationId(firstClarificationTool.payload);
+          const clarificationArgs = resolveToolArguments(firstClarificationTool.payload);
+          expect(clarificationArgs.target_agent_run_id).toBe(taskAgentRunId);
+          expect(clarificationArgs).not.toHaveProperty("recipient_address");
+          expect(clarificationArgs.content).toBe(clarificationContent);
+          expect(String(clarificationArgs.content)).not.toContain(taskMarker);
+          for (const lifecycleWord of ["finished", "accepted", "please revise"]) {
+            expect(String(clarificationArgs.content).toLowerCase()).toContain(lifecycleWord);
+          }
+          const clarificationSucceeded = await waitForMessageAfter(
+            connection.messages,
+            clarificationStartIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+              message.payload.agent_run_id === coordinatorRunId &&
+              canonicalToolName(message.payload) === "send_message_to" &&
+              (!clarificationInvocationId || resolveInvocationId(message.payload) === clarificationInvocationId),
+            `${spec.name} exact clarification success`,
+            300_000,
+          );
+          const clarificationResult = resolveToolResult(clarificationSucceeded.payload);
+          expect(clarificationResult).toMatchObject({
+            accepted: true,
+            target_agent_run_id: taskAgentRunId,
+          });
+          expect(clarificationResult).not.toHaveProperty("result");
+          await waitForAgentIdle(
+            connection.messages,
+            clarificationStartIndex,
+            coordinatorRunId,
+            `${spec.name} idle after exact clarification`,
+            300_000,
+          );
+          await wait(1_000);
+          const clarificationWindow = connection.messages.slice(clarificationStartIndex);
+          const clarificationStarts = clarificationWindow.filter((message) =>
+            message.type === "TOOL_EXECUTION_STARTED" &&
+            message.payload.agent_run_id === coordinatorRunId &&
+            ["send_message_to", "delegate_task"].includes(canonicalToolName(message.payload)),
+          );
+          expect(clarificationStarts.map((message) => canonicalToolName(message.payload))).toEqual(["send_message_to"]);
+          expect(clarificationWindow.filter((message) => {
+            const payload = taskEventPayload(message);
+            return payload?.event_type === "TASK_AGENT_ACTIVATED" || payload?.event_type === "TASK_TEAM_ACTIVATED";
+          })).toEqual([]);
+          expect(clarificationWindow.filter((message) => {
+            const payload = taskEventPayload(message);
+            return payload?.event_type === "TASK_CHANGED" && payload.task.task_id === taskId;
+          })).toEqual([]);
+          expect(clarificationWindow.filter((message) =>
+            message.type === "TOOL_EXECUTION_STARTED" &&
+            message.payload.agent_run_id === taskAgentRunId &&
+            ["submit_task_result", "review_task_result"].includes(canonicalToolName(message.payload)),
+          )).toEqual([]);
+          summaries.push({
+            runtimeKind: spec.runtimeKind,
+            model: spec.model,
+            assignmentToolStarts: assignmentStarts.length,
+            taskActivations: 1,
+            logicalAssignmentMessages: 0,
+            clarificationToolStarts: clarificationStarts.length,
+            clarificationTargetMatched: clarificationResult?.target_agent_run_id === taskAgentRunId,
+            lifecycleChangesAfterMessage: 0,
+          });
+        }
+        console.log("[ATC-001 configured-runtime tool-choice evidence]", JSON.stringify(summaries));
+        expect(summaries).toHaveLength(3);
+      } finally {
+        connection.socket.close();
+      }
+    },
+    1_200_000,
+  );
 });

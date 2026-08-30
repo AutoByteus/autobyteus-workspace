@@ -70,7 +70,7 @@ export class AgentToolsMcpMethodDispatcher {
       case "initialize":
         return this.dispatchInitialize(id, request, input.protocolVersion);
       case "tools/list":
-        return this.dispatchToolsList(id, request, input.session);
+        return this.dispatchToolsList(id, request, input.session, input.protocolVersion);
       case "tools/call":
         return this.dispatchToolsCall(id, request, input.session);
       case "resources/list":
@@ -95,12 +95,19 @@ export class AgentToolsMcpMethodDispatcher {
     }));
   }
 
-  private dispatchToolsList(id: JsonRpcId, request: JsonRpcObject, session: AgentToolMcpSession): AgentToolsMcpDispatchResult {
+  private dispatchToolsList(
+    id: JsonRpcId,
+    request: JsonRpcObject,
+    session: AgentToolMcpSession,
+    protocolVersion: string,
+  ): AgentToolsMcpDispatchResult {
     if (!areParamsObjectLike(request.params)) {
       return this.invalidParams(id, "tools/list params must be an object when provided.");
     }
     try {
-      return this.json(200, this.resultMapper.jsonRpcSuccess(id, { tools: this.catalog.listMcpToolsForSession(session) }));
+      return this.json(200, this.resultMapper.jsonRpcSuccess(id, {
+        tools: this.catalog.listMcpToolsForSession(session, protocolVersion),
+      }));
     } catch {
       return this.internalError(id);
     }

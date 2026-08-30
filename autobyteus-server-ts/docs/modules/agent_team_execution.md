@@ -295,9 +295,10 @@ protocols are not part of this surface.
 }
 ```
 
-The address uses the same `/...` or immediate-Team-relative `./...` grammar as
-`send_message_to`. The root topology resolver first returns one immutable Agent
-or AgentTeam placement. Task policy then requires that placement to be a direct
+The address uses the same canonical absolute non-root `/...` grammar as
+`send_message_to`; relative addresses, bare names, and the structural root `/`
+are invalid. The root topology resolver first returns one immutable Agent or
+AgentTeam placement. Task policy then requires that placement to be a direct
 child of the caller's immediate Team and rejects self, deeper, or cross-branch
 activation before reserving a task ID or mutating the ledger.
 
@@ -306,6 +307,11 @@ address. A successful AgentTeam target creates one task-scoped TeamRun and sends
 the work packet through that Team's exact configured coordinator ingress while
 keeping the logical Team as accountable target. The resulting concrete
 execution address is runtime identity; there is no public task-instance ID.
+Successful delegation returns the formal `task_id`, `status:"active"`, and the
+fresh task Agent or task Team coordinator ingress as `target_agent_run_id`.
+Activation failure returns `task_id`, `status:"not_started"`, and a concise
+`message`, omitting `target_agent_run_id` because no contactable fresh execution
+exists.
 
 The task lifecycle is:
 
@@ -347,12 +353,16 @@ Each Agent receives one `MemberTeamContext` containing:
 After optional authored `Team Instruction`, the Carpenter prompt renders one
 `AgentTeam Addressing` section followed by one `AgentTeam Collaboration`
 section, before `Working Environment`. The shared exact renderer supplies the
-canonical member address, logical directory/file analogy, `/...` and `./...`
-semantics, Team coordinator ingress rule, `send_message_to`, the
-`get_handoff_rules` workflow, and the task direct-child rule. It injects no flat
-recipient, representative, or delegation roster. Runtime exposure automatically
-includes `get_handoff_rules`, `send_message_to`, and `delegate_task` for a valid
-Team context, with identical copy across AutoByteus, Codex, and Claude.
+canonical member address, logical directory/file analogy, absolute non-root
+address rule, Team coordinator ingress rule, and the complete intent-first
+collaboration contract. The exact copy distinguishes ordinary communication
+with an existing execution from spawning a fresh independently owned task
+execution, prohibits duplicate work-packet delivery, records exact returned run
+identity, preserves formal result/review lifecycle tools, and defines ordered
+rule-based handoffs. It injects no flat recipient, representative, or delegation
+roster. Runtime exposure automatically includes `get_handoff_rules`,
+`send_message_to`, and `delegate_task` for a valid Team context, with identical
+copy across AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
 service. An Agent target delivers to that real Agent. An AgentTeam target
@@ -364,6 +374,15 @@ structured metadata and natural message prose is not scanned for paths.
 An accepted delivery is projected once when the target AgentRun owns the input;
 later provider forwarding or terminal observation does not publish a duplicate
 Team Communication or member-input record.
+
+Successful logical messaging returns that existing Agent or AgentTeam
+coordinator run as flat `target_agent_run_id`; rejection returns null identity.
+This message creates no task or new execution. A successful `delegate_task`
+already creates the task and delivers the complete assignment to its fresh
+ingress. Callers must not resend the assignment through logical-address
+messaging. Genuinely new clarification may target the exact active fresh ingress
+returned by delegation, but only `submit_task_result` and `review_task_result`
+change formal task lifecycle state.
 
 `target_agent_run_id` remains the separate live-only direct AgentRun route owned
 by `src/agent-communication`; it does not create Team Communication projection.

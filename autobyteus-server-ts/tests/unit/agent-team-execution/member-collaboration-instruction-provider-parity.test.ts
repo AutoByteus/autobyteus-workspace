@@ -7,6 +7,7 @@ import {
 import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { renderMemberCollaborationInstruction } from "../../../src/agent-team-execution/services/member-collaboration-instruction-renderer.js";
 import { testMemberTeamContext } from "../../fixtures/current-team-run-fixtures.js";
+import { AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION } from "../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 const occurrences = (value: string, fragment: string): number =>
   value.split(fragment).length - 1;
@@ -44,15 +45,7 @@ const expectedInstruction = (memberAddress: string): string => [
   "",
   "Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.",
   "",
-  "## AgentTeam Collaboration",
-  "",
-  "Use `send_message_to` with `recipient_address` to contact any mounted Agent or AgentTeam in your rooted AgentTeam. When you know an exact active AgentRun ID, you may instead use `target_agent_run_id` to contact that execution directly.",
-  "",
-  "Use `delegate_task` with `recipient_address` to create a fresh dedicated task execution for any mounted Agent or AgentTeam in your rooted AgentTeam, except your own exact Agent address. An AgentTeam task starts a fresh Team execution through its configured coordinator.",
-  "",
-  "When you finish your work or are blocked, call `get_handoff_rules`. If a returned rule applies, notify its `recipient_address` using `send_message_to`. Combine applicable reasons for the same recipient and follow distinct recipients in their returned order. If no rule applies, finish normally.",
-  "",
-  "Do not claim that a message or handoff was delivered unless `send_message_to` confirms delivery. Use `submit_task_result` and `review_task_result`—not ordinary message wording—for formal task lifecycle changes.",
+  AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION,
 ].join("\n");
 
 const agentDefinition = new AgentDefinition({
@@ -110,10 +103,16 @@ describe("member collaboration instruction provider parity", () => {
       expect(prompt).not.toContain("memberPath");
       expect(prompt).not.toContain("Team membership roster");
       expect(prompt).not.toContain("requirements_engineering");
+      expect(prompt).not.toContain("REQ-");
+      expect(prompt).not.toContain("DEC-");
       expect(prompt).toContain("The root AgentTeam is represented by `/`");
       expect(prompt).toContain("├── /A              (Agent)");
       expect(prompt).toContain("└── /C              (nested AgentTeam)");
       expect(prompt).toContain("The letters in this example are placeholders only.");
+      expect(prompt).toContain("These operations are not interchangeable.");
+      expect(prompt).toContain("Never use both to deliver\nthe same work.");
+      expect(prompt).toContain("genuinely new clarification");
+      expect(prompt).toContain("It is not an alias for the newly spawned task execution.");
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(providerSharedPrompt).not.toContain("## Bash Operating Practice");

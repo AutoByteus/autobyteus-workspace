@@ -63,6 +63,7 @@ type McpServerStatusListResponse = {
 
 type McpServerToolCallResponse = {
   content?: Array<Record<string, unknown>>;
+  structuredContent: Record<string, unknown>;
   isError?: boolean;
 };
 
@@ -188,6 +189,22 @@ const mcpToolCallText = (response: McpServerToolCallResponse): string =>
     .map((item) => (typeof item.text === "string" ? item.text : ""))
     .filter(Boolean)
     .join("\n");
+
+const mcpToolCallResult = (
+  response: McpServerToolCallResponse,
+): Record<string, unknown> => {
+  const textResult = JSON.parse(mcpToolCallText(response)) as unknown;
+  if (!isRecord(textResult)) {
+    throw new Error("Agent Tools MCP call did not return an object JSON result.");
+  }
+  if (!isRecord(response.structuredContent)) {
+    throw new Error(
+      "Agent Tools MCP call did not return record-valued structuredContent.",
+    );
+  }
+  expect(response.structuredContent).toEqual(textResult);
+  return textResult;
+};
 
 const parseWsMessage = (raw: WebSocket.RawData): WsMessage | null => {
   try {
@@ -701,6 +718,12 @@ describeCodexStandaloneDirect(
             },
           );
         expect(activeCallResponse.isError).not.toBe(true);
+        const activePublicResult = mcpToolCallResult(activeCallResponse);
+        expect(activePublicResult).toMatchObject({
+          accepted: true,
+          target_agent_run_id: targetRunId,
+        });
+        expect(activePublicResult).not.toHaveProperty("result");
 
         const directEvent = await waitForMessageAfter(
           targetConnection.messages,
@@ -745,19 +768,24 @@ describeCodexStandaloneDirect(
             },
           );
         expect(inactiveCallResponse.isError).toBe(true);
-        expect(mcpToolCallText(inactiveCallResponse)).toContain(
-          `Exact AgentRun target '${targetRunId}' is not active.`,
-        );
+        const inactivePublicResult = mcpToolCallResult(inactiveCallResponse);
+        expect(inactivePublicResult).toEqual({
+          accepted: false,
+          code: "TARGET_AGENT_RUN_NOT_ACTIVE",
+          message: `Exact AgentRun target '${targetRunId}' is not active.`,
+          target_agent_run_id: null,
+        });
+        expect(inactivePublicResult).not.toHaveProperty("result");
         console.log(
           "[LIVE-002 same-thread Agent Tools MCP call results]",
           JSON.stringify({
             active: {
               isError: activeCallResponse.isError === true,
-              text: mcpToolCallText(activeCallResponse),
+              result: activePublicResult,
             },
             inactive: {
               isError: inactiveCallResponse.isError === true,
-              text: mcpToolCallText(inactiveCallResponse),
+              result: inactivePublicResult,
             },
           }),
         );

@@ -1,0 +1,1049 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26154) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts
+Custom app data directory set to: /tmp/mixed-task-delegation-e2e-appdata-keHAtV
+Updated config file path to /tmp/mixed-task-delegation-e2e-appdata-keHAtV/.env
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Loading environment from: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/mixed-task-delegation-e2e-appdata-keHAtV/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8001
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8001
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/mixed-task-delegation-e2e-appdata-keHAtV
+DB DIRECTORY: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/db
+LOGS DIRECTORY: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/logs
+DOWNLOAD DIRECTORY: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/download
+MEMORY DIRECTORY: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-30T12:10:44.408Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Overwriting existing tool definition for name: 'delegate_task'
+Overwriting existing tool definition for name: 'submit_task_result'
+Overwriting existing tool definition for name: 'review_task_result'
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Populating agent definition cache for the first time...
+[2026-08-30T12:10:44.622Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+[2026-08-30T12:10:44.692Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Discovering LM Studio models from host: http://192.168.2.158:1234
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+[CodexAppServerClient] stderr: 2026-08-30T12:10:44.922868Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Added new agent definition with ID intent-auto-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition created successfully with ID: intent-auto-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Added new agent definition with ID intent-codex-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition created successfully with ID: intent-codex-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Added new agent definition with ID intent-claude-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition created successfully with ID: intent-claude-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Added new agent definition with ID intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition created successfully with ID: intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+[2026-08-30T12:10:46.629Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID collaboration-intent-choice-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Team Definition created successfully with ID: collaboration-intent-choice-0ae71c53-c771-4d05-9cd0-c773cca67524
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Created and registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent team websocket attached for team run collaboration_intent_choice_0ae71c53_c771_4d05_9_ddda0703319f4744a421759fee89a4b7
+Created agent session 3fbe167a-9849-4a19-809d-134f7135ef7e for run collaboration_intent_choice_0ae71c53_c771_4d05_9_ddda0703319f4744a421759fee89a4b7
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Team WebSocket connected: session=3fbe167a-9849-4a19-809d-134f7135ef7e, run=collaboration_intent_choice_0ae71c53_c771_4d05_9_ddda0703319f4744a421759fee89a4b7
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Reusing registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+MediaStorageService initialized. Media root: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/media
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntimeState initialized for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' with config: 'intent-auto_coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524'.
+AgentWorker initialized for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'.
+Registered AgentContext for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Context registered.
+Agent facade initialized for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' created and stored successfully.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' requesting runtime to start.
+AgentRuntime for 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Starting worker.
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Starting...
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' asyncRun(): Starting.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Runtime init completed (event store initialized).
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Runtime init completed (status deriver initialized).
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Runtime init completed (AgentEventInbox initialized).
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' to become idle (timeout: 30s)...
+AgentEventStream (ID: ac4ac18f-bb30-4d8b-901b-55dfaa73676c) initialized for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Subscribed to notifier.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Bootstrapper starting direct lifecycle execution.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Executing SystemPromptProcessingStep.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Skill access mode is NONE. Skipping skill catalog.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Final processed system prompt configured and captured. Trace ID: rt_1788091846797_130a8aa0-a5c9-41fb-bd6c-3816a2314df9. Final length: 8366.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' has become idle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: ac4ac18f-bb30-4d8b-901b-55dfaa73676c) for 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 489a84b7-0840-450d-a40d-e33418589c15) initialized for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Published autobyteus agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': UserInputContextBuildingProcessor completed. Final content length: 504
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Reusing registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+MediaStorageService initialized. Media root: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/media
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntimeState initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' with config: 'intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524'.
+AgentWorker initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'.
+Registered AgentContext for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Context registered.
+Agent facade initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' created and stored successfully.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' requesting runtime to start.
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Starting worker.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Starting...
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' asyncRun(): Starting.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Runtime init completed (event store initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Runtime init completed (status deriver initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Runtime init completed (AgentEventInbox initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' to become idle (timeout: 30s)...
+AgentEventStream (ID: 1b0a8715-1bf8-4f71-866e-9da3529709d2) initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Subscribed to notifier.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Bootstrapper starting direct lifecycle execution.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Executing SystemPromptProcessingStep.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Skill access mode is NONE. Skipping skill catalog.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Final processed system prompt configured and captured. Trace ID: rt_1788091859972_690c7c1b-1eeb-4ef7-9e53-c605e255a6e3. Final length: 8256.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' has become idle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 1b0a8715-1bf8-4f71-866e-9da3529709d2) for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: f251cd9f-ede0-4bb8-9bea-d521adddd071) initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Published autobyteus agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': UserInputContextBuildingProcessor completed. Final content length: 51
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_data_system_task_notification_received. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': UserInputContextBuildingProcessor completed. Final content length: 351
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': UserInputContextBuildingProcessor completed. Final content length: 709
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': UserInputContextBuildingProcessor completed. Final content length: 333
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': UserInputContextBuildingProcessor completed. Final content length: 53
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Reusing registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stderr | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+[CodexAppServerClient] stderr: 2026-08-30T12:11:47.655415Z ERROR codex_app_server: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Published codex_app_server agent run 'intent_codex_coordinator_0ae71c53_c771_4d05_9cd0_0eea9feb44584a96bc060112fca52718'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Reusing registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+MediaStorageService initialized. Media root: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/media
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntimeState initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' with config: 'intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524'.
+AgentWorker initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'.
+Registered AgentContext for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Total registered contexts: 3
+AgentRuntime initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Context registered.
+Agent facade initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' created and stored successfully.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' requesting runtime to start.
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Starting worker.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Starting...
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' asyncRun(): Starting.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Runtime init completed (event store initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Runtime init completed (status deriver initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Runtime init completed (AgentEventInbox initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' to become idle (timeout: 30s)...
+AgentEventStream (ID: 54ad3a94-7fbb-4d6f-99ee-90c6a9762ef6) initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Subscribed to notifier.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Bootstrapper starting direct lifecycle execution.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Executing SystemPromptProcessingStep.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Skill access mode is NONE. Skipping skill catalog.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Final processed system prompt configured and captured. Trace ID: rt_1788091926069_2af004df-3756-4a5c-b16d-8ceceef4782a. Final length: 8256.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' has become idle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 54ad3a94-7fbb-4d6f-99ee-90c6a9762ef6) for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 1d6a9d09-7fef-4f7e-bc85-698395cbad36) initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Published autobyteus agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_data_system_task_notification_received. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': UserInputContextBuildingProcessor completed. Final content length: 861
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': UserInputContextBuildingProcessor completed. Final content length: 292
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Reusing registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Published claude_agent_sdk agent run 'intent_claude_coordinator_0ae71c53_c771_4d05_9cd_45943efdf0714a26a6c5663aef99271f'.
+
+(node:26154) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Creating new workspace for rootPath: /tmp/collaboration-intent-choice-e2e-TeesUr
+Created metadata-only FileSystemWorkspace at /tmp/collaboration-intent-choice-e2e-TeesUr.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Reusing registered workspace ID: agent_ws_d5354ad2571bf449422f1a99c09bf0e3cc1c9323c9350347d9b2de622d51c5ca
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+MediaStorageService initialized. Media root: /tmp/mixed-task-delegation-e2e-appdata-keHAtV/media
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntimeState initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' with config: 'intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524'.
+AgentWorker initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'.
+Registered AgentContext for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Total registered contexts: 4
+AgentRuntime initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Context registered.
+Agent facade initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' created and stored successfully.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' requesting runtime to start.
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Starting worker.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Starting...
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' asyncRun(): Starting.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Runtime init completed (event store initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Runtime init completed (status deriver initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Runtime init completed (AgentEventInbox initialized).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' to become idle (timeout: 30s)...
+AgentEventStream (ID: 22cda5aa-c896-4f03-9bf6-1d968a0da3ea) initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Subscribed to notifier.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Bootstrapper starting direct lifecycle execution.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Executing SystemPromptProcessingStep.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Skill access mode is NONE. Skipping skill catalog.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Final processed system prompt configured and captured. Trace ID: rt_1788091941430_ac30d229-8f7e-4958-a0d7-dd790f765636. Final length: 8256.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' has become idle.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 22cda5aa-c896-4f03-9bf6-1d968a0da3ea) for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: abc984d3-239c-40be-8dc5-d931d5ad646a) initialized for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Published autobyteus agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_data_system_task_notification_received. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': UserInputContextBuildingProcessor completed. Final content length: 399
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+(node:26154) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent run 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': UserInputContextBuildingProcessor completed. Final content length: 294
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+[ATC-001 configured-runtime tool-choice evidence] [{"runtimeKind":"autobyteus","model":"qwen/qwen3.6-35b-a3b:lmstudio@192.168.2.158:1234","assignmentToolStarts":1,"taskActivations":1,"logicalAssignmentMessages":0,"clarificationToolStarts":1,"clarificationTargetMatched":true,"lifecycleChangesAfterMessage":0},{"runtimeKind":"codex_app_server","model":"gpt-5.4-mini","assignmentToolStarts":1,"taskActivations":1,"logicalAssignmentMessages":0,"clarificationToolStarts":1,"clarificationTargetMatched":true,"lifecycleChangesAfterMessage":0},{"runtimeKind":"claude_agent_sdk","model":"haiku","assignmentToolStarts":1,"taskActivations":1,"logicalAssignmentMessages":0,"clarificationToolStarts":1,"clarificationTargetMatched":true,"lifecycleChangesAfterMessage":0}]
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' requesting runtime interrupt.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Closed agent session 3fbe167a-9849-4a19-809d-134f7135ef7e
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: f251cd9f-ede0-4bb8-9bea-d521adddd071) for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'. Attempting graceful shutdown.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 8d91489f-5e84-4740-af1d-02d80e53d1ed, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' asyncRun() loop has finished.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Shutdown resource cleanup completed successfully.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Unregistered AgentContext for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced'.
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_9530190bda4b4df89168292088f37ced' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 1d6a9d09-7fef-4f7e-bc85-698395cbad36) for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'. Attempting graceful shutdown.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: ddd3d959-9204-4a35-9bec-6391d57b2aae, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' asyncRun() loop has finished.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Shutdown resource cleanup completed successfully.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Unregistered AgentContext for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19'.
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_42e9249ecb83412d856980d708d01a19' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: abc984d3-239c-40be-8dc5-d931d5ad646a) for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'. Attempting graceful shutdown.
+Agent 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: 4fee759c-031f-4978-b966-8df1d4594373, AgentID: intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' asyncRun() loop has finished.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Shutdown resource cleanup completed successfully.
+AgentWorker 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Unregistered AgentContext for agent_id 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff'.
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntime for 'intent_worker_0ae71c53_c771_4d05_9cd0_c773cca675_e32d0eec591f43a197cdcbbf7e33bdff' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentEventStream (ID: 489a84b7-0840-450d-a40d-e33418589c15) for 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'. Attempting graceful shutdown.
+Agent 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Stop requested.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentExternalEventNotifier (NotifierID: e8c50332-7d72-4fee-bc22-5f19fed77033, AgentID: intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' asyncRun() loop has finished.
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Shutdown resource cleanup completed successfully.
+AgentWorker 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Unregistered AgentContext for agent_id 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8'.
+AgentRuntime for 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8': Context unregistered.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+AgentRuntime for 'intent_auto_coordinator_0ae71c53_c771_4d05_9cd0_dfc47f65276d4c2387f31bfe2222dfe8' stop() method completed.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+[2026-08-30T12:12:32.716Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID collaboration-intent-choice-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Team Definition with ID collaboration-intent-choice-0ae71c53-c771-4d05-9cd0-c773cca67524 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Removed agent definition with ID intent-auto-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition with ID intent-auto-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Removed agent definition with ID intent-codex-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition with ID intent-codex-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Removed agent definition with ID intent-claude-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition with ID intent-claude-coordinator-0ae71c53-c771-4d05-9cd0-c773cca67524 deleted successfully.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+In-memory cache: Removed agent definition with ID intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524.
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts > Live mixed-runtime task delegation e2e > uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch
+Agent Definition with ID intent-worker-0ae71c53-c771-4d05-9cd0-c773cca67524 deleted successfully.
+
+ ✓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (3 tests | 2 skipped) 108510ms
+     ✓ uses the shared intent contract across AutoByteus, Codex, and Claude without duplicate assignment dispatch  107952ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Start at  12:10:31
+   Duration  121.55s (transform 8.38s, setup 27ms, import 11.99s, tests 108.51s, environment 0ms)
+

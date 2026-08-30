@@ -13,7 +13,7 @@ const parseEnvelope = (value: string) => JSON.parse(value) as {
   accepted: boolean;
   code: string;
   message: string;
-  result: unknown;
+  target_agent_run_id: string | null;
 };
 
 const createMemberTeamContext = (
@@ -21,6 +21,7 @@ const createMemberTeamContext = (
     accepted: boolean;
     code?: string;
     message?: string;
+    agentRunId?: string;
   }>,
 ) => testMemberTeamContext({
   rootTeamRunId: "team-run-1",
@@ -33,6 +34,7 @@ const createDispatcher = (globalResult = {
   accepted: true,
   code: "DIRECT_DELIVERED",
   message: "Delivered globally.",
+  agentRunId: "active-target-run",
 }) => {
   const globalRouter = {
     deliver: vi.fn(async () => globalResult),
@@ -49,7 +51,10 @@ describe("AutoByteus server-owned send_message_to", () => {
   });
 
   it("routes a hierarchical recipient_address through Team delivery and returns canonical JSON", async () => {
-    const deliverInterAgentMessage = vi.fn(async () => ({ accepted: true }));
+    const deliverInterAgentMessage = vi.fn(async () => ({
+      accepted: true,
+      agentRunId: "run-research-lead",
+    }));
     const memberTeamContext = createMemberTeamContext(deliverInterAgentMessage);
     const { dispatcher, globalRouter } = createDispatcher();
     const tool = createBoundAutoByteusSendMessageToTool(
@@ -72,7 +77,7 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: true,
       code: "DELIVERED",
       message: "Delivered message to /research_team/research_lead.",
-      result: null,
+      target_agent_run_id: "run-research-lead",
     });
     expect(globalRouter.deliver).not.toHaveBeenCalled();
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
@@ -99,6 +104,7 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: true,
       code: "DIRECT_MESSAGE_DELIVERED",
       message: "Delivered globally.",
+      agentRunId: "active-target-run",
     });
     const tool = createBoundAutoByteusSendMessageToTool(
       buildAgentRunMessageSenderContext({
@@ -120,7 +126,7 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: true,
       code: "DIRECT_MESSAGE_DELIVERED",
       message: "Delivered globally.",
-      result: null,
+      target_agent_run_id: "active-target-run",
     });
     expect(globalRouter.deliver).toHaveBeenCalledWith(expect.objectContaining({
       sender: expect.objectContaining({ senderRunId: "standalone-sender" }),
@@ -156,7 +162,7 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: false,
       code: "COLLABORATION_TARGET_NOT_FOUND",
       message: "Collaboration target '/missing' was not found.",
-      result: null,
+      target_agent_run_id: null,
     });
   });
 
@@ -177,14 +183,19 @@ describe("AutoByteus server-owned send_message_to", () => {
     }))).toMatchObject({
       accepted: false,
       code: "TEAM_CONTEXT_REQUIRED",
-      result: null,
+      target_agent_run_id: null,
     });
   });
 
   it.each([
     {
       label: "accepted",
-      result: { accepted: true, code: "DELIVERED", message: "Delivered through Team routing." },
+      result: {
+        accepted: true,
+        code: "DELIVERED",
+        message: "Delivered through Team routing.",
+        agentRunId: "run-writer",
+      },
       isError: undefined,
     },
     {

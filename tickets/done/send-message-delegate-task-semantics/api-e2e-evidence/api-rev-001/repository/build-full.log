@@ -1,0 +1,7 @@
+
+> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

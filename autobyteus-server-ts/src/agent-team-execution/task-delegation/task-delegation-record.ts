@@ -1,4 +1,8 @@
 import type { TeamMemberExecutionIdentity } from "../domain/team-member-execution-identity.js";
+export {
+  DelegateTaskResultSchema,
+  type DelegateTaskResult,
+} from "./task-delegation-result-contract.js";
 
 export const TASK_DELEGATION_RECORDS_FILE_NAME = "task_delegation_records.json";
 
@@ -26,10 +30,6 @@ export type ReviewTaskResultInput = Readonly<{
   comment?: string | null;
   reference_files?: string[];
 }>;
-
-export type DelegateTaskResult =
-  | Readonly<{ task_id: string; status: "active"; target_agent_run_id: string }>
-  | Readonly<{ task_id: string; status: "not_started"; message: string }>;
 
 export type SubmitTaskResultResult = Readonly<{
   task_id: string;

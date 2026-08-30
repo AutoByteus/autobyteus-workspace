@@ -73,7 +73,8 @@ broadcast them or call per-thread runtime-error projection.
 
 Codex exposes in-scope effective backend agent tools through the server-hosted
 Agent Tools MCP surface. Effective exposure is the deduplicated configured set
-plus automatic `send_message_to` and `delegate_task` for a valid team context.
+plus automatic `get_handoff_rules`, `send_message_to`, and `delegate_task` for a
+valid team context.
 For an application run, configured names may resolve to an application-owned
 route from that exact package and binding; those routes are absent from
 general-process and other-application sessions and invoke the common
@@ -111,11 +112,16 @@ Family semantics still come from the shared server-owned services:
   `src/agent-communication` dispatcher: `recipient_address` requires a team member
   context, while `target_agent_run_id` can be used by an explicitly configured
   standalone or automatically enabled team-member Codex run to reach an exact
-  currently active `AgentRun.runId`.
+  currently active `AgentRun.runId`. Its canonical result returns the exact
+  existing receiver as flat `target_agent_run_id`, or null identity on
+  rejection.
 - Task-delegation tools call `TaskDelegationToolService` with the current
   `MemberTeamContext`, inherit the canonical ready-to-run/no-dependencies
   guidance from the shared manifest/schema, and remain unavailable for
-  standalone sessions.
+  standalone sessions. Successful delegation returns the fresh task Agent or
+  task Team coordinator ingress as `target_agent_run_id`; the delegation call
+  already delivers the complete packet and must not be duplicated by ordinary
+  messaging.
 - Browser, media, and `publish_artifacts` tools execute through their shared
   family services/manifests instead of Codex dynamic handlers.
 - Configured MCP-origin tools appear under their registered AutoByteus names
@@ -284,10 +290,10 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
   requests are auto-accepted or session-granted. Leave auto-approve off when the
   run should remain on visible manual approval gates.
 - Team-member auto-approval does not own team communication routing. A valid
-  team context automatically adds `send_message_to` and `delegate_task` to
-  effective exposure, while team-owned handlers, current rosters, and recipient
-  or target validation still constrain each call. Other tools remain configured
-  and availability-gated.
+  team context automatically adds `get_handoff_rules`, `send_message_to`, and
+  `delegate_task` to effective exposure, while team-owned handlers, current
+  rosters, and recipient or target validation still constrain each call. Other
+  tools remain configured and availability-gated.
 
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings

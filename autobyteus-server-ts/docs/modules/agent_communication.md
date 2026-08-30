@@ -4,7 +4,8 @@
 
 `src/agent-communication` owns the shared public `send_message_to` and
 `get_handoff_rules` contracts, argument parsing, selector dispatch, canonical
-result envelopes, direct exact-run routing, and optional direct-message grants.
+operation result contracts, direct exact-run routing, and optional direct-message
+grants.
 Runtime adapters and team execution code call this shared boundary instead of
 owning provider-specific selector or result semantics.
 
@@ -12,8 +13,8 @@ owning provider-specific selector or result semantics.
 
 `send_message_to` accepts exactly one target selector:
 
-- `recipient_address`: a rooted logical Agent-or-Team address. Use `/...` from the
-  collaboration root or `./...` from the caller's immediate Team.
+- `recipient_address`: a canonical absolute non-root logical Agent-or-Team
+  address beginning with `/` in the caller's collaboration root.
 - `target_agent_run_id`: an exact, currently active `AgentRun.runId`.
 
 Callers must not provide both selectors, omit both selectors, or use selector
@@ -24,14 +25,14 @@ instead of, explanatory message content. Optional `message_type` defaults to
 `agent_message` when omitted; runtime/provider traces must not require providers
 to echo that optional field when the semantic delivery is otherwise valid.
 
-Bare names, backslashes, repeated/trailing separators, and `.`/`..` path
-segments are invalid. `/` addresses the root Team; `./` addresses the caller's
-immediate Team. A Team address resolves to that Team's exact direct Agent
-coordinator ingress, while an Agent address resolves to that Agent. The root
-topology resolver supports nested, upward, sibling, and cross-branch Team
-communication inside the same collaboration root. It rejects missing targets,
-invalid traversal through an Agent, self-targets, and Teams without valid
-ingress before recipient input or an accepted communication event is produced.
+The structural root `/`, relative addresses, bare names, backslashes,
+repeated/trailing separators, and `.`/`..` path segments are invalid. A Team
+address resolves to that mounted Team's exact configured coordinator ingress,
+while an Agent address resolves to that mounted Agent execution. Absolute
+addresses can select nested, sibling, or cross-branch placements inside the same
+collaboration root. The topology resolver rejects missing targets, invalid
+traversal through an Agent, self-targets, and Teams without valid ingress before
+recipient input or an accepted communication event is produced.
 
 The shared collaboration boundary carries one canonical execution identity
 rather than parallel path/owner caches. `TeamMemberExecutionIdentity` is exactly
@@ -101,15 +102,38 @@ task eligibility policy still apply.
 
 ## Result Shapes
 
-`send_message_to` uses the canonical operation-result envelope:
+`send_message_to` returns a strict operation-owned result. Accepted delivery
+includes the exact existing AgentRun that accepted the message:
 
-```text
-{ accepted, code, message, result }
+```json
+{
+  "accepted": true,
+  "code": "DELIVERED",
+  "message": "Delivered message to /reviewer.",
+  "target_agent_run_id": "existing-reviewer-run-123"
+}
 ```
 
-Its successful result is `null`; exact-run operation codes pass through
-unchanged. MCP `content` text parses to the same object as
-`structuredContent`, and `isError` is set only for rejected outcomes.
+For a logical Agent address, `target_agent_run_id` is that mounted Agent's
+existing run. For a logical AgentTeam address, it is the mounted Team's existing
+configured coordinator run. For exact-run delivery, it confirms the selected
+active run. Rejection preserves the exact operation code/message and returns no
+successful receiver identity:
+
+```json
+{
+  "accepted": false,
+  "code": "COLLABORATION_TARGET_NOT_FOUND",
+  "message": "Target was not found.",
+  "target_agent_run_id": null
+}
+```
+
+The removed generic `result` field and generic communication-result mapper are
+not compatibility surfaces. Native JSON, MCP text JSON, MCP
+`structuredContent`, public types, and advertised post-2025-03 output schemas
+use the same flat field names and null rule. MCP `isError` is set only for
+rejected outcomes.
 
 `get_handoff_rules` instead returns the read-only `{ handoffs }` object shown
 above. Its AutoByteus JSON result and MCP `content`/`structuredContent` represent
@@ -206,6 +230,22 @@ projection: a bound AutoByteus local tool or the session-scoped
 `autobyteus_agent_tools` MCP surface for Codex and Claude. The MCP adapter is
 available only when the session sender has an active member collaboration
 context.
+
+## Communication Versus Task Execution
+
+`send_message_to` communicates with an already existing execution. It creates
+no task, Agent, AgentTeam, or task lifecycle transition. `delegate_task` instead
+spawns one fresh independently tracked task Agent or task AgentTeam execution
+and delivers the complete work packet during that same call. The original
+logical `recipient_address` continues to identify the mounted definition; it is
+not an alias for the spawned task execution, and callers must not repeat one
+assignment through both operations.
+
+After successful delegation, genuinely new clarification may be sent to the
+fresh task ingress using the returned exact `target_agent_run_id` while that run
+is active. Formal task submission and review still use `submit_task_result` and
+`review_task_result`; message wording never submits, accepts, revises, or
+finalizes a task.
 
 ## Out Of Scope
 
