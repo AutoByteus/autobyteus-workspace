@@ -3,11 +3,11 @@
 ## Document Status
 
 - Status: `Ready for Approval`
-- Current requirements revision ID: `RER-005`
+- Current requirements revision ID: `RER-006`
 - Request / ticket: Clarify and enforce the distinct orchestration semantics of `send_message_to` and `delegate_task`
 - Requirements owner: Requirements Engineering
 - Date: 2026-08-30
-- Approval state and reference: User confirmed on 2026-08-30 that the LLM-facing contract must be intuitive, straightforward, and unambiguous and expressed a preference for the earlier `Ordinary Communication` / `Dedicated Task Execution` structure with explicit instance-creation language; requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001 and explicit approval of the complete intended behavior remain pending
+- Approval state and reference: User confirmed on 2026-08-30 that the LLM-facing contract must be intuitive, straightforward, and unambiguous, preferred the earlier `Ordinary Communication` / `Dedicated Task Execution` structure with explicit spawned-instance language, and requested investigation of symmetric message/delegation return identities; requirements visualizer `SMDS-RV-001` / `VIS-R04` is ready at `http://127.0.0.1:4179`; DEC-001, DEC-002, and explicit approval of the complete intended behavior remain pending
 
 ## Problem And Desired Outcome
 
@@ -27,6 +27,7 @@
 | BEH-005 | Contract | `submit_task_result` and `review_task_result` exclusively own formal result/review transitions. A message whose content says “finished,” “accepted,” or “revise” has no task-lifecycle effect. | Keep this separation visible in the same decision guidance so messaging cannot be mistaken for task completion, revision, acceptance, or finalization. | Existing submission, review, notification, and settlement semantics remain unchanged. | SRC-002, SRC-003, SRC-013 |
 | BEH-006 | Operational | The same collaboration instruction is composed centrally into AutoByteus, Codex, and Claude Team-member prompts, and shared tool descriptions flow through native/MCP adapters. Current parity tests pin the exact wording. | All Agent-facing provider projections must carry one semantically identical decision boundary and must not reintroduce provider-specific or definition-specific ambiguity. | One Addressing section and one Collaboration section, canonical absolute addresses, tool exposure, and provider parity remain. | SRC-004, SRC-010–SRC-012 |
 | BEH-007 | Contract | Some repository docs still describe pre-current targeting restrictions or do not express the duplicate-dispatch distinction consistently. | Current authoritative docs, prompt guidance, tool descriptions, and verification must agree on the current runtime contract and the approved choice semantics. | No new tool alias, selector, lifecycle state, or compatibility path is introduced. | SRC-014 |
+| BEH-008 | Contract | Successful Team message delivery internally resolves and returns the receiving configured AgentRun identity, but the public `send_message_to` result mapper currently discards it and exposes `result:null`. Successful `delegate_task` directly exposes `task_id`, `status:"active"`, and the fresh task ingress `target_agent_run_id`. | Pending DEC-002: either preserve the current asymmetric public result and keep the prompt silent about a message return ID, or expose the exact receiving existing AgentRun ID from successful `send_message_to` so tool feedback reinforces the existing-instance versus spawned-instance model. | No return-shape change is approved yet. A task Agent target returns its fresh AgentRun ID; a task AgentTeam target returns its fresh coordinator AgentRun ID, not the task TeamRun ID. | SRC-023–SRC-024 |
 
 ## Stakeholders, Actors, And Outcomes
 
@@ -53,7 +54,7 @@
 
 ### Out Of Scope
 
-- Changing `send_message_to` or `delegate_task` input/output schemas, target resolution, persistence, routing, execution creation, task state, result/review, notification, or settlement behavior.
+- Changing `send_message_to` or `delegate_task` input/output schemas, target resolution, persistence, routing, execution creation, task state, result/review, notification, or settlement behavior, unless the user explicitly approves the narrowly proposed `send_message_to` success-identity expansion in DEC-002.
 - Removing `send_message_to` or `delegate_task` from Team-bound Agents.
 - A runtime heuristic that inspects message text and blocks calls merely because a task was recently delegated.
 - A new combined “message or task” tool, automatic conversion between tools, provider-specific forced tool selection, or hidden fallback behavior.
@@ -191,6 +192,7 @@
 | Decision / Question ID | Question | Why It Matters | Options / Evidence | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | After a successful delegation, should genuinely additional ordinary clarification to that exact fresh task execution remain allowed through the returned `target_agent_run_id`? | The existing approved interaction contract explicitly supports it. A blanket “never send after delegate” rule would remove useful bidirectional communication and materially change scope; the observed problem appears to be duplicate dispatch to the logical recipient. | **Option A (recommended):** preserve exact-run clarification, forbid repeating the packet or messaging the logical address as task alias. **Option B:** prohibit delegator-to-assignee ordinary follow-up entirely and rely only on task packet/result-review lifecycle, requiring a broader behavior revision. | User | Open |
+| DEC-002 | Should successful public `send_message_to` output expose the exact existing receiving AgentRun as `target_agent_run_id`, aligning its feedback with the fresh task ingress ID returned by `delegate_task`? | The backend already resolves and carries the receiving AgentRun ID for Team delivery, but the model-facing message-result mapper currently discards it. Exposing it would make the two modes' identity consequences observable, but it is a public output-contract change rather than prompt-only clarification. | **Option A:** expand scope so successful `send_message_to` returns the exact receiving `target_agent_run_id`; for an AgentTeam logical address this is its configured coordinator ingress. **Option B:** preserve `result:null` and keep the prompt accurate without claiming an ID is returned. | User | Open — requirement gap identified during return-contract investigation |
 
 ## Traceability
 
@@ -212,7 +214,7 @@
 
 ## Downstream Architecture Input
 
-- Product and system constraints architecture must preserve: Existing tool contracts and lifecycle; one semantic contract across providers; logical-address messaging selects configured ingress; delegation creates a fresh execution and already delivers the packet; exact-run clarification is preserved if DEC-001 selects Option A; no hidden fallback or duplicate-dispatch automation.
+- Product and system constraints architecture must preserve: Existing tool contracts and lifecycle except for the narrow successful-message result expansion if DEC-002 Option A is approved; one semantic contract across providers; logical-address messaging selects configured ingress; delegation creates a fresh execution and already delivers the packet; exact-run clarification is preserved if DEC-001 selects Option A; no hidden fallback or duplicate-dispatch automation.
 - Decisions intentionally deferred to architecture design: The exact authoritative source(s) for wording, how to minimize duplication across prompt and tool descriptions, and the proportional verification/evaluation strategy.
 - Technical facts architecture should verify: All active provider surfaces consume the shared composer/descriptions; no runtime-specific prompt augmentation contradicts them; current docs that mention relative/direct-child restrictions are current or stale; successful delegation result exposure consistently includes `target_agent_run_id`.
 - Known feasibility or integration risks: Overlong prompt text can reduce salience; updating only the system prompt but not tool descriptions can leave conflicting cues; representative live-model compliance is probabilistic, so deterministic contract tests alone do not prove behavioral improvement.
@@ -229,4 +231,4 @@
 - Material assumptions and open decisions are visible: `Yes`
 - User approval received: `No`
 - Architecture-ready: `No`
-- Remaining blocker: User review/decision on DEC-001 and explicit approval of the intended behavior and decision-table supplement.
+- Remaining blocker: User decisions on DEC-001 and DEC-002 and explicit approval of the intended behavior and decision-table supplement.

@@ -11,6 +11,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | RER-003 | Product Design & Prototyping returned review-ready `SMDS-RV-001` / `VIS-R04` | Draft — Requirements Visualization Needed | Ready for Approval | REQ-001–REQ-007, REQ-010; AC-001–AC-008; DEC-001 | Exploratory visualizer evidence reconciled and review URL presented; DEC-001 and explicit approval remain pending |
 | RER-004 | User emphasized intuitive, straightforward, ambiguity-free LLM instruction design | Ready for Approval | Ready for Approval | REQ-012; AC-012; QR-005 | Cognitive clarity and production-copy hygiene made explicit and testable; DEC-001 and complete-package approval remain pending |
 | RER-005 | User preferred the earlier prompt structure and requested explicit `forked`/`spawned` instance terminology analysis | Ready for Approval | Ready for Approval | REQ-002, REQ-013; AC-013 | `Spawned fresh task instance` selected as the accurate mental model; unqualified `forked` wording rejected because no live-state clone is established |
+| RER-006 | User requested verification of message/delegation returned instance identities | Ready for Approval | Ready for Approval — Scope Decision Needed | BEH-008; DEC-002 | Confirmed current public asymmetry: message result discards resolved existing AgentRun ID while delegation exposes fresh task ingress ID; optional output-contract expansion awaits user decision |
 
 ## Revision Entries
 
@@ -88,3 +89,18 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture impact: Exact prose remains downstream-owned, but it must preserve fresh execution identity and must not promise cloning of live mounted-run state.
 - Remaining gaps, assumptions, or blocked decisions: DEC-001; explicit complete-package approval.
 - Next action or recipient: Present the earlier-style prompt revised with `spawned fresh task instance` language and obtain user confirmation or further edits.
+
+### RER-006 — Tool Return Identity Investigation
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user asked whether `send_message_to` returns the exact existing receiving AgentRun ID and whether `delegate_task` returns the created task Agent identity, proposing that symmetric feedback could make the prompt and tool behavior more coherent.
+- Prior authoritative status (`N/A` for `RER-001`): Ready for Approval under RER-005.
+- Current authoritative status: Ready for Approval — Scope Decision Needed.
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: BEH-008; DEC-002; existing scope boundary and downstream architecture input.
+- Why this baseline or revision was recorded: Distinguish current model-facing output from richer internal delivery metadata and prevent the proposed coherence improvement from being mistaken for already-supported behavior.
+- Canonical artifact sections changed: Current/desired behavior, out-of-scope boundary, open decisions, downstream architecture input, readiness, investigation intake/source log, and requirement implications.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: None; the exploratory visualizer illustrates execution identity but does not define public tool result schemas.
+- User approval impact: DEC-002 asks whether to expand scope with a `send_message_to` success identity. No schema change is approved yet.
+- Downstream architecture impact: DEC-002 Option A is a public contract change and a structural-impact trigger requiring Architecture Designer routing after requirements approval. Option B preserves the previously expected prompt/tool/docs-only scope.
+- Remaining gaps, assumptions, or blocked decisions: DEC-001; DEC-002; explicit complete-package approval.
+- Next action or recipient: Report the exact current outputs and obtain the user's DEC-002 choice before finalizing the prompt claim or route.
