@@ -63,7 +63,7 @@ type McpServerStatusListResponse = {
 
 type McpServerToolCallResponse = {
   content?: Array<Record<string, unknown>>;
-  structuredContent?: Record<string, unknown>;
+  structuredContent: Record<string, unknown>;
   isError?: boolean;
 };
 
@@ -197,9 +197,12 @@ const mcpToolCallResult = (
   if (!isRecord(textResult)) {
     throw new Error("Agent Tools MCP call did not return an object JSON result.");
   }
-  if (response.structuredContent !== undefined) {
-    expect(response.structuredContent).toEqual(textResult);
+  if (!isRecord(response.structuredContent)) {
+    throw new Error(
+      "Agent Tools MCP call did not return record-valued structuredContent.",
+    );
   }
+  expect(response.structuredContent).toEqual(textResult);
   return textResult;
 };
 

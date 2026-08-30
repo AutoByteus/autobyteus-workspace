@@ -13,14 +13,15 @@
 - Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/implementation-handoff.md`
 - Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/implementation-revision-record.md` (`IR-001`)
 - Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/code-review-report.md`
-- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/code-review-revision-record.md` (`CRR-001`)
-- Delivery Revision Record (delivery re-entry only): `N/A — initial API/E2E round`
+- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/code-review-revision-record.md` (`CRR-002`; `CRR-001` implementation-source Pass remains unchanged)
+- Triggering Test Review Report: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-test-review-report.md` (`TEST-001`, Local Fix)
+- Delivery Revision Record (delivery re-entry only): `N/A — Code Reviewer Local Fix re-entry`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-revision-record.md` (`API-REV-001`)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: `1`
-- Trigger: `CRR-001` independent implementation-source review Pass at commit `59bf1f39e`, implementation commit `7e54677e8`
-- Prior Investigation Reviewed: `N/A — no prior API/E2E investigation exists`
+- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/send-message-delegate-task-semantics/tickets/in-progress/send-message-delegate-task-semantics/api-e2e-revision-record.md` (`API-REV-002`)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: `2`
+- Trigger: `CRR-002` proportional durable-test review Fail, finding `TEST-001`, at commit `716efbf53`; `CRR-001` source-review Pass remains unchanged
+- Prior Investigation Reviewed: `API-REV-001 — Pass / 97.7%`
 - Latest Authoritative Investigation: This file
 
 ## Routing Classification
@@ -29,13 +30,15 @@
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` — two durable E2E files changed
+- Proportional test-code review decision: `Required` — API-REV-002 changes one of the two cumulative durable E2E files and must return through Code Reviewer
 
 ## Current Requirement And Design Basis
 
 ATC-001 requires one provider-shared two-mode contract: ordinary communication contacts an existing mounted AgentRun, while delegation creates and fully instructs one fresh tracked task execution. One work packet must not be dispatched through both operations. Logical AgentTeam messaging must identify the mounted Team coordinator; AgentTeam delegation must materialize a full fresh task Team and return its new coordinator AgentRun. Successful message results replace the obsolete `result` field with flat `target_agent_run_id`; rejection uses null. Delegation preserves strict `active` and `not_started` branches, with the latter omitting target identity. Native JSON, MCP text, MCP structured content, and post-2025-03 output schemas must agree. Formal result/review transitions remain exclusive to `submit_task_result` and `review_task_result`. The reviewed design requires configured AutoByteus, Codex, and Claude evaluation based on collaboration intent and observable task/message counts, not only exact-copy assertions.
 
 The implementation and code review report a clean legacy removal and a `Not Affected` persisted-data decision. Those answers are internally consistent with the changed files: message/task persistence, task states, routing inputs, and stored record shapes are unchanged. API/E2E must not add compatibility-only coverage or infer that the public break is backward compatible.
+
+Round 2 rechecked the complete prior package plus `CRR-002`. `TEST-001` correctly identified that the live Codex helper treated MCP `structuredContent` as optional, so API-SCN-004 could pass when the supported response omitted the structured projection. The bounded correction must require record-valued structured content, compare it exactly with the parsed text object for both active and inactive calls, and rerun that real Codex App Server -> Agent Tools MCP -> message-router path. No implementation-source, requirement, design, environment, or confidence finding was introduced.
 
 ## Changed Behavior Summary
 
@@ -123,8 +126,8 @@ The implementation and code review report a clean legacy removal and a `Not Affe
 | `tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts` | Real Fastify tools/list protocol gating | AC-016 | Still Valid | HTTP MCP route | Run unchanged |
 | `tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` | Fresh Agent/full Team identities; submit/review lifecycle; current persisted records | AC-003,006,008,013 | Still Valid | RootTeamRun/task service/current stores | Run unchanged; add only if a gap cannot be proven elsewhere |
 | `tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts` | Real AutoByteus/Codex/Claude logical Agent messaging | AC-002,009,014 | Still Valid | Its existing cross-runtime delivery assertions remain valid, but probabilistic recipient prose/tool turns made it unsuitable as the identity oracle for this round | Leave unchanged; use deterministic native/integration identity coverage plus retained exact-Codex and three-provider intent live evidence |
-| `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` | Live task Agent and full task Team activation plus lifecycle | AC-003,005,006,008,013 | Needs Update | Real runtime, but task success result identity and natural two-tool choice are not fully asserted | Add result/identity/count assertions and an intent-only three-provider choice scenario |
-| `tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts` | Real exact active-run success and post-termination rejection | AC-004,014 | Needs Update | Real Codex/MCP route, but result field/null/legacy omission are not asserted | Parse active/rejected public results and assert exact/null/no `result` |
+| `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` | Live task Agent and full task Team activation plus lifecycle | AC-003,005,006,008,013 | Still Valid | API-REV-001 added and passed result/identity/count plus intent-only three-provider choice assertions | Retain unchanged in API-REV-002 |
+| `tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts` | Real exact active-run success and post-termination rejection | AC-004,014,016 | Still Valid — corrected in API-REV-002 | Real Codex/MCP helper now rejects absent/non-record structured content and asserts exact equality with parsed text before either branch asserts its public identity | Retain and rerun live |
 | Product VIS-R04 browser checks | Deterministic explanatory motion/UI | Requirements visualization only | Out Of Scope | Explicitly mocked; no production runtime | Do not rerun as production evidence |
 
 ## Stale Or Obsolete Coverage Decisions
@@ -144,7 +147,7 @@ No durable scenario will be removed. The single old-shape occurrence in `collabo
 | --- | --- | --- | --- | --- |
 | API-SCN-002 | `mixed-task-delegation.e2e.test.ts` Agent task | Assert delegate success result task ID/run ID equals activation | AC-003,013,016 | Also count no logical send. |
 | API-SCN-003 | `mixed-task-delegation.e2e.test.ts` Team task | Assert delegate result target is fresh task Team coordinator, not TeamRun/configured coordinator | AC-008,013–016 | Existing activation provides comparison identities. |
-| API-SCN-004 | `codex-standalone-send-message-global-routing.e2e.test.ts` | Assert active exact ID, inactive null, typed error, and no legacy field in real MCP results | AC-004,014,016 | Existing suite already owns safe live exact-route lifecycle. |
+| API-SCN-004 | `codex-standalone-send-message-global-routing.e2e.test.ts` | Assert active exact ID, inactive null, typed error, no legacy field, and mandatory record-valued MCP structured content exactly equal to parsed text for both calls | AC-004,014,016 | API-REV-002 closes `TEST-001` on the suite's safe live exact-route lifecycle. |
 
 ## Durable Coverage To Remove
 
@@ -159,6 +162,9 @@ None.
 | 3 | `pnpm ... vitest run` for the two changed E2E files with gates disabled | Same | Durable E2E collection/import and default skip behavior | Pass — 2 files / 4 intentionally skipped tests | `.../repository/changed-e2e-collection-final.log` |
 | 4 | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | Same | Supported source-build typecheck | Pass | `.../repository/typecheck.log` |
 | 5 | `pnpm -C autobyteus-server-ts run build:full` | Same | Production TypeScript build, managed messaging assets, sanitized bootstrap smoke | Pass | `.../repository/build-full.log` |
+| 6 | `pnpm -C autobyteus-server-ts run prepare:shared` | API-REV-002 Local Fix; worktree root | Recreate required shared package build output after API-REV-001 cleanup | Pass | `api-e2e-evidence/api-rev-002/repository/prepare-shared.log` |
+| 7 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts --no-watch` | API-REV-002; real Codex App Server and Agent Tools MCP | API-SCN-004 active/inactive text plus mandatory structured parity and exact/null identities | Pass — 1 file / 1 test | `api-e2e-evidence/api-rev-002/live/codex-exact-routing.log` |
+| 8 | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | API-REV-002; supported build config | Corrected durable helper type and source-build type safety | Pass | `api-e2e-evidence/api-rev-002/repository/typecheck.log` |
 
 ## Post-Repository Confidence Scorecard
 
@@ -189,9 +195,10 @@ None.
 | Environment, configuration, identity, and fixture fidelity | 98% | Current provider catalogs/models, isolated app data, exact configured and fresh IDs, owned workspaces | Production user data intentionally not used |
 | Failure, edge-case, lifecycle, and recovery evidence | 97% | Inactive exact rejection/null, not-started omission, lifecycle-looking message neutrality, and formal lifecycle tests | No unrelated process-crash recovery scenario |
 | User-surface, browser, and desktop-shell confidence | N/A | No applicable surface | None |
-| Durable regression coverage quality and relevance | 98% | Changed E2E files passed live; 109 focused checks and build passed | Probabilistic provider tests remain gated by design |
+| Durable regression coverage quality and relevance | 98% | Both cumulative changed E2E files passed live; API-REV-002 additionally makes API-SCN-004 fail on absent/non-record structured content and requires exact text/structured equality | Probabilistic provider tests remain gated by design |
 
 - Overall final confidence: `97.7%`
+- API-REV-002 confidence treatment: `Unchanged, not rescored` — CRR-002 did not question execution confidence; the targeted correction strengthens the retained live assertion and its focused real-runtime rerun passed.
 - Every critical acceptance criterion directly proven: `Yes`
 - Any applicable category below `90%`: `No`
 - Default clean-confidence target of `95%` met: `Yes`
@@ -250,10 +257,10 @@ None at investigation time. Any discovered mismatch in public result identity, p
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Completed — Pass`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes — update two files; remove none`
+- Proceed To API/E2E Execution: `Completed — API-REV-002 Local Fix Pass`
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes — API-REV-002 updates one file; the cumulative API/E2E package updates two files; removes none`
 - Post-repository confidence: `93.3%`
 - Broader validation decision: `Required`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: `N/A`
-- Notes: Investigation preceded durable edits. Broader configured-runtime validation raised final confidence to `97.7%`; the authoritative execution report records the completed Pass result.
+- Notes: The API-REV-001 investigation preceded its durable edits, and the canonical package plus CRR-002 were re-read before the bounded API-REV-002 correction. The focused live Codex rerun now enforces mandatory record-valued `structuredContent` and exact text/structured equality in both response branches. Final confidence remains the upstream-reviewed `97.7%`; the authoritative execution report records the completed Local Fix Pass.
