@@ -1,0 +1,28 @@
+{
+  "verdict": "USER_VERIFICATION_FAILED",
+  "packagedApp": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "embeddedBackend": "http://127.0.0.1:29695/graphql",
+  "teamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+  "observableElectronState": [
+    "Two live-created transient /StudentStudyGroup/student_two task rows are visible.",
+    "Both rows show In progress · Offline; selecting either shows the exact task assignment but not the later reasoning/tool/output retained by the backend.",
+    "The first selected task Team pane shows 2 Messages while the center monitor remains at the task assignment."
+  ],
+  "backendContradiction": [
+    "Both exact task records remain active and the root checkpoint reports open execution work.",
+    "Task student_two_b3e... retained 8 conversation entries and 4 Activity items and emitted two exact-token ordinary messages.",
+    "Task student_two_aba1... retained 4 conversation entries and 2 Activity items and emitted the second exact-token ordinary message.",
+    "The exact task Agents therefore executed; Offline/assignment-only is a stale frontend presentation, not absence of backend work."
+  ],
+  "coverageGap": [
+    "API-E2E-TMV-001/002 used intercepted deterministic GraphQL projections and an emulated Team WebSocket.",
+    "API-E2E-LIVE-001 fresh-opened already-retained node-8001 projections read-only; it did not create/select a new live task before later work arrived.",
+    "The reports explicitly excluded actual Electron-shell execution and a fresh live LLM delegation/settlement journey."
+  ],
+  "evidence": [
+    "electron-task-one-selected.png",
+    "electron-two-task-rows.png",
+    "electron-task-two-selected.png",
+    "backend-state.json"
+  ]
+}

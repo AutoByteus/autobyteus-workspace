@@ -5,154 +5,147 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/design-spec.md`
-- Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/ui-ux-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/live-selection-comparison.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/configured-parent-selected.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/task-run-selected.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/deterministic-reproduction-summary.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/reproduce-nested-sibling-task.cjs`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round3-reproduction.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round3-before-click.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round3-after-click.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round3-backend-projection.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round3-backend-topology.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round2-fresh-open-control.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round2-fresh-open-control-after-click.png`
+- UI/UX supplement: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/ui-ux-spec.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A` for this initial implementation baseline. The implementation follows the `ARCH-REV-005` Pass and the `SR-005` design basis; `ARCH-F-006`/`MP-006` were resolved upstream by the deterministic-reproduction artifacts listed above.
+- Historical source and durable-test reviews, retained as superseded context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/code-review-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-test-review-report.md`
+- Historical API/E2E package, whose delivery-readiness result was superseded by `DR-003`:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-revision-record.md`
+- Triggering delivery reroute:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/release-deployment-report.md`
+- Deterministic first-inspection evidence retained from `MP-006`:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/deterministic-reproduction-summary.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/reproduce-nested-sibling-task.cjs`
+- Packaged failure and `MP-007` live-event evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/user-verification-summary.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/backend-state.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-task-one-selected.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-two-task-rows.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-task-two-selected.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-summary.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-reconnect-status.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/reproduce-live-selected-before-work.cjs`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-reproduction.raw.json.gz`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-selected-immediately.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-plus-30s.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-plus-60s.png`
 
 ## Current Implementation Summary
 
-The frontend now treats retained projection authority as an explicit property, not as a consequence of a task row, mounted context, or activation shell existing. Mounted task inspection single-flights an exact projection request, stages conversation and Activity, validates composite context and revision witnesses, and commits before focus/navigation/outer selection. Fresh Team open resolves the requested exact focus, treats nonfocused projections as best effort, applies an all-or-none Activity batch, and only then mounts/selects/connects. Conflicts and fetch/validation errors keep the previous coherent selection.
+The current candidate preserves the reviewed frontend exact-inspection, Activity CAS, fresh-open, focus-convergence, standalone keep-live, and dual-status implementation at `3064b084c`. `IR-003` adds the bounded `DS-009` server correction at the existing mixed task-Agent registry owner.
 
-Task execution rows and the selected header now show task context plus separate lifecycle and execution status. Loading, retryable failure, and authoritative-empty states are distinct. Focus is derived from `TeamExecutionViewState`, task activation cannot steal focus, snapshot/reconnect invalidates projection authority, and standalone Agent open retains its existing `KEEP_LIVE_CONTEXT` behavior through staged projection commits. Under `IR-002`, incremental task settlement now emits the existing focused-projection reconciliation effect only when focus repair changes the exact AgentRun; the stream dispatcher immediately enters the existing loading/error-capable reconciliation path for the repaired fallback.
+Each prepared task Agent now receives one stateful publisher gate. The gate buffers events in `prepared`, drains them FIFO in `releasing` (including synchronous reentrant publications), transitions to `live` only after the queue is empty, and then forwards later events directly and exactly once to the unchanged containing-Team/root publisher. Release is idempotent and completes before assignment work is queued. Abort or registry disposal closes the gate, drops retained/future events, and prevents a delayed committed release from starting work.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-005`
-- Related architecture-review revision IDs: `ARCH-REV-005`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-F-001` / `CR-MP-001`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-006`
+- Related code-review revision IDs: `CRR-001`–`CRR-004` are historical; current source re-review pending
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002` are historical/superseded for delivery readiness
+- Related delivery revision IDs: `DR-003`
+- Triggering finding/evidence IDs: `USER-VERIFY-001`, `F-018`–`F-021`, `MP-007`; no unresolved architecture finding
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Every current task row and focused surface resolves one exact AgentRun. | `stores/runHistorySelectionActions.ts` branches on mounted root; `services/runOpen/teamMemberInspectionCoordinator.ts` and `services/runHydration/teamMemberProjectionHydrationService.ts` hydrate before `TeamExecutionViewState.focusAgent`; `stores/runHistoryNavigationPatches.ts` rebuilds navigation from the view. | Implemented. Target selection is committed only after exact projection authority succeeds. |
-| BEH-002 | Incomplete local task content loads the exact retained projection and exposes loading/error/true-empty states. | `teamMemberProjectionHydrationService.ts` stages and guardedly applies exact content; `stores/runHistoryTeamMemberInspectionActions.ts` owns compound-key attempt state; `TeamMembersPanel.vue`, `AgentTeamEventMonitor.vue`, and `ActivityFeed.vue` render loading, retry, and authoritative-empty presentation. | Implemented. Failure preserves prior selection and exposes retry. |
-| BEH-003 | One focused-run invariant governs user selection and structural stream changes without activation focus theft. | `services/teamExecution/teamExecutionViewState.ts`, `TeamStreamingService.ts`, `runHistoryNavigationPatches.ts`, and `workspaceNavigationService.ts`. | Implemented. View focus is authoritative; navigation is derived; activation invalidates the new shell without focusing it; snapshots invalidate authority and reconcile current focus; settlement that repairs focus also reconciles the repaired fallback projection. |
-| BEH-004 | Task rows and selected-task header expose non-color-only lifecycle and execution labels and a Task marker. | `services/teamExecution/taskDelegationPresentation.ts`, `teamExecutionViewModels.ts`, `WorkspaceTransientExecutionRow.vue`, `TeamWorkspaceView.vue`, and localized `workspace.ts` catalogs. | Implemented for lifecycle values including active, awaiting review, revision requested, accepted, and interrupted, combined with exact execution status. |
-| BEH-005 | Retained/live conversation and Activity render independently of lifecycle state or collaboration-tool choice. | `runProjectionActivityHydration.ts` is a pure adapter; `agentActivityStore.ts` owns revisioned replacement; Team and standalone open/hydration coordinators commit content without lifecycle gating. | Implemented. Ordinary messages and tool content remain visible; no completion inference was added. |
-| BEH-006 | Configured parents and same-address task AgentRuns remain distinct by exact run identity. | `teamExecutionTreeSelectors.ts`, `runHistoryTeamExecutionRows.ts`, `teamMemberProjectionHydrationService.ts`, and exact compound identities throughout selection. | Implemented. Browser inspection repeatedly switched between same-address parent/task contexts without content transfer. |
-| PB-001 / DS-008 | Preserve standalone active subscribed context while making replaceable projection commits coherent. | `runContextHydrationService.ts` returns a pure staged candidate; `agentRunOpenCoordinator.ts` recomputes strategy after load and keeps live Activity/conversation on `KEEP_LIVE_CONTEXT`, otherwise commits Activity/context/baseline/files before selection/stream. | Preserved and covered by focused unit/integration checks. |
+| BEH-001–BEH-002 | Exact task selection stages and validates retained content before focus/current selection; a selected exact context subsequently advances from its live stream. | Existing frontend hydration/open owners under `autobyteus-web/services/runHydration/**`, `services/runOpen/**`, and run-history stores; new live edge from the mixed task-Agent gate into the existing root publisher. | Preserved frontend authority plus corrected live continuation. |
+| BEH-003 | View-owned focus and stream effects remain authoritative across activation, reconnect, and settlement. | `teamExecutionViewState.ts`, `TeamStreamingService.ts`, and derived navigation paths at candidate `3064b084c`. | Preserved unchanged in `IR-003`. |
+| BEH-004 | Task lifecycle and exact execution status remain separate and non-color-only. | Existing task presentation mapper and Team/history Vue surfaces. | Preserved; no lifecycle inference or policy change. |
+| BEH-005 | Retained and subsequent exact-run conversation/Activity remain visible independently of task lifecycle or collaboration-tool choice. | Existing projection/Activity owners plus post-release task-Agent events forwarded through the root Team publisher/WebSocket. | Server event edge corrected; real-boundary convergence proof remains downstream. |
+| BEH-006 | Configured and repeated same-address task runs stay isolated by exact root/address/run identity. | Existing compound frontend identity and unchanged `MixedAgentMemberHandle` execution binding/root publisher. | Preserved; no DTO/projector change. |
+| BEH-007 / R-013 / DS-009 | Withhold task-Agent events before durable activation, then drain and continuously forward in one root sequence. | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts`. | Implemented with `prepared/releasing/live/aborted` gate; old permanent enqueue-only closure removed. |
+| PB-001 | Standalone Agent `KEEP_LIVE_CONTEXT` behavior remains coherent. | Existing frontend standalone hydration/open coordinators. | Preserved unchanged. |
+| PB-002 | Failed/aborted/disposed preparation emits no event and starts no work; successful activation releases once after activation publication. | Registry gate lifecycle and existing task service ordering; owner-unit coverage in `mixed-team-member-registry-task-agent-memory.test.ts`. | Implemented. Task service, persistence, and lifecycle remain unchanged. |
 
 ## Key Files Or Areas
 
-- Exact mounted Team-member projection ownership: `autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts`, `autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts`, and `autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts`.
-- Fresh Team and standalone candidate/commit sequencing: `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`, `autobyteus-web/services/runHydration/teamRunHydrationCommit.ts`, `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`, `autobyteus-web/services/runHydration/runContextHydrationService.ts`, and `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts`.
-- Activity revision/atomic replacement boundary: `autobyteus-web/stores/agentActivityStore.ts` and `autobyteus-web/services/runHydration/runProjectionActivityHydration.ts`.
-- Focus/topology/stream convergence: `autobyteus-web/services/teamExecution/teamExecutionViewState.ts`, `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`, and the run-history navigation/selection store modules.
-- Task lifecycle presentation and UI: `autobyteus-web/services/teamExecution/taskDelegationPresentation.ts`, Team/history row components, monitor/feed components, and English/Chinese localization catalogs.
-- Removed obsolete production path: `autobyteus-web/services/runHydration/teamRunMemberStatusHydration.ts` and the old Activity writer/focus-patch/false-hydration actions.
+- New live event-egress owner: `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts`
+- Owner-unit contract: `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts`
+- Preserved frontend baseline: exact Team/run hydration/open services, `agentActivityStore.ts`, `TeamExecutionViewState`, `TeamStreamingService`, task presentation, and workspace monitor/tree surfaces at candidate `3064b084c`
+- Explicitly unchanged server boundaries: `task-delegation-service.ts`, root `TeamRunEventPublisher`, Team WebSocket projectors/DTOs, Agent prompts/tools, task policy, persistence, and lifecycle transitions
 
 ## Important Assumptions
 
-- The existing exact `GetTeamMemberRunProjection` GraphQL operation and Team stream snapshot/task contracts remain the production authorities.
-- Backend lifecycle values remain authoritative; execution state and message text never mutate or infer lifecycle.
-- Mounted Team root presence, rather than target-row/context presence, selects the mounted-inspection branch.
-- Exact task projection authority is context-bound and is invalidated by context replacement or authoritative snapshot/reconnect changes.
+- Existing task service order remains authoritative: durable state commit, `TASK_AGENT_ACTIVATED` root publication, then `releaseWork()`.
+- The injected containing-Team/root publisher remains the sole owner of root change sequences and the existing WebSocket projectors remain the sole DTO boundary.
+- JavaScript synchronous execution makes the `releasing` loop a complete reentrancy boundary: publications raised by `forward(event)` append behind already queued events before `live` is entered.
+- Exact projection hydration remains necessary for first inspection/recovery; the restored live edge does not replace it.
 
 ## Known Risks
 
-- Independent API/E2E coverage investigation and execution remain outstanding.
-- `autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` still calls the removed `applyRunNavigationTeamFocus` action. It is repository-resident durable E2E coverage and therefore intentionally left for the API/E2E engineer's required coverage investigation and update/removal decision; any durable edit must return through code review.
-- The repository's broad typography audit currently fails on 14 pre-existing fixed-pixel declarations in untouched token-usage components. No task file participates in that failure.
-- The standard Nuxt typecheck entrypoint is blocked by the installed `vue-tsc`/TypeScript package-export incompatibility on Node 22. A direct TypeScript fallback still reports broad baseline diagnostics; filtering its output to changed production files reports zero diagnostics.
+- `DR-003` supersedes the historical delivery-readiness result. Existing API/E2E task-monitor coverage intercepted GraphQL/emulated Team WebSocket messages or fresh-opened retained data; it did not prove the failed real create/select-before-later-work boundary.
+- API/E2E must refresh its coverage investigation and execute the real root Team socket plus real-backend early-selection browser paths required by AC-017. The implementation stage did not run or claim those checks.
+- Any repository-resident durable coverage added, updated, or removed downstream must return through proportional code review before delivery.
+- The full server `pnpm typecheck` command remains blocked by the repository's existing `tsconfig.json` `rootDir: src` while `tests` is included, producing TS6059 for the test tree. The production build TypeScript configuration passes with `--noEmit`.
+- The SR-006 request mentioned `origin/main`, but no such ref exists in this checkout; canonical bootstrap and actual remote remain `origin/personal` at `80e2bd195`. Delivery must re-confirm the final integration target and this implementation did not alter the branch basis.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: frontend bug fix and behavior correction.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Missing Invariant`, and `Shared Structure Looseness`; the primary defect was missing exact retained-projection authority for live-created task shells.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
+- Reviewed change posture: cross-boundary bug fix: bounded server event-egress correction plus preserved frontend observability safeguards.
+- Reviewed root-cause classification: missing registry-owned post-durability event-sink transition; independently proven frontend first-inspection authority gap remains addressed by the existing candidate.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`, bounded to the existing registry owner.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: the implementation creates one inspection/hydration authority, derives navigation focus from `TeamExecutionViewState`, makes Activity replacement atomic and revision-guarded, and removes the ambiguous/duplicate production actions rather than layering a compatibility path over them.
+- Evidence / notes: the implementation replaces the permanent enqueue-only callback with one owner-local state gate and reuses the unchanged root publisher; it adds no poller, secondary transport, DTO, or Team-message inference.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` — the permanent `retainedEvents.push` sink and one-shot detached drain are replaced, not wrapped.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: repository-wide production search is empty for `hydrateActivitiesFromProjection`, `teamRunMemberStatusHydration`, `focusTeamMemberAndEnsureHydrated`, and `applyRunNavigationTeamFocus`. The only old focus-action reference is the downstream-owned E2E fixture identified under Known Risks.
+- Notes: the changed registry is 225 effective non-empty lines and the implementation delta is well below the split-pressure threshold.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`
-- Design-spec decision reference: design spec Persisted Data / State Transition Decision; requirements R-009 and AC-007/AC-013/AC-015.
+- Design-spec decision reference: design spec Persisted Data / State Transition Decision; R-009, AC-007/AC-013/AC-015.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: existing execution trees, task records, communication history, raw projections, and current DTOs are read as-is by exact identity. Browser validation used retained Docker node-8001 data without rewrite or migration.
+- Direct-use evidence or discard/rebuild result, when applicable: the change alters only the in-memory event callback lifecycle; stored trees, task records, projections, DTOs, and readers are unchanged.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility`
-- Branch/base: `codex/task-agent-monitor-visibility`, based on `origin/personal` at `80e2bd195c42ea3ced778dbc051d4d00edaef16f`.
-- Local runtime: Node `v22.23.1`, pnpm workspace dependencies already installed.
-- The frontend build/tests require generated `@autobyteus/application-sdk-contracts/dist`; it was created with `pnpm --filter @autobyteus/application-sdk-contracts build` for checks and removed afterward as ignored generated output.
-- Browser feedback used the project Nuxt dev surface on port 3100, proxied through `BACKEND_NODE_BASE_URL=http://127.0.0.1:8001`; the temporary dev server was stopped.
+- Branch/base: `codex/task-agent-monitor-visibility`, based on actual `origin/personal` at `80e2bd195c42ea3ced778dbc051d4d00edaef16f`
+- Pre-rework candidate HEAD: `3064b084c74fa02f2fe06a764669a1669c58286a`
+- Node/pnpm workspace dependencies were already installed.
+- The standard server typecheck prehook regenerated untracked shared-package `dist/` directories. They are build output, excluded from this implementation change, and were not staged.
 
 ## Local Implementation Checks Run
 
-- `pnpm --filter @autobyteus/application-sdk-contracts build` — passed.
-- `pnpm build` from `autobyteus-web` — passed; Nuxt production static build transformed 3,756 modules and prerendered 15 routes.
-- Changed-test selection across 27 spec files — passed, 27 files / 257 tests.
-- Follow-up `taskDelegationPresentation.spec.ts` after aligning the mapper to the current `awaiting_review` DTO value — passed, 1 file / 5 tests.
-- Full `pnpm test:nuxt --run` — 436 files and 2,432 tests passed, 2 files/tests skipped; one unrelated existing fixed-pixel typography audit failed on 14 declarations in five untouched token-usage files.
-- `IR-002` focused settlement/view-stream check — passed, 2 files / 22 tests. The view assertion requires navigation plus focused-projection reconciliation after exact focus repair; the stream assertion requires dispatch to `reconcileFocusedTeamMemberProjection(rootTeamRunId, repairedAgentRunId)`.
-- `IR-002` Nuxt production build — passed after the focused correction; 3,756 modules transformed and 15 routes prerendered.
-- `IR-002` direct TypeScript fallback — the unchanged repository baseline remains 465 diagnostics; changed-production-file filtering found 0 diagnostics.
-- `pnpm exec nuxi typecheck` — could not start diagnostics because `vue-tsc` requests the unexported TypeScript subpath `./lib/tsc` (`ERR_PACKAGE_PATH_NOT_EXPORTED`).
-- Fallback `pnpm exec tsc --noEmit -p .nuxt/tsconfig.json --pretty false` — exited with 465 repository-baseline diagnostics; changed-production-file filtering found 0 diagnostics.
-- `git diff --check` — passed.
-- Frontend-only guard — `git diff --name-only -- autobyteus-server-ts` returned empty.
-- Removal/import search — no production references to the four superseded helpers/actions; one E2E fixture reference recorded for downstream coverage ownership.
-- Changed production source size check — every changed implementation file is below 500 effective non-empty lines; no changed source delta exceeded the implementation pressure threshold after responsibility splits.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts --no-watch` — passed, 2 files / 12 tests. Coverage includes pre-release isolation, representative handle-event FIFO/reentrant drain, live pass-through, repeated-release idempotence, abort/drop behavior, disposal before delayed release, no delayed work start, and the existing activation release invariant.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed for production source.
+- `pnpm -C autobyteus-server-ts typecheck` — did not reach actionable diagnostics because the repository baseline includes `tests` beneath `rootDir: src`; it failed with TS6059 across the test tree. The narrower production configuration above passes.
+- `git diff --check` for the changed server source/unit test — passed.
+- Source-size guard — changed registry is 225 effective non-empty lines; passed.
+- No API, E2E, real-backend browser, packaged Electron, or deployment execution was performed by implementation.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: already-open Team execution tree; exact task selection; selected task header; center conversation monitor; Activity pane; same-address configured-parent/task comparison; 1024px responsive layout.
-- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md` UXJ-001–UXJ-006; requirements BEH-001–BEH-006 and AC-001–AC-015; design spines DS-001–DS-008.
-- Existing design system, shared components, and adjacent product surfaces reviewed: stable and transient execution rows, Team member panel/header, Agent/Team event monitors, Activity feed, responsive workspace shell, existing status dot/badge/typography patterns, and English/Chinese catalogs.
-- Project development / preview instructions and rendered surface used: Nuxt browser development renderer at `http://127.0.0.1:3100`, backed by Docker node 8001.
-- States, layouts, viewports, and interactions inspected: opened retained `Nested Classroom Test Team`; expanded the hierarchy; selected exact task `student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd`; switched to configured same-address parent `student_one_88bc7221b197477388fc88e73874ae07`; reselected the task; inspected 1680x1050 and 1024x768. Each state had exactly one current row. The task rendered 2 conversation items and 5 Activity items, the parent rendered 22/12, and one exact task projection request was observed.
-- Visual or interaction issues found and corrected: task identity/status wording, full-description access, false-empty presentation, loading/error/retry ownership, responsive truncation, and current/busy accessibility were implemented and iterated until the desktop and 1024px surfaces remained coherent. The final state showed a visible `Task` marker and `Interrupted · Offline` without losing retained content.
-- Supporting evidence and remaining unverified states or limitations:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-evidence/task-monitor-browser-check.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-evidence/task-selected-desktop.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-evidence/task-selected-1024.png`
-  - The initial implementation check used an existing retained interrupted task and did not create a new live task. `IR-002` changes no component, styling, label, or layout code; its settlement-only stream effect was verified at the view/dispatcher boundary rather than by creating a new live formal settlement during implementation. Upstream deterministic evidence establishes the supported live-created defect; downstream API/E2E still owns independent reproduction and broader state coverage.
+Not Applicable for `IR-003`: this round changes only the server-side event callback lifecycle and owner-unit coverage; it adds no component, style, label, layout, or frontend interaction code. The earlier frontend rendered evidence remains historical context, while actual no-reload live convergence for this server correction must be proved independently at the real GraphQL/WebSocket boundary under AC-017.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Re-run the supported live-created nested-task journey on node 8001 and select the task without reload; assert one exact projection request occurs before the target becomes current and retained content is non-empty.
-- Force exact projection fetch/validation failure and confirm previous row/header/monitor/Activity remain coherent while the target row shows localized retry state; verify retry succeeds.
-- Select configured parent and two same-address task AgentRuns repeatedly; assert each exact conversation/Activity/status/lifecycle remains isolated and exactly one row is current.
-- Exercise active+Running, active+Idle, awaiting-review, revision-requested, accepted, and interrupted presentation without gating monitor content or inferring lifecycle from ordinary text.
-- Exercise task activation while another member is focused, snapshot/reconnect invalidation, and settlement removal of the current task; assert activation does not steal focus and settlement repair converges all surfaces.
-- Exercise fresh Team target validation and Activity-revision conflict; assert no partial mount, focus, selection, config clearing, or stream connection.
-- Recheck standalone active subscribed `KEEP_LIVE_CONTEXT` and replaceable history/deep-link opens for replacement-before-selection/stream ordering.
-- Investigate and update/remove `tests/e2e/fixtures/background-agent-renderer-contention.page.vue`'s call to the removed focus action before running that durable fixture.
+- Strengthen the actual root Team-socket mixed-task scenario: require `TASK_AGENT_ACTIVATED` to have a lower root `change_sequence` than the first exact task-Agent Agent frame; require monotonic exact-ID status/turn/content/tool frames on that same socket with no duplicates.
+- Exercise a failed pre-durability preparation/abort and prove no exact task-Agent Agent frame and no assignment work escapes.
+- Against a real backend using Codex runtime and GPT-5.6 Luna, keep the Team already open, delegate configured `student_one` to configured `student_two`, select the exact task while only its assignment projection exists, then prove the already-selected row/header/conversation/Activity/status advance without reload or refocus.
+- Compare the final selected state with the exact projection and root snapshot, and repeat the same configured address for a second task run to prove exact-run isolation.
+- Treat intercepted GraphQL/WebSocket fixtures as supplementary only. If their durable repository coverage is changed, route it through proportional code re-review after execution.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. This handoff reports implementation-scoped unit/build/static/render checks only. The API/E2E engineer must first produce the required coverage investigation, then own durable coverage decisions, environment setup, broader execution, and independent evidence. Any repository-resident durable coverage edit must return through code review before delivery.
+Yes. The historical API/E2E delivery-readiness conclusion is superseded by `DR-003`. After source review passes, `/api_e2e_engineer` must refresh the coverage investigation and independently execute the actual Team-socket and real-backend AC-017 browser paths. This handoff reports implementation-scoped source/type/unit checks only.

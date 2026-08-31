@@ -14,13 +14,13 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`-`ARCH-REV-005` (`ARCH-REV-005` current)
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002` (`IR-002` current)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: `/implementation_engineer` completed `IR-001` at development commit `9ba13698fb85c5a24daeca8a05761bf09b790f5f` under `SR-005` / `ARCH-REV-005`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: `/implementation_engineer` completed `IR-002` at development commit `3064b084c74fa02f2fe06a764669a1669c58286a`, correcting `CR-F-001` from `CRR-001` under `SR-005` / `ARCH-REV-005`.
+- Prior Review Round Reviewed: `1` / `CRR-001` (`Fail`, `Local Fix`)
+- Latest Authoritative Round: `2`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
@@ -34,37 +34,37 @@
 ## Review Scope
 
 - Changed implementation and behavior reviewed: frontend exact Team-member projection authority; mounted and fresh selection commits; Activity revision/CAS ownership; Team stream topology/freshness effects; standalone Agent open preservation; task lifecycle/execution presentation; loading/error/empty UI; cleanup and no-server boundary.
-- Files / areas reviewed: development diff `80e2bd195c42ea3ced778dbc051d4d00edaef16f..9ba13698fb85c5a24daeca8a05761bf09b790f5f` across `autobyteus-web/components`, `composables`, `services`, `stores`, `utils`, localization, and changed unit/component/integration specs; production caller/removal searches; implementation evidence.
+- Files / areas reviewed: full development diff `80e2bd195c42ea3ced778dbc051d4d00edaef16f..3064b084c74fa02f2fe06a764669a1669c58286a` across `autobyteus-web/components`, `composables`, `services`, `stores`, `utils`, localization, and changed unit/component/integration specs; focused correction diff `9ba13698fb85c5a24daeca8a05761bf09b790f5f..3064b084c74fa02f2fe06a764669a1669c58286a`; production caller/removal searches; implementation evidence.
 - Explicit exclusions: API/E2E coverage investigation/execution and disposition of `autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` remain with `/api_e2e_engineer`; `autobyteus-server-ts/**`, prompts, collaboration tools, persistence, and backend lifecycle are approved no-change scope.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: `Yes` — the change is frontend exact-run observability and truthful status presentation only.
-- Design-spec behavior map verified against the implementation: `Yes`, except the incremental settlement return/event path identified in `CR-F-001` does not complete projection reconciliation after focus repair.
+- Design-spec behavior map verified against the implementation: `Yes`, including the corrected incremental settlement return/event path from `CR-F-001`.
 - Design review report and round confirmed: `ARCH-REV-005` / Pass.
-- Behavior-basis status: `Contradicted` — the approved basis is clear, but `IR-001` does not satisfy `BEH-003` on the settlement path in `CR-F-001`.
-- Changed or newly discovered behavior, if any: `None`. `CR-F-001` concerns an already-approved settlement/reconnect lifecycle, not new product behavior.
-- Remaining material ambiguity, if any: `None` for classification. The failing path is reachable under the existing contracts recorded as `MP-001` plus formal task settlement.
+- Behavior-basis status: `Confirmed` — `IR-002` closes the only round-1 contradiction without changing the approved behavior basis.
+- Changed or newly discovered behavior, if any: `None`.
+- Remaining material ambiguity, if any: `None`. The corrected path remains independently reachable under `MP-001` plus formal task settlement.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
 | `BEH-001` | Confirmed | Mounted row activation goes through `inspectMountedTeamMember -> ensureAuthoritativeTeamMemberProjection -> view.focusAgent -> derived navigation/outer selection`; fresh open validates exact focus before mount. | N/A |
 | `BEH-002` | Confirmed | `teamMemberProjectionHydrationService.ts` single-flights exact fetch, stages conversation/Activity, checks Team/Agent identity plus presentation/Activity revisions, and commits synchronously or retries/errors. | N/A |
-| `BEH-003` | Contradicted | Activation invalidates new shells without focus theft and snapshots invalidate/reconcile the focused member. Incremental settlement repairs focus but emits navigation reconciliation only. | `CR-F-001` / `CR-MP-001`: a repaired fallback can remain projection-non-authoritative. |
+| `BEH-003` | Confirmed | Activation invalidates new shells without focus theft; snapshots invalidate all projection authority and reconcile the focused member; incremental settlement now detects an exact focus repair and emits navigation followed by focused-projection reconciliation. | N/A; `CR-F-001` is resolved in `IR-002`. |
 | `BEH-004` | Confirmed | `taskDelegationPresentation.ts` owns lifecycle mapping; task rows/header render localized lifecycle plus exact execution status. | N/A |
 | `BEH-005` | Confirmed | Projection staging and Activity replacement have no lifecycle/tool-choice gate; exact retained/live content remains run-scoped. | N/A |
 | `BEH-006` | Confirmed | Root/run compound identity, execution locations, exact projection query, and run-keyed Activity/context stores keep same-address executions distinct. | N/A |
 | `PB-001` | Confirmed | `openAgentRun` recomputes post-load strategy; `KEEP_LIVE_CONTEXT` skips projection Activity/conversation replacement, while replaceable contexts commit before selection/stream policy. | N/A |
 
-`BEH-003` is a confirmed approved behavior whose current implementation is contradicted on one reachable lifecycle path; no upstream requirement ambiguity exists.
+All reviewed behaviors are confirmed in the current implementation; no upstream requirement ambiguity exists.
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The boundary/missing-invariant diagnosis drives explicit projection authority, one focus owner, and Activity revision ownership. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | UI/status/selection states match `ui-ux-spec.md`, but incremental settlement can expose a repaired fallback without authoritative projection reconciliation (`CR-F-001`). | Complete the settlement focus-repair path. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-001/002/005/007/008 are preserved; DS-003 stops at navigation after incremental settlement even when `repairFocus()` changes the exact run. | Emit/consume focused projection reconciliation on that return/event edge. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | UI/status/selection states match `ui-ux-spec.md`; `IR-002` also reconciles the exact fallback projection when settlement repairs focus. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-001/002/005/007/008 remain preserved, and DS-003 now continues from settlement focus repair through navigation and focused projection reconciliation. | None. |
 | Ownership boundary preservation and clarity | Pass | `TeamExecutionViewState`, hydration services, Activity store, and open/inspection coordinators have distinct authority. | None. |
 | Off-spine concern clarity | Pass | Attempt state, navigation cache, localization, and projection conversion serve named spine owners. | None. |
 | Existing capability/subsystem reuse check | Pass | Existing run-hydration, run-open, Team execution, navigation, and Activity areas are extended rather than duplicated. | None. |
@@ -82,14 +82,14 @@
 | No unjustified duplication of code / repeated structures in changed scope | Pass | Lifecycle derivation and projection Activity building are single-owned. | None. |
 | Patch-on-patch complexity control | Pass | Obsolete writers/focus helpers are removed rather than wrapped. | None. |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | Production searches are empty for removed hydration/focus/status symbols; deleted helper has no compatibility alias. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Core changed tests pass, but the settlement test at `teamExecutionViewState.spec.ts:373-403` asserts focus repair without asserting the required focused-projection reconciliation effect. | Add focused view/stream coverage for `CR-F-001`. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | `teamExecutionViewState.spec.ts` requires navigation followed by focused projection reconciliation, and `TeamStreamingService.spec.ts` requires dispatch with the repaired coordinator identity. Reviewer rerun passed 2 files / 22 tests. | None. |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Current Team fixtures/builders and focused service specs remain coherent. | None. |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The one known durable E2E fixture reference is explicitly assigned to downstream coverage investigation, as required by team workflow; it is not treated as implementation proof. | `/api_e2e_engineer` must disposition it after source re-review passes. |
-| API/E2E readiness for the next workflow stage | Fail | `CR-F-001` is an implementation defect on AC-009, so API/E2E must not start yet. | Fix, run implementation-scoped checks, and return for source re-review. |
+| API/E2E readiness for the next workflow stage | Pass | `CR-F-001` is resolved, focused checks pass, and the remaining stale durable fixture is explicitly assigned to the required downstream coverage investigation. | Proceed to `/api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit
 
-Changed implementation-source files only; tests, fixtures, generated evidence, and ticket artifacts are excluded. No changed implementation file exceeds 500 effective non-empty lines and no source delta exceeds 220 added lines.
+Changed implementation-source files only; tests, fixtures, generated evidence, and ticket artifacts are excluded. Current source and both the full implementation diff and focused `IR-002` diff were rechecked. No changed implementation file exceeds 500 effective non-empty lines and no source delta exceeds 220 added lines.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
@@ -105,7 +105,7 @@ Changed implementation-source files only; tests, fixtures, generated evidence, a
 | `composables/mobile/useMobileTeamMemberFocusCoordinator.ts` | 87 | Pass | Pass (`+6/-1`) | Pass | Pass | None | None |
 | `localization/messages/en/workspace.ts` | 350 | Pass | Pass (`+17/-0`) | Pass | Pass | None | None |
 | `localization/messages/zh-CN/workspace.ts` | 349 | Pass | Pass (`+17/-0`) | Pass | Pass | None | None |
-| `services/agentStreaming/TeamStreamingService.ts` | 348 | Pass | Pass (`+34/-3`) | Fail on `CR-F-001` return edge | Pass | Local Fix | Consume a settlement focus-reconcile effect. |
+| `services/agentStreaming/TeamStreamingService.ts` | 348 | Pass | Pass (`+34/-3`) | Pass; existing ordered effect consumer dispatches repaired root/run identity | Pass | None | None |
 | `services/runHydration/runContextHydrationService.ts` | 192 | Pass | Pass (`+35/-16`) | Pass | Pass | None | None |
 | `services/runHydration/runProjectionActivityHydration.ts` | 253 | Pass | Pass (`+3/-17`) | Pass; cohesive pure DTO conversion | Pass | None | None |
 | `services/runHydration/teamMemberProjectionHydrationService.ts` | 138 | Pass | Pass (`+150/-0`) | Pass | Pass | None | None |
@@ -118,7 +118,7 @@ Changed implementation-source files only; tests, fixtures, generated evidence, a
 | `services/teamExecution/taskDelegationPresentation.ts` | 28 | Pass | Pass (`+32/-0`) | Pass | Pass | None | None |
 | `services/teamExecution/teamExecutionTreeSelectors.ts` | 320 | Pass | Pass (`+26/-15`) | Pass | Pass | None | None |
 | `services/teamExecution/teamExecutionViewModels.ts` | 75 | Pass | Pass (`+6/-2`) | Pass | Pass | None | None |
-| `services/teamExecution/teamExecutionViewState.ts` | 387 | Pass | Pass (`+19/-1`) | Fail on `CR-F-001` effect completeness | Pass | Local Fix | Signal reconciliation when settlement changes focus. |
+| `services/teamExecution/teamExecutionViewState.ts` | 393 | Pass | Pass (`+25/-1`) | Pass; settlement conditionally signals exact focused projection reconciliation after focus repair | Pass | None | None |
 | `services/workspace/workspaceNavigationService.ts` | 103 | Pass | Pass (`+17/-0`) | Pass | Pass | None | None |
 | `stores/agentActivityStore.ts` | 345 | Pass | Pass (`+80/-6`) | Pass | Pass | None | None |
 | `stores/agentTeamRunStore.ts` | 428 | Pass | Pass (`+28/-6`) | Pass | Pass | None | None |
@@ -173,66 +173,59 @@ None in implementation source. The stale E2E fixture reference is a downstream c
 - Relevant behavior ID(s): `BEH-003`, with `BEH-002` authority semantics.
 - Initiating basis kind: `System`
 - Independent product-supported initiating trigger or applicable governing contract: the existing formal task lifecycle emits `TASK_EXECUTION_SETTLED` for the currently focused task. An ordinary supported Team disconnect/reconnect snapshot can previously invalidate every member projection under confirmed `MP-001`, while only the then-focused task is reconciled.
-- Support evidence: `TeamExecutionViewState.applySnapshot` emits invalidate-all plus focused reconciliation; `TeamExecutionViewState.applyMessage` handles `TASK_EXECUTION_SETTLED`, calls `repairFocus()`, but returns only `reconcile_team_navigation`; `TeamStreamingService.applyEffects` already has the focused-projection reconciliation boundary but receives no such effect. The current settlement test verifies the fallback focus but not authority reconciliation.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `operator focuses task -> supported reconnect snapshot invalidates all projections -> focused task alone is reconciled -> formal TASK_EXECUTION_SETTLED removes that task -> repairFocus selects root coordinator -> stream dispatcher refreshes navigation only -> header/monitor/Activity read the fallback context without exact projection reconciliation`.
-- Lifecycle preconditions and material consequence at the claimed point: the visible fallback remained nonfocused after reconnect and can have missed retained activity under `MP-001`; after settlement it becomes current immediately but remains non-authoritative, so the UI can expose stale/false-empty content on the exact system-repair path AC-009 requires to converge.
+- Support evidence: `TeamExecutionViewState.applySnapshot` emits invalidate-all plus focused reconciliation. In the corrected incremental path, `TeamExecutionViewState.applyMessage` captures focus before `repairFocus()`, detects an exact change caused by `TASK_EXECUTION_SETTLED`, and emits `reconcile_focused_team_member_projection` after navigation. `TeamStreamingService.applyEffects` reads the repaired root/run identity and invokes the existing reconciliation action, whose loading state is entered synchronously before its authoritative fetch.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `operator focuses task -> supported reconnect snapshot invalidates all projections -> focused task alone is reconciled -> formal TASK_EXECUTION_SETTLED removes that task -> repairFocus selects root coordinator -> stream dispatcher refreshes navigation -> dispatcher reconciles the repaired coordinator projection -> header/monitor/Activity expose authoritative content or honest row-scoped loading/error state`.
+- Lifecycle preconditions and material consequence at the claimed point: the visible fallback may have remained nonfocused and non-authoritative after reconnect under `MP-001`; after settlement makes it current, the new effect restores authority rather than exposing it as silently current with stale/false-empty content.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-F-001` is a bounded Local Fix. Signal and consume focused projection reconciliation whenever incremental settlement actually repairs focus, retain honest loading/error state, and cover the view effect plus stream dispatch. No new API, backend behavior, persistence, or fallback machinery is needed.
+- Review consequence / proportionate response: `CR-F-001` is resolved by `IR-002`. The bounded change uses the existing view/effect/store owners and does not add an API, backend behavior, persistence path, or unsupported fallback mechanism.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.17`
-- Overall score (`/100`): `91.7`
-- Score calculation note: simple average for summary only; `CR-F-001` and the two sub-9 categories control the Fail decision.
+- Overall score (`/10`): `9.40`
+- Overall score (`/100`): `94.0`
+- Score calculation note: simple average for summary only. No current finding or sub-9 category remains.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.7 | Main mounted/fresh/standalone spines are explicit and implemented. | DS-003 incremental settlement stops after focus repair/navigation instead of completing projection reconciliation. | Close the return/event edge in `CR-F-001`. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | View, hydration, Activity, navigation, and coordinator ownership is clear. | Minor drag only from the missed effect handoff between two otherwise-correct owners. | Preserve the same owners while completing the handoff. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Exact compound identities and typed results replace ambiguous helpers. | No material API defect; the existing effect API is underused on settlement. | Reuse the existing reconciliation effect. |
-| `4` | `Separation of Concerns and File Placement` | 9.4 | Pure adapters, store-owned mutation, and coordinator sequencing are well separated. | No material structural drag beyond the localized effect omission. | Keep the fix within view/stream owners and tests. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | Task presentation and hydration/CAS shapes are tight and single-owned. | No material gap. | No redesign required. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | New names accurately describe authority, candidates, and transactions. | A few long orchestration files remain pre-existing but navigable. | Keep the repair explicit and named by reconciliation intent. |
-| `7` | `API/E2E Readiness` | 8.6 | Broad unit/build/browser evidence is strong and the stale E2E fixture is transparently recorded. | AC-009 settlement authority is not implemented or covered, so downstream execution would start from a known source defect. | Fix/re-review first; then perform coverage investigation and fixture disposition. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.4 | Primary deterministic task selection, atomic conflicts, identity isolation, and status UI are correct. | Reachable settlement repair can focus a non-authoritative fallback (`CR-MP-001`). | Reconcile the repaired focus before treating its retained monitor as authoritative. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Mounted, fresh, standalone, snapshot, activation, and settlement spines now carry explicit authority and convergence effects end to end. | No material current defect; asynchronous projection fetch still intentionally exposes loading/error state. | Validate the full lifecycle independently in API/E2E. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | View, hydration, Activity, navigation, and coordinator ownership is clear, and `IR-002` reuses those owners. | No material gap. | Preserve these boundaries during durable coverage work. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Exact compound identities and typed effects/results replace ambiguous helpers. | No material API defect. | None. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | Pure adapters, store-owned mutation, view-owned focus, and coordinator sequencing remain separated. | Larger pre-existing orchestration files remain navigable but deserve normal maintenance attention. | None required for this change. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | Task presentation and hydration/CAS shapes are tight and single-owned. | No material gap. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Authority, candidate, transaction, and reconciliation names describe behavior directly. | Some orchestration is necessarily stateful, but the new condition is localized and readable. | None. |
+| `7` | `API/E2E Readiness` | 9.2 | Focused reviewer checks pass and source behavior is ready for independent coverage investigation/execution. | One known durable E2E fixture still references a removed action and must be dispositioned downstream before relying on it. | Investigate coverage first; return any durable test-code edit through code review. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | Exact task hydration, atomic conflict handling, identity isolation, status UI, and settlement fallback convergence align with approved behavior. | Formal live settlement still needs downstream independent runtime execution. | Exercise reconnect/settlement and failure states in API/E2E. |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Clean-cut removals and no-server/no-migration boundaries are respected. | No material gap. | None. |
-| `10` | `Cleanup Completeness` | 9.2 | Production obsolete symbols/helpers are removed and searches are clean. | One known durable E2E fixture remains for the mandated downstream coverage decision. | API/E2E must disposition it after source re-review passes. |
+| `10` | `Cleanup Completeness` | 9.2 | Production obsolete symbols/helpers are removed and searches are clean. | The known stale durable fixture remains intentionally queued for the mandated coverage investigation. | API/E2E must update, remove, or replace it based on current coverage validity. |
 
 ## Findings
 
-### `CR-F-001` — Settlement focus repair bypasses retained-projection authority
-
-- Severity: `High`
-- Classification: `Local Fix`
-- Affected approved behavior/contracts: `BEH-003`, R-004, AC-009; projection-authority invariant from `BEH-002`/R-003.
-- Material premise: `CR-MP-001` (`Reachable`).
-- Evidence: `teamExecutionViewState.ts:205-212` repairs to a visible fallback; `teamExecutionViewState.ts:297-334` invokes that repair for `TASK_EXECUTION_SETTLED` but emits only navigation reconciliation; `TeamStreamingService.ts:297-317` can reconcile the focused projection only when it receives the existing effect; `teamExecutionViewState.spec.ts:373-403` proves the focus changes to the coordinator but does not require that effect.
-- Consequence: after a reconnect invalidates all projections and reconciles only the focused task, later settlement can make a non-authoritative coordinator current and render stale/false-empty monitor state. This recreates the authority class the ticket is intended to remove, on the approved settlement path.
-- Required action: when an incremental task event makes `repairFocus()` change the exact focused AgentRun, emit/consume the existing focused projection reconciliation effect (with current loading/error behavior) before considering convergence complete. Add focused view and stream-effect assertions. Keep the correction frontend-only and within existing owners.
+None. `CR-F-001` is resolved by `IR-002`; the resolution history is recorded in `CRR-002`.
 
 ## Classification
 
-`Local Fix` — bounded frontend implementation/test correction; no requirement or design change is needed.
+`Pass`
 
 ## Recommended Recipient
 
-`/implementation_engineer`
+`/api_e2e_engineer`
 
-Implementation-owned correction must return through full source review before API/E2E coverage investigation/execution.
+Proceed with the required coverage investigation before final test execution or durable coverage changes.
 
 ## Residual Risks
 
-- The durable E2E fixture `autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` still calls a removed focus action; it remains a mandatory downstream coverage-investigation decision after source review passes.
+- The durable E2E fixture `autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue` still calls a removed focus action; it remains a mandatory downstream coverage-investigation decision, not implementation proof.
 - Standard Nuxt typecheck remains blocked by the installed `vue-tsc`/TypeScript package-export mismatch; direct changed-production filtering reported zero diagnostics.
 - The broad typography audit failure is pre-existing and outside touched production files.
+- Independent live execution must still verify reconnect/snapshot invalidation followed by focused task settlement, including the fallback projection's loading/error/success behavior.
 - Continuous mounted mutation may legitimately exhaust bounded retries, but must retain the previous coherent selection and honest Retry state.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `CR-MP-001` has an independent supported system trigger and complete forward lifecycle path.
-- Score Summary: `9.17/10` (`91.7/100`); Data-Flow `8.7`, API/E2E Readiness `8.6`, Runtime Correctness `8.4` are below clean-pass threshold.
-- Failure Origin (when applicable): `IR-001` implementation omission on the incremental task-settlement return/event path; not an API/E2E result.
-- Recommended Recipient (when applicable): `/implementation_engineer`
-- Notes: Primary exact task hydration, Activity CAS, identity isolation, status presentation, cleanup, and no-server/no-migration boundaries pass. API/E2E must not begin until `CR-F-001` is corrected and source re-review passes.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — `CR-MP-001` remains independently reachable and `IR-002` now completes its forward production path.
+- Score Summary: `9.40/10` (`94.0/100`); all categories are at least `9.2`.
+- Failure Origin (when applicable): `N/A`; prior `IR-001` omission `CR-F-001` is resolved.
+- Recommended Recipient (when applicable): `/api_e2e_engineer`
+- Notes: Reviewer rerun passed the two focused view/stream files with 22 tests. Primary exact task hydration, Activity CAS, focus/navigation convergence, identity isolation, status presentation, cleanup, and no-server/no-migration boundaries pass. API/E2E now owns coverage investigation, stale-fixture disposition, broader execution, and independent evidence.

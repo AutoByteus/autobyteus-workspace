@@ -1,0 +1,19 @@
+$ node --check browser probes
+PASS: syntax checks
+
+$ git diff --check
+PASS: tracked diff whitespace
+
+$ rg applyRunNavigationTeamFocus autobyteus-web
+PASS: removed symbol absent
+
+$ git diff --name-only origin/personal -- autobyteus-server-ts
+
+PASS: no backend diff
+
+$ test ! -e autobyteus-web/pages/api-e2e-task-agent-monitor-visibility.vue
+PASS: temporary fixture route removed
+
+$ curl -fsS http://127.0.0.1:8001/rest/health
+{"status":"ok","message":"Server is running"}
+PASS: shared node 8001 remains healthy and was not stopped

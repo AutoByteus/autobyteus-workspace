@@ -1,0 +1,253 @@
+{
+  "evidenceId": "LIVE-ELECTRON-29695-SR006-A",
+  "marker": "LIVE_EARLY_SELECT_SR006_A",
+  "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+  "taskAgentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "frontendUrl": "http://127.0.0.1:33372",
+  "backendUrl": "http://127.0.0.1:29695",
+  "timeline": [
+    {
+      "label": "student-one-selected-before-request",
+      "capturedAt": "2026-08-31T20:01:29.635Z",
+      "row": null,
+      "focusedContext": {
+        "runId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+        "currentStatus": "idle",
+        "conversationMessageCount": 36,
+        "activityCount": 18
+      },
+      "backendProjection": null,
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3724,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "delegation-request-sent",
+      "capturedAt": "2026-08-31T20:01:29.741Z",
+      "row": null,
+      "focusedContext": {
+        "runId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+        "currentStatus": "initializing",
+        "conversationMessageCount": 37,
+        "activityCount": 18
+      },
+      "backendProjection": null,
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3727,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "task-row-visible-before-immediate-selection",
+      "capturedAt": "2026-08-31T20:01:42.089Z",
+      "row": {
+        "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "text": "Task: LIVE_EARLY_SELECT_SR006_A Perform this exact sequence\u2026 In progress \u00b7 Offline",
+        "current": null
+      },
+      "focusedContext": {
+        "runId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+        "currentStatus": "running",
+        "conversationMessageCount": 38,
+        "activityCount": 19
+      },
+      "backendProjection": {
+        "lastActivityAt": "2026-08-31T20:01:42.054Z",
+        "conversationCount": 1,
+        "activityCount": 1
+      },
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3751,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "task-selected-immediately",
+      "capturedAt": "2026-08-31T20:01:42.215Z",
+      "row": {
+        "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "text": "Task: LIVE_EARLY_SELECT_SR006_A Perform this exact sequence\u2026 In progress \u00b7 Offline",
+        "current": "true"
+      },
+      "focusedContext": {
+        "runId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "conversationMessageCount": 1,
+        "activityCount": 1
+      },
+      "backendProjection": {
+        "lastActivityAt": "2026-08-31T20:01:42.054Z",
+        "conversationCount": 1,
+        "activityCount": 1
+      },
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3751,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "plus-2s",
+      "capturedAt": "2026-08-31T20:01:44.300Z",
+      "row": {
+        "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "text": "Task: LIVE_EARLY_SELECT_SR006_A Perform this exact sequence\u2026 In progress \u00b7 Offline",
+        "current": "true"
+      },
+      "focusedContext": {
+        "runId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "conversationMessageCount": 1,
+        "activityCount": 1
+      },
+      "backendProjection": {
+        "lastActivityAt": "2026-08-31T20:01:42.054Z",
+        "conversationCount": 1,
+        "activityCount": 1
+      },
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3751,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "plus-10s",
+      "capturedAt": "2026-08-31T20:01:52.355Z",
+      "row": {
+        "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "text": "Task: LIVE_EARLY_SELECT_SR006_A Perform this exact sequence\u2026 In progress \u00b7 Offline",
+        "current": "true"
+      },
+      "focusedContext": {
+        "runId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "conversationMessageCount": 1,
+        "activityCount": 1
+      },
+      "backendProjection": {
+        "lastActivityAt": "2026-08-31T20:01:42.054Z",
+        "conversationCount": 1,
+        "activityCount": 1
+      },
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3759,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "plus-30s",
+      "capturedAt": "2026-08-31T20:02:12.422Z",
+      "row": {
+        "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "text": "Task: LIVE_EARLY_SELECT_SR006_A Perform this exact sequence\u2026 In progress \u00b7 Offline",
+        "current": "true"
+      },
+      "focusedContext": {
+        "runId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "conversationMessageCount": 1,
+        "activityCount": 1
+      },
+      "backendProjection": {
+        "lastActivityAt": "2026-08-31T20:02:02.927Z",
+        "conversationCount": 6,
+        "activityCount": 4
+      },
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3948,
+        "hasOpenExecutionWork": true
+      }
+    },
+    {
+      "label": "plus-60s",
+      "capturedAt": "2026-08-31T20:02:42.481Z",
+      "row": {
+        "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "text": "Task: LIVE_EARLY_SELECT_SR006_A Perform this exact sequence\u2026 In progress \u00b7 Offline",
+        "current": "true"
+      },
+      "focusedContext": {
+        "runId": "student_two_64b95302c0324d69afc27fef4a55c912",
+        "currentStatus": "offline",
+        "conversationMessageCount": 1,
+        "activityCount": 1
+      },
+      "backendProjection": {
+        "lastActivityAt": "2026-08-31T20:02:02.927Z",
+        "conversationCount": 6,
+        "activityCount": 4
+      },
+      "checkpoint": {
+        "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+        "changeSequence": 3948,
+        "hasOpenExecutionWork": true
+      }
+    }
+  ],
+  "teamWebSocket": {
+    "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "receivedFrameCount": 227,
+    "frameTypeCounts": {
+      "CONNECTED": 1,
+      "TEAM_EXECUTION_VIEW_SNAPSHOT": 1,
+      "TEAM_RUN_LIFECYCLE": 1,
+      "AGENT_STATUS": 115,
+      "MEMBER_INPUT_MESSAGE": 3,
+      "TURN_STARTED": 3,
+      "SEGMENT_START": 7,
+      "SEGMENT_CONTENT": 74,
+      "TOKEN_USAGE_UPDATED": 7,
+      "SEGMENT_END": 7,
+      "TOOL_EXECUTION_STARTED": 1,
+      "TASK_DELEGATION_EVENT": 1,
+      "TOOL_EXECUTION_SUCCEEDED": 1,
+      "TEAM_COMMUNICATION_MESSAGE": 2,
+      "TURN_COMPLETED": 3
+    },
+    "exactTaskAgentIdentityMentionCount": 6,
+    "exactTaskAgentAgentEventCount": 0,
+    "exactIdentityFrames": [
+      {
+        "at": "2026-08-31T20:01:42.074Z",
+        "type": "TASK_DELEGATION_EVENT"
+      },
+      {
+        "at": "2026-08-31T20:01:42.081Z",
+        "type": "TOOL_EXECUTION_SUCCEEDED"
+      },
+      {
+        "at": "2026-08-31T20:01:53.780Z",
+        "type": "TEAM_COMMUNICATION_MESSAGE"
+      },
+      {
+        "at": "2026-08-31T20:01:53.780Z",
+        "type": "MEMBER_INPUT_MESSAGE"
+      },
+      {
+        "at": "2026-08-31T20:02:02.926Z",
+        "type": "TEAM_COMMUNICATION_MESSAGE"
+      },
+      {
+        "at": "2026-08-31T20:02:02.929Z",
+        "type": "MEMBER_INPUT_MESSAGE"
+      }
+    ]
+  },
+  "browserExactProjectionRequestCount": 1,
+  "observation": "The selected task context remained Offline with 1 conversation/1 Activity through +60s while the exact backend projection grew to 6 conversation/4 Activity by +30s. The root Team WebSocket carried no AGENT event whose payload.agent_run_id was the exact task AgentRun; only activation and collaboration/member-input references mentioned it."
+}

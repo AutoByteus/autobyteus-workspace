@@ -1,0 +1,14 @@
+$ node --check autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs
+PASS: probe syntax
+
+$ reject dead fixture query-count instrumentation/imports
+PASS: dead query counter/control/state and unused reactive imports absent
+
+$ authoritative evidence result and exact request sequence
+PASS: exact task, task, teacher sequence; configured Student absent; cleanup complete
+
+$ git diff --check
+PASS: tracked diff whitespace
+
+$ test ! -e autobyteus-web/pages/api-e2e-task-agent-monitor-visibility.vue
+PASS: temporary fixture route removed

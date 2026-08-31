@@ -11,6 +11,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | `ARCH-REV-003` | Round 3 / `SR-004` rework | `SR-001`–`SR-004` | `Fail` | `Pass` | `ARCH-F-004`, `ARCH-F-005` |
 | `ARCH-REV-004` | Round 4 / user-required deterministic reproduction gate | `SR-001`–`SR-004` pending new `SR-*` | `Pass` | `Blocked` | `ARCH-F-006` |
 | `ARCH-REV-005` | Round 5 / `SR-005` deterministic reproduction and authority correction | `SR-001`–`SR-005` | `Blocked` | `Pass` | `ARCH-F-006` |
+| `ARCH-REV-006` | Round 6 / `SR-006` post-delivery event-egress correction | `SR-001`–`SR-006` | `Pass` (superseded by failed user verification) | `Pass` | `MP-007`; prior `ARCH-F-001`–`ARCH-F-006` remain resolved |
 
 ## Revision Entries
 
@@ -120,3 +121,25 @@ None.
 - Material classification changes: Decision changes from `Blocked` to `Pass`. `MP-006` changes from `Unclear` to `Reachable — reproduced 3/3`. `MP-002` remains reachable as an activation-order contract, but its prior consequence is corrected: activation before work does not establish retained-monitor projection authority, so the superseded live-baseline-authoritative design statement is rejected.
 - Recommended recipient: `/implementation_engineer`
 - Remaining risks or uncertainty: Bounded mounted contention or standalone context/Activity conflict may expose the designed recoverable failure while preserving prior coherent state. Activity revision completeness and the corrected non-authoritative activation-shell invariant require implementation review. Paused uncommitted frontend work predates `SR-005` and must be reconciled rather than used as evidence. No server/prompt/tool/lifecycle/persistence change is authorized.
+
+### ARCH-REV-006 — Proven task-Agent event-egress correction approved
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/design-review-report.md`
+- Review round and trigger: Round 6; user verification rejected the delivered Electron candidate, and `/solution_designer` returned `SR-006` after a current-source renderer plus packaged embedded-backend experiment isolated the missing post-durability task-Agent Agent-event edge.
+- Triggering role, report path, and finding IDs: `/solution_designer`; prior canonical report at the path above; downstream `USER-VERIFY-001`, investigation F-018–F-021, and material premise `MP-007`. No new unresolved architecture finding is opened.
+- Relevant solution revision IDs: `SR-001`–`SR-006` (`SR-006` current; `SR-001` superseded)
+- Prior authoritative decision: `Pass` under `ARCH-REV-005`, subsequently superseded as an implementation-readiness basis by the failed packaged live journey.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: Verified that MP-007 is independently reachable through a supported already-open configured-student_one to direct-task-student_two delegation. Exact selection loaded a valid 1/1 projection, the backend reached 6/4, the UI remained `Offline`/1/1 through +60 seconds, a healthy root socket delivered 227 frames but zero exact task-Agent Agent frames, and reconnect snapshot read the handle `Idle`. Current and packaged source establish the immutable enqueue-only publisher closure and one-shot drain as the causal boundary. Approved DS-009: the existing registry owns a prepared/releasing/live/aborted gate; activation publishes first, the gate drains buffered plus synchronous reentrant events FIFO, then later events forward exactly once to the unchanged root publisher. Prior frontend hydration/focus/Activity/presentation design remains independently required.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-F-001`–`ARCH-F-005` | Resolved | Remain Resolved | `SR-003`–`SR-004`; `ARCH-REV-002`–`ARCH-REV-003` | The new server evidence does not invalidate the independently reachable Activity-race, fresh-target, shared-writer, scope, or traceability resolutions. |
+| `ARCH-F-006` | Resolved | Remains Resolved | `SR-005`; `MP-006`; `ARCH-REV-005` | The delivered candidate's successful exact 1/1 selection confirms that first-inspection hydration remains necessary and functioning; MP-007 explains why later work still did not arrive. |
+
+- New or remaining finding IDs: `None`
+- Material classification changes: The prior frontend-only causal boundary is superseded, not the approved observable behavior. New `MP-007` is `Reachable — reproduced`; `BEH-007`, `PB-002`, R-013, AC-017, and DS-009 map its existing root-stream contract and proportionate correction. The material-premise gate remains `Pass` across MP-001–MP-007.
+- Recommended recipient: `/implementation_engineer`
+- Remaining risks or uncertainty: Implementation must prove FIFO/exactly-once behavior under synchronous reentrancy, abort/disposal/pre-durability isolation, idempotent release, and activation-before-exact-Agent-event root sequencing. The environment-gated server LLM E2E or an equivalent actual Team-socket path and a real-backend early-selected browser path are required before delivery. No poller, Team-message inference, DTO/projector, prompt/tool/task-policy/persistence/lifecycle change, or migration is authorized. The SR-006 request's `origin/main` label conflicts with the canonical/actual `origin/personal` remote; delivery must re-confirm the actual finalization target.

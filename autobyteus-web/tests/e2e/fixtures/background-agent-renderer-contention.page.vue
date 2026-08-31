@@ -44,7 +44,7 @@
           <AgentUserInputTextArea />
         </div>
         <div class="mt-3 text-xs text-slate-600">
-          <p data-test="rich-focus">focus={{ richTeam.focusedMemberRouteKey }}</p>
+          <p data-test="rich-focus">focus={{ richTeam.view.getFocusedAgentRunId() }}</p>
           <p data-test="rich-task-status">task={{ richTaskContext.state.currentStatus }}</p>
           <p data-test="detail-revision">detail={{ detailRevision }}</p>
           <button data-test="detail-only-update" class="mt-1 rounded border px-2 py-1" @click="detailRevision += 1">Update detail only</button>
@@ -68,7 +68,6 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { RunHistoryTeamExecutionRow } from '~/stores/runHistoryTypes';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -84,6 +83,12 @@ import { dispatchAgentStreamMessage, type AgentStreamProjectionTarget } from '~/
 import type { ServerMessage } from '~/services/agentStreaming/protocol';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { createUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import {
+  buildTestTeamContext,
+  testAgentNode,
+  testSubTeamNode,
+  testTaskRecord,
+} from '~/test-support/currentTeamTestFixtures';
 
 definePageMeta({ layout: false });
 
@@ -129,17 +134,6 @@ const contextFor = (runId: string, workspaceIndex: number, status = AgentStatus.
   context.isSubscribed = true;
   return context;
 };
-const agentNode = (routeKey: string, runId: string, displayName: string, overrides: Record<string, unknown> = {}) => ({
-  memberKind: 'agent' as const,
-  memberName: displayName,
-  displayName,
-  memberPath: routeKey.split('/'),
-  memberRouteKey: routeKey,
-  memberRunId: runId,
-  agentDefinitionId: `definition-${runId}`,
-  ...overrides,
-});
-
 for (let index = 0; index < 26; index += 1) {
   const metadata = workspaceMetadata(index);
   workspaceStore.workspaces[metadata.workspaceId] = {
@@ -163,96 +157,96 @@ const richWorkerContext = contextFor('rich-worker-run', 0, AgentStatus.Idle);
 const richTaskContext = contextFor('rich-task-agent-run', 0, AgentStatus.Running);
 const richReviewerContext = contextFor('rich-reviewer-run', 0, AgentStatus.Idle);
 const richTaskTeamChildContext = contextFor('rich-task-team-child-run', 0, AgentStatus.Running);
-const richWorkerNode = agentNode('worker', richWorkerContext.state.runId, 'Worker');
-const richTaskAgentNode = agentNode('rich-task-agent-run', richTaskContext.state.runId, 'Worker · task_0001', {
-  memberPath: ['worker', 'rich-task-agent-run'],
-  isTaskAgentInstance: true,
-  taskAgentRunId: 'rich-task-agent-run',
-  taskId: 'task_0001',
-  logicalMemberRouteKey: 'worker',
-  taskDescription: 'Hidden task detail',
+const richWorkerNode = testAgentNode('/worker', {
+  agentRunId: richWorkerContext.state.runId,
+  displayName: 'Worker',
 });
-const richReviewerNode = agentNode('ReviewTeam/reviewer', richReviewerContext.state.runId, 'Reviewer');
-const richStableTeamNode = {
-  memberKind: 'agent_team' as const,
-  memberName: 'Review Team',
+const richReviewerNode = testAgentNode('/ReviewTeam/reviewer', {
+  agentRunId: richReviewerContext.state.runId,
+  displayName: 'Reviewer',
+});
+const richStableTeamNode = testSubTeamNode('/ReviewTeam', [richReviewerNode], {
   displayName: 'Review Team',
-  memberPath: ['ReviewTeam'],
-  memberRouteKey: 'ReviewTeam',
-  memberRunId: 'review-team-run',
   teamDefinitionId: 'review-team',
-  children: [richReviewerNode],
-};
-const richTaskTeamChildNode = agentNode(
-  'rich-task-team-run/reviewer',
-  richTaskTeamChildContext.state.runId,
-  'Task Reviewer',
-  {
-    memberPath: ['rich-task-team-run', 'reviewer'],
-    isTaskTeamChildProjection: true,
-    parentTaskTeamRunId: 'rich-task-team-run',
-    currentStatus: AgentStatus.Running,
-  },
-);
-const richTaskTeamNode = {
-  memberKind: 'agent_team' as const,
-  memberName: 'Review Team · task_0002',
-  displayName: 'Review Team · task_0002',
-  memberPath: ['rich-task-team-run'],
-  memberRouteKey: 'rich-task-team-run',
-  memberRunId: 'rich-task-team-run',
-  teamDefinitionId: 'review-team',
-  children: [richTaskTeamChildNode],
-  isTaskTeamInstance: true,
-  taskTeamRunId: 'rich-task-team-run',
-  taskId: 'task_0002',
-  logicalTeamRouteKey: 'ReviewTeam',
-  taskDescription: 'Hidden nested task detail',
-};
-const richNodes = [richWorkerNode, richTaskAgentNode, richStableTeamNode, richTaskTeamNode] as TeamMemberNode[];
-const richTeam: AgentTeamContext = reactive({
-  teamRunId: 'team-0',
-  config: {
-    teamDefinitionId: 'contention-team', teamDefinitionName: 'Contention Team', runtimeKind: 'autobyteus',
-    workspaceId: 'workspace-0', workspaceMetadata: workspaceMetadata(0), llmModelIdentifier: 'probe-model',
-    llmConfig: null, autoExecuteTools: false, skillAccessMode: 'NONE', memberOverrides: {}, isLocked: true,
-  },
-  memberTree: richNodes,
-  memberNodesByRouteKey: new Map(richNodes.flatMap((node) => node.memberKind === 'agent_team'
-    ? [[node.memberRouteKey, node], ...node.children.map((child) => [child.memberRouteKey, child] as const)]
-    : [[node.memberRouteKey, node] as const])),
-  leafAgentContextsByRouteKey: new Map([
-    ['worker', richWorkerContext],
-    ['rich-task-agent-run', richTaskContext],
-    ['ReviewTeam/reviewer', richReviewerContext],
-    ['rich-task-team-run/reviewer', richTaskTeamChildContext],
-  ]),
-  coordinatorMemberRouteKey: 'worker', historicalHydration: null, focusedMemberRouteKey: 'worker',
-  isActive: true, isSubscribed: true,
+  teamRunId: 'review-team-run',
+  coordinatorAddress: '/ReviewTeam/reviewer',
 });
-teamContextsStore.teams.set(richTeam.teamRunId, richTeam);
+const richTaskAgent = testTaskRecord({
+  taskId: 'task_0001',
+  delegatorAgentRunId: richWorkerContext.state.runId,
+  recipientAddress: '/worker',
+  target: { agentRunId: richTaskContext.state.runId },
+  description: 'Hidden task detail',
+});
+const richTaskTeam = testTaskRecord({
+  taskId: 'task_0002',
+  delegatorAgentRunId: richWorkerContext.state.runId,
+  recipientAddress: '/ReviewTeam',
+  target: { teamRunId: 'rich-task-team-run' },
+  description: 'Hidden nested task detail',
+});
+const richTeam = buildTestTeamContext({
+  teamRunId: 'team-0',
+  teamDefinitionId: 'contention-team',
+  teamDefinitionName: 'Contention Team',
+  coordinatorAddress: '/worker',
+  focusedAgentRunId: richWorkerContext.state.runId,
+  workspaceRootPath: '/probe/workspace-0',
+  configuration: {
+    workspaceId: 'workspace-0',
+    workspaceMetadata: workspaceMetadata(0),
+  },
+  rootChildren: [richWorkerNode, richStableTeamNode],
+  tasks: [richTaskAgent, richTaskTeam],
+  taskExecutions: [
+    {
+      kind: 'task_agent', address: '/worker', agent_run_id: richTaskContext.state.runId,
+      platform_agent_run_id: null, started_at: now, settled_at: null,
+    },
+    {
+      kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
+      members: [{
+        kind: 'task_team_agent', address: '/ReviewTeam/reviewer',
+        agent_run_id: richTaskTeamChildContext.state.runId, platform_agent_run_id: null,
+      }],
+      task_executions: [], started_at: now, settled_at: null,
+    },
+  ],
+  contexts: [
+    { agentRunId: richWorkerContext.state.runId, context: richWorkerContext },
+    { agentRunId: richTaskContext.state.runId, context: richTaskContext },
+    { agentRunId: richReviewerContext.state.runId, context: richReviewerContext },
+    { agentRunId: richTaskTeamChildContext.state.runId, context: richTaskTeamChildContext },
+  ],
+});
+const seededTeams = [richTeam];
 
 for (let index = 1; index < 38; index += 1) {
   const workspaceIndex = index % 26;
   const runId = `team-${index}-worker-run`;
-  const routeKey = 'worker';
   const memberContext = contextFor(runId, workspaceIndex);
-  const memberNode = agentNode(routeKey, runId, `Worker ${index}`);
-  const team: AgentTeamContext = reactive({
-    teamRunId: `team-${index}`,
-    config: {
-      teamDefinitionId: 'contention-team', teamDefinitionName: 'Contention Team', runtimeKind: 'autobyteus',
-      workspaceId: `workspace-${workspaceIndex}`, workspaceMetadata: workspaceMetadata(workspaceIndex),
-      llmModelIdentifier: 'probe-model', llmConfig: null, autoExecuteTools: false,
-      skillAccessMode: 'NONE', memberOverrides: {}, isLocked: true,
-    },
-    memberTree: [memberNode], memberNodesByRouteKey: new Map([[routeKey, memberNode]]),
-    leafAgentContextsByRouteKey: new Map([[routeKey, memberContext]]),
-    coordinatorMemberRouteKey: routeKey, historicalHydration: null, focusedMemberRouteKey: routeKey,
-    isActive: true, isSubscribed: true,
+  const memberNode = testAgentNode('/worker', {
+    agentRunId: runId,
+    displayName: `Worker ${index}`,
+    currentStatus: AgentStatus.Running,
   });
-  teamContextsStore.teams.set(team.teamRunId, team);
+  const team = buildTestTeamContext({
+    teamRunId: `team-${index}`,
+    teamDefinitionId: 'contention-team',
+    teamDefinitionName: 'Contention Team',
+    coordinatorAddress: '/worker',
+    focusedAgentRunId: runId,
+    workspaceRootPath: `/probe/workspace-${workspaceIndex}`,
+    configuration: {
+      workspaceId: `workspace-${workspaceIndex}`,
+      workspaceMetadata: workspaceMetadata(workspaceIndex),
+    },
+    rootChildren: [memberNode],
+    contexts: [{ agentRunId: runId, context: memberContext }],
+  });
+  seededTeams.push(team);
 }
+teamContextsStore.teams = new Map(seededTeams.map((team) => [team.view.getRootTeamRunId(), team]));
 
 const retentionContext = contextFor('retention-run', 1, AgentStatus.Running);
 agentContextsStore.runs.set(retentionContext.state.runId, retentionContext);
@@ -261,15 +255,19 @@ runHistoryStore.refreshRunNavigationTopology('contention-probe-seed');
 const loadTargets: AgentStreamProjectionTarget[] = Array.from(teamContextsStore.teams.values())
   .slice(0, 20)
   .map((team) => {
-    const memberRouteKey = team.teamRunId === richTeam.teamRunId ? 'rich-task-agent-run' : 'worker';
-    const context = team.leafAgentContextsByRouteKey.get(memberRouteKey)!;
+    const teamRunId = team.view.getRootTeamRunId();
+    const agentRunId = teamRunId === richTeam.view.getRootTeamRunId()
+      ? richTaskContext.state.runId
+      : team.view.getFocusedAgentRunId();
+    const context = team.view.getAgentContext(agentRunId)!;
+    const memberAddress = team.view.getMemberAddress(agentRunId)!;
     dispatchAgentStreamMessage({
       type: 'SEGMENT_START',
-      payload: { id: `load-${team.teamRunId}`, turn_id: `turn-${team.teamRunId}`, segment_type: 'text' },
+      payload: { id: `load-${teamRunId}`, turn_id: `turn-${teamRunId}`, segment_type: 'text' },
     } as ServerMessage, {
-      kind: 'team_member', context, teamRunId: team.teamRunId, memberRouteKey, memberRunId: context.state.runId,
+      kind: 'team_member', context, teamRunId, agentRunId, memberAddress,
     });
-    return { kind: 'team_member', context, teamRunId: team.teamRunId, memberRouteKey, memberRunId: context.state.runId };
+    return { kind: 'team_member', context, teamRunId, agentRunId, memberAddress } as const;
   });
 runHistoryStore.refreshRunNavigationTopology('contention-probe-after-segments');
 
@@ -409,14 +407,16 @@ const runLatest100 = () => {
   };
 };
 const inspectHierarchy = () => {
-  const team = runHistoryStore.navigationProjection?.teamNodes.find((candidate) => candidate.teamRunId === richTeam.teamRunId);
+  const team = runHistoryStore.navigationProjection?.teamNodes.find(
+    (candidate) => candidate.teamRunId === richTeam.view.getRootTeamRunId(),
+  );
   return {
-    focusedMemberRouteKey: team?.focusedMemberRouteKey,
+    focusedAgentRunId: team?.focusedAgentRunId,
     rows: team?.executionRows.map((row) => ({
-      kind: row.kind, routeKey: row.memberRouteKey, depth: row.depth,
+      kind: row.kind, memberAddress: row.memberAddress, agentRunId: row.agentRunId, depth: row.depth,
       hasChildren: row.hasChildren,
       transientKind: row.kind === 'transient_execution' ? row.transientKind : null,
-      status: row.currentStatus,
+      status: row.kind === 'transient_execution' ? row.currentStatus : row.row.currentStatus,
     })) ?? [],
   };
 };
@@ -504,8 +504,10 @@ const actions: WorkspaceHistorySectionActions = {
   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },
   onSelectTeamMember: (row: RunHistoryTeamExecutionRow) => {
-    richTeam.focusedMemberRouteKey = row.memberRouteKey;
-    runHistoryStore.applyRunNavigationTeamFocus(row.teamRunId, row.memberRouteKey);
+    if (!row.agentRunId) return;
+    const result = richTeam.view.focusAgent(row.agentRunId);
+    if (result.disposition === 'rejected') throw new Error(result.message);
+    runHistoryStore.refreshRunNavigationTopology('contention-probe-member-focus');
   },
 };
 

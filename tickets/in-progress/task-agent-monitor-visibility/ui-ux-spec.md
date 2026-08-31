@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Requirements-ready`/`Refined`)
 
-`Refined` — aligned to the user's 2026-08-31 scope clarification: frontend exact-run content/status visibility only; no Agent prompt, tool-choice, or backend lifecycle changes.
+`Refined` — observable UI behavior remains user-approved. SR-006 corrects the technical dependency: one bounded server task-Agent event-egress defect is in scope because it prevents the existing live monitor contract from reaching the frontend; Agent prompts, LLM/tool choice, task policy, persistence, and lifecycle behavior remain unchanged.
 
 ## UX Goal
 
@@ -10,9 +10,9 @@ Make a delegated task Agent inspectable and understandable at a glance. When a u
 
 ## Related Requirements And Acceptance Criteria
 
-- Requirements: R-001–R-011, including R-007–R-008 lifecycle-independent exact-content visibility and backend/Agent preservation.
-- Acceptance criteria: AC-001–AC-015, including AC-008 and AC-012–AC-014 for lifecycle/tool-choice-independent rendering with no inferred transition.
-- These IDs add no manual submission control and authorize no prompt/backend change.
+- Requirements: R-001–R-011 and R-013, including R-007–R-008 lifecycle-independent exact-content visibility and R-013 post-durability task-Agent event egress.
+- Acceptance criteria: AC-001–AC-015 and AC-017, including AC-008/AC-012–AC-014 for lifecycle/tool-choice-independent rendering and AC-017 for real-backend live convergence.
+- These IDs add no manual submission control and authorize no prompt, tool, task-policy, persistence, lifecycle, public-DTO, or presentation-contract change. The only server authorization is the proven registry event-gate correction.
 
 ## Users / Personas / Contexts
 
@@ -31,6 +31,7 @@ Make a delegated task Agent inspectable and understandable at a glance. When a u
 | UXJ-004 | Operator reading status | Task Agent may be running or idle while task remains active/awaiting review | Know both workflow and execution state | Visible compact `Lifecycle · Execution` wording removes ambiguity | R-005–R-006, R-010; AC-004–AC-005, AC-011 |
 | UXJ-005 | Keyboard/screen-reader user | Focus is in the execution tree | Select and verify a task | Enter/Space invokes the same atomic path; exactly one current row and full spoken status/context | R-002, R-010; AC-006, AC-011 |
 | UXJ-006 | Operator during live task activation/settlement | Team is open and a stream event changes task topology | Continue current work without surprise | Activation does not steal focus; settlement repairs invalid focus and all surfaces converge | R-004, R-009; AC-002, AC-009 |
+| UXJ-007 | Operator watching an already-open sibling task | Exact task is selected from its assignment snapshot before later work | See work advance without reload/refocus | Existing root Team stream advances exact status, conversation, and Activity to the selected task monitor | R-003–R-004, R-007–R-008, R-013; AC-002–AC-003, AC-008, AC-014, AC-017 |
 
 ## Journey Details
 
@@ -72,6 +73,14 @@ Make a delegated task Agent inspectable and understandable at a glance. When a u
 - Settlement of a nonfocused task only removes/updates that task representation.
 - Settlement of the focused task invokes existing valid fallback selection; the tree, header, monitor, and Activity switch together.
 
+### UXJ-007 — Observe task work after early selection
+
+1. A configured Agent delegates directly to another configured Agent in the same nested Team.
+2. The root Team stream inserts the exact task row after durable activation; the user selects it while only the assignment snapshot is present.
+3. The selected row/header/monitor may initially show the authoritative assignment snapshot and transitional execution status.
+4. Without reload, refocus, projection polling, or a formal task transition, exact task-Agent status/turn/content/tool events arriving on the existing root Team stream update the selected header, monitor, and Activity pane.
+5. When the Agent becomes idle, the UI shows the current execution status and all delivered work while the formal lifecycle independently remains truthful.
+
 ## Screen / Surface / Component Inventory
 
 | Surface / Component | Purpose | Entry Conditions | Important States | Exit / Next Action |
@@ -91,6 +100,7 @@ Make a delegated task Agent inspectable and understandable at a glance. When a u
 | Task projection missing/incomplete | Select task row | Row indicates loading; previous workspace stays rendered/current | On success, task becomes current and exact content appears | Fetch/validate/merge exact projection, then commit focus | inspect |
 | Projection fetch/validation fails | Select task or retry | Error announced; loading stops | Previous row remains current; target is not current | No partial focus/selected-member commit | Retry or select another row |
 | Live task activation | Stream event | New task row appears without selected styling | Existing selected workspace remains unchanged | Topology reconciles; no focus theft | select new task when desired |
+| Early-selected task produces later work | Exact task-Agent stream events | Existing selected monitor/status advance incrementally | Conversation/Activity/status converge for the same exact run without reload | Existing root Team WebSocket dispatch; no polling or lifecycle inference | continue monitoring or change selection |
 | Live snapshot/recovery | Stream checkpoint/snapshot | Existing recovery notice behavior if needed | Exact focus preserved if still visible; otherwise one fallback becomes current | Context/topology replace and focus reconcile atomically | continue or select another row |
 | Task submission event | Formal `submit_task_result` succeeds | Lifecycle text updates | `Awaiting review · <execution>` shown while execution remains represented | Existing task record update/state transition | delegator reviews formally |
 | Task settlement | Accepted/interrupted settlement event | Affected live task leaves or updates per existing tree policy | Nonfocused selection unchanged; focused task repairs to one coherent fallback | Existing settlement state/tree transition | inspect task history or another run |
@@ -212,7 +222,7 @@ Use localization keys for all new visible/accessible copy. Do not use `Complete`
 - Exact focused AgentRun: owning `AgentTeamContext.view` focus state.
 - Row lifecycle/execution values: existing projected `taskStatus` and `currentStatus`.
 - Retained monitor: existing `GetTeamMemberRunProjection(teamRunId, agentRunId)` response.
-- Live monitor/status: existing Team execution snapshot/events and per-Agent stream dispatch.
+- Live monitor/status: existing root Team execution WebSocket and per-Agent dispatch. The server registry durability gate must forward buffered and all later exact task-Agent Agent events into that existing publisher after `TASK_AGENT_ACTIVATED`; GraphQL hydration is retained-state recovery/first inspection, not a polling substitute.
 - Formal lifecycle: existing task delegation record and `TASK_DELEGATION_EVENT` updates.
 - Task context: existing task description/record associated to the exact task execution; no new public ID display.
 
@@ -222,18 +232,21 @@ Use localization keys for all new visible/accessible copy. Do not use `Complete`
 - Full visual redesign of Team task history, Activity, Token, Artifacts, or the navigation hierarchy.
 - Automatically selecting new tasks, inferring completion, or displaying internal IDs.
 - Mobile-specific information architecture changes.
+- Agent prompt/tool-choice behavior, task submission/review policy, persistence/lifecycle transitions, new public event DTOs, or a second live transport.
 
 ## Open Decisions / Risks
 
 - Design must choose the smallest established header layout that keeps the `Task` marker and description discoverable without crowding existing actions. The required information hierarchy is authoritative; exact spacing/token choice is implementation-level.
-- The clean-baseline node-8001 experiment deterministically reproduces the defect when a live stream associates a new exact task context and the user selects its row after backend content already exists: both focus IDs are exact, but the local shell stays `Offline`/empty because selection performs no exact projection query. Coverage must encode that live-created-shell path and still validate snapshot/recovery/fresh-open boundaries that share the hydration/convergence code.
+- The clean-baseline node-8001 experiment deterministically proves the first-inspection false-empty shell: both focus IDs are exact, but selection performs no exact projection query. The SR-006 packaged/current-source experiment independently selected the exact task immediately, then observed backend projection growth from 1/1 to 6/4 while the UI stayed `Offline`/1/1 and the healthy root socket delivered zero exact task-Agent Agent frames. Coverage must encode both independently supported paths and validate snapshot/recovery/fresh-open boundaries that share hydration/convergence code.
+- The registry event gate is a transport dependency, not a new UI state. Its ordering contract (`TASK_AGENT_ACTIVATED` before exact Agent events; later events exactly once/in order) must be proven with a real backend because intercepted frontend fixtures can mask the missing edge.
 
 ## Approval Status
 
-Initially approved on 2026-08-31 and refined by the user's explicit scope clarification the same day. The authoritative UI scope confirms:
+Initially approved on 2026-08-31 and refined by the user's explicit scope clarification the same day. SR-006 changes no requested layout or interaction; it corrects the proven production dependency after the user rejected the earlier frontend-only causal design. The authoritative UI scope confirms:
 
 1. task rows show visible `formal lifecycle · Agent execution` status;
 2. the selected header shows a `Task` marker and exact task context;
 3. selection does not switch current-row state until exact hydration succeeds; and
 4. new task activation does not steal the user's focus; and
-5. exact task messages/Activity remain visible regardless of LLM collaboration-tool choice, without changing prompts or backend lifecycle behavior.
+5. exact task messages/Activity remain visible regardless of LLM collaboration-tool choice, without changing prompts or backend lifecycle behavior; and
+6. an early-selected exact task continues advancing from existing root Team stream events without reload/refocus.

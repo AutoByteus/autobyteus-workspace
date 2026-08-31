@@ -343,6 +343,14 @@ the execution address captured from the authoritative `agent_execution` event is
 reused even if UI focus later changes. No command reconstructs identity from a
 display name, a route-key alias, a structural template, or an invocation id.
 
+Focus changes are committed through inspection rather than by updating the
+Workspaces row first. For a mounted Team, the inspection coordinator ensures the
+exact AgentRun has an authoritative retained projection before
+`TeamExecutionViewState` accepts focus; the run-history current-row projection is
+then rebuilt from that view. A failed or conflicted inspection leaves the
+previous AgentRun selected. For a task Agent, the existence of a live-created
+context is not proof that its retained conversation or Activity has been loaded.
+
 Root `TEAM_RUN_LIFECYCLE` remains a binary Team-container fact. Exact
 `AGENT_STATUS` events own leaf `offline` / `initializing` / `idle` / `running` /
 `error` state. WebSocket subscription state remains separate from both. This
@@ -400,6 +408,16 @@ configured hierarchy: the root and every nested Team carry their complete
 `defaultLaunchConfiguration`, and every configured Agent carries its complete
 `launchConfiguration`.
 
+The selected exact member projection is a required part of a coherent open.
+Fresh open stages the required conversation and Activity before the Team context
+is mounted and treats nonfocused member projections as best effort. Mounted
+inspection uses the existing `GetTeamMemberRunProjection(teamRunId, agentRunId)`
+operation, single-flights duplicate selection, and performs a revision-guarded
+conversation/Activity replacement. Loading, retryable error, and authoritative
+empty are distinct UI states. Snapshot/reconnect invalidates projection
+authority, and settlement-triggered focus repair reconciles the repaired
+fallback projection before its monitor becomes authoritative.
+
 The workspace config panel derives one existing-run view from that tree and the
 local `ExistingTeamModelConfigDraft`, then adapts it to
 `ExistingTeamRunFormModel`. `TeamRunConfigForm.vue`,
@@ -449,6 +467,14 @@ same canonical address. The Workspaces tree renders execution rows from this
 model and selection/focus uses exact serialized address equality, so identical
 member names, repeated logical placements, and nested task executions cannot
 collide.
+
+Task-Agent presentation keeps lifecycle and execution state separate. The row
+and selected header show a Task marker plus a task-record lifecycle label (`In
+progress`, `Awaiting review`, `Revision requested`, `Accepted`, or
+`Interrupted`) and the exact AgentRun execution label (`Initializing`,
+`Running`, `Idle`, `Error`, or `Offline`). Conversation and Activity visibility
+does not depend on lifecycle or on which collaboration tool produced the
+content, and ordinary message text never advances the task state machine.
 
 Team → Tasks remains the durable delegated-task surface. It renders persisted
 records and reference files, while the Workspaces tree renders the live execution

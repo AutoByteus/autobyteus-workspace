@@ -1,0 +1,15 @@
+{
+  "capturedAt": "2026-08-31T20:08:26.998Z",
+  "url": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+  "agentRunId": "student_two_64b95302c0324d69afc27fef4a55c912",
+  "baseChangeSequence": 3948,
+  "status": {
+    "agent_run_id": "student_two_64b95302c0324d69afc27fef4a55c912",
+    "member_address": "/StudentStudyGroup/student_two",
+    "status": "idle",
+    "trigger": null,
+    "tool_name": null,
+    "error_message": null,
+    "error_details": null
+  }
+}

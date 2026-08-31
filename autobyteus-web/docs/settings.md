@@ -429,14 +429,38 @@ right-only current elbow from that metadata; the current vertical continues to
 the next sibling or stops at the current row midpoint for the last sibling.
 These branches are presentation-only and do not create or rewrite topology.
 Selecting either a stable or transient Workspaces row uses the existing
-team-member focus path. A team-member row is current only when its owning
-`teamRunId` is the authoritative selected TeamRun and its exact member address
-matches that Team's roster/history focus; an address alone must not select the
-same placement in another historical TeamRun. Stable and transient current rows
-expose the single `aria-current="true"` navigation state, while focus, hover,
-status, and transient presentation remain separate visual states. The right-
-side Team tab owns task detail/content through its Tasks section; it is not the
-primary execution hierarchy or status surface.
+team-member inspection path. `TeamExecutionViewState` is the sole authority for
+the focused exact Agent execution; the run-history navigation projection derives
+its current row from that view only after inspection succeeds. A team-member row
+is current only when its owning `teamRunId` is the authoritative selected TeamRun
+and the view's exact focused AgentRun matches that row. An address alone must not
+select the same placement in another historical TeamRun, and navigation code must
+not patch a second focus value. Stable and transient current rows expose the
+single `aria-current="true"` navigation state, while focus, hover, status, and
+transient presentation remain separate visual states. The right-side Team tab
+owns task detail/content through its Tasks section; it is not the primary
+execution hierarchy or status surface.
+
+Mounted task contexts are not automatically retained-projection authority. A
+live activation may materialize the exact task AgentRun with default empty and
+`offline` presentation before its retained conversation and Activity are loaded.
+Selecting such a row keeps the previous coherent row current, shows row-scoped
+loading state, and single-flights `GetTeamMemberRunProjection` for the exact root
+TeamRun and AgentRun. The hydration service stages conversation and Activity,
+then applies them only when the root context, Agent context, event-monitor
+revision, and Activity revision still match. A conflict retries rather than
+overwriting newer live state; a terminal error keeps the prior focus and exposes
+a retry action. A successfully loaded zero-item projection is the only
+authoritative empty state.
+
+Fresh Team open follows the same invariant: an explicitly requested focus must
+exist and its exact projection is fail-fast, while nonfocused projections remain
+best effort. The open coordinator commits the staged projection and Activity
+batch before mounting, selecting, or connecting the stream. Snapshot/reconnect
+processing invalidates retained-projection authority. Task settlement preserves
+focus when it remains visible; when focus repair chooses a different AgentRun,
+the stream path immediately reconciles that fallback's exact projection before
+its monitor is treated as authoritative.
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -511,10 +535,12 @@ unchanged message-owned surface.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
 surface for workspaces, runs, teams, durable members, and live transient
-execution identities. `runHistoryStore` owns one cached, indexed navigation
-projection that includes completed stable-plus-transient `executionRows` and
-focused-member identity for every team. Components consume those rows rather
-than reading live `AgentTeamContext` or rebuilding rows per workspace. The
+execution identities. `runHistoryStore` owns one cached, indexed navigation read
+model that includes completed stable-plus-transient `executionRows`; its
+focused-member presentation is derived from the owning
+`AgentTeamContext.view`. Components consume those rows rather than reading live
+contexts or rebuilding rows per workspace, but the cached projection is never an
+independent focus authority. The
 projection may reuse the shared status-dot presentation for workspace rows and
 stable member rows, but transient task executions remain navigation-only rows
 rather than ordinary durable `TeamMemberTreeRow` history rows. Transient
@@ -524,6 +550,14 @@ so simultaneous task-team executions do not accidentally share expansion state.
 When a transient task-team row has children, activating the row body toggles that
 identity-keyed disclosure state while also selecting/focusing the transient row;
 the explicit disclosure control remains a stopped toggle-only target.
+Each task-Agent row also renders a textual task-lifecycle label alongside the
+exact Agent execution-status label. The selected task header exposes the same
+two independent dimensions plus a visible Task marker. Lifecycle values come
+only from the task record (`In progress`, `Awaiting review`, `Revision
+requested`, `Accepted`, or `Interrupted`); execution values come only from the
+Agent status (`Initializing`, `Running`, `Idle`, `Error`, or `Offline`). Message
+wording, Activity, ordinary handoffs, and idle status never imply task
+completion.
 Workspaces must not render delegated-task summary blocks, task reference rows,
 raw task arguments, approval controls, or delegated-task Technical details.
 Tasks is not an approval action surface: pending approval can appear only as
@@ -793,12 +827,15 @@ member, or selects a nested member row directly,
 `useWorkspaceHistoryTreeState(...)` to expand only the subteam ancestors
 needed to keep that nested focus visible.
 
-For team-run member rows, selection state uses roster/history visual focus, not
-active-execution command focus. The current-row predicate is scoped to the
-authoritative selected team run plus that run's focused member route; clearing
-the team selection or having no valid target leaves no member row current. The
-Workspace history tree renders recursive `team.rootTeam.members` structure
-from the V2 history projection. Nested configured-Team member rows appear as
+For Team execution rows, selection state derives from the same exact
+`TeamExecutionViewState` focus used by the workspace and command surfaces; there
+is no separate roster/history visual-focus authority. The current-row predicate
+is scoped to the authoritative selected TeamRun plus the view's focused exact
+AgentRun. Clearing the Team selection or having no valid target leaves no member
+row current. The cached run-history projection mirrors that focus only after
+successful exact inspection. The Workspace history tree renders recursive
+`team.rootTeam.members` structure from the V2 history projection. Nested
+configured-Team member rows appear as
 semibold subteam rows with an unboxed filled user-group icon and their own
 disclosure control; they are collapsed by default and expand children through
 the continuous-rail/right-elbow printed-tree grammar described above.
@@ -807,11 +844,13 @@ selects only when that structural row has a concrete Agent run. The explicit
 disclosure control remains visible and toggles children without selecting the
 row or bubbling into the row-body handler. Leaf member rows without children
 remain select-only. Clicking a member or subteam row whose canonical address
-exists in the Team's V2 tree should keep that exact address selected in the
-history tree and Focus display even when the member is offline or has no active
-runtime context. Live/hydrated team-context merges must preserve the persisted history
-row's workspace grouping and use this roster focus for selected-row
-highlighting; the shared composer remains active-execution-owned separately.
+exists in the Team's V2 tree requests inspection of its exact AgentRun and keeps
+the previous row current until required projection authority succeeds. An
+offline AgentRun may still be focused when its retained projection is
+authoritative; a structural row without an executable AgentRun cannot become the
+workspace focus. Live/hydrated Team-context merges must preserve the persisted
+history row's workspace grouping while deriving selected-row highlighting from
+the execution view.
 
 Topology operations build and index the complete run-history navigation
 projection once, retaining equal workspace/team branches by reference. The
