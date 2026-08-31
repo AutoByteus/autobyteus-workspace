@@ -1,0 +1,86 @@
+{
+  "queriedAfterLiveCapture": true,
+  "exactTaskProjectionRequestCountDuringLiveSelection": 0,
+  "projection": {
+    "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+    "lastActivityAt": "2026-08-31T15:15:27.915Z",
+    "summary": "Task delegator address: /StudentStudyGroup/student_one Task delegator AgentRun ID: student_one_8e...",
+    "conversationCount": 5,
+    "activityCount": 3,
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Task delegator address: /StudentStudyGroup/student_one\nTask delegator AgentRun ID: student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd\n\nDescription:\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result.",
+        "toolName": null,
+        "toolArgs": null,
+        "toolResult": null,
+        "ts": 1788189311.719
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "**Planning message sending with tool discovery**\n\n**Clarifying submit tool filter criteria**",
+        "toolName": null,
+        "toolArgs": null,
+        "toolResult": null,
+        "ts": 1788189325.639
+      },
+      {
+        "kind": "tool_call",
+        "role": null,
+        "content": "",
+        "toolName": "send_message_to",
+        "toolArgs": {
+          "recipient_address": "/StudentStudyGroup/student_one",
+          "content": "STUDENT_TWO_TASK_STARTED"
+        },
+        "toolResult": {
+          "accepted": true,
+          "code": "DELIVERED",
+          "message": "Delivered message to /StudentStudyGroup/student_one.",
+          "target_agent_run_id": "student_one_88bc7221b197477388fc88e73874ae07"
+        },
+        "ts": 1788189325.649
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "**Waiting for process completion**",
+        "toolName": null,
+        "toolArgs": null,
+        "toolResult": null,
+        "ts": 1788189327.915
+      },
+      {
+        "kind": "tool_call_pending",
+        "role": null,
+        "content": "",
+        "toolName": "run_bash",
+        "toolArgs": {
+          "command": "/bin/bash -lc 'sleep 120'",
+          "cwd": "/home/autobyteus/workspace"
+        },
+        "toolResult": null,
+        "ts": 1788189327.915
+      }
+    ],
+    "activities": [
+      {
+        "kind": "system_instruction",
+        "toolName": null,
+        "ts": 1788189311.643
+      },
+      {
+        "kind": "tool",
+        "toolName": "send_message_to",
+        "ts": 1788189325.649
+      },
+      {
+        "kind": "tool",
+        "toolName": "run_bash",
+        "ts": 1788189327.915
+      }
+    ]
+  }
+}

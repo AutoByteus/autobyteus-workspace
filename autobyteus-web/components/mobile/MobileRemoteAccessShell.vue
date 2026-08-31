@@ -173,40 +173,44 @@ async function checkStatus(): Promise<void> {
 }
 
 async function openRunContext(context: MobileWorkContext): Promise<void> {
-  try {
-    if (context.kind === 'agent-run') {
-      if (agentContextsStore.getRun(context.runId)) {
-        selectMobileRun(context.runId, 'agent');
-      } else {
-        await runHistoryStore.openRun(context.runId, { selectionMode: 'mobile' });
-      }
-    } else if (context.kind === 'team-run') {
-      if (teamContextsStore.getTeamContextById(context.teamRunId)) {
-        selectMobileRun(context.teamRunId, 'team');
-        await runHistoryStore.focusTeamMemberAndEnsureHydrated(context.teamRunId, context.focusedAgentRunId);
-      } else {
-        await runHistoryStore.openTeamMemberRun(context.teamRunId, context.focusedAgentRunId, { selectionMode: 'mobile' });
-        selectMobileRun(context.teamRunId, 'team');
-      }
+  if (context.kind === 'agent-run') {
+    if (agentContextsStore.getRun(context.runId)) {
+      selectMobileRun(context.runId, 'agent');
     } else {
-      clearMobileRunSelection();
+      await runHistoryStore.openRun(context.runId, { selectionMode: 'mobile' });
     }
-  } catch (error) {
-    console.warn('[MobileRemoteAccessShell] Failed to open selected mobile context.', error);
+  } else if (context.kind === 'team-run') {
+    if (teamContextsStore.getTeamContextById(context.teamRunId)) {
+      const result = await runHistoryStore.inspectTeamMember(
+        context.teamRunId,
+        context.focusedAgentRunId,
+        { selectionMode: 'mobile' },
+      );
+      if (result.disposition === 'rejected') throw new Error(result.message);
+    } else {
+      await runHistoryStore.openTeamMemberRun(context.teamRunId, context.focusedAgentRunId, { selectionMode: 'mobile' });
+      selectMobileRun(context.teamRunId, 'team');
+    }
+  } else {
+    clearMobileRunSelection();
   }
 }
 
 async function openContext(context: MobileWorkContext, tab?: MobileTaskTab): Promise<void> {
   showContextSwitcher.value = false;
   const targetTab = tab ?? preferredTabForMobileContext(context);
-  mobileWorkStore.selectContext(context, targetTab);
-  if (context.kind === 'agent-definition') {
-    mobileWorkStore.requestRunSetup({ kind: 'agent', agentDefinitionId: context.agentDefinitionId });
-  } else if (context.kind === 'team-definition') {
-    mobileWorkStore.requestRunSetup({ kind: 'team', teamDefinitionId: context.teamDefinitionId });
+  try {
+    await openRunContext(context);
+    mobileWorkStore.selectContext(context, targetTab);
+    if (context.kind === 'agent-definition') {
+      mobileWorkStore.requestRunSetup({ kind: 'agent', agentDefinitionId: context.agentDefinitionId });
+    } else if (context.kind === 'team-definition') {
+      mobileWorkStore.requestRunSetup({ kind: 'team', teamDefinitionId: context.teamDefinitionId });
+    }
+    screen.value = 'work';
+  } catch (error) {
+    console.warn('[MobileRemoteAccessShell] Failed to open selected mobile context.', error);
   }
-  screen.value = 'work';
-  await openRunContext(context);
 }
 
 async function retryCatalogSegment(segmentId: MobileCatalogSegmentId): Promise<void> {

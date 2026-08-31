@@ -203,4 +203,90 @@ describe('agentActivityStore', () => {
     expect(store.hasAwaitingApproval(agentId)).toBe(true);
     expect(store.getHighlightedActivityId(agentId)).toBeNull();
   });
+
+  it('advances the content revision for every successful content mutation but not UI-only or rejected operations', () => {
+    const store = useAgentActivityStore();
+    const runId = 'revision-run';
+
+    expect(store.getActivityContentRevision(runId)).toBe(0);
+    expect(store.addToolActivity(runId, buildToolActivity())).toBe(true);
+    expect(store.getActivityContentRevision(runId)).toBe(1);
+    expect(store.addToolActivity(runId, buildToolActivity())).toBe(false);
+    expect(store.updateToolActivityStatus(runId, '1', 'awaiting-approval')).toBe(true);
+    expect(store.addToolActivityLog(runId, '1', 'log')).toBe(true);
+    expect(store.setToolActivityResult(runId, '1', { ok: true })).toBe(true);
+    expect(store.updateToolActivityArguments(runId, '1', { path: 'a' })).toBe(true);
+    expect(store.updateToolActivityApprovalTarget(runId, '1', { agentRunId: runId })).toBe(true);
+    expect(store.getActivityContentRevision(runId)).toBe(6);
+
+    store.setHighlightedActivity(runId, '1');
+    expect(store.getActivityContentRevision(runId)).toBe(6);
+    expect(store.updateToolActivityStatus(runId, '1', 'awaiting-approval')).toBe(false);
+    expect(store.getActivityContentRevision(runId)).toBe(6);
+  });
+
+  it('treats clear as a monotonic invalidation boundary even for an empty run', () => {
+    const store = useAgentActivityStore();
+    const runId = 'clear-run';
+
+    store.clearActivities(runId);
+    expect(store.getActivityContentRevision(runId)).toBe(1);
+    store.clearActivities(runId);
+    expect(store.getActivityContentRevision(runId)).toBe(2);
+  });
+
+  it('replaces projection batches atomically and preserves only a surviving highlight', () => {
+    const store = useAgentActivityStore();
+    store.addToolActivity('run-a', buildToolActivity({ activityId: 'keep', invocationId: 'keep' }));
+    store.addToolActivity('run-b', buildToolActivity({ activityId: 'old', invocationId: 'old' }));
+    store.setHighlightedActivity('run-a', 'keep');
+    const expectedA = store.getActivityContentRevision('run-a');
+    const expectedB = store.getActivityContentRevision('run-b');
+
+    expect(store.replaceProjectionActivitiesIfRevisions([
+      { runId: 'run-a', expectedRevision: expectedA, activities: [buildToolActivity({ activityId: 'keep', invocationId: 'keep', status: 'awaiting-approval' })] },
+      { runId: 'run-b', expectedRevision: expectedB - 1, activities: [] },
+    ])).toBe('conflict');
+    expect(store.getActivities('run-a').map((activity) => activity.activityId)).toEqual(['keep']);
+    expect(store.getActivities('run-b').map((activity) => activity.activityId)).toEqual(['old']);
+
+    expect(store.replaceProjectionActivitiesIfRevisions([
+      { runId: 'run-a', expectedRevision: expectedA, activities: [buildToolActivity({ activityId: 'keep', invocationId: 'keep', status: 'awaiting-approval' })] },
+      { runId: 'run-b', expectedRevision: expectedB, activities: [] },
+    ])).toBe('applied');
+    expect(store.getHighlightedActivityId('run-a')).toBe('keep');
+    expect(store.hasAwaitingApproval('run-a')).toBe(true);
+    expect(store.getActivities('run-b')).toEqual([]);
+    expect(store.getActivityContentRevision('run-a')).toBe(expectedA + 1);
+    expect(store.getActivityContentRevision('run-b')).toBe(expectedB + 1);
+  });
+
+  it('rejects a stale projection after an Activity clear-and-recreate ABA sequence', () => {
+    const store = useAgentActivityStore();
+    const expectedRevision = store.getActivityContentRevision('run-aba');
+    store.clearActivities('run-aba');
+    store.addToolActivity('run-aba', buildToolActivity({ activityId: 'live', invocationId: 'live' }));
+
+    expect(store.replaceProjectionActivitiesIfRevisions([{
+      runId: 'run-aba',
+      expectedRevision,
+      activities: [],
+    }])).toBe('conflict');
+    expect(store.getActivities('run-aba').map((activity) => activity.activityId)).toEqual(['live']);
+  });
+
+  it('keeps activity identity unique when a projection repeats an activity ID', () => {
+    const store = useAgentActivityStore();
+    expect(store.replaceProjectionActivitiesIfRevisions([{
+      runId: 'run-duplicate',
+      expectedRevision: 0,
+      activities: [
+        buildToolActivity({ activityId: 'same', invocationId: 'first' }),
+        buildToolActivity({ activityId: 'same', invocationId: 'second' }),
+      ],
+    }])).toBe('applied');
+    expect(store.getActivities('run-duplicate')).toEqual([
+      expect.objectContaining({ activityId: 'same', invocationId: 'first' }),
+    ]);
+  });
 });

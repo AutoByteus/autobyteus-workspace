@@ -324,6 +324,10 @@ describe('TeamExecutionViewState', () => {
       }),
     }));
     expectApplied(taskTeamResult);
+    expect(taskTeamResult.effects).toEqual([
+      { kind: 'invalidate_team_member_projection', agentRunIds: ['task-coordinator-run', 'task-student-run'] },
+      { kind: 'reconcile_team_navigation' },
+    ]);
 
     expect(state.hasAgentRun('coordinator-run')).toBe(true);
     expect(state.hasAgentRun('task-coordinator-run')).toBe(true);
@@ -335,6 +339,7 @@ describe('TeamExecutionViewState', () => {
     });
     expect(state.listNavigationRows().find((row) => row.teamRunId === 'study-team-task-1')).toMatchObject({
       displayName: 'Task: Complete task-team-1', focusable: false,
+      task: { taskId: 'task-team-1', description: 'Complete task-team-1', displayStatus: 'in_progress' },
     });
 
     const nestedTask = task({
@@ -350,6 +355,12 @@ describe('TeamExecutionViewState', () => {
       task: nestedTask,
     }));
     expect(activationResult).toMatchObject({ disposition: 'applied' });
+    expect(activationResult.effects).toEqual([
+      { kind: 'invalidate_team_member_projection', agentRunIds: ['nested-student-run'] },
+      { kind: 'reconcile_team_navigation' },
+    ]);
+    expect(state.listNavigationRows().find((row) => row.agentRunId === 'nested-student-run')?.task)
+      .toEqual({ taskId: 'nested-agent-task', description: 'Complete nested-agent-task', displayStatus: 'in_progress' });
     expect(state.getAgentContext('nested-student-run')?.state.runId).toBe('nested-student-run');
     expect(state.getAgentExecutionLocation('nested-student-run')).toEqual({
       agentRunId: 'nested-student-run',
@@ -376,9 +387,10 @@ describe('TeamExecutionViewState', () => {
     expect(state.focusAgent('task-student-run').disposition).toBe('applied');
 
     const accepted = { ...active, status: 'accepted' as const };
-    expect(state.applyMessage(taskEvent({
+    const changed = state.applyMessage(taskEvent({
       event_type: 'TASK_CHANGED', change_sequence: 2, task: accepted,
-    })).disposition).toBe('applied');
+    }));
+    expect(changed).toMatchObject({ disposition: 'applied', effects: [{ kind: 'reconcile_team_navigation' }] });
     expect(state.listNavigationRows().some((row) => row.agentRunId === 'task-student-run')).toBe(true);
 
     expect(state.applyMessage(taskEvent({
@@ -474,6 +486,31 @@ describe('TeamExecutionViewState', () => {
     });
     expect(state.getExecutionTree()).toEqual(beforeTree);
     expect(state.getChangeSequence()).toBe(0);
+  });
+
+  it('invalidates projection authority and reconciles navigation/focus after a valid snapshot', () => {
+    const state = createState();
+    const snapshot = state.applySnapshot({
+      type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
+      payload: {
+        root_team_run_id: 'root-team-1', base_change_sequence: 4, execution_tree: tree(),
+        tasks: [], messages: [],
+        agent_statuses: [
+          { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null },
+          { agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null },
+          { agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null },
+        ],
+      },
+    });
+
+    expect(snapshot).toMatchObject({
+      disposition: 'applied',
+      effects: [
+        { kind: 'invalidate_team_member_projections' },
+        { kind: 'reconcile_team_navigation' },
+        { kind: 'reconcile_focused_team_member_projection' },
+      ],
+    });
   });
 
   it('rejects a containing-Team placement change before committing snapshot state', () => {

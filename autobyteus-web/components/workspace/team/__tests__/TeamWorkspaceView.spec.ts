@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testSubTeamNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
 
 const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigStoreMock,
   agentRunConfigStoreMock, selectionStoreMock, workspaceCenterViewStoreMock, agentTeamRunStoreMock } = vi.hoisted(() => {
@@ -59,9 +59,16 @@ describe('TeamWorkspaceView current aggregate', () => {
 
   const mountComponent = () => mount(TeamWorkspaceView, {
     global: { mocks: {
-      $t: (key: string) => key === 'workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required'
-        ? 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.'
-        : key,
+      $t: (key: string, params?: Record<string, string>) => {
+        if (key === 'workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required') {
+          return 'Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.';
+        }
+        if (key === 'workspace.task_monitor.task') return 'Task';
+        if (key === 'workspace.task_monitor.lifecycle.in_progress') return 'In progress';
+        if (key === 'workspace.task_monitor.execution.idle') return 'Idle';
+        if (key === 'workspace.task_monitor.combined_status') return `${params?.lifecycle} · ${params?.execution}`;
+        return key;
+      },
     }, stubs: {
       AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor"><slot name="composerContext" /></div>' },
       SkillImprovementComposerCta: {
@@ -93,6 +100,26 @@ describe('TeamWorkspaceView current aggregate', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('Student');
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
+  });
+
+  it('renders the focused task context with distinct lifecycle and execution status', () => {
+    state.activeTeamContext = buildTestTeamContext({
+      teamRunId: 'team-1', teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
+      rootChildren: [buildAgent('/Student', 'Student', 'student-run', 'agent-student-def')],
+      coordinatorAddress: '/Student', focusedAgentRunId: 'task-student-run',
+      tasks: [testTaskRecord({
+        taskId: 'task-1', delegatorAgentRunId: 'student-run', recipientAddress: '/Student',
+        target: { agentRunId: 'task-student-run' }, description: 'Solve the retained task exactly',
+      })],
+    });
+    state.activeTeamContext.view.getAgentContext('task-student-run').state.currentStatus = AgentStatus.Idle;
+
+    const wrapper = mountComponent();
+
+    expect(wrapper.text()).toContain('Task');
+    expect(wrapper.text()).toContain('Solve the retained task exactly');
+    expect(wrapper.get('[data-test="team-workspace-task-status"]').text()).toBe('In progress · Idle');
+    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Idle);
   });
 
   it('renders persistent actionable guidance while the selected Team stream requires recovery', () => {

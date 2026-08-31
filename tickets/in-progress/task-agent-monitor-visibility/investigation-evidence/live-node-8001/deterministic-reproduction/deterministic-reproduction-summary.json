@@ -1,0 +1,158 @@
+{
+  "verdict": "REPRODUCED",
+  "reproductionRate": {
+    "liveCreatedTaskSelection": "3/3 rounds showed Offline/empty task monitor",
+    "freshOpenControl": "1/1 loaded the exact projection and rendered task content"
+  },
+  "environment": {
+    "backend": "http://127.0.0.1:8001 (Docker-published node)",
+    "frontend": "http://127.0.0.1:33372",
+    "frontendSource": "clean detached worktree at 80e2bd195c42ea3ced778dbc051d4d00edaef16f; not the paused implementation worktree",
+    "teamDefinition": "Nested Classroom Test Team",
+    "runtime": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "autoExecuteTools": true
+  },
+  "supportedInitiatingFlow": [
+    "Open the existing root TeamRun in a fresh browser and keep /Teacher focused.",
+    "Send a normal user message to /Teacher requesting delegate_task to /StudentStudyGroup.",
+    "The task-Team coordinator student_one uses delegate_task for sibling /StudentStudyGroup/student_two.",
+    "The live Team stream adds the exact transient task Agent row without a reload.",
+    "After waiting 20 seconds so backend task content already exists, click that live-created student_two task row."
+  ],
+  "initialMountedState": {
+    "rootTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+    "rootIsActive": true,
+    "streamCondition": "The already-open mounted Team delivered the new task row live; no reload/reopen/reconnect was performed between initiating delegation and selection.",
+    "navigationFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+    "viewFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+    "focusedContext": {
+      "runId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+      "currentStatus": "idle",
+      "conversationMessageCount": 20,
+      "activityCount": 12,
+      "lastConversationText": "Delegated the round-2 probe to `/StudentStudyGroup` and waited 120+ seconds. The nested task remains active."
+    }
+  },
+  "identityProof": {
+    "logicalAddress": "/StudentStudyGroup/student_two",
+    "configuredAgentRunId": "student_two_27e3a3a370264e429ef3fcd4bb6c5a74",
+    "taskAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+    "containingTaskTeamRunId": "team_local_team_nested_classroom_test_student_st_411ff85901314de29dcf81ce010ff5c6",
+    "taskStartedAt": "2026-08-31T15:15:11.620Z",
+    "taskSettledAt": null
+  },
+  "backendBeforeClick": {
+    "projectionLastActivityAt": "2026-08-31T15:15:27.915Z",
+    "browserPreClickCapturedAt": "2026-08-31T15:15:34.281Z",
+    "conversationEntryCount": 5,
+    "activityCount": 3,
+    "ordinaryMessageToolResult": "send_message_to delivered STUDENT_TWO_TASK_STARTED",
+    "visibleToolStep": "run_bash sleep 120 pending",
+    "taskLifecycleVisibleInUI": "In progress"
+  },
+  "liveSelectionContradiction": {
+    "row": {
+      "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+      "memberAddress": "/StudentStudyGroup/student_two",
+      "rowCurrentStatus": "offline",
+      "current": null,
+      "selected": "false",
+      "label": "Temporary task agent, Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026, level 4, offline, /StudentStudyGroup/student_two"
+    },
+    "immediatelyAfterClick": {
+      "capturedAt": "2026-08-31T15:15:34.385Z",
+      "row": {
+        "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "rowCurrentStatus": "offline",
+        "current": "true",
+        "selected": "true"
+      },
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/StudentStudyGroup/student_two",
+        "navigationFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "viewFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "focusedContext": {
+          "runId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "currentStatus": "offline",
+          "conversationMessageCount": 0,
+          "activityCount": 0,
+          "lastConversationText": ""
+        }
+      }
+    },
+    "tenSecondsAfterClick": {
+      "capturedAt": "2026-08-31T15:15:44.462Z",
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/StudentStudyGroup/student_two",
+        "navigationFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "viewFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "focusedContext": {
+          "runId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "currentStatus": "offline",
+          "conversationMessageCount": 0,
+          "activityCount": 0,
+          "lastConversationText": ""
+        }
+      }
+    },
+    "exactProjectionRequestsDuringLiveSelection": 0,
+    "pageErrors": [],
+    "observableUI": "Exact task row is current/selected; both navigation and execution view focus the exact task ID; header reads student_two \u00b7 Offline; center conversation/Activity are empty; right Team pane still shows the task In progress and one ordinary Team message."
+  },
+  "freshOpenControl": {
+    "capturedAt": "2026-08-31T15:10:35.680Z",
+    "exactTaskAgentRunId": "student_two_4e582e56314f47d0b80ee606c03eb14c",
+    "exactProjectionRequestCount": 1,
+    "focusedContextAfterClick": {
+      "runId": "student_two_4e582e56314f47d0b80ee606c03eb14c",
+      "currentStatus": "idle",
+      "conversationMessageCount": 2,
+      "activityCount": 4,
+      "lastConversationText": "Unable to call `submit_task_result`: the tool is unavailable in this execution."
+    },
+    "rowAfterClick": {
+      "current": "true",
+      "selected": "true",
+      "label": "Temporary task agent, Task: STUDENT_TWO_MONITOR_PROBE_ROUND2. Immediately send an\u2026, level 4, idle, /StudentStudyGroup/student_two"
+    },
+    "observableUI": "After a new browser/open hydration, selecting the same exact task renders Idle, its conversation, send_message_to, run_bash tool steps, and four Activity items."
+  },
+  "productionPathProof": [
+    {
+      "path": "services/teamExecution/teamExecutionViewState.ts:148-175",
+      "fact": "A live execution-tree update associates a context for a newly visible exact AgentRun."
+    },
+    {
+      "path": "services/teamExecution/teamExecutionContextFactory.ts:62-78",
+      "fact": "That context starts with an empty conversation and AgentStatus.Offline."
+    },
+    {
+      "path": "stores/runHistorySelectionActions.ts:81-127",
+      "fact": "Because the mounted view already has the exact task ID, click takes the local reuse branch."
+    },
+    {
+      "path": "stores/runHistoryNavigationStoreActions.ts:72-83",
+      "fact": "focusTeamMemberAndEnsureHydrated only focuses the exact ID and patches navigation; it performs no projection fetch or hydration."
+    },
+    {
+      "path": "components/workspace/history/WorkspaceTeamExecutionTree.vue:108-111",
+      "fact": "The row becomes current from navigation focusedAgentRunId, which explains the truthful current styling over the false-empty local context."
+    }
+  ],
+  "rootCause": "Frontend live-created task contexts are materialized as default Offline/empty shells. Selecting a shell in an already-mounted Team takes a function named ensure hydrated that only focuses and patches navigation. It does not request or merge the exact retained projection. Therefore exact row/view identity can be correct while the monitor data is false-empty. Full/fresh hydration requests the exact projection and masks the defect.",
+  "boundaryConclusion": "Frontend defect. Node 8001 already serves distinct exact task data. The result does not depend on whether the assignee later calls submit_task_result, and no backend prompt, tool, lifecycle, or persistence change is justified.",
+  "repeatCommand": "BACKEND_NODE_BASE_URL=http://127.0.0.1:8001 corepack pnpm dev --host 127.0.0.1 --port 33372; then run reproduce-nested-sibling-task.cjs with FRONTEND_URL, ROOT_TEAM_RUN_ID, MARKER, PRE_CLICK_WAIT_MS=20000, PLAYWRIGHT_CORE_MODULE, and PLAYWRIGHT_EXECUTABLE_PATH as documented in investigation-notes.md.",
+  "evidenceFiles": [
+    "student-two-monitor-probe-round3-reproduction.json",
+    "student-two-monitor-probe-round3-before-click.png",
+    "student-two-monitor-probe-round3-after-click.png",
+    "round3-backend-projection.json",
+    "round3-backend-topology.json",
+    "round2-fresh-open-control.json",
+    "round2-fresh-open-control-after-click.png",
+    "reproduce-nested-sibling-task.cjs"
+  ]
+}

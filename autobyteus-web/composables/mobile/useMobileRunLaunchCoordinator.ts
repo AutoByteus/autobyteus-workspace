@@ -153,7 +153,8 @@ export function useMobileRunLaunchCoordinator() {
     if (!fallback) {
       throw new Error('This team has no focusable member for mobile Chat.');
     }
-    await runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, fallback);
+    const result = await runHistoryStore.inspectTeamMember(teamRunId, fallback, { selectionMode: 'mobile' });
+    if (result.disposition === 'rejected') throw new Error(result.message);
     const focused = teamContextsStore.getTeamContextById(teamRunId)?.view.getFocusedAgentRunId() ?? fallback;
     mobileWorkStore.rememberFocusedTeamMember(teamRunId, focused);
     return focused;

@@ -1,0 +1,1324 @@
+{
+  "startedAt": "2026-08-31T15:14:52.081Z",
+  "finishedAt": "2026-08-31T15:15:44.465Z",
+  "frontendUrl": "http://127.0.0.1:33372",
+  "rootTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "preClickWaitMs": 20000,
+  "taskPrompt": "Create a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.",
+  "steps": [
+    {
+      "label": "root-opened-before-second-delegation",
+      "capturedAt": "2026-08-31T15:14:57.722Z",
+      "markerRows": [],
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/Teacher",
+        "navigationFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+        "viewFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+        "focusedContext": {
+          "runId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+          "currentStatus": "idle",
+          "conversationMessageCount": 20,
+          "activityCount": 12,
+          "lastConversationText": "Delegated the round-2 probe to `/StudentStudyGroup` and waited 120+ seconds. The nested task remains active."
+        }
+      },
+      "activityText": "",
+      "mainText": "T\nTeacher\nIdle\nYou\nThis is a live frontend observability experiment. Use delegate_task now to delegate one dedicated task to /StudentStudyGroup. The task packet must instruct the nested team coordinator to:\n1. immediately send you an ordinary message containing exactly CLASSROOM_TASK_STARTED;\n2. delegate or send work within its nested team and produce at least two visible activity/tool steps;\n3. keep the task active for at least 60 seconds;\n4. then call submit_task_result with exactly CLASSROOM_TASK_FINISHED.\nAfter delegating, wait for the nested team. Do not perform the task yourself.\nT\nTeacher\nThinking\ndelegate_task\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 65'\nThinking\n\nDelegated the task to /StudentStudyGroup and waited at least 60 seconds. The nested team remains active; no result has been received yet.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c90493bd439f997e1\nmessage:\nCLASSROOM_TASK_STARTED\nT\nTeacher\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 40'\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 30'\n\nReceived CLASSROOM_TASK_STARTED. Continuing to wait for the nested team\u2019s completion result.\n\nYou\nTask task_32c20c4ab27c4123a6c7acb1aab92ca7 result submitted:\nCLASSROOM_TASK_FINISHED\nT\nTeacher\nreview_task_result\n\nAccepted the nested team\u2019s result: CLASSROOM_TASK_FINISHED.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c90493bd439f997e1\nmessage:\nThe nested classroom task is complete; the exact result CLASSROOM_TASK_FINISHED was submitted for review.\nT\nTeacher\n\nConfirmed: the nested classroom task was completed and accepted.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\nThinking\ndelegate_task\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\nThinking\n\nDelegated the second monitor probe to /StudentStudyGroup and waited 120+ seconds. The nested task remains active; no result has been received yet.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_5dacea03064a4317b9bb5004be42dc70\nmessage:\nNested monitor probe outcome: delegated the dedicated STUDENT_TWO_MONITOR_PROBE to /StudentStudyGroup/student_two. The student_two execution completed its required visible step and 120+ second wait; its required result submission was awaited. The expected finished token is STUDENT_TWO_TASK_FINISHED.\nT\nTeacher\nThinking\n\nReceived the nested probe outcome. It reports that /StudentStudyGroup/student_two completed the visible step and 120+ second wait; the expected token is STUDENT_TWO_TASK_FINISHED.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_5dacea03064a4317b9bb5004be42dc70\nmessage:\nHandoff: nested team completed the delegated monitor probe; please review the student_two task result through the task lifecycle.\nT\nTeacher\nThinking\n\nI can only review the delegated /StudentStudyGroup task result. The student_two task is owned by student_one, so its result must be submitted and reviewed within that nested lifecycle first.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_88bc7221b197477388fc88e73874ae07\nmessage:\nThe nested team reports task result: STUDENT_TWO_TASK_FINISHED. I attempted submit_task_result, but the system returned TASK_NOT_ACTIVE (caller has no active assigned task), so formal submission could not be completed.\nT\nTeacher\nThinking\nsend_message_to\n\nThe nested formal submission failed with TASK_NOT_ACTIVE. I sent a clarification to the nested coordinator requesting submission through its active task lifecycle, if available.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_88bc7221b197477388fc88e73874ae07\nmessage:\nConfirmed: my own task execution is not active; submit_task_result returned TASK_NOT_ACTIVE. I cannot formally submit the nested probe outcome through my lifecycle. Runtime failure remains: STUDENT_TWO_TASK_FINISHED was only reported via ordinary message.\nT\nTeacher\nThinking\nreview_task_result\nTask 'task_01c0f00823d24647b64dc31b3fbc5835' is not awaiting review.\n\nFormal review was unavailable: TASK_NOT_AWAITING_REVIEW. The nested result was never submitted through the task lifecycle; only the ordinary-message report exists.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND2 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\ndelegate_task\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\n\nDelegated the round-2 probe to /StudentStudyGroup and waited 120+ seconds. The nested task remains active.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n7 Messages\nTasks\n3 tasks\nYou are the nested team coordinator for this dedicated task. Execute the following exact sequence and keep the task active:\n1. Immediately send the parent coordinator (/Teacher) an ordinary message whose entire content is exactly CLASSROOM_TASK_STARTED.\n2. Delegate or send work within your nested team, and produce at least two visible activity/tool steps. Ensure those steps are observable in the task activity.\n3. Keep this task active for at least 60 seconds from task start; do not submit early.\n4. After at least 60 seconds have elapsed, call submit_task_result and submit exactly CLASSROOM_TASK_FINISHED as the result.\nDo not substitute other result text. Do not ask the parent to perform any part of this task.\nAccepted\nUpdated 04:33 PM\nTeacher \u2192 StudentStudyGroup\nResult submitted \u00b7 Result 1\n\nStudentStudyGroup \u2192 Teacher\n\n04:32 PM\n\nCLASSROOM_TASK_FINISHED\n\nResult 1 accepted\n\nTeacher \u2192 StudentStudyGroup\n\n04:33 PM\n\nResult accepted.\n\nYou are coordinator student_one for this nested monitor probe. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster (use that canonical address, not a relative or guessed address).\n2. The student_two subtask description must begin exactly with STUDENT_TWO_MONITOR_PROBE and must require student_two to immediately send you (student_one) an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result; do not perform the subtask yourself and do not submit the student_two result on its behalf.\nAfter the student_two task is submitted, report the nested monitor probe outcome to the parent coordinator.\nIn progress\nUpdated 04:50 PM\nTeacher \u2192 StudentStudyGroup\nYou are coordinator student_one for the second live monitor probe, round 2. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster (copy the canonical address exactly).\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND2 and must require student_two to immediately send you (student_one) an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result and do not perform the subtask yourself.\nAfter delegating, remain waiting for the formal student_two task result.\nIn progress\nUpdated 04:56 PM\nTeacher \u2192 StudentStudyGroup\nTask assigned\nAccepted\n\nTeacher \u2192 StudentStudyGroup\n\nAug 31, 04:31 PM\n\nYou are the nested team coordinator for this dedicated task. Execute the following exact sequence and keep the task active:\n\nImmediately send the parent coordinator (/Teacher) an ordinary message whose entire content is exactly CLASSROOM_TASK_STARTED.\nDelegate or send work within your nested team, and produce at least two visible activity/tool steps. Ensure those steps are observable in the task activity.\nKeep this task active for at least 60 seconds from task start; do not submit early.\nAfter at least 60 seconds have elapsed, call submit_task_result and submit exactly CLASSROOM_TASK_FINISHED as the result.\nDo not substitute other result text. Do not ask the parent to perform any part of this task."
+    },
+    {
+      "label": "second-delegation-request-sent",
+      "capturedAt": "2026-08-31T15:14:57.827Z",
+      "markerRows": [],
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/Teacher",
+        "navigationFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+        "viewFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+        "focusedContext": {
+          "runId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+          "currentStatus": "running",
+          "conversationMessageCount": 21,
+          "activityCount": 12,
+          "lastConversationText": "Create a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following: 1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Student_two must then run at least one visible tool step"
+        }
+      },
+      "activityText": "",
+      "mainText": "T\nTeacher\nRunning\nYou\nThis is a live frontend observability experiment. Use delegate_task now to delegate one dedicated task to /StudentStudyGroup. The task packet must instruct the nested team coordinator to:\n1. immediately send you an ordinary message containing exactly CLASSROOM_TASK_STARTED;\n2. delegate or send work within its nested team and produce at least two visible activity/tool steps;\n3. keep the task active for at least 60 seconds;\n4. then call submit_task_result with exactly CLASSROOM_TASK_FINISHED.\nAfter delegating, wait for the nested team. Do not perform the task yourself.\nT\nTeacher\nThinking\ndelegate_task\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 65'\nThinking\n\nDelegated the task to /StudentStudyGroup and waited at least 60 seconds. The nested team remains active; no result has been received yet.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c90493bd439f997e1\nmessage:\nCLASSROOM_TASK_STARTED\nT\nTeacher\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 40'\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 30'\n\nReceived CLASSROOM_TASK_STARTED. Continuing to wait for the nested team\u2019s completion result.\n\nYou\nTask task_32c20c4ab27c4123a6c7acb1aab92ca7 result submitted:\nCLASSROOM_TASK_FINISHED\nT\nTeacher\nreview_task_result\n\nAccepted the nested team\u2019s result: CLASSROOM_TASK_FINISHED.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c90493bd439f997e1\nmessage:\nThe nested classroom task is complete; the exact result CLASSROOM_TASK_FINISHED was submitted for review.\nT\nTeacher\n\nConfirmed: the nested classroom task was completed and accepted.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\nThinking\ndelegate_task\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\nThinking\n\nDelegated the second monitor probe to /StudentStudyGroup and waited 120+ seconds. The nested task remains active; no result has been received yet.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_5dacea03064a4317b9bb5004be42dc70\nmessage:\nNested monitor probe outcome: delegated the dedicated STUDENT_TWO_MONITOR_PROBE to /StudentStudyGroup/student_two. The student_two execution completed its required visible step and 120+ second wait; its required result submission was awaited. The expected finished token is STUDENT_TWO_TASK_FINISHED.\nT\nTeacher\nThinking\n\nReceived the nested probe outcome. It reports that /StudentStudyGroup/student_two completed the visible step and 120+ second wait; the expected token is STUDENT_TWO_TASK_FINISHED.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_5dacea03064a4317b9bb5004be42dc70\nmessage:\nHandoff: nested team completed the delegated monitor probe; please review the student_two task result through the task lifecycle.\nT\nTeacher\nThinking\n\nI can only review the delegated /StudentStudyGroup task result. The student_two task is owned by student_one, so its result must be submitted and reviewed within that nested lifecycle first.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_88bc7221b197477388fc88e73874ae07\nmessage:\nThe nested team reports task result: STUDENT_TWO_TASK_FINISHED. I attempted submit_task_result, but the system returned TASK_NOT_ACTIVE (caller has no active assigned task), so formal submission could not be completed.\nT\nTeacher\nThinking\nsend_message_to\n\nThe nested formal submission failed with TASK_NOT_ACTIVE. I sent a clarification to the nested coordinator requesting submission through its active task lifecycle, if available.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_88bc7221b197477388fc88e73874ae07\nmessage:\nConfirmed: my own task execution is not active; submit_task_result returned TASK_NOT_ACTIVE. I cannot formally submit the nested probe outcome through my lifecycle. Runtime failure remains: STUDENT_TWO_TASK_FINISHED was only reported via ordinary message.\nT\nTeacher\nThinking\nreview_task_result\nTask 'task_01c0f00823d24647b64dc31b3fbc5835' is not awaiting review.\n\nFormal review was unavailable: TASK_NOT_AWAITING_REVIEW. The nested result was never submitted through the task lifecycle; only the ordinary-message report exists.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND2 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\ndelegate_task\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\n\nDelegated the round-2 probe to /StudentStudyGroup and waited 120+ seconds. The nested task remains active.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n7 Messages\nTasks\n3 tasks\nYou are the nested team coordinator for this dedicated task. Execute the following exact sequence and keep the task active:\n1. Immediately send the parent coordinator (/Teacher) an ordinary message whose entire content is exactly CLASSROOM_TASK_STARTED.\n2. Delegate or send work within your nested team, and produce at least two visible activity/tool steps. Ensure those steps are observable in the task activity.\n3. Keep this task active for at least 60 seconds from task start; do not submit early.\n4. After at least 60 seconds have elapsed, call submit_task_result and submit exactly CLASSROOM_TASK_FINISHED as the result.\nDo not substitute other result text. Do not ask the parent to perform any part of this task.\nAccepted\nUpdated 04:33 PM\nTeacher \u2192 StudentStudyGroup\nResult submitted \u00b7 Result 1\n\nStudentStudyGroup \u2192 Teacher\n\n04:32 PM\n\nCLASSROOM_TASK_FINISHED\n\nResult 1 accepted\n\nTeacher \u2192 StudentStudyGroup\n\n04:33 PM\n\nResult accepted.\n\nYou are coordinator student_one for this nested monitor probe. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster (use that canonical address, not a relative or guessed address).\n2. The student_two subtask description must begin exactly with STUDENT_TWO_MONITOR_PROBE and must require student_two to immediately send you (student_one) an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result; do not perform the subtask yourself and do not submit the student_two result on its behalf.\nAfter the student_two task is submitted, report the nested monitor probe outcome to the parent coordinator.\nIn progress\nUpdated 04:50 PM\nTeacher \u2192 StudentStudyGroup\nYou are coordinator student_one for the second live monitor probe, round 2. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster (copy the canonical address exactly).\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND2 and must require student_two to immediately send you (student_one) an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result and do not perform the subtask yourself.\nAfter delegating, remain waiting for the formal student_two task result.\nIn progress\nUpdated 04:56 PM\nTeacher \u2192 StudentStudyGroup\nTask assigned\nAccepted\n\nTeacher \u2192 StudentStudyGroup\n\nAug 31, 04:31 PM\n\nYou are the nested team coordinator for this dedicated task. Execute the following exact sequence and keep the task active:\n\nImmediately send the parent coordinator (/Teacher) an ordinary message whose entire content is exactly CLASSROOM_TASK_STARTED.\nDelegate or send work within your nested team, and produce at least two visible activity/tool steps. Ensure those steps are observable in the task activity.\nKeep this task active for at least 60 seconds from task start; do not submit early.\nAfter at least 60 seconds have elapsed, call submit_task_result and submit exactly CLASSROOM_TASK_FINISHED as the result.\nDo not substitute other result text. Do not ask the parent to perform any part of this task."
+    },
+    {
+      "label": "student-two-task-row-visible-before-click",
+      "capturedAt": "2026-08-31T15:15:34.281Z",
+      "markerRows": [
+        {
+          "test": "workspace-team-transient-execution-row",
+          "rowKind": "transient_execution",
+          "nodeKind": "agent",
+          "transientKind": "task_agent",
+          "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "rowCurrentStatus": "offline",
+          "current": null,
+          "selected": "false",
+          "expanded": null,
+          "label": "Temporary task agent, Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026, level 4, offline, /StudentStudyGroup/student_two",
+          "text": "Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026",
+          "activeElement": false,
+          "classes": "transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 text-gray-600"
+        }
+      ],
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/Teacher",
+        "navigationFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+        "viewFocusedAgentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+        "focusedContext": {
+          "runId": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+          "currentStatus": "running",
+          "conversationMessageCount": 22,
+          "activityCount": 14,
+          "lastConversationText": ""
+        }
+      },
+      "activityText": "",
+      "mainText": "T\nTeacher\nRunning\nYou\nThis is a live frontend observability experiment. Use delegate_task now to delegate one dedicated task to /StudentStudyGroup. The task packet must instruct the nested team coordinator to:\n1. immediately send you an ordinary message containing exactly CLASSROOM_TASK_STARTED;\n2. delegate or send work within its nested team and produce at least two visible activity/tool steps;\n3. keep the task active for at least 60 seconds;\n4. then call submit_task_result with exactly CLASSROOM_TASK_FINISHED.\nAfter delegating, wait for the nested team. Do not perform the task yourself.\nT\nTeacher\nThinking\ndelegate_task\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 65'\nThinking\n\nDelegated the task to /StudentStudyGroup and waited at least 60 seconds. The nested team remains active; no result has been received yet.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c90493bd439f997e1\nmessage:\nCLASSROOM_TASK_STARTED\nT\nTeacher\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 40'\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 30'\n\nReceived CLASSROOM_TASK_STARTED. Continuing to wait for the nested team\u2019s completion result.\n\nYou\nTask task_32c20c4ab27c4123a6c7acb1aab92ca7 result submitted:\nCLASSROOM_TASK_FINISHED\nT\nTeacher\nreview_task_result\n\nAccepted the nested team\u2019s result: CLASSROOM_TASK_FINISHED.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c90493bd439f997e1\nmessage:\nThe nested classroom task is complete; the exact result CLASSROOM_TASK_FINISHED was submitted for review.\nT\nTeacher\n\nConfirmed: the nested classroom task was completed and accepted.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\nThinking\ndelegate_task\nThinking\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\nThinking\n\nDelegated the second monitor probe to /StudentStudyGroup and waited 120+ seconds. The nested task remains active; no result has been received yet.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_5dacea03064a4317b9bb5004be42dc70\nmessage:\nNested monitor probe outcome: delegated the dedicated STUDENT_TWO_MONITOR_PROBE to /StudentStudyGroup/student_two. The student_two execution completed its required visible step and 120+ second wait; its required result submission was awaited. The expected finished token is STUDENT_TWO_TASK_FINISHED.\nT\nTeacher\nThinking\n\nReceived the nested probe outcome. It reports that /StudentStudyGroup/student_two completed the visible step and 120+ second wait; the expected token is STUDENT_TWO_TASK_FINISHED.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_5dacea03064a4317b9bb5004be42dc70\nmessage:\nHandoff: nested team completed the delegated monitor probe; please review the student_two task result through the task lifecycle.\nT\nTeacher\nThinking\n\nI can only review the delegated /StudentStudyGroup task result. The student_two task is owned by student_one, so its result must be submitted and reviewed within that nested lifecycle first.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_88bc7221b197477388fc88e73874ae07\nmessage:\nThe nested team reports task result: STUDENT_TWO_TASK_FINISHED. I attempted submit_task_result, but the system returned TASK_NOT_ACTIVE (caller has no active assigned task), so formal submission could not be completed.\nT\nTeacher\nThinking\nsend_message_to\n\nThe nested formal submission failed with TASK_NOT_ACTIVE. I sent a clarification to the nested coordinator requesting submission through its active task lifecycle, if available.\n\nYou\nYou received a message from sender name: student_one, sender id: student_one_88bc7221b197477388fc88e73874ae07\nmessage:\nConfirmed: my own task execution is not active; submit_task_result returned TASK_NOT_ACTIVE. I cannot formally submit the nested probe outcome through my lifecycle. Runtime failure remains: STUDENT_TWO_TASK_FINISHED was only reported via ordinary message.\nT\nTeacher\nThinking\nreview_task_result\nTask 'task_01c0f00823d24647b64dc31b3fbc5835' is not awaiting review.\n\nFormal review was unavailable: TASK_NOT_AWAITING_REVIEW. The nested result was never submitted through the task lifecycle; only the ordinary-message report exists.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND2 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\ndelegate_task\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\n\nDelegated the round-2 probe to /StudentStudyGroup and waited 120+ seconds. The nested task remains active.\n\nYou\nCreate a second live delegated-task monitor probe. Use delegate_task to delegate one task to /StudentStudyGroup. The nested task packet must instruct its coordinator student_one to do all of the following:\n1. Use delegate_task to delegate a dedicated subtask to the exact student_two Agent address available in its own Team roster.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Student_two must then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Student_one must wait for the student_two task result and must not perform the subtask itself.\nAfter delegating to /StudentStudyGroup, wait. Do not perform either nested task yourself.\nT\nTeacher\ndelegate_task\nrun_bash\n\u00b7 /bin/bash -lc 'sleep 130'\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n7 Messages\nTasks\n4 tasks\nYou are the nested team coordinator for this dedicated task. Execute the following exact sequence and keep the task active:\n1. Immediately send the parent coordinator (/Teacher) an ordinary message whose entire content is exactly CLASSROOM_TASK_STARTED.\n2. Delegate or send work within your nested team, and produce at least two visible activity/tool steps. Ensure those steps are observable in the task activity.\n3. Keep this task active for at least 60 seconds from task start; do not submit early.\n4. After at least 60 seconds have elapsed, call submit_task_result and submit exactly CLASSROOM_TASK_FINISHED as the result.\nDo not substitute other result text. Do not ask the parent to perform any part of this task.\nAccepted\nUpdated 04:33 PM\nTeacher \u2192 StudentStudyGroup\nResult submitted \u00b7 Result 1\n\nStudentStudyGroup \u2192 Teacher\n\n04:32 PM\n\nCLASSROOM_TASK_FINISHED\n\nResult 1 accepted\n\nTeacher \u2192 StudentStudyGroup\n\n04:33 PM\n\nResult accepted.\n\nYou are coordinator student_one for this nested monitor probe. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster (use that canonical address, not a relative or guessed address).\n2. The student_two subtask description must begin exactly with STUDENT_TWO_MONITOR_PROBE and must require student_two to immediately send you (student_one) an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result; do not perform the subtask yourself and do not submit the student_two result on its behalf.\nAfter the student_two task is submitted, report the nested monitor probe outcome to the parent coordinator.\nIn progress\nUpdated 04:50 PM\nTeacher \u2192 StudentStudyGroup\nYou are coordinator student_one for the second live monitor probe, round 2. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster (copy the canonical address exactly).\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND2 and must require student_two to immediately send you (student_one) an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result and do not perform the subtask yourself.\nAfter delegating, remain waiting for the formal student_two task result.\nIn progress\nUpdated 04:56 PM\nTeacher \u2192 StudentStudyGroup\nYou are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself.\n1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly.\n2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED.\n3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED.\n4. Wait for the student_two task result and must not perform the subtask yourself.\nAfter delegating, remain waiting for the formal student_two task result.\nIn progress\nUpdated 05:15 PM\nTeacher \u2192 StudentStudyGroup\nTask assigned\nAccepted\n\nTeacher \u2192 StudentStudyGroup\n\nAug 31, 04:31 PM\n\nYou are the nested team coordinator for this dedicated task. Execute the following exact sequence and keep the task active:\n\nImmediately send the parent coordinator (/Teacher) an ordinary message whose entire content is exactly CLASSROOM_TASK_STARTED.\nDelegate or send work within your nested team, and produce at least two visible activity/tool steps. Ensure those steps are observable in the task activity.\nKeep this task active for at least 60 seconds from task start; do not submit early.\nAfter at least 60 seconds have elapsed, call submit_task_result and submit exactly CLASSROOM_TASK_FINISHED as the result.\nDo not substitute other result text. Do not ask the parent to perform any part of this task."
+    },
+    {
+      "label": "student-two-immediately-after-click",
+      "capturedAt": "2026-08-31T15:15:34.385Z",
+      "markerRows": [
+        {
+          "test": "workspace-team-transient-execution-row",
+          "rowKind": "transient_execution",
+          "nodeKind": "agent",
+          "transientKind": "task_agent",
+          "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "rowCurrentStatus": "offline",
+          "current": "true",
+          "selected": "true",
+          "expanded": null,
+          "label": "Temporary task agent, Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026, level 4, offline, /StudentStudyGroup/student_two",
+          "text": "Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026",
+          "activeElement": false,
+          "classes": "transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 is-selected text-indigo-900"
+        }
+      ],
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/StudentStudyGroup/student_two",
+        "navigationFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "viewFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "focusedContext": {
+          "runId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "currentStatus": "offline",
+          "conversationMessageCount": 0,
+          "activityCount": 0,
+          "lastConversationText": ""
+        }
+      },
+      "activityText": "",
+      "mainText": "S\nstudent_two\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nTasks\n1 task\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result.\nIn progress\nUpdated 05:15 PM\nstudent_one \u2192 student_two\nTask assigned\nIn progress\n\nstudent_one \u2192 student_two\n\nAug 31, 05:15 PM\n\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result."
+    },
+    {
+      "label": "student-two-2.5s-after-click",
+      "capturedAt": "2026-08-31T15:15:36.891Z",
+      "markerRows": [
+        {
+          "test": "workspace-team-transient-execution-row",
+          "rowKind": "transient_execution",
+          "nodeKind": "agent",
+          "transientKind": "task_agent",
+          "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "rowCurrentStatus": "offline",
+          "current": "true",
+          "selected": "true",
+          "expanded": null,
+          "label": "Temporary task agent, Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026, level 4, offline, /StudentStudyGroup/student_two",
+          "text": "Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026",
+          "activeElement": false,
+          "classes": "transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 is-selected text-indigo-900"
+        }
+      ],
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/StudentStudyGroup/student_two",
+        "navigationFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "viewFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "focusedContext": {
+          "runId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "currentStatus": "offline",
+          "conversationMessageCount": 0,
+          "activityCount": 0,
+          "lastConversationText": ""
+        }
+      },
+      "activityText": "",
+      "mainText": "S\nstudent_two\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nTasks\n1 task\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result.\nIn progress\nUpdated 05:15 PM\nstudent_one \u2192 student_two\nTask assigned\nIn progress\n\nstudent_one \u2192 student_two\n\nAug 31, 05:15 PM\n\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result."
+    },
+    {
+      "label": "student-two-10s-after-click",
+      "capturedAt": "2026-08-31T15:15:44.462Z",
+      "markerRows": [
+        {
+          "test": "workspace-team-transient-execution-row",
+          "rowKind": "transient_execution",
+          "nodeKind": "agent",
+          "transientKind": "task_agent",
+          "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+          "memberAddress": "/StudentStudyGroup/student_two",
+          "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "rowCurrentStatus": "offline",
+          "current": "true",
+          "selected": "true",
+          "expanded": null,
+          "label": "Temporary task agent, Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026, level 4, offline, /StudentStudyGroup/student_two",
+          "text": "Task: STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send st\u2026",
+          "activeElement": false,
+          "classes": "transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300 is-selected text-indigo-900"
+        }
+      ],
+      "storeState": {
+        "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "selectedTeamMemberAddress": "/StudentStudyGroup/student_two",
+        "navigationFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "viewFocusedAgentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "focusedContext": {
+          "runId": "student_two_617e2f1d206245e5b6bd4ae450284846",
+          "currentStatus": "offline",
+          "conversationMessageCount": 0,
+          "activityCount": 0,
+          "lastConversationText": ""
+        }
+      },
+      "activityText": "",
+      "mainText": "S\nstudent_two\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nTasks\n1 task\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result.\nIn progress\nUpdated 05:15 PM\nstudent_one \u2192 student_two\nTask assigned\nIn progress\n\nstudent_one \u2192 student_two\n\nAug 31, 05:15 PM\n\nSTUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result."
+    }
+  ],
+  "exactTaskProjectionRequestCount": 0,
+  "graphqlRequests": [
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434"
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434"
+      }
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_88bc7221b197477388fc88e73874ae07"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_27e3a3a370264e429ef3fcd4bb6c5a74"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_4d1b2e43ca05469c90493bd439f997e1"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_84cd6ca620674fd194d117845d9236a7"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_5dacea03064a4317b9bb5004be42dc70"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_5529bbb0a26a4dfaa0ae787a8261c80a"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_783c12f8740e418d9d376245f4d45af3"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_3436676b46924505aca864678df010c7"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_a5663cf5aa88430090d35a1d2f65a6ac"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_4e582e56314f47d0b80ee606c03eb14c"
+      }
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": null,
+      "variables": null
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "codex_16587e60d3da4917a13ad5a7d3773037"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "codex_16587e60d3da4917a13ad5a7d3773037"
+      }
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "codex_16587e60d3da4917a13ad5a7d3773037"
+      }
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "codex_5e781c496faf4678a83631de0d358e90"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "codex_5e781c496faf4678a83631de0d358e90"
+      }
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "codex_5e781c496faf4678a83631de0d358e90"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721"
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721"
+      }
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "requirements_engineer_6568eac682114f2cb3ddb8f1d91d3c34"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "product_prototyper_32f0b05629874df1b1fe3baa585775bc"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "prototype_bootstrapper_ae508a8a05114e4aa2345f66ba9c1848"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "prototype_bootstrapper_59372829f6294393b6f83bb80a293260"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "prototype_bootstrapper_d109c470f86a40e486047cf9c2c4d50a"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "architecture_designer_6b8b3019214246e086957b3f395901bb"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "architecture_reviewer_c06051181da94687b3f42cca395e51eb"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "implementation_engineer_c58a9da47f7346ad84da5ce2486ab593"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "code_reviewer_cc67aa21ced94e779adfbbbff4a52ea1"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "api_e2e_engineer_d23a092db04042b69d944416be75d3b9"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "delivery_engineer_dd842e4c322e4e428687baf8c38ac8b7"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8"
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8"
+      }
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "head_of_software_development_3eda070c4bf9428b9f88070a2d4c8d04"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "requirements_engineer_6ebad92b619a4af186fd2937d6ef41ef"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "product_prototyper_9783ff4c900d472ca75a529edb8c377f"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "prototype_bootstrapper_ee651f84d0a346cf998d9c4f2c494f42"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "architecture_designer_7b82ddd7b16142e697f7be1c98ce2e3a"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "architecture_reviewer_0f9bd48ef0454c15a718b6c3e2af06d3"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "implementation_engineer_c48d4c8a39c3435d8ddd0212978f0a65"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "code_reviewer_793851db66ac4feeb930f470876a022d"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "api_e2e_engineer_1803cb7e59314beaaf984ed53e3018fc"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_5fe79472c2324349aa5399cf00f469e8",
+        "agentRunId": "delivery_engineer_6a90da04443f482687c5c5d6931d5ade"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_47e0d13091734bf4ac4af06ce06adec4"
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_47e0d13091734bf4ac4af06ce06adec4"
+      }
+    },
+    {
+      "operationName": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_47e0d13091734bf4ac4af06ce06adec4"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_47e0d13091734bf4ac4af06ce06adec4",
+        "agentRunId": "test_teacher_a921a0e962fc4a4bb6f80d721c1f0d0a"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_47e0d13091734bf4ac4af06ce06adec4",
+        "agentRunId": "student_one_5c24d19540bc42149bccf78fa39d51c6"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_47e0d13091734bf4ac4af06ce06adec4",
+        "agentRunId": "student_two_e1a74343d0ed4ce49a2f7cc8abad1e6d"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    },
+    {
+      "operationName": "GetWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6,
+        "workspaceId": "temp_ws_default"
+      }
+    }
+  ],
+  "pageErrors": []
+}

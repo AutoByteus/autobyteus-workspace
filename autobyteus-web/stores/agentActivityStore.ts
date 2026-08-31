@@ -19,6 +19,14 @@ interface AgentActivities {
   highlightedActivityId: string | null;
 }
 
+export interface ActivityProjectionReplacement {
+  readonly runId: string;
+  readonly expectedRevision: number;
+  readonly activities: readonly RunActivity[];
+}
+
+export type ActivityProjectionReplacementResult = 'applied' | 'conflict';
+
 const isValidActivityId = (activityId: unknown): activityId is string =>
   typeof activityId === 'string' && activityId.trim().length > 0;
 
@@ -46,16 +54,17 @@ const presentationValuesEqual = (left: unknown, right: unknown): boolean => {
 export const useAgentActivityStore = defineStore('agentActivity', {
   state: () => ({
     activitiesByRunId: new Map<string, AgentActivities>(),
+    activityContentRevisionByRunId: new Map<string, number>(),
   }),
 
   getters: {
-    getActivities: (state) => (runId: string): RunActivity[] => {
+    getActivities: (state) => (runId: string): readonly RunActivity[] => {
       return state.activitiesByRunId.get(runId)?.activities.filter((activity) =>
         isValidActivityId(activity?.activityId),
       ) ?? [];
     },
 
-    getToolActivities: (state) => (runId: string): ToolActivity[] => {
+    getToolActivities: (state) => (runId: string): readonly ToolActivity[] => {
       const activities = state.activitiesByRunId.get(runId)?.activities ?? [];
       return activities.filter(
         (activity): activity is ToolActivity =>
@@ -63,7 +72,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       );
     },
 
-    getCompactionActivities: (state) => (runId: string): CompactionActivity[] => {
+    getCompactionActivities: (state) => (runId: string): readonly CompactionActivity[] => {
       const activities = state.activitiesByRunId.get(runId)?.activities ?? [];
       return activities.filter(isCompactionActivity);
     },
@@ -74,7 +83,10 @@ export const useAgentActivityStore = defineStore('agentActivity', {
 
     getHighlightedActivityId: (state) => (runId: string): string | null => {
       return state.activitiesByRunId.get(runId)?.highlightedActivityId ?? null;
-    }
+    },
+
+    getActivityContentRevision: (state) => (runId: string): number =>
+      state.activityContentRevisionByRunId.get(runId) ?? 0,
   },
 
   actions: {
@@ -93,6 +105,11 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       agentState.hasAwaitingApproval = agentState.activities.some(
         (a) => a.kind === 'tool' && a.status === 'awaiting-approval'
       );
+    },
+
+    _incrementContentRevision(runId: string) {
+      const current = this.activityContentRevisionByRunId.get(runId) ?? 0;
+      this.activityContentRevisionByRunId.set(runId, current + 1);
     },
 
     _enforceRecentWindow(agentState: AgentActivities): boolean {
@@ -137,6 +154,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       }
       state.activities.push(activity);
       this._enforceRecentWindow(state);
+      this._incrementContentRevision(runId);
       return true;
     },
 
@@ -157,6 +175,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       if (!existing) {
         state.activities.push(activity);
         this._enforceRecentWindow(state);
+        this._incrementContentRevision(runId);
         return true;
       }
 
@@ -170,8 +189,9 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       const changed = Object.entries(patch)
         .some(([key, value]) => !presentationValuesEqual((existing as unknown as Record<string, unknown>)[key], value));
       if (changed) Object.assign(existing, patch);
-      this._enforceRecentWindow(state);
-      return changed;
+      const evicted = this._enforceRecentWindow(state);
+      if (changed || evicted) this._incrementContentRevision(runId);
+      return changed || evicted;
     },
 
     upsertSystemInstructionActivity(runId: string, activity: SystemInstructionActivity): boolean {
@@ -186,6 +206,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       if (!existing) {
         state.activities.push(activity);
         this._enforceRecentWindow(state);
+        this._incrementContentRevision(runId);
         return true;
       }
       if (existing.kind !== 'system_instruction'
@@ -212,6 +233,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
         if (activity.status === status) return false;
         activity.status = status;
         this._enforceRecentWindow(state);
+        this._incrementContentRevision(runId);
         return true;
       }
       return false;
@@ -226,6 +248,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
         if (activity.logs.at(-1) === log) return false;
         activity.logs.push(log);
         this._enforceRecentWindow(state);
+        this._incrementContentRevision(runId);
         return true;
       }
       return false;
@@ -241,6 +264,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
         activity.result = result;
         activity.error = error;
         this._enforceRecentWindow(state);
+        this._incrementContentRevision(runId);
         return true;
       }
       return false;
@@ -256,6 +280,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
         if (presentationValuesEqual(activity.arguments, next)) return false;
         activity.arguments = next;
         this._enforceRecentWindow(state);
+        this._incrementContentRevision(runId);
         return true;
       }
       return false;
@@ -269,6 +294,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       if (activity) {
         if (presentationValuesEqual(activity.approvalTarget ?? null, approvalTarget)) return false;
         activity.approvalTarget = approvalTarget;
+        this._incrementContentRevision(runId);
         return true;
       }
       return false;
@@ -288,6 +314,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       if (isPlaceholderToolName(activity.toolName)) {
         if (activity.toolName === toolName) return false;
         activity.toolName = toolName;
+        this._incrementContentRevision(runId);
         return true;
       }
       return false;
@@ -298,8 +325,55 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       state.highlightedActivityId = activityId;
     },
 
+    replaceProjectionActivitiesIfRevisions(
+      replacements: readonly ActivityProjectionReplacement[],
+    ): ActivityProjectionReplacementResult {
+      const seenRunIds = new Set<string>();
+      for (const replacement of replacements) {
+        const runId = replacement.runId.trim();
+        if (!runId || seenRunIds.has(runId)
+          || this.getActivityContentRevision(runId) !== replacement.expectedRevision) {
+          return 'conflict';
+        }
+        seenRunIds.add(runId);
+      }
+
+      const staged = replacements.map((replacement) => {
+        const runId = replacement.runId.trim();
+        const current = this.activitiesByRunId.get(runId);
+        const seenActivityIds = new Set<string>();
+        const activities = replacement.activities.filter((activity) => {
+          if (!isValidActivityId(activity.activityId)) return false;
+          if (seenActivityIds.has(activity.activityId)
+            || (activity.kind === 'tool' && !isValidToolInvocationId(activity.invocationId))) {
+            return false;
+          }
+          seenActivityIds.add(activity.activityId);
+          return true;
+        });
+        const next: AgentActivities = {
+          activities: [...activities],
+          hasAwaitingApproval: false,
+          highlightedActivityId: current?.highlightedActivityId ?? null,
+        };
+        this._enforceRecentWindow(next);
+        if (next.highlightedActivityId
+          && !next.activities.some((activity) => activity.activityId === next.highlightedActivityId)) {
+          next.highlightedActivityId = null;
+        }
+        return { runId, next };
+      });
+
+      for (const { runId, next } of staged) {
+        this.activitiesByRunId.set(runId, next);
+        this._incrementContentRevision(runId);
+      }
+      return 'applied';
+    },
+
     clearActivities(runId: string) {
       this.activitiesByRunId.delete(runId);
+      this._incrementContentRevision(runId);
     }
   },
 });

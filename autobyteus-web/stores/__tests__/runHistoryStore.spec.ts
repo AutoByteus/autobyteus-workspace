@@ -448,7 +448,8 @@ describe('runHistoryStore', () => {
         focusedAgentRunId: hydratedContext.view.getFocusedAgentRunId(),
         resumeConfig: { teamRunId, isActive: true, metadata },
         hydratedContext,
-        projectionByMemberAddress: new Map(),
+        projectionByAgentRunId: new Map([[member.agentRunId, { agentRunId: member.agentRunId }]]),
+        activityReplacements: [],
       };
     });
     mutateMock.mockReset();
@@ -639,6 +640,7 @@ describe('runHistoryStore', () => {
       agentRunId: 'member-run-live-1',
       resolveWorkspaceMetadataByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
+      selectRun: false,
     });
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
   });

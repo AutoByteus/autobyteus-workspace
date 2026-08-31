@@ -14,6 +14,7 @@
     :aria-label="accessibleLabel"
     :aria-current="isSelected ? 'true' : undefined"
     :aria-selected="isSelected"
+    :aria-busy="inspectionAttempt?.state === 'loading' ? 'true' : undefined"
     :aria-level="row.depth + 1"
     :aria-expanded="hasChildren ? expanded : undefined"
     role="treeitem"
@@ -55,7 +56,7 @@
       aria-hidden="true"
     />
 
-    <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
+    <div class="flex min-w-0 flex-1 items-start py-1 pr-2">
       <span class="member-status inline-flex flex-shrink-0 items-center">
         <StatusDot
           v-if="row.memberKind === 'agent'"
@@ -73,8 +74,31 @@
       >
         <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
       </span>
-      <span class="min-w-0 flex-1 truncate" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
-        {{ row.displayName }}
+      <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
+        <span class="block truncate">{{ row.displayName }}</span>
+        <span
+          v-if="combinedTaskStatus"
+          class="mt-0.5 block truncate text-[0.6875rem] font-medium text-slate-600"
+          data-test="workspace-transient-task-status"
+        >{{ combinedTaskStatus }}</span>
+        <span
+          v-if="inspectionAttempt?.state === 'loading'"
+          class="mt-0.5 block text-[0.6875rem] font-medium text-indigo-700"
+          role="status"
+        >{{ t('workspace.task_monitor.loading') }}</span>
+        <span
+          v-else-if="inspectionAttempt?.state === 'error'"
+          class="mt-0.5 flex items-center gap-1 text-[0.6875rem] font-medium text-red-700"
+          role="alert"
+        >
+          <span>{{ t('workspace.task_monitor.load_error') }}</span>
+          <button
+            type="button"
+            class="rounded px-1 py-0.5 underline focus:outline-none focus-visible:ring-1 focus-visible:ring-red-500"
+            :aria-label="t('workspace.task_monitor.retry_accessible')"
+            @click.stop="emit('select', row)"
+          >{{ t('workspace.task_monitor.retry') }}</button>
+        </span>
       </span>
     </div>
     <span
@@ -92,6 +116,7 @@ import WorkspaceHierarchyBranches from '~/components/workspace/history/Workspace
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 const props = withDefaults(defineProps<{
   row: RunHistoryTransientExecutionRow;
@@ -114,6 +139,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useLocalization();
+const runHistoryStore = useRunHistoryStore();
 
 const roleLabel = computed(() => t(
   props.row.memberKind === 'agent_team'
@@ -123,19 +149,32 @@ const roleLabel = computed(() => t(
 
 const status = computed(() => props.row.currentStatus || AgentStatus.Offline);
 const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
+const executionStatusLabel = computed(() => t(`workspace.task_monitor.execution.${status.value}`));
+const lifecycleStatusLabel = computed(() => props.row.task
+  ? t(`workspace.task_monitor.lifecycle.${props.row.task.displayStatus}`)
+  : '');
+const combinedTaskStatus = computed(() => props.row.task && props.row.memberKind === 'agent'
+  ? t('workspace.task_monitor.combined_status', {
+    lifecycle: lifecycleStatusLabel.value,
+    execution: executionStatusLabel.value,
+  })
+  : lifecycleStatusLabel.value);
+const inspectionAttempt = computed(() => props.row.agentRunId
+  ? runHistoryStore.getTeamMemberInspectionAttempt(props.row.teamRunId, props.row.agentRunId)
+  : null);
 
 const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
   role: roleLabel.value,
-  name: props.row.displayName,
+  name: props.row.task?.description || props.row.displayName,
   address: props.row.memberAddress,
 }));
 
 const accessibleLabel = computed(() => t('workspace.history.hierarchy.tree_item', {
   role: roleLabel.value,
-  name: props.row.displayName,
+  name: props.row.task?.description || props.row.displayName,
   address: props.row.memberAddress,
   level: props.row.depth + 1,
-  status: statusLabel.value,
+  status: combinedTaskStatus.value || statusLabel.value,
 }));
 
 const disclosureLabel = computed(() => t(

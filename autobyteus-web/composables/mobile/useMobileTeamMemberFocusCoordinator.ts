@@ -63,7 +63,12 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
     }
     isUpdating.value = true;
     try {
-      await runHistoryStore.focusTeamMemberAndEnsureHydrated(context.teamRunId, exactAgentRunId);
+      const result = await runHistoryStore.inspectTeamMember(
+        context.teamRunId,
+        exactAgentRunId,
+        { selectionMode: 'mobile' },
+      );
+      if (result.disposition === 'rejected') throw new Error(result.message);
       const focused = teamContextsStore.getTeamContextById(context.teamRunId)?.view.getFocusedAgentRunId();
       if (!focused || focused !== exactAgentRunId) throw new Error('Focused Team AgentRun is unavailable.');
       mobileWorkStore.updateFocusedTeamMember(context.teamRunId, focused);

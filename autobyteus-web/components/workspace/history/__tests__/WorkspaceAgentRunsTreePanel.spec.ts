@@ -213,6 +213,7 @@ const {
       get navigationTopologyRevision() {
         return 0;
       },
+      getTeamMemberInspectionAttempt: vi.fn(() => null),
       fetchTree: vi.fn().mockResolvedValue(undefined),
       loadWorkspaceCatalogForNavigation: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),

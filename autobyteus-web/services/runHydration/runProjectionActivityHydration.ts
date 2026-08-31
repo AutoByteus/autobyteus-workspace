@@ -1,4 +1,3 @@
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type {
   CompactionActivity,
   RunActivity,
@@ -265,22 +264,9 @@ const toRunActivity = (entry: RunProjectionActivityEntry): RunActivity | null =>
   }
 };
 
-export const hydrateActivitiesFromProjection = (
-  runId: string,
+export const buildActivitiesFromProjection = (
   entries: RunProjectionActivityEntry[],
-): void => {
-  const store = useAgentActivityStore();
-  store.clearActivities(runId);
-
-  entries.forEach((entry) => {
+): RunActivity[] => entries.flatMap((entry): RunActivity[] => {
     const activity = toRunActivity(entry);
-    if (!activity) {
-      return;
-    }
-    if (activity.kind === 'system_instruction') {
-      store.upsertSystemInstructionActivity(runId, activity);
-    } else {
-      store.addActivity(runId, activity);
-    }
+    return activity ? [activity] : [];
   });
-};

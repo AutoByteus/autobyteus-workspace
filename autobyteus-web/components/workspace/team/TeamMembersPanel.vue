@@ -42,7 +42,8 @@
         :aria-level="row.depth + 1"
         :aria-expanded="row.expandable ? isExpanded(row) : undefined"
         :aria-selected="row.agentRunId ? row.agentRunId === focusedAgentRunId : undefined"
-        :aria-label="row.accessibleName"
+        :aria-label="accessibleRowLabel(row)"
+        :aria-busy="inspectionAttempt(row)?.state === 'loading' ? 'true' : undefined"
         :tabindex="index === rovingIndex ? 0 : -1"
         class="flex w-full items-center gap-2 rounded-lg border p-3 text-left transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
         :style="{ paddingLeft: `${12 + row.depth * 16}px` }"
@@ -62,12 +63,29 @@
         <span class="min-w-0 flex-1">
           <span class="block truncate text-sm font-medium" :title="row.displayName">{{ row.displayName }}</span>
           <span v-if="row.teamRunId" class="mt-0.5 block text-xs text-slate-500">Team</span>
+          <span
+            v-if="taskStatusLabel(row)"
+            class="mt-0.5 block text-xs font-medium text-slate-600"
+          >{{ taskStatusLabel(row) }}</span>
+          <span
+            v-if="inspectionAttempt(row)?.state === 'loading'"
+            class="mt-0.5 block text-xs font-medium text-indigo-700"
+            role="status"
+          >{{ $t('workspace.task_monitor.loading') }}</span>
+          <span
+            v-else-if="inspectionAttempt(row)?.state === 'error'"
+            class="mt-0.5 flex items-center gap-1 text-xs font-medium text-red-700"
+            role="alert"
+          >
+            <span>{{ $t('workspace.task_monitor.load_error') }}</span>
+            <span class="underline">{{ $t('workspace.task_monitor.retry') }}</span>
+          </span>
         </span>
         <span
           v-if="row.coordinator"
           class="rounded-full bg-yellow-200 px-2 py-0.5 text-xs font-bold text-yellow-800"
         >Coord</span>
-        <AgentStatusDisplay v-if="row.agentRunId" :status="row.currentStatus ?? 'offline'" />
+        <AgentStatusDisplay v-if="row.agentRunId && !row.task" :status="row.currentStatus ?? 'offline'" />
       </button>
     </div>
 
@@ -91,10 +109,12 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import type { TeamExecutionNavigationRow } from '~/services/teamExecution/teamExecutionViewModels';
+import { useLocalization } from '~/composables/useLocalization';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const runHistoryStore = useRunHistoryStore();
 const teamRunStore = useAgentTeamRunStore();
+const { t } = useLocalization();
 const showTerminateConfirm = ref(false);
 const expandedTeamRunIds = ref(new Set<string>());
 const rovingIndex = ref(0);
@@ -120,6 +140,31 @@ const isStopPending = computed(() => {
   const rootTeamRunId = activeTeam.value?.view.getRootTeamRunId();
   return rootTeamRunId ? Boolean(teamRunStore.stopPendingTeamIds[rootTeamRunId]) : false;
 });
+const executionStatusLabel = (row: TeamExecutionNavigationRow): string => t(
+  `workspace.task_monitor.execution.${row.currentStatus ?? 'offline'}`,
+);
+const taskStatusLabel = (row: TeamExecutionNavigationRow): string => {
+  if (!row.task) return '';
+  const lifecycle = t(`workspace.task_monitor.lifecycle.${row.task.displayStatus}`);
+  return row.agentRunId
+    ? t('workspace.task_monitor.combined_status', {
+      lifecycle,
+      execution: executionStatusLabel(row),
+    })
+    : lifecycle;
+};
+const accessibleRowLabel = (row: TeamExecutionNavigationRow): string => [
+  row.task ? t('workspace.task_monitor.task') : '',
+  row.task?.description || row.accessibleName,
+  taskStatusLabel(row),
+  row.address,
+].filter(Boolean).join(', ');
+const inspectionAttempt = (row: TeamExecutionNavigationRow) => row.agentRunId && activeTeam.value
+  ? runHistoryStore.getTeamMemberInspectionAttempt(
+    activeTeam.value.view.getRootTeamRunId(),
+    row.agentRunId,
+  )
+  : null;
 
 const registerRowElement = (key: string, element: unknown): void => {
   if (element instanceof HTMLElement) rowElements.set(key, element);
@@ -143,7 +188,7 @@ const focusVisibleRow = async (index: number): Promise<void> => {
 };
 const selectAgent = async (agentRunId: string): Promise<void> => {
   const rootTeamRunId = activeTeam.value?.view.getRootTeamRunId();
-  if (rootTeamRunId) await runHistoryStore.focusTeamMemberAndEnsureHydrated(rootTeamRunId, agentRunId);
+  if (rootTeamRunId) await runHistoryStore.inspectTeamMember(rootTeamRunId, agentRunId);
 };
 const activateRow = (row: TeamExecutionNavigationRow): void => {
   if (row.agentRunId) void selectAgent(row.agentRunId);

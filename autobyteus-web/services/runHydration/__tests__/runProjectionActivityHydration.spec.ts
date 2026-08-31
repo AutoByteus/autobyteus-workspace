@@ -1,33 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { createPinia, setActivePinia } from 'pinia';
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { hydrateActivitiesFromProjection } from '../runProjectionActivityHydration';
+import { describe, expect, it } from 'vitest';
+import { buildActivitiesFromProjection } from '../runProjectionActivityHydration';
 
 describe('runProjectionActivityHydration', () => {
-  beforeEach(() => {
-    setActivePinia(createPinia());
-  });
-
-  it('replaces stale activities with projected history rows', () => {
-    const store = useAgentActivityStore();
-    const runId = 'run-1';
-
-    store.addToolActivity(runId, {
-      kind: 'tool',
-      activityId: 'stale',
-      invocationId: 'stale',
-      toolName: 'old_tool',
-      type: 'tool_call',
-      status: 'parsing',
-      contextText: 'old_tool',
-      arguments: {},
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
-
-    hydrateActivitiesFromProjection(runId, [
+  it('builds projected history rows without writing a store', () => {
+    const activities = buildActivitiesFromProjection([
       {
         kind: 'tool',
         invocationId: 'history-1',
@@ -41,7 +17,6 @@ describe('runProjectionActivityHydration', () => {
       },
     ]);
 
-    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -56,10 +31,7 @@ describe('runProjectionActivityHydration', () => {
   });
 
   it('drops malformed projected rows without invocation ids', () => {
-    const store = useAgentActivityStore();
-    const runId = 'run-2';
-
-    hydrateActivitiesFromProjection(runId, [
+    const activities = buildActivitiesFromProjection([
       {
         kind: 'tool',
         invocationId: '',
@@ -78,7 +50,6 @@ describe('runProjectionActivityHydration', () => {
       },
     ]);
 
-    const activities = store.getToolActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -89,10 +60,7 @@ describe('runProjectionActivityHydration', () => {
   });
 
   it('hydrates exact system content and omits only malformed system rows', () => {
-    const store = useAgentActivityStore();
-    const runId = 'run-system';
-
-    hydrateActivitiesFromProjection(runId, [
+    const activities = buildActivitiesFromProjection([
       { kind: 'system_instruction', activityId: 'bad', content: 'bad', ts: 0 },
       { kind: 'system_instruction', activityId: 'raw-system', content: '  exact\ntext  ', ts: 40 },
       {
@@ -101,7 +69,7 @@ describe('runProjectionActivityHydration', () => {
       },
     ]);
 
-    expect(store.getActivities(runId)).toEqual([
+    expect(activities).toEqual([
       {
         kind: 'system_instruction', activityId: 'raw-system', content: '  exact\ntext  ',
         timestamp: new Date(40_000),
@@ -111,10 +79,7 @@ describe('runProjectionActivityHydration', () => {
   });
 
   it('hydrates durable compaction projection rows without fabricating tool data', () => {
-    const store = useAgentActivityStore();
-    const runId = 'run-3';
-
-    hydrateActivitiesFromProjection(runId, [
+    const activities = buildActivitiesFromProjection([
       {
         kind: 'compaction',
         activityId: 'compaction:boundary:boundary-1',
@@ -127,8 +92,8 @@ describe('runProjectionActivityHydration', () => {
       },
     ]);
 
-    expect(store.getToolActivities(runId)).toHaveLength(0);
-    expect(store.getCompactionActivities(runId)).toEqual([
+    expect(activities.filter((activity) => activity.kind === 'tool')).toHaveLength(0);
+    expect(activities.filter((activity) => activity.kind === 'compaction')).toEqual([
       expect.objectContaining({
         kind: 'compaction',
         activityId: 'compaction:boundary:boundary-1',

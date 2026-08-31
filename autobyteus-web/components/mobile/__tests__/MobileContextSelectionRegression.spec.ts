@@ -31,6 +31,7 @@ import type { AgentTeamContext } from "~/types/agent/AgentTeamContext";
 import type { Conversation } from "~/types/conversation";
 import type { MobileWorkContext } from "~/types/mobileWork";
 import { createWorkspaceContextAttachment } from "~/utils/contextFiles/contextAttachmentModel";
+import { markTeamMemberProjectionAuthoritative } from "~/services/runHydration/teamMemberProjectionHydrationService";
 import {
   buildTestTeamContext,
   testAgentNode,
@@ -440,6 +441,7 @@ describe("mobile context selection stale-run regression", () => {
 
   it("updates both team focus and the mobile work context when changing an existing team-run target", async () => {
     const teamContext = seedActiveTeamRun();
+    markTeamMemberProjectionAuthoritative(teamContext, "reviewer-run");
 
     const wrapper = mountWithPinia(MobileTeamMemberFocusBar, {
       props: { context: useMobileWorkStore().currentContext },

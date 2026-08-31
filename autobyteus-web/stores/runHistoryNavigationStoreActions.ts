@@ -10,7 +10,6 @@ import {
 } from './runHistoryNavigationProjection';
 import {
   applyRunNavigationEffectToProjection,
-  applyRunNavigationTeamFocusToProjection,
   type RunNavigationTarget,
 } from './runHistoryNavigationPatches';
 
@@ -53,33 +52,6 @@ export const applyRunNavigationEffectForStore = (
   store.navigationProjection = result.state;
   store.navigationPatchRevision += 1;
   return true;
-};
-
-export const applyRunNavigationTeamFocusForStore = (
-  store: RunHistoryNavigationStoreState,
-  teamRunId: string,
-  agentRunId: string,
-): boolean => {
-  const result = applyRunNavigationTeamFocusToProjection(
-    ensureProjection(store), teamRunId, agentRunId,
-  );
-  if (!result.changed) return false;
-  store.navigationProjection = result.state;
-  store.navigationPatchRevision += 1;
-  return true;
-};
-
-export const focusTeamMemberAndEnsureHydratedForStore = async (
-  store: RunHistoryNavigationStoreState,
-  teamRunId: string,
-  agentRunId: string,
-): Promise<boolean> => {
-  const teamStore = useAgentTeamContextsStore();
-  const context = teamStore.getTeamContextById(teamRunId);
-  if (!context || context.view.getRootTeamRunId() !== teamRunId) return false;
-  const result = context.view.focusAgent(agentRunId);
-  if (result.disposition === 'rejected' || context.view.getFocusedAgentRunId() !== agentRunId) return false;
-  return applyRunNavigationTeamFocusForStore(store, teamRunId, agentRunId);
 };
 
 export const standaloneNavigationTarget = (input: {

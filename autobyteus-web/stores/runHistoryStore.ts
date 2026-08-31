@@ -4,6 +4,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
+  TeamMemberInspectionAttempt,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import {
@@ -39,10 +40,14 @@ import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamM
 import type { RunNavigationTarget } from './runHistoryNavigationPatches';
 import {
   applyRunNavigationEffectForStore,
-  applyRunNavigationTeamFocusForStore,
-  focusTeamMemberAndEnsureHydratedForStore,
   refreshRunNavigationTopologyForStore,
 } from './runHistoryNavigationStoreActions';
+import {
+  inspectTeamMemberForStore,
+  reconcileFocusedTeamMemberProjectionForStore,
+  teamMemberInspectionIdentity,
+} from './runHistoryTeamMemberInspectionActions';
+import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberInspectionCoordinator';
 import { createDraftRunForHistoryStore } from './runHistoryDraftActions';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentRunResumeConfig, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
@@ -59,6 +64,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     selectedRunId: null as string | null,
     selectedTeamRunId: null as string | null,
     selectedTeamMemberAddress: null as string | null,
+    teamMemberInspectionByIdentity: {} as Record<string, TeamMemberInspectionAttempt | undefined>,
     navigationProjection: null as RunHistoryNavigationProjectionState | null,
     navigationTopologyRevision: 0,
     navigationPatchRevision: 0,
@@ -440,15 +446,28 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return applyRunNavigationEffectForStore(this, target, effect);
     },
 
-    applyRunNavigationTeamFocus(teamRunId: string, agentRunId: string): boolean {
-      return applyRunNavigationTeamFocusForStore(this, teamRunId, agentRunId);
-    },
-
-    async focusTeamMemberAndEnsureHydrated(
+    getTeamMemberInspectionAttempt(
       teamRunId: string,
       agentRunId: string,
-    ): Promise<boolean> {
-      return focusTeamMemberAndEnsureHydratedForStore(this, teamRunId, agentRunId);
+    ): TeamMemberInspectionAttempt | null {
+      return this.teamMemberInspectionByIdentity[
+        teamMemberInspectionIdentity(teamRunId, agentRunId)
+      ] ?? null;
+    },
+
+    async inspectTeamMember(
+      teamRunId: string,
+      agentRunId: string,
+      options: { selectionMode?: RunHistorySelectionMode } = {},
+    ): Promise<TeamMemberInspectionResult> {
+      return inspectTeamMemberForStore(this, teamRunId, agentRunId, options);
+    },
+
+    async reconcileFocusedTeamMemberProjection(
+      teamRunId: string,
+      agentRunId: string,
+    ): Promise<void> {
+      await reconcileFocusedTeamMemberProjectionForStore(this, teamRunId, agentRunId);
     },
 
     async openTeamMemberRun(

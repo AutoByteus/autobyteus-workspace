@@ -43,6 +43,7 @@ export interface TeamExecutionViewState {
   getFocusedAgentRunId(): string;
   getFocusedMemberAddress(): AgentTeamAddress;
   getFocusedAgentContext(): AgentContext | null;
+  getFocusedNavigationRow(): TeamExecutionNavigationRow | null;
   getAgentContext(agentRunId: string): AgentContext | null;
   getAgentExecutionLocation(agentRunId: string): TeamAgentExecutionLocation | null;
   getMemberAddress(agentRunId: string): AgentTeamAddress | null;
@@ -267,7 +268,14 @@ export const createTeamExecutionViewState = (
       changeSequence.value = payload.base_change_sequence;
       streamRecoveryRequired.value = false;
       repairFocus();
-      return Object.freeze({ disposition: 'applied', effects: Object.freeze([]) });
+      return Object.freeze({
+        disposition: 'applied',
+        effects: Object.freeze([
+          { kind: 'invalidate_team_member_projections' as const },
+          { kind: 'reconcile_team_navigation' as const },
+          { kind: 'reconcile_focused_team_member_projection' as const },
+        ]),
+      });
     } catch (error) {
       return Object.freeze({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID', message: String(error), effects: Object.freeze([]) });
     }
@@ -317,6 +325,13 @@ export const createTeamExecutionViewState = (
         if (nextLocations) locations.value = nextLocations;
         tasks.value = nextTasks;
         repairFocus();
+        if (planned.length > 0) {
+          effects.push({
+            kind: 'invalidate_team_member_projection',
+            agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
+          });
+        }
+        effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
         if (messages.value.some((entry) => entry.message_id === message.payload.message.message_id)) {
           return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });
@@ -359,6 +374,9 @@ export const createTeamExecutionViewState = (
     getFocusedAgentRunId: () => focusedAgentRunId.value,
     getFocusedMemberAddress: () => locations.value.get(focusedAgentRunId.value)!.memberAddress,
     getFocusedAgentContext: () => contexts.get(focusedAgentRunId.value) ?? null,
+    getFocusedNavigationRow: () => navigationRows().find(
+      (row) => row.agentRunId === focusedAgentRunId.value,
+    ) ?? null,
     getAgentContext: (agentRunId) => contexts.get(agentRunId.trim()) ?? null,
     getAgentExecutionLocation: (agentRunId) => locations.value.get(agentRunId.trim()) ?? null,
     getMemberAddress: (agentRunId) => locations.value.get(agentRunId.trim())?.memberAddress ?? null,

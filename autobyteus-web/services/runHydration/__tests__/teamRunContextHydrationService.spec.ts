@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
 import {
   hydrateLiveTeamRunContext,
   hydrateTeamRunContextForStreamRecovery,
@@ -9,14 +10,10 @@ const {
   queryMock,
   fetchTeamCommunicationMock,
   fetchTaskDelegationsMock,
-  hydrateActivitiesFromProjectionMock,
-  primeRecentEventMonitorBaselineMock,
 } = vi.hoisted(() => ({
   queryMock: vi.fn(),
   fetchTeamCommunicationMock: vi.fn(),
   fetchTaskDelegationsMock: vi.fn(),
-  hydrateActivitiesFromProjectionMock: vi.fn(),
-  primeRecentEventMonitorBaselineMock: vi.fn(),
 }));
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: queryMock }) }));
@@ -26,27 +23,6 @@ vi.mock('../teamCommunicationHydrationService', () => ({
 vi.mock('../taskDelegationHydrationService', () => ({
   fetchTaskDelegationRecordsForTeam: fetchTaskDelegationsMock,
 }));
-vi.mock('~/services/runHydration/runProjectionActivityHydration', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('~/services/runHydration/runProjectionActivityHydration')>();
-  return {
-    ...actual,
-    hydrateActivitiesFromProjection: (runId: string, activities: any[]) => {
-      hydrateActivitiesFromProjectionMock(runId, activities);
-      actual.hydrateActivitiesFromProjection(runId, activities);
-    },
-  };
-});
-vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('~/services/eventMonitor/recentEventMonitorMutationCoordinator')>();
-  return {
-    ...actual,
-    primeRecentEventMonitorBaseline: (context: any) => {
-      primeRecentEventMonitorBaselineMock(context);
-      actual.primeRecentEventMonitorBaseline(context);
-    },
-  };
-});
-
 const tree = buildTestTeamContext({
   teamRunId: 'team-live-recovery',
   teamDefinitionId: 'team-def-1',
@@ -65,17 +41,16 @@ const projectedActivity = {
 
 describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
     fetchTaskDelegationsMock.mockResolvedValue([]);
     fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
-  it.each([
-    { name: 'with its persisted projection', projection: {
+  it('stages one exact AgentRun projection without mutating the Activity store', async () => {
+    const projection = {
       agentRunId: 'run-a', conversation: [], activities: [projectedActivity], hasEarlierActiveTraceEvents: false,
-    }, expectedActivityCalls: 1, expectedPrimeCalls: 1 },
-    { name: 'without a persisted projection', projection: null, expectedActivityCalls: 0, expectedPrimeCalls: 0 },
-  ])('hydrates one exact AgentRun $name', async ({ projection, expectedActivityCalls, expectedPrimeCalls }) => {
+    };
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: projection }, errors: [] }
@@ -95,14 +70,71 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     expect(result.focusedAgentRunId).toBe('run-a');
     expect(result.hydratedContext.view.getMemberAddress('run-a')).toBe('/member-a');
     expect(memberContext?.state.runId).toBe('run-a');
-    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(expectedActivityCalls);
-    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(expectedPrimeCalls);
-    if (projection) {
-      expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith('run-a', projection.activities);
-      expect(hydrateActivitiesFromProjectionMock.mock.invocationCallOrder[0])
-        .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
-      expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(memberContext);
-    }
+    expect(result.activityReplacements).toEqual([
+      expect.objectContaining({ runId: 'run-a', expectedRevision: 0 }),
+    ]);
+    expect(result.activityReplacements[0]?.activities).toEqual([
+      expect.objectContaining({ activityId: projectedActivity.activityId }),
+    ]);
+  });
+
+  it('fails fast when the exact requested AgentRun projection is missing', async () => {
+    queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
+      variables.agentRunId
+        ? { data: { getTeamMemberRunProjection: null }, errors: [] }
+        : { data: { getTeamRunResumeConfig: {
+            teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+          } }, errors: [] }
+    ));
+
+    await expect(hydrateLiveTeamRunContext({
+      teamRunId: 'team-live-recovery',
+      agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+    })).rejects.toThrow("Team member projection payload missing for 'run-a'.");
+  });
+
+  it('keeps the requested projection exact while treating nonfocused members as best effort', async () => {
+    const twoMemberTree = buildTestTeamContext({
+      teamRunId: 'team-live-recovery',
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Recovery Team',
+      coordinatorAddress: '/member-a',
+      rootChildren: [
+        testAgentNode('/member-a', {
+          agentRunId: 'run-a', agentDefinitionId: 'agent-a', llmModelIdentifier: 'gpt-test',
+        }),
+        testAgentNode('/member-b', {
+          agentRunId: 'run-b', agentDefinitionId: 'agent-b', llmModelIdentifier: 'gpt-test',
+        }),
+      ],
+    }).view.getExecutionTree();
+    queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => {
+      if (!variables.agentRunId) {
+        return { data: { getTeamRunResumeConfig: {
+          teamRunId: 'team-live-recovery', isActive: true, executionTree: twoMemberTree,
+        } }, errors: [] };
+      }
+      if (variables.agentRunId === 'run-a') {
+        return { data: { getTeamMemberRunProjection: {
+          agentRunId: 'run-a', conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+        } }, errors: [] };
+      }
+      return { data: null, errors: [{ message: 'nonfocused projection unavailable' }] };
+    });
+
+    const result = await hydrateLiveTeamRunContext({
+      teamRunId: 'team-live-recovery',
+      agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+    });
+
+    expect(result.focusedAgentRunId).toBe('run-a');
+    expect(result.projectionByAgentRunId.get('run-a')).toEqual(expect.objectContaining({ agentRunId: 'run-a' }));
+    expect(result.projectionByAgentRunId.get('run-b')).toBeNull();
+    expect(result.activityReplacements.map((replacement) => replacement.runId)).toEqual(['run-a']);
   });
 
   it('rejects a requested root that disagrees with the execution tree', async () => {

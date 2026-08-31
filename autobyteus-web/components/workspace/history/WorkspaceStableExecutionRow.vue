@@ -11,6 +11,7 @@
     :data-member-address="row.memberAddress"
     :aria-current="isSelected ? 'true' : undefined"
     :aria-selected="isSelected"
+    :aria-busy="inspectionAttempt?.state === 'loading' ? 'true' : undefined"
     :aria-level="row.depth + 1"
     :aria-expanded="hasChildren ? expanded : undefined"
     :aria-label="accessibleLabel"
@@ -93,7 +94,25 @@
         <span class="min-w-0 flex-1 truncate">{{ displayName }}</span>
       </div>
 
-      <span class="member-age ml-2 flex-shrink-0 text-xs text-gray-400">
+      <span
+        v-if="inspectionAttempt?.state === 'loading'"
+        class="member-age ml-2 flex-shrink-0 text-xs font-medium text-indigo-700"
+        role="status"
+      >{{ t('workspace.task_monitor.loading') }}</span>
+      <span
+        v-else-if="inspectionAttempt?.state === 'error'"
+        class="member-age ml-2 flex flex-shrink-0 items-center gap-1 text-xs font-medium text-red-700"
+        role="alert"
+      >
+        <span>{{ t('workspace.task_monitor.load_error') }}</span>
+        <button
+          type="button"
+          class="rounded px-1 py-0.5 underline focus:outline-none focus-visible:ring-1 focus-visible:ring-red-500"
+          :aria-label="t('workspace.task_monitor.retry_accessible')"
+          @click.stop="$emit('activate', row)"
+        >{{ t('workspace.task_monitor.retry') }}</button>
+      </span>
+      <span v-else class="member-age ml-2 flex-shrink-0 text-xs text-gray-400">
         {{ age }}
       </span>
     </div>
@@ -114,6 +133,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { WorkspaceHistoryAvatarBindings } from '~/components/workspace/history/workspaceHistorySectionContracts';
 import type { RunHistoryStableExecutionRow } from '~/stores/runHistoryTypes';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 const props = defineProps<{
   row: RunHistoryStableExecutionRow;
@@ -133,6 +153,10 @@ defineEmits<{
 }>();
 
 const { t } = useLocalization();
+const runHistoryStore = useRunHistoryStore();
+const inspectionAttempt = computed(() => props.row.agentRunId
+  ? runHistoryStore.getTeamMemberInspectionAttempt(props.row.teamRunId, props.row.agentRunId)
+  : null);
 
 const displayName = computed(() =>
   props.row.displayName || props.avatars.getTeamMemberDisplayName(props.row.row));

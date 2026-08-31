@@ -1,0 +1,67 @@
+{
+  "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+  "isActive": true,
+  "rootConfiguration": {
+    "address": "/",
+    "team_definition_name": "Nested Classroom Test Team",
+    "team_run_id": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+    "default_launch_configuration": {
+      "runtime_kind": "codex_app_server",
+      "llm_model_identifier": "gpt-5.6-luna",
+      "llm_config": null,
+      "auto_execute_tools": true,
+      "skill_access_mode": "PRELOADED_ONLY",
+      "workspace_root_path": "/home/autobyteus/workspace"
+    }
+  },
+  "configuredStudentTwo": {
+    "kind": "configured_agent",
+    "address": "/StudentStudyGroup/student_two",
+    "agent_run_id": "student_two_27e3a3a370264e429ef3fcd4bb6c5a74",
+    "platform_agent_run_id": "01a0583b-5d82-77c1-9554-7dddc22ae27d",
+    "launch_configuration": {
+      "runtime_kind": "codex_app_server",
+      "llm_model_identifier": "gpt-5.6-luna",
+      "llm_config": null,
+      "auto_execute_tools": true,
+      "skill_access_mode": "PRELOADED_ONLY",
+      "workspace_root_path": "/home/autobyteus/workspace"
+    }
+  },
+  "round3Task": {
+    "kind": "task_agent",
+    "address": "/StudentStudyGroup/student_two",
+    "agent_run_id": "student_two_617e2f1d206245e5b6bd4ae450284846",
+    "platform_agent_run_id": "01a05863-82a2-7242-8991-ad722aba9310",
+    "started_at": "2026-08-31T15:15:11.620Z",
+    "settled_at": null
+  },
+  "round3ContainingTaskTeam": {
+    "kind": "task_team",
+    "address": "/StudentStudyGroup",
+    "team_run_id": "team_local_team_nested_classroom_test_student_st_411ff85901314de29dcf81ce010ff5c6",
+    "members": [
+      {
+        "kind": "task_team_agent",
+        "address": "/StudentStudyGroup/student_one",
+        "agent_run_id": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd"
+      },
+      {
+        "kind": "task_team_agent",
+        "address": "/StudentStudyGroup/student_two",
+        "agent_run_id": "student_two_63add49c116e49ca8ee8912a91a58b98"
+      }
+    ],
+    "task_executions": [
+      {
+        "kind": "task_agent",
+        "address": "/StudentStudyGroup/student_two",
+        "agent_run_id": "student_two_617e2f1d206245e5b6bd4ae450284846",
+        "started_at": "2026-08-31T15:15:11.620Z",
+        "settled_at": null
+      }
+    ],
+    "started_at": "2026-08-31T15:15:02.960Z",
+    "settled_at": null
+  }
+}

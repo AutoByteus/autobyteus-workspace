@@ -3,6 +3,7 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
+import type { TeamExecutionTaskPresentation } from '~/services/teamExecution/taskDelegationPresentation';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -135,6 +136,11 @@ export interface TeamMemberFocusTarget {
   agentRunId: string;
 }
 
+export interface TeamMemberInspectionAttempt {
+  state: 'loading' | 'error';
+  detail: string | null;
+}
+
 export interface RunHistoryTeamExecutionRowBase {
   teamRunId: string;
   memberAddress: string;
@@ -156,6 +162,7 @@ export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecution
   kind: 'transient_execution';
   transientKind: 'task_agent' | 'task_team' | 'task_team_child';
   currentStatus: AgentStatus | string | null;
+  task: TeamExecutionTaskPresentation | null;
 }
 
 export type RunHistoryTeamExecutionRow =
