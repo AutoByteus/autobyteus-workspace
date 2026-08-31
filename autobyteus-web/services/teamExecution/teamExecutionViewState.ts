@@ -324,7 +324,10 @@ export const createTeamExecutionViewState = (
         tree.value = nextTree;
         if (nextLocations) locations.value = nextLocations;
         tasks.value = nextTasks;
+        const focusBeforeRepair = focusedAgentRunId.value;
         repairFocus();
+        const focusChangedBySettlement = message.payload.event_type === 'TASK_EXECUTION_SETTLED'
+          && focusedAgentRunId.value !== focusBeforeRepair;
         if (planned.length > 0) {
           effects.push({
             kind: 'invalidate_team_member_projection',
@@ -332,6 +335,9 @@ export const createTeamExecutionViewState = (
           });
         }
         effects.push({ kind: 'reconcile_team_navigation' });
+        if (focusChangedBySettlement) {
+          effects.push({ kind: 'reconcile_focused_team_member_projection' });
+        }
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
         if (messages.value.some((entry) => entry.message_id === message.payload.message.message_id)) {
           return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });

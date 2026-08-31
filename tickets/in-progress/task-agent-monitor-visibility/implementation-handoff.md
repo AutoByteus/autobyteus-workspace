@@ -28,17 +28,17 @@
 
 The frontend now treats retained projection authority as an explicit property, not as a consequence of a task row, mounted context, or activation shell existing. Mounted task inspection single-flights an exact projection request, stages conversation and Activity, validates composite context and revision witnesses, and commits before focus/navigation/outer selection. Fresh Team open resolves the requested exact focus, treats nonfocused projections as best effort, applies an all-or-none Activity batch, and only then mounts/selects/connects. Conflicts and fetch/validation errors keep the previous coherent selection.
 
-Task execution rows and the selected header now show task context plus separate lifecycle and execution status. Loading, retryable failure, and authoritative-empty states are distinct. Focus is derived from `TeamExecutionViewState`, task activation cannot steal focus, snapshot/reconnect invalidates projection authority, and standalone Agent open retains its existing `KEEP_LIVE_CONTEXT` behavior through staged projection commits.
+Task execution rows and the selected header now show task context plus separate lifecycle and execution status. Loading, retryable failure, and authoritative-empty states are distinct. Focus is derived from `TeamExecutionViewState`, task activation cannot steal focus, snapshot/reconnect invalidates projection authority, and standalone Agent open retains its existing `KEEP_LIVE_CONTEXT` behavior through staged projection commits. Under `IR-002`, incremental task settlement now emits the existing focused-projection reconciliation effect only when focus repair changes the exact AgentRun; the stream dispatcher immediately enters the existing loading/error-capable reconciliation path for the repaired fallback.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-005`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-F-001` / `CR-MP-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -46,7 +46,7 @@ Task execution rows and the selected header now show task context plus separate 
 | --- | --- | --- | --- |
 | BEH-001 | Every current task row and focused surface resolves one exact AgentRun. | `stores/runHistorySelectionActions.ts` branches on mounted root; `services/runOpen/teamMemberInspectionCoordinator.ts` and `services/runHydration/teamMemberProjectionHydrationService.ts` hydrate before `TeamExecutionViewState.focusAgent`; `stores/runHistoryNavigationPatches.ts` rebuilds navigation from the view. | Implemented. Target selection is committed only after exact projection authority succeeds. |
 | BEH-002 | Incomplete local task content loads the exact retained projection and exposes loading/error/true-empty states. | `teamMemberProjectionHydrationService.ts` stages and guardedly applies exact content; `stores/runHistoryTeamMemberInspectionActions.ts` owns compound-key attempt state; `TeamMembersPanel.vue`, `AgentTeamEventMonitor.vue`, and `ActivityFeed.vue` render loading, retry, and authoritative-empty presentation. | Implemented. Failure preserves prior selection and exposes retry. |
-| BEH-003 | One focused-run invariant governs user selection and structural stream changes without activation focus theft. | `services/teamExecution/teamExecutionViewState.ts`, `TeamStreamingService.ts`, `runHistoryNavigationPatches.ts`, and `workspaceNavigationService.ts`. | Implemented. View focus is authoritative; navigation is derived; activation invalidates the new shell without focusing it; snapshots invalidate authority and reconcile current focus. |
+| BEH-003 | One focused-run invariant governs user selection and structural stream changes without activation focus theft. | `services/teamExecution/teamExecutionViewState.ts`, `TeamStreamingService.ts`, `runHistoryNavigationPatches.ts`, and `workspaceNavigationService.ts`. | Implemented. View focus is authoritative; navigation is derived; activation invalidates the new shell without focusing it; snapshots invalidate authority and reconcile current focus; settlement that repairs focus also reconciles the repaired fallback projection. |
 | BEH-004 | Task rows and selected-task header expose non-color-only lifecycle and execution labels and a Task marker. | `services/teamExecution/taskDelegationPresentation.ts`, `teamExecutionViewModels.ts`, `WorkspaceTransientExecutionRow.vue`, `TeamWorkspaceView.vue`, and localized `workspace.ts` catalogs. | Implemented for lifecycle values including active, awaiting review, revision requested, accepted, and interrupted, combined with exact execution status. |
 | BEH-005 | Retained/live conversation and Activity render independently of lifecycle state or collaboration-tool choice. | `runProjectionActivityHydration.ts` is a pure adapter; `agentActivityStore.ts` owns revisioned replacement; Team and standalone open/hydration coordinators commit content without lifecycle gating. | Implemented. Ordinary messages and tool content remain visible; no completion inference was added. |
 | BEH-006 | Configured parents and same-address task AgentRuns remain distinct by exact run identity. | `teamExecutionTreeSelectors.ts`, `runHistoryTeamExecutionRows.ts`, `teamMemberProjectionHydrationService.ts`, and exact compound identities throughout selection. | Implemented. Browser inspection repeatedly switched between same-address parent/task contexts without content transfer. |
@@ -118,6 +118,9 @@ Task execution rows and the selected header now show task context plus separate 
 - Changed-test selection across 27 spec files — passed, 27 files / 257 tests.
 - Follow-up `taskDelegationPresentation.spec.ts` after aligning the mapper to the current `awaiting_review` DTO value — passed, 1 file / 5 tests.
 - Full `pnpm test:nuxt --run` — 436 files and 2,432 tests passed, 2 files/tests skipped; one unrelated existing fixed-pixel typography audit failed on 14 declarations in five untouched token-usage files.
+- `IR-002` focused settlement/view-stream check — passed, 2 files / 22 tests. The view assertion requires navigation plus focused-projection reconciliation after exact focus repair; the stream assertion requires dispatch to `reconcileFocusedTeamMemberProjection(rootTeamRunId, repairedAgentRunId)`.
+- `IR-002` Nuxt production build — passed after the focused correction; 3,756 modules transformed and 15 routes prerendered.
+- `IR-002` direct TypeScript fallback — the unchanged repository baseline remains 465 diagnostics; changed-production-file filtering found 0 diagnostics.
 - `pnpm exec nuxi typecheck` — could not start diagnostics because `vue-tsc` requests the unexported TypeScript subpath `./lib/tsc` (`ERR_PACKAGE_PATH_NOT_EXPORTED`).
 - Fallback `pnpm exec tsc --noEmit -p .nuxt/tsconfig.json --pretty false` — exited with 465 repository-baseline diagnostics; changed-production-file filtering found 0 diagnostics.
 - `git diff --check` — passed.
@@ -137,7 +140,7 @@ Task execution rows and the selected header now show task context plus separate 
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-evidence/task-monitor-browser-check.json`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-evidence/task-selected-desktop.png`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/implementation-evidence/task-selected-1024.png`
-  - The implementation check used an existing retained interrupted task and did not create a new live task. Upstream deterministic evidence establishes the supported live-created defect; downstream API/E2E still owns independent reproduction and broader state coverage.
+  - The initial implementation check used an existing retained interrupted task and did not create a new live task. `IR-002` changes no component, styling, label, or layout code; its settlement-only stream effect was verified at the view/dispatcher boundary rather than by creating a new live formal settlement during implementation. Upstream deterministic evidence establishes the supported live-created defect; downstream API/E2E still owns independent reproduction and broader state coverage.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

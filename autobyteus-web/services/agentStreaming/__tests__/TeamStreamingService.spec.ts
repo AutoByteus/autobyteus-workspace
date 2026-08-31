@@ -163,6 +163,43 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       .toHaveBeenCalledWith('team-stream-structure');
   });
 
+  it('reconciles the repaired fallback projection after the focused task settles', () => {
+    const { callbacks, team } = createHarness();
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
+    admitReady(callbacks, team);
+    vi.clearAllMocks();
+
+    const activatedTask = testTaskRecord({
+      taskId: 'dynamic-task', delegatorAgentRunId: teacherRunId, recipientAddress: '/Student',
+      target: { agentRunId: 'dynamic-task-run' }, description: 'New delegated task',
+    });
+    emit(callbacks, 'TASK_DELEGATION_EVENT', {
+      event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 1, parent_team_run_id: rootTeamRunId,
+      execution: {
+        kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
+        platform_agent_run_id: null, started_at: '2026-08-14T12:00:00.000Z', settled_at: null,
+      },
+      task: activatedTask,
+    });
+    expect(team.view.focusAgent('dynamic-task-run')).toMatchObject({ disposition: 'applied' });
+    vi.clearAllMocks();
+
+    emit(callbacks, 'TASK_DELEGATION_EVENT', {
+      event_type: 'TASK_EXECUTION_SETTLED', change_sequence: 2,
+      execution: { agent_run_id: 'dynamic-task-run' },
+      task: { ...activatedTask, status: 'accepted' },
+      settled_at: '2026-08-14T12:05:00.000Z',
+    });
+
+    expect(team.view.getFocusedAgentRunId()).toBe(teacherRunId);
+    expect(runHistoryStoreMock.refreshRunNavigationTopology)
+      .toHaveBeenCalledWith('team-stream-structure');
+    expect(runHistoryStoreMock.reconcileFocusedTeamMemberProjection)
+      .toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.reconcileFocusedTeamMemberProjection)
+      .toHaveBeenCalledWith(rootTeamRunId, teacherRunId);
+  });
+
   it('rejects a foreign connected root and cannot admit its snapshot', () => {
     const { callbacks, service, team } = createHarness();
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);

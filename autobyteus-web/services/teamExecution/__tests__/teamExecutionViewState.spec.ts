@@ -393,10 +393,17 @@ describe('TeamExecutionViewState', () => {
     expect(changed).toMatchObject({ disposition: 'applied', effects: [{ kind: 'reconcile_team_navigation' }] });
     expect(state.listNavigationRows().some((row) => row.agentRunId === 'task-student-run')).toBe(true);
 
-    expect(state.applyMessage(taskEvent({
+    const settlement = state.applyMessage(taskEvent({
       event_type: 'TASK_EXECUTION_SETTLED', change_sequence: 3,
       execution: { agent_run_id: 'task-student-run' }, task: accepted, settled_at: '2026-08-14T12:05:00.000Z',
-    })).disposition).toBe('applied');
+    }));
+    expect(settlement).toMatchObject({
+      disposition: 'applied',
+      effects: [
+        { kind: 'reconcile_team_navigation' },
+        { kind: 'reconcile_focused_team_member_projection' },
+      ],
+    });
     expect(state.listNavigationRows().some((row) => row.agentRunId === 'task-student-run')).toBe(false);
     expect(state.getFocusedAgentRunId()).toBe('teacher-run');
     expect(state.listTaskHistoryRows()[0]?.task.status).toBe('accepted');
