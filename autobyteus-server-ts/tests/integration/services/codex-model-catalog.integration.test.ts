@@ -183,7 +183,7 @@ describeCodexModelCatalogIntegration(
       await getCodexAppServerClientManager().close();
     });
 
-    it("preserves each live model's advertised reasoning sequence through catalog and GraphQL", async () => {
+    it("preserves each live model's advertised reasoning and Fast capabilities through catalog and GraphQL", async () => {
       const rawModels = await collectRawModelCapabilities();
       expect(rawModels.length).toBeGreaterThan(0);
       expect(rawModels.some((model) => model.advertisesFast)).toBe(true);
