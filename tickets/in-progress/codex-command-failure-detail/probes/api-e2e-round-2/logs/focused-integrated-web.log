@@ -1,0 +1,115 @@
+
+> autobyteus@1.4.64 test:nuxt /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/ToolCallIndicator.spec.ts components/progress/__tests__/ToolActivityItem.spec.ts components/progress/__tests__/ActivityFeed.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts services/runHydration/__tests__/teamRunContextHydrationService.spec.ts --run --reporter=dot
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/ToolCallIndicator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/ToolActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/ActivityFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/progress/__tests__/ToolActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/ActivityFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/ToolCallIndicator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts > runProjectionActivityHydration > hydrates exact system content and omits only malformed system rows
+[runProjectionActivityHydration] Omitted malformed system instruction activity.
+
+····stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+························stderr | services/runHydration/__tests__/teamRunContextHydrationService.spec.ts > hydrateLiveTeamRunContext current V2 aggregate > keeps the requested projection exact while treating nonfocused members as best effort
+[teamRunContextHydration] Failed to fetch AgentRun projection 'run-b'. Error: nonfocused projection unavailable
+    at fetchExactTeamMemberProjection (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:90:21)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at fetchBestEffortProjection (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:104:12)
+    at /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:261:9
+    at async Promise.all (index 1)
+    at hydrateCurrentTeamRunContext (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:258:3)
+    at /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts:127:20
+    at file:///home/autobyteus/workspace/autobyteus-workspace/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+·········stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > becomes ready only after the exact connected root and complete authoritative snapshot
+Team WebSocket transport connected
+
+····stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > acts on the first rejected gap effect once and cannot revive the failed instance
+Rejected Team execution message (TEAM_EXECUTION_CHANGE_SEQUENCE_GAP): Expected change sequence 1, received 2.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService current AgentRun event dispatch > rejects and stops a candidate whose snapshot base does not match
+Rejected invalid Team WebSocket message: Error: TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected 7, received 8.
+    at TeamStreamingService.dispatchMessage (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:262:15)
+    at handleMessage (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/agentStreaming/TeamStreamingService.ts:217:16)
+    at emit (/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:70:31)
+    at /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:455:5
+    at file:///home/autobyteus/workspace/autobyteus-workspace/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///home/autobyteus/workspace/autobyteus-workspace/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///home/autobyteus/workspace/autobyteus-workspace/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///home/autobyteus/workspace/autobyteus-workspace/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///home/autobyteus/workspace/autobyteus-workspace/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+
+··················
+
+ Test Files  8 passed (8)
+      Tests  59 passed (59)
+   Start at  11:49:14
+   Duration  21.43s (transform 7.84s, setup 120.78s, collect 2.01s, tests 208ms, environment 27.43s, prepare 13.74s)

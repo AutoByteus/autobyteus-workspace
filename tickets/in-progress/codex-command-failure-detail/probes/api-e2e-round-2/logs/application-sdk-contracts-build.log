@@ -1,0 +1,3 @@
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /home/autobyteus/workspace/autobyteus-workspace/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json

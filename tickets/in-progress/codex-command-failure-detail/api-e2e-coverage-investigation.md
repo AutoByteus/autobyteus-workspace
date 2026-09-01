@@ -14,13 +14,13 @@
 - Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md`
 - Code Review Report: `N/A — not applicable under the matching direct Small/Low route`; the user's unmatched source-review request remains recorded upstream
 - Code Review Revision Record: `N/A — not applicable`
-- Delivery Revision Record: `N/A — initial downstream validation`
+- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md` (`DR-001`)
 - API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: `1`
-- Trigger: implementation handoff `IR-001`, commit `190f5bee1b6ed624bba1d0247da1b4225abf125a`
-- Prior Investigation Reviewed: `N/A — no prior API/E2E result`
-- Latest Authoritative Investigation: `Yes — updated after repository, live-provider, and browser execution on 2026-09-01`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: `2`
+- Trigger: delivery `DR-001` Local Fix -> implementation `IR-002`; integrated candidate `36b173299a3d52d2b1ea134206e07936bd733ec0`
+- Prior Investigation Reviewed: `Yes — API-REV-001 Pass / 98% at 005aa4f84a3315d467f949c40ff86afd9872599a`
+- Latest Authoritative Investigation: `Yes — round 2 integrated-current-base revalidation completed on 2026-09-01`
 
 Supplemental absolute paths:
 
@@ -212,12 +212,38 @@ None. The live and browser checks were made repository-resident and discoverable
 | --- | --- | --- | --- |
 | Unrelated live steered-input assertion is stale against current admission return | Local Fix, outside current package | `live-codex-memory-full-attempt-1.log`; implementation commit changes no admission code | Separate implementation/test-maintenance ticket; not a blocker or reroute for this result |
 
+## Round 2 Integrated-Current-Base Revalidation
+
+- Triggering recovery: Delivery `DR-001` stopped the mandatory latest-base merge on one additive `autobyteus-web/README.md` conflict. Implementation `IR-002` completed merge `a14532534cbb618fd859d8e760f3baeafb1b01d7` and recorded current candidate `36b173299a3d52d2b1ea134206e07936bd733ec0`.
+- Prior authoritative result: `API-REV-001 Pass / 98%` on `005aa4f84a3315d467f949c40ff86afd9872599a`. This is reviewed evidence, not an inferred result for the new candidate.
+- Ancestry/integration discovery: both the prior validated candidate and `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52` are ancestors of current HEAD; there are no unmerged paths or active merge state.
+- Delta assessment: the ticket's parser, converter, standalone/Team server transport, trace/replay, production center/Activity components, browser probe, and fixture have no content delta from `API-REV-001`. The overlapping ticket paths are `autobyteus-web/README.md` and `package.json`; the resolution retains the Codex probe and adds the current-base task-monitor probe/version. Incoming current-base work also changes Team streaming/hydration and `ActivityFeed`, so round 2 will include those adjacent frontend suites rather than relying only on the direct component probe.
+- Prior unresolved package failures: `None`. The separately recorded pre-existing live steering assertion remains `Needs Update`; it will be rechecked first to confirm its classification remains unchanged and will not be used as a task acceptance gate.
+- Durable coverage decision: no new durable tests are planned. Existing `API-SCN-001/002/003/004` coverage remains valid; execution evidence and canonical reports/revision record will be updated.
+
+| Order | Current-Candidate Revalidation | Boundary / Reason | Result / Evidence |
+| --- | --- | --- | --- |
+| 1 | Recheck the known invalid live steering assertion | Confirm prior unrelated baseline classification before new scenario evaluation | Confirmed unchanged `Needs Update`: current initial admission returns accepted with `turnId: null`; expected invalid assertion failed. Non-gating. `prior-baseline-live-steering.log` |
+| 2 | Ancestry, merge-state, conflict-marker, README/package/script/target consistency | Prove `DR-001` is actually resolved on the integrated tree | Pass: both ancestors, complete merge, no unmerged paths/markers, both probe docs/scripts/targets and one shared note. `integration-and-doc-consistency.log` |
+| 3 | Focused parser/converter/transport/replay/history server suites | Revalidate `API-SCN-001/002` and the provider matrix on current HEAD | Pass: `5 files / 87 tests`. `focused-server.log` |
+| 4 | Broader Codex/stream/trace/replay plus incoming task-registry suite and build-config source check | Detect integrated-current-base regressions | Pass: `15 files passed + 1 env-gated skipped; 211 passed + 10 skipped`; Prisma generation/source compile passed. `broader-server.log`, `server-build-typecheck.log` |
+| 5 | Center/Activity/handler plus current-base Team streaming/hydration/ActivityFeed suites | Exercise the adjacent frontend integration delta | Pass: `8 files / 59 tests`. `focused-integrated-web.log` |
+| 6 | Real Codex failed-command scenario | Revalidate `API-SCN-003` through the installed provider/process on current HEAD | Pass: actual Codex 0.152.0 exit-23 command, canonical failure/raw trace/idle. `live-codex-command-failure.log` |
+| 7 | Integrated package-script Chromium desktop/narrow probe | Revalidate `API-SCN-004` and the actual conflict-adjacent command/docs path | Pass: `2/2` semantic scenarios, clean owned cleanup, screenshots visually clean. `browser/evidence.json`, screenshots, `browser-probe.log`, `browser-visual-inspection.log` |
+| 8 | Syntax/package/patch integrity and cleanup | Final executable and worktree integrity | Pass: syntax/package/evidence/cleanup/unmerged/diff checks; generated contract dist removed. `integrity.log` |
+
+- Round 2 post-repository confidence: `95%`; direct current-candidate server and adjacent frontend suites passed, but current live-provider and rendered-browser proof was still pending at that gate.
+- Round 2 broader-validation decision: `Required — completed`. Real Codex and Chromium were rerun because the merge changed adjacent Team renderer/hydration code and the browser-probe documentation/script inventory.
+- Round 2 final confidence: `98%`; all critical acceptance criteria retain direct current-candidate proof and no applicable category is below 90%.
+- Round 2 durable coverage delta: `None`; the current durable suite remained valid and passed. Only canonical API/E2E reports, revision history, and retained execution evidence changed.
+- Reroute required before execution: `No`.
+
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes — completed`
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes / Yes / No`
-- Post-repository confidence: `93%`
-- Broader validation: `Required — completed through real Codex App Server and Chromium`
+- Proceed To API/E2E Execution: `Yes — round 2 completed`
+- Repository-Resident Durable Coverage Added / Updated / Removed In Round 2: `No / No / No`
+- Post-repository confidence: `95%`
+- Broader validation: `Required — completed through real Codex App Server and Chromium on the integrated candidate`
 - Reroute Required Before Validation: `No`
-- Final recommendation: `Pass` at `98%`, direct Delivery route
+- Final recommendation: `Pass` at `98%`; direct Delivery route
 - Proportional test-code review: `Not Required — direct low-risk route`
