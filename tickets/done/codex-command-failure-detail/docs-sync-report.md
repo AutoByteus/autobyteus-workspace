@@ -3,7 +3,7 @@
 ## Scope
 
 - Ticket: `codex-command-failure-detail`
-- Current delivery revision: `DR-005`
+- Current delivery revision: `DR-006`
 - Trigger: explicit user acceptance of the DR-004 Electron session and authorization to finalize without a new release
 - Bootstrap base reference: `80e2bd195c42ea3ced778dbc051d4d00edaef16f`
 - Integrated base reference used for docs sync: `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52`, integrated by merge `a14532534cbb618fd859d8e760f3baeafb1b01d7`
@@ -62,7 +62,7 @@ No component, API, schema, or persisted record format was removed.
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Complete the staged archived-ticket commit/push, merge/push to `personal`, and perform safe branch/build-output cleanup. Release/version/tag/deployment work is explicitly not required.
+- Next delivery action: Repository finalization and safe cleanup are complete. Return the authoritative terminal package through current handoff rules. Release/version/tag/deployment work is explicitly not required.
 - Notes: Task size `Small`, architectural risk `Low`, and `Direct Low-Risk` route are preserved. Architecture/source-review artifacts remain `N/A — not applicable`; no route reclassification occurred.
 
 ## Blocked Or Escalated Follow-Up
@@ -92,3 +92,10 @@ No component, API, schema, or persisted record format was removed.
 - Post-acceptance checks passed: focused server `5 files / 87 tests`, focused frontend `2 files / 12 tests`, diff/ancestry/merge-state, integrated README/package probe inventory, and repository artifact hygiene.
 - Ticket artifacts were moved to `tickets/done/codex-command-failure-detail`; archival changes do not alter the synchronized runtime behavior.
 - Result: `Pass — canonical documentation remains current; no additional long-lived documentation edit required during finalization`.
+
+
+### DR-006 Repository Finalization Check
+
+- Ticket commit `ff09ad56132a1c4f507d479e6d3514d9348d1890` and target merge `c226a5593f5dac0a85bd8b5a9d05074f41fedb94` contain the same synchronized runtime documentation and accepted implementation.
+- Finalization changed repository placement/integration state only; it did not change provider mapping, transport/replay, frontend presentation, compatibility, packaging instructions, or deployment topology.
+- Result: `Pass — no additional long-lived documentation edit required`; the archived ticket and final delivery artifacts are the appropriate authority for finalization history.

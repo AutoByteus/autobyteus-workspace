@@ -25,7 +25,7 @@
 - Result: `Pass`
 - Build started: `2026-09-01T12:01:46Z`
 - Build completed: `2026-09-01T12:07:38Z`
-- Artifact:
+- Produced artifact (removed during DR-006 post-acceptance cleanup):
   - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage`
 - Size: `523,527,852 bytes`
 - Mode: `755` (executable)
@@ -44,7 +44,7 @@ All checks passed:
 3. Bundled Prisma schema/query engines for `linux-arm64-openssl-3.0.x` are present in both engine and client locations.
 4. The unpacked packaged Electron runtime started the bundled server as Electron-run-as-Node, applied all 24 migrations to an isolated temporary SQLite database, reached `/rest/health`, and shut down cleanly.
 5. A real packaged Electron Playwright launch reached ready state using the built unpacked executable on an isolated port/data root, then cleaned its owned root and stopped responding on its owned port.
-6. Build-created shared SDK `dist/` directories that were absent before the build were removed; the AppImage and unpacked package remain available for user testing.
+6. Build-created shared SDK `dist/` directories that were absent before the build were removed; the AppImage and unpacked package remained available through user testing and were removed after acceptance during DR-006 cleanup.
 
 Evidence:
 
@@ -62,11 +62,11 @@ On this Linux ARM64 host, run:
 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
 ```
 
-The artifact is already executable. A normal launch uses the packaged production contract: bundled backend on `http://127.0.0.1:29695` and ordinary Linux data under `~/.autobyteus/server-data`. The automated launch smoke used an isolated temporary profile and removed it; it did not modify ordinary production data.
+At DR-003 handoff time, the artifact was executable. A normal launch uses the packaged production contract: bundled backend on `http://127.0.0.1:29695` and ordinary Linux data under `~/.autobyteus/server-data`. The automated launch smoke used an isolated temporary profile and removed it; it did not modify ordinary production data. The verification-only build output was removed after user acceptance and repository finalization; rebuild with the documented command if another local artifact is needed.
 
 This local artifact is for Linux ARM64 only and is not a published release. A macOS, Windows, or Linux x64 artifact requires that matching native host/runner under the README contract.
 
-## User Verification Target
+## Historical User Verification Target
 
 After launch, run a Codex-backed Agent or Team member through the exact failure scenario and confirm both the center tool card and Activity panel display:
 
@@ -81,7 +81,8 @@ The exact command is:
 /bin/bash -lc 'printf CODEX_FAILURE_STDERR_MARKER >&2; exit 23'
 ```
 
-Reply with explicit verification/acceptance or report a finding. Ticket archival and repository finalization remain on hold.
+The user completed this check and explicitly accepted the behavior. Ticket
+archival and repository finalization subsequently completed in DR-006.
 
 
 ## DR-004 Operational Launch Update
@@ -90,11 +91,19 @@ A direct AppImage launch on this minimal host failed before application startup
 because its runtime requests unversioned `libz.so`, while the host provides
 `libz.so.1`. Delivery therefore launched the exact verified unpacked package at
 `electron-dist/linux-arm64-unpacked/autobyteus` with the container-required
-`--no-sandbox` flag. That application is running with its ordinary embedded
-server at port `29695`, production data root `/root/.autobyteus/server-data`,
-and a visible 1200x800 X11 window. See `electron-user-launch-report.md`.
+`--no-sandbox` flag. That application ran with its ordinary embedded server at
+port `29695`, production data root `/root/.autobyteus/server-data`, and a
+visible 1200x800 X11 window. See `electron-user-launch-report.md`.
 
 The earlier AppImage run command remains the artifact's intended interface, but
 this report does not claim that the local AppImage is directly portable to this
-minimal host without the missing library. Current hands-on testing uses the
-unpacked payload instead.
+minimal host without the missing library. The completed DR-004 hands-on session
+used the unpacked payload instead.
+
+## DR-006 Final Cleanup
+
+After the user confirmed that the behavior works, Delivery stopped the packaged
+application/backend, confirmed port `29695` closed, completed repository
+finalization, and removed the verification-only `autobyteus-web/electron-dist`
+output. The checksum and complete build/startup evidence above remain archived;
+no published release asset was created or removed.

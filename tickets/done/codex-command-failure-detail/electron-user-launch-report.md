@@ -42,7 +42,7 @@ publication remain not required.
 
 - Combined launch log:
   `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-user-launch-dr004.log`
-- Current root PID file:
+- Historical root PID evidence file:
   `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-user-launch-dr004.pid`
 - Current readiness evidence:
   `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-user-launch-readiness-dr004.log`

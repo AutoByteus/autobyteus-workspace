@@ -2,7 +2,7 @@
 
 ## Status
 
-`User verified / accepted; archived package ready for repository finalization` — the DR-001 README conflict is resolved, the current-base integrated candidate passed API/E2E at 98% confidence, durable documentation is synchronized, and the README-guided packaged app build/launch checks passed. The user explicitly confirmed that the behavior works and asked Delivery to finalize without releasing a new version.
+`Delivery Completed — authoritative terminal completion package` — the DR-001 README conflict is resolved, the current-base integrated candidate passed API/E2E at 98% confidence, durable documentation is synchronized, the user verified the packaged app behavior, repository finalization is complete, and safe cleanup passed. Per explicit user direction, no new version or release was produced.
 
 ## Classification And Route
 
@@ -51,7 +51,7 @@
 ## Linux ARM64 Electron Verification Candidate
 
 - Build checkpoint: `da6b96cd3fd169f192466ec8de8f2f27d21efdc0`
-- Artifact: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage`
+- Produced artifact: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage` (verification-only output removed after acceptance in DR-006)
 - SHA-256: `08c48ec0fd14fbf41f57b6a0ed2b088f2f47012280d68c7da3c1b7d1d11e3663`
 - Build/architecture/updater metadata/Prisma/server startup: `Pass`
 - Packaged Electron Playwright readiness and owned cleanup: `Pass`
@@ -62,7 +62,7 @@
 ```
 
 - Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/electron-build-linux-report.md`
-- Compatibility: local Linux ARM64 verification artifact; not a published release and not usable on macOS, Windows, or Linux x64.
+- Compatibility: this was a local Linux ARM64 verification artifact, not a published release and not usable on macOS, Windows, or Linux x64; rebuild is required if another local artifact is needed.
 
 ## Completed User-Testing Session
 
@@ -108,6 +108,16 @@ The user explicitly verified and accepted this integrated handoff. Delivery is c
 - Integrity: diff, ancestry, merge state, README/package probe inventory, and artifact hygiene passed.
 - Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-evidence/dr-005-finalization-refresh.log` and `dr-005-finalization-*.log`.
 
+## Repository Finalization And Cleanup
+
+- Archived ticket commit: `ff09ad56132a1c4f507d479e6d3514d9348d1890` on `req/codex-command-failure-detail`; push to `origin/req/codex-command-failure-detail` completed before target integration.
+- Refreshed target before merge: `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52` (unchanged from the accepted base).
+- Merge method/result: clean temporary worktree, `git merge --no-ff origin/req/codex-command-failure-detail`; merge commit `c226a5593f5dac0a85bd8b5a9d05074f41fedb94`.
+- Target push: `origin/personal` advanced successfully to `c226a5593f5dac0a85bd8b5a9d05074f41fedb94` before this final delivery-record commit.
+- Cleanup: local/remote ticket branches and temporary finalization worktree/branch removed; worktree metadata pruned; verification-only `electron-dist` removed; application/backend processes absent; port `29695` closed.
+- Cleanup evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-evidence/dr-006-post-finalization-cleanup.log`.
+- Release/version/tag/publication/deployment: `Not required`; none performed.
+
 ## Residual Risks And Baselines
 
 - No material delivery blocker remains.
@@ -120,7 +130,7 @@ The user explicitly verified and accepted this integrated handoff. Delivery is c
 
 - Explicit user verification: `Completed`
 - Ticket moved to `tickets/done`: `Yes — /home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail`
-- Ticket branch committed/pushed for finalization: `No`
-- Merge/push into `personal`: `No`
+- Ticket branch committed/pushed for finalization: `Yes — ff09ad56132a1c4f507d479e6d3514d9348d1890`
+- Merge/push into `personal`: `Yes — c226a5593f5dac0a85bd8b5a9d05074f41fedb94`
 - Release/deployment: `Not required — the user explicitly requested no new version; none performed`
-- Successful terminal package return: `Pending repository finalization and safe cleanup`
+- Successful terminal package return: `Eligible — dispatch through current handoff rules after this final record is committed/pushed`
