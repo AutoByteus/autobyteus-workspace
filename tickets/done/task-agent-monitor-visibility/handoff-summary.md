@@ -3,15 +3,15 @@
 ## Status
 
 - Ticket: `task-agent-monitor-visibility`
-- Delivery status: `User-accepted corrected candidate; repository finalization and v1.4.64 release authorized and in progress`.
-- Current delivery revision: `DR-004`
+- Delivery status: `Repository finalization and v1.4.64 release completed; safe local cleanup pending user exit`.
+- Current delivery revision: `DR-005`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility`
 - Ticket branch: `codex/task-agent-monitor-visibility`
 - Finalization target/base: `personal` / `origin/personal`
 - Latest tracked base checked: `origin/personal` at `80e2bd195c42ea3ced778dbc051d4d00edaef16f`
 - Corrected candidate HEAD: `fe9f1a286b37ce53d33999b1155bd189822a0a24`
 - User completion/finalization authorization received: `Yes` on 2026-09-01; the user declared the task done and requested finalization plus a new release.
-- Repository finalization: `Authorized and in progress`; the final result will be recorded as DR-005 after archive, branch/target push, v1.4.64 tag publication, rollout verification, and safe cleanup.
+- Repository finalization: `Completed`; ticket commit `973349c7d`, target merge `f87749dd4`, release commit/tag target `47b2a8629` / `v1.4.64`.
 
 ## Delivery Re-entry Integration Refresh
 
@@ -123,6 +123,18 @@ Before starting DR-004, fully quit the currently running rejected AutoByteus app
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/done/task-agent-monitor-visibility/delivery-revision-record.md`
 - Delivery report: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/done/task-agent-monitor-visibility/release-deployment-report.md`
 
-## User Verification And Finalization Authorization
+## DR-005 Repository Finalization And Release
 
-The user explicitly accepted the corrected candidate on 2026-09-01, declared the task done, and requested repository finalization plus a new release. Delivery selected the next sequential patch, `v1.4.64`, from the current `v1.4.63` baseline. Finalization and release execution are now authorized; DR-005 will record the resulting commits, tag, workflow rollout, and cleanup.
+- User acceptance: Received on 2026-09-01 with explicit finalization and new-release authorization.
+- Archived ticket: `tickets/done/task-agent-monitor-visibility/` in ticket commit `973349c7db73489d1d99088b689067d706ce3fb0`.
+- Target merge: `f87749dd4004d970d050c2ef9da7646786b8abbc` pushed to `origin/personal`.
+- Release: `v1.4.64`, release commit/tag target `47b2a8629bc4e1551381711183f7104265a4a3f0`.
+- Public release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.64`.
+- Rollout: Desktop, Android APK, iOS App Store Connect, messaging gateway, and server Docker workflows all completed successfully.
+- Assets: 21 published assets, including macOS, Linux, Windows, Android, messaging-gateway, and updater metadata.
+- Verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/done/task-agent-monitor-visibility/delivery-release-v1.4.64-verification.json`.
+- Primary `personal` worktree safety: its pre-existing non-owned dirty/behind state was left untouched; finalization used an isolated clean worktree.
+
+## Remaining Safe Cleanup Gate
+
+The accepted DR-004 AutoByteus application is still running from `electron-dist/dr004-fe9f1a/` inside the dedicated ticket worktree. Delivery will not delete live application resources or terminate the user-owned session. The user must fully quit that AutoByteus app; delivery can then remove the ticket/finalization worktrees, prune, and delete the local/remote temporary branches.

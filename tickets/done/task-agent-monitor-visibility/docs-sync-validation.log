@@ -81,3 +81,24 @@ PASS: explicit user acceptance/finalization/release authorization recorded
 PASS: origin/personal unchanged at 80e2bd195c42ea3ced778dbc051d4d00edaef16f after acceptance
 PASS: ticket archived under tickets/done before final commit
 PASS: finalization owner-unit rerun 2 files / 12 tests; evidence delivery-finalization-owner-unit.log
+
+DR-005 repository finalization and v1.4.64 rollout validation
+============================================================
+PASS: explicit user acceptance/finalization/release authorization
+PASS: post-acceptance origin/personal refresh unchanged at accepted base
+PASS: ticket archived before final ticket commit
+PASS: finalization owner-unit rerun 2 files / 12 tests
+PASS: ticket commit 973349c7db73489d1d99088b689067d706ce3fb0 pushed
+PASS: target merge f87749dd4004d970d050c2ef9da7646786b8abbc pushed to personal
+PASS: documented release helper produced commit/tag 47b2a8629bc4e1551381711183f7104265a4a3f0 / v1.4.64
+PASS: web and messaging-gateway versions are 1.4.64
+PASS: managed messaging release manifest targets v1.4.64
+PASS: remote personal and annotated v1.4.64 tag resolved to release commit before post-release record
+PASS: public GitHub release is non-draft/non-prerelease and exposes 21 assets
+PASS: Desktop Release completed/success
+PASS: Android APK Release completed/success
+PASS: iOS App Store Connect Release completed/success
+PASS: Release Messaging Gateway completed/success
+PASS: Server Docker Release completed/success
+PASS: release verification JSON assessment is PASS
+BLOCKED: physical ticket/finalization worktree and temporary-branch cleanup waits for user to quit the DR-004 AutoByteus app still running from the ticket worktree

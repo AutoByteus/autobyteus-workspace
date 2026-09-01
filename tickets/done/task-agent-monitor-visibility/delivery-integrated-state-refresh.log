@@ -59,3 +59,14 @@ candidate HEAD: fe9f1a286b37ce53d33999b1155bd189822a0a24
 HEAD...origin/personal left/right count: 3	0
 merge base: 80e2bd195c42ea3ced778dbc051d4d00edaef16f
 assessment: PASS — verified DR-004 state remains current; acceptance changes authorization only, not user-facing behavior. No renewed verification is required before finalization.
+
+DR-005 repository finalization and v1.4.64 release result
+========================================================
+User acceptance: received 2026-09-01; task completion, finalization, and new-release publication explicitly authorized.
+Post-acceptance base: origin/personal remained 80e2bd195c42ea3ced778dbc051d4d00edaef16f before finalization.
+Ticket archive/finalization commit: 973349c7db73489d1d99088b689067d706ce3fb0 (pushed to origin/codex/task-agent-monitor-visibility).
+Target merge commit: f87749dd4004d970d050c2ef9da7646786b8abbc (pushed to origin/personal).
+Release commit and tag target: 47b2a8629bc4e1551381711183f7104265a4a3f0 / v1.4.64.
+Release publication: PASS — branch/tag pushed and public GitHub release published.
+Rollout: PASS — Desktop, Android APK, iOS App Store Connect, messaging gateway, and server Docker workflows all completed successfully.
+Post-release record: origin/personal and v1.4.64 resolved to 47b2a8629bc4e1551381711183f7104265a4a3f0 before this delivery-record update.
