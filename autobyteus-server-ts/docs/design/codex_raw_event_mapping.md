@@ -240,6 +240,24 @@ recording therefore persists `cwd` for future command calls through the
 existing arguments object. Pre-change command-only traces remain valid and are
 neither rewritten nor backfilled.
 
+For a failed `commandExecution`, the existing `TOOL_EXECUTION_FAILED.error`
+string retains the best supported provider diagnostic. Non-empty explicit
+`error`/`message` content, including supported structured result error content,
+takes precedence. Otherwise non-empty
+`aggregatedOutput` is retained, with a valid non-zero integer `exitCode`
+appended as `Exit code: <code>`; a non-zero exit code by itself becomes
+`Command exited with code <code>.`. The generic `Tool execution failed.` value
+is used only when no supported detail exists. Empty diagnostic strings and
+`exitCode: 0` are ignored. This mapping does not expose the raw provider item,
+fabricate stdout/stderr separation, or construct the richer native AutoByteus
+`TerminalResult` contract.
+
+Standalone and Team transports carry the same normalized error. The local
+raw-trace writer persists it as `tool_error`, so newly recorded local replay
+uses the detailed string without a schema migration. Older generic values stay
+readable and are not rewritten; diagnostic `thread/read` projection remains a
+separate inspection path rather than a normal UI recovery source.
+
 ## Local Replay Reasoning Persistence
 
 Normal Codex UI reload depends on local application-owned raw traces, so live
@@ -366,7 +384,7 @@ card do not receive that prefix.
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED(run_bash)` with exact stable item `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; projection only, with no command execution or fabricated CWD |
-| `item/completed` | `item.type = commandExecution` | `TOOL_DENIED`, `TOOL_EXECUTION_FAILED`, or `TOOL_EXECUTION_SUCCEEDED(run_bash)` with exact stable item `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; future local traces retain CWD in the existing argument object |
+| `item/completed` | `item.type = commandExecution` | `TOOL_DENIED`, `TOOL_EXECUTION_FAILED`, or `TOOL_EXECUTION_SUCCEEDED(run_bash)` with exact stable item `command` and `cwd` arguments when present; failed completions retain explicit error/message or supported structured result error first, otherwise aggregated output plus valid non-zero exit code, exit-code-only detail, or the generic fallback | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; future local traces retain CWD and the canonical failure error through existing arguments/result fields without a schema change |
 | `item/started` | `item.type = dynamicToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = dynamicToolCall` | `TOOL_EXECUTION_FAILED` when `success === false` or status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = mcpToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED`; also tracks pending MCP call data on `CodexThread` | `codex-item-event-converter.ts`, `codex-thread-notification-handler.ts` | Keep |

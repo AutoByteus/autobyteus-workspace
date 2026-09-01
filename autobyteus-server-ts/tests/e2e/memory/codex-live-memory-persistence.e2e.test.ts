@@ -167,7 +167,12 @@ const createCodexFactory = (input: {
   runId: string;
 }): CodexAgentRunBackendFactory => {
   const threadBootstrapper = new CodexThreadBootstrapper(
-    undefined,
+    {
+      activateForRun: () => ({ kind: "not_exposed" }),
+    },
+    {
+      materializeConfiguredWorkspaceSkills: async () => [],
+    } as never,
     {
       resolveWorkingDirectory: async () => input.workspaceRoot,
     } as never,
@@ -182,7 +187,7 @@ const createCodexFactory = (input: {
       }),
     } as never,
     {
-      resolveConfiguredSkillsForAgent: () => [],
+      resolveConfiguredSkillBindingsForAgent: () => [],
     } as never,
     input.clientManager,
   );
@@ -444,6 +449,157 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       }));
 
       expect(fs.existsSync(snapshotPath)).toBe(false);
+    } finally {
+      unsubscribe();
+      unsubscribeRaw();
+    }
+  }, FLOW_TIMEOUT_MS);
+
+  it("persists an enriched failed-command diagnostic from a real Codex app-server turn", async () => {
+    const workspaceRoot = await createTempDir("codex-live-command-failure-workspace");
+    const memoryDir = await createTempDir("codex-live-command-failure-memory");
+    const runId = `run-codex-live-command-failure-${randomUUID()}`;
+
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const recorder = new AgentRunMemoryRecorder();
+    const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+    const activationRegistry = new AgentRunActivationRegistry(
+      new AgentRunResourceManager({
+        runSessions: deactivator,
+        runFileChangeService: createNoopSidecar() as never,
+        publishedArtifactRelayService: createNoopSidecar() as never,
+        memoryRecorder: recorder,
+      }),
+    );
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: unusedBackendFactory,
+      codexBackendFactory: createCodexFactory({
+        clientManager,
+        threadManager,
+        workspaceRoot,
+        runId,
+      }),
+      claudeBackendFactory: unusedBackendFactory,
+      activationRegistry,
+      memoryRecorder: recorder,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+      agentToolMcpRunSessionDeactivator: deactivator,
+    });
+
+    const config = new AgentRunConfig({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      agentDefinitionId: "agent-def-codex-live-command-failure",
+      llmModelIdentifier: modelIdentifier,
+      autoExecuteTools: true,
+      workspaceId: "workspace-codex-live-command-failure",
+      memoryDir,
+      llmConfig: {
+        reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
+      },
+      skillAccessMode: SkillAccessMode.NONE,
+    });
+    const candidate = await manager.prepareNewAgentRun({ runId, config });
+    const run = candidate.commitPublication();
+    createdRunIds.add(run.runId);
+
+    const thread = threadManager.getThread(run.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const events: AgentRunEvent[] = [];
+    const rawMessages: CodexAppServerMessage[] = [];
+    const unsubscribe = run.subscribeToEvents((event) => events.push(event));
+    const unsubscribeRaw = thread!.subscribeAppServerMessages((message) => {
+      rawMessages.push(message);
+    });
+
+    try {
+      const sendResult = await run.postUserMessage(new AgentInputUserMessage(
+        [
+          "Use the terminal command tool exactly once to execute this exact command:",
+          "/bin/bash -lc 'printf CODEX_FAILURE_STDERR_MARKER >&2; exit 23'.",
+          "Do not replace it, do not retry it, and do not run any other command.",
+          "After it fails, reply briefly that the requested probe completed.",
+        ].join(" "),
+      ));
+      expect(sendResult.accepted).toBe(true);
+
+      const failedEvent = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
+          event.payload.tool_name === "run_bash" &&
+          typeof event.payload.error === "string" &&
+          event.payload.error.includes("CODEX_FAILURE_STDERR_MARKER"),
+      );
+      expect(failedEvent.payload).toMatchObject({
+        tool_name: "run_bash",
+        error: "CODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+      });
+      expect(failedEvent.payload.invocation_id).toBeTruthy();
+      expect(failedEvent.payload.turn_id).toBeTruthy();
+      expect(failedEvent.payload).not.toHaveProperty("result");
+      expect(asRecord(failedEvent.payload.arguments).command).toEqual(
+        expect.stringContaining("printf CODEX_FAILURE_STDERR_MARKER"),
+      );
+      expect(asRecord(failedEvent.payload.arguments).cwd).toBe(workspaceRoot);
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.status === "idle",
+      );
+      await recorder.waitForIdle(run.runId);
+
+      const completedCommands = rawMessages
+        .filter((message) => message.method === "item/completed")
+        .map((message) => asRecord(message.params.item))
+        .filter((item) => item.type === "commandExecution");
+      expect(completedCommands).toHaveLength(1);
+      expect(completedCommands[0]).toMatchObject({
+        status: "failed",
+        aggregatedOutput: "CODEX_FAILURE_STDERR_MARKER",
+        exitCode: 23,
+        cwd: workspaceRoot,
+      });
+
+      const rawTraces = await readJsonl(
+        path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
+      );
+      const commandCalls = rawTraces.filter(
+        (trace) => trace.trace_type === "tool_call" && trace.tool_name === "run_bash",
+      );
+      const commandResults = rawTraces.filter(
+        (trace) => trace.trace_type === "tool_result" && trace.tool_name === "run_bash",
+      );
+      expect(commandCalls).toHaveLength(1);
+      expect(commandResults).toHaveLength(1);
+      expect(commandCalls[0]).toMatchObject({
+        tool_call_id: failedEvent.payload.invocation_id,
+        turn_id: failedEvent.payload.turn_id,
+        tool_args: failedEvent.payload.arguments,
+      });
+      expect(commandResults[0]).toMatchObject({
+        tool_call_id: failedEvent.payload.invocation_id,
+        turn_id: failedEvent.payload.turn_id,
+        tool_error: "CODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+      });
+      expect(thread!.currentStatus).toBe("IDLE");
     } finally {
       unsubscribe();
       unsubscribeRaw();

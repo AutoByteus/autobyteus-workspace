@@ -1,0 +1,324 @@
+# DR-001 Delivery Integration Refresh Evidence
+
+Timestamp (UTC): 2026-09-01T11:41:00Z
+Workspace: /home/autobyteus/workspace/autobyteus-workspace
+Ticket branch: req/codex-command-failure-detail
+Bootstrap base: 80e2bd195c42ea3ced778dbc051d4d00edaef16f
+Validated candidate before merge: 005aa4f84a3315d467f949c40ff86afd9872599a
+Fetched target: origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52
+Fetch result: passed; origin/personal advanced from 80e2bd195c42ea3ced778dbc051d4d00edaef16f to ad63d74275a4eb204ebc6d97a2260aa9790fea52 (8 base-only commits).
+Checkpoint: not needed; the API/E2E candidate was already committed and the worktree was clean.
+Integration command: git merge --no-edit origin/personal
+Integration command result: exit 1; automatic merge stopped on one content conflict in autobyteus-web/README.md.
+Conflict resolution by Delivery: none.
+
+## Repository State
+## req/codex-command-failure-detail
+M  .github/release-notes/release-notes.md
+M  autobyteus-message-gateway/package.json
+M  autobyteus-server-ts/docs/modules/agent_team_execution.md
+M  autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-task-agent-execution-registry.ts
+M  autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+M  autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-member-registry-task-agent-memory.test.ts
+UU autobyteus-web/README.md
+M  autobyteus-web/components/mobile/MobileRemoteAccessShell.vue
+M  autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+M  autobyteus-web/components/progress/ActivityFeed.vue
+M  autobyteus-web/components/progress/__tests__/ActivityFeed.spec.ts
+M  autobyteus-web/components/workspace/history/WorkspaceStableExecutionRow.vue
+M  autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+M  autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+M  autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+M  autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+A  autobyteus-web/components/workspace/history/__tests__/WorkspaceTransientExecutionRow.task-monitor.spec.ts
+M  autobyteus-web/components/workspace/running/RunningAgentsPanel.vue
+M  autobyteus-web/components/workspace/team/AgentTeamEventMonitor.vue
+M  autobyteus-web/components/workspace/team/TeamMembersPanel.vue
+M  autobyteus-web/components/workspace/team/TeamWorkspaceView.vue
+M  autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts
+M  autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+M  autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts
+M  autobyteus-web/composables/mobile/useMobileTeamMemberFocusCoordinator.ts
+M  autobyteus-web/docs/agent_execution_architecture.md
+M  autobyteus-web/docs/agent_teams.md
+M  autobyteus-web/docs/settings.md
+M  autobyteus-web/localization/messages/en/workspace.ts
+M  autobyteus-web/localization/messages/zh-CN/workspace.ts
+M  autobyteus-web/package.json
+M  autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+M  autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+A  autobyteus-web/services/runHydration/__tests__/runContextHydrationService.spec.ts
+M  autobyteus-web/services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+A  autobyteus-web/services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts
+M  autobyteus-web/services/runHydration/__tests__/teamRunContextHydrationService.spec.ts
+M  autobyteus-web/services/runHydration/runContextHydrationService.ts
+M  autobyteus-web/services/runHydration/runProjectionActivityHydration.ts
+A  autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
+M  autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+A  autobyteus-web/services/runHydration/teamRunHydrationCommit.ts
+D  autobyteus-web/services/runHydration/teamRunMemberStatusHydration.ts
+M  autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+M  autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+A  autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+M  autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+M  autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts
+A  autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
+M  autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+A  autobyteus-web/services/teamExecution/__tests__/taskDelegationPresentation.spec.ts
+M  autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+A  autobyteus-web/services/teamExecution/taskDelegationPresentation.ts
+M  autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+M  autobyteus-web/services/teamExecution/teamExecutionViewModels.ts
+M  autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+M  autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts
+M  autobyteus-web/services/workspace/workspaceNavigationService.ts
+M  autobyteus-web/stores/__tests__/agentActivityStore.spec.ts
+M  autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+M  autobyteus-web/stores/__tests__/runHistoryNavigationProjection.spec.ts
+M  autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts
+M  autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+M  autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+A  autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+M  autobyteus-web/stores/agentActivityStore.ts
+M  autobyteus-web/stores/agentTeamRunStore.ts
+M  autobyteus-web/stores/runHistoryLoadActions.ts
+M  autobyteus-web/stores/runHistoryNavigationPatches.ts
+M  autobyteus-web/stores/runHistoryNavigationStoreActions.ts
+M  autobyteus-web/stores/runHistorySelectionActions.ts
+M  autobyteus-web/stores/runHistoryStore.ts
+M  autobyteus-web/stores/runHistoryTeamExecutionRows.ts
+A  autobyteus-web/stores/runHistoryTeamMemberInspectionActions.ts
+M  autobyteus-web/stores/runHistoryTypes.ts
+M  autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs
+M  autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
+A  autobyteus-web/tests/e2e/fixtures/task-agent-monitor-visibility.page.vue
+A  autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs
+M  autobyteus-web/utils/teamDelegatedTaskEntries.ts
+A  tickets/done/task-agent-monitor-visibility/api-e2e-coverage-investigation.md
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence-contract-build.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-002-test-fix-guards.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-browser.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-cleanup.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated-browser.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated-isolation-browser.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated-nuxt.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated-server.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/AC017_CURRENT_SOURCE_FINAL_TASK_ONE-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/AC017_CURRENT_SOURCE_FINAL_TASK_ONE-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/AC017_CURRENT_SOURCE_FINAL_TASK_ONE-selected-early.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/AC017_CURRENT_SOURCE_FINAL_TASK_TWO-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/AC017_CURRENT_SOURCE_FINAL_TASK_TWO-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/AC017_CURRENT_SOURCE_FINAL_TASK_TWO-selected-early.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/authoritative-summary.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/cleanup.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/evidence.raw.json.gz
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/failure.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/isolation-browser-probe.cjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/isolation-evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/isolation-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/live-browser-probe.cjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/setup-team.mjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/setup.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolation.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-nuxt.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-server.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_FINAL_TASK_ONE-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_FINAL_TASK_ONE-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_FINAL_TASK_ONE-selected-early.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_FINAL_TASK_TWO-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_FINAL_TASK_TWO-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_FINAL_TASK_TWO-selected-early.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_PASS_TASK_ONE-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_PASS_TASK_ONE-selected-early.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_TASK_ONE-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_TASK_ONE-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/AC017_CURRENT_SOURCE_TASK_ONE-selected-early.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/evidence.raw.json.gz
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/failure.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/isolation-browser-probe.cjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/isolation-evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/isolation-final.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/setup-team.mjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/setup.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/guards.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/mixed-task-live.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/owner-unit.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/server-build.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/nuxt.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/settlement-fallback-complete.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/settlement-fallback-loading.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/task-selected.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/background-contention/desktop-hierarchy.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/background-contention/evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/background-contention/mobile-composer.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/background-contention/nuxt.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/focused-vitest.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/full-nuxt-suite.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/live-node-8001/configured-member-selected.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/live-node-8001/live-retained-projection-check.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/live-node-8001/live-retained-projection-check.mjs
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/live-node-8001/nuxt.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/live-node-8001/task-selected.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/nuxt-build.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/nuxt-typecheck.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/source-guards.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/task-agent-monitor-visibility/evidence.json
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/task-agent-monitor-visibility/nuxt.log
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/task-agent-monitor-visibility/settlement-fallback-complete.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/task-agent-monitor-visibility/settlement-fallback-loading.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-evidence/task-agent-monitor-visibility/task-selected.png
+A  tickets/done/task-agent-monitor-visibility/api-e2e-execution-coverage-report.md
+A  tickets/done/task-agent-monitor-visibility/api-e2e-revision-record.md
+A  tickets/done/task-agent-monitor-visibility/api-e2e-test-review-report.md
+A  tickets/done/task-agent-monitor-visibility/architecture-review-revision-record.md
+A  tickets/done/task-agent-monitor-visibility/code-review-report.md
+A  tickets/done/task-agent-monitor-visibility/code-review-revision-record.md
+A  tickets/done/task-agent-monitor-visibility/delivery-electron-build-dr004.log
+A  tickets/done/task-agent-monitor-visibility/delivery-electron-build-verification-dr004.log
+A  tickets/done/task-agent-monitor-visibility/delivery-electron-build-verification.log
+A  tickets/done/task-agent-monitor-visibility/delivery-electron-build.log
+A  tickets/done/task-agent-monitor-visibility/delivery-finalization-owner-unit.log
+A  tickets/done/task-agent-monitor-visibility/delivery-integrated-state-refresh.log
+A  tickets/done/task-agent-monitor-visibility/delivery-release-v1.4.64-verification.json
+A  tickets/done/task-agent-monitor-visibility/delivery-revision-record.md
+A  tickets/done/task-agent-monitor-visibility/design-review-report.md
+A  tickets/done/task-agent-monitor-visibility/design-spec.md
+A  tickets/done/task-agent-monitor-visibility/docs-sync-report.md
+A  tickets/done/task-agent-monitor-visibility/docs-sync-validation.log
+A  tickets/done/task-agent-monitor-visibility/handoff-summary.md
+A  tickets/done/task-agent-monitor-visibility/implementation-evidence/task-monitor-browser-check.json
+A  tickets/done/task-agent-monitor-visibility/implementation-evidence/task-selected-1024.png
+A  tickets/done/task-agent-monitor-visibility/implementation-evidence/task-selected-desktop.png
+A  tickets/done/task-agent-monitor-visibility/implementation-handoff.md
+A  tickets/done/task-agent-monitor-visibility/implementation-revision-record.md
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/configured-parent-selected.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/deterministic-reproduction-summary.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/nested-sibling-task-reproduction.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/nested-sibling-task-reproduction.raw.json.gz
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/projection-identity-comparison.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/reproduce-nested-sibling-task.cjs
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round2-backend-identity-and-projection.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round2-fresh-open-control-after-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round2-fresh-open-control.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round3-backend-projection.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/round3-backend-topology.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-after-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-before-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round2-after-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round2-before-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round2-reproduction.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round2-reproduction.raw.json.gz
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round3-after-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round3-before-click.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/deterministic-reproduction/student-two-monitor-probe-round3-reproduction.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/live-selection-comparison.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/live-node-8001/task-run-selected.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-before-selection.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-plus-10s.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-plus-2s.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-plus-30s.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-plus-60s.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-reconnect-status.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-reproduction.raw.json.gz
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-selected-immediately.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/LIVE_EARLY_SELECT_SR006_A-summary.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/backend-state.json
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-task-one-selected.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-task-two-selected.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-two-task-rows.png
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/reproduce-live-selected-before-work.cjs
+A  tickets/done/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/user-verification-summary.json
+A  tickets/done/task-agent-monitor-visibility/investigation-notes.md
+A  tickets/done/task-agent-monitor-visibility/release-deployment-report.md
+A  tickets/done/task-agent-monitor-visibility/release-notes.md
+A  tickets/done/task-agent-monitor-visibility/requirements.md
+A  tickets/done/task-agent-monitor-visibility/solution-revision-record.md
+A  tickets/done/task-agent-monitor-visibility/ui-ux-spec.md
+?? tickets/in-progress/codex-command-failure-detail/delivery-evidence/
+
+HEAD: 005aa4f84a3315d467f949c40ff86afd9872599a
+MERGE_HEAD: ad63d74275a4eb204ebc6d97a2260aa9790fea52
+merge-base: 80e2bd195c42ea3ced778dbc051d4d00edaef16f
+base-only commit count from bootstrap: 8
+
+## Unmerged Index
+100644 6596da6acb22d11f304b03c133a990eec815fe2b 1	autobyteus-web/README.md
+100644 5a4f3fa3533bebe793af9577376ed3f368bcd6c5 2	autobyteus-web/README.md
+100644 eb3483b974de8f781797a00d62e41d9cd70834b3 3	autobyteus-web/README.md
+
+## Conflict Hunk
+diff --cc autobyteus-web/README.md
+index 5a4f3fa35,eb3483b97..000000000
+--- a/autobyteus-web/README.md
++++ b/autobyteus-web/README.md
+@@@ -506,19 -506,23 +506,39 @@@ Use `--port <port>` to pin the port. I
+  Chrome/Chromium, pass `--browser-executable <path>` or set
+  `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+  
+++<<<<<<< HEAD
+ +### Codex Command Failure Detail Browser Probe
+ +
+ +The failed Codex command diagnostic has a self-starting renderer probe for the
+ +existing center tool card and Activity card. It mounts both production
+ +components with the same multiline failed-event error, asserts exact DOM text
+ +and computed whitespace preservation at desktop and narrow viewports, captures
+ +screenshots, and removes only its owned Nuxt fixture and process:
+ +
+ +```bash
+ +pnpm test:e2e:codex-command-failure-detail -- --output-dir ../tickets/<ticket-name>/probes/api-e2e/browser
+ +```
+ +
+ +Use `--port <port>` to pin the port. If automatic discovery does not find
+++=======
++ ### Task Agent Monitor Visibility Browser Probe
++ 
++ The exact task-monitor regression has a self-starting Chromium probe that uses
++ the production Team stream service, Pinia stores, GraphQL hydration path, Team
++ member tree, workspace header/conversation monitor, and Activity feed. It proves
++ that mounted task selection remains on the previous row while the exact retained
++ projection loads, then exercises snapshot projection invalidation followed by
++ focused task settlement, fallback focus repair, and exact fallback projection
++ reconciliation. The harness installs a temporary fixture route, starts an owned
++ Nuxt server on a free loopback port, intercepts deterministic projection payloads,
++ captures JSON/screenshots/logs, and removes only its owned resources:
++ 
++ ```bash
++ pnpm test:e2e:task-agent-monitor-visibility -- --output-dir test-results/task-agent-monitor-visibility
++ ```
++ 
++ Use `--port <port>` to pin the port. If automatic browser discovery does not find
+++>>>>>>> origin/personal
+  Chrome/Chromium, pass `--browser-executable <path>` or set
+  `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+  
+@@@ -540,7 -544,7 +560,11 @@@ pnpm codege
+  - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
+  - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
+  - `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
+++<<<<<<< HEAD
+ +- `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
+++=======
++ - `pnpm test:e2e:task-agent-monitor-visibility`: Run the self-starting exact task hydration and settlement-fallback browser probe
+++>>>>>>> origin/personal
+  - `pnpm preview`: Preview web production build
+  - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
+  - `pnpm build:electron:linux`: Build desktop application for Linux host architecture
+
+## Base-only Commits
+ad63d7427 docs(delivery): record safe post-release cleanup
+3d5a2fedc docs(delivery): record v1.4.64 task monitor rollout
+47b2a8629 chore(release): bump workspace release version to 1.4.64
+f87749dd4 Merge task agent monitor visibility
+973349c7d chore(delivery): finalize task agent monitor visibility
+fe9f1a286 fix(server): stream live task agent events
+3064b084c fix(web): reconcile settled task fallback projection
+9ba13698f fix(web): hydrate exact task monitor projections
+
+## Disposition
+No post-integration executable check was run because no integrated candidate exists.
+Long-lived docs sync, user verification, repository finalization, release/deployment, and cleanup are held.

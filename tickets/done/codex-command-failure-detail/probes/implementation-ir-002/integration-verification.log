@@ -1,0 +1,11 @@
+integration_merge_commit=a14532534cbb618fd859d8e760f3baeafb1b01d7
+parents=005aa4f84a3315d467f949c40ff86afd9872599a ad63d74275a4eb204ebc6d97a2260aa9790fea52
+base_ancestry=PASS
+validated_candidate_ancestry=PASS
+unmerged_paths=NONE
+merge_state=COMPLETE
+readme_codex_heading_count=1
+readme_task_heading_count=1
+readme_shared_note_count=1
+package_codex_script=node tests/e2e/codex-command-failure-detail-probe.mjs
+package_task_script=node tests/e2e/task-agent-monitor-visibility-probe.mjs

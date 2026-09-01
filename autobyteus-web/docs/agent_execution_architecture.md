@@ -1289,6 +1289,12 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
       - `components/workspace/agent/CompactionStatusRow.vue` renders compact compaction rows inside the event monitor feed.
       - `components/progress/ToolActivityItem.vue` renders the right-side tool activity row, including the textual status chip and short invocation id.
       - `components/progress/CompactionActivityItem.vue` renders the right-side compaction activity row without pretending it is a tool invocation.
+    - Failed-tool `error` is already the canonical display string. The inline
+      `ToolCallIndicator` and right-side `ToolActivityItem` render that same
+      value verbatim with whitespace-preserving wrapping so multiline command
+      output and exit-code detail remain readable at desktop and narrow widths;
+      frontend code must not parse raw provider envelopes or reconstruct the
+      diagnostic independently.
     - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual tool activity-status changes should stay in `ToolActivityItem.vue`; compaction row presentation should stay in the compaction row components.
 4.  **Token Usage Meter (`TokenUsageMeterStore`)**:
     - Listens to live `TOKEN_USAGE_UPDATED` events through the standalone/team handlers and hydrates reopened/focused subjects through current-run-record GraphQL summary queries. An individual live update becomes display-ready only from the strict post-persist `run_summary_after_event` cumulative snapshot; raw meter deltas are not treated as durable hydration.

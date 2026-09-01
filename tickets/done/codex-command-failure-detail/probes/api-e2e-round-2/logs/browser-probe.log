@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.64 test:e2e:codex-command-failure-detail /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node tests/e2e/codex-command-failure-detail-probe.mjs -- --browser-executable /usr/bin/chromium --output-dir ../tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/browser
+
+Codex command failure detail browser probe passed. Evidence: /home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/browser/evidence.json

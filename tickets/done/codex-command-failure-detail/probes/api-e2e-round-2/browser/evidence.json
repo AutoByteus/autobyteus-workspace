@@ -1,0 +1,86 @@
+{
+  "startedAt": "2026-09-01T11:50:24.909Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/usr/bin/chromium",
+  "fixturePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/fixtures/codex-command-failure-detail.page.vue",
+  "installedPagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/pages/__codex-command-failure-detail-probe.vue",
+  "routePath": "/__codex-command-failure-detail-probe",
+  "diagnostic": "first diagnostic line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+  "scenarios": {
+    "BE2E-CODEX-FAIL-001": {
+      "result": "Pass",
+      "description": "Desktop center and Activity surfaces preserve the same readable multiline diagnostic.",
+      "details": {
+        "centerText": "first diagnostic line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+        "activityText": "first diagnostic line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+        "viewport": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "screenshot": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/browser/desktop-failure-surfaces.png"
+      }
+    },
+    "BE2E-CODEX-FAIL-002": {
+      "result": "Pass",
+      "description": "Narrow renderer keeps both complete diagnostics readable without document overflow.",
+      "details": {
+        "metrics": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "screenshot": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/browser/narrow-failure-surfaces.png"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 11092,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "fixture": "removed"
+  },
+  "port": 46163,
+  "baseUrl": "http://127.0.0.1:46163",
+  "browserVersion": "149.0.7827.196",
+  "result": "Pass",
+  "finishedAt": "2026-09-01T11:50:44.253Z",
+  "artifacts": {
+    "evidencePath": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/browser/evidence.json",
+    "nuxtLogPath": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/browser/nuxt.log"
+  }
+}

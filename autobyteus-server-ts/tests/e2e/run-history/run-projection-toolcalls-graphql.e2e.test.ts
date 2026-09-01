@@ -9,6 +9,8 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
@@ -160,6 +162,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let ownedAgentRunManager: AgentRunManager | null = null;
+  let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
   beforeAll(async () => {
     testDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "run-projection-toolcalls-gql-"));
@@ -171,6 +175,32 @@ describe("Run projection tool-call GraphQL e2e", () => {
     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "run-projection-workspace-"));
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     memoryDir = appConfigProvider.config.getMemoryDir();
+    try {
+      AgentRunManager.getInstance();
+    } catch {
+      ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
+        autoByteusBackendFactory: {} as never,
+        codexBackendFactory: {} as never,
+        claudeBackendFactory: {} as never,
+        activationRegistry: {} as never,
+        memoryRecorder: {} as never,
+        providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+        agentToolMcpRunSessionDeactivator: {} as never,
+      });
+    }
+    try {
+      AgentTeamRunManager.getInstance();
+    } catch {
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+        memoryDir,
+        mixedTeamRunBackendFactory: {} as never,
+        taskExecutionIdentity: {
+          agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
+          taskTeams: { create: () => "unused-task-team" },
+        } as never,
+        modelConfigValidator: { validate: () => undefined } as never,
+      });
+    }
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
 
@@ -206,6 +236,14 @@ describe("Run projection tool-call GraphQL e2e", () => {
 
   afterAll(async () => {
     closeStudioServices?.();
+    if (ownedAgentTeamRunManager) {
+      AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);
+      ownedAgentTeamRunManager = null;
+    }
+    if (ownedAgentRunManager) {
+      AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
+      ownedAgentRunManager = null;
+    }
     await fs.rm(workspaceRootPath, { recursive: true, force: true });
     await fs.rm(testDataDir, { recursive: true, force: true });
   });
@@ -302,6 +340,148 @@ describe("Run projection tool-call GraphQL e2e", () => {
       status: "success",
       arguments: { cmd: "echo graphql-api-validation" },
       result: { stdout: "graphql-api-validation\n", exit_code: 0 },
+    });
+  });
+
+  it("reopens a newly recorded provider-shaped Codex command failure with its enriched diagnostic", async () => {
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    const runId = "run-codex-command-failure-local-replay";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await metadataStore.writeMetadata(runId, {
+      runId,
+      agentDefinitionId: "agent-codex-command-failure-local-replay",
+      workspaceRootPath,
+      memoryDir: runDir,
+      llmModelIdentifier: "gpt-5.6-sol",
+      llmConfig: { reasoning_effort: "low" },
+      autoExecuteTools: true,
+      skillAccessMode: SkillAccessMode.NONE,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      platformAgentRunId: "native-thread-must-not-recover-command-failure",
+    } satisfies AgentRunMetadata);
+
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir: runDir });
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId,
+      writer,
+      toolTraceLifecycleGroups: writer.readToolTraceLifecycleGroups(),
+    });
+    const converter = createCodexThreadEventHarness(runId);
+    const segmentLifecycleTransformer = new AgentSegmentLifecycleEventTransformer();
+    const segmentLifecycleState = new AgentSegmentLifecycleState();
+    const turnLifecycleState = new AgentTurnLifecycleState();
+    const recordConverted = (method: string, params: JsonObject): AgentRunEvent[] => {
+      const canonicalEvents = segmentLifecycleTransformer.transform({
+        runContext: {} as never,
+        events: converter.emitThroughThread({ method, params }),
+        lifecycleState: turnLifecycleState,
+        segmentLifecycleState,
+      });
+      canonicalEvents.forEach((canonicalEvent) => accumulator.recordRunEvent(canonicalEvent));
+      return canonicalEvents;
+    };
+
+    recordConverted(CodexThreadEventName.TURN_STARTED, {
+      turn: { id: "turn-command-failure" },
+    });
+    recordConverted(CodexThreadEventName.ITEM_STARTED, {
+      turnId: "turn-command-failure",
+      item: {
+        id: "exec-command-failure",
+        type: "commandExecution",
+        command: "/bin/bash -lc 'exit 23'",
+        cwd: "/workspace/command-failure",
+        status: "inProgress",
+      },
+    });
+    const terminalEvents = recordConverted(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-command-failure",
+      item: {
+        id: "exec-command-failure",
+        type: "commandExecution",
+        command: "/bin/bash -lc 'exit 23'",
+        cwd: "/workspace/command-failure",
+        status: "failed",
+        aggregatedOutput: "first line\nCODEX_FAILURE_STDERR_MARKER",
+        exitCode: 23,
+      },
+    });
+    recordConverted(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-command-failure" },
+    });
+
+    expect(terminalEvents).toContainEqual(expect.objectContaining({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      payload: expect.objectContaining({
+        invocation_id: "exec-command-failure",
+        turn_id: "turn-command-failure",
+        tool_name: "run_bash",
+        arguments: {
+          command: "/bin/bash -lc 'exit 23'",
+          cwd: "/workspace/command-failure",
+        },
+        error: "first line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+      }),
+    }));
+
+    const persistedRows = (await fs.readFile(
+      path.join(runDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
+      "utf-8",
+    ))
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    expect(persistedRows.filter((row) => row.trace_type === "tool_call")).toEqual([
+      expect.objectContaining({
+        tool_call_id: "exec-command-failure",
+        tool_name: "run_bash",
+        tool_args: {
+          command: "/bin/bash -lc 'exit 23'",
+          cwd: "/workspace/command-failure",
+        },
+      }),
+    ]);
+    expect(persistedRows.filter((row) => row.trace_type === "tool_result")).toEqual([
+      expect.objectContaining({
+        tool_call_id: "exec-command-failure",
+        tool_name: "run_bash",
+        tool_error: "first line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+      }),
+    ]);
+
+    const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
+      `
+        query RunProjection($runId: String!) {
+          getRunProjection(runId: $runId) {
+            runId
+            summary
+            lastActivityAt
+            conversation
+            activities
+          }
+        }
+      `,
+      { runId },
+    );
+
+    expect(readThreadMock).not.toHaveBeenCalled();
+    expect(findToolRow(result.getRunProjection.conversation, "exec-command-failure")).toMatchObject({
+      kind: "tool_call",
+      toolName: "run_bash",
+      toolArgs: {
+        command: "/bin/bash -lc 'exit 23'",
+        cwd: "/workspace/command-failure",
+      },
+      toolError: "first line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+    });
+    expect(findToolRow(result.getRunProjection.activities, "exec-command-failure")).toMatchObject({
+      toolName: "run_bash",
+      arguments: {
+        command: "/bin/bash -lc 'exit 23'",
+        cwd: "/workspace/command-failure",
+      },
+      error: "first line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+      status: "error",
     });
   });
 

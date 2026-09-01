@@ -1,0 +1,30 @@
+# DR-004 Active User Launch Readiness
+
+Timestamp UTC: 2026-09-01T12:44:53Z
+Recorded root PID: 23250
+PASS: Electron root process is running.
+  PID  PPID STAT     ELAPSED CMD
+23250     1 Ssl        01:58 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus --no-sandbox
+23335 23250 Sl         01:58 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js --port 29695 --data-dir /root/.autobyteus/server-data
+PASS: embedded health: {"status":"ok","message":"Server is running"}
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      511          0.0.0.0:29695      0.0.0.0:*    users:(("autobyteus",pid=23335,fd=90))
+0x2e00004 "autobyteus": ("autobyteus" "autobyteus")  1510x864+0+24  +0+51
+PASS: visible interactive autobyteus X11 window exists.
+PASS: direct-wrapper failure and successful unpacked recovery are both recorded.
+PASS: git diff --check.
+
+## Working Tree
+ M tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md
+ M tickets/in-progress/codex-command-failure-detail/docs-sync-report.md
+ M tickets/in-progress/codex-command-failure-detail/handoff-summary.md
+ M tickets/in-progress/codex-command-failure-detail/release-deployment-report.md
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-build-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-build-verification-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-launch-smoke-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-user-launch-dr004.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-user-launch-dr004.pid
+?? tickets/in-progress/codex-command-failure-detail/delivery-handoff-readiness-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-user-launch-readiness-dr004.log
+?? tickets/in-progress/codex-command-failure-detail/electron-build-linux-report.md
+?? tickets/in-progress/codex-command-failure-detail/electron-user-launch-report.md

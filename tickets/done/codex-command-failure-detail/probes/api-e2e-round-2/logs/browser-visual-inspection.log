@@ -1,0 +1,3 @@
+API/E2E round 2 visual inspection: PASS
+- desktop-failure-surfaces.png: center and Activity diagnostics are readable, aligned, and preserve three lines; command/cwd arguments are legible; no clipping or overlap observed.
+- narrow-failure-surfaces.png: center and Activity diagnostics remain readable at 390px; activity arguments wrap within the card; no document overflow, clipping, or overlap observed.

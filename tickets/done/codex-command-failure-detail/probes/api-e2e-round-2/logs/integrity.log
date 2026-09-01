@@ -1,0 +1,7 @@
+browser_probe_syntax=PASS
+package_json=PASS
+browser_evidence_and_cleanup=PASS
+temporary_browser_page=ABSENT
+generated_contract_dist=CLEANED
+unmerged_paths=NONE
+git_diff_check=PASS

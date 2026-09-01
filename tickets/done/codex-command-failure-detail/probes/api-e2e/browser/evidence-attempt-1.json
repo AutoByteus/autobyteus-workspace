@@ -1,0 +1,103 @@
+{
+  "startedAt": "2026-09-01T11:21:31.599Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/usr/bin/chromium",
+  "fixturePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/fixtures/codex-command-failure-detail.page.vue",
+  "installedPagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/pages/__codex-command-failure-detail-probe.vue",
+  "routePath": "/__codex-command-failure-detail-probe",
+  "diagnostic": "first diagnostic line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+  "scenarios": {
+    "BE2E-CODEX-FAIL-001": {
+      "result": "Fail",
+      "description": "Desktop center and Activity surfaces preserve the same readable multiline diagnostic.",
+      "failure": {
+        "id": "BE2E-CODEX-FAIL-001",
+        "description": "Desktop center and Activity surfaces preserve the same readable multiline diagnostic.",
+        "message": "The input did not match the regular expression /Failed/. Input:\n\n'Activity panel\\n' +\n  'run_bash\\n' +\n  '#exec-c\\n' +\n  'FAILED\\n' +\n  'Arguments\\n' +\n  'Error\\n' +\n  'first diagnostic line\\n' +\n  'CODEX_FAILURE_STDERR_MARKER\\n' +\n  'Exit code: 23'\n",
+        "stack": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Failed/. Input:\n\n'Activity panel\\n' +\n  'run_bash\\n' +\n  '#exec-c\\n' +\n  'FAILED\\n' +\n  'Arguments\\n' +\n  'Error\\n' +\n  'first diagnostic line\\n' +\n  'CODEX_FAILURE_STDERR_MARKER\\n' +\n  'Exit code: 23'\n\n    at file:///home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs:279:14\n    at async recordScenario (file:///home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs:146:21)\n    at async file:///home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs:259:3"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:44171/_nuxt/layouts/default.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "failures": [
+    {
+      "id": "BE2E-CODEX-FAIL-001",
+      "description": "Desktop center and Activity surfaces preserve the same readable multiline diagnostic.",
+      "message": "The input did not match the regular expression /Failed/. Input:\n\n'Activity panel\\n' +\n  'run_bash\\n' +\n  '#exec-c\\n' +\n  'FAILED\\n' +\n  'Arguments\\n' +\n  'Error\\n' +\n  'first diagnostic line\\n' +\n  'CODEX_FAILURE_STDERR_MARKER\\n' +\n  'Exit code: 23'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Failed/. Input:\n\n'Activity panel\\n' +\n  'run_bash\\n' +\n  '#exec-c\\n' +\n  'FAILED\\n' +\n  'Arguments\\n' +\n  'Error\\n' +\n  'first diagnostic line\\n' +\n  'CODEX_FAILURE_STDERR_MARKER\\n' +\n  'Exit code: 23'\n\n    at file:///home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs:279:14\n    at async recordScenario (file:///home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs:146:21)\n    at async file:///home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs:259:3"
+    }
+  ],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 48386,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "fixture": "removed"
+  },
+  "port": 44171,
+  "baseUrl": "http://127.0.0.1:44171",
+  "browserVersion": "149.0.7827.196",
+  "result": "Fail",
+  "finishedAt": "2026-09-01T11:21:45.561Z",
+  "artifacts": {
+    "evidencePath": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e/browser/evidence.json",
+    "nuxtLogPath": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e/browser/nuxt.log"
+  }
+}

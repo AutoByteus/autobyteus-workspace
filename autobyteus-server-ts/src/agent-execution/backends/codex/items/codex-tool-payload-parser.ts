@@ -1,4 +1,5 @@
 import { CodexFileChangePayloadHelper } from "./codex-file-change-payload-helper.js";
+import { resolveCodexToolItemFamily } from "./codex-tool-item-family.js";
 
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -282,18 +283,35 @@ export class CodexToolPayloadParser {
 
   public resolveToolError(payload: Record<string, unknown>): string {
     const item = asObject(payload.item);
-    const candidate =
-      asString(payload.error) ??
-      asString(payload.message) ??
-      asString(item.error) ??
-      asString(item.message);
+    const isCommandExecutionFailure =
+      resolveCodexToolItemFamily(asString(item.type) ?? asString(payload.item_type)) ===
+        "command_execution" && this.isExecutionFailure(payload);
+    const explicitCandidates = [payload.error, payload.message, item.error, item.message];
+    const candidate = isCommandExecutionFailure
+      ? explicitCandidates.find(
+          (value): value is string => typeof value === "string" && value.trim().length > 0,
+        ) ?? null
+      : asString(payload.error) ?? asString(payload.message) ?? asString(item.error) ??
+        asString(item.message);
     if (candidate) {
       return candidate;
     }
 
     const resultError = this.resolveParsedErrorText(payload.result ?? item.result);
-    if (resultError) {
+    if (resultError && (!isCommandExecutionFailure || resultError.trim().length > 0)) {
       return resultError;
+    }
+
+    const commandExitCode = isCommandExecutionFailure
+      ? this.resolveCommandExitCode(payload)
+      : null;
+    if (isCommandExecutionFailure) {
+      const commandOutput = this.resolveCommandAggregatedOutput(payload);
+      if (commandOutput) {
+        return commandExitCode === null
+          ? commandOutput
+          : `${commandOutput}\nExit code: ${commandExitCode}`;
+      }
     }
 
     const textCandidate = this.resolveToolResultText(payload);
@@ -306,6 +324,10 @@ export class CodexToolPayloadParser {
         }
       }
       return textCandidate;
+    }
+
+    if (commandExitCode !== null) {
+      return `Command exited with code ${commandExitCode}.`;
     }
 
     const status = (asString(payload.status) ?? asString(item.status))?.toLowerCase();
@@ -476,6 +498,28 @@ export class CodexToolPayloadParser {
       }
     }
     return contentText;
+  }
+
+  private resolveCommandAggregatedOutput(payload: Record<string, unknown>): string | null {
+    const item = asObject(payload.item);
+    const candidate = [
+      payload.aggregatedOutput,
+      payload.aggregated_output,
+      item.aggregatedOutput,
+      item.aggregated_output,
+    ].find((value) => typeof value === "string" && value.trim().length > 0);
+    return typeof candidate === "string" ? candidate.trimEnd() : null;
+  }
+
+  private resolveCommandExitCode(payload: Record<string, unknown>): number | null {
+    const item = asObject(payload.item);
+    const candidate = [
+      payload.exitCode,
+      payload.exit_code,
+      item.exitCode,
+      item.exit_code,
+    ].find((value) => typeof value === "number" && Number.isInteger(value) && value !== 0);
+    return typeof candidate === "number" ? candidate : null;
   }
 
   private resolveCommandActionValue(payload: Record<string, unknown>): string | null {

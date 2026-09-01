@@ -97,6 +97,44 @@ describe("CodexThreadEventConverter through CodexThread", () => {
     });
   });
 
+  it("projects provider diagnostics for a failed command without changing correlation facts", () => {
+    const converter = createCodexThreadEventHarness("run-1");
+
+    const converted = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-command-failed",
+        item: {
+          id: "tool-command-failed",
+          type: "commandExecution",
+          command: "/bin/bash -lc 'exit 23'",
+          cwd: "/workspace/nested",
+          status: "failed",
+          aggregatedOutput: "CODEX_FAILURE_STDERR_MARKER",
+          exitCode: 23,
+        },
+      },
+    });
+
+    const terminal = converted.find(
+      (runtimeEvent) => runtimeEvent.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED,
+    );
+    expect(terminal).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      payload: {
+        invocation_id: "tool-command-failed",
+        turn_id: "turn-command-failed",
+        tool_name: "run_bash",
+        arguments: {
+          command: "/bin/bash -lc 'exit 23'",
+          cwd: "/workspace/nested",
+        },
+        error: "CODEX_FAILURE_STDERR_MARKER\nExit code: 23",
+      },
+    });
+    expect(terminal?.payload).not.toHaveProperty("result");
+  });
+
   it("projects top-level command cwd on approval requests", () => {
     const converter = createCodexThreadEventHarness("run-1");
 

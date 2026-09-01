@@ -506,6 +506,18 @@ Use `--port <port>` to pin the port. If automatic browser discovery does not fin
 Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Codex Command Failure Detail Browser Probe
+
+The failed Codex command diagnostic has a self-starting renderer probe for the
+existing center tool card and Activity card. It mounts both production
+components with the same multiline failed-event error, asserts exact DOM text
+and computed whitespace preservation at desktop and narrow viewports, captures
+screenshots, and removes only its owned Nuxt fixture and process:
+
+```bash
+pnpm test:e2e:codex-command-failure-detail -- --output-dir ../tickets/<ticket-name>/probes/api-e2e/browser
+```
+
 ### Task Agent Monitor Visibility Browser Probe
 
 The exact task-monitor regression has a self-starting Chromium probe that uses
@@ -522,7 +534,7 @@ captures JSON/screenshots/logs, and removes only its owned resources:
 pnpm test:e2e:task-agent-monitor-visibility -- --output-dir test-results/task-agent-monitor-visibility
 ```
 
-Use `--port <port>` to pin the port. If automatic browser discovery does not find
+For either probe, use `--port <port>` to pin the port. If automatic browser discovery does not find
 Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
@@ -544,6 +556,7 @@ pnpm codegen
 - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
 - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
 - `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
+- `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
 - `pnpm test:e2e:task-agent-monitor-visibility`: Run the self-starting exact task hydration and settlement-fallback browser probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
