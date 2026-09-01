@@ -253,6 +253,24 @@ projection source, and the server does not execute or reroute the normalized
 `cwd` inside their existing arguments object, while older command-only traces
 remain directly readable and are not backfilled.
 
+Failed `commandExecution` items also preserve the provider's actionable
+terminal diagnostic in the existing canonical failed-tool `error` string. A
+non-empty explicit provider `error` or `message`, including supported structured
+result error content, remains authoritative. When no explicit error exists,
+non-empty `aggregatedOutput` is used and a valid non-zero
+integer `exitCode` is appended on its own `Exit code: <code>` line. A non-zero
+exit code without useful output becomes `Command exited with code <code>.`;
+only a command failure with no supported detail keeps the generic
+`Tool execution failed.` fallback. Empty strings and `exitCode: 0` do not
+manufacture a diagnostic. This is content projection only: the command remains
+failed, no raw provider envelope or fabricated native `TerminalResult` is
+exposed, and unrelated tool families retain their existing error mapping.
+
+The same normalized error flows through standalone and Team transport and is
+written as `tool_error` by the local raw-trace recorder. Newly recorded runs
+therefore replay the actionable diagnostic through the normal local projection;
+older generic strings remain readable and are not rewritten or backfilled.
+
 Call timing follows provider argument readiness. Ordinary Codex command, file,
 dynamic, and MCP starts with explicit argument objects are written early. A
 hosted `webSearch` placeholder start omits `arguments` and creates no raw tool
@@ -494,6 +512,12 @@ conversation is being applied.
   requests normalize to `run_bash` with exact canonical `command` and `cwd`
   arguments when supplied. Missing `cwd` remains absent; raw model-facing
   `workdir` is not promoted, and normalization never executes the command.
+- A failed `commandExecution` completion keeps the existing failed lifecycle
+  shape and chooses one canonical error string: non-empty explicit provider
+  error/message or structured result error, then non-empty aggregated command output with a valid non-zero
+  exit-code line when present, then exit-code-only detail, and finally the
+  generic fallback. Successful, denied, interrupted, and non-command tool
+  families do not use this command-failure synthesis.
 - Completed Codex reasoning snapshots are grouped under one allocator-owned
   logical segment id per active turn. A real ordered boundary emits exactly one
   status-neutral `SEGMENT_END(reasoning)` for that id before the boundary's own

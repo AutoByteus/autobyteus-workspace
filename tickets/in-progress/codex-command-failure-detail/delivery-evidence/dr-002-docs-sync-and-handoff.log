@@ -1,0 +1,23 @@
+# DR-002 Docs Sync And Handoff Validation
+
+Timestamp (UTC): 2026-09-01T11:59:12Z
+HEAD: e28c65f00e459c89bcb0fd9b47fff5e151ddbcfe
+Latest tracked base: ad63d74275a4eb204ebc6d97a2260aa9790fea52
+Divergence HEAD...origin/personal: 7/0
+PASS: latest tracked base is an ancestor of HEAD.
+PASS: no unmerged path or active merge exists.
+PASS: canonical docs match current source behavior; both integrated browser probes and delivery artifacts are present.
+PASS: git diff --check.
+Behavioral rerun: not repeated. API-REV-002 validated exact HEAD against the unchanged current base immediately before this documentation-only Delivery delta.
+
+## Working Tree
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M tickets/in-progress/codex-command-failure-detail/delivery-integration-blocker.md
+ M tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md
+ M tickets/in-progress/codex-command-failure-detail/docs-sync-report.md
+ M tickets/in-progress/codex-command-failure-detail/release-deployment-report.md
+?? tickets/in-progress/codex-command-failure-detail/delivery-evidence/dr-002-docs-sync-and-handoff.log
+?? tickets/in-progress/codex-command-failure-detail/handoff-summary.md
+?? tickets/in-progress/codex-command-failure-detail/release-notes.md

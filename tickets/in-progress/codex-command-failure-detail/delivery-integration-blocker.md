@@ -1,6 +1,14 @@
 # Delivery Integration Blocker
 
-## Status
+## DR-002 Resolution
+
+- Status: `Resolved`
+- Resolution owner/result: Implementation `IR-002` completed merge `a14532534cbb618fd859d8e760f3baeafb1b01d7`; API/E2E `API-REV-002` passed the integrated candidate at 98% confidence in evidence commit `e28c65f00e459c89bcb0fd9b47fff5e151ddbcfe`.
+- Exact resolution: `autobyteus-web/README.md` and `package.json` retain both the Codex command-failure and task-agent-monitor probe documentation/scripts/targets with one shared browser-discovery note; no unmerged path or conflict marker remains.
+- Current delivery state: `DR-002 — Pass; ready for explicit user verification`.
+- Historical value: the remainder of this artifact preserves the exact DR-001 blocker and must not be treated as a current blocker.
+
+## Historical DR-001 Record
 
 - Delivery revision: `DR-001`
 - Result: `Blocked`
