@@ -61,7 +61,7 @@
       </div>
 
       <div v-if="presentation.errorMessage" class="px-3 pb-2 pt-0 border-t border-red-100/50">
-        <div class="mt-2 rounded border border-red-100 bg-red-50 px-2 py-1 font-mono text-xs text-red-600 break-words">
+        <div data-test="tool-error-message" class="mt-2 rounded border border-red-100 bg-red-50 px-2 py-1 font-mono text-xs text-red-600 whitespace-pre-wrap break-words">
           {{ presentation.errorMessage }}
         </div>
       </div>

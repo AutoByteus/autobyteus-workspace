@@ -153,6 +153,17 @@ describe('ToolCallIndicator.vue', () => {
     expect(wrapper.find('[data-icon="heroicons:exclamation-circle-solid"]').exists()).toBe(true);
   });
 
+  it('preserves multiline diagnostic structure in the inline error details row', () => {
+    const wrapper = mountIndicator({
+      status: 'error',
+      errorMessage: 'CODEX_FAILURE_STDERR_MARKER\nExit code: 23',
+    });
+
+    const errorMessage = wrapper.get('[data-test="tool-error-message"]');
+    expect(errorMessage.text()).toContain('CODEX_FAILURE_STDERR_MARKER\nExit code: 23');
+    expect(errorMessage.classes()).toContain('whitespace-pre-wrap');
+  });
+
   it('keeps non-awaiting rows navigable to the Activity panel', async () => {
     const wrapper = mountIndicator({ status: 'success' });
 

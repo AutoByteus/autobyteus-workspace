@@ -71,3 +71,87 @@ describe("CodexItemEventPayloadParser command arguments", () => {
     }, "run_bash")).toEqual({ command: "pwd" });
   });
 });
+
+describe("CodexItemEventPayloadParser command failure errors", () => {
+  it("combines provider command output and a non-zero exit code", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolError({
+      item: {
+        type: "commandExecution",
+        status: "failed",
+        aggregatedOutput: "first line\nCODEX_FAILURE_STDERR_MARKER\n",
+        exitCode: 23,
+      },
+    })).toBe("first line\nCODEX_FAILURE_STDERR_MARKER\nExit code: 23");
+  });
+
+  it("keeps an explicit provider error authoritative", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolError({
+      message: "Provider rejected the command.",
+      item: {
+        type: "commandExecution",
+        status: "failed",
+        aggregatedOutput: "less specific output",
+        exitCode: 23,
+      },
+    })).toBe("Provider rejected the command.");
+  });
+
+  it("ignores blank explicit fields before a useful provider message", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolError({
+      error: "  ",
+      item: {
+        type: "commandExecution",
+        status: "failed",
+        message: "Nested provider diagnostic.",
+        aggregatedOutput: "less specific output",
+        exitCode: 23,
+      },
+    })).toBe("Nested provider diagnostic.");
+  });
+
+  it("uses an exit-code-only diagnostic when command output is empty", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolError({
+      item: {
+        type: "commandExecution",
+        status: "failed",
+        aggregatedOutput: "  \n",
+        exitCode: 9,
+      },
+    })).toBe("Command exited with code 9.");
+  });
+
+  it("keeps the generic fallback when a failed command has no useful detail", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolError({
+      error: "   ",
+      item: {
+        type: "commandExecution",
+        status: "failed",
+        aggregatedOutput: null,
+        exitCode: 0,
+      },
+    })).toBe("Tool execution failed.");
+  });
+
+  it("does not apply command diagnostics to unrelated tool families", () => {
+    const parser = new CodexItemEventPayloadParser();
+
+    expect(parser.resolveToolError({
+      item: {
+        type: "dynamicToolCall",
+        status: "failed",
+        aggregatedOutput: "unrelated output",
+        exitCode: 17,
+      },
+    })).toBe("Tool execution failed.");
+  });
+});

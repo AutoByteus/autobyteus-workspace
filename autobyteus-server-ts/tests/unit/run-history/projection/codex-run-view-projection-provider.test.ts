@@ -357,7 +357,7 @@ describe("CodexRunViewProjectionProvider", () => {
             output: "boom\n",
             exit_code: 1,
           },
-          toolError: "Tool execution failed.",
+          toolError: "boom\nExit code: 1",
         }),
       ]);
       expect(projection?.activities).toEqual([
@@ -371,7 +371,7 @@ describe("CodexRunViewProjectionProvider", () => {
             output: "boom\n",
             exit_code: 1,
           },
-          error: "Tool execution failed.",
+          error: "boom\nExit code: 1",
         }),
       ]);
     } finally {
