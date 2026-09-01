@@ -104,10 +104,10 @@ The public GitHub release is non-draft, non-prerelease, targets the release comm
 
 - Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility`
 - Ticket worktree cleanup result: `Blocked for safety`
-- Worktree prune result: `Held`
-- Local ticket branch cleanup result: `Held`
-- Remote ticket branch cleanup result: `Held`
-- Temporary finalization worktree/branch cleanup result: `Held until this post-release record is committed and pushed`
+- Worktree prune result: `Completed` after temporary finalization-worktree removal
+- Local ticket branch cleanup result: `Blocked` while its worktree hosts the running app
+- Remote ticket branch cleanup result: `Completed`
+- Temporary finalization worktree/branch cleanup result: `Completed`
 - Safety blocker: The accepted DR-004 AutoByteus app root process and helpers are still running directly from ignored `electron-dist/dr004-fe9f1a/` inside the ticket worktree. Deleting that worktree would remove live executable/resources used by the current user-owned application session. Delivery will not terminate the application or delete its files without the user first quitting it.
 - Generated-output disposition: Build-owned backend SDK output was already removed. Pre-existing non-owned contracts output remains only in the ticket worktree and will disappear with safe worktree cleanup.
 

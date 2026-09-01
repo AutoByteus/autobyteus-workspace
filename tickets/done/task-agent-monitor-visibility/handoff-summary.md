@@ -137,4 +137,4 @@ Before starting DR-004, fully quit the currently running rejected AutoByteus app
 
 ## Remaining Safe Cleanup Gate
 
-The accepted DR-004 AutoByteus application is still running from `electron-dist/dr004-fe9f1a/` inside the dedicated ticket worktree. Delivery will not delete live application resources or terminate the user-owned session. The user must fully quit that AutoByteus app; delivery can then remove the ticket/finalization worktrees, prune, and delete the local/remote temporary branches.
+The accepted DR-004 AutoByteus application is still running from `electron-dist/dr004-fe9f1a/` inside the dedicated ticket worktree. Delivery will not delete live application resources or terminate the user-owned session. The remote ticket branch and temporary finalization worktree/branch are already removed and worktrees were pruned. The user must fully quit that AutoByteus app; delivery can then remove the remaining ticket worktree and its local branch.
