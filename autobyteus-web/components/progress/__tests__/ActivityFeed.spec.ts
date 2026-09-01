@@ -5,6 +5,8 @@ import type { RunActivity } from '~/types/activity/RunActivity';
 
 const highlightedId = ref<string | null>(null);
 const activities = ref<RunActivity[]>([]);
+const activeTeamContext = ref<any>(null);
+const authoritative = ref(false);
 const activeContextStoreMock = reactive({
   activeAgentContext: {
     config: { runtimeKind: 'autobyteus' },
@@ -24,12 +26,20 @@ vi.mock('~/stores/agentActivityStore', () => ({
 vi.mock('~/stores/activeContextStore', () => ({
   useActiveContextStore: () => activeContextStoreMock,
 }));
+vi.mock('~/stores/agentTeamContextsStore', () => ({
+  useAgentTeamContextsStore: () => ({ get activeTeamContext() { return activeTeamContext.value; } }),
+}));
+vi.mock('~/services/runHydration/teamMemberProjectionHydrationService', () => ({
+  isTeamMemberProjectionAuthoritative: () => authoritative.value,
+}));
 
 import ActivityFeed from '../ActivityFeed.vue';
 
 describe('ActivityFeed', () => {
   beforeEach(() => {
     highlightedId.value = null;
+    activeTeamContext.value = null;
+    authoritative.value = false;
     activities.value = [
       {
         kind: 'tool',
@@ -200,5 +210,22 @@ describe('ActivityFeed', () => {
     expect(wrapper.findAll('[data-test="activity-feed-scroll-container"]')).toHaveLength(1);
 
     wrapper.unmount();
+  });
+
+  it('uses exact task true-empty wording only after projection authority is established', () => {
+    activities.value = [];
+    authoritative.value = true;
+    activeTeamContext.value = {
+      view: {
+        getFocusedNavigationRow: () => ({ agentRunId: 'run-1', task: { taskId: 'task-1' } }),
+      },
+    };
+
+    const wrapper = mount(ActivityFeed, {
+      global: { mocks: { $t: (key: string) => key === 'workspace.task_monitor.empty'
+        ? 'No activity recorded for this task yet.' : key } },
+    });
+
+    expect(wrapper.text()).toContain('No activity recorded for this task yet.');
   });
 });

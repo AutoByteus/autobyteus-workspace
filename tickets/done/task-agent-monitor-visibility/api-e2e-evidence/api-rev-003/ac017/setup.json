@@ -1,0 +1,82 @@
+{
+  "createdAt": "2026-08-31T22:07:53.744Z",
+  "backendUrl": "http://127.0.0.1:60637",
+  "marker": "AC017_CURRENT_SOURCE_A",
+  "modelCatalog": [
+    "gpt-5.3-codex-spark",
+    "gpt-5.4",
+    "gpt-5.4-mini",
+    "gpt-5.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra"
+  ],
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "workspaceRootPath": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646",
+  "studentOneDefinitionId": "student-one-ac017-ac017-current-source-a",
+  "studentTwoDefinitionId": "student-two-ac017-ac017-current-source-a",
+  "teamDefinitionId": "ac017-live-team-ac017-current-source-a",
+  "teamRunId": "ac017_live_team_ac017_current_source_a_878aafc9778645e5b21986cd3cd5971b",
+  "resumeConfig": {
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-31T22:07:53.678Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "ac017-live-team-ac017-current-source-a",
+        "team_definition_name": "AC017 Live Team AC017_CURRENT_SOURCE_A",
+        "team_run_id": "ac017_live_team_ac017_current_source_a_878aafc9778645e5b21986cd3cd5971b",
+        "coordinator_address": "/student_one",
+        "default_launch_configuration": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.6-luna",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "NONE",
+          "workspace_root_path": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/student_one",
+            "agent_definition_id": "student-one-ac017-ac017-current-source-a",
+            "role": null,
+            "description": null,
+            "agent_run_id": "student_one_ac017_ac017_current_source_a_237f6112023147e9b25b0bf833a4e909",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "NONE",
+              "workspace_root_path": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646"
+            }
+          },
+          {
+            "kind": "configured_agent",
+            "address": "/student_two",
+            "agent_definition_id": "student-two-ac017-ac017-current-source-a",
+            "role": null,
+            "description": null,
+            "agent_run_id": "student_two_ac017_ac017_current_source_a_4ed4a9cc9d3b425bbc028df86c533995",
+            "platform_agent_run_id": null,
+            "launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "NONE",
+              "workspace_root_path": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646"
+            }
+          }
+        ],
+        "task_executions": []
+      }
+    }
+  }
+}

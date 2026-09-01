@@ -224,7 +224,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
       role: 'treeitem',
       'aria-level': '2',
       'aria-selected': 'true',
-      title: 'Temporary task agent · Task: Solve current task · /worker',
+      title: 'Temporary task agent · Solve current task · /worker',
     });
     await taskRow.trigger('click');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({

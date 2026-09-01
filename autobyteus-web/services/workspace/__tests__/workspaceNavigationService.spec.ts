@@ -6,11 +6,19 @@ const {
   openTeamRunMock,
   ensureWorkspaceByRootPathMock,
   resolveWorkspaceMetadataByRootPathMock,
+  getTeamContextByIdMock,
+  openTeamMemberRunMock,
+  inspectTeamMemberMock,
+  selectRunMock,
 } = vi.hoisted(() => ({
   openAgentRunMock: vi.fn(),
   openTeamRunMock: vi.fn(),
   ensureWorkspaceByRootPathMock: vi.fn(),
   resolveWorkspaceMetadataByRootPathMock: vi.fn(),
+  getTeamContextByIdMock: vi.fn(),
+  openTeamMemberRunMock: vi.fn(),
+  inspectTeamMemberMock: vi.fn(),
+  selectRunMock: vi.fn(),
 }))
 
 vi.mock('~/services/runOpen/agentRunOpenCoordinator', () => ({
@@ -24,6 +32,21 @@ vi.mock('~/services/runOpen/teamRunOpenCoordinator', () => ({
 vi.mock('~/stores/runHistoryLoadActions', () => ({
   ensureRunHistoryWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
   resolveRunHistoryWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
+}))
+
+vi.mock('~/stores/agentTeamContextsStore', () => ({
+  useAgentTeamContextsStore: () => ({ getTeamContextById: getTeamContextByIdMock }),
+}))
+
+vi.mock('~/stores/runHistoryStore', () => ({
+  useRunHistoryStore: () => ({
+    openTeamMemberRun: openTeamMemberRunMock,
+    inspectTeamMember: inspectTeamMemberMock,
+  }),
+}))
+
+vi.mock('~/stores/agentSelectionStore', () => ({
+  useAgentSelectionStore: () => ({ selectRun: selectRunMock }),
 }))
 
 import {
@@ -97,18 +120,14 @@ describe('workspaceNavigationService', () => {
     expect(openTeamRunMock).not.toHaveBeenCalled()
   })
 
-  it('routes team execution links through the team open coordinator', async () => {
+  it('routes an absent exact team execution link through the history facade', async () => {
     await openWorkspaceExecutionLink({
       kind: 'team',
       teamRunId: 'team-run-1',
       agentRunId: 'writer-run-1',
     })
 
-    expect(openTeamRunMock).toHaveBeenCalledWith({
-      teamRunId: 'team-run-1',
-      agentRunId: 'writer-run-1',
-      resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
-      ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
-    })
+    expect(openTeamMemberRunMock).toHaveBeenCalledWith('team-run-1', 'writer-run-1')
+    expect(openTeamRunMock).not.toHaveBeenCalled()
   })
 })

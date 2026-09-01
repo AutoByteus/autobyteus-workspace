@@ -9,13 +9,17 @@ import {
   testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
 
-const { state, teamContextsStoreMock } = vi.hoisted(() => {
-  const localState = { activeTeamContext: null as any };
+const { state, teamContextsStoreMock, activityStoreMock, authorityMock } = vi.hoisted(() => {
+  const localState = { activeTeamContext: null as any, activities: [] as any[] };
   return { state: localState, teamContextsStoreMock: {
     get activeTeamContext() { return localState.activeTeamContext; },
-  } };
+  }, activityStoreMock: { getActivities: vi.fn(() => localState.activities) }, authorityMock: vi.fn() };
 });
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
+vi.mock('~/stores/agentActivityStore', () => ({ useAgentActivityStore: () => activityStoreMock }));
+vi.mock('~/services/runHydration/teamMemberProjectionHydrationService', () => ({
+  isTeamMemberProjectionAuthoritative: authorityMock,
+}));
 
 const agentDefinitionStoreMock = vi.hoisted(() => ({
   agentDefinitions: [{ id: 'agent-professor-def', name: 'Professor', avatarUrl: 'https://example.com/professor.png' }],
@@ -25,7 +29,8 @@ const agentDefinitionStoreMock = vi.hoisted(() => ({
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentDefinitionStoreMock }));
 
 const mountSubject = () => shallowMount(AgentTeamEventMonitor, {
-  global: { stubs: { AgentEventMonitor: {
+  global: { mocks: { $t: (key: string) => key === 'workspace.task_monitor.empty'
+    ? 'No activity recorded for this task yet.' : key }, stubs: { AgentEventMonitor: {
     name: 'AgentEventMonitor',
     props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'browseSubject'],
     template: '<div class="agent-event-monitor-stub" />',
@@ -34,6 +39,8 @@ const mountSubject = () => shallowMount(AgentTeamEventMonitor, {
 
 describe('AgentTeamEventMonitor exact AgentRun focus', () => {
   beforeEach(() => {
+    state.activities = [];
+    authorityMock.mockReturnValue(false);
     const professor = testAgentContext({ runId: 'professor-run', displayName: 'Professor', agentDefinitionId: 'agent-professor-def' });
     const student = testAgentContext({ runId: 'student-run', displayName: 'Student', agentDefinitionId: 'agent-student-def' });
     const professorNode = testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' });
@@ -96,5 +103,25 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
     const monitor = mountSubject().findComponent({ name: 'AgentEventMonitor' });
     expect(monitor.props('runId')).toBe('task-student-run');
     expect((monitor.props('conversation') as any).messages[0].text).toBe('Dedicated task packet');
+  });
+
+  it('shows true-empty wording only for an authoritative exact task projection', () => {
+    state.activeTeamContext = buildTestTeamContext({
+      teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'empty-task-run',
+      rootChildren: [testAgentNode('/Professor', { agentRunId: 'professor-run' })],
+      tasks: [testTaskRecord({
+        taskId: 'empty-task', delegatorAgentRunId: 'professor-run', recipientAddress: '/Professor',
+        target: { agentRunId: 'empty-task-run' },
+      })],
+    });
+    authorityMock.mockReturnValue(true);
+
+    const wrapper = mountSubject();
+
+    expect(wrapper.get('[data-test="team-task-authoritative-empty"]').text())
+      .toBe('No activity recorded for this task yet.');
+    expect(wrapper.text()).not.toContain(
+      'workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the',
+    );
   });
 });

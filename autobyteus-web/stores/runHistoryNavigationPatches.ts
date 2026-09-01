@@ -162,18 +162,6 @@ export const applyRunNavigationEffectToProjection = (
   return { state: next, changed: next !== state };
 };
 
-export const applyRunNavigationTeamFocusToProjection = (
-  state: RunHistoryNavigationProjectionState,
-  teamRunId: string,
-  agentRunId: string,
-): { state: RunHistoryNavigationProjectionState; changed: boolean } => {
-  const index = state.teamIndexById[teamRunId];
-  const team = index ? state.teamNodes[index.index] : null;
-  if (!team || team.focusedAgentRunId === agentRunId) return { state, changed: false };
-  const next = replaceTeam(state, { ...team, focusedAgentRunId: agentRunId });
-  return { state: next, changed: next !== state };
-};
-
 export const applyTaskExecutionRowPresentationToProjection = (
   state: RunHistoryNavigationProjectionState,
   teamRunId: string,

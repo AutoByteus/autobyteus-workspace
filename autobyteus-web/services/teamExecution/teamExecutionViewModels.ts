@@ -8,6 +8,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import type { TeamTokenUsageDetails } from '~/types/tokenUsageMeter';
+import type { TeamExecutionTaskPresentation } from './taskDelegationPresentation';
 
 export type TeamExecutionRowKind =
   | 'configured_team'
@@ -27,8 +28,7 @@ export interface TeamExecutionNavigationRow {
   readonly parentKey: string | null;
   readonly agentRunId: string | null;
   readonly teamRunId: string | null;
-  readonly taskId: string | null;
-  readonly taskStatus: TaskDelegationRecordDto['status'] | null;
+  readonly task: TeamExecutionTaskPresentation | null;
   readonly currentStatus: AgentStatus | null;
   readonly focusable: boolean;
   readonly expandable: boolean;
@@ -64,6 +64,10 @@ export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>
   | Readonly<{ kind: 'record_team_token_usage'; agentRunId: string; details: TeamTokenUsageDetails }>
+  | Readonly<{ kind: 'reconcile_team_navigation' }>
+  | Readonly<{ kind: 'invalidate_team_member_projection'; agentRunIds: readonly string[] }>
+  | Readonly<{ kind: 'invalidate_team_member_projections' }>
+  | Readonly<{ kind: 'reconcile_focused_team_member_projection' }>
   | Readonly<{ kind: 'team_stream_recovery_required' }>;
 
 export type TeamExecutionApplyResult =

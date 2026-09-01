@@ -18,12 +18,52 @@ import type { MemberTeamContextBuilder } from "../../../services/member-team-con
 import type { MemberTaskRootResolver } from "../../../task-delegation/member-task-root-resolver.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
+type TaskAgentDurabilityEventGateState = "prepared" | "releasing" | "live" | "aborted";
+type TaskAgentDurabilityEvent = Parameters<MixedTeamEventPublish>[0];
+
+/** Keeps task-Agent events private until the durable activation is externally visible. */
+export class TaskAgentDurabilityEventGate {
+  private state: TaskAgentDurabilityEventGateState = "prepared";
+  private readonly retainedEvents: TaskAgentDurabilityEvent[] = [];
+
+  constructor(private readonly forward: MixedTeamEventPublish) {}
+
+  readonly publish = (event: TaskAgentDurabilityEvent): void => {
+    if (this.state === "aborted") return;
+    if (this.state === "live") {
+      this.forward(event);
+      return;
+    }
+    this.retainedEvents.push(event);
+  };
+
+  releaseToLive(): boolean {
+    if (this.state !== "prepared") return this.state === "live";
+    this.state = "releasing";
+    while (this.state === "releasing") {
+      const event = this.retainedEvents.shift();
+      if (!event) {
+        this.state = "live";
+        return true;
+      }
+      this.forward(event);
+    }
+    return false;
+  }
+
+  abort(): void {
+    if (this.state === "aborted") return;
+    this.state = "aborted";
+    this.retainedEvents.length = 0;
+  }
+}
 
 /** Direct task-Agent mechanics for one TeamRun; task policy remains root-owned. */
 export class MixedTaskAgentExecutionRegistry {
   private readonly active = new Map<string, MixedAgentMemberHandle>();
   private readonly reserved = new Set<string>();
   private readonly preparedHandles = new Map<string, MixedAgentMemberHandle>();
+  private readonly eventGates = new Map<string, TaskAgentDurabilityEventGate>();
   private readonly settling = new Set<string>();
   private materializationOpen = true;
 
@@ -55,7 +95,7 @@ export class MixedTaskAgentExecutionRegistry {
       throw new Error(`Task AgentRun '${runId}' is already active or reserved.`);
     }
     this.reserved.add(runId);
-    const retainedEvents: Parameters<MixedTeamEventPublish>[0][] = [];
+    const eventGate = new TaskAgentDurabilityEventGate(this.options.publish);
     const handle = new MixedAgentMemberHandle({
       teamContext: this.options.teamContext,
       context: new MixedAgentMemberContext({
@@ -72,18 +112,21 @@ export class MixedTaskAgentExecutionRegistry {
       memberTeamContextBuilder: this.options.memberTeamContextBuilder,
       workspaceManager: this.options.workspaceManager,
       taskRootResolver: this.options.taskRootResolver,
-      publish: (event) => retainedEvents.push(event),
+      publish: eventGate.publish,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       acceptPlatformBinding: this.options.acceptPlatformBinding,
     });
     this.preparedHandles.set(runId, handle);
+    this.eventGates.set(runId, eventGate);
     let state: PreparedState = "preparing";
     let activation!: Awaited<ReturnType<MixedAgentMemberHandle["prepareForTaskActivation"]>>;
     try {
       activation = await handle.prepareForTaskActivation();
     } catch (error) {
+      eventGate.abort();
       this.reserved.delete(runId);
       this.preparedHandles.delete(runId);
+      this.eventGates.delete(runId);
       handle.dispose();
       throw error;
     }
@@ -106,7 +149,8 @@ export class MixedTaskAgentExecutionRegistry {
           releaseWork: () => {
             if (released) return;
             released = true;
-            retainedEvents.splice(0).forEach(this.options.publish);
+            if (!eventGate.releaseToLive()) return;
+            this.eventGates.delete(runId);
             queueMicrotask(() => { void handle.postMessage(input.message); });
           },
         });
@@ -114,9 +158,10 @@ export class MixedTaskAgentExecutionRegistry {
       abort: async () => {
         if (state === "committed" || state === "aborted") return;
         state = "aborted";
+        eventGate.abort();
         this.reserved.delete(runId);
         this.preparedHandles.delete(runId);
-        retainedEvents.length = 0;
+        this.eventGates.delete(runId);
         try { await activation.abort(); } finally { handle.dispose(); }
       },
     };
@@ -183,11 +228,13 @@ export class MixedTaskAgentExecutionRegistry {
   }
 
   dispose(): void {
+    this.eventGates.forEach((gate) => gate.abort());
     this.active.forEach((handle) => handle.dispose());
     this.preparedHandles.forEach((handle) => handle.dispose());
     this.active.clear();
     this.reserved.clear();
     this.preparedHandles.clear();
+    this.eventGates.clear();
     this.settling.clear();
   }
 }

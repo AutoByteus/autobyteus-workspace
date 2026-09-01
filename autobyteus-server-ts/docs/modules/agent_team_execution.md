@@ -328,6 +328,25 @@ The task lifecycle is:
    deliver revision instructions; or
 8. on `accept`, settle the exact task execution and record terminal acceptance.
 
+Direct task-Agent activation owns a registry-local durability event gate with
+`prepared`, `releasing`, `live`, and `aborted` states. While the Agent candidate
+is private, every adapted Agent event is retained behind that gate. After the
+active task record and any external platform binding are durable, the root
+publishes `TASK_AGENT_ACTIVATED`; only then does `releaseWork()` drain retained
+events to the unchanged root publisher. Draining is FIFO, includes events
+published synchronously while the drain is in progress, and becomes direct
+exactly-once forwarding only after the retained queue is empty. Assignment work
+starts in a later microtask after release. Repeated release is idempotent, while
+pre-durability failure, abort, or registry disposal drops retained and future
+events and starts no assignment work.
+
+This ordering makes activation the public identity barrier: every root-stream
+Agent frame for a newly delegated task Agent follows its
+`TASK_AGENT_ACTIVATED` event. `RootTeamRun` / `TeamRunEventPublisher` remain the
+only `change_sequence` authority, so configured-Agent and multiple same-address
+task-Agent frames share one strictly increasing root sequence without acquiring
+a second publisher or task-local sequence.
+
 Notification delivery is non-transactional after valid ledger mutation. A
 warning may be recorded without rolling back accepted task state. Task Agent and
 task Team settlement use their known execution bindings and open-work facts;
@@ -422,6 +441,14 @@ Team-only events retain their own strict identities:
 
 Multiple WebSocket/API subscribers do not create duplicate runtime listeners,
 pipeline passes, or projection writes.
+
+For a live task Agent, the root stream is the continuation path after any exact
+retained projection used for first inspection. The activation-before-Agent-frame
+barrier ensures a client can materialize and select the exact task identity
+before later status, turn, segment, tool, and content events arrive, then route
+those events by `agent_execution` without reload, polling, or same-address
+fallback. A reconnect snapshot remains the recovery authority; it does not
+replace the normal post-activation event-egress contract.
 
 ## Restore And Persistence
 

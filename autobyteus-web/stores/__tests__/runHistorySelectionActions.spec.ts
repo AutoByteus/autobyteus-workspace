@@ -50,11 +50,12 @@ const buildStore = () => ({
   selectedTeamRunId: 'team-before' as string | null,
   selectedTeamMemberAddress: '/before' as string | null,
   teamResumeConfigByTeamRunId: {} as Record<string, any>,
+  teamMemberInspectionByIdentity: {},
   openTeamMemberRun: vi.fn(),
   openRun: vi.fn(),
   ensureWorkspaceByRootPath: vi.fn(),
   resolveWorkspaceMetadataByRootPath: vi.fn(),
-  focusTeamMemberAndEnsureHydrated: vi.fn(),
+  inspectTeamMember: vi.fn(),
 });
 
 describe('runHistorySelectionActions failed Team stream recovery', () => {
@@ -65,12 +66,49 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
     isReopenRequiredMock.mockReturnValue(true);
   });
 
+  it('routes a mounted exact shell through inspection instead of fresh Team replacement', async () => {
+    isReopenRequiredMock.mockReturnValue(false);
+    const store = buildStore();
+    store.inspectTeamMember.mockResolvedValue({
+      disposition: 'committed', teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
+    });
+
+    await selectTreeRunFromHistory(store, {
+      teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
+    });
+
+    expect(store.inspectTeamMember).toHaveBeenCalledWith('team-recovery', 'run-a');
+    expect(openMock).not.toHaveBeenCalled();
+    expect(reopenMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps the previous selection and row surface when mounted inspection is rejected', async () => {
+    isReopenRequiredMock.mockReturnValue(false);
+    const store = buildStore();
+    store.inspectTeamMember.mockResolvedValue({
+      disposition: 'rejected', code: 'TEAM_MEMBER_INSPECTION_FAILED', message: 'projection unavailable',
+    });
+
+    await expect(selectTreeRunFromHistory(store, {
+      teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
+    })).rejects.toThrow('projection unavailable');
+
+    expect(store.selectedTeamRunId).toBe('team-before');
+    expect(store.selectedTeamMemberAddress).toBe('/before');
+    expect(store.error).toBeNull();
+    expect(openMock).not.toHaveBeenCalled();
+  });
+
   it('routes a known failed local Team selection only through checkpointed recovery', async () => {
-    reopenMock.mockResolvedValue({
+    reopenMock.mockImplementation(async (input: any) => {
+      const result = {
       teamRunId: 'team-recovery',
       focusedAgentRunId: 'run-a',
       focusedMemberAddress: '/member-a',
       resumeConfig: { teamRunId: 'team-recovery', isActive: true, executionTree: {} },
+      };
+      input.onCommitted(result);
+      return result;
     });
     const store = buildStore();
 
@@ -79,7 +117,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
     });
 
     expect(reopenMock).toHaveBeenCalledTimes(1);
-    expect(store.focusTeamMemberAndEnsureHydrated).not.toHaveBeenCalled();
+    expect(store.inspectTeamMember).not.toHaveBeenCalled();
     expect(store.openTeamMemberRun).not.toHaveBeenCalled();
     expect(store.selectedTeamRunId).toBe('team-recovery');
     expect(store.selectedTeamMemberAddress).toBe('/member-a');
@@ -107,11 +145,15 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
   it('retries the same Team member after a retryable refusal', async () => {
     reopenMock
       .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
-      .mockResolvedValueOnce({
-        teamRunId: 'team-recovery',
-        focusedAgentRunId: 'run-a',
-        focusedMemberAddress: '/member-a',
-        resumeConfig: { teamRunId: 'team-recovery', isActive: true, executionTree: {} },
+      .mockImplementationOnce(async (input: any) => {
+        const result = {
+          teamRunId: 'team-recovery',
+          focusedAgentRunId: 'run-a',
+          focusedMemberAddress: '/member-a',
+          resumeConfig: { teamRunId: 'team-recovery', isActive: true, executionTree: {} },
+        };
+        input.onCommitted(result);
+        return result;
       });
     const store = buildStore();
     const target = {

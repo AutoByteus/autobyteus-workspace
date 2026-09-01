@@ -8,7 +8,6 @@ import {
 } from '~/test-support/currentTeamTestFixtures';
 import {
   applyRunNavigationEffectToProjection,
-  applyRunNavigationTeamFocusToProjection,
   applyTaskExecutionRowPresentationToProjection,
 } from '../runHistoryNavigationPatches';
 import {
@@ -205,7 +204,7 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     expect(changed.state.teamNodes).toBe(state.teamNodes);
   });
 
-  it('applies tight task-row and exact-focus patches while equal/detail-free changes do no work', () => {
+  it('applies tight task-row patches while equal/detail-free changes do no work', () => {
     const state = buildProjection();
     const otherTeam = state.teamNodes.find((team) => team.teamRunId === 'team-b');
     const status = applyTaskExecutionRowPresentationToProjection(
@@ -225,12 +224,6 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     ).changed).toBe(false);
     expect(applyTaskExecutionRowPresentationToProjection(status.state, 'team-a', taskRowKey('team-a'), []).changed)
       .toBe(false);
-
-    const focus = applyRunNavigationTeamFocusToProjection(status.state, 'team-a', stableAgentRunId('team-a'));
-    expect(focus.changed).toBe(true);
-    expect(focus.state.teamNodes.find((team) => team.teamRunId === 'team-a')?.focusedAgentRunId)
-      .toBe(stableAgentRunId('team-a'));
-    expect(applyRunNavigationTeamFocusToProjection(focus.state, 'team-a', stableAgentRunId('team-a')).changed).toBe(false);
   });
 
   it('applies combined status, summary, and activity through one exact Team branch patch', () => {

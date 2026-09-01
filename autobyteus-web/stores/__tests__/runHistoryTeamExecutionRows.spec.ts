@@ -90,12 +90,14 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     ]);
     expect(rows.find((row) => row.agentRunId === 'task-agent-run-1')).toMatchObject({
       kind: 'transient_execution', transientKind: 'task_agent', currentStatus: AgentStatus.Running,
+      task: { taskId: 'task-agent-1', description: 'This detail stays outside Workspace rows.', displayStatus: 'in_progress' },
     });
     expect(rows.find((row) => row.teamRunIdForNode === 'task-team-run-1')).toMatchObject({
       kind: 'transient_execution', transientKind: 'task_team', hasChildren: true,
     });
     expect(rows.find((row) => row.agentRunId === 'task-team-run-1:review-lead-run')).toMatchObject({
       kind: 'transient_execution', transientKind: 'task_team_child', memberAddress: reviewLead.address,
+      task: { taskId: 'task-team-1', description: 'Review the implementation as a Team.', displayStatus: 'in_progress' },
     });
     expect(rows.every((row) => !('taskDescription' in row) && !('taskReferenceFiles' in row))).toBe(true);
   });

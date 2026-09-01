@@ -1,0 +1,13 @@
+{
+  "result": "Pass",
+  "assertions": {
+    "taskRunsDistinct": true,
+    "configuredDistinct": true,
+    "taskOneExact": true,
+    "configuredExact": true,
+    "taskTwoExact": true,
+    "sameAddressRows": true,
+    "noPageErrors": true,
+    "noConsoleErrors": true
+  }
+}

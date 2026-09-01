@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.63 test:e2e:task-agent-monitor-visibility /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/autobyteus-web
+> node tests/e2e/task-agent-monitor-visibility-probe.mjs -- --output-dir ../tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor
+
+Task Agent monitor visibility browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/evidence.json

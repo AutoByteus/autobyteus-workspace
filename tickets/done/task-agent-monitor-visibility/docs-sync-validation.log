@@ -1,0 +1,83 @@
+Task: task-agent-monitor-visibility
+Delivery revision: DR-001
+Checked at: 2026-08-31 20:45:51 CEST
+
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+PASS
+origin/personal=80e2bd195c42ea3ced778dbc051d4d00edaef16f
+counts=2 0
+
+$ git diff --check
+PASS
+
+$ node: parse package.json and verify named script target
+PASS
+
+$ node --check tests/e2e/task-agent-monitor-visibility-probe.mjs
+PASS
+
+$ documentation contract guards
+PASS
+
+$ delivery artifact presence and trailing-whitespace guards
+PASS
+
+DR-002 final delivery-artifact validation
+========================================
+PASS: git diff --check
+PASS: exists autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+PASS: exists autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.63.dmg
+PASS: exists autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.63.zip
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/delivery-electron-build.log
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/delivery-electron-build-verification.log
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/handoff-summary.md
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/release-deployment-report.md
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/delivery-revision-record.md
+PASS: build-owned untracked backend SDK dist removed
+PASS: pre-existing non-owned contracts dist preserved and excluded
+PASS: DR-002 cross-artifact markers
+PASS: delivery markdown contains no tab characters
+PASS: DR-002 final validation complete
+
+DR-003 failed-verification reroute artifact validation
+===================================================
+PASS: git diff --check
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/user-verification-summary.json
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/backend-state.json
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-task-one-selected.png
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-two-task-rows.png
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/investigation-evidence/user-verification-electron-29695/electron-task-two-selected.png
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/handoff-summary.md
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/release-deployment-report.md
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/delivery-revision-record.md
+PASS: exists tickets/in-progress/task-agent-monitor-visibility/docs-sync-report.md
+PASS: failure JSON evidence parses
+PASS: DR-003 status/classification/reroute markers
+PASS: delivery markdown contains no tab characters
+PASS: DR-003 reroute artifacts ready
+
+DR-004 corrected-candidate delivery validation
+==============================================
+Checked at: 2026-09-01 01:06:53 CEST
+PASS: git diff --check
+PASS: corrected HEAD/base integration markers
+PASS: corrected package and authoritative DR-004 artifacts exist
+PASS: corrected DMG/ZIP SHA-256 values
+PASS: package isolation, temporary-launcher removal, and generated-output ownership
+PASS: DR-004, CRR-005, API-REV-003, and CRR-006 cross-artifact markers
+NOTE: Initial implementation-class-name documentation guard was inapplicable; the canonical doc intentionally records the architecture as a registry-local durability event gate. Validation continued with the durable contract terms below.
+PASS: corrected server/frontend durable documentation guards
+PASS: delivery markdown contains no tab characters
+PASS: recorded package integrity, server lifecycle, and embedded gate identity
+PASS: post-record git diff --check
+PASS: DR-004 corrected candidate ready for renewed user verification; finalization held
+
+DR-005 post-acceptance pre-finalization validation
+================================================
+Checked at: 2026-09-01 04:53:47 CEST
+PASS: explicit user acceptance/finalization/release authorization recorded
+PASS: origin/personal unchanged at 80e2bd195c42ea3ced778dbc051d4d00edaef16f after acceptance
+PASS: ticket archived under tickets/done before final commit
+PASS: finalization owner-unit rerun 2 files / 12 tests; evidence delivery-finalization-owner-unit.log

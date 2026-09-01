@@ -15,6 +15,10 @@ import type {
   TeamExecutionNavigationRow,
   TeamTaskHistoryRow,
 } from './teamExecutionViewModels';
+import {
+  deriveTaskDelegationPresentation,
+  type TeamExecutionTaskPresentation,
+} from './taskDelegationPresentation';
 
 export const agentRowKey = (agentRunId: string): string => `agent:${agentRunId}`;
 export const teamRowKey = (teamRunId: string): string => `team:${teamRunId}`;
@@ -204,16 +208,15 @@ export const projectNavigationRows = (input: {
     agentRunId: string;
     depth: number;
     parentKey: string | null;
-    task?: TaskDelegationRecordDto | null;
+    task?: TeamExecutionTaskPresentation | null;
     coordinatorAddress?: AgentTeamAddress | null;
   }): void => {
     const label = inputAgent.task ? taskLabel(inputAgent.task.description) : memberAddressBasename(inputAgent.address);
     rows.push(Object.freeze({
       key: agentRowKey(inputAgent.agentRunId), kind: inputAgent.kind, address: inputAgent.address,
-      displayName: label, accessibleName: inputAgent.task ? `Task: ${inputAgent.task.description.trim().replace(/\s+/g, ' ')}` : label,
+      displayName: label, accessibleName: inputAgent.task ? `Task: ${inputAgent.task.description}` : label,
       depth: inputAgent.depth, parentKey: inputAgent.parentKey, agentRunId: inputAgent.agentRunId,
-      teamRunId: null, taskId: inputAgent.task?.task_id ?? null,
-      taskStatus: inputAgent.task?.status ?? null, currentStatus: status(inputAgent.agentRunId),
+      teamRunId: null, task: inputAgent.task ?? null, currentStatus: status(inputAgent.agentRunId),
       focusable: true, expandable: false, coordinator: inputAgent.coordinatorAddress === inputAgent.address,
     }));
   };
@@ -221,7 +224,10 @@ export const projectNavigationRows = (input: {
     if (input.purpose === 'LIVE_EXECUTION' && task.settled_at) return;
     if (task.kind === 'task_agent') {
       const record = tasksByAgent.get(task.agent_run_id);
-      if (record) addAgent({ kind: 'task_agent', address: task.address, agentRunId: task.agent_run_id, depth, parentKey, task: record });
+      if (record) addAgent({
+        kind: 'task_agent', address: task.address, agentRunId: task.agent_run_id,
+        depth, parentKey, task: deriveTaskDelegationPresentation(record),
+      });
       return;
     }
     const record = tasksByTeam.get(task.team_run_id);
@@ -234,20 +240,24 @@ export const projectNavigationRows = (input: {
     depth: number,
     parentKey: string,
     coordinatorAddress: AgentTeamAddress,
+    owningTask: TeamExecutionTaskPresentation,
   ): void => {
     for (const member of members) {
       if (member.kind === 'task_team_agent') {
-        addAgent({ kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id, depth, parentKey, coordinatorAddress });
+        addAgent({
+          kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id,
+          depth, parentKey, coordinatorAddress, task: owningTask,
+        });
       } else {
         const key = teamRowKey(member.team_run_id);
         rows.push(Object.freeze({
           key, kind: 'task_team_member', address: member.address,
           displayName: memberAddressBasename(member.address), accessibleName: memberAddressBasename(member.address),
-          depth, parentKey, agentRunId: null, teamRunId: member.team_run_id, taskId: null,
-          taskStatus: null, currentStatus: null, focusable: false,
+          depth, parentKey, agentRunId: null, teamRunId: member.team_run_id, task: owningTask,
+          currentStatus: null, focusable: false,
           expandable: member.members.length > 0 || member.task_executions.length > 0, coordinator: false,
         }));
-        addTaskMembers(member.members, member.task_executions, depth + 1, key, coordinatorAddress);
+        addTaskMembers(member.members, member.task_executions, depth + 1, key, coordinatorAddress, owningTask);
       }
       tasks.filter((task) => task.address === member.address).forEach((task) => addTask(task, depth + 1, member.kind === 'task_team_agent' ? agentRowKey(member.agent_run_id) : teamRowKey(member.team_run_id)));
     }
@@ -262,14 +272,15 @@ export const projectNavigationRows = (input: {
   ): void => {
     const key = teamRowKey(team.team_run_id);
     const coordinatorAddress = configuredTeamAtAddress(input.tree, team.address)?.coordinator_address ?? team.address;
+    const presentation = deriveTaskDelegationPresentation(task);
     rows.push(Object.freeze({
       key, kind: 'task_team', address: team.address,
-      displayName: taskLabel(task.description), accessibleName: `Task: ${task.description.trim().replace(/\s+/g, ' ')}`,
-      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, taskId: task.task_id,
-      taskStatus: task.status, currentStatus: null, focusable: false,
+      displayName: taskLabel(presentation.description), accessibleName: `Task: ${presentation.description}`,
+      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, task: presentation,
+      currentStatus: null, focusable: false,
       expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
     }));
-    addTaskMembers(team.members, team.task_executions, depth + 1, key, coordinatorAddress);
+    addTaskMembers(team.members, team.task_executions, depth + 1, key, coordinatorAddress, presentation);
   };
   const addConfiguredTeam = (
     team: ConfiguredTeamExecutionDto | TeamRunExecutionTreeDto['root_team'],
@@ -282,8 +293,8 @@ export const projectNavigationRows = (input: {
       key, kind: 'configured_team', address: isRoot ? '/' : (team as ConfiguredTeamExecutionDto).address,
       displayName: isRoot ? input.tree.root_team.team_definition_name : memberAddressBasename((team as ConfiguredTeamExecutionDto).address),
       accessibleName: isRoot ? input.tree.root_team.team_definition_name : memberAddressBasename((team as ConfiguredTeamExecutionDto).address),
-      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, taskId: null,
-      taskStatus: null, currentStatus: null, focusable: false,
+      depth, parentKey, agentRunId: null, teamRunId: team.team_run_id, task: null,
+      currentStatus: null, focusable: false,
       expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
     }));
     for (const member of team.members) {

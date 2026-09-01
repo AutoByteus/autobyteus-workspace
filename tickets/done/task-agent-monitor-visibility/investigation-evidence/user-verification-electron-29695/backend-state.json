@@ -1,0 +1,116 @@
+{
+  "capturedAt": "2026-08-31T19:40:54Z",
+  "endpoint": "http://127.0.0.1:29695/graphql",
+  "teamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+  "checkpoint": {
+    "rootTeamRunId": "nested_classroom_test_team_50a66215ad3648688d73998834c9ceb4",
+    "changeSequence": 3724,
+    "hasOpenExecutionWork": true
+  },
+  "tasks": [
+    {
+      "taskId": "task_085f7b59c5f84b7fa61deee9c7f32287",
+      "delegatorAgentRunId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+      "recipientAddress": "/StudentStudyGroup/student_two",
+      "targetAgentRunId": "student_two_b3e580beab9c40fea2b6a29231532321",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Complete this bounded classroom smoke test: submit the exact token STUDENT_TWO_DELEGATED_OK using submit_task_result. Do not add explanation or other text.",
+      "createdAt": "2026-08-31T19:31:14.885Z",
+      "updates": []
+    },
+    {
+      "taskId": "task_260496d06b4e46c88627f70a1751b843",
+      "delegatorAgentRunId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+      "recipientAddress": "/StudentStudyGroup/student_two",
+      "targetAgentRunId": "student_two_aba1b01800364f3bbeda261574dd8ed3",
+      "targetTeamRunId": null,
+      "status": "active",
+      "description": "Complete this bounded smoke test: submit the exact token STUDENT_TWO_DELEGATED_OK_TWO using submit_task_result. Do not add explanation or any other text.",
+      "createdAt": "2026-08-31T19:35:49.456Z",
+      "updates": []
+    }
+  ],
+  "messagesFromExactTaskRuns": [
+    {
+      "messageId": "teammsg_6-SooRDqsRlMstzSUhG0YLwR5ZrQFofS",
+      "senderAgentRunId": "student_two_b3e580beab9c40fea2b6a29231532321",
+      "receiverAgentRunId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+      "content": "STUDENT_TWO_DELEGATED_OK",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-31T19:31:50.176Z"
+    },
+    {
+      "messageId": "teammsg_0BCSoKFmYnD9I17WD3Tu6KI59yipJ-nP",
+      "senderAgentRunId": "student_two_b3e580beab9c40fea2b6a29231532321",
+      "receiverAgentRunId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+      "content": "STUDENT_TWO_DELEGATED_OK",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-31T19:32:00.638Z"
+    },
+    {
+      "messageId": "teammsg_8bLNLEoAp95rHWPluzMDbd-6CaZHUxGf",
+      "senderAgentRunId": "student_two_aba1b01800364f3bbeda261574dd8ed3",
+      "receiverAgentRunId": "student_one_600a8c0f902c4bfb87c03e6bbb73aae5",
+      "content": "STUDENT_TWO_DELEGATED_OK_TWO",
+      "messageType": "agent_message",
+      "createdAt": "2026-08-31T19:36:23.839Z"
+    }
+  ],
+  "projections": [
+    {
+      "agentRunId": "student_two_b3e580beab9c40fea2b6a29231532321",
+      "lastActivityAt": "2026-08-31T19:32:01.884Z",
+      "summary": "Task delegator address: /StudentStudyGroup/student_one Task delegator AgentRun ID: student_one_60...",
+      "conversationEntryCount": 8,
+      "activityCount": 4,
+      "conversationKinds": [
+        "message",
+        "reasoning",
+        "tool_call",
+        "reasoning",
+        "tool_call",
+        "reasoning",
+        "tool_call",
+        "message"
+      ],
+      "toolNames": [
+        "send_message_to",
+        "get_handoff_rules",
+        "send_message_to"
+      ],
+      "assistantTexts": [
+        "STUDENT_TWO_DELEGATED_OK"
+      ],
+      "activityKinds": [
+        "system_instruction",
+        "tool",
+        "tool",
+        "tool"
+      ]
+    },
+    {
+      "agentRunId": "student_two_aba1b01800364f3bbeda261574dd8ed3",
+      "lastActivityAt": "2026-08-31T19:36:25.908Z",
+      "summary": "Task delegator address: /StudentStudyGroup/student_one Task delegator AgentRun ID: student_one_60...",
+      "conversationEntryCount": 4,
+      "activityCount": 2,
+      "conversationKinds": [
+        "message",
+        "reasoning",
+        "tool_call",
+        "message"
+      ],
+      "toolNames": [
+        "send_message_to"
+      ],
+      "assistantTexts": [
+        "STUDENT_TWO_DELEGATED_OK_TWO"
+      ],
+      "activityKinds": [
+        "system_instruction",
+        "tool"
+      ]
+    }
+  ]
+}

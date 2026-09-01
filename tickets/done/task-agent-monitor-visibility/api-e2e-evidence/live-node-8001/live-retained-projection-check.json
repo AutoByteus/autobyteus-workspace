@@ -1,0 +1,247 @@
+{
+  "startedAt": "2026-08-31T17:56:40.103Z",
+  "backendUrl": "http://127.0.0.1:8001",
+  "rootTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+  "taskAgentRunId": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd",
+  "configuredAgentRunId": "student_one_88bc7221b197477388fc88e73874ae07",
+  "memberAddress": "/StudentStudyGroup/student_one",
+  "result": "Pass",
+  "captures": [
+    {
+      "label": "task-selected",
+      "capturedAt": "2026-08-31T17:56:52.402Z",
+      "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+      "selectedTeamMemberAddress": "/StudentStudyGroup/student_one",
+      "focusedAgentRunId": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd",
+      "currentRows": [
+        {
+          "dataTest": "workspace-team-transient-execution-row",
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "ariaLabel": "Temporary task agent, You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result., level 3, Interrupted · Offline, /StudentStudyGroup/student_one",
+          "text": "Task: You are coordinator student_one for live monitor prob… Interrupted · Offline"
+        }
+      ],
+      "focusedContext": {
+        "runId": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd",
+        "currentStatus": "offline",
+        "conversationMessageCount": 2,
+        "activityCount": 5,
+        "conversationText": "Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_53ec983b17b84972b96dd240ac4c4920 Description: You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. Delegated to `/StudentStudyGroup/student_two`; waiting for the formal task result."
+      },
+      "mainText": "S student_one Task Offline You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. Interrupted · Offline You Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_53ec983b17b84972b96dd240ac4c4920 Description: You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. S student_one Thinking delegate_task Thinking run_bash · /bin/bash -lc 'sleep 125' Thinking run_bash · /bin/bash -lc 'sleep 10' Thinking get_handoff_rules Thinking Delegated to /StudentStudyGroup/student_two; waiting for the formal task result. Context Files (0) (drag, paste, or upload) Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages Tasks 2 tasks You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. Interrupted Updated 05:50 PM Teacher → StudentStudyGroup Task interrupted System lifecycle event 05:50 PM Interrupted because live task recovery is not supported after TeamRun reopen. STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result. Interrupted Updated 05:50 PM student_one → student_two Task interrupted System lifecycle event 05:50 PM Interrupted because live task recovery is not supported after TeamRun reopen. Task assigned Interrupted Teacher → StudentStudyGroup Aug 31, 05:15 PM You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result."
+    },
+    {
+      "label": "configured-member-selected",
+      "capturedAt": "2026-08-31T17:56:52.535Z",
+      "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+      "selectedTeamMemberAddress": "/StudentStudyGroup/student_one",
+      "focusedAgentRunId": "student_one_88bc7221b197477388fc88e73874ae07",
+      "currentRows": [
+        {
+          "dataTest": "workspace-team-member-nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434-/StudentStudyGroup/student_one",
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "ariaLabel": "Agent, student_one, level 2, offline, /StudentStudyGroup/student_one",
+          "text": "S student_one 3h"
+        }
+      ],
+      "focusedContext": {
+        "runId": "student_one_88bc7221b197477388fc88e73874ae07",
+        "currentStatus": "offline",
+        "conversationMessageCount": 22,
+        "activityCount": 12,
+        "conversationText": "You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Acknowledged the study-group coordination check. I’ll remain available. Acknowledged. I’ll remain available for the delegated task. You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Confirmed—the task remains active while we wait. Understood. I’ll remain available while the task is active. You received a message from sender name: student_two, sender id: student_two_783c12f8740e418d9d376245f4d45af3 message: STUDENT_TWO_TASK_STARTED Acknowledged: `STUDENT_TWO_TASK_STARTED`. You received a message from sender name: student_two, sender id: student_two_783c12f8740e418d9d376245f4d45af3 message: STUDENT_TWO_TASK_FINISHED Acknowledged. Please provide the task result if coordinator submission is required. You received a message from sender name: student_two, sender id: student_two_783c12f8740e418d9d376245f4d45af3 message: No—the required task result was not submitted via submit_task_result because that tool was unavailable. I sent STUDENT_TWO_TASK_FINISHED as an ordinary message after the required wait. Unable to submit: the system reports no active assigned task (`TASK_NOT_ACTIVE`). You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Task result: STUDENT_TWO_TASK_FINISHED Teacher notified: `STUDENT_TWO_TASK_FINISHED`. Formal submission was unavailable because no active task was assigned. You received a message from sender name: Teacher, sender id: test_teacher_53ec983b17b84972b96dd240ac4c4920 message: Please do not submit on behalf of student_two. The student_two result is reported as STUDENT_TWO_TASK_FINISHED, but formal submission returned TASK_NOT_ACTIVE. If your parent task execution is active, submit the nested probe outcome through your own task lifecycle so I can review it; otherwise report the runtime failure. Confirmed: my task execution is not active (`TASK_NOT_ACTIVE`), so I cannot submit formally. Runtime failure reported to Teacher. You received a message from sender name: student_two, sender id: student_two_4e582e56314f47d0b80ee606c03eb14c message: STUDENT_TWO_TASK_STARTED Acknowledged: `STUDENT_TWO_TASK_STARTED`. You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Acknowledged: STUDENT_TWO_TASK_STARTED. Noted. You received a message from sender name: student_two, sender id: student_two_617e2f1d206245e5b6bd4ae450284846 message: STUDENT_TWO_TASK_STARTED Acknowledged: `STUDENT_TWO_TASK_STARTED`. You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Acknowledged: STUDENT_TWO_TASK_STARTED. Noted."
+      },
+      "mainText": "S student_one Offline You You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Acknowledged the study-group coordination check. I’ll remain available. S student_one Thinking get_handoff_rules Acknowledged. I’ll remain available for the delegated task. You You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Confirmed—the task remains active while we wait. S student_one Thinking send_message_to Understood. I’ll remain available while the task is active. You You received a message from sender name: student_two, sender id: student_two_783c12f8740e418d9d376245f4d45af3 message: STUDENT_TWO_TASK_STARTED S student_one send_message_to Acknowledged: STUDENT_TWO_TASK_STARTED. You You received a message from sender name: student_two, sender id: student_two_783c12f8740e418d9d376245f4d45af3 message: STUDENT_TWO_TASK_FINISHED S student_one Thinking send_message_to Acknowledged. Please provide the task result if coordinator submission is required. You You received a message from sender name: student_two, sender id: student_two_783c12f8740e418d9d376245f4d45af3 message: No—the required task result was not submitted via submit_task_result because that tool was unavailable. I sent STUDENT_TWO_TASK_FINISHED as an ordinary message after the required wait. S student_one Thinking submit_task_result · NESTED_CLASSROOM_OK The caller has no active assigned task. Thinking Unable to submit: the system reports no active assigned task (TASK_NOT_ACTIVE). You You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Task result: STUDENT_TWO_TASK_FINISHED S student_one Thinking get_handoff_rules send_message_to Teacher notified: STUDENT_TWO_TASK_FINISHED. Formal submission was unavailable because no active task was assigned. You You received a message from sender name: Teacher, sender id: test_teacher_53ec983b17b84972b96dd240ac4c4920 message: Please do not submit on behalf of student_two. The student_two result is reported as STUDENT_TWO_TASK_FINISHED, but formal submission returned TASK_NOT_ACTIVE. If your parent task execution is active, submit the nested probe outcome through your own task lifecycle so I can review it; otherwise report the runtime failure. S student_one Thinking send_message_to Confirmed: my task execution is not active (TASK_NOT_ACTIVE), so I cannot submit formally. Runtime failure reported to Teacher. You You received a message from sender name: student_two, sender id: student_two_4e582e56314f47d0b80ee606c03eb14c message: STUDENT_TWO_TASK_STARTED S student_one send_message_to Acknowledged: STUDENT_TWO_TASK_STARTED. You You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Acknowledged: STUDENT_TWO_TASK_STARTED. S student_one send_message_to Noted. You You received a message from sender name: student_two, sender id: student_two_617e2f1d206245e5b6bd4ae450284846 message: STUDENT_TWO_TASK_STARTED S student_one send_message_to Acknowledged: STUDENT_TWO_TASK_STARTED. You You received a message from sender name: student_two, sender id: student_two_27e3a3a370264e429ef3fcd4bb6c5a74 message: Acknowledged: STUDENT_TWO_TASK_STARTED. S student_one Noted. Context Files (0) (drag, paste, or upload) Files Team Terminal Activity Token Artifacts VNC Viewer Messages 19 Messages Tasks 0 tasks No delegated tasks yet Delegated work appears here from saved task records."
+    },
+    {
+      "label": "task-reselected",
+      "capturedAt": "2026-08-31T17:56:52.660Z",
+      "selectedTeamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+      "selectedTeamMemberAddress": "/StudentStudyGroup/student_one",
+      "focusedAgentRunId": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd",
+      "currentRows": [
+        {
+          "dataTest": "workspace-team-transient-execution-row",
+          "memberAddress": "/StudentStudyGroup/student_one",
+          "ariaLabel": "Temporary task agent, You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result., level 3, Interrupted · Offline, /StudentStudyGroup/student_one",
+          "text": "Task: You are coordinator student_one for live monitor prob… Interrupted · Offline"
+        }
+      ],
+      "focusedContext": {
+        "runId": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd",
+        "currentStatus": "offline",
+        "conversationMessageCount": 2,
+        "activityCount": 5,
+        "conversationText": "Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_53ec983b17b84972b96dd240ac4c4920 Description: You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. Delegated to `/StudentStudyGroup/student_two`; waiting for the formal task result."
+      },
+      "mainText": "S student_one Task Offline You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. Interrupted · Offline You Task delegator address: /Teacher Task delegator AgentRun ID: test_teacher_53ec983b17b84972b96dd240ac4c4920 Description: You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. S student_one Thinking delegate_task Thinking run_bash · /bin/bash -lc 'sleep 125' Thinking run_bash · /bin/bash -lc 'sleep 10' Thinking get_handoff_rules Thinking Delegated to /StudentStudyGroup/student_two; waiting for the formal task result. Context Files (0) (drag, paste, or upload) Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages Tasks 2 tasks You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. 1. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. 2. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. 3. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. 4. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result. Interrupted Updated 05:50 PM Teacher → StudentStudyGroup Task interrupted System lifecycle event 05:50 PM Interrupted because live task recovery is not supported after TeamRun reopen. STUDENT_TWO_MONITOR_PROBE_ROUND3. Immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit the result before the 120-second wait. The coordinator student_one must remain waiting for your formal task result. Interrupted Updated 05:50 PM student_one → student_two Task interrupted System lifecycle event 05:50 PM Interrupted because live task recovery is not supported after TeamRun reopen. Task assigned Interrupted Teacher → StudentStudyGroup Aug 31, 05:15 PM You are coordinator student_one for live monitor probe round 3. Do not perform the delegated subtask yourself. Use delegate_task to delegate one dedicated subtask to the exact student_two Agent address available in your own Team roster, using its canonical address exactly. The student_two subtask description must begin with STUDENT_TWO_MONITOR_PROBE_ROUND3 and require student_two to immediately send student_one an ordinary message containing exactly STUDENT_TWO_TASK_STARTED. Require student_two to run at least one visible tool step, wait at least 120 seconds, and only then call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Wait for the student_two task result and must not perform the subtask yourself. After delegating, remain waiting for the formal student_two task result."
+    }
+  ],
+  "graphql": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "test_teacher_53ec983b17b84972b96dd240ac4c4920"
+      },
+      "requestedAt": "2026-08-31T17:56:48.711Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_88bc7221b197477388fc88e73874ae07"
+      },
+      "requestedAt": "2026-08-31T17:56:48.711Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_27e3a3a370264e429ef3fcd4bb6c5a74"
+      },
+      "requestedAt": "2026-08-31T17:56:48.711Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_4d1b2e43ca05469c90493bd439f997e1"
+      },
+      "requestedAt": "2026-08-31T17:56:48.711Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_84cd6ca620674fd194d117845d9236a7"
+      },
+      "requestedAt": "2026-08-31T17:56:48.711Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_5dacea03064a4317b9bb5004be42dc70"
+      },
+      "requestedAt": "2026-08-31T17:56:48.711Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_5529bbb0a26a4dfaa0ae787a8261c80a"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_783c12f8740e418d9d376245f4d45af3"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_3436676b46924505aca864678df010c7"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_a5663cf5aa88430090d35a1d2f65a6ac"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_4e582e56314f47d0b80ee606c03eb14c"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_one_8e5ffe4a8dbb479294f7f0cd785b6bbd"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_63add49c116e49ca8ee8912a91a58b98"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "agentRunId": "student_two_617e2f1d206245e5b6bd4ae450284846"
+      },
+      "requestedAt": "2026-08-31T17:56:48.712Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 39329,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed"
+  },
+  "backendHealth": {
+    "status": 200,
+    "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+  },
+  "frontendUrl": "http://127.0.0.1:57215",
+  "finishedAt": "2026-08-31T17:56:52.793Z"
+}
