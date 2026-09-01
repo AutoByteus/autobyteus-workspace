@@ -2,19 +2,19 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-revision-record.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-doc.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-revision-record.md`
 - Design Spec / Architecture Design Revision / Design Review / Architecture Review: `N/A — not applicable` for the direct route
 - Supplemental Task Artifacts: retained provider probe summary/raw JSONL/reproduction script and approved user screenshot from the cumulative package
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md` (`IR-002`)
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-revision-record.md` (`IR-002`)
 - Code Review Report / Revision Record: `N/A — not applicable under the matching direct Small/Low route`; the user's unmatched request remains recorded upstream
-- Delivery Blocker: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-integration-blocker.md`
-- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md` (`DR-001`)
+- Delivery Blocker: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-integration-blocker.md`
+- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-revision-record.md` (`DR-001`)
 - Delivery Docs/Release Reports: `docs-sync-report.md`; `release-deployment-report.md`
-- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-revision-record.md`
+- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-002`
 - Current Execution Round: `2`
 - Trigger: `DR-001` latest-base conflict -> `IR-002` integrated Local Fix
@@ -133,7 +133,7 @@ None. `IR-002` changed no durable test or production behavior. Existing reposito
 
 ## Round 2 Execution Artifacts
 
-- Root: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e-round-2/`
+- Root: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/api-e2e-round-2/`
 - Machine-readable browser evidence: `browser/evidence.json`
 - Screenshots: `browser/desktop-failure-surfaces.png`; `browser/narrow-failure-surfaces.png`
 - Exact logs: `logs/*.log`

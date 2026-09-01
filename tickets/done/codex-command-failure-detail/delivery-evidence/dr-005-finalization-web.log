@@ -1,0 +1,32 @@
+
+> autobyteus@1.4.64 test:nuxt /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/ToolCallIndicator.spec.ts components/progress/__tests__/ToolActivityItem.spec.ts --run --reporter=dot
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+
+stderr | components/conversation/__tests__/ToolCallIndicator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/ToolActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/__tests__/ToolCallIndicator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/ToolActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+············
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  12:52:02
+   Duration  11.10s (transform 6.25s, setup 19.46s, collect 103ms, tests 45ms, environment 1.26s, prepare 661ms)

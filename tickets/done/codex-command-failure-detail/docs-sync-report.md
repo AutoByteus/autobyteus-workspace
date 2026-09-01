@@ -3,11 +3,11 @@
 ## Scope
 
 - Ticket: `codex-command-failure-detail`
-- Current delivery revision: `DR-004`
-- Trigger: `IR-002` resolved DR-001 and `API-REV-002` passed the integrated current-base candidate at 98% confidence
+- Current delivery revision: `DR-005`
+- Trigger: explicit user acceptance of the DR-004 Electron session and authorization to finalize without a new release
 - Bootstrap base reference: `80e2bd195c42ea3ced778dbc051d4d00edaef16f`
 - Integrated base reference used for docs sync: `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52`, integrated by merge `a14532534cbb618fd859d8e760f3baeafb1b01d7`
-- Post-integration verification reference: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-execution-coverage-report.md` (`API-REV-002`, evidence commit `e28c65f00e459c89bcb0fd9b47fff5e151ddbcfe`)
+- Post-integration verification reference: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-execution-coverage-report.md` (`API-REV-002`, evidence commit `e28c65f00e459c89bcb0fd9b47fff5e151ddbcfe`)
 
 ## Why Docs Were Updated
 
@@ -57,12 +57,12 @@ No component, API, schema, or persisted record format was removed.
 - Fresh delivery fetch: `origin/personal` remained `ad63d74275a4eb204ebc6d97a2260aa9790fea52` and is already an ancestor of validated HEAD `e28c65f00e459c89bcb0fd9b47fff5e151ddbcfe`; divergence was `7 ahead / 0 behind`.
 - No additional behavioral rerun was needed because `API-REV-002` validated that exact HEAD against the same unchanged base immediately before docs sync, and Delivery changed documentation/handoff artifacts only.
 - Markdown/patch hygiene, source-to-doc assertions, package-script/README target consistency, no-unmerged-state, and artifact presence checks passed.
-- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-evidence/dr-002-docs-sync-and-handoff.log`.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-evidence/dr-002-docs-sync-and-handoff.log`.
 
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Hold for explicit user verification of the integrated handoff. After verification, refresh the finalization target again before archival, commit/push, and target merge/push.
+- Next delivery action: Complete the staged archived-ticket commit/push, merge/push to `personal`, and perform safe branch/build-output cleanup. Release/version/tag/deployment work is explicitly not required.
 - Notes: Task size `Small`, architectural risk `Low`, and `Direct Low-Risk` route are preserved. Architecture/source-review artifacts remain `N/A — not applicable`; no route reclassification occurred.
 
 ## Blocked Or Escalated Follow-Up
@@ -83,3 +83,12 @@ No component, API, schema, or persisted record format was removed.
 - The exact unpacked packaged Electron payload ran for user testing with the ordinary production embedded port/data contract; the user accepted the behavior and Delivery stopped the owned process tree cleanly.
 - The AppImage wrapper's missing unversioned `libz.so` on this minimal host is recorded in the ticket-local launch report; it does not change the documented Codex mapping, replay, or presentation behavior.
 - Result: `Pass — no additional long-lived documentation edit required`; no portability claim or release action is inferred from the local launch.
+
+
+### DR-005 Post-Acceptance Finalization Check
+
+- The user explicitly confirmed that the tested behavior works and requested ticket finalization without a new version.
+- Delivery refreshed `origin/personal` after that signal. It remained `ad63d74275a4eb204ebc6d97a2260aa9790fea52`, already contained by the accepted ticket state (`0 behind / 9 ahead` before the archive commit), so no base change or user-facing delta required renewed verification.
+- Post-acceptance checks passed: focused server `5 files / 87 tests`, focused frontend `2 files / 12 tests`, diff/ancestry/merge-state, integrated README/package probe inventory, and repository artifact hygiene.
+- Ticket artifacts were moved to `tickets/done/codex-command-failure-detail`; archival changes do not alter the synchronized runtime behavior.
+- Result: `Pass — canonical documentation remains current; no additional long-lived documentation edit required during finalization`.

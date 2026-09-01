@@ -2,7 +2,7 @@
 
 ## Status
 
-`User verified / accepted; repository finalization in progress` — the DR-001 README conflict is resolved, the current-base integrated candidate passed API/E2E at 98% confidence, durable documentation is synchronized, and the README-guided packaged app build/launch checks passed. The user explicitly confirmed that the behavior works and asked Delivery to finalize without releasing a new version.
+`User verified / accepted; archived package ready for repository finalization` — the DR-001 README conflict is resolved, the current-base integrated candidate passed API/E2E at 98% confidence, durable documentation is synchronized, and the README-guided packaged app build/launch checks passed. The user explicitly confirmed that the behavior works and asked Delivery to finalize without releasing a new version.
 
 ## Classification And Route
 
@@ -61,7 +61,7 @@
 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
 ```
 
-- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-build-linux-report.md`
+- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/electron-build-linux-report.md`
 - Compatibility: local Linux ARM64 verification artifact; not a published release and not usable on macOS, Windows, or Linux x64.
 
 ## Completed User-Testing Session
@@ -73,7 +73,7 @@
 - Embedded health: `http://127.0.0.1:29695/rest/health` — healthy
 - Production data root: `/root/.autobyteus/server-data`
 - X11 window: visible interactive `autobyteus` window; latest observed size `1510x864`
-- Launch report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-user-launch-report.md`
+- Launch report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/electron-user-launch-report.md`
 - Host note: direct AppImage wrapper startup failed because this minimal host lacks unversioned `libz.so`; the exact unpacked payload was run with container-required `--no-sandbox`. No E2E isolation profile was active.
 - User acceptance: `2026-09-01 user message — “the task is done. i tested it works. lets finalize the ticket. no need to release a new version”`
 - Cleanup: Electron and its embedded backend stopped gracefully; port `29695` was closed at `2026-09-01T12:48:10Z`.
@@ -95,8 +95,18 @@ The user explicitly verified and accepted this integrated handoff. Delivery is c
   - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
   - `autobyteus-web/docs/agent_execution_architecture.md`
   - `autobyteus-web/README.md` (durable browser-probe command from API/E2E, integrated with the current-base task probe)
-- Ticket release notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/release-notes.md`
-- Ticket-scoped release/publication/deployment: `Not required unless separately requested or authorized`; no version/tag/release/deployment action has occurred
+- Ticket release notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/release-notes.md`
+- Ticket-scoped release/publication/deployment: `Not required — user explicitly requested no new version`; no version/tag/release/deployment action has occurred
+
+## Post-Acceptance Finalization Gate
+
+- Delivery-owned edits protected: checkpoint `33a22161bf4606e5858eb4cb3cba45aeabd47224`.
+- Mandatory target refresh: `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52` unchanged and already contained (`0 behind / 9 ahead` before the archive commit).
+- Renewed verification: `Not required` — no new base commit or user-facing behavior entered the accepted state.
+- Focused server: `5 files / 87 tests passed`.
+- Focused frontend: `2 files / 12 tests passed`.
+- Integrity: diff, ancestry, merge state, README/package probe inventory, and artifact hygiene passed.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-evidence/dr-005-finalization-refresh.log` and `dr-005-finalization-*.log`.
 
 ## Residual Risks And Baselines
 
@@ -109,7 +119,7 @@ The user explicitly verified and accepted this integrated handoff. Delivery is c
 ## Finalization State
 
 - Explicit user verification: `Completed`
-- Ticket moved to `tickets/done`: `No`
+- Ticket moved to `tickets/done`: `Yes — /home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail`
 - Ticket branch committed/pushed for finalization: `No`
 - Merge/push into `personal`: `No`
 - Release/deployment: `Not required — the user explicitly requested no new version; none performed`

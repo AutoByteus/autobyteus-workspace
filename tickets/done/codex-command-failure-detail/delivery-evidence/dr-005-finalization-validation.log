@@ -1,0 +1,22 @@
+# DR-005 Post-Acceptance Finalization Validation
+Started UTC: 2026-09-01T12:51:36Z
+HEAD: 33a22161bf4606e5858eb4cb3cba45aeabd47224
+Base: ad63d74275a4eb204ebc6d97a2260aa9790fea52
+Final target refresh integrated no new commits; the accepted user-facing state is unchanged, so renewed user verification is not required.
+
++ focused server validation (5 files)
+Focused server exit: 0
+
++ focused frontend validation (2 files)
+Focused frontend exit: 0
+
++ repository integrity checks
+Repository artifact hygiene check passed.
+Tracked files scanned: 26764
+Path-length threshold: 200
+Longest tracked path: 199 chars: tickets/done/event-monitor-history-transparency/probes/api-e2e/full-stack-runtime/data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-08-20T18-45-01-177Z.log
+PASS: diff, ancestry, merge-state, integrated README/package inventory, and repository artifact hygiene.
+Completed UTC: 2026-09-01T12:52:13Z
+
+Post-test cleanup: generated autobyteus-ts, application SDK contracts, application backend SDK dist directories and server test .tmp were removed.
+Ticket archive transition: tickets/in-progress/codex-command-failure-detail -> tickets/done/codex-command-failure-detail.

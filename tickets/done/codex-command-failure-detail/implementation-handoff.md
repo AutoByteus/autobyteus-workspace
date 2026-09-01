@@ -3,25 +3,25 @@
 ## Upstream Artifact Package
 
 - Upstream route: `Direct Requirements-to-Implementation`
-- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md`
-- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`
-- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-revision-record.md`
-- Requirements routing assessment: `Architecture Design Routing Assessment` in `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md`
+- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-doc.md`
+- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/investigation-notes.md`
+- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-revision-record.md`
+- Requirements routing assessment: `Architecture Design Routing Assessment` in `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-doc.md`
 - Design spec: `N/A — not applicable`
 - Supplemental task artifacts:
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-command-failure-probe.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probe-codex-failed-command.py`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-command-failure-probe.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probe-codex-failed-command.py`
   - `/home/autobyteus/data/memory/agent_teams/software_development_department_b40dd773428c4a3fa3643158732e996b/requirements_engineer_01fcde30983a42f6983f16280a00c327/context_files/ctx_efd9a119e8ba__image.png`
 - Architecture design revision record: `N/A — not applicable`
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
 - Triggering rework report, revision record, or evidence, when applicable:
   - Initial implementation from approved requirements commit `5902f6fe7b2b8677c67d011647949d79811e509d`; after implementation and before handoff, the user explicitly requested source code review on 2026-09-01.
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-execution-coverage-report.md` (`API-REV-001`, Pass / 98%, validated candidate `005aa4f84a3315d467f949c40ff86afd9872599a`)
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-integration-blocker.md` (`DR-001`)
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-evidence/dr-001-integration-refresh.log`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-execution-coverage-report.md` (`API-REV-001`, Pass / 98%, validated candidate `005aa4f84a3315d467f949c40ff86afd9872599a`)
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-integration-blocker.md` (`DR-001`)
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-evidence/dr-001-integration-refresh.log`
 
 ## Current Implementation Summary
 
@@ -32,7 +32,7 @@ The existing canonical failure string continues through standalone/team streamin
 For `IR-002`, the previously validated candidate was integrated with the latest fetched base `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52` in merge commit `a14532534cbb618fd859d8e760f3baeafb1b01d7`. The sole conflict in `autobyteus-web/README.md` was resolved additively: both the Codex command-failure browser probe and incoming task-agent monitor browser probe remain documented, both package scripts remain present, and the shared port/Chromium discovery note appears once. Both `005aa4f84a3315d467f949c40ff86afd9872599a` and the fetched base are confirmed ancestors; no unmerged path or active merge state remains. No production behavior was changed by this integration correction.
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md`
+- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related architecture design revision IDs: `N/A`
 - Related architecture-review revision IDs: `N/A`
@@ -45,7 +45,7 @@ For `IR-002`, the previously validated candidate was integrated with the latest 
 
 - Task size (`Small`/`Medium`/`Large`): `Small`
 - Architecture risk (`Low`/`High`): `Low`
-- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md` (`Architecture Design Routing Assessment`)
+- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-doc.md` (`Architecture Design Routing Assessment`)
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: The completed product delta remains a bounded command-family content projection plus one existing-card whitespace class. `IR-002` only resolves an additive README merge conflict against the current base and retains both existing probe contracts. It changes no public event shape, persistence schema, lifecycle, ownership boundary, concurrency, security/privacy policy, deployment topology, migration behavior, or production source. The only ticket production source change remains under the 500-effective-line guardrail and the source delta is below the 220-line pressure threshold.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E — the current team-config has no Code Reviewer rule for confirmed Small/Low work; the user's explicit source-review request is recorded for downstream visibility without falsifying the classification`
@@ -70,7 +70,7 @@ For `IR-002`, the previously validated candidate was integrated with the latest 
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/components/conversation/__tests__/ToolCallIndicator.spec.ts`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/README.md`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/package.json`
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/implementation-ir-002/`
 
 ## Important Assumptions
 
@@ -128,9 +128,9 @@ For `IR-002`, the previously validated candidate was integrated with the latest 
 - Frontend component/handler suite for center card, Activity item, and failure handler: 3 files, 24 tests — passed after `nuxt prepare`.
 - `pnpm -C autobyteus-server-ts typecheck` — not passed due the baseline `TS6059` repository configuration issue described above; no errors from the changed source were present in the passing build-config source check.
 - `IR-002` integrated focused provider/parser/converter/history suite: 4 files, 85 tests — passed.
-- `IR-002` package-script browser execution: `pnpm -C autobyteus-web test:e2e:codex-command-failure-detail -- --browser-executable /usr/bin/chromium --output-dir ../tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/browser` — passed at desktop and 390px with owned fixture/process cleanup.
-- `IR-002` executable README/package consistency assertion — passed; both probe sections, both package scripts, both executable target files, one shared browser-discovery note, and no conflict markers were confirmed. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/readme-package-consistency.log`.
-- `IR-002` integration verification — passed; merge commit `a14532534cbb618fd859d8e760f3baeafb1b01d7` has validated candidate `005aa4f84a3315d467f949c40ff86afd9872599a` and latest base `ad63d74275a4eb204ebc6d97a2260aa9790fea52` as parents/ancestors, with no unmerged path or active merge. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/integration-verification.log`.
+- `IR-002` package-script browser execution: `pnpm -C autobyteus-web test:e2e:codex-command-failure-detail -- --browser-executable /usr/bin/chromium --output-dir ../tickets/done/codex-command-failure-detail/probes/implementation-ir-002/browser` — passed at desktop and 390px with owned fixture/process cleanup.
+- `IR-002` executable README/package consistency assertion — passed; both probe sections, both package scripts, both executable target files, one shared browser-discovery note, and no conflict markers were confirmed. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/implementation-ir-002/readme-package-consistency.log`.
+- `IR-002` integration verification — passed; merge commit `a14532534cbb618fd859d8e760f3baeafb1b01d7` has validated candidate `005aa4f84a3315d467f949c40ff86afd9872599a` and latest base `ad63d74275a4eb204ebc6d97a2260aa9790fea52` as parents/ancestors, with no unmerged path or active merge. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/implementation-ir-002/integration-verification.log`.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -140,7 +140,7 @@ For `IR-002`, the previously validated candidate was integrated with the latest 
 - Project development / preview instructions and rendered surface used: Integrated `autobyteus-web/README.md`; project-owned self-starting Nuxt/Chromium probe invoked through the integrated `autobyteus-web/package.json` script.
 - States, layouts, viewports, and interactions inspected: Failed center-card and Activity diagnostic at 1280px and 390px. Exact multiline marker/exit-code text, computed whitespace preservation, and absence of narrow document overflow were asserted; resulting screenshots were visually inspected.
 - Visual or interaction issues found and corrected: The Activity card already used `whitespace-pre-wrap`; the center tool card did not. Added the same whitespace-preserving behavior without changing layout or interaction.
-- Supporting evidence and remaining unverified states or limitations: Integrated browser evidence passed and is retained at `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/browser/evidence.json`, with desktop/narrow screenshots alongside it. The probe is a deterministic renderer fixture; current-base transport/live/replay revalidation remains downstream API/E2E responsibility.
+- Supporting evidence and remaining unverified states or limitations: Integrated browser evidence passed and is retained at `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/implementation-ir-002/browser/evidence.json`, with desktop/narrow screenshots alongside it. The probe is a deterministic renderer fixture; current-base transport/live/replay revalidation remains downstream API/E2E responsibility.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

@@ -33,7 +33,7 @@
 - Updater metadata:
   - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/latest-linux-arm64.yml`
 - Full build log:
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-electron-build-dr003.log`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-build-dr003.log`
 
 ## Verification Result
 
@@ -48,9 +48,9 @@ All checks passed:
 
 Evidence:
 
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-electron-build-verification-dr003.log`
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-electron-launch-smoke-dr003.log`
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-handoff-readiness-dr003.log`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-build-verification-dr003.log`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-launch-smoke-dr003.log`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-handoff-readiness-dr003.log`
 
 Non-blocking build warnings were limited to the repository's existing Browserslist-age, module-type, workspace-bin/peer-dependency, deprecated-subdependency, and large-chunk notices. All guards, builds, packaging, architecture/metadata checks, server startup, migrations, Electron readiness, and cleanup completed with exit `0`.
 

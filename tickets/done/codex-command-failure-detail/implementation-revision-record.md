@@ -1,6 +1,6 @@
 # Implementation Revision Record
 
-The current code and `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-handoff.md` remain authoritative.
+The current code and `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-handoff.md` remain authoritative.
 
 ## Revision Index
 
@@ -13,7 +13,7 @@ The current code and `/home/autobyteus/workspace/autobyteus-workspace/tickets/in
 
 ### IR-001 — Enriched Codex command-failure diagnostic baseline
 
-- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md`; initial implementation round from approved commit `5902f6fe7b2b8677c67d011647949d79811e509d`.
+- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-doc.md`; initial implementation round from approved commit `5902f6fe7b2b8677c67d011647949d79811e509d`.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -39,7 +39,7 @@ The current code and `/home/autobyteus/workspace/autobyteus-workspace/tickets/in
 
 ### IR-002 — Integrate latest base and retain both browser-probe contracts
 
-- Triggering role, report path, and round: Delivery Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-integration-blocker.md`; `DR-001` local-fix round after `API-REV-001` Pass / 98%.
+- Triggering role, report path, and round: Delivery Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-integration-blocker.md`; `DR-001` local-fix round after `API-REV-001` Pass / 98%.
 - Triggering finding IDs: `DR-001 latest-base README integration conflict`
 - Classification: `Local Fix`
 - Prior authoritative result: Validated pre-integration candidate `005aa4f84a3315d467f949c40ff86afd9872599a` (`API-REV-001`, Pass / 98%); Delivery blocked during mandatory latest-base refresh.
@@ -55,9 +55,9 @@ The current code and `/home/autobyteus/workspace/autobyteus-workspace/tickets/in
 - Changed files or areas:
   - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/README.md`
   - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/package.json` (integrated base and ticket scripts retained; no manual content edit required)
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-handoff.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md`
-  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/`
-- Local validation and result: Merge completion and both-parent ancestry passed with no unmerged path or active merge. Focused integrated server suite passed (4 files / 85 tests). The integrated package-script Codex browser probe passed at desktop and 390px with exact multiline text/whitespace/overflow assertions and owned cleanup. Executable README/package consistency passed for both probe sections/scripts/targets and the single shared browser note. Desktop and narrow screenshots were visually inspected without defects. Evidence is under `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/`.
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-handoff.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/implementation-ir-002/`
+- Local validation and result: Merge completion and both-parent ancestry passed with no unmerged path or active merge. Focused integrated server suite passed (4 files / 85 tests). The integrated package-script Codex browser probe passed at desktop and 390px with exact multiline text/whitespace/overflow assertions and owned cleanup. Executable README/package consistency passed for both probe sections/scripts/targets and the single shared browser note. Desktop and narrow screenshots were visually inspected without defects. Evidence is under `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probes/implementation-ir-002/`.
 - Next recipient or routing: `/software_engineering_team/api_e2e_engineer` under the matching Small/Low local-fix handoff rule; Delivery resumes only after the integrated candidate is revalidated.
 - Remaining limitations or risks: `API-REV-001` validated the pre-integration candidate; downstream must issue the current integrated-candidate result. The repository-wide server `typecheck` TS6059 baseline and other previously recorded unrelated residuals remain unchanged.

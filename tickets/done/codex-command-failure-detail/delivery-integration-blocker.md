@@ -55,5 +55,5 @@ The conflict is additive and does not itself establish architectural impact or a
 
 ## Evidence
 
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-evidence/dr-001-integration-refresh.log`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-evidence/dr-001-integration-refresh.log`
 - Current unmerged worktree at `/home/autobyteus/workspace/autobyteus-workspace`

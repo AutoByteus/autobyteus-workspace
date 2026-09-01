@@ -1,0 +1,14 @@
+DR-005 mandatory post-user-verification finalization target refresh
+Started UTC: 2026-09-01T12:50:54Z
+User acceptance: 2026-09-01 — the task is done. i tested it works. lets finalize the ticket. no need to release a new version
+Protected delivery checkpoint: 33a22161bf4606e5858eb4cb3cba45aeabd47224
++ git fetch origin --prune
+origin/personal=ad63d74275a4eb204ebc6d97a2260aa9790fea52
+ticket_head=33a22161bf4606e5858eb4cb3cba45aeabd47224
++ git merge-base --is-ancestor origin/personal HEAD
+PASS: latest origin/personal is already an ancestor of the user-verified ticket state.
++ git rev-list --left-right --count origin/personal...HEAD
+0	9
++ git status --short
+?? tickets/in-progress/codex-command-failure-detail/delivery-evidence/dr-005-finalization-refresh.log
+Completed UTC: 2026-09-01T12:50:56Z

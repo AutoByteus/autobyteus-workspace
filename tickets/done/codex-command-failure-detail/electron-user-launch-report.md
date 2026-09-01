@@ -41,11 +41,11 @@ publication remain not required.
 ## Evidence And Lifecycle
 
 - Combined launch log:
-  `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-electron-user-launch-dr004.log`
+  `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-user-launch-dr004.log`
 - Current root PID file:
-  `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-electron-user-launch-dr004.pid`
+  `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-electron-user-launch-dr004.pid`
 - Current readiness evidence:
-  `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-user-launch-readiness-dr004.log`
+  `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-user-launch-readiness-dr004.log`
 - User acceptance: `2026-09-01 user message — “the task is done. i tested it
   works. lets finalize the ticket. no need to release a new version”`.
 - Delivery requested graceful shutdown after acceptance. Electron exited after

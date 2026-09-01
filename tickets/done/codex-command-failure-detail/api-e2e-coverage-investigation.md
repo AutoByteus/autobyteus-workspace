@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-revision-record.md`
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-doc.md`
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/requirements-revision-record.md`
 - Design Spec: `N/A — not applicable` for the direct route
 - Supplemental Task Artifacts: `codex-command-failure-probe.md`, `codex-app-server-failed-command-raw.jsonl`, `probe-codex-failed-command.py`, and the approved user screenshot listed below
 - Architecture Design Revision Record: `N/A — not applicable` for the direct route
 - Design Review Report: `N/A — not applicable` for the direct route
 - Architecture Review Revision Record: `N/A — not applicable` for the direct route
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md`
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/implementation-revision-record.md`
 - Code Review Report: `N/A — not applicable under the matching direct Small/Low route`; the user's unmatched source-review request remains recorded upstream
 - Code Review Revision Record: `N/A — not applicable`
-- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md` (`DR-001`)
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-revision-record.md`
+- Delivery Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-revision-record.md` (`DR-001`)
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-002`
 - Current Investigation Round: `2`
 - Trigger: delivery `DR-001` Local Fix -> implementation `IR-002`; integrated candidate `36b173299a3d52d2b1ea134206e07936bd733ec0`
@@ -24,9 +24,9 @@
 
 Supplemental absolute paths:
 
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-command-failure-probe.md`
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`
-- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probe-codex-failed-command.py`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-command-failure-probe.md`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probe-codex-failed-command.py`
 - `/home/autobyteus/data/memory/agent_teams/software_development_department_b40dd773428c4a3fa3643158732e996b/requirements_engineer_01fcde30983a42f6983f16280a00c327/context_files/ctx_efd9a119e8ba__image.png`
 
 ## Routing Classification
@@ -188,7 +188,7 @@ Focused setup failures before the final pass were test-owned and corrected: stan
 - Live Codex command: `RUN_CODEX_E2E=1 pnpm exec vitest run tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts --no-watch --reporter=verbose -t "persists an enriched failed-command diagnostic from a real Codex app-server turn"`.
 - Exact instructed shell command: `/bin/bash -lc 'printf CODEX_FAILURE_STDERR_MARKER >&2; exit 23'` once.
 - Observed: one raw provider `commandExecution` failed item with marker/exit 23; one canonical `TOOL_EXECUTION_FAILED` with `CODEX_FAILURE_STDERR_MARKER\nExit code: 23`; command/cwd/invocation/turn retained; one tool call/result persisted; run returned idle.
-- Browser command: `pnpm test:e2e:codex-command-failure-detail -- --output-dir ../tickets/in-progress/codex-command-failure-detail/probes/api-e2e/browser`.
+- Browser command: `pnpm test:e2e:codex-command-failure-detail -- --output-dir ../tickets/done/codex-command-failure-detail/probes/api-e2e/browser`.
 - Observed: exact three-line center and Activity text; computed `white-space: pre-wrap`; arguments reveal cwd; raw field names absent; no desktop or 390px document overflow; no browser errors.
 - Cleanup: live test terminated thread/client and removed owned temp dirs; browser context/Chromium closed, Nuxt process group terminated, and temporary page removed. Evidence JSON reports all cleanup steps passed.
 

@@ -6,10 +6,10 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/handoff-summary.md`
+- Handoff summary artifact: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
+- Delivery revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/delivery-revision-record.md`
+- Current delivery revision ID: `DR-005`
 - Notes: Exact verification steps, current commits, validation evidence, compatibility, and residuals are recorded in the handoff summary.
 
 ## Initial Delivery Integration Refresh
@@ -32,46 +32,46 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification / acceptance reference: `2026-09-01 user message — “the task is done. i tested it works. lets finalize the ticket. no need to release a new version”`
-- Renewed verification required after later re-integration: `Pending mandatory final target refresh; required only if that refresh materially changes the user-facing state`
+- Renewed verification required after later re-integration: `No — mandatory final target refresh integrated no new commit and made no user-facing change`
 - Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: `N/A`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/docs-sync-report.md`
+- Docs sync artifact: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/codex_integration.md`; `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`; `autobyteus-web/docs/agent_execution_architecture.md`; integrated API/E2E update in `autobyteus-web/README.md`
 - No-impact rationale: `N/A`
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — explicit user verification pending`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail`
 
 ## Version / Tag / Release Commit
 
 - Current web/package release baseline: `1.4.64`
-- Version bump: `Not started`
-- Release commit: `Not started`
-- Tag: `Not started`
+- Version bump: `Not required`
+- Release commit: `Not required`
+- Tag: `Not required`
 - Decision: `Not required` — user explicitly requested finalization without a new version.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`
+- Bootstrap context source: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/investigation-notes.md`
 - Ticket branch: `req/codex-command-failure-detail`
-- Ticket branch commit result: `Pre-verification safety checkpoint da6b96cd3fd169f192466ec8de8f2f27d21efdc0 completed; final ticket commit remains pending explicit user verification`
+- Ticket branch commit result: `Pre-verification safety checkpoint da6b96cd3fd169f192466ec8de8f2f27d21efdc0 and post-verification protection checkpoint 33a22161bf4606e5858eb4cb3cba45aeabd47224 completed; archived final ticket commit is staged/pending`
 - Ticket branch push result: `Not started`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `N/A — verification pending`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed at current hold; mandatory final refresh still pending`
+- Target advanced after verification / acceptance: `No — post-acceptance fetch kept origin/personal at ad63d74275a4eb204ebc6d97a2260aa9790fea52`
+- Delivery-owned edits protected before re-integration: `Yes — checkpoint 33a22161bf4606e5858eb4cb3cba45aeabd47224`
+- Re-integration before final merge result: `Not required — target was unchanged and already an ancestor; no accepted user-facing delta`
 - Target branch update result: `Not started`
 - Merge into target result: `Not started`
 - Push target branch result: `Not started`
-- Repository finalization status: `Pending explicit user verification`
-- Blocker: `Verification hold only; no technical blocker`
+- Repository finalization status: `In progress — verification, refresh, checks, and archive complete; commit/push/merge/push remain`
+- Blocker: `None`
 
 ## Local Electron Verification Build
 
@@ -81,7 +81,7 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 - Artifact: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage`
 - SHA-256: `08c48ec0fd14fbf41f57b6a0ed2b088f2f47012280d68c7da3c1b7d1d11e3663`
 - Artifact verification: ARM64 AppImage/unpacked runtime, updater metadata, bundled Prisma engines, isolated packaged server migrations/health, actual packaged Electron Playwright readiness, and cleanup all passed.
-- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-build-linux-report.md`
+- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/electron-build-linux-report.md`
 - Publication status: local verification artifact only; no version/tag/release/publication occurred.
 
 ## Active User Verification Launch
@@ -94,7 +94,7 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 - Window: visible interactive X11 `autobyteus` window; latest observed size `1510x864`
 - Direct AppImage attempt: exited before app startup because this minimal host lacks unversioned `libz.so`
 - Recovery: exact verified unpacked payload launched with root-container `--no-sandbox`; no E2E profile variables
-- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-user-launch-report.md`, `delivery-electron-user-launch-dr004.log`, and `delivery-user-launch-readiness-dr004.log`
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/electron-user-launch-report.md`, `delivery-electron-user-launch-dr004.log`, and `delivery-user-launch-readiness-dr004.log`
 - Cleanup: Electron and embedded backend exited gracefully; port `29695` was closed at `2026-09-01T12:48:10Z`
 
 ## Release / Publication / Deployment
@@ -103,7 +103,7 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 - Method: `Other — no release action`
 - Method reference / command: Root README documents `pnpm release <version> -- --release-notes tickets/done/<ticket>/release-notes.md` if a later release is explicitly authorized.
 - Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Prepared for a future curated release; publication not required now`
+- Release notes handoff result: `Retained with the archived ticket; not consumed because release/publication is not required`
 - Blocker: `None; release was explicitly declined`
 
 ## Post-Finalization Cleanup
@@ -112,8 +112,8 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 - Worktree cleanup result: `Not required`
 - Worktree prune result: `Not required`
 - Local ticket branch cleanup result: `Pending safe finalization; current branch must remain available`
-- Remote branch cleanup result: `Not required — no remote ticket branch exists yet`
-- Blocker: `Verification/finalization sequencing only`
+- Remote branch cleanup result: `Pending after ticket-branch push and confirmed target merge`
+- Blocker: `None`
 
 ## Escalation / Reroute
 
@@ -121,8 +121,8 @@ Current delivery result: `Pass — user verified and accepted; repository finali
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/release-notes.md`
-- Archived release notes artifact used for release/publication: `N/A — ticket not archived and release not required`
+- Release notes artifact created before verification / acceptance: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/release-notes.md`
+- Archived release notes artifact used for release/publication: `N/A — ticket archived but release/publication not required`
 - Release notes status: `Updated`
 
 ## Deployment Steps
@@ -153,10 +153,12 @@ None. No deployment configuration or topology changed.
 - Final DR-003 artifact/report/base/working-tree readiness audit: passed; evidence in `delivery-handoff-readiness-dr003.log`.
 - DR-004 direct AppImage wrapper: failed before application startup on missing host `libz.so`; exact evidence retained and no portability claim made.
 - DR-004 unpacked packaged application: production embedded server health/migration state and visible X11 window passed; after user acceptance, owned processes shut down gracefully and port `29695` closed.
+- DR-005 mandatory post-acceptance refresh: target unchanged/current; no renewed verification required.
+- DR-005 focused finalization rerun: server `5 files / 87 tests` and frontend `2 files / 12 tests` passed; repository integrity checks passed. Evidence: `delivery-evidence/dr-005-finalization-*.log`.
 
 ## Rollback Criteria
 
-Do not archive, push/finalize, merge into `personal`, tag, release, or deploy before explicit user verification. After verification, refresh `origin/personal` again; if new base work materially changes the user-facing handoff, re-integrate, rerun relevant checks, update artifacts, and obtain renewed verification. If a user finding shows incorrect command detail, altered failure status/lifecycle, raw provider leakage, unreadable/overflowing multiline display, or replay mismatch, hold finalization and route the finding by origin.
+If the final merge/push or cleanup fails, keep the terminal return blocked and preserve completed repository state. If a later finding shows incorrect command detail, altered failure status/lifecycle, raw provider leakage, unreadable/overflowing multiline display, or replay mismatch, revert the final target merge or issue a focused corrective ticket. No release rollback is applicable because no version/tag/release/deployment is authorized.
 
 ## Final Status
 

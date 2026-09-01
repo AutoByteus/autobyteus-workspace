@@ -146,9 +146,9 @@
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-command-failure-probe.md` | Summarizes the live provider probe and identifies the loss boundary. | REQ-001, REQ-002 / AC-001, AC-005, AC-006, AC-007 | Complete evidence | Evidence only; included in approval basis. |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl` | Retains relevant raw App Server lifecycle messages from the reproducible exit-23 command. | REQ-001, REQ-002 / AC-001 | Complete evidence | Evidence only; included in approval basis. |
-| `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probe-codex-failed-command.py` | Repeats the live App Server experiment. | REQ-001, REQ-002 / AC-001 | Complete reproducibility aid | Evidence only; does not define behavior. |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-command-failure-probe.md` | Summarizes the live provider probe and identifies the loss boundary. | REQ-001, REQ-002 / AC-001, AC-005, AC-006, AC-007 | Complete evidence | Evidence only; included in approval basis. |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl` | Retains relevant raw App Server lifecycle messages from the reproducible exit-23 command. | REQ-001, REQ-002 / AC-001 | Complete evidence | Evidence only; included in approval basis. |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/probe-codex-failed-command.py` | Repeats the live App Server experiment. | REQ-001, REQ-002 / AC-001 | Complete reproducibility aid | Evidence only; does not define behavior. |
 | `/home/autobyteus/data/memory/agent_teams/software_development_department_b40dd773428c4a3fa3643158732e996b/requirements_engineer_01fcde30983a42f6983f16280a00c327/context_files/ctx_efd9a119e8ba__image.png` | Shows the user-visible generic-only failure. | REQ-003 / AC-003 | User evidence | Included in approval basis. |
 
 ## Assumptions
@@ -206,7 +206,7 @@
 - Structural surfaces reviewed: Codex converter/parser; normalized failed-tool event; standalone and team stream adapters; frontend error consumers; local raw-trace persistence and replay.
 - Payload/content surfaces reviewed: App Server `commandExecution.status`, `aggregatedOutput`, `exitCode`, and `cwd`; canonical failed-event `error`; local trace `tool_error`.
 - Structural-impact triggers: `None`
-- Evidence paths: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-command-failure-probe.md`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`.
+- Evidence paths: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/investigation-notes.md`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-command-failure-probe.md`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`.
 - Decision rationale: The approved outcome fits the existing failed-tool `error` string and existing live/team/replay consumers. No API or external-contract shape, persistence schema/invariant, security/privacy boundary, concurrency/lifecycle behavior, deployment topology, ownership boundary, migration, architectural pattern, or structural refactor is required. The change is a bounded provider-payload mapping correction with focused regression validation. Exact alignment to native AutoByteus `TerminalResult` is not an approved structural requirement and must not expand this direct route.
 - Selected route: `Implementation Engineer`
 - Outcome classification: `Approved Direct-Implementation`

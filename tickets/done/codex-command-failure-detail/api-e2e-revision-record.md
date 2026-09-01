@@ -11,7 +11,7 @@
 
 ### API-REV-001 — Initial provider, transport, replay, live, and browser baseline
 
-- Triggering role, report path, and round: API/E2E Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-execution-coverage-report.md`; round `1`
+- Triggering role, report path, and round: API/E2E Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-execution-coverage-report.md`; round `1`
 - Triggering scenarios: `SCN-001/002/003`, `API-SCN-001/002/003/004`, `BE2E-CODEX-FAIL-001/002`
 - Related revisions: requirements `RER-002`; implementation `IR-001`; architecture/source-review/delivery revisions `N/A — direct initial route`
 - Why recorded: first completed API/E2E result for package `REQ-CODEX-COMMAND-FAILURE-DETAIL-20260901`; no prior result or confidence may be inferred.
@@ -38,7 +38,7 @@ None — `API-REV-001` is the initial baseline. Test-harness failures encountere
 
 ### API-REV-002 — Revalidate integrated current-base candidate after DR-001
 
-- Triggering role, report path, and round: Implementation Engineer Local Fix `IR-002` after Delivery `DR-001`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-execution-coverage-report.md`; round `2`
+- Triggering role, report path, and round: Implementation Engineer Local Fix `IR-002` after Delivery `DR-001`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/codex-command-failure-detail/api-e2e-execution-coverage-report.md`; round `2`
 - Triggering finding/scenarios: `DR-001 latest-base README integration conflict`; rechecked `API-SCN-001/002/003/004`, `BE2E-CODEX-FAIL-001/002`, and the provider matrix
 - Related revisions: `RER-002`, `IR-002`, `DR-001`, prior `API-REV-001`; architecture/source-review revisions `N/A — direct Small/Low route`
 - Why recorded: the prior validated candidate was merged with current base `ad63d74275a4eb204ebc6d97a2260aa9790fea52`, including adjacent Team streaming/hydration/Activity source changes, so the integrated candidate required its own explicit result rather than inheriting API-REV-001.
