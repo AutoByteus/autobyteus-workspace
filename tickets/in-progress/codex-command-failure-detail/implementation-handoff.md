@@ -29,7 +29,7 @@ The Codex payload parser now enriches only provider-failed `commandExecution` er
 
 The existing canonical failure string continues through standalone/team streaming and local trace persistence. Diagnostic `thread/read` projection also receives the enriched command-only string through the same parser. The center tool card now preserves multiline error whitespace, matching the existing Activity error presentation.
 
-For `IR-002`, the previously validated candidate was integrated with the latest fetched base `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52`. The sole conflict in `autobyteus-web/README.md` was resolved additively: both the Codex command-failure browser probe and incoming task-agent monitor browser probe remain documented, both package scripts remain present, and the shared port/Chromium discovery note appears once. No production behavior was changed by this integration correction.
+For `IR-002`, the previously validated candidate was integrated with the latest fetched base `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52` in merge commit `a14532534cbb618fd859d8e760f3baeafb1b01d7`. The sole conflict in `autobyteus-web/README.md` was resolved additively: both the Codex command-failure browser probe and incoming task-agent monitor browser probe remain documented, both package scripts remain present, and the shared port/Chromium discovery note appears once. Both `005aa4f84a3315d467f949c40ff86afd9872599a` and the fetched base are confirmed ancestors; no unmerged path or active merge state remains. No production behavior was changed by this integration correction.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md`
@@ -130,6 +130,7 @@ For `IR-002`, the previously validated candidate was integrated with the latest 
 - `IR-002` integrated focused provider/parser/converter/history suite: 4 files, 85 tests — passed.
 - `IR-002` package-script browser execution: `pnpm -C autobyteus-web test:e2e:codex-command-failure-detail -- --browser-executable /usr/bin/chromium --output-dir ../tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/browser` — passed at desktop and 390px with owned fixture/process cleanup.
 - `IR-002` executable README/package consistency assertion — passed; both probe sections, both package scripts, both executable target files, one shared browser-discovery note, and no conflict markers were confirmed. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/readme-package-consistency.log`.
+- `IR-002` integration verification — passed; merge commit `a14532534cbb618fd859d8e760f3baeafb1b01d7` has validated candidate `005aa4f84a3315d467f949c40ff86afd9872599a` and latest base `ad63d74275a4eb204ebc6d97a2260aa9790fea52` as parents/ancestors, with no unmerged path or active merge. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/integration-verification.log`.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
