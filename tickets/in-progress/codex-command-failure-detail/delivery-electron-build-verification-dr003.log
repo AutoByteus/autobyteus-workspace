@@ -1,0 +1,218 @@
+# DR-003 Linux ARM64 Electron Artifact Verification
+
+Started UTC: 2026-09-01T12:08:19Z
+AppImage: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
+Size: 523527852 bytes; mode: 755
+autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=4b12022a0a60af0d4b7920deac219fcbd1d92080, stripped
+08c48ec0fd14fbf41f57b6a0ed2b088f2f47012280d68c7da3c1b7d1d11e3663  autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
+version: 1.4.64
+files:
+  - url: AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
+    sha512: HhmhiPm9Edxl0/ByNcH35Ld9iS1cAszumvHFVcH3+AaN/nS3XDDCb0I4IvWvf00zHfcJnc1yqMPc9ZZUB99B1w==
+    size: 523527852
+    blockMapSize: 545272
+path: AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
+sha512: HhmhiPm9Edxl0/ByNcH35Ld9iS1cAszumvHFVcH3+AaN/nS3XDDCb0I4IvWvf00zHfcJnc1yqMPc9ZZUB99B1w==
+releaseDate: '2026-09-01T12:07:38.153Z'
+Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+Runtime executable: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=1aa66cfcf2514c2c2d9ade8f950b56dd0545901a, stripped
+Prisma engines dir: autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+PASS: packaged Prisma ARM64 engines present.
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+App data directory: /tmp/autobyteus-packaged-server-t0ZZUB
+AppConfig instance created.
+Config file path: /tmp/autobyteus-packaged-server-t0ZZUB/.env
+Loading environment from: /tmp/autobyteus-packaged-server-t0ZZUB/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../../../tmp/autobyteus-packaged-server-t0ZZUB/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:46503
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:46503
+APP ROOT DIRECTORY: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+APP DATA DIRECTORY: /tmp/autobyteus-packaged-server-t0ZZUB
+DB DIRECTORY: /tmp/autobyteus-packaged-server-t0ZZUB/db
+LOGS DIRECTORY: /tmp/autobyteus-packaged-server-t0ZZUB/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-packaged-server-t0ZZUB/download
+MEMORY DIRECTORY: /tmp/autobyteus-packaged-server-t0ZZUB/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-packaged-server-t0ZZUB/db/production.db"
+
+SQLite database production.db created at file:/tmp/autobyteus-packaged-server-t0ZZUB/db/production.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-01T12:08:28.613Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Browser Tools
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-01T12:08:28.776Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Agent definition cache populated with 50 items.
+[2026-09-01T12:08:28.821Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+{"level":30,"time":1788264508828,"pid":19321,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:33945"}
+{"level":30,"time":1788264508856,"pid":19321,"hostname":"0d2d48492ef2","msg":"Server listening at http://127.0.0.1:46503"}
+[2026-09-01T12:08:28.856Z] [INFO] [server.runtime] Server listening on 127.0.0.1:46503
+[2026-09-01T12:08:28.864Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:46503
+Packaged server startup validation passed for /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-09-01T12:08:28.877Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-01T12:08:28.885Z] [INFO] [server.runtime] Server closed cleanly.
+PASS: packaged server startup and migration smoke.
+Finished UTC: 2026-09-01T12:08:28Z

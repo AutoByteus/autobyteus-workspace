@@ -1,0 +1,15 @@
+# DR-003 Packaged Electron Launch Smoke
+
+Started UTC: 2026-09-01T12:08:46Z
+DISPLAY=:99
+Command: pnpm -C autobyteus-web test:e2e:electron --skip-build --adapter playwright --executable /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus --hold-ms 1000
+
+> autobyteus@1.4.64 test:e2e:electron /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter playwright --executable /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus --hold-ms 1000
+
+{"type":"electron-e2e-ready","executablePath":"/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus","port":41427,"dataRoot":"/tmp/autobyteus-e2e-hBt0mH","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:41427","healthUrl":"http://127.0.0.1:41427/rest/health"}
+Finished UTC: 2026-09-01T12:08:57Z
+Exit status: 0
+Cleanup verification UTC: 2026-09-01T12:09:29Z
+PASS: owned data root removed: /tmp/autobyteus-e2e-hBt0mH
+PASS: owned port no longer responds: 41427

@@ -1,0 +1,24 @@
+# DR-003 Electron Verification Handoff Readiness
+
+Timestamp UTC: 2026-09-01T12:11:35Z
+HEAD: da6b96cd3fd169f192466ec8de8f2f27d21efdc0
+Base: ad63d74275a4eb204ebc6d97a2260aa9790fea52
+Divergence: 8/0
+PASS: latest tracked base is contained.
+PASS: no unmerged path.
+PASS: executable AppImage exists with recorded SHA-256.
+PASS: AppImage architecture is ARM64.
+PASS: build, artifact/server verification, Electron readiness, and cleanup evidence are complete.
+PASS: DR-003 reports are present and build-owned generated shared SDK directories are cleaned.
+PASS: git diff --check.
+
+## Working Tree
+ M tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md
+ M tickets/in-progress/codex-command-failure-detail/docs-sync-report.md
+ M tickets/in-progress/codex-command-failure-detail/handoff-summary.md
+ M tickets/in-progress/codex-command-failure-detail/release-deployment-report.md
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-build-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-build-verification-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-electron-launch-smoke-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/delivery-handoff-readiness-dr003.log
+?? tickets/in-progress/codex-command-failure-detail/electron-build-linux-report.md

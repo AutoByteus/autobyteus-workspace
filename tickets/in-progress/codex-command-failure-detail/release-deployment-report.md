@@ -2,14 +2,14 @@
 
 ## Release / Publication / Deployment Scope
 
-Current delivery result: `Pass — integrated/docs-synchronized handoff ready for explicit user verification`. Repository finalization is held by policy. Ticket-scoped version bump, tag, release, publication, and deployment are `Not required` unless separately requested or authorized after verification.
+Current delivery result: `Pass — user verified and accepted; repository finalization in progress`. The user explicitly requested no new version. Ticket-scoped version bump, tag, release, publication, and deployment are therefore `Not required`.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-004`
 - Notes: Exact verification steps, current commits, validation evidence, compatibility, and residuals are recorded in the handoff summary.
 
 ## Initial Delivery Integration Refresh
@@ -30,9 +30,9 @@ Current delivery result: `Pass — integrated/docs-synchronized handoff ready fo
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: `Pending against DR-002 handoff-summary.md`
-- Renewed verification required after later re-integration: `No — no prior user verification exists`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: `2026-09-01 user message — “the task is done. i tested it works. lets finalize the ticket. no need to release a new version”`
+- Renewed verification required after later re-integration: `Pending mandatory final target refresh; required only if that refresh materially changes the user-facing state`
 - Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: `N/A`
 
@@ -54,13 +54,13 @@ Current delivery result: `Pass — integrated/docs-synchronized handoff ready fo
 - Version bump: `Not started`
 - Release commit: `Not started`
 - Tag: `Not started`
-- Decision: ticket-scoped version/tag work is not currently requested; reassess only after user verification if release is separately authorized.
+- Decision: `Not required` — user explicitly requested finalization without a new version.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`
 - Ticket branch: `req/codex-command-failure-detail`
-- Ticket branch commit result: `Pending explicit user verification; delivery-owned docs are uncommitted`
+- Ticket branch commit result: `Pre-verification safety checkpoint da6b96cd3fd169f192466ec8de8f2f27d21efdc0 completed; final ticket commit remains pending explicit user verification`
 - Ticket branch push result: `Not started`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
@@ -73,14 +73,38 @@ Current delivery result: `Pass — integrated/docs-synchronized handoff ready fo
 - Repository finalization status: `Pending explicit user verification`
 - Blocker: `Verification hold only; no technical blocker`
 
+## Local Electron Verification Build
+
+- Applicable for user verification: `Yes`
+- Method: README-guided native Linux ARM64 build, `pnpm -C autobyteus-web build:electron:linux:arm64`
+- Result: `Completed`
+- Artifact: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage`
+- SHA-256: `08c48ec0fd14fbf41f57b6a0ed2b088f2f47012280d68c7da3c1b7d1d11e3663`
+- Artifact verification: ARM64 AppImage/unpacked runtime, updater metadata, bundled Prisma engines, isolated packaged server migrations/health, actual packaged Electron Playwright readiness, and cleanup all passed.
+- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-build-linux-report.md`
+- Publication status: local verification artifact only; no version/tag/release/publication occurred.
+
+## Active User Verification Launch
+
+- Applicable: `Yes`
+- Result: `Completed; user accepted the tested behavior and the session was cleanly stopped`
+- Electron root / embedded server PIDs: `23250` / `23335`
+- Backend: production embedded `http://127.0.0.1:29695`; health passed
+- Data root: `/root/.autobyteus/server-data`
+- Window: visible interactive X11 `autobyteus` window; latest observed size `1510x864`
+- Direct AppImage attempt: exited before app startup because this minimal host lacks unversioned `libz.so`
+- Recovery: exact verified unpacked payload launched with root-container `--no-sandbox`; no E2E profile variables
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-user-launch-report.md`, `delivery-electron-user-launch-dr004.log`, and `delivery-user-launch-readiness-dr004.log`
+- Cleanup: Electron and embedded backend exited gracefully; port `29695` was closed at `2026-09-01T12:48:10Z`
+
 ## Release / Publication / Deployment
 
-- Applicable: `No — not part of the currently authorized ticket scope`
+- Applicable: `No — user explicitly requested no new version`
 - Method: `Other — no release action`
 - Method reference / command: Root README documents `pnpm release <version> -- --release-notes tickets/done/<ticket>/release-notes.md` if a later release is explicitly authorized.
 - Release/publication/deployment result: `Not required`
 - Release notes handoff result: `Prepared for a future curated release; publication not required now`
-- Blocker: `None; no release requested`
+- Blocker: `None; release was explicitly declined`
 
 ## Post-Finalization Cleanup
 
@@ -122,6 +146,13 @@ None. No deployment configuration or topology changed.
 - Chromium 149 desktop/narrow: 2/2 passed with clean owned cleanup.
 - Contracts, Prisma generation, build-config TypeScript source check, syntax/package/evidence/merge/patch integrity: passed.
 - Fresh DR-002 delivery fetch/base relationship and docs/handoff validation: passed; evidence in `delivery-evidence/dr-002-docs-sync-and-handoff.log`.
+- Fresh DR-003 target refresh: unchanged base already contained; `8 ahead / 0 behind` after safety checkpoint.
+- Linux ARM64 Electron build: passed; guards, bundled backend build, mobile/Electron renderer generation, Electron transpilation, native-module rebuild, and AppImage packaging exited `0`.
+- AppImage/updater/Prisma/server smoke: passed; 24 isolated migrations applied and packaged `/rest/health` reached.
+- Actual packaged Electron Playwright readiness: passed on isolated port/data root; owned root and port cleanup passed.
+- Final DR-003 artifact/report/base/working-tree readiness audit: passed; evidence in `delivery-handoff-readiness-dr003.log`.
+- DR-004 direct AppImage wrapper: failed before application startup on missing host `libz.so`; exact evidence retained and no portability claim made.
+- DR-004 unpacked packaged application: production embedded server health/migration state and visible X11 window passed; after user acceptance, owned processes shut down gracefully and port `29695` closed.
 
 ## Rollback Criteria
 
@@ -129,11 +160,11 @@ Do not archive, push/finalize, merge into `personal`, tag, release, or deploy be
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
+- Explicit user testing/verification complete: `Yes`
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `Yes — not required at current authorized scope`
-- Applicable safe cleanup complete or not required: `No — branch remains required until finalization`
-- Unresolved blocker: `None; explicit user-verification hold remains`
+- Applicable safe cleanup complete or not required: `Partially — the active user-testing process lifecycle is clean; repository branch/worktree cleanup follows finalization`
+- Unresolved blocker: `None; repository finalization is in progress`
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/requirements_engineer`: `No`
 - Terminal message/reference: `N/A`

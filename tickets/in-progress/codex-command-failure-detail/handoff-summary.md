@@ -2,7 +2,7 @@
 
 ## Status
 
-`Ready for explicit user verification` — the DR-001 README conflict is resolved, the current-base integrated candidate passed API/E2E at 98% confidence, durable documentation is synchronized, and repository finalization remains intentionally on hold.
+`User verified / accepted; repository finalization in progress` — the DR-001 README conflict is resolved, the current-base integrated candidate passed API/E2E at 98% confidence, durable documentation is synchronized, and the README-guided packaged app build/launch checks passed. The user explicitly confirmed that the behavior works and asked Delivery to finalize without releasing a new version.
 
 ## Classification And Route
 
@@ -48,6 +48,36 @@
 - Contract builds, Prisma generation, build-config TypeScript source check, syntax/package/evidence/merge/patch integrity: passed
 - Persisted-data disposition: `Directly Usable — No Migration`; older generic strings remain readable and are not rewritten
 
+## Linux ARM64 Electron Verification Candidate
+
+- Build checkpoint: `da6b96cd3fd169f192466ec8de8f2f27d21efdc0`
+- Artifact: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage`
+- SHA-256: `08c48ec0fd14fbf41f57b6a0ed2b088f2f47012280d68c7da3c1b7d1d11e3663`
+- Build/architecture/updater metadata/Prisma/server startup: `Pass`
+- Packaged Electron Playwright readiness and owned cleanup: `Pass`
+- Run command:
+
+```bash
+/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.64.AppImage
+```
+
+- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-build-linux-report.md`
+- Compatibility: local Linux ARM64 verification artifact; not a published release and not usable on macOS, Windows, or Linux x64.
+
+## Completed User-Testing Session
+
+- Status: `Completed and cleanly stopped after user acceptance`
+- Exact runtime: verified unpacked payload from the DR-003 package
+- Electron root PID: `23250`
+- Embedded server PID: `23335`
+- Embedded health: `http://127.0.0.1:29695/rest/health` — healthy
+- Production data root: `/root/.autobyteus/server-data`
+- X11 window: visible interactive `autobyteus` window; latest observed size `1510x864`
+- Launch report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/electron-user-launch-report.md`
+- Host note: direct AppImage wrapper startup failed because this minimal host lacks unversioned `libz.so`; the exact unpacked payload was run with container-required `--no-sandbox`. No E2E isolation profile was active.
+- User acceptance: `2026-09-01 user message — “the task is done. i tested it works. lets finalize the ticket. no need to release a new version”`
+- Cleanup: Electron and its embedded backend stopped gracefully; port `29695` was closed at `2026-09-01T12:48:10Z`.
+
 ## User Verification Checklist
 
 1. In the current integrated application, run a Codex-backed standalone Agent or Team member and ask it to execute `/bin/bash -lc 'printf CODEX_FAILURE_STDERR_MARKER >&2; exit 23'` once.
@@ -56,7 +86,7 @@
 4. Confirm command and working-directory context remain available and the overall Agent returns to idle/continues normally.
 5. If practical, reopen that newly recorded run and confirm the same detailed failure remains visible.
 
-The user may explicitly respond that this integrated handoff is verified/accepted, or report any finding. Verification is the required gate before ticket archival, commit/push finalization, and merge/push to `personal`.
+The user explicitly verified and accepted this integrated handoff. Delivery is completing the required final target refresh, ticket archival, commit/push, merge/push to `personal`, and safe cleanup.
 
 ## Documentation And Release Posture
 
@@ -76,11 +106,11 @@ The user may explicitly respond that this integrated handoff is verified/accepte
 - The repository-wide server typecheck retains the pre-existing TS6059 rootDir/tests mismatch; the applicable build-config source check passed.
 - An unrelated pre-existing live steered-input test still expects an immediate non-null admission turn id while the current accepted admission returns null. It remains separate test-maintenance work and is not caused by this package.
 
-## Finalization Hold
+## Finalization State
 
-- Explicit user verification: `Pending`
+- Explicit user verification: `Completed`
 - Ticket moved to `tickets/done`: `No`
 - Ticket branch committed/pushed for finalization: `No`
 - Merge/push into `personal`: `No`
-- Release/deployment: `Not required at current scope; none performed`
-- Successful terminal package return: `Not yet eligible`
+- Release/deployment: `Not required — the user explicitly requested no new version; none performed`
+- Successful terminal package return: `Pending repository finalization and safe cleanup`

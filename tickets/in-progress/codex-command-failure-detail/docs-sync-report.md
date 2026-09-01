@@ -3,7 +3,7 @@
 ## Scope
 
 - Ticket: `codex-command-failure-detail`
-- Current delivery revision: `DR-002`
+- Current delivery revision: `DR-004`
 - Trigger: `IR-002` resolved DR-001 and `API-REV-002` passed the integrated current-base candidate at 98% confidence
 - Bootstrap base reference: `80e2bd195c42ea3ced778dbc051d4d00edaef16f`
 - Integrated base reference used for docs sync: `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52`, integrated by merge `a14532534cbb618fd859d8e760f3baeafb1b01d7`
@@ -68,3 +68,18 @@ No component, API, schema, or persisted record format was removed.
 ## Blocked Or Escalated Follow-Up
 
 `N/A — docs sync completed truthfully on the integrated, API/E2E-passed state.`
+
+
+### DR-003 Electron Build Re-entry Check
+
+- The user requested the documented Electron build for hands-on testing.
+- Root and web README instructions selected the native Linux ARM64 command `pnpm -C autobyteus-web build:electron:linux:arm64`; it built and the project/release-owned artifact checks passed.
+- The instructions remain accurate: the generated AppImage is in `autobyteus-web/electron-dist`, contains the integrated backend, and the packaged runtime starts the server and Electron window successfully.
+- Result: `Pass — no additional long-lived documentation edit required`. Build facts belong in `electron-build-linux-report.md`; they do not alter the durable runtime/mapping contract synchronized in DR-002.
+
+
+### DR-004 User Launch Re-entry Check
+
+- The exact unpacked packaged Electron payload ran for user testing with the ordinary production embedded port/data contract; the user accepted the behavior and Delivery stopped the owned process tree cleanly.
+- The AppImage wrapper's missing unversioned `libz.so` on this minimal host is recorded in the ticket-local launch report; it does not change the documented Codex mapping, replay, or presentation behavior.
+- Result: `Pass — no additional long-lived documentation edit required`; no portability claim or release action is inferred from the local launch.
