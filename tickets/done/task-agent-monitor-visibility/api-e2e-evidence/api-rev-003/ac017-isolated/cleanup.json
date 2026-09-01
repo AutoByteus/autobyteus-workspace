@@ -1,0 +1,44 @@
+{
+  "finishedAt": "2026-08-31T22:35:21.802256+00:00",
+  "removedPaths": [
+    {
+      "path": "/tmp/autobyteus-api-rev-003-ac017-isolated-61117",
+      "existedBeforeRemoval": true,
+      "existsAfterRemoval": false
+    },
+    {
+      "path": "/tmp/autobyteus-api-rev-003-workspace-a168436e-2fbe-4a6f-bc18-d2ba1218b00e",
+      "existedBeforeRemoval": true,
+      "existsAfterRemoval": false
+    }
+  ],
+  "ownedPorts": {
+    "61117": {
+      "listeningAfterStop": false,
+      "lsof": ""
+    },
+    "61118": {
+      "listeningAfterStop": false,
+      "lsof": ""
+    },
+    "61124": {
+      "listeningAfterStop": false,
+      "lsof": ""
+    }
+  },
+  "unrelatedPreExistingPorts": {
+    "29695": {
+      "stillListening": true,
+      "lsofFirstLine": "COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME"
+    },
+    "8001": {
+      "stillListening": true,
+      "lsofFirstLine": "COMMAND    PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME"
+    },
+    "1234": {
+      "stillListening": true,
+      "lsofFirstLine": "COMMAND    PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME"
+    }
+  },
+  "result": "Pass"
+}

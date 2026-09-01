@@ -208,9 +208,9 @@ const selectTeamRun = (runId: string) => {
 };
 
 const selectTeamMember = (teamRunId: string, agentRunId: string) => {
-  selectionStore.selectRun(teamRunId, 'team');
-  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, agentRunId);
-  emit('run-selected', { type: 'team', runId: teamRunId });
+  void runHistoryStore.inspectTeamMember(teamRunId, agentRunId).then((result) => {
+    if (result.disposition === 'committed') emit('run-selected', { type: 'team', runId: teamRunId });
+  });
 };
 
 const deleteAgentRun = async (runId: string) => {

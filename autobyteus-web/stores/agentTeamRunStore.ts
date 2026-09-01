@@ -25,7 +25,14 @@ import {
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
 import { buildClientInterruptCommandId, buildClientMessageId, showInterruptCommandResult, showInterruptTransportFailure } from '~/services/agentStreaming/teamRunCommandPresentation';
-import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
+import {
+  hydrateLiveTeamRunContext,
+  type TeamRunHydrationCandidate,
+} from '~/services/runHydration/teamRunContextHydrationService';
+import {
+  commitTeamRunHydrationActivities,
+  markCommittedTeamRunHydrationAuthority,
+} from '~/services/runHydration/teamRunHydrationCommit';
 import { ensureRunHistoryWorkspaceByRootPath, resolveRunHistoryWorkspaceMetadataByRootPath } from '~/stores/runHistoryLoadActions';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -128,6 +135,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       rootTeamRunId: string;
       candidateContext: AgentTeamContext;
       expectedBaseChangeSequence: number;
+      beforeContextCommit?: () => void;
     }): Promise<TeamStreamingService> {
       const previousService = teamStreamingServices.get(input.rootTeamRunId);
       const contexts = useAgentTeamContextsStore();
@@ -166,6 +174,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           || !previousService.isReopenRequired) {
           throw new Error(`Team stream '${input.rootTeamRunId}' changed before recovery commit.`);
         }
+        input.beforeContextCommit?.();
         contexts.replaceTeamContext(input.rootTeamRunId, previousContext, input.candidateContext);
         teamStreamingServices.set(input.rootTeamRunId, candidate);
         const notices = { ...this.streamRecoveryNoticesByRootTeamRunId };
@@ -242,9 +251,16 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           const { data, errors } = await getApolloClient().mutate<RestorePayload>({ mutation: RestoreAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
           if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
           if (!data?.restoreAgentTeamRun?.success) throw new Error(data?.restoreAgentTeamRun?.message || 'Team restore failed.');
+          const expectedContext = team;
           const hydrated = await this.hydrateRun(rootTeamRunId, { agentRunId: targetAgentRunId });
-          contexts.addTeamContext(hydrated);
-          team = hydrated; targetAgentRunId = hydrated.view.getFocusedAgentRunId();
+          if (contexts.getTeamContextById(rootTeamRunId) !== expectedContext) {
+            throw new Error(`Team context '${rootTeamRunId}' changed before restore commit.`);
+          }
+          commitTeamRunHydrationActivities(hydrated);
+          contexts.replaceTeamContext(rootTeamRunId, expectedContext, hydrated.hydratedContext);
+          markCommittedTeamRunHydrationAuthority(hydrated);
+          team = hydrated.hydratedContext;
+          targetAgentRunId = team.view.getFocusedAgentRunId();
         }
         if (!team || !targetAgentRunId || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
         const member = team.view.getAgentContext(targetAgentRunId);
@@ -295,7 +311,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         { agentRunId: target.agentRunId },
       ) ?? false;
     },
-    async hydrateRun(rootTeamRunId: string, target: { agentRunId?: string | null; memberAddress?: string | null } = {}) {
+    async hydrateRun(
+      rootTeamRunId: string,
+      target: { agentRunId?: string | null; memberAddress?: string | null } = {},
+    ): Promise<TeamRunHydrationCandidate> {
       const payload = await hydrateLiveTeamRunContext({
         teamRunId: rootTeamRunId,
         agentRunId: target.agentRunId,
@@ -303,7 +322,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
       });
-      return payload.hydratedContext;
+      return payload;
     },
     async launchDraft(draft: TeamLaunchDraft) {
       const drafts = useTeamRunConfigStore();
@@ -389,7 +408,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         const result = data?.createAgentTeamRun;
         if (!result?.success || !result.teamRunId) throw new Error(result?.message || 'Team launch failed without a real TeamRun ID.');
-        const context = await this.hydrateRun(result.teamRunId, { memberAddress: currentDraft.focusedMemberAddress });
+        const candidate = await this.hydrateRun(result.teamRunId, { memberAddress: currentDraft.focusedMemberAddress });
+        const context = candidate.hydratedContext;
         const execution = findConfiguredAgentByAddress(context.view.getExecutionTree(), currentDraft.focusedMemberAddress);
         if (!execution || !context.view.hasAgentRun(execution.agent_run_id)) throw new Error(`Launched Team is missing '${currentDraft.focusedMemberAddress}'.`);
         const focusResult = context.view.focusAgent(execution.agent_run_id);
@@ -397,7 +417,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         transferDraftPendingInputs(currentDraft, context);
         const contexts = useAgentTeamContextsStore();
         if (contexts.getTeamContextById(result.teamRunId)) throw new Error(`TeamRun '${result.teamRunId}' is already registered.`);
+        commitTeamRunHydrationActivities(candidate);
         contexts.addTeamContext(context);
+        markCommittedTeamRunHydrationAuthority(candidate);
         useAgentSelectionStore().promoteTeamDraftLaunch(currentDraft.draftId, result.teamRunId);
         drafts.completeDraftLaunch(currentDraft);
         return { rootTeamRunId: result.teamRunId, agentRunId: execution.agent_run_id, context };

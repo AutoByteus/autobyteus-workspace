@@ -1,0 +1,6 @@
+Error: overall assertion failed: sameAddress
+    at assert (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/live-browser-probe.cjs:40:64)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/live-browser-probe.cjs:390:67
+    at Array.forEach (<anonymous>)
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017-isolated/live-browser-probe.cjs:390:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)

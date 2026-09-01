@@ -7,14 +7,13 @@ import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
 import type { TeamTaskHistoryRow } from '~/services/teamExecution/teamExecutionViewModels';
+import {
+  deriveTaskDelegationPresentation,
+  type TaskDelegationDisplayStatus,
+} from '~/services/teamExecution/taskDelegationPresentation';
 
 export type DelegatedTaskEntryKind = 'task_agent' | 'task_team';
-export type DelegatedTaskDisplayStatus =
-  | 'in_progress'
-  | 'awaiting_review'
-  | 'revision_requested'
-  | 'accepted'
-  | 'interrupted';
+export type DelegatedTaskDisplayStatus = TaskDelegationDisplayStatus;
 
 export type DelegatedTaskParticipant =
   | Readonly<{ kind: 'named'; label: string }>
@@ -160,14 +159,6 @@ const assigneeParticipant = (task: TeamTaskHistoryRow): DelegatedTaskParticipant
   return label ? namedParticipant(label) : { kind: 'assignee_fallback' };
 };
 
-const displayStatus = (task: TeamTaskHistoryRow): DelegatedTaskDisplayStatus => {
-  if (task.task.status !== 'active') return task.task.status;
-  const latestUpdate = task.task.updates.at(-1);
-  return latestUpdate?.kind === 'review' && latestUpdate.decision === 'request_revision'
-    ? 'revision_requested'
-    : 'in_progress';
-};
-
 const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTaskEntry => {
   const kind: DelegatedTaskEntryKind = task.targetAgentRunId ? 'task_agent' : 'task_team';
   const runId = task.targetAgentRunId ?? task.targetTeamRunId;
@@ -260,7 +251,7 @@ const toEntry = (team: AgentTeamContext, task: TeamTaskHistoryRow): DelegatedTas
     teamRunId: team.view.getRootTeamRunId(),
     taskId,
     runId,
-    displayStatus: displayStatus(task),
+    displayStatus: deriveTaskDelegationPresentation(task.task).displayStatus,
     lastActivityAt: task.task.updates.at(-1)?.created_at ?? task.task.created_at,
     lifecycleItems: lifecycleItems as [DelegatedTaskLifecycleItem, ...DelegatedTaskLifecycleItem[]],
   };

@@ -1,0 +1,267 @@
+{
+  "evidenceId": "API-E2E-AC017-001-002",
+  "startedAt": "2026-08-31T22:20:06.584Z",
+  "finishedAt": "2026-08-31T22:21:15.963Z",
+  "result": "Fail",
+  "error": "locator.evaluate: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][aria-label*=\"AC017_CURRENT_SOURCE_FINAL_TASK_TWO\"]').first()\u001b[22m\n\n    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:369:22)",
+  "frontendUrl": "http://127.0.0.1:60638",
+  "backendUrl": "http://127.0.0.1:60637",
+  "rootTeamRunId": "ac017_live_team_ac017_current_source_a_878aafc9778645e5b21986cd3cd5971b",
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "setup": {
+    "modelCatalogContainsExactModel": true,
+    "resumeConfig": {
+      "executionTree": {
+        "schema_version": 2,
+        "created_at": "2026-08-31T22:07:53.678Z",
+        "archived_at": null,
+        "application_binding": null,
+        "handoffs": [],
+        "root_team": {
+          "address": "/",
+          "team_definition_id": "ac017-live-team-ac017-current-source-a",
+          "team_definition_name": "AC017 Live Team AC017_CURRENT_SOURCE_A",
+          "team_run_id": "ac017_live_team_ac017_current_source_a_878aafc9778645e5b21986cd3cd5971b",
+          "coordinator_address": "/student_one",
+          "default_launch_configuration": {
+            "runtime_kind": "codex_app_server",
+            "llm_model_identifier": "gpt-5.6-luna",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "skill_access_mode": "NONE",
+            "workspace_root_path": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646"
+          },
+          "members": [
+            {
+              "kind": "configured_agent",
+              "address": "/student_one",
+              "agent_definition_id": "student-one-ac017-ac017-current-source-a",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_one_ac017_ac017_current_source_a_237f6112023147e9b25b0bf833a4e909",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646"
+              }
+            },
+            {
+              "kind": "configured_agent",
+              "address": "/student_two",
+              "agent_definition_id": "student-two-ac017-ac017-current-source-a",
+              "role": null,
+              "description": null,
+              "agent_run_id": "student_two_ac017_ac017_current_source_a_4ed4a9cc9d3b425bbc028df86c533995",
+              "platform_agent_run_id": null,
+              "launch_configuration": {
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.6-luna",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "skill_access_mode": "NONE",
+                "workspace_root_path": "/tmp/autobyteus-api-rev-003-workspace-8b81c0c4-f73a-46e9-b667-614fe7e67646"
+              }
+            }
+          ],
+          "task_executions": []
+        }
+      }
+    }
+  },
+  "tasks": [
+    {
+      "ordinal": 1,
+      "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE",
+      "taskId": "task_7fc810368306421a9777318a9400f0a2",
+      "taskAgentRunId": "student_two_ac017_ac017_current_source_a_ce3d1f2b7799400da0347afb5240d75d",
+      "request": {
+        "description": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.",
+        "prompt": "Call delegate_task exactly once with recipient_address exactly /student_two and description exactly the following text. Do not do the work yourself and do not call another tool after delegate_task succeeds.\n\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate."
+      },
+      "assignmentSnapshot": {
+        "conversationCount": 1,
+        "activityCount": 1,
+        "status": "running",
+        "projectionConversationCount": 1,
+        "projectionActivityCount": 1
+      },
+      "final": {
+        "conversationCount": 2,
+        "activityCount": 4,
+        "status": "idle",
+        "projectionConversationCount": 7,
+        "projectionActivityCount": 4,
+        "snapshotStatus": "idle"
+      },
+      "noReloadOrRefocus": {
+        "selectedUrl": "http://127.0.0.1:60638/workspace",
+        "finalUrl": "http://127.0.0.1:60638/workspace",
+        "navigationType": "navigate",
+        "navigationCountAtSelection": 6,
+        "navigationCountAtFinal": 6,
+        "focusedExactAtEveryPostSelectionCapture": true
+      },
+      "socketAssertions": {
+        "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE",
+        "taskAgentRunId": "student_two_ac017_ac017_current_source_a_ce3d1f2b7799400da0347afb5240d75d",
+        "activationIndex": 19,
+        "exactFrameCount": 78,
+        "exactFrameTypes": [
+          "AGENT_STATUS",
+          "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          "TURN_STARTED",
+          "SEGMENT_START",
+          "SEGMENT_CONTENT",
+          "TOKEN_USAGE_UPDATED",
+          "SEGMENT_END",
+          "TOOL_EXECUTION_STARTED",
+          "TOOL_EXECUTION_SUCCEEDED",
+          "TURN_COMPLETED"
+        ],
+        "activationPrecedesEveryExactAgentFrame": true,
+        "representativeStatus": true,
+        "representativeTurn": true,
+        "representativeContent": true,
+        "representativeTool": true,
+        "rootChangeSequenceCount": 143,
+        "rootChangeSequencesStrictlyIncreasing": true,
+        "rootChangeSequencesUnique": true
+      },
+      "assertions": {
+        "advancedConversation": true,
+        "advancedActivity": true,
+        "finalConversationSemanticallyEqualsProjection": true,
+        "finalActivityEqualsProjection": true,
+        "finalStatusEqualsSnapshot": true,
+        "exactProjectionIdentity": true,
+        "retainedStartMarker": true,
+        "retainedDoneMarker": true,
+        "retainedCompleteMarker": true,
+        "retainedToolCalls": true,
+        "noReloadOrNavigationAfterSelection": true,
+        "exactFocusHeld": true,
+        "currentRowHeld": true
+      },
+      "beforeSelectionNavigationCount": 6
+    },
+    {
+      "ordinal": 2,
+      "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO",
+      "taskId": "task_8c16309dff0847e3956fa35cd2efc813",
+      "taskAgentRunId": "student_two_ac017_ac017_current_source_a_7a34d333fdf244db9040e3785ebd6e6b",
+      "request": {
+        "description": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.",
+        "prompt": "Call delegate_task exactly once with recipient_address exactly /student_two and description exactly the following text. Do not do the work yourself and do not call another tool after delegate_task succeeds.\n\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate."
+      },
+      "assignmentSnapshot": {
+        "conversationCount": 1,
+        "activityCount": 1,
+        "status": "running",
+        "projectionConversationCount": 1,
+        "projectionActivityCount": 1
+      },
+      "final": {
+        "conversationCount": 2,
+        "activityCount": 4,
+        "status": "idle",
+        "projectionConversationCount": 7,
+        "projectionActivityCount": 4,
+        "snapshotStatus": "idle"
+      },
+      "noReloadOrRefocus": {
+        "selectedUrl": "http://127.0.0.1:60638/workspace",
+        "finalUrl": "http://127.0.0.1:60638/workspace",
+        "navigationType": "navigate",
+        "navigationCountAtSelection": 6,
+        "navigationCountAtFinal": 6,
+        "focusedExactAtEveryPostSelectionCapture": true
+      },
+      "socketAssertions": {
+        "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO",
+        "taskAgentRunId": "student_two_ac017_ac017_current_source_a_7a34d333fdf244db9040e3785ebd6e6b",
+        "activationIndex": 162,
+        "exactFrameCount": 78,
+        "exactFrameTypes": [
+          "AGENT_STATUS",
+          "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          "TURN_STARTED",
+          "SEGMENT_START",
+          "SEGMENT_CONTENT",
+          "TOKEN_USAGE_UPDATED",
+          "SEGMENT_END",
+          "TOOL_EXECUTION_STARTED",
+          "TOOL_EXECUTION_SUCCEEDED",
+          "TURN_COMPLETED"
+        ],
+        "activationPrecedesEveryExactAgentFrame": true,
+        "representativeStatus": true,
+        "representativeTurn": true,
+        "representativeContent": true,
+        "representativeTool": true,
+        "rootChangeSequenceCount": 286,
+        "rootChangeSequencesStrictlyIncreasing": true,
+        "rootChangeSequencesUnique": true
+      },
+      "assertions": {
+        "advancedConversation": true,
+        "advancedActivity": true,
+        "finalConversationSemanticallyEqualsProjection": true,
+        "finalActivityEqualsProjection": true,
+        "finalStatusEqualsSnapshot": true,
+        "exactProjectionIdentity": true,
+        "retainedStartMarker": true,
+        "retainedDoneMarker": true,
+        "retainedCompleteMarker": true,
+        "retainedToolCalls": true,
+        "noReloadOrNavigationAfterSelection": true,
+        "exactFocusHeld": true,
+        "currentRowHeld": true
+      },
+      "beforeSelectionNavigationCount": 6
+    }
+  ],
+  "assertions": {},
+  "navigationEvents": [
+    {
+      "at": "2026-08-31T22:20:07.408Z",
+      "url": "http://127.0.0.1:60638/agents"
+    },
+    {
+      "at": "2026-08-31T22:20:07.646Z",
+      "url": "http://127.0.0.1:60638/agents"
+    },
+    {
+      "at": "2026-08-31T22:20:07.721Z",
+      "url": "http://127.0.0.1:60638/agents"
+    },
+    {
+      "at": "2026-08-31T22:20:07.738Z",
+      "url": "http://127.0.0.1:60638/agents"
+    },
+    {
+      "at": "2026-08-31T22:20:08.556Z",
+      "url": "http://127.0.0.1:60638/agents"
+    },
+    {
+      "at": "2026-08-31T22:20:08.557Z",
+      "url": "http://127.0.0.1:60638/workspace"
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "rootSocket": {
+    "url": "ws://127.0.0.1:60637/ws/agent-team/ac017_live_team_ac017_current_source_a_878aafc9778645e5b21986cd3cd5971b",
+    "receivedFrameCount": 289,
+    "errors": []
+  },
+  "evidenceFiles": [
+    "evidence.raw.json.gz",
+    "AC017_CURRENT_SOURCE_TASK_ONE-*.png",
+    "AC017_CURRENT_SOURCE_TASK_TWO-*.png"
+  ]
+}

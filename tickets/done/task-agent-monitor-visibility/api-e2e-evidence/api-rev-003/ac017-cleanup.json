@@ -1,0 +1,56 @@
+{
+  "at": "2026-08-31T22:25:31.201Z",
+  "teamRunId": "ac017_live_team_ac017_current_source_a_878aafc9778645e5b21986cd3cd5971b",
+  "results": [
+    {
+      "op": "terminateTeamRun",
+      "status": 200,
+      "body": {
+        "data": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    },
+    {
+      "op": "deleteTeamDefinition",
+      "status": 200,
+      "body": {
+        "data": {
+          "deleteAgentTeamDefinition": {
+            "success": true,
+            "message": "Agent team definition deleted successfully."
+          }
+        }
+      }
+    },
+    {
+      "op": "deleteAgentDefinition",
+      "id": "student-one-ac017-ac017-current-source-a",
+      "status": 200,
+      "body": {
+        "data": {
+          "deleteAgentDefinition": {
+            "success": true,
+            "message": "Agent definition deleted successfully."
+          }
+        }
+      }
+    },
+    {
+      "op": "deleteAgentDefinition",
+      "id": "student-two-ac017-ac017-current-source-a",
+      "status": 200,
+      "body": {
+        "data": {
+          "deleteAgentDefinition": {
+            "success": true,
+            "message": "Agent definition deleted successfully."
+          }
+        }
+      }
+    }
+  ]
+}

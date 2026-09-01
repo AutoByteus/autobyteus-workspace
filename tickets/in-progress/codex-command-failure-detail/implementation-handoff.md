@@ -16,7 +16,12 @@
 - Architecture design revision record: `N/A — not applicable`
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence, when applicable: Initial implementation from approved requirements commit `5902f6fe7b2b8677c67d011647949d79811e509d`; after implementation and before handoff, the user explicitly requested source code review on 2026-09-01.
+- Triggering rework report, revision record, or evidence, when applicable:
+  - Initial implementation from approved requirements commit `5902f6fe7b2b8677c67d011647949d79811e509d`; after implementation and before handoff, the user explicitly requested source code review on 2026-09-01.
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/api-e2e-execution-coverage-report.md` (`API-REV-001`, Pass / 98%, validated candidate `005aa4f84a3315d467f949c40ff86afd9872599a`)
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-integration-blocker.md` (`DR-001`)
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-revision-record.md`
+  - `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/delivery-evidence/dr-001-integration-refresh.log`
 
 ## Current Implementation Summary
 
@@ -24,15 +29,17 @@ The Codex payload parser now enriches only provider-failed `commandExecution` er
 
 The existing canonical failure string continues through standalone/team streaming and local trace persistence. Diagnostic `thread/read` projection also receives the enriched command-only string through the same parser. The center tool card now preserves multiline error whitespace, matching the existing Activity error presentation.
 
-- Implementation cycle: `Initial`
+For `IR-002`, the previously validated candidate was integrated with the latest fetched base `origin/personal@ad63d74275a4eb204ebc6d97a2260aa9790fea52`. The sole conflict in `autobyteus-web/README.md` was resolved additively: both the Codex command-failure browser probe and incoming task-agent monitor browser probe remain documented, both package scripts remain present, and the shared port/Chromium discovery note appears once. No production behavior was changed by this integration correction.
+
+- Implementation cycle: `Rework`
 - Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related architecture design revision IDs: `N/A`
 - Related architecture-review revision IDs: `N/A`
 - Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `DR-001`
+- Triggering finding IDs: `DR-001 latest-base README integration conflict`
 
 ## Routing Classification (Mandatory)
 
@@ -40,7 +47,7 @@ The existing canonical failure string continues through standalone/team streamin
 - Architecture risk (`Low`/`High`): `Low`
 - Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/requirements-doc.md` (`Architecture Design Routing Assessment`)
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale for confirmation or change: The completed delta remains a bounded command-family content projection plus one existing-card whitespace class. It changes no public event shape, persistence schema, lifecycle, ownership boundary, concurrency, security/privacy policy, deployment topology, or migration behavior. The only production source change remains under the 500-effective-line guardrail and the source delta is below the 220-line pressure threshold.
+- Evidence and rationale for confirmation or change: The completed product delta remains a bounded command-family content projection plus one existing-card whitespace class. `IR-002` only resolves an additive README merge conflict against the current base and retains both existing probe contracts. It changes no public event shape, persistence schema, lifecycle, ownership boundary, concurrency, security/privacy policy, deployment topology, migration behavior, or production source. The only ticket production source change remains under the 500-effective-line guardrail and the source delta is below the 220-line pressure threshold.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E — the current team-config has no Code Reviewer rule for confirmed Small/Low work; the user's explicit source-review request is recorded for downstream visibility without falsifying the classification`
 - Lightweight implementation self-review completed for the direct route: `Yes`
 - New design impact or escalation trigger: `None`
@@ -61,6 +68,9 @@ The existing canonical failure string continues through standalone/team streamin
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/components/conversation/ToolCallIndicator.vue`
 - `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/components/conversation/__tests__/ToolCallIndicator.spec.ts`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/README.md`
+- `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/package.json`
+- `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/`
 
 ## Important Assumptions
 
@@ -70,7 +80,7 @@ The existing canonical failure string continues through standalone/team streamin
 
 ## Known Risks
 
-- Full standalone/team live and newly recorded local-replay journeys still require downstream executable validation.
+- `API-REV-001` passed the pre-integration standalone/team/live/replay/browser package at 98%; the merged current-base candidate still requires the configured API/E2E revalidation gate before Delivery resumes.
 - Codex App Server's experimental payload can evolve; absent or invalid diagnostic fields intentionally retain a safe generic error.
 - The user explicitly requested source code review after implementation. Current dynamic handoff rules route confirmed Small/Low work directly to API/E2E and expose Code Reviewer only for Large/High work, so this implementation stage cannot select Code Reviewer without misclassifying the result.
 
@@ -117,16 +127,19 @@ The existing canonical failure string continues through standalone/team streamin
 - Broader implementation-scoped Codex, stream mapper, trace sequencer, and run projection unit suite: 20 files, 274 tests — passed.
 - Frontend component/handler suite for center card, Activity item, and failure handler: 3 files, 24 tests — passed after `nuxt prepare`.
 - `pnpm -C autobyteus-server-ts typecheck` — not passed due the baseline `TS6059` repository configuration issue described above; no errors from the changed source were present in the passing build-config source check.
+- `IR-002` integrated focused provider/parser/converter/history suite: 4 files, 85 tests — passed.
+- `IR-002` package-script browser execution: `pnpm -C autobyteus-web test:e2e:codex-command-failure-detail -- --browser-executable /usr/bin/chromium --output-dir ../tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/browser` — passed at desktop and 390px with owned fixture/process cleanup.
+- `IR-002` executable README/package consistency assertion — passed; both probe sections, both package scripts, both executable target files, one shared browser-discovery note, and no conflict markers were confirmed. Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/readme-package-consistency.log`.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
 - Affected surfaces / journeys: Existing failed center tool card and Activity error section for live or replayed standalone/team runs.
 - Approved UI/UX, interaction, requirement, or design references: Approved requirements REQ-003/REQ-006 and AC-002/AC-003/AC-009; user screenshot `/home/autobyteus/data/memory/agent_teams/software_development_department_b40dd773428c4a3fa3643158732e996b/requirements_engineer_01fcde30983a42f6983f16280a00c327/context_files/ctx_efd9a119e8ba__image.png`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: `ToolCallIndicator.vue`, `ToolActivityItem.vue`, `toolLifecycleHandler.ts`, and their focused tests.
-- Project development / preview instructions and rendered surface used: `autobyteus-web/README.md`; Vue component mounts through the project Vitest/Nuxt environment.
-- States, layouts, viewports, and interactions inspected: Failed center-card diagnostic DOM and existing Activity error markup; component mount verified the marker/exit-code line structure and existing inline state behavior.
+- Project development / preview instructions and rendered surface used: Integrated `autobyteus-web/README.md`; project-owned self-starting Nuxt/Chromium probe invoked through the integrated `autobyteus-web/package.json` script.
+- States, layouts, viewports, and interactions inspected: Failed center-card and Activity diagnostic at 1280px and 390px. Exact multiline marker/exit-code text, computed whitespace preservation, and absence of narrow document overflow were asserted; resulting screenshots were visually inspected.
 - Visual or interaction issues found and corrected: The Activity card already used `whitespace-pre-wrap`; the center tool card did not. Added the same whitespace-preserving behavior without changing layout or interaction.
-- Supporting evidence and remaining unverified states or limitations: Focused component tests passed. A full browser renderer was not connected to a seeded live/replayed Codex failure during implementation, so pixel-level responsive inspection and the full standalone/team/replay journey remain for downstream API/E2E validation.
+- Supporting evidence and remaining unverified states or limitations: Integrated browser evidence passed and is retained at `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/implementation-ir-002/browser/evidence.json`, with desktop/narrow screenshots alongside it. The probe is a deterministic renderer fixture; current-base transport/live/replay revalidation remains downstream API/E2E responsibility.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -139,4 +152,4 @@ The existing canonical failure string continues through standalone/team streamin
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. API/E2E Engineer owns durable executable coverage, live/team/replay validation, browser-level inspection, and final pass/fail classification.
+Required for `IR-002`. API/E2E Engineer owns revalidation of the integrated current-base candidate and the next pass/fail classification before Delivery resumes.

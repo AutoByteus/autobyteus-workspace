@@ -17,6 +17,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import { drainPendingInterruptTransportFailures, tryAdmitInterruptCommand } from './interruptCommandAdmission';
 import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import {
   createTeamInterruptMessage,
@@ -25,6 +26,10 @@ import {
 } from './teamClientMessageFactory';
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
+import {
+  invalidateTeamMemberProjection,
+  invalidateTeamMemberProjections,
+} from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 export type TeamStreamSyncPhase =
   | 'disconnected'
@@ -258,6 +263,7 @@ export class TeamStreamingService {
       }
       const result = context.view.applySnapshot(message);
       if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
+      this.applyEffects(result.effects, context);
       this.phase = 'ready';
       this.expectedBaseChangeSequence = null;
       this.resolveCandidate();
@@ -266,9 +272,13 @@ export class TeamStreamingService {
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
       if (this.phase !== 'ready') throw new Error(`Team lifecycle message is invalid during '${this.phase}'.`);
       const result = context.view.setRootTeamActive(message.payload.is_active);
-      if (result.disposition === 'applied') useRunHistoryStore().applyRunNavigationEffect({
-        kind: 'team_run', teamRunId: context.view.getRootTeamRunId(), isActive: message.payload.is_active,
-      }, { kind: 'PRESENTATION' });
+      if (result.disposition === 'applied') {
+        const history = useRunHistoryStore();
+        history.applyRunNavigationEffect({
+          kind: 'team_run', teamRunId: context.view.getRootTeamRunId(), isActive: message.payload.is_active,
+        }, { kind: 'PRESENTATION' });
+        history.refreshRunNavigationTopology('team-stream-lifecycle');
+      }
       return;
     }
     if (message.type === 'AGENT_COMMAND_ACK') {
@@ -288,6 +298,23 @@ export class TeamStreamingService {
     for (const effect of effects) {
       if (effect.kind === 'team_stream_recovery_required') {
         this.enterReopenRequired(true);
+      } else if (effect.kind === 'invalidate_team_member_projections') {
+        invalidateTeamMemberProjections(context);
+      } else if (effect.kind === 'invalidate_team_member_projection') {
+        effect.agentRunIds.forEach((agentRunId) => {
+          invalidateTeamMemberProjection(context, agentRunId);
+        });
+      } else if (effect.kind === 'reconcile_team_navigation') {
+        if (this.isMountedContext(context)) {
+          useRunHistoryStore().refreshRunNavigationTopology('team-stream-structure');
+        }
+      } else if (effect.kind === 'reconcile_focused_team_member_projection') {
+        if (this.isMountedContext(context)) {
+          void useRunHistoryStore().reconcileFocusedTeamMemberProjection(
+            context.view.getRootTeamRunId(),
+            context.view.getFocusedAgentRunId(),
+          );
+        }
       } else if (effect.kind === 'record_team_token_usage') {
         useTokenUsageMeterStore().applyTeamTokenUsage(context.view.getRootTeamRunId(), effect.agentRunId, effect.details);
       } else if (effect.kind === 'dispatch_agent') {
@@ -303,6 +330,10 @@ export class TeamStreamingService {
         });
       }
     }
+  }
+
+  private isMountedContext(context: AgentTeamContext): boolean {
+    return useAgentTeamContextsStore().getTeamContextById(context.view.getRootTeamRunId()) === context;
   }
 
   private enterReopenRequired(notify: boolean): void {

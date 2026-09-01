@@ -20,6 +20,8 @@ const {
   selectRunWithoutShellNavigationMock,
   selectDraftMock,
   clearAgentRunConfigMock,
+  commitActivitiesMock,
+  markAuthorityMock,
 } = vi.hoisted(() => ({
   hydrateLiveTeamRunContextMock: vi.fn(),
   hydrateTeamRunContextForStreamRecoveryMock: vi.fn(),
@@ -33,11 +35,17 @@ const {
   selectRunWithoutShellNavigationMock: vi.fn(),
   selectDraftMock: vi.fn(),
   clearAgentRunConfigMock: vi.fn(),
+  commitActivitiesMock: vi.fn(),
+  markAuthorityMock: vi.fn(),
 }))
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   hydrateLiveTeamRunContext: hydrateLiveTeamRunContextMock,
   hydrateTeamRunContextForStreamRecovery: hydrateTeamRunContextForStreamRecoveryMock,
+}))
+vi.mock('~/services/runHydration/teamRunHydrationCommit', () => ({
+  commitTeamRunHydrationActivities: commitActivitiesMock,
+  markCommittedTeamRunHydrationAuthority: markAuthorityMock,
 }))
 vi.mock('~/stores/agentTeamContextsStore', () => ({
   useAgentTeamContextsStore: () => ({
@@ -92,7 +100,8 @@ const hydration = (team: ReturnType<typeof makeTeam>) => ({
   teamRunId: ROOT,
   focusedAgentRunId: team.view.getFocusedAgentRunId(),
   resumeConfig: { teamRunId: ROOT, isActive: team.view.isRootTeamActive(), executionTree: team.view.getExecutionTree() },
-  projectionByAgentRunId: new Map(),
+  projectionByAgentRunId: new Map([[team.view.getFocusedAgentRunId(), {}]]),
+  activityReplacements: [],
   hydratedContext: team,
 })
 
@@ -103,26 +112,18 @@ describe('openTeamRun current exact execution identity', () => {
     replaceFailedTeamStreamMock.mockResolvedValue(undefined)
   })
 
-  it('uses the existing exact focus as the hydration request and replaces it with the current projection', async () => {
+  it('rejects the fresh-open path when the Team is already mounted', async () => {
     const existing = makeTeam({ focus: 'run-b' })
-    const hydrated = makeTeam({ focus: 'run-b' })
     getTeamContextByIdMock.mockReturnValue(existing)
-    hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
 
-    const result = await openTeamRun({
+    await expect(openTeamRun({
       teamRunId: ROOT,
       resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
-    })
+    })).rejects.toThrow("Team context 'team-1' is already mounted.")
 
-    expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({
-      teamRunId: ROOT,
-      agentRunId: 'run-b',
-    }))
-    expect(addTeamContextMock).toHaveBeenCalledWith(hydrated)
-    expect(result.focusedAgentRunId).toBe('run-b')
-    expect(result.focusedMemberAddress).toBe('/member-b')
-    expect(connectToTeamStreamMock).toHaveBeenCalledWith(ROOT)
+    expect(hydrateLiveTeamRunContextMock).not.toHaveBeenCalled()
+    expect(addTeamContextMock).not.toHaveBeenCalled()
   })
 
   it('adds a fresh current Team projection and performs desktop selection cleanup', async () => {
@@ -138,7 +139,9 @@ describe('openTeamRun current exact execution identity', () => {
 
     expect(hydrated.view.getExecutionTree().root_team.members.map((node) => node.address)).toEqual(['/member-a', '/member-b'])
     expect(hydrated.view.hasAgentRun('run-a')).toBe(true)
+    expect(commitActivitiesMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: hydrated }))
     expect(addTeamContextMock).toHaveBeenCalledWith(hydrated)
+    expect(markAuthorityMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: hydrated }))
     expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
     expect(selectDraftMock).toHaveBeenCalledWith(null)
     expect(clearAgentRunConfigMock).toHaveBeenCalledTimes(1)
@@ -146,6 +149,7 @@ describe('openTeamRun current exact execution identity', () => {
 
   it('preserves an exact requested task-Agent focus present in the hydrated execution state', async () => {
     const hydrated = makeTeam({
+      focus: 'task-agent-run-1',
       tasks: [testTaskRecord({
         taskId: 'task-1',
         delegatorAgentRunId: 'run-a',
@@ -153,7 +157,7 @@ describe('openTeamRun current exact execution identity', () => {
         target: { agentRunId: 'task-agent-run-1' },
       })],
     })
-    getTeamContextByIdMock.mockReturnValue(makeTeam())
+    getTeamContextByIdMock.mockReturnValue(null)
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
 
     const result = await openTeamRun({
@@ -177,6 +181,7 @@ describe('openTeamRun current exact execution identity', () => {
       status: 'interrupted',
     })
     const hydrated = makeTeam({
+      focus: 'settled-task-agent-run-1',
       active: false,
       tasks: [record],
       taskExecutions: [{
@@ -185,7 +190,7 @@ describe('openTeamRun current exact execution identity', () => {
         settled_at: '2026-08-14T12:05:00.000Z',
       }],
     })
-    getTeamContextByIdMock.mockReturnValue(makeTeam())
+    getTeamContextByIdMock.mockReturnValue(null)
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
 
     const result = await openTeamRun({
@@ -205,17 +210,41 @@ describe('openTeamRun current exact execution identity', () => {
   })
 
   it('rejects an absent requested AgentRun without silently substituting another focus', async () => {
-    const hydrated = makeTeam({ focus: 'run-a' })
-    getTeamContextByIdMock.mockReturnValue(makeTeam())
-    hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
+    getTeamContextByIdMock.mockReturnValue(null)
+    hydrateLiveTeamRunContextMock.mockRejectedValue(
+      new Error("Requested AgentRun 'missing-run' is not part of this Team execution."),
+    )
 
     await expect(openTeamRun({
       teamRunId: ROOT,
       agentRunId: 'missing-run',
       resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
-    })).rejects.toThrow("AgentRun 'missing-run' is not part of this Team execution.")
-    expect(hydrated.view.getFocusedAgentRunId()).toBe('run-a')
+    })).rejects.toThrow("Requested AgentRun 'missing-run' is not part of this Team execution.")
+    expect(addTeamContextMock).not.toHaveBeenCalled()
+    expect(selectRunMock).not.toHaveBeenCalled()
+  })
+
+  it('leaves the fresh Team unpublished and unselected when Activity commit conflicts', async () => {
+    const hydrated = makeTeam({ focus: 'run-b' })
+    getTeamContextByIdMock.mockReturnValue(null)
+    hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
+    commitActivitiesMock.mockImplementationOnce(() => {
+      throw new Error("Team activity for 'team-1' changed before projection commit.")
+    })
+
+    await expect(openTeamRun({
+      teamRunId: ROOT,
+      agentRunId: 'run-b',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    })).rejects.toThrow("Team activity for 'team-1' changed before projection commit.")
+
+    expect(addTeamContextMock).not.toHaveBeenCalled()
+    expect(markAuthorityMock).not.toHaveBeenCalled()
+    expect(selectRunMock).not.toHaveBeenCalled()
+    expect(connectToTeamStreamMock).not.toHaveBeenCalled()
+    expect(disconnectTeamStreamMock).not.toHaveBeenCalled()
   })
 
   it('uses navigation-free mobile selection and leaves an inactive projection disconnected', async () => {
@@ -257,7 +286,12 @@ describe('openTeamRun current exact execution identity', () => {
       rootTeamRunId: ROOT,
       candidateContext: candidate,
       expectedBaseChangeSequence: 12,
+      beforeContextCommit: expect.any(Function),
     })
+    const commit = replaceFailedTeamStreamMock.mock.calls[0]?.[0].beforeContextCommit
+    commit()
+    expect(commitActivitiesMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: candidate }))
+    expect(markAuthorityMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: candidate }))
     expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
     expect(result).toMatchObject({ focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
   })

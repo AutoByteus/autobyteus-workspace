@@ -8,6 +8,10 @@ import {
   hydrateLiveTeamRunContext,
   hydrateTeamRunContextForStreamRecovery,
 } from '~/services/runHydration/teamRunContextHydrationService';
+import {
+  commitTeamRunHydrationActivities,
+  markCommittedTeamRunHydrationAuthority,
+} from '~/services/runHydration/teamRunHydrationCommit';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
@@ -18,6 +22,7 @@ export interface OpenTeamRunWithCoordinatorInput {
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
   selectionMode?: TeamRunOpenSelectionMode;
+  onCommitted?: (result: OpenTeamRunWithCoordinatorResult) => void;
 }
 export interface OpenTeamRunWithCoordinatorResult {
   teamRunId: string;
@@ -30,22 +35,27 @@ export const openTeamRun = async (
   input: OpenTeamRunWithCoordinatorInput,
 ): Promise<OpenTeamRunWithCoordinatorResult> => {
   const contexts = useAgentTeamContextsStore();
-  const current = contexts.getTeamContextById(input.teamRunId);
-  const preferredAgentRunId = input.agentRunId?.trim()
-    || current?.view.getFocusedAgentRunId()
-    || null;
+  if (contexts.getTeamContextById(input.teamRunId)) {
+    throw new Error(`Team context '${input.teamRunId}' is already mounted.`);
+  }
+  const preferredAgentRunId = input.agentRunId?.trim() || null;
   const runStore = useAgentTeamRunStore();
   const hydrated = await hydrateLiveTeamRunContext({
     ...input,
     agentRunId: preferredAgentRunId,
   });
   const context = hydrated.hydratedContext;
-  contexts.addTeamContext(context);
-
-  if (preferredAgentRunId) {
-    const result = context.view.focusAgent(preferredAgentRunId);
-    if (result.disposition === 'rejected') throw new Error(result.message);
+  if (contexts.getTeamContextById(input.teamRunId)) {
+    throw new Error(`Team context '${input.teamRunId}' became mounted while it was loading.`);
   }
+  if (context.view.getRootTeamRunId() !== input.teamRunId
+    || context.view.getFocusedAgentRunId() !== hydrated.focusedAgentRunId
+    || hydrated.projectionByAgentRunId.get(hydrated.focusedAgentRunId) == null) {
+    throw new Error(`Team '${input.teamRunId}' did not load its exact focused AgentRun.`);
+  }
+  commitTeamRunHydrationActivities(hydrated);
+  contexts.addTeamContext(context);
+  markCommittedTeamRunHydrationAuthority(hydrated);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();
 
@@ -57,14 +67,16 @@ export const openTeamRun = async (
     useTeamRunConfigStore().selectDraft(null);
     useAgentRunConfigStore().clearConfig();
   }
-  if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
-  else runStore.disconnectTeamStream(input.teamRunId);
-  return {
+  const result = {
     teamRunId: input.teamRunId,
     focusedAgentRunId,
     focusedMemberAddress,
     resumeConfig: hydrated.resumeConfig,
   };
+  input.onCommitted?.(result);
+  if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
+  else runStore.disconnectTeamStream(input.teamRunId);
+  return result;
 };
 
 export const reopenTeamRunAfterStreamLoss = async (
@@ -93,7 +105,9 @@ export const reopenTeamRunAfterStreamLoss = async (
     rootTeamRunId: input.teamRunId,
     candidateContext: context,
     expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
+    beforeContextCommit: () => commitTeamRunHydrationActivities(hydrated),
   });
+  markCommittedTeamRunHydrationAuthority(hydrated);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();
   if (input.selectRun !== false) {
@@ -104,10 +118,12 @@ export const reopenTeamRunAfterStreamLoss = async (
     useTeamRunConfigStore().selectDraft(null);
     useAgentRunConfigStore().clearConfig();
   }
-  return {
+  const result = {
     teamRunId: input.teamRunId,
     focusedAgentRunId,
     focusedMemberAddress,
     resumeConfig: hydrated.resumeConfig,
   };
+  input.onCommitted?.(result);
+  return result;
 };

@@ -1,0 +1,205 @@
+{
+  "evidenceId": "API-E2E-AC017-003-AUTHORITATIVE",
+  "result": "Pass",
+  "implementationCommit": "fe9f1a286",
+  "environment": {
+    "backend": "current autobyteus-server-ts dist/app.js on 127.0.0.1:61117",
+    "frontend": "current autobyteus-web Nuxt on 127.0.0.1:61118, exercised in actual Chromium",
+    "database": "isolated SQLite file:/tmp/autobyteus-api-rev-003-ac017-isolated-61117/db/production.db",
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-5.6-luna",
+    "actualRootTeamSocket": "ws://127.0.0.1:61117/ws/agent-team/ac017_live_team_ac017_isolated_current_source_61a62761b25a4abb96754865167497be"
+  },
+  "mainProbe": {
+    "startedAt": "2026-08-31T22:27:58.275Z",
+    "finishedAt": "2026-08-31T22:29:06.232Z",
+    "rootTeamRunId": "ac017_live_team_ac017_isolated_current_source_61a62761b25a4abb96754865167497be",
+    "rawExecutionResult": "Fail",
+    "rawHarnessDefect": {
+      "predicate": "taskRows expected data-transient-kind='task'",
+      "actualContract": "data-transient-kind='task_agent'",
+      "effect": "Only the aggregate sameAddress helper evaluated false; every task, socket, model, navigation, identity-restoration, page-error, and projection assertion evaluated true.",
+      "correction": "Ticket-scoped probe now recognizes task_agent; exact same-address state was rerun through isolation-browser-probe.cjs and passed from real rendered DOM rows.",
+      "productFailure": false
+    },
+    "rootSocketReceivedFrameCount": 310,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "allNonDefectiveOverallAssertionsPassed": true
+  },
+  "tasks": [
+    {
+      "ordinal": 1,
+      "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE",
+      "taskId": "task_00a095546947407aa25011cacfa11fe1",
+      "taskAgentRunId": "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b",
+      "assignmentSnapshot": {
+        "conversationCount": 1,
+        "activityCount": 1,
+        "status": "running",
+        "projectionConversationCount": 1,
+        "projectionActivityCount": 1
+      },
+      "final": {
+        "conversationCount": 2,
+        "activityCount": 4,
+        "status": "idle",
+        "projectionConversationCount": 7,
+        "projectionActivityCount": 4,
+        "snapshotStatus": "idle"
+      },
+      "noReloadOrRefocus": {
+        "selectedUrl": "http://127.0.0.1:61118/workspace",
+        "finalUrl": "http://127.0.0.1:61118/workspace",
+        "navigationType": "navigate",
+        "navigationCountAtSelection": 6,
+        "navigationCountAtFinal": 6,
+        "focusedExactAtEveryPostSelectionCapture": true
+      },
+      "socketAssertions": {
+        "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE",
+        "taskAgentRunId": "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b",
+        "activationIndex": 30,
+        "exactFrameCount": 82,
+        "exactFrameTypes": [
+          "AGENT_STATUS",
+          "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          "TURN_STARTED",
+          "SEGMENT_START",
+          "SEGMENT_CONTENT",
+          "TOKEN_USAGE_UPDATED",
+          "SEGMENT_END",
+          "TOOL_EXECUTION_STARTED",
+          "TOOL_EXECUTION_SUCCEEDED",
+          "TURN_COMPLETED"
+        ],
+        "activationPrecedesEveryExactAgentFrame": true,
+        "representativeStatus": true,
+        "representativeTurn": true,
+        "representativeContent": true,
+        "representativeTool": true,
+        "rootChangeSequenceCount": 164,
+        "rootChangeSequencesStrictlyIncreasing": true,
+        "rootChangeSequencesUnique": true
+      },
+      "allLifecycleAssertionsPassed": true
+    },
+    {
+      "ordinal": 2,
+      "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO",
+      "taskId": "task_9e8665cf08da40969576037c7a966155",
+      "taskAgentRunId": "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d",
+      "assignmentSnapshot": {
+        "conversationCount": 1,
+        "activityCount": 1,
+        "status": "running",
+        "projectionConversationCount": 1,
+        "projectionActivityCount": 1
+      },
+      "final": {
+        "conversationCount": 2,
+        "activityCount": 4,
+        "status": "idle",
+        "projectionConversationCount": 7,
+        "projectionActivityCount": 4,
+        "snapshotStatus": "idle"
+      },
+      "noReloadOrRefocus": {
+        "selectedUrl": "http://127.0.0.1:61118/workspace",
+        "finalUrl": "http://127.0.0.1:61118/workspace",
+        "navigationType": "navigate",
+        "navigationCountAtSelection": 6,
+        "navigationCountAtFinal": 6,
+        "focusedExactAtEveryPostSelectionCapture": true
+      },
+      "socketAssertions": {
+        "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO",
+        "taskAgentRunId": "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d",
+        "activationIndex": 183,
+        "exactFrameCount": 78,
+        "exactFrameTypes": [
+          "AGENT_STATUS",
+          "SYSTEM_INSTRUCTIONS_SUPPLIED",
+          "TURN_STARTED",
+          "SEGMENT_START",
+          "SEGMENT_CONTENT",
+          "TOKEN_USAGE_UPDATED",
+          "SEGMENT_END",
+          "TOOL_EXECUTION_STARTED",
+          "TOOL_EXECUTION_SUCCEEDED",
+          "TURN_COMPLETED"
+        ],
+        "activationPrecedesEveryExactAgentFrame": true,
+        "representativeStatus": true,
+        "representativeTurn": true,
+        "representativeContent": true,
+        "representativeTool": true,
+        "rootChangeSequenceCount": 307,
+        "rootChangeSequencesStrictlyIncreasing": true,
+        "rootChangeSequencesUnique": true
+      },
+      "allLifecycleAssertionsPassed": true
+    }
+  ],
+  "sameAddressAndRepeatedRunIsolation": {
+    "result": "Pass",
+    "configuredRunId": "student_two_ac017_ac017_isolated_current_source_ae7b580e36bd4c2a8def1421cda1a92d",
+    "taskRunIds": [
+      "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b",
+      "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d"
+    ],
+    "renderedRows": [
+      {
+        "label": "task-one",
+        "focusedAgentRunId": "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b",
+        "memberAddress": "/student_two",
+        "transientKind": "task_agent",
+        "conversationCount": 2,
+        "activityCount": 4
+      },
+      {
+        "label": "configured-student-two",
+        "focusedAgentRunId": "student_two_ac017_ac017_isolated_current_source_ae7b580e36bd4c2a8def1421cda1a92d",
+        "memberAddress": "/student_two",
+        "transientKind": null,
+        "conversationCount": 0,
+        "activityCount": 0
+      },
+      {
+        "label": "task-two",
+        "focusedAgentRunId": "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d",
+        "memberAddress": "/student_two",
+        "transientKind": "task_agent",
+        "conversationCount": 2,
+        "activityCount": 4
+      }
+    ],
+    "assertions": {
+      "taskRunsDistinct": true,
+      "configuredDistinct": true,
+      "taskOneExact": true,
+      "configuredExact": true,
+      "taskTwoExact": true,
+      "sameAddressRows": true,
+      "noPageErrors": true,
+      "noConsoleErrors": true
+    }
+  },
+  "mandatoryProof": {
+    "activationBeforeEveryExactTaskAgentFrame": true,
+    "monotonicUniqueRootSequences": true,
+    "representativeStatusTurnContentTool": true,
+    "alreadyOpenEarlySelectedUIAdvancedWithoutReloadOrRefocus": true,
+    "finalProjectionAndRootSnapshotConsistent": true,
+    "sameAddressConfiguredTaskAndRepeatedRunIsolation": true
+  },
+  "sourceEvidence": {
+    "rawMain": "evidence.raw.json.gz",
+    "inspectableMainSummary": "evidence.json",
+    "focusedIsolation": "isolation-evidence.json",
+    "browserLog": "../ac017-isolated-browser.log",
+    "isolationLog": "../ac017-isolated-isolation-browser.log",
+    "serverLog": "../ac017-isolated-server.log",
+    "nuxtLog": "../ac017-isolated-nuxt.log"
+  }
+}

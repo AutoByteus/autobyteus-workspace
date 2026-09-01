@@ -14,10 +14,28 @@
             {{ headerAvatarInitials }}
           </span>
         </div>
-        <h4 v-if="activeTeamContext" class="text-base font-medium text-gray-800 truncate" :title="headerTitle">
-          {{ headerTitle }}
-        </h4>
-        <AgentStatusDisplay v-if="activeTeamContext && headerStatus" :status="headerStatus" />
+        <div v-if="activeTeamContext" class="min-w-0 flex-1">
+          <div class="flex min-w-0 items-center gap-2">
+            <h4 class="truncate text-base font-medium text-gray-800" :title="headerTitle">
+              {{ headerTitle }}
+            </h4>
+            <span
+              v-if="focusedTask"
+              class="shrink-0 rounded-full bg-indigo-100 px-2 py-0.5 text-[0.6875rem] font-semibold text-indigo-700"
+            >{{ $t('workspace.task_monitor.task') }}</span>
+            <AgentStatusDisplay v-if="headerStatus" :status="headerStatus" variant="compact" />
+          </div>
+          <p
+            v-if="focusedTask"
+            class="truncate text-xs text-slate-500"
+            :title="focusedTask.description"
+          >{{ focusedTask.description }}</p>
+          <p
+            v-if="focusedTaskStatus"
+            class="text-xs font-medium text-slate-600"
+            data-test="team-workspace-task-status"
+          >{{ focusedTaskStatus }}</p>
+        </div>
       </div>
 
       <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
@@ -71,6 +89,7 @@ import SkillImprovementComposerCta from '~/components/workspace/skill-improvemen
 import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
+import { useLocalization } from '~/composables/useLocalization';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
@@ -80,6 +99,7 @@ const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const headerAvatarLoadError = ref(false);
+const { t } = useLocalization();
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
 const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
@@ -91,6 +111,14 @@ const streamRecoveryNotice = computed(() => {
 const focusedMemberContext = computed(() => activeTeamContext.value?.view.getFocusedAgentContext() ?? null);
 const focusedMemberAddress = computed(() => activeTeamContext.value?.view.getFocusedMemberAddress() ?? '');
 const headerStatus = computed(() => focusedMemberContext.value?.state.currentStatus ?? null);
+const focusedNavigationRow = computed(() => activeTeamContext.value?.view.getFocusedNavigationRow() ?? null);
+const focusedTask = computed(() => focusedNavigationRow.value?.task ?? null);
+const focusedTaskStatus = computed(() => focusedTask.value && headerStatus.value
+  ? t('workspace.task_monitor.combined_status', {
+    lifecycle: t(`workspace.task_monitor.lifecycle.${focusedTask.value.displayStatus}`),
+    execution: t(`workspace.task_monitor.execution.${headerStatus.value}`),
+  })
+  : '');
 
 const headerTitle = computed(() => {
   const team = activeTeamContext.value;

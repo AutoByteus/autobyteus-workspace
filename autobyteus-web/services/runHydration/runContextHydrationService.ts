@@ -1,6 +1,7 @@
 import { getApolloClient } from '~/utils/apolloClient';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { GetAgentRunResumeConfig, GetRunFileChanges, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
@@ -10,7 +11,7 @@ import {
 } from '~/types/agent/AgentRunConfig';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection, type RunProjectionConversationEntry } from './runProjectionConversation';
-import { hydrateActivitiesFromProjection, type RunProjectionActivityEntry } from './runProjectionActivityHydration';
+import { buildActivitiesFromProjection, type RunProjectionActivityEntry } from './runProjectionActivityHydration';
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { hydrateRunFileChanges } from './runFileChangeHydrationService';
@@ -46,19 +47,21 @@ export interface LoadRunContextHydrationInput {
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
 }
 
-export interface RunContextHydrationPayload {
+export interface RunContextHydrationCandidate {
   runId: string;
   resumeConfig: RunResumeConfigPayload;
   config: AgentRunConfig;
   conversation: ReturnType<typeof buildConversationFromProjection>;
-  activities: RunProjectionActivityEntry[];
+  activities: ReturnType<typeof buildActivitiesFromProjection>;
+  expectedActivityRevision: number;
   fileChanges: RunFileChangeArtifact[];
   hasEarlierActiveTraceEvents: boolean;
 }
 
-export const loadRunContextHydrationPayload = async (
+export const loadRunContextHydrationCandidate = async (
   input: LoadRunContextHydrationInput,
-): Promise<RunContextHydrationPayload> => {
+): Promise<RunContextHydrationCandidate> => {
+  const expectedActivityRevision = useAgentActivityStore().getActivityContentRevision(input.runId);
   const client = getApolloClient();
   const [projectionResponse, resumeResponse, fileChangesResponse] = await Promise.all([
     client.query<GetRunProjectionQueryData>({
@@ -167,7 +170,8 @@ export const loadRunContextHydrationPayload = async (
     resumeConfig,
     config,
     conversation,
-    activities: projection.activities || [],
+    activities: buildActivitiesFromProjection(projection.activities || []),
+    expectedActivityRevision,
     fileChanges: fileChangesResponse.data?.getRunFileChanges || [],
     hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
   };
@@ -175,17 +179,32 @@ export const loadRunContextHydrationPayload = async (
 
 export const hydrateLiveRunContext = async (
   input: LoadRunContextHydrationInput & { currentStatus?: string | null },
-): Promise<RunContextHydrationPayload> => {
-  const payload = await loadRunContextHydrationPayload(input);
-  const context = useAgentContextsStore().upsertProjectionContext({
-    runId: payload.runId,
-    config: payload.config,
-    conversation: payload.conversation,
+): Promise<RunContextHydrationCandidate> => {
+  const contexts = useAgentContextsStore();
+  if (contexts.getRun(input.runId)) {
+    throw new Error(`Agent run '${input.runId}' became available before background hydration.`);
+  }
+  const candidate = await loadRunContextHydrationCandidate(input);
+  if (contexts.getRun(input.runId)) {
+    throw new Error(`Agent run '${input.runId}' changed before background hydration commit.`);
+  }
+  const activities = useAgentActivityStore();
+  const activityResult = activities.replaceProjectionActivitiesIfRevisions([{
+    runId: candidate.runId,
+    expectedRevision: candidate.expectedActivityRevision,
+    activities: candidate.activities,
+  }]);
+  if (activityResult === 'conflict') {
+    throw new Error(`Agent activity for '${input.runId}' changed before background hydration commit.`);
+  }
+  const context = contexts.upsertProjectionContext({
+    runId: candidate.runId,
+    config: candidate.config,
+    conversation: candidate.conversation,
     status: normalizeAgentRuntimeStatus(input.currentStatus),
-    hasEarlierActiveTraceEvents: payload.hasEarlierActiveTraceEvents,
+    hasEarlierActiveTraceEvents: candidate.hasEarlierActiveTraceEvents,
   });
-  hydrateActivitiesFromProjection(payload.runId, payload.activities);
   primeRecentEventMonitorBaseline(context);
-  hydrateRunFileChanges(payload.runId, payload.fileChanges);
-  return payload;
+  hydrateRunFileChanges(candidate.runId, candidate.fileChanges);
+  return candidate;
 };

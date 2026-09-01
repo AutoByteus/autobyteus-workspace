@@ -518,7 +518,23 @@ screenshots, and removes only its owned Nuxt fixture and process:
 pnpm test:e2e:codex-command-failure-detail -- --output-dir ../tickets/<ticket-name>/probes/api-e2e/browser
 ```
 
-Use `--port <port>` to pin the port. If automatic discovery does not find
+### Task Agent Monitor Visibility Browser Probe
+
+The exact task-monitor regression has a self-starting Chromium probe that uses
+the production Team stream service, Pinia stores, GraphQL hydration path, Team
+member tree, workspace header/conversation monitor, and Activity feed. It proves
+that mounted task selection remains on the previous row while the exact retained
+projection loads, then exercises snapshot projection invalidation followed by
+focused task settlement, fallback focus repair, and exact fallback projection
+reconciliation. The harness installs a temporary fixture route, starts an owned
+Nuxt server on a free loopback port, intercepts deterministic projection payloads,
+captures JSON/screenshots/logs, and removes only its owned resources:
+
+```bash
+pnpm test:e2e:task-agent-monitor-visibility -- --output-dir test-results/task-agent-monitor-visibility
+```
+
+For either probe, use `--port <port>` to pin the port. If automatic browser discovery does not find
 Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
@@ -541,6 +557,7 @@ pnpm codegen
 - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
 - `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
 - `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
+- `pnpm test:e2e:task-agent-monitor-visibility`: Run the self-starting exact task hydration and settlement-fallback browser probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

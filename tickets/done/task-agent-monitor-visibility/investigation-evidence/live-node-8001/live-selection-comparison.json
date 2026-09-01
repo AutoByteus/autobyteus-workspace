@@ -1,0 +1,114 @@
+{
+  "capturedAt": "2026-08-31T08:38:11.110Z",
+  "frontend": "http://127.0.0.1:33371",
+  "backend": "http://127.0.0.1:8001",
+  "rootTeamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+  "taskAgentRunId": "prototype_bootstrapper_59372829f6294393b6f83bb80a293260",
+  "parent": {
+    "label": "configured-parent-selected",
+    "taskRowCount": 1,
+    "taskAriaSelected": "false",
+    "taskAriaCurrent": null,
+    "headerTitle": "prototype_bootstrapper",
+    "headerStatus": "Agent Status: Offline",
+    "activityHeader": "Activity 0 Events",
+    "monitorText": "Context Files (0)\n(drag, paste, or upload)",
+    "bodyText": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nautobyteus_rpa_llm_workspace\nautobyteus-agents\nautobyteus-marketing-workspace\nautobyteus-mcps\nautobyteus-private-mcps\nautobyteus-private-skills\nautobyteus-web-prototype\nautobyteus-workspace\nTEAMS\nSD\nSoftware Development Department\n(9)\nhello\n13h\nR\nrequirements_engineer\n13h\nproduct_design_prototyping_team\n13h\nP\nproduct_prototyper\n13h\nP\nprototype_bootstrapper\n13h\nTask: Outcome: Baseline Needed Stable package identifier: A…\nsoftware_engineering_team\n13h\ni got one problem with the UI. when i have nested team for example. Basically, the problem is tha...\n1d\ncodex currently seems have support ultra fast mode in the newest one version. i have the newest v...\n1d\nCurrently, I have one problem with the sub team. But I mean, the sub team itself, I don't have, l...\n1d\nthe current token statistics page looks so ugly. its very unprofessional. here we need better ui\n2d\nhello\n4d\nCurrently in the backends, we have like a currently in the backends, we if you look at the we hav...\n5d\ndo you have handoff rules?\n5d\nhello\n1w\nSE\nSoftware Engineering Team\n(5)\nTemp Workspace\nSettings\nP\nprototype_bootstrapper\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n0 Events\nNo activity history yet."
+  },
+  "task": {
+    "label": "task-run-selected",
+    "taskRowCount": 1,
+    "taskAriaSelected": "true",
+    "taskAriaCurrent": "true",
+    "headerTitle": "prototype_bootstrapper",
+    "headerStatus": "Agent Status: Idle",
+    "activityHeader": "Activity 51 Events",
+    "monitorText": "P\nprototype_bootstrapper\nrun_bash\n· /bin/bash -lc \"sed -n '1,360p' /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/prototype/scripts/validate-req-atptn-current-team-refresh.mjs\"\nTool execution failed.\nThinking\nrun_bash\n· /bin/bash -lc \"git -C /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction show 5dbfc29:prototype/scripts/validate-req-atptn-current-team-refresh.mjs | sed -n '1,420p'\"\nThinking\nrun_bash\n· /bin/bash -lc \"cd /home/autobyteus/workspace/autobyteus-workspace printf '%s\\\\n' '--- source docs observable relevant ---' git show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/docs/agent_execution_architecture.md | sed -n '260,315p' printf '%s\\\\n' '--- source history tests relevant ---' git show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts | sed -n '200,300p' printf '%s\\\\n' '--- source row derivation tests ---' git show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts | sed -n '1,160p' printf '%s\\\\n' '--- event monitor task agent test ---' git show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts | sed -n '40,120p' printf '%s\\\\n' '--- e2e probe task bits ---' git show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/tests/e2e/background-agent-renderer-contention-probe.mjs | sed -n '250,315p'\"\nThinking\nrun_bash\n· /bin/bash -lc \"git -C /home/autobyteus/workspace/autobyteus-workspace show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/stores/runHistoryTeamExecutionRows.ts | sed -n '1,360p' && printf '\\\\n--- types ---\\\\n' && git -C /home/autobyteus/workspace/autobyteus-workspace show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/stores/runHistoryTypes.ts | rg -n -C 5 'Transient|ExecutionRow'\"\nThinking\nrun_bash\n· /bin/bash -lc \"git -C /home/autobyteus/workspace/autobyteus-workspace show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts | sed -n '120,275p' && printf '\\\\n--- types nav row ---\\\\n' && git -C /home/autobyteus/workspace/autobyteus-workspace grep -n \\\"interface.*NavigationRow\\\\|displayName:.*Task\\\\|Task: \\\" 8ef282ba77705180d985e7000d801f0e0068cdc1 -- autobyteus-web/services autobyteus-web/types | head -100\"\nThinking\nrun_bash\n· /bin/bash -lc \"git -C /home/autobyteus/workspace/autobyteus-workspace show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts | sed -n '1,45p'; git -C /home/autobyteus/workspace/autobyteus-workspace show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/services/teamExecution/teamExecutionViewModels.ts | sed -n '1,100p'; git -C /home/autobyteus/workspace/autobyteus-workspace show 8ef282ba77705180d985e7000d801f0e0068cdc1:autobyteus-web/docs/agent_execution_architecture.md | sed -n '315,365p'\"\nThinking\nrun_bash\n· /bin/bash -lc \"sed -n '300,430p' /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/prototype/shared/apply-experience-scenario.js && sed -n '430,560p' /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/prototype/shared/apply-experience-scenario.js\"\nThinking\nrun_bash\n· /bin/bash -lc \"sed -n '1,360p' /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/prototype/scripts/validate-nested-team-hierarchy-review.mjs\"\nThinking\nrun_bash\n· /bin/bash -lc \"rg -n \\\"teamExecutionRowClasses|teamExecutionRowStyle|hierarchyReviewTreeClasses|prototypeReview\\\" /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue | head -100 && sed -n '520,860p' /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue\"\nThinking\nedit_file\n· history/WorkspaceHistoryWorkspaceSection.vue\nThinking\nrun_bash\n· /bin/bash -lc \"cd /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction git diff --check git diff --stat git diff -- prototype/shared/apply-experience-scenario.js components/workspace/history/WorkspaceTransientExecutionRow.vue components/workspace/history/WorkspaceHistoryWorkspaceSection.vue prototype-scenarios.md | sed -n '1,460p' node --check prototype/shared/apply-experience-scenario.js\"\nThinking\nrun_bash\n· /bin/bash -lc \"sed -n '1,300p' /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/components/workspace/history/WorkspaceAgentRunsTreePanel.vue | sed -n '1,240p'; rg -n \\\"teams-tab|agents-tab|data-test\\\" /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/A",
+    "bodyText": "ototype/UXV-CORR-TASK-AGENT-002-prototype.png` | Same plus current-row state, exact focused run ID and dedicated conversation | None | **Pass** | | `UXV-CORR-TASK-TEAM-001` | Task Team collapsed | Same | `source/UXV-CORR-TASK-TEAM-001-source.png` | `prototype/UXV-CORR-TASK-TEAM-001-prototype.png` | Exact parent row/disclosure/child absence, geometry/styles, screenshot bytes | None | **Pass** | | `UXV-CORR-TASK-TEAM-002` | Task Team expanded | Same | `source/UXV-CORR-TASK-TEAM-002-source.png` | `prototype/UXV-CORR-TASK-TEAM-002-prototype.png` | Exact disclosure transition, child row/indent/status, unchanged center focus | None | **Pass** | | `UXV-CORR-TASK-TEAM-003` | Task Team child selected + exact conversation | Same | `source/UXV-CORR-TASK-TEAM-003-source.png` | `prototype/UXV-CORR-TASK-TEAM-003-prototype.png` | Same plus exact child current state, focused run ID, and child conversation | None | **Pass** | All five source/prototype screenshots are byte-identical (`changedPixels: 0`). Machine results are `aorg-flat-team-baseline-correction-results.json`; summary is `aorg-flat-team-baseline-correction-summary.json`; readable command/result log is `validation/browser-comparison.txt`. ## Implementation Simplifications | Production Capability Visible In The UI | Visible Experience Preserved | Prototype Simulation | Production Mechanism Intentionally Absent | | --- | --- | --- | --- | | Task Agent execution identity | Exact nested transient row, status, selection, focused AgentRun, and dedicated conversation | Prototype-native Pinia projection, fixed temporary run ID, synthetic work packet/result | Delegation service, Agent process, team stream, persistence | | Task Team execution identity | Exact collapsed parent, disclosure, child identity/status, child focus and conversation | Prototype-native execution rows and deterministic disclosure/focus state | Team spawning, nested runtime, backend execution tree, stream protocol | | Team/Workspace history navigation | Exact configured parents, transient placement, current-row semantics, and reset behavior | Small in-memory navigation projection | History query, hydration, database | - Presentation code/styles/tokens/assets reused: accepted Workspace history and Event Monitor presentation. The source-current default branch now retains the source ring/radius treatment while accepted hierarchy-only selection styling remains scoped to its explicit review context. - UI code recreated: none for the user-visible Task Agent / Task Team surfaces; only scenario fixtures, conditional source-current style scoping, and a focused browser comparator were added. - Prototype-specific state model: existing browser-local Pinia stores plus two deterministic scenario projections. - Synthetic data: Team/member names, task labels, run IDs, conversations, amounts, and timestamps are fixed and non-production. - Scripted asynchronous behavior: fixture installation and browser settling only; disclosure and selection interactions are real Vue actions. - Browser simulation of host/runtime context: ordinary desktop browser only; Electron and production backend contexts are absent. - Retained production store/client/protocol/runtime: `None` for capability. Retained presentation stores consume only locally installed fixture state. ## Validation - Browser: Chromium `149.0.7827.196` at `/usr/bin/chromium` through `playwright-core`. - Validated viewport: `1440x900`. - Source-observation method: exact pinned archive, controlled loopback observer, unchanged source presentation, external requests blocked. - Prototype browser command: ```bash SOURCE_BASE_URL=http://127.0.0.1:4282 '\"\\\\ PROTOTYPE_BASE_URL=http://127.0.0.1:4180 \\\\ MOCK_BASE_URL=http://127.0.0.1:4382 \\\\ corepack pnpm validate:aorg-flat-team-correction \"'``` - Matched browser result: `5/5` pass; exact semantic, geometry, computed-style, action/focus, and screenshot results; zero source or prototype browser errors. - Independent documented start: `corepack pnpm dev --port 3210`; `/workspace` returned HTTP 200 and a fresh browser context rendered `workspace_team_task_team` (`validation/independent-start.txt`). - `corepack pnpm typecheck`: pass; accepted-base duplicate-getter warnings only (`validation/typecheck.txt`). - `corepack pnpm lint`: pass (`validation/lint.txt`). - `corepack pnpm test`: 3 files / 12 tests pass (`validation/test.txt`). - `corepack pnpm validate:boundaries`: 13/13 pass (`validation/boundaries.txt`). - `NUXT_IGNORE_LOCK=1 corepack pnpm build`: pass, node-server output (`validation/build.txt`). - Accepted future hierarchy regression: selected-row 2px indigo inset accent, background, and transient Task Team markers remain present under the explicit hierarchy review context (`validation/accepted-hierarchy-regression.txt`). - Scenario reset/isolation: every comparison uses a fresh browser context, cleared local storage, a selected local scenario, blocked external requests, and deterministic focus/disclosure state; pass. - Known validation limitations: the disposable source archive required the browser-only runtime normalization described above. It changed no selected source presentation. Narrow/mobile views are outside the named desktop Workspaces-tree correction boundary. ## Completion Check - Selected source boundary and pinned revision are explicit: `Yes` - Prototype starts independently at the documented URL: `Yes` - Every named navigation destination and surface has exact source and prototype evidence: `Yes` - Every named interaction, feedback, and meaningful state pattern is demonstrated: `Yes` - Every context that materially changes the named UI is represented: `Yes` - Every named journey and recovery path is runnable with matching outcomes: `Yes` - Desktop and narrow-mobile behavior validated when applicable: `N/A` for narrow; the named Workspaces execution tree is a desktop surface - Interface structure/interactions are real: `Yes` - Production capabilities are simulated locally and deterministically: `Yes` - Production credentials, customer data, live dependencies, and writes are absent: `Yes` - Remaining perceptible appearance or client-behavior discrepancies: `None` - Remaining unsubstantiated distinct UI inventory items: `None` - 100% observable parity for the two named inventory items: `Yes` ## Known Gaps And Next Action - Blocked or incomplete UI inventory IDs: `None` - Unsubstantiated inventory IDs: `None` - User-facing differences or omissions inside the named correction boundary: `None` - Illustrative fixture content: all Team/member identities, task descriptions, run IDs, conversations, token/cost amounts, and timestamps are synthetic and resettable. Production data and mechanisms are intentionally absent without changing presentation or interaction. - Source reachability limitation: exact pin observation required the disposable browser-only normalization already documented; selected source presentation remained exact and hash-recorded. - Required correction: `None` - Recommended next action: Product Prototyper acceptance review and accepted ticket-branch commit. Bootstrapper intentionally did not alter Product ticket status, approval records, `ui-ux-spec.md`, final normative references, canonical prototype integration, or repository history. EOF git diff --check wc -l prototype-bootstrap-report.md sed -n '\"'1,80p' prototype-bootstrap-report.md\"\nThinking\nrun_bash\n· /bin/bash -lc \"cd /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction printf '%s\\\\n' '--- status ---' git status --short printf '%s\\\\n' '--- diff stat ---' git diff --stat printf '%s\\\\n' '--- untracked evidence sizes ---' du -ah evidence/AORG-FLAT-TEAM-001/baseline-correction | sort -h | tail -20 printf '%s\\\\n' '--- report identity checks ---' rg -n \\\"Status:|Request type:|AORG-FLAT|8ef282|32f879|Unsubstantiated|Required correction\\\" prototype-bootstrap-report.md printf '%s\\\\n' '--- source worktree remains unmodified selected path ---' git -C /home/autobyteus/workspace/autobyteus-workspace status --short -- autobyteus-web printf '%s\\\\n' '--- canonical prototype checkout status ---' git -C /home/autobyteus/workspace/autobyteus-web-prototype status --short printf '%s\\\\n' '--- branch/worktree ---' git branch --show-current git rev-parse HEAD git diff --check\"\nThinking\nget_handoff_rules\nThinking\nsend_message_to\nThinking\n\nCompleted correction for AORG-FLAT-TEAM-001 and handed it to Product Prototyper.\n\nBoth Task Agent and Task Team inventory items pass.\nMatched browser validation: 5/5, byte-identical screenshots.\nReport: /home/autobyteus/workspace/autobyteus-web-prototype-worktrees/AORG-FLAT-TEAM-001-baseline-correction/prototype-bootstrap-report.md\nCandidate remains uncommitted for Product Prototyper acceptance.\nYou\nYou received a message from sender name: product_prototyper, sender id: product_prototyper_32f0b05629874df1b1fe3baa585775bc\nmessage:\nAdditional user clarification: do not treat the Baseline Needed outcome as the end state. Complete the named baseline correction first and return the runnable corrected baseline plus comparison evidence so Product Prototyper can review, accept, integrate it, reconcile the paused AORG-FLAT-TEAM-001 branch, and continue the future-state prototype. Preserve the pinned source authority and the original correction scope.\nP\nprototype_bootstrapper\nThinking\nsend_message_to\n\nAcknowledged and confirmed to Product Prototyper. The completed correction remains an intermediate baseline for acceptance, integration, branch reconciliation, and continued future-state prototyping.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n51 Events\nrun_bash\n#exec-a\nFAILED\nArguments\nError\nTool execution failed.\nrun_bash\n#exec-5\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-6\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-3\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-e\nSUCCESS\nArguments\nResult\nedit_file\n#exec-d\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-d\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-6\nFAILED\nArguments\nError\nTool execution failed.\nrun_bash\n#exec-5\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-6\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-b\nFAILED\nArguments\nError\nTool execution failed.\nrun_bash\n#exec-d\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-1\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-e\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-b\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-1\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-1\nFAILED\nArguments\nError\nTool execution failed.\nrun_bash\n#exec-e\nFAILED\nArguments\nError\nTool execution failed.\nedit_file\n#exec-2\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-5\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nFAILED\nArguments\nError\nTool execution failed.\nrun_bash\n#exec-d\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-2\nSUCCESS\nArguments\nResult\nedit_file\n#exec-a\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-1\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-7\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-e\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-3\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-5\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nPARSED\nArguments\nrun_bash\n#exec-d\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-a\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-0\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-c\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-f\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-4\nSUCCESS\nArguments\nResult\nrun_bash\n#exec-5\nSUCCESS\nArguments\nResult\nget_handoff_rules\n#exec-b\nSUCCESS\nResult\nsend_message_to\n#exec-4\nSUCCESS\nArguments\nResult\nsend_message_to\n#exec-4\nSUCCESS\nArguments\nResult"
+  },
+  "graphql": [
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721"
+      }
+    },
+    {
+      "operationName": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "requirements_engineer_6568eac682114f2cb3ddb8f1d91d3c34"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "product_prototyper_32f0b05629874df1b1fe3baa585775bc"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "prototype_bootstrapper_ae508a8a05114e4aa2345f66ba9c1848"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "prototype_bootstrapper_59372829f6294393b6f83bb80a293260"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "architecture_designer_6b8b3019214246e086957b3f395901bb"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "architecture_reviewer_c06051181da94687b3f42cca395e51eb"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "implementation_engineer_c58a9da47f7346ad84da5ce2486ab593"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "code_reviewer_cc67aa21ced94e779adfbbbff4a52ea1"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "api_e2e_engineer_d23a092db04042b69d944416be75d3b9"
+      }
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "software_development_department_d2b93633ad6b4d969e6e0d776dda7721",
+        "agentRunId": "delivery_engineer_dd842e4c322e4e428687baf8c38ac8b7"
+      }
+    }
+  ],
+  "errors": []
+}

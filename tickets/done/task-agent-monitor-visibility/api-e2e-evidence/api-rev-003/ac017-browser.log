@@ -1,0 +1,28 @@
+Error: Team definition 'AC017 Live Team AC017_CURRENT_SOURCE_A' not found
+    at assert (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:40:64)
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:328:5)
+page.waitForURL: Timeout 30000ms exceeded.
+=========================== logs ===========================
+waiting for navigation to "**/workspace" until "load"
+  navigated to "http://127.0.0.1:60638/agents"
+  navigated to "http://127.0.0.1:60638/agents"
+  navigated to "http://127.0.0.1:60638/agents"
+  navigated to "http://127.0.0.1:60638/agents"
+============================================================
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:336:16)
+Error: AC017_CURRENT_SOURCE_TASK_ONE socket assertion failed: representativeContent
+    at assert (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:40:64)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:232:39
+    at Array.forEach (<anonymous>)
+    at assertSocketTask (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:231:32)
+    at runTask (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:267:30)
+    at async run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:342:21)
+Error: AC017_CURRENT_SOURCE_PASS_TASK_ONE did not focus exact task
+    at assert (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:40:64)
+    at runTask (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:254:5)
+    at async run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:352:21)
+locator.evaluate: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-team-transient-execution-row"][aria-label*="AC017_CURRENT_SOURCE_FINAL_TASK_TWO"]').first()[22m
+
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/ac017/live-browser-probe.cjs:369:22)

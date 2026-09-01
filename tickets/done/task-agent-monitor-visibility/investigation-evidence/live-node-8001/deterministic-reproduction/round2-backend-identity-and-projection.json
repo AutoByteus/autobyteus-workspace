@@ -1,0 +1,307 @@
+{
+  "resume": {
+    "teamRunId": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+    "isActive": true,
+    "executionTree": {
+      "schema_version": 2,
+      "created_at": "2026-08-31T14:30:36.498Z",
+      "archived_at": null,
+      "application_binding": null,
+      "handoffs": [
+        {
+          "from": "/Teacher",
+          "to": "/StudentStudyGroup",
+          "rules": [
+            "When a bounded classroom task is ready to be delegated to the nested student study group."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/Teacher",
+          "rules": [
+            "When the nested team has completed the delegated task and its coordinator must submit the result for teacher review through the task lifecycle."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_one",
+          "to": "/StudentStudyGroup/student_two",
+          "rules": [
+            "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+          ]
+        },
+        {
+          "from": "/StudentStudyGroup/student_two",
+          "to": "/StudentStudyGroup/student_one",
+          "rules": [
+            "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+          ]
+        }
+      ],
+      "root_team": {
+        "address": "/",
+        "team_definition_id": "nested-classroom-test",
+        "team_definition_name": "Nested Classroom Test Team",
+        "team_run_id": "nested_classroom_test_team_3d07be9f368f459b94cf28ab9f20f434",
+        "coordinator_address": "/Teacher",
+        "default_launch_configuration": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.6-luna",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/home/autobyteus/workspace"
+        },
+        "members": [
+          {
+            "kind": "configured_agent",
+            "address": "/Teacher",
+            "agent_definition_id": "team-local-agent:nested-classroom-test:teacher",
+            "role": null,
+            "description": null,
+            "agent_run_id": "test_teacher_53ec983b17b84972b96dd240ac4c4920",
+            "platform_agent_run_id": "01a0583b-0282-7900-852d-1b1db7217bb9",
+            "launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/home/autobyteus/workspace"
+            }
+          },
+          {
+            "kind": "configured_team",
+            "address": "/StudentStudyGroup",
+            "team_definition_id": "team-local-team:nested-classroom-test:student-study-group",
+            "role": null,
+            "description": null,
+            "team_run_id": "student_study_group_555ddafac82a4bc3a018ebb90ded2b2f",
+            "coordinator_address": "/StudentStudyGroup/student_one",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/home/autobyteus/workspace"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-one",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_one_88bc7221b197477388fc88e73874ae07",
+                "platform_agent_run_id": "01a0583b-781f-7622-ae9e-d185021bb6c2",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/home/autobyteus/workspace"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_definition_id": "team-local-agent:team-local-team%3Anested-classroom-test%3Astudent-study-group:student-two",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_two_27e3a3a370264e429ef3fcd4bb6c5a74",
+                "platform_agent_run_id": "01a0583b-5d82-77c1-9554-7dddc22ae27d",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/home/autobyteus/workspace"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        ],
+        "task_executions": [
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_baaaebb417ed493787b719b5fdcb1d68",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_4d1b2e43ca05469c90493bd439f997e1",
+                "platform_agent_run_id": "01a0583b-29fd-7221-9f84-0bf305ca1dee"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_84cd6ca620674fd194d117845d9236a7",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [],
+            "started_at": "2026-08-31T14:31:07.451Z",
+            "settled_at": "2026-08-31T14:33:47.756Z"
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_a2be23ce3dad4e46a96465805a917c42",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_5dacea03064a4317b9bb5004be42dc70",
+                "platform_agent_run_id": "01a0584d-1c4c-7fa2-b493-522b3fb8dd31"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_5529bbb0a26a4dfaa0ae787a8261c80a",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [
+              {
+                "kind": "task_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_783c12f8740e418d9d376245f4d45af3",
+                "platform_agent_run_id": "01a0584d-3b1c-7d72-ae2a-fb858e10a217",
+                "started_at": "2026-08-31T14:50:51.500Z",
+                "settled_at": null
+              }
+            ],
+            "started_at": "2026-08-31T14:50:43.598Z",
+            "settled_at": null
+          },
+          {
+            "kind": "task_team",
+            "address": "/StudentStudyGroup",
+            "team_run_id": "team_local_team_nested_classroom_test_student_st_bec437bc795e4b128681e9d7da420607",
+            "members": [
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_one",
+                "agent_run_id": "student_one_3436676b46924505aca864678df010c7",
+                "platform_agent_run_id": "01a05852-3cc6-7de2-a7a9-82f5f33754d9"
+              },
+              {
+                "kind": "task_team_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_a5663cf5aa88430090d35a1d2f65a6ac",
+                "platform_agent_run_id": null
+              }
+            ],
+            "task_executions": [
+              {
+                "kind": "task_agent",
+                "address": "/StudentStudyGroup/student_two",
+                "agent_run_id": "student_two_4e582e56314f47d0b80ee606c03eb14c",
+                "platform_agent_run_id": "01a05853-7106-7721-80bb-9eaef3129c21",
+                "started_at": "2026-08-31T14:57:38.521Z",
+                "settled_at": null
+              }
+            ],
+            "started_at": "2026-08-31T14:56:19.594Z",
+            "settled_at": null
+          }
+        ]
+      }
+    }
+  },
+  "configured": {
+    "agentRunId": "student_two_27e3a3a370264e429ef3fcd4bb6c5a74",
+    "lastActivityAt": "2026-08-31T14:58:05.848Z",
+    "conversationCount": 23,
+    "activityCount": 5,
+    "summary": "You received a message from sender name: student_one, sender id: student_one_4d1b2e43ca05469c9049..."
+  },
+  "task": {
+    "agentRunId": "student_two_4e582e56314f47d0b80ee606c03eb14c",
+    "lastActivityAt": "2026-08-31T15:00:15.837Z",
+    "conversationCount": 7,
+    "activityCount": 4,
+    "summary": "Task delegator address: /StudentStudyGroup/student_one Task delegator AgentRun ID: student_one_34...",
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Task delegator address: /StudentStudyGroup/student_one\nTask delegator AgentRun ID: student_one_3436676b46924505aca864678df010c7\n\nDescription:\nSTUDENT_TWO_MONITOR_PROBE_ROUND2. Immediately send an ordinary message to student_one at /StudentStudyGroup/student_one containing exactly STUDENT_TWO_TASK_STARTED. Then run at least one visible tool step (for example, a simple shell command whose output is visible). After that, wait at least 120 seconds. Only after the required visible tool step and the full 120-second wait, call submit_task_result with exactly STUDENT_TWO_TASK_FINISHED. Do not submit any other result.",
+        "toolName": null,
+        "ts": 1788188258.649
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "**Planning hidden tool discovery**\n\n**Searching task result exposure**\n\n**Clarifying missing callable tool**",
+        "toolName": null,
+        "ts": 1788188274.999
+      },
+      {
+        "kind": "tool_call",
+        "role": null,
+        "content": "",
+        "toolName": "send_message_to",
+        "ts": 1788188275.01
+      },
+      {
+        "kind": "tool_call",
+        "role": null,
+        "content": "",
+        "toolName": "run_bash",
+        "ts": 1788188277.454
+      },
+      {
+        "kind": "tool_call",
+        "role": null,
+        "content": "",
+        "toolName": "run_bash",
+        "ts": 1788188400.846
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "**Planning 95-second poll interval**\n\n**Searching tools for final task**\n\n**Investigating task submission method**\n\n**Verifying tool availability for task submission**\n\n**Confirming final response constraints****Clarifying task submission limitations**",
+        "toolName": null,
+        "ts": 1788188415.658
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "Unable to call `submit_task_result`: the tool is unavailable in this execution.",
+        "toolName": null,
+        "ts": 1788188415.837
+      }
+    ],
+    "activities": [
+      {
+        "kind": "system_instruction",
+        "toolName": null,
+        "content": "## Agent Identity\n\n- Name: Student Two\n- Description: Supporting student for the nested Student Study Group test team.\n\n### Responsibilities and Boundaries\n\nYou are `student_two`, a supporting member of `/StudentStudyGroup`.\n\nWhen `/StudentStudyGroup/student_one` asks for help, respond concisely using `send_message_to` with `recipient_address: \"/StudentStudyGroup/student_one\"`.\n\nFor smoke-test tasks involving an exact token such as `NESTED_CLASSROOM_OK`, confirm that the requested token is the answer.\n\nDo not attempt to submit final task results. `student_one` owns `submit_task_result` for this nested team fixture.\n\n## Team Instruction\n\nThis nested team is intentionally simple.\n\n`student_one` coordinates the study group. `student_two` is a supporting student.\n\nWhen this team receives a delegated task from `Teacher`, `student_one` should complete the task and submit the final result with `submit_task_result`.\n\nIf the prompt asks for an exact token, the submitted result message should contain exactly that token unless the task explicitly asks for extra explanation.\n\nUse `send_message_to` only for ordinary teammate discussion. Do not use it for final task result submission.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/StudentStudyGroup/student_two\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Apply\nevery matching rule and notify each exact returned `recipient_address` using\n`send_message_to`. Combine applicable reasons for the same recipient and\nfollow distinct recipients in their returned order. If no rule applies, finish\nnormally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+        "ts": 1788188258.557
+      },
+      {
+        "kind": "tool",
+        "toolName": "send_message_to",
+        "content": null,
+        "ts": 1788188275.01
+      },
+      {
+        "kind": "tool",
+        "toolName": "run_bash",
+        "content": null,
+        "ts": 1788188277.454
+      },
+      {
+        "kind": "tool",
+        "toolName": "run_bash",
+        "content": null,
+        "ts": 1788188400.846
+      }
+    ]
+  }
+}

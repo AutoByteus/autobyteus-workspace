@@ -1,6 +1,9 @@
 import type { LocationQuery, LocationQueryRaw, LocationQueryValue, RouteLocationRaw } from 'vue-router'
 import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import {
   ensureRunHistoryWorkspaceByRootPath,
   resolveRunHistoryWorkspaceMetadataByRootPath,
@@ -89,6 +92,20 @@ export const openWorkspaceExecutionLink = async (
     return
   }
 
+  const mounted = useAgentTeamContextsStore().getTeamContextById(link.teamRunId)
+  if (mounted && link.agentRunId) {
+    const result = await useRunHistoryStore().inspectTeamMember(link.teamRunId, link.agentRunId)
+    if (result.disposition === 'rejected') throw new Error(result.message)
+    return
+  }
+  if (mounted) {
+    useAgentSelectionStore().selectRun(link.teamRunId, 'team')
+    return
+  }
+  if (link.agentRunId) {
+    await useRunHistoryStore().openTeamMemberRun(link.teamRunId, link.agentRunId)
+    return
+  }
   await openTeamRun({
     teamRunId: link.teamRunId,
     agentRunId: link.agentRunId,

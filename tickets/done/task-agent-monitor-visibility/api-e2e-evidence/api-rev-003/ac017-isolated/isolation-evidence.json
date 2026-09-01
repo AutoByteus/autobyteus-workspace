@@ -1,0 +1,390 @@
+{
+  "evidenceId": "API-E2E-AC017-002-ISOLATION",
+  "startedAt": "2026-08-31T22:33:14.312Z",
+  "rootTeamRunId": "ac017_live_team_ac017_isolated_current_source_61a62761b25a4abb96754865167497be",
+  "tasks": [
+    {
+      "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE",
+      "taskId": "task_00a095546947407aa25011cacfa11fe1",
+      "taskAgentRunId": "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b"
+    },
+    {
+      "marker": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO",
+      "taskId": "task_9e8665cf08da40969576037c7a966155",
+      "taskAgentRunId": "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d"
+    }
+  ],
+  "configuredRunId": "student_two_ac017_ac017_isolated_current_source_ae7b580e36bd4c2a8def1421cda1a92d",
+  "steps": [
+    {
+      "label": "task-one",
+      "focusedAgentRunId": "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b",
+      "status": "idle",
+      "conversationCount": 2,
+      "activityCount": 4,
+      "currentRows": [
+        {
+          "memberAddress": "/student_two",
+          "transientKind": "task_agent",
+          "label": "Temporary task agent, AC017_CURRENT_SOURCE_FINAL_TASK_ONE Perform this exact sequence in order: 1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START. 2. Call get_handoff_rules once. 3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE. 4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop. Do not call submit_task_result. Do not delegate., level 2, In progress · Idle, /student_two"
+        }
+      ],
+      "mainText": "S\nstudent_two\nTask\nIdle\n\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE Perform this exact sequence in order: 1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START. 2. Call get_handoff_rules once. 3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE. 4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop. Do not call submit_task_result. Do not delegate.\n\nIn progress · Idle\n\nYou\nTask delegator address: /student_one\nTask delegator AgentRun ID: student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97\n\nDescription:\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.\nS\nstudent_two\nThinking\nsend_message_to\nThinking\nget_handoff_rules\nsend_message_to\n\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nTasks\n1 task\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.\nIn progress\nUpdated 00:28\nstudent_one → student_two\nTask assigned\nIn progress\n\nstudent_one → student_two\n\n1. Sept., 00:28\n\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE\nPerform this exact sequence in order:\n\nImmediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START.\nCall get_handoff_rules once.\nCall send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE.\nReply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.",
+      "projection": {
+        "agentRunId": "student_two_ac017_ac017_isolated_current_source_736dca173898403b9a3c410c0c38c91b",
+        "conversation": [
+          {
+            "kind": "message",
+            "role": "user",
+            "content": "Task delegator address: /student_one\nTask delegator AgentRun ID: student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97\n\nDescription:\nAC017_CURRENT_SOURCE_FINAL_TASK_ONE\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.",
+            "media": null,
+            "ts": 1788215305.78
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Identifying exact messaging tool usage**\n\n**Searching for alternative tools**\n\n**Correcting arguments for message sending**",
+            "media": null,
+            "ts": 1788215315.454
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-d81ec18b-f681-4c0d-9477-160ff99e7181",
+            "role": null,
+            "content": "",
+            "toolName": "send_message_to",
+            "toolArgs": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START"
+            },
+            "toolResult": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1788215315.476
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Executing single get_handoff call**",
+            "media": null,
+            "ts": 1788215317.341
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-c3aba15d-10a1-45e4-a89b-3d4fd11e0618",
+            "role": null,
+            "content": "",
+            "toolName": "get_handoff_rules",
+            "toolArgs": {},
+            "toolResult": {
+              "handoffs": []
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1788215317.349
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-74c6762a-56b4-406d-942f-ba269116ceb4",
+            "role": null,
+            "content": "",
+            "toolName": "send_message_to",
+            "toolArgs": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE"
+            },
+            "toolResult": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1788215319.302
+          },
+          {
+            "kind": "message",
+            "role": "assistant",
+            "content": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE_COMPLETE",
+            "media": null,
+            "ts": 1788215320.349
+          }
+        ],
+        "activities": [
+          {
+            "kind": "system_instruction",
+            "activityId": "rt_1788215305607_4901164d-1830-4b6c-a04c-dd2514caaa27",
+            "content": "## Agent Identity\n\n- Name: student-two-ac017-ac017_isolated_current_source\n- Description: Configured student_two direct task target for AC-017 live event delivery validation.\n\n### Responsibilities and Boundaries\n\nYou are configured student_two. For every direct delegated task, obey the task description exactly. When it instructs you to call send_message_to and get_handoff_rules, use those tools in the stated order with the exact arguments. Do not call submit_task_result. Do not delegate. After completing the exact sequence, reply with only the requested final marker.\n\n## Team Instruction\n\nstudent_one delegates bounded direct tasks to student_two; identities remain exact and isolated.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/student_two\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Apply\nevery matching rule and notify each exact returned `recipient_address` using\n`send_message_to`. Combine applicable reasons for the same recipient and\nfollow distinct recipients in their returned order. If no rule applies, finish\nnormally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+            "ts": 1788215305.607
+          },
+          {
+            "kind": "tool",
+            "invocationId": "exec-d81ec18b-f681-4c0d-9477-160ff99e7181",
+            "toolName": "send_message_to",
+            "type": "tool_call",
+            "status": "success",
+            "contextText": "send_message_to",
+            "arguments": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE_START"
+            },
+            "logs": [],
+            "result": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "error": null,
+            "ts": 1788215315.476,
+            "detailLevel": "source_limited"
+          },
+          {
+            "kind": "tool",
+            "invocationId": "exec-c3aba15d-10a1-45e4-a89b-3d4fd11e0618",
+            "toolName": "get_handoff_rules",
+            "type": "tool_call",
+            "status": "success",
+            "contextText": "get_handoff_rules",
+            "arguments": {},
+            "logs": [],
+            "result": {
+              "handoffs": []
+            },
+            "error": null,
+            "ts": 1788215317.349,
+            "detailLevel": "source_limited"
+          },
+          {
+            "kind": "tool",
+            "invocationId": "exec-74c6762a-56b4-406d-942f-ba269116ceb4",
+            "toolName": "send_message_to",
+            "type": "tool_call",
+            "status": "success",
+            "contextText": "send_message_to",
+            "arguments": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_ONE_DONE"
+            },
+            "logs": [],
+            "result": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "error": null,
+            "ts": 1788215319.302,
+            "detailLevel": "source_limited"
+          }
+        ]
+      }
+    },
+    {
+      "label": "configured-student-two",
+      "focusedAgentRunId": "student_two_ac017_ac017_isolated_current_source_ae7b580e36bd4c2a8def1421cda1a92d",
+      "status": "offline",
+      "conversationCount": 0,
+      "activityCount": 0,
+      "currentRows": [
+        {
+          "memberAddress": "/student_two",
+          "transientKind": null,
+          "label": "Agent, student_two, level 1, offline, /student_two"
+        }
+      ],
+      "mainText": "S\nstudent_two\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\nTasks\n0 tasks\n\nNo delegated tasks yet\n\nDelegated work appears here from saved task records.",
+      "projection": null
+    },
+    {
+      "label": "task-two",
+      "focusedAgentRunId": "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d",
+      "status": "idle",
+      "conversationCount": 2,
+      "activityCount": 4,
+      "currentRows": [
+        {
+          "memberAddress": "/student_two",
+          "transientKind": "task_agent",
+          "label": "Temporary task agent, AC017_CURRENT_SOURCE_FINAL_TASK_TWO Perform this exact sequence in order: 1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START. 2. Call get_handoff_rules once. 3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE. 4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop. Do not call submit_task_result. Do not delegate., level 2, In progress · Idle, /student_two"
+        }
+      ],
+      "mainText": "S\nstudent_two\nTask\nIdle\n\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO Perform this exact sequence in order: 1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START. 2. Call get_handoff_rules once. 3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE. 4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop. Do not call submit_task_result. Do not delegate.\n\nIn progress · Idle\n\nYou\nTask delegator address: /student_one\nTask delegator AgentRun ID: student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97\n\nDescription:\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.\nS\nstudent_two\nThinking\nsend_message_to\nThinking\nget_handoff_rules\nsend_message_to\n\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nTasks\n1 task\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.\nIn progress\nUpdated 00:28\nstudent_one → student_two\nTask assigned\nIn progress\n\nstudent_one → student_two\n\n1. Sept., 00:28\n\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO\nPerform this exact sequence in order:\n\nImmediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START.\nCall get_handoff_rules once.\nCall send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE.\nReply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.",
+      "projection": {
+        "agentRunId": "student_two_ac017_ac017_isolated_current_source_4dafd310c700465b8327f9c26aaaf97d",
+        "conversation": [
+          {
+            "kind": "message",
+            "role": "user",
+            "content": "Task delegator address: /student_one\nTask delegator AgentRun ID: student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97\n\nDescription:\nAC017_CURRENT_SOURCE_FINAL_TASK_TWO\nPerform this exact sequence in order:\n1. Immediately call send_message_to with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START.\n2. Call get_handoff_rules once.\n3. Call send_message_to again with recipient_address exactly /student_one and message exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE.\n4. Reply with exactly AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE and stop.\nDo not call submit_task_result. Do not delegate.",
+            "media": null,
+            "ts": 1788215326.292
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Inspecting ALL_TOOLS for send_message_to****Planning dynamic tool invocation**\n\n**Sending message with exact recipient field**",
+            "media": null,
+            "ts": 1788215336.95
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-187166d4-eb58-445b-8286-771786b38c84",
+            "role": null,
+            "content": "",
+            "toolName": "send_message_to",
+            "toolArgs": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START"
+            },
+            "toolResult": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1788215336.975
+          },
+          {
+            "kind": "reasoning",
+            "role": null,
+            "content": "**Confirming single get_handoff call**",
+            "media": null,
+            "ts": 1788215338.989
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-5e2a319f-41c7-49c5-8b4a-914d7a2b235d",
+            "role": null,
+            "content": "",
+            "toolName": "get_handoff_rules",
+            "toolArgs": {},
+            "toolResult": {
+              "handoffs": []
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1788215338.993
+          },
+          {
+            "kind": "tool_call",
+            "invocationId": "exec-18dad261-3197-4233-a525-1a91336bcce1",
+            "role": null,
+            "content": "",
+            "toolName": "send_message_to",
+            "toolArgs": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE"
+            },
+            "toolResult": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "toolError": null,
+            "media": null,
+            "ts": 1788215341.242
+          },
+          {
+            "kind": "message",
+            "role": "assistant",
+            "content": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO_COMPLETE",
+            "media": null,
+            "ts": 1788215343.972
+          }
+        ],
+        "activities": [
+          {
+            "kind": "system_instruction",
+            "activityId": "rt_1788215326131_fd3d4a3f-feba-45c4-bd7e-de970a723811",
+            "content": "## Agent Identity\n\n- Name: student-two-ac017-ac017_isolated_current_source\n- Description: Configured student_two direct task target for AC-017 live event delivery validation.\n\n### Responsibilities and Boundaries\n\nYou are configured student_two. For every direct delegated task, obey the task description exactly. When it instructs you to call send_message_to and get_handoff_rules, use those tools in the stated order with the exact arguments. Do not call submit_task_result. Do not delegate. After completing the exact sequence, reply with only the requested final marker.\n\n## Team Instruction\n\nstudent_one delegates bounded direct tasks to student_two; identities remain exact and isolated.\n\n## AgentTeam Addressing\n\nAgentTeams use filesystem-like logical addresses. Think of an AgentTeam as a directory, an Agent inside it as a file, and a nested AgentTeam as a subdirectory. This analogy describes the Team structure and addressing model only; the addresses are not real filesystem paths.\n\nThe root AgentTeam is represented by `/`. Its display or metadata name is not included in any address.\n\nThe following example illustrates the address structure:\n\n/\n├── /A              (Agent)\n├── /B              (Agent)\n└── /C              (nested AgentTeam)\n    ├── /C/D         (Agent)\n    └── /C/E         (Agent)\n\nIn this example:\n\n- `/A` and `/B` are Agents directly under the root AgentTeam.\n- `/C` is an AgentTeam directly under the root AgentTeam.\n- `/C/D` and `/C/E` are Agents directly inside AgentTeam `/C`.\n- Each `/` separates one parent-to-child level.\n\nThe letters in this example are placeholders only. They do not identify available recipients. Use only an exact canonical address made available in your current AgentTeam context.\n\nEvery Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.\n\nYour Agent address is:\n\n/student_two\n\nSending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.\n\n## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.\n`send_message_to` communicates with an already existing execution.\n`delegate_task` spawns a fresh task execution that independently owns a unit\nof work. These operations are not interchangeable. Never use both to deliver\nthe same work.\n\n### Ordinary Communication\n\nUse `send_message_to` to communicate with an already existing Agent or\nAgentTeam instance.\n\n- When `recipient_address` identifies an Agent, the message is delivered to\n  that mounted Agent's existing execution.\n- When `recipient_address` identifies an AgentTeam, the message is delivered\n  to that mounted Team's existing configured coordinator.\n- When an exact active AgentRun ID is known, `target_agent_run_id` may instead\n  select that specific execution.\n\nA successful call returns the exact existing AgentRun that accepted the\nmessage as `target_agent_run_id`. For an AgentTeam recipient, this is its\nexisting coordinator AgentRun.\n\n`send_message_to` does not spawn an Agent or AgentTeam, create or track a task,\nsubmit a task result, review a task result, or change task status.\n\n### Dedicated Task Execution\n\nUse `delegate_task` to assign a new bounded unit of work that requires its own\nexecution, ownership, and task lifecycle.\n\nThe `recipient_address` identifies the mounted Agent or AgentTeam definition\nfrom which the task execution is spawned.\n\n- When `recipient_address` identifies an Agent, the system spawns a fresh task\n  Agent instance and delivers the complete task packet to that new Agent.\n- When `recipient_address` identifies an AgentTeam, the system spawns a fresh\n  task AgentTeam instance and delivers the complete task packet to that new\n  Team's configured coordinator. The entire task Team is newly spawned; its\n  coordinator is the initial task ingress.\n\nA successful call returns the new task's `task_id`, `status`, and exact spawned\ntask ingress as `target_agent_run_id`. For a task AgentTeam, this is the newly\nspawned Team's coordinator AgentRun.\n\nThe delegation call is both the creation and assignment step. Include the\ncomplete task description and reference files in that call. Do not send the\nsame assignment again through `send_message_to`.\n\nThe original logical `recipient_address` continues to identify the mounted\nAgent or AgentTeam. It is not an alias for the newly spawned task execution.\n\nIf delegation returns `status: \"not_started\"`, no task execution was\nsuccessfully spawned. Do not use an ordinary message as an equivalent task-\ncreation fallback. Correct the problem and delegate again, or report the\nfailure.\n\n### Additional Task Clarification\n\nAfter successful delegation, genuinely new clarification may be sent to the\nexact active task ingress using the returned `target_agent_run_id`. Never\nrepeat the original task packet, and never use the original logical\n`recipient_address` as an alias for the spawned task execution.\n\nAn additional message communicates with the active task execution; it does not\ncreate another task or change the existing task's lifecycle state.\n\n### Task Lifecycle\n\nThe spawned task assignee uses `submit_task_result` to submit its formal result.\nThe delegator uses `review_task_result` to accept the result or request a\nrevision.\n\nMessage wording such as \"finished,\" \"accepted,\" or \"please revise\" does not\nchange task state.\n\n### Rule-Based Handoffs\n\nWhen you finish your own work or are blocked, call `get_handoff_rules`. Apply\nevery matching rule and notify each exact returned `recipient_address` using\n`send_message_to`. Combine applicable reasons for the same recipient and\nfollow distinct recipients in their returned order. If no rule applies, finish\nnormally.\n\nDo not claim that a message, delegation, or handoff succeeded unless the\ncorresponding tool confirms success.",
+            "ts": 1788215326.131
+          },
+          {
+            "kind": "tool",
+            "invocationId": "exec-187166d4-eb58-445b-8286-771786b38c84",
+            "toolName": "send_message_to",
+            "type": "tool_call",
+            "status": "success",
+            "contextText": "send_message_to",
+            "arguments": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO_START"
+            },
+            "logs": [],
+            "result": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "error": null,
+            "ts": 1788215336.975,
+            "detailLevel": "source_limited"
+          },
+          {
+            "kind": "tool",
+            "invocationId": "exec-5e2a319f-41c7-49c5-8b4a-914d7a2b235d",
+            "toolName": "get_handoff_rules",
+            "type": "tool_call",
+            "status": "success",
+            "contextText": "get_handoff_rules",
+            "arguments": {},
+            "logs": [],
+            "result": {
+              "handoffs": []
+            },
+            "error": null,
+            "ts": 1788215338.993,
+            "detailLevel": "source_limited"
+          },
+          {
+            "kind": "tool",
+            "invocationId": "exec-18dad261-3197-4233-a525-1a91336bcce1",
+            "toolName": "send_message_to",
+            "type": "tool_call",
+            "status": "success",
+            "contextText": "send_message_to",
+            "arguments": {
+              "recipient_address": "/student_one",
+              "content": "AC017_CURRENT_SOURCE_FINAL_TASK_TWO_DONE"
+            },
+            "logs": [],
+            "result": {
+              "accepted": true,
+              "code": "DELIVERED",
+              "message": "Delivered message to /student_one.",
+              "target_agent_run_id": "student_one_ac017_ac017_isolated_current_source_3f0a3356bc814ab1a5491a76fcfa1c97"
+            },
+            "error": null,
+            "ts": 1788215341.242,
+            "detailLevel": "source_limited"
+          }
+        ]
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "assertions": {
+    "taskRunsDistinct": true,
+    "configuredDistinct": true,
+    "taskOneExact": true,
+    "configuredExact": true,
+    "taskTwoExact": true,
+    "sameAddressRows": true,
+    "noPageErrors": true,
+    "noConsoleErrors": true
+  },
+  "result": "Pass",
+  "finishedAt": "2026-08-31T22:33:16.932Z"
+}

@@ -11,6 +11,13 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun, reopenTeamRunAfterStreamLoss } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberInspectionCoordinator';
+import {
+  clearTeamMemberInspectionAttempt,
+  setTeamMemberInspectionError,
+  setTeamMemberInspectionLoading,
+  type TeamMemberInspectionAttemptStoreState,
+} from './runHistoryTeamMemberInspectionActions';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -18,7 +25,7 @@ interface RunHistoryOpenOptions {
   selectionMode?: RunHistorySelectionMode;
 }
 
-interface RunHistorySelectionStoreLike {
+interface RunHistorySelectionStoreLike extends TeamMemberInspectionAttemptStoreState {
   openingRun: boolean;
   error: string | null;
   selectedRunId: string | null;
@@ -29,7 +36,11 @@ interface RunHistorySelectionStoreLike {
   openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
-  focusTeamMemberAndEnsureHydrated(teamRunId: string, agentRunId: string): Promise<boolean>;
+  inspectTeamMember(
+    teamRunId: string,
+    agentRunId: string,
+    options?: RunHistoryOpenOptions,
+  ): Promise<TeamMemberInspectionResult>;
 }
 
 export type TeamStreamRecoverySelectionFeedback = 'wait' | 'retry';
@@ -52,6 +63,7 @@ export const openTeamMemberRunFromHistory = async (
 ): Promise<void> => {
   store.openingRun = true;
   store.error = null;
+  setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
   try {
     const result = await openTeamRun({
       teamRunId,
@@ -60,14 +72,22 @@ export const openTeamMemberRunFromHistory = async (
         store.resolveWorkspaceMetadataByRootPath(path),
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
       selectionMode: options.selectionMode,
+      onCommitted: (committed) => {
+        store.teamResumeConfigByTeamRunId[committed.resumeConfig.teamRunId] = committed.resumeConfig;
+        store.selectedTeamRunId = committed.teamRunId;
+        store.selectedTeamMemberAddress = committed.focusedMemberAddress;
+        store.selectedRunId = null;
+        clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+      },
     });
-
-    store.teamResumeConfigByTeamRunId[result.resumeConfig.teamRunId] = result.resumeConfig;
-    store.selectedTeamRunId = result.teamRunId;
-    store.selectedTeamMemberAddress = result.focusedMemberAddress;
-    store.selectedRunId = null;
+    void result;
   } catch (error: any) {
-    store.error = error?.message || `Failed to open team '${teamRunId}'.`;
+    setTeamMemberInspectionError(
+      store,
+      teamRunId,
+      agentRunId,
+      error?.message || `Failed to open team '${teamRunId}'.`,
+    );
     throw error;
   } finally {
     store.openingRun = false;
@@ -80,50 +100,45 @@ export const selectTreeRunFromHistory = async (
 ): Promise<void> => {
   if ('teamRunId' in row) {
     const teamContextsStore = useAgentTeamContextsStore();
-    const selectionStore = useAgentSelectionStore();
     const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
-    const shouldReuseLocalTeamContext = Boolean(localTeamContext?.view.hasAgentRun(row.agentRunId));
-    const localTargetMemberAddress = row.memberAddress;
+    const shouldReuseLocalTeamContext = Boolean(localTeamContext);
 
     if (shouldReuseLocalTeamContext) {
       const teamRunStore = useAgentTeamRunStore();
       if (teamRunStore.isTeamStreamReopenRequired(row.teamRunId)) {
         store.openingRun = true;
         store.error = null;
+        setTeamMemberInspectionLoading(store, row.teamRunId, row.agentRunId);
         try {
-          const result = await reopenTeamRunAfterStreamLoss({
+          await reopenTeamRunAfterStreamLoss({
             teamRunId: row.teamRunId,
             agentRunId: row.agentRunId,
             resolveWorkspaceMetadataByRootPath: (path: string) =>
               store.resolveWorkspaceMetadataByRootPath(path),
             ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
+            onCommitted: (committed) => {
+              store.teamResumeConfigByTeamRunId[committed.resumeConfig.teamRunId] = committed.resumeConfig;
+              store.selectedTeamRunId = committed.teamRunId;
+              store.selectedTeamMemberAddress = committed.focusedMemberAddress;
+              store.selectedRunId = null;
+              clearTeamMemberInspectionAttempt(store, row.teamRunId, row.agentRunId);
+            },
           });
-          store.teamResumeConfigByTeamRunId[result.resumeConfig.teamRunId] = result.resumeConfig;
-          store.selectedTeamRunId = result.teamRunId;
-          store.selectedTeamMemberAddress = result.focusedMemberAddress;
-          store.selectedRunId = null;
         } catch (error: any) {
-          if (!getTeamStreamRecoverySelectionFeedback(error)) {
-            store.error = error?.message || `Failed to recover team '${row.teamRunId}'.`;
-          }
+          setTeamMemberInspectionError(
+            store,
+            row.teamRunId,
+            row.agentRunId,
+            error?.message || `Failed to recover team '${row.teamRunId}'.`,
+          );
           throw error;
         } finally {
           store.openingRun = false;
         }
         return;
       }
-      try {
-        selectionStore.selectRun(row.teamRunId, 'team');
-        await store.focusTeamMemberAndEnsureHydrated(row.teamRunId, row.agentRunId);
-        store.selectedTeamRunId = row.teamRunId;
-        store.selectedTeamMemberAddress = localTargetMemberAddress;
-        store.selectedRunId = null;
-        useTeamRunConfigStore().clearConfig();
-        useAgentRunConfigStore().clearConfig();
-      } catch (error: any) {
-        store.error = error?.message || `Failed to open team '${row.teamRunId}'.`;
-        throw error;
-      }
+      const result = await store.inspectTeamMember(row.teamRunId, row.agentRunId);
+      if (result.disposition === 'rejected') throw new Error(result.message);
       return;
     }
     await store.openTeamMemberRun(row.teamRunId, row.agentRunId);

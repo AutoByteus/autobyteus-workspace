@@ -5,8 +5,7 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const {
-  loadRunContextHydrationPayloadMock,
-  hydrateActivitiesFromProjectionMock,
+  loadRunContextHydrationCandidateMock,
   hydrateRunFileChangesMock,
   mergeHydratedRunFileChangesMock,
   connectToAgentStreamMock,
@@ -16,8 +15,7 @@ const {
   clearAgentRunConfigMock,
   isAgentStreamReadyMock,
 } = vi.hoisted(() => ({
-  loadRunContextHydrationPayloadMock: vi.fn(),
-  hydrateActivitiesFromProjectionMock: vi.fn(),
+  loadRunContextHydrationCandidateMock: vi.fn(),
   hydrateRunFileChangesMock: vi.fn(),
   mergeHydratedRunFileChangesMock: vi.fn(),
   connectToAgentStreamMock: vi.fn(),
@@ -29,11 +27,7 @@ const {
 }));
 
 vi.mock('~/services/runHydration/runContextHydrationService', () => ({
-  loadRunContextHydrationPayload: loadRunContextHydrationPayloadMock,
-}));
-
-vi.mock('~/services/runHydration/runProjectionActivityHydration', () => ({
-  hydrateActivitiesFromProjection: hydrateActivitiesFromProjectionMock,
+  loadRunContextHydrationCandidate: loadRunContextHydrationCandidateMock,
 }));
 
 vi.mock('~/services/runHydration/runFileChangeHydrationService', () => ({
@@ -105,7 +99,7 @@ describe('openAgentRun integration with real agent context store', () => {
     const existing = store.getRun(runId)!;
 
     const offlineConversation = buildConversation('2026-05-16T00:02:00.000Z');
-    loadRunContextHydrationPayloadMock.mockResolvedValue({
+    loadRunContextHydrationCandidateMock.mockResolvedValue({
       runId,
       resumeConfig: {
         runId,
@@ -115,7 +109,9 @@ describe('openAgentRun integration with real agent context store', () => {
       config: buildConfig(false),
       conversation: offlineConversation,
       activities: [],
+      expectedActivityRevision: 0,
       fileChanges: [],
+      hasEarlierActiveTraceEvents: false,
     });
 
     await openAgentRun({

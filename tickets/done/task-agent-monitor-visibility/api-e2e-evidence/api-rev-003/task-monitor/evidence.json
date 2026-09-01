@@ -1,0 +1,176 @@
+{
+  "startedAt": "2026-08-31T21:53:51.875Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/autobyteus-web/tests/e2e/fixtures/task-agent-monitor-visibility.page.vue",
+  "scenarios": {
+    "API-E2E-TMV-001": {
+      "result": "Pass",
+      "description": "Mounted exact task selection hydrates retained conversation and Activity before focus commit",
+      "startedAt": "2026-08-31T21:54:00.274Z",
+      "details": {
+        "loadingState": {
+          "phase": "awaiting_connected_root",
+          "focusedAgentRunId": "task-monitor-teacher-run",
+          "focusedMemberAddress": "/Teacher",
+          "taskVisible": true,
+          "taskAuthoritative": false,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 0,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 0,
+          "teacherActivityCount": 0,
+          "taskAttempt": {
+            "state": "loading",
+            "detail": null
+          },
+          "teacherAttempt": null
+        },
+        "finalState": {
+          "phase": "awaiting_connected_root",
+          "focusedAgentRunId": "task-monitor-task-agent-run",
+          "focusedMemberAddress": "/Student",
+          "taskVisible": true,
+          "taskAuthoritative": true,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": null,
+          "teacherAttempt": null
+        },
+        "taskRequest": {
+          "operationName": "GetTeamMemberRunProjection",
+          "teamRunId": "task-monitor-root-run",
+          "agentRunId": "task-monitor-task-agent-run",
+          "requestedAt": "2026-08-31T21:54:00.289Z"
+        },
+        "taskAriaLabel": "Task, Retained task monitor exact identity proof, In progress · Idle, /Student"
+      }
+    },
+    "API-E2E-TMV-002": {
+      "result": "Pass",
+      "description": "Snapshot invalidation and focused task settlement reconcile the repaired fallback projection",
+      "startedAt": "2026-08-31T21:54:00.858Z",
+      "details": {
+        "snapshotLoading": {
+          "phase": "ready",
+          "focusedAgentRunId": "task-monitor-task-agent-run",
+          "focusedMemberAddress": "/Student",
+          "taskVisible": true,
+          "taskAuthoritative": false,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": {
+            "state": "loading",
+            "detail": null
+          },
+          "teacherAttempt": null
+        },
+        "settlementLoading": {
+          "phase": "ready",
+          "focusedAgentRunId": "task-monitor-teacher-run",
+          "focusedMemberAddress": "/Teacher",
+          "taskVisible": false,
+          "taskAuthoritative": true,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": null,
+          "teacherAttempt": {
+            "state": "loading",
+            "detail": null
+          }
+        },
+        "finalState": {
+          "phase": "ready",
+          "focusedAgentRunId": "task-monitor-teacher-run",
+          "focusedMemberAddress": "/Teacher",
+          "taskVisible": false,
+          "taskAuthoritative": true,
+          "teacherAuthoritative": true,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 2,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 1,
+          "taskAttempt": null,
+          "teacherAttempt": null
+        },
+        "taskProjectionRequests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "task-monitor-root-run",
+            "agentRunId": "task-monitor-task-agent-run",
+            "requestedAt": "2026-08-31T21:54:00.289Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "task-monitor-root-run",
+            "agentRunId": "task-monitor-task-agent-run",
+            "requestedAt": "2026-08-31T21:54:00.864Z"
+          }
+        ],
+        "fallbackProjectionRequest": {
+          "operationName": "GetTeamMemberRunProjection",
+          "teamRunId": "task-monitor-root-run",
+          "agentRunId": "task-monitor-teacher-run",
+          "requestedAt": "2026-08-31T21:54:01.356Z"
+        }
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "task-monitor-root-run",
+      "agentRunId": "task-monitor-task-agent-run",
+      "requestedAt": "2026-08-31T21:54:00.289Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "task-monitor-root-run",
+      "agentRunId": "task-monitor-task-agent-run",
+      "requestedAt": "2026-08-31T21:54:00.864Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "task-monitor-root-run",
+      "agentRunId": "task-monitor-teacher-run",
+      "requestedAt": "2026-08-31T21:54:01.356Z"
+    }
+  ],
+  "browserEvents": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 47492,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "port": 60468,
+  "baseUrl": "http://127.0.0.1:60468",
+  "result": "Pass",
+  "finishedAt": "2026-08-31T21:54:02.257Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/nuxt.log",
+    "taskScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/task-selected.png",
+    "settlementLoadingScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/settlement-fallback-loading.png",
+    "settlementCompleteScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-monitor-visibility/tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/task-monitor/settlement-fallback-complete.png"
+  }
+}
