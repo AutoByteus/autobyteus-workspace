@@ -1,0 +1,3 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 build /home/autobyteus/workspace/autobyteus-workspace/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json

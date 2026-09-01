@@ -506,6 +506,22 @@ Use `--port <port>` to pin the port. If automatic browser discovery does not fin
 Chrome/Chromium, pass `--browser-executable <path>` or set
 `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Codex Command Failure Detail Browser Probe
+
+The failed Codex command diagnostic has a self-starting renderer probe for the
+existing center tool card and Activity card. It mounts both production
+components with the same multiline failed-event error, asserts exact DOM text
+and computed whitespace preservation at desktop and narrow viewports, captures
+screenshots, and removes only its owned Nuxt fixture and process:
+
+```bash
+pnpm test:e2e:codex-command-failure-detail -- --output-dir ../tickets/<ticket-name>/probes/api-e2e/browser
+```
+
+Use `--port <port>` to pin the port. If automatic discovery does not find
+Chrome/Chromium, pass `--browser-executable <path>` or set
+`PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:
@@ -524,6 +540,7 @@ pnpm codegen
 - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
 - `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
 - `pnpm test:e2e:nested-team-hierarchy`: Run the self-starting Workspace-history nested-Team hierarchy browser probe
+- `pnpm test:e2e:codex-command-failure-detail`: Run the self-starting center/Activity failed-command diagnostic browser probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

@@ -1,0 +1,70 @@
+
+> autobyteus@1.4.63 test:nuxt /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/ToolCallIndicator.spec.ts components/progress/__tests__/ToolActivityItem.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+
+stderr | components/progress/__tests__/ToolActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/ToolCallIndicator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/progress/__tests__/ToolActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/ToolCallIndicator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > creates synthetic terminal segment and activity when TOOL_EXECUTION_STARTED arrives first 5ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > hydrates edit_file on TOOL_APPROVAL_REQUESTED 2ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > hydrates request_permissions approval cards with requested access context 1ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > applies TOOL_APPROVED then TOOL_EXECUTION_STARTED progression 1ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > replaces unknown_tool placeholders when later lifecycle events carry the concrete tool name 0ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > does not regress from executing back to approved 0ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > applies success terminal state and ignores later started transition 1ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > hydrates arguments from a result-first TOOL_EXECUTION_SUCCEEDED payload 1ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > applies failed terminal state and updates activity result 1ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > applies denied terminal state when reason or error exists 0ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation 1ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > appends TOOL_LOG entries without inferring terminal status 1ms
+ ✓ components/progress/__tests__/ToolActivityItem.spec.ts > ToolActivityItem.vue > keeps the right-panel status chip text and short debug id visible 11ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > omits the center status label for 'success' while preserving the status icon 13ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > omits the center status label for 'error' while preserving the status icon 4ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > omits the center status label for 'approved' while preserving the status icon 2ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > omits the center status label for 'denied' while preserving the status icon 2ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > omits the center running label while preserving the executing spinner 2ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > keeps the reclaimed header space focused on tool context content 1ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > keeps the full command summary available for responsive truncation instead of hard-cutting it in JavaScript 2ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > keeps the inline error details row available without restoring the failed label 2ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > preserves multiline diagnostic structure in the inline error details row 3ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > keeps non-awaiting rows navigable to the Activity panel 3ms
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts > ToolCallIndicator.vue > keeps awaiting-approval rows on the inline approval path instead of Activity navigation 5ms
+
+ Test Files  3 passed (3)
+      Tests  24 passed (24)
+   Start at  11:21:16
+   Duration  9.54s (transform 4.69s, setup 23.98s, collect 202ms, tests 64ms, environment 2.22s, prepare 1.08s)

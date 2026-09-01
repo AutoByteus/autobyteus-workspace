@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.63 test:e2e:codex-command-failure-detail /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node tests/e2e/codex-command-failure-detail-probe.mjs -- --output-dir ../tickets/in-progress/codex-command-failure-detail/probes/api-e2e/browser
+
+Codex command failure detail browser probe failed. Evidence: /home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/probes/api-e2e/browser/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

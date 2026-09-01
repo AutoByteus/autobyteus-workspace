@@ -1,0 +1,242 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stderr | tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not map token-usage telemetry into AGENT_STATUS
+Run 'run-1': Codex token-usage update arrived without a turn id. Skipping persistence.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects command cwd on live execution start 4ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects command cwd on live execution completion 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects provider diagnostics for a failed command without changing correlation facts 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects top-level command cwd on approval requests 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects authoritative command arguments for a result-first completed command 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > preserves explicit empty arguments for a result-first dynamic terminal 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > omits arguments for a genuinely argument-absent dynamic terminal 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > ignores codex-prefixed internal events at the dispatcher boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not map token-usage telemetry into AGENT_STATUS 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes thread/compacted into provider compaction boundary status 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes contextCompaction item start into a non-rotating provider compaction status 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes contextCompaction item completion into a rotating provider compaction boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not let contextCompaction start suppress the later completed boundary 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes raw context_compaction items into provider compaction boundaries 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > dedupes completed contextCompaction and raw context_compaction surfaces for the same item 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > ignores compaction_trigger items as non-boundary signals 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > dedupes raw compaction items when thread/compacted already reported the boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > dedupes raw no-stable compaction items when thread/compacted already reported the boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > dedupes later thread/compacted when a raw no-stable compaction item arrived first 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > dedupes repeated raw no-stable compaction items in the same converter window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > keeps raw compaction items with a distinct stable id after thread/compacted in the same window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > keeps thread/compacted with a distinct stable id after a raw compaction item in the same window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > emits thread status changes as neutral lifecycle facts 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > emits only neutral explicit turn lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > emits effect-aware Codex errors without a backend status companion 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > keeps unclassified Codex errors as content without a guessed status 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not emit a status companion for a terminal error rejected by native turn guards 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps local Agent Tools MCP approval requests into TOOL_APPROVAL_REQUESTED with canonical arguments 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps local permission approval requests into TOOL_APPROVAL_REQUESTED with requested profile context 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out mcpToolCall starts into tool_call segment and lifecycle start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes observed local MCP open_tab completion envelopes into direct browser results 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes Agent Tools MCP delegate_task completion envelopes into direct task results 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes Agent Tools MCP review_task_result completion envelopes into direct task results 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects generic Codex MCP JSON text envelopes into parsed results 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects generic Codex MCP plain text envelopes into text results 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects generic Codex MCP structuredContent before text fallback 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects generic Codex MCP multi-text envelopes with deterministic separators 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > projects generic Codex MCP rich content envelopes into sanitized items 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps Codex MCP isError result envelopes into failure events without result 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > does not project exact envelope-shaped non-MCP Codex dynamic tool results 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes aliased Browser MCP completion results without circular placeholders 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out webSearch starts into tool_call segment and lifecycle start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > omits arguments from the captured hosted webSearch placeholder start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > emits card-capable identity and name without inventing arguments for an unseen webSearch terminal 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out successful webSearch completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out failed webSearch completions into terminal failure and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps successful Agent Tools MCP send_message_to completions into canonical terminal success 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > normalizes non-send Agent Tools MCP completions into canonical tool lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > redacts prefixed free-form text and raw secret fields in Agent Tools MCP payloads 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps failed Agent Tools MCP send_message_to completions into canonical terminal failure 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > maps generic dynamic tool completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > parses generic dynamic tool JSON text results from contentItems 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out fileChange start into segment and lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > fans out fileChange completion into success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter through CodexThread > preserves edit_file metadata when converting file-change segments 0ms
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser invocation identity > does not append approval metadata to public invocation ids 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command arguments > projects cwd from a command execution item 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command arguments > projects top-level cwd from a command approval request 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command arguments > keeps explicit canonical cwd authoritative 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command arguments > does not invent cwd when no supported source supplies it 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command failure errors > combines provider command output and a non-zero exit code 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command failure errors > keeps an explicit provider error authoritative 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command failure errors > ignores blank explicit fields before a useful provider message 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command failure errors > uses an exit-code-only diagnostic when command output is empty 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command failure errors > keeps the generic fallback when a failed command has no useful detail 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts > CodexItemEventPayloadParser command failure errors > does not apply command diagnostics to unrelated tool families 0ms
+ × tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts > Codex command failure transport integration > preserves one enriched provider-shaped failure through standalone and Team wire paths 10ms
+   → expected ServerMessage{ …(2) } to deeply equal { type: 'TOOL_EXECUTION_FAILED', …(1) }
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts [ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts:17:7
+  5  |    APPLICATION_MANIFEST_VERSION,
+  6  |    parseApplicationAgentToolDeclarations
+  7  |  } from "@autobyteus/application-sdk-contracts";
+     |          ^
+  8  |  export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
+  9  |  const SLOT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts > Codex command failure transport integration > preserves one enriched provider-shaped failure through standalone and Team wire paths
+AssertionError: expected ServerMessage{ …(2) } to deeply equal { type: 'TOOL_EXECUTION_FAILED', …(1) }
+
+- Expected
++ Received
+
+- {
++ ServerMessage {
+    "payload": {
+      "arguments": {
+        "command": "/bin/bash -lc 'exit 23'",
+        "cwd": "/workspace/command-failure",
+      },
+      "error": "first line
+  CODEX_FAILURE_STDERR_MARKER
+  Exit code: 23",
+      "invocation_id": "exec-command-failure",
++     "item": {
++       "aggregatedOutput": "first line
++ CODEX_FAILURE_STDERR_MARKER",
++       "command": "/bin/bash -lc 'exit 23'",
++       "cwd": "/workspace/command-failure",
++       "exitCode": 23,
++       "id": "exec-command-failure",
++       "status": "failed",
++       "type": "commandExecution",
++     },
++     "threadId": "thread-command-failure",
+      "tool_name": "run_bash",
++     "turnId": "turn-command-failure",
+      "turn_id": "turn-command-failure",
+    },
+    "type": "TOOL_EXECUTION_FAILED",
+  }
+
+ ❯ tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts:52:24
+     50|
+     51|     const standalone = new AgentRunEventMessageMapper().map(failure);
+     52|     expect(standalone).toEqual({
+       |                        ^
+     53|       type: "TOOL_EXECUTION_FAILED",
+     54|       payload: expectedFailurePayload,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  1 failed | 72 passed (73)
+   Start at  11:18:47
+   Duration  7.36s (transform 3.60s, setup 75ms, import 760ms, tests 52ms, environment 0ms)
