@@ -2,13 +2,13 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current requirements revision ID: `RER-001`
+- Status: `Approved`
+- Current requirements revision ID: `RER-002`
 - Package identifier: `REQ-CODEX-COMMAND-FAILURE-DETAIL-20260901`
 - Request / ticket: `codex-command-failure-detail`
 - Requirements owner: Requirements Engineer
 - Date: 2026-09-01
-- Approval state and reference: Pending explicit user approval; no approval inferred from the investigation request.
+- Approval state and reference: Explicitly approved by the user on 2026-09-01: “anyways, i approved. you can route now.” The earlier question about possible alignment with the AutoByteus `run_bash` return is retained as a downstream technical consideration; it does not amend the approved product behavior or authorize a structural contract change.
 
 ## Problem And Desired Outcome
 
@@ -111,7 +111,7 @@
 - Linked runnable prototype, separate prototype repository/root, UI/UX specification, and applicable support artifacts: `N/A — not applicable`
 - Product prototype ticket record and folder (externally owned): `N/A — not applicable`
 - Prototype revision or commit: `N/A — not applicable`
-- UI/UX user-confirmation reference: `N/A — no Product Design work requested; intended diagnostic behavior awaits requirements approval`
+- UI/UX user-confirmation reference: User approval of the intended diagnostic behavior on 2026-09-01; no Product Design work was requested.
 - Approved visual-reference baseline: `N/A — existing UI is preserved`
 - Normative visual and interaction details, including the approved final references: Preserve the current failed styling and Error section; replace the generic-only content with readable actionable diagnostic text.
 - Explicitly illustrative fixture content or permitted implementation variation: `CODEX_FAILURE_STDERR_MARKER` and exit code `23` are verification fixtures. Exact punctuation/order may vary provided both facts are clearly visible and precedence requirements hold.
@@ -156,13 +156,13 @@
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
 | ASM-001 | The existing `error` string is the correct canonical product surface for failed tool diagnostics. | Standalone, team, replay, and both UI cards already consume it. | Verified by source investigation; Implementation Engineer rechecks contract tests. | Validated |
-| ASM-002 | Exact punctuation/line ordering need not be prescribed if the best evidence and exit code are clearly visible. | Keeps requirements behavioral and avoids target implementation design. | User approval of this package. | Pending approval |
+| ASM-002 | Exact punctuation/line ordering need not be prescribed if the best evidence and exit code are clearly visible. | Keeps requirements behavioral and avoids target implementation design. | User approval of this package. | Validated by approval |
 
 ## Open Decisions And Questions
 
 | Decision / Question ID | Question | Why It Matters | Options / Evidence | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Approve the desired diagnostic precedence and live/replay scope defined here? | Explicit approval is required before downstream work. | Recommended: approve REQ-001 through REQ-006 and AC-001 through AC-009. | User | Open |
+| DEC-001 | Approve the desired diagnostic precedence and live/replay scope defined here? | Explicit approval is required before downstream work. | User explicitly approved the package on 2026-09-01. | User | Approved |
 
 ## Traceability
 
@@ -177,11 +177,11 @@
 
 ## Downstream Architecture Input
 
-- Approved scenario IDs and product-level behavior paths architecture must map: Pending approval; candidate paths are SCN-001 through SCN-003.
+- Approved scenario IDs and product-level behavior paths architecture must map: SCN-001 through SCN-003.
 - Product and system constraints architecture must preserve: Existing failed-tool event contract, team/standalone consistency, local replay, command/cwd identity, and unrelated tool behavior.
 - Decisions intentionally deferred to architecture design: None currently identified; technical placement and exact formatter ownership remain downstream decisions if architecture design is selected.
 - Technical facts architecture should verify: `aggregatedOutput` is available to result parsing but not error parsing; failed terminal events publish only `error` through the canonical failure contract; downstream UI preserves that string.
-- Known feasibility or integration risks: The shared payload parser serves several Codex tool families, so a broad parser change could unintentionally alter non-command errors; implementation must keep the approved command scope and preserved behavior.
+- Known feasibility or integration risks: The shared payload parser serves several Codex tool families, so a broad parser change could unintentionally alter non-command errors; implementation must keep the approved command scope and preserved behavior. The user asked whether the provider item could be mapped to the AutoByteus `run_bash` return. Native AutoByteus returns structured `stdout`, `stderr`, `exitCode`, `timedOut`, `effectiveCwd`, and optional background-process data, whereas the observed Codex command item exposes combined `aggregatedOutput`, `exitCode`, and `cwd`. Downstream may reuse compatible existing projection concepts, but must not fabricate stdout/stderr separation, reclassify the approved failed state, or introduce a structural contract change without returning a `Requirement Gap` or `Design Impact`.
 
 ## Readiness Check
 
@@ -193,26 +193,23 @@
 - Prototype and supplemental evidence is integrated consistently: `Yes`
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A — no redesign/prototype requested`
 - Material assumptions and open decisions are visible: `Yes`
-- User approval received: `No`
-- Requirements package ready for downstream route: `No — ready for approval, routing assessment must wait`
-- Remaining blocker: Explicit user approval of the intended behavior.
+- User approval received: `Yes`
+- Requirements package ready for downstream route: `Yes`
+- Remaining blocker: None.
 
 ## Architecture Design Routing Assessment
 
-This assessment is intentionally not performed while the package is awaiting
-explicit user approval.
-
-- Assessment status: `N/A — not yet eligible`
-- Assessment owner and date: Requirements Engineer; pending approval
-- Preliminary task size: `N/A — assessment not run`
-- Preliminary architectural risk: `N/A — assessment not run`
-- Structural surfaces reviewed: Codex converter/parser, failed-tool stream adapters, frontend error consumers, and local replay were investigated for requirements evidence only.
-- Payload/content surfaces reviewed: App Server `commandExecution` terminal payload; failed event `error`; local trace `tool_error`.
-- Structural-impact triggers: `N/A — assessment not run`
-- Evidence paths: `investigation-notes.md`; `codex-command-failure-probe.md`; raw JSONL.
-- Decision rationale: Routing policy requires an approved, readiness-passing requirements package before the assessment.
-- Selected route: `N/A — pending approval`
-- Outcome classification: `N/A — pending approval`
-- Direct-route conditions all satisfied: `N/A — pending approval`
-- Architecture design, review, and design-revision artifacts: `N/A — pending route`
-- Downstream re-entry trigger: Explicit user approval, followed by the Requirements Engineer's routing assessment and handoff classification.
+- Assessment status: `Complete`
+- Assessment owner and date: Requirements Engineer; 2026-09-01
+- Preliminary task size: `Small`
+- Preliminary architectural risk: `Low`
+- Structural surfaces reviewed: Codex converter/parser; normalized failed-tool event; standalone and team stream adapters; frontend error consumers; local raw-trace persistence and replay.
+- Payload/content surfaces reviewed: App Server `commandExecution.status`, `aggregatedOutput`, `exitCode`, and `cwd`; canonical failed-event `error`; local trace `tool_error`.
+- Structural-impact triggers: `None`
+- Evidence paths: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/investigation-notes.md`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-command-failure-probe.md`; `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/codex-command-failure-detail/codex-app-server-failed-command-raw.jsonl`.
+- Decision rationale: The approved outcome fits the existing failed-tool `error` string and existing live/team/replay consumers. No API or external-contract shape, persistence schema/invariant, security/privacy boundary, concurrency/lifecycle behavior, deployment topology, ownership boundary, migration, architectural pattern, or structural refactor is required. The change is a bounded provider-payload mapping correction with focused regression validation. Exact alignment to native AutoByteus `TerminalResult` is not an approved structural requirement and must not expand this direct route.
+- Selected route: `Implementation Engineer`
+- Outcome classification: `Approved Direct-Implementation`
+- Direct-route conditions all satisfied: `Yes`
+- Architecture design, review, and design-revision artifacts: `N/A — not applicable`
+- Downstream re-entry trigger: Implementation Engineer must return `Design Impact` if production evidence shows the approved outcome requires a structural change, or `Requirement Gap` if exact native `run_bash` return parity would change the approved product contract.

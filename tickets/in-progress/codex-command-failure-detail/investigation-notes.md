@@ -10,13 +10,13 @@
 - Base or reference revision: `80e2bd195c42ea3ced778dbc051d4d00edaef16f`
 - Bootstrap result: Clean base branch was verified and a dedicated task branch was created before deeper investigation.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-001`
-- Investigation status: Complete enough for product review; requirements await explicit user approval.
+- Current requirements revision ID: `RER-002`
+- Investigation status: Complete; requirements approved and classified `Approved Direct-Implementation`.
 
 ## Initial Request And Clarifications
 
 - Original request: Investigate why a Bash failure from an agent using the Codex runtime appears in AutoByteus only as `Tool execution failed.` Determine whether Codex, the converter, or an AutoByteus mapping is responsible. Probe Codex App Server with a failing command and inspect the returned data.
-- Clarifications received: None after intake.
+- Clarifications received: The user asked whether the Codex command payload could be mapped to the AutoByteus `run_bash` return, then explicitly approved the current requirements package and requested routing, noting that the technical mapping choice is downstream responsibility. The question is retained as implementation context, not as an approved structural return-contract change.
 - User-supplied facts and constraints: Screenshot shows a running Codex team member (`implementation_engineer`) with a failed `run_bash` Activity card whose Error section contains only `Tool execution failed.` The user explicitly requested an experiment rather than an assumption.
 - Initial ambiguity: Whether Codex App Server omitted diagnostic data, the backend converter discarded it, or the frontend failed to render it.
 
@@ -48,6 +48,8 @@
 | 2026-09-01 | Code | Frontend `toolLifecycleHandler.ts`, `ToolActivityItem.vue`, `ToolCallIndicator.vue` | Determine whether frontend ignores richer data. | Frontend stores and renders the failed event's `error` unchanged in both existing surfaces. | No frontend redesign needed. |
 | 2026-09-01 | Code | `runtime-tool-trace-sequencer.ts` and Codex integration docs | Check replay consequence. | Failed event error is persisted as `tool_error`; normal run history uses local replay. Generic live mapping therefore becomes generic replay too. | Include newly recorded replay consistency; no backfill. |
 | 2026-09-01 | Code / Test | `codex-run-view-projection-provider.test.ts` failed-command fixture | Assess existing coverage. | A diagnostic/native history fixture currently expects rich result `{output, exit_code}` but generic `toolError`, demonstrating the diagnostic split; normal UI uses local replay, not this provider projection. | Add focused live-converter/replay coverage rather than relying on native history. |
+| 2026-09-01 | Code | `autobyteus-ts/src/tools/terminal/types.ts`, `run-bash.ts`, and `shell-command-executor.ts` | Evaluate the user's question about mapping to the AutoByteus `run_bash` return. | Native AutoByteus returns `TerminalResult { stdout, stderr, exitCode, timedOut, effectiveCwd, backgroundProcesses }`; non-zero exit is returned as a structured result. The observed Codex item supplies combined `aggregatedOutput`, `exitCode`, and `cwd`, not separated stdout/stderr or the full native shape. | Downstream may reuse compatible mapping concepts but must not fabricate missing semantics or change the approved failed-event contract without escalation. |
+| 2026-09-01 | User | “anyways, i approved. you can route now.” | Capture explicit approval and routing authorization. | REQ-001-REQ-006, AC-001-AC-009, and SCN-001-SCN-003 are approved. The earlier return-mapping question does not block routing. | Complete routing assessment and dynamic handoff. |
 
 ## Relevant Existing Behavior And Supported Product Paths
 
@@ -107,7 +109,7 @@ agent-command scenario, not a new user journey.
 - Security or privacy boundary change: None identified; existing command diagnostic output is already an execution result/log surface.
 - Concurrency or lifecycle change: None; failed state and turn continuation are preserved.
 - Deployment, migration, ownership-boundary, architectural-pattern, or structural-refactoring change: None currently identified. A shared-parser change needs bounded regression care but does not itself establish structural impact.
-- Confirmed absent, present, or unknown: Preliminary evidence indicates absent, but the formal routing assessment must wait for user approval.
+- Confirmed absent, present, or unknown: Absent for the approved bounded mapping correction. Exact native `TerminalResult` contract parity is not part of the approved scope and would require downstream escalation if proposed as structural behavior.
 
 ## Runtime, Probe, Or Reproduction Findings
 
@@ -182,10 +184,10 @@ agent-command scenario, not a new user journey.
 
 | ID | Type (`Assumption`/`Unknown`/`Risk`) | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| ASM-001 | Assumption | Existing canonical failure `error` string is the right visible carrier. | Avoids needless contract/UI changes. | Source-validated; Implementation Engineer rechecks tests. | Validated |
+| ASM-001 | Assumption | Existing canonical failure `error` string is the right visible carrier. | Avoids needless contract/UI changes. | Source-validated and user-approved; Implementation Engineer rechecks tests. | Validated |
 | RSK-001 | Risk | `CodexToolPayloadParser` is shared across tool families. A broad extraction change could alter unrelated errors. | Scope is command failure only. | Preserve REQ-005/AC-008; downstream implementation/review. | Open downstream risk |
 | RSK-002 | Risk | `aggregatedOutput` is combined stdout/stderr and may contain ordinary output as well as error text. | UI must call it diagnostic output, not claim stream provenance. | Requirements prohibit fabricated stdout/stderr distinction. | Mitigated in scope |
-| UNK-001 | Unknown | Exact formatting chosen for output plus exit code. | Punctuation is not product-critical if both facts are visible and precedence holds. | Downstream within REQ-002/REQ-006; user approves allowed variation. | Non-blocking |
+| UNK-001 | Unknown | Exact formatting chosen for output plus exit code. | Punctuation is not product-critical if both facts are visible and precedence holds. | Downstream within approved REQ-002/REQ-006. | Non-blocking |
 
 ## Requirement Implications
 
@@ -211,5 +213,11 @@ agent-command scenario, not a new user journey.
 - Verify standalone, team-member, memory, and replay consumers using the
   existing failure error string; do not introduce an alternate UI-only source.
 - Use the retained provider-shaped sample as executable fixture evidence.
+- The user's AutoByteus-return question is useful implementation context:
+  native `TerminalResult` separates stdout/stderr and includes fields the Codex
+  item does not expose. Reuse compatible mapping or presentation logic only
+  where semantically accurate. Do not invent stream separation, turn a
+  provider-failed command into success, or widen the public contract under this
+  direct route.
 - Exact target code structure and final architecture-risk classification remain
   downstream responsibilities.
