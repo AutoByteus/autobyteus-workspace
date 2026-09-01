@@ -1,0 +1,15 @@
+$ git rev-parse HEAD
+fe9f1a286b37ce53d33999b1155bd189822a0a24
+
+$ pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+
+$ git diff --check
+
+$ git diff --name-only -- autobyteus-server-ts/tests autobyteus-web/tests
+
+$ git status --short
+ M tickets/in-progress/task-agent-monitor-visibility/api-e2e-coverage-investigation.md
+ M tickets/in-progress/task-agent-monitor-visibility/code-review-report.md
+ M tickets/in-progress/task-agent-monitor-visibility/code-review-revision-record.md
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/task-agent-monitor-visibility/api-e2e-evidence/api-rev-003/

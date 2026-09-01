@@ -462,6 +462,18 @@ focus when it remains visible; when focus repair chooses a different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
+The retained projection is only the exact first-inspection baseline. For a
+newly delegated task Agent, the root Team stream publishes
+`TASK_AGENT_ACTIVATED` before every exact task-Agent frame. The server buffers
+pre-activation Agent events behind a registry-owned durability gate, drains them
+FIFO after durable activation, including synchronous reentrant events, and then
+forwards later status, turn, content, tool, and segment events exactly once.
+Abort/disposal publishes nothing and starts no assignment work. The frontend
+routes released frames by exact `agent_execution`, allowing an already-selected
+task monitor, Activity, and execution status to advance without reload/refocus
+while repeated same-address task runs remain isolated. Reconnect snapshots are a
+recovery authority, not the normal continuation path.
+
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
 status, selection, and applicable expanded state; row bodies and independent

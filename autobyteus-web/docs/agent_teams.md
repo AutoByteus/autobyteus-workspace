@@ -356,6 +356,16 @@ Root `TEAM_RUN_LIFECYCLE` remains a binary Team-container fact. Exact
 `error` state. WebSocket subscription state remains separate from both. This
 keeps Team liveness, leaf status, focus, and interrupt authority independent.
 
+For a delegated task Agent, its retained projection establishes the selected
+monitor baseline and the root Team stream owns subsequent progress. The server
+publishes `TASK_AGENT_ACTIVATED` before that exact run's status, turn, content,
+tool, or segment frames: a durability gate buffers pre-activation events, drains
+them FIFO after activation becomes durable, and then forwards later frames
+exactly once. Abort/disposal drops the private events and starts no task work.
+The frontend routes the released frames by the exact `agent_execution`, so an
+early-selected task advances without reload/refocus and repeated task runs at one
+logical address remain isolated.
+
 ## Stopped Team Follow-Up And Termination State
 
 `agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
