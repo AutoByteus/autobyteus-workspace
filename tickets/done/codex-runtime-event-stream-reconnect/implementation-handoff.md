@@ -2,13 +2,13 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/architecture-review-revision-record.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-spec.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence, when applicable: `N/A` for implementation rework. The initial implementation was triggered by the passing `ARCH-REV-003` decision above.
 
 ## Current Implementation Summary
@@ -16,7 +16,7 @@
 The implementation now distinguishes a retryable Codex provider error from a terminal turn error at the native notification boundary. Exact `willRetry === true` produces canonical turn-scoped diagnostic evidence without ending the active turn or clearing pending correlation state. Emitted errors perform effect- and scope-aware converter cleanup. Explicit late terminal boundaries for retired turn A are suppressed while turn B is active, before mutation and before local/native emission, so they cannot enter canonical, replay, wire, or frontend projection paths. No frontend production code, shared protocol, reconnect/replay logic, persistence format, or package dependency changed.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-003` (including the retained `SR-002` cleanup decision)
 - Related architecture-review revision IDs: `ARCH-REV-003`

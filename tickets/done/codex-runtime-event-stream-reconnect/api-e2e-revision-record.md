@@ -12,7 +12,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 
 ### API-REV-001 — Retry lifecycle joined coverage and real Codex validation baseline
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`; API/E2E round 1.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`; API/E2E round 1.
 - Triggering finding or scenario IDs: No code-review finding; initial validation created `API-SC-001` through `API-SC-007`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-003` (retaining `SR-002`), `ARCH-REV-003`, `IR-001`, `CRR-001`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: Establish the mandatory first coverage investigation and completed execution result after source review. Directly protect the production failure outcome across native classification, canonical lifecycle, trace persistence, wire/frontend projection, and current real Codex process execution.
@@ -25,9 +25,9 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 None.
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-coverage-investigation.md` — inventory, decisions, execution results, post-repository confidence, and broader-validation result.
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-execution-coverage-report.md` — complete round-1 execution and evidence.
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-revision-record.md` — `API-REV-001` baseline.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-coverage-investigation.md` — inventory, decisions, execution results, post-repository confidence, and broader-validation result.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-execution-coverage-report.md` — complete round-1 execution and evidence.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-revision-record.md` — `API-REV-001` baseline.
 - Prior result and confidence: `N/A`
 - Current result and confidence: `Pass` / `96.6%`
 - New or remaining failure IDs: None.

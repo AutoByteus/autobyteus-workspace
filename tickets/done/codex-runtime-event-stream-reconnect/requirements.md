@@ -29,7 +29,7 @@ Correct the Codex App Server integration bug in which AutoByteus treats a retrya
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md` | Investigation evidence: exact run identity, retry/completion timeline, upstream protocol contract, and localized fault path | `REQ-001`, `REQ-002`, `REQ-003` | `AC-001`, `AC-002`, `AC-003` | `Complete`; approval `N/A` | Supports the factual basis; defines no intended behavior beyond this requirements doc. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md` | Investigation evidence: exact run identity, retry/completion timeline, upstream protocol contract, and localized fault path | `REQ-001`, `REQ-002`, `REQ-003` | `AC-001`, `AC-002`, `AC-003` | `Complete`; approval `N/A` | Supports the factual basis; defines no intended behavior beyond this requirements doc. |
 
 ## Design Health Assessment (Mandatory)
 

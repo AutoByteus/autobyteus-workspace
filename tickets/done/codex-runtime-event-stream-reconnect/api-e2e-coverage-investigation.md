@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-revision-record.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Investigation Round: `1`
 - Trigger: `/code_reviewer` pass at implementation commit `fb65f564f`; `CRR-001`; source-review score `9.75/10`; no findings.
@@ -56,14 +56,14 @@ The approved change is a Codex App Server lifecycle correction, not a reconnect 
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect`
+- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67`
 - Project type and runtime stack: pnpm 10.28.2 TypeScript monorepo; Node.js 22.23.1; Fastify/GraphQL/WebSocket backend with Vitest 4; Nuxt/Vue frontend with Vitest 3; Electron 42 desktop wrapper; Codex App Server CLI 0.152.1.
 - Conflicting, missing, or unclear project instructions: The implementation handoff labels `tests/integration/agent/agent-status-websocket.integration.test.ts` as a web-package check, but the path and code-review correction establish that it must run from `autobyteus-server-ts`. No other conflict. Full server/web typecheck baseline limitations are already recorded upstream; the production-source server config is the relevant clean typecheck.
 - Required environment variables or secrets available: `Yes` for installed/authenticated Codex CLI as established by the retained production run and to be rechecked by live execution; no secret values will be read or recorded. `RUN_CODEX_E2E=1` is required for Codex live suites. Deterministic tests require no secret.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/README.md` | Workspace setup, deterministic/live E2E, Codex, dev and Electron guidance | `pnpm install`; `pnpm test:e2e`; Codex live suites require `RUN_CODEX_E2E=1`; `pnpm dev` owns ports 8000/3000 and `.autobyteus/development`; browser/Electron launch is unnecessary for unchanged projector behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/README.md` | Workspace setup, deterministic/live E2E, Codex, dev and Electron guidance | `pnpm install`; `pnpm test:e2e`; Codex live suites require `RUN_CODEX_E2E=1`; `pnpm dev` owns ports 8000/3000 and `.autobyteus/development`; browser/Electron launch is unnecessary for unchanged projector behavior. |
 | `autobyteus-server-ts/AGENTS.md` | Closest server test instruction | Use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`; do not use watch mode. |
 | `autobyteus-server-ts/README.md` | Server runtime, tests, isolation and cleanup | Tests use `.env.test` and temporary DB under `tests/.tmp`; live Codex suites isolate app data to per-suite temporary directories; do not use development DB; use `RUN_CODEX_E2E=1`. |
 | `autobyteus-server-ts/package.json` | Authoritative scripts/prerequisites | `prepare:shared` builds `autobyteus-ts`, SDK contracts and backend SDK; `prebuild` generates Prisma; production source check is `tsc -p tsconfig.build.json --noEmit`. |

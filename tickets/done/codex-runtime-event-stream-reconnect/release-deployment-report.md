@@ -6,10 +6,10 @@ Finalization and stable patch release after integrated-state validation, documen
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/delivery-revision-record.md`
+- Current delivery revision ID: `DR-004`
 - Notes: The user accepted the verified local Electron candidate. A post-acceptance refresh confirmed the target is unchanged, so repository finalization and `v1.4.67` release are in progress.
 
 ## Initial Delivery Integration Refresh
@@ -34,19 +34,19 @@ Finalization and stable patch release after integrated-state validation, documen
 - Initial verification / acceptance reference: User message on 2026-09-02 — “its working. lets finalize and release a new version”.
 - Renewed verification required after later re-integration: `No`; the mandatory post-acceptance refresh found `origin/personal` unchanged.
 - Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/delivery-evidence/post-acceptance-refresh.log`
+- Renewed verification / acceptance reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/delivery-evidence/post-acceptance-refresh.log`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/docs-sync-report.md`
 - Docs sync result: `Updated`
-- Docs updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
+- Docs updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect`
 
 ## Version / Tag / Release Commit
 
@@ -54,19 +54,19 @@ Finalization and stable patch release after integrated-state validation, documen
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/investigation-notes.md`
 - Ticket branch: `codex/codex-runtime-event-stream-reconnect`
-- Ticket branch commit result: Held pending explicit verification; reviewed implementation source is committed at `fb65f564f`, while API/E2E and delivery-owned artifacts remain for the final ticket commit.
-- Ticket branch push result: Held pending explicit verification.
+- Ticket branch commit result: Completed at `b75feba1ce69f6233b131629a21463894d7fd605`.
+- Ticket branch push result: Completed; remote branch verified at `b75feba1ce69f6233b131629a21463894d7fd605`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `No`; refreshed `origin/personal` remains `5fb16658e7bd2aefd750f99eb596a17382e161ac`.
 - Delivery-owned edits protected before re-integration: `Not needed`; no target commits required integration.
 - Re-integration before final merge result: `Already current`; no merge/rebase or renewed test run needed.
-- Target branch update result: In progress.
-- Merge into target result: In progress.
-- Push target branch result: In progress.
-- Repository finalization status: `In progress`
+- Target branch update result: Completed; clean checkout fast-forwarded to refreshed `origin/personal` at `5fb16658e7bd2aefd750f99eb596a17382e161ac`.
+- Merge into target result: Completed as merge commit `f2eb54158aa27d4d230206827097d1becad92707`.
+- Push target branch result: Completed; remote `personal` verified at `f2eb54158aa27d4d230206827097d1becad92707`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -75,12 +75,12 @@ Finalization and stable patch release after integrated-state validation, documen
 - Method: Documented workspace release script on updated `personal`.
 - Method reference / command: `corepack pnpm release 1.4.67 -- --release-notes tickets/done/codex-runtime-event-stream-reconnect/release-notes.md`
 - Release/publication/deployment result: `In progress`
-- Release notes handoff result: Prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/release-notes.md`; archive path will be used by the script.
+- Release notes handoff result: Prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/release-notes.md`; archive path will be used by the script.
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect`
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67`
 - Worktree cleanup result: `Pending`
 - Worktree prune result: `Pending`
 - Local ticket branch cleanup result: `Pending`
@@ -96,7 +96,7 @@ Finalization and stable patch release after integrated-state validation, documen
 ## Release Notes Summary
 
 - Release notes artifact created before finalization: `Yes`
-- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/release-notes.md`
 - Release notes status: `Prepared`
 
 ## Deployment Steps
@@ -131,4 +131,4 @@ If rollout verification fails before publication completes, keep final handoff b
 
 ## Final Status
 
-`DR-003 Pass — user verification and release authorization apply to the unchanged candidate. Repository finalization and the documented v1.4.67 release are in progress.`
+`DR-004 Pass — repository finalization is complete and verified on personal. The documented v1.4.67 release, rollout verification, and cleanup remain in progress.`

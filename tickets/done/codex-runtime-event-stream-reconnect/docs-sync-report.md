@@ -6,7 +6,7 @@
 - Trigger: `CRR-002` passed the proportional review of API/E2E-owned durable coverage after `API-REV-001` passed at `96.6%` final validation confidence.
 - Bootstrap base reference: `origin/personal` at `5fb16658e7bd2aefd750f99eb596a17382e161ac` (`docs(delivery): record v1.4.66 release completion`).
 - Integrated base reference used for docs sync: refreshed `origin/personal` at `5fb16658e7bd2aefd750f99eb596a17382e161ac`; the remote base had not advanced, so no base commit required integration.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/delivery-integrated-state-refresh.log`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/delivery-integrated-state-refresh.log`
 
 ## Why Docs Were Updated
 
@@ -17,17 +17,17 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Canonical Codex native-notification, thread-state, reasoning-boundary, and raw-event audit contract | Updated | Added retry/stale-boundary policy, corrected reasoning-boundary rules, expanded error/status/completion audit rows, and added an operational guardrail. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-server-ts/docs/modules/agent_streaming.md` | Canonical provider-neutral lifecycle admission and standalone/Team transport behavior | No change | Already states that turn/runtime diagnostics remain visible and non-terminal and only explicit terminal evidence settles lifecycle. It does not encode stale Codex-native behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/docs/agent_execution_architecture.md` | Frontend lifecycle/error projection contract | No change | Already requires exact `turn_id` correlation, treats diagnostics as non-terminal, and forbids content/activity from reopening or settling turns. No frontend production behavior changed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/docs/agent_integration_minimal_bridge.md` | Minimal client contract for `ERROR` scope/effect handling | No change | Already states that diagnostic or unclassified errors are visible but do not settle a turn and that delayed A boundaries cannot close B. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/README.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-server-ts/README.md` | User/operator Codex configuration and live-test guidance | No change | The fix changes internal event classification, not setup, configuration, commands, or operator actions. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Canonical Codex native-notification, thread-state, reasoning-boundary, and raw-event audit contract | Updated | Added retry/stale-boundary policy, corrected reasoning-boundary rules, expanded error/status/completion audit rows, and added an operational guardrail. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-server-ts/docs/modules/agent_streaming.md` | Canonical provider-neutral lifecycle admission and standalone/Team transport behavior | No change | Already states that turn/runtime diagnostics remain visible and non-terminal and only explicit terminal evidence settles lifecycle. It does not encode stale Codex-native behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/docs/agent_execution_architecture.md` | Frontend lifecycle/error projection contract | No change | Already requires exact `turn_id` correlation, treats diagnostics as non-terminal, and forbids content/activity from reopening or settling turns. No frontend production behavior changed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/docs/agent_integration_minimal_bridge.md` | Minimal client contract for `ERROR` scope/effect handling | No change | Already states that diagnostic or unclassified errors are visible but do not settle a turn and that delayed A boundaries cannot close B. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/README.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-server-ts/README.md` | User/operator Codex configuration and live-test guidance | No change | The fix changes internal event classification, not setup, configuration, commands, or operator actions. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Durable runtime/event contract | Documented `willRetry` authority, diagnostic preservation, exact matching terminal cleanup, explicit stale terminal suppression, runtime-global fail-safe cleanup, and the no-resubmission rule. | Keep the canonical Codex audit table and operational rules aligned with the final reviewed and executed behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Durable runtime/event contract | Documented `willRetry` authority, diagnostic preservation, exact matching terminal cleanup, explicit stale terminal suppression, runtime-global fail-safe cleanup, and the no-resubmission rule. | Keep the canonical Codex audit table and operational rules aligned with the final reviewed and executed behavior. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -53,7 +53,7 @@
 
 - Result: `Pass`
 - Next delivery action: The verified local macOS ARM64 Electron package is ready for the user's manual test. Keep ticket archival, final commit/push, target merge/push, release, deployment, and cleanup on hold until the user explicitly verifies and authorizes finalization.
-- Notes: Documentation validation and `git diff --check` passed; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/docs-sync-validation.log`. No post-integration executable rerun was required because the tracked remote base did not advance and the already-reviewed/API-E2E-tested source state did not change. The later local packaging request introduced no further long-lived documentation impact; `DR-002` build and verification evidence is recorded in the handoff and delivery reports.
+- Notes: Documentation validation and `git diff --check` passed; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/docs-sync-validation.log`. No post-integration executable rerun was required because the tracked remote base did not advance and the already-reviewed/API-E2E-tested source state did not change. The later local packaging request introduced no further long-lived documentation impact; `DR-002` build and verification evidence is recorded in the handoff and delivery reports.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

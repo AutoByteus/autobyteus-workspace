@@ -1,0 +1,11 @@
+# Repository finalization evidence
+timestamp_utc=2026-09-02T19:35:39Z
+branch=personal
+ticket_branch_commit=b75feba1ce69f6233b131629a21463894d7fd605
+merge_commit=f2eb54158aa27d4d230206827097d1becad92707
+merge_parents=5fb16658e7bd2aefd750f99eb596a17382e161ac b75feba1ce69f6233b131629a21463894d7fd605
+remote_personal=f2eb54158aa27d4d230206827097d1becad92707
+ticket_commit_is_ancestor_of_personal=yes
+working_tree_clean_before_record=no
+remote_v1.4.67_present=no
+result=PASS: archived ticket branch committed/pushed and merged/pushed to personal; v1.4.67 release may proceed.

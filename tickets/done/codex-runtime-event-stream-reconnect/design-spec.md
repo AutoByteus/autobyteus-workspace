@@ -43,7 +43,7 @@ The behavior map defines what real behavior the design must serve. The spine sec
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md` | Exact production timeline, trace divergence, upstream v2 contract, and fault localization | `REQ-001`, `REQ-002`, `REQ-003`; `AC-001`, `AC-002`, `AC-003` | Establishes that Codex recovered and identifies `willRetry` plus the adapter state mutation as the design premise | `Complete`; approval `N/A` (evidence only) |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md` | Exact production timeline, trace divergence, upstream v2 contract, and fault localization | `REQ-001`, `REQ-002`, `REQ-003`; `AC-001`, `AC-002`, `AC-003` | Establishes that Codex recovered and identifies `willRetry` plus the adapter state mutation as the design premise | `Complete`; approval `N/A` (evidence only) |
 
 ## Task Design Health Assessment (Mandatory)
 

@@ -6,16 +6,16 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md` | Implementation review / initial `IR-001` source handoff at `fb65f564f` | `N/A` | `Pass` | None |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-test-review-report.md` | Proportional test-code review / successful `API-REV-001` with durable coverage rename and expansion | `Pass` (`CRR-001` implementation review) | `Pass` (API/E2E test-code review) | None |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md` | Implementation review / initial `IR-001` source handoff at `fb65f564f` | `N/A` | `Pass` | None |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-test-review-report.md` | Proportional test-code review / successful `API-REV-001` with durable coverage rename and expansion | `Pass` (`CRR-001` implementation review) | `Pass` (API/E2E test-code review) | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation source review passes
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 1
-- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/implementation-handoff.md`; no triggering finding or scenario ID
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/implementation-handoff.md`; no triggering finding or scenario ID
 - Relevant solution revision IDs: `SR-003` (retaining `SR-002`)
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-001`
@@ -36,9 +36,9 @@ None.
 
 ### CRR-002 — Expanded durable lifecycle integration passes proportional review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-test-review-report.md`
 - Review entry point and round: Successful API/E2E test-code review, round 1
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-execution-coverage-report.md`; `API-SC-001`, `API-SC-002`
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-execution-coverage-report.md`; `API-SC-001`, `API-SC-002`
 - Relevant solution revision IDs: `SR-003` (retaining `SR-002`)
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-001`

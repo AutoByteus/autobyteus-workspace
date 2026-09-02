@@ -14,7 +14,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 
 ### ARCH-REV-001 — Initial review finds cross-turn terminal cleanup leakage
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review after the user approved the Design-ready requirements and the solution designer completed `SR-001`.
 - Triggering role, report path, and finding IDs: Solution designer; no prior downstream report; finding `AR-F-001` created in this review.
 - Relevant solution revision IDs: `SR-001`
@@ -33,7 +33,7 @@ None.
 
 ### ARCH-REV-002 — Converter cleanup resolved; stale terminal projection remains
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
 - Review round and trigger: Round 2; re-review of `SR-002` after round-1 `AR-F-001`.
 - Triggering role, report path, and finding IDs: Solution designer; `solution-revision-record.md` entry `SR-002`; prior finding `AR-F-001`.
 - Relevant solution revision IDs: `SR-002`
@@ -54,7 +54,7 @@ None.
 
 ### ARCH-REV-003 — Stale projection containment resolves the remaining design impact
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`
 - Review round and trigger: Round 3; re-review of `SR-003` after round-2 `AR-F-002`.
 - Triggering role, report path, and finding IDs: Solution designer; `solution-revision-record.md` entry `SR-003`; prior finding `AR-F-002`.
 - Relevant solution revision IDs: `SR-003` (with accepted `SR-002` cleanup design retained)

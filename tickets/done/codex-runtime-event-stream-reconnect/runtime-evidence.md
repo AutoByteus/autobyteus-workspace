@@ -2,7 +2,7 @@
 
 ## Artifact Metadata
 
-- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
+- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
 - Type: Investigation evidence supplement
 - Status: `Complete`
 - Approval applicability: `N/A` — this artifact records observed evidence and does not define intended product behavior.

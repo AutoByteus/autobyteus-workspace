@@ -4,18 +4,18 @@
 
 - Review Round: `1`
 - Trigger: Successful API/E2E round `API-REV-001` at `96.6%` final confidence, with one durable lifecycle integration renamed and expanded.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/requirements.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/solution-revision-record.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/architecture-review-revision-record.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/implementation-revision-record.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/code-review-revision-record.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/requirements.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/design-spec.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/solution-revision-record.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/architecture-review-revision-record.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/implementation-revision-record.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-revision-record.md` (`API-REV-001`)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/api-e2e-revision-record.md` (`API-REV-001`)
 - Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A`
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `96.6%`
@@ -27,8 +27,8 @@ Temporary execution logs, generated setup outputs, and the live test run are evi
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts` | `Added` as the renamed/replacement path and expanded | `API-SC-001`, `API-SC-002`; `BEH-001`-`BEH-003`; `AC-001`-`AC-003`, `AC-005`-`AC-007` | Joins native Codex notifications through real thread/backend/AgentRun/wire/frontend owners, and for retry continuation also observes the current JSONL recorder. | Contains two related lifecycle cases: retry-diagnostic continuation/persistence and retained stale-A/active-B containment. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/tests/integration/codex-stale-turn-boundary-projection.integration.test.ts` | `Removed` | `API-SC-002`; `AC-005`, `AC-006` | Replaced by the broader lifecycle-oriented file above. | `durable-coverage.diff` confirms the scenario and assertions were retained rather than deleted. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts` | `Added` as the renamed/replacement path and expanded | `API-SC-001`, `API-SC-002`; `BEH-001`-`BEH-003`; `AC-001`-`AC-003`, `AC-005`-`AC-007` | Joins native Codex notifications through real thread/backend/AgentRun/wire/frontend owners, and for retry continuation also observes the current JSONL recorder. | Contains two related lifecycle cases: retry-diagnostic continuation/persistence and retained stale-A/active-B containment. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/tests/integration/codex-stale-turn-boundary-projection.integration.test.ts` | `Removed` | `API-SC-002`; `AC-005`, `AC-006` | Replaced by the broader lifecycle-oriented file above. | `durable-coverage.diff` confirms the scenario and assertions were retained rather than deleted. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
@@ -52,7 +52,7 @@ None.
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts`; removed/replaced `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/tests/integration/codex-stale-turn-boundary-projection.integration.test.ts`
+- Changed durable test paths reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts`; removed/replaced `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/tests/integration/codex-stale-turn-boundary-projection.integration.test.ts`
 - Unresolved finding IDs: None.
 - Recommended Recipient: `/delivery_engineer`
 - Notes: Proportional review is limited to API/E2E-owned durable test code. The passed implementation source report and scorecard remain unchanged. The renamed integration is coherent, deterministic, requirement-linked, and consistent with the successful `API-REV-001` evidence.
