@@ -63,6 +63,27 @@ payload for audit, but supported cache/reasoning/context fields must not be
 raw-only because the ledger, GraphQL summaries, and token meter store consume
 the canonical fields.
 
+## Retryable Error And Stale Turn Boundary Policy
+
+Native Codex `error` notifications use the App Server `willRetry` field as the
+turn-lifecycle authority. When `willRetry === true` and a turn can be resolved,
+the notification becomes
+`ERROR { error_scope: "turn", error_effect: "diagnostic", turn_id }`. It remains
+visible, but the same turn stays active and running. The converter must not end
+that turn's open reasoning block, clear its ordered-tool correlation, discard
+pending MCP call data, or reject later same-turn reasoning, tool, assistant,
+usage, and completion events. Codex owns the actual retry and transport
+fallback; AutoByteus does not resubmit the user command.
+
+A matching `willRetry: false` notification remains terminal. It fails and
+clears only the exact active turn, closes only that turn's open reasoning,
+clears its pending tool correlation, and emits the canonical turn-terminal
+error. An explicitly identified terminal error, failed status, or completion
+for an older turn is suppressed when a different turn is active, so the stale
+boundary cannot settle or corrupt the newer turn. Runtime-scoped failures still
+close all live turn state. A missing or non-boolean `willRetry` value never
+opts into diagnostic behavior.
+
 ## Apply-Patch / Edit-File Spine
 
 For Codex `apply_patch`, the authoritative mutation spine is the raw `fileChange` item lifecycle, not the `custom_tool_call` completion.
@@ -313,13 +334,16 @@ content-bearing identity is not abandoned.
 Boundary handling is semantic rather than based on converter fall-through:
 
 - close the turn-scoped block for user/text transcript items, turn completion,
-  and tool starts/requests or result-first lifecycle events that create a new
-  ordered card, emitting the reasoning end before the boundary output;
+  matching turn-terminal errors, and tool starts/requests or result-first
+  lifecycle events that create a new ordered card, emitting the reasoning end
+  before the boundary output;
 - preserve the active block for matching results, approvals, statuses, logs,
   and completions that update an already-positioned tool card;
 - close every cached content-bearing block in deterministic insertion order for
-  turn start and terminal runtime error, or when a boundary has no usable turn
-  id, emitting all reasoning ends before the boundary output;
+  turn start, terminal runtime error, or when a terminal boundary has no usable
+  turn id, emitting all reasoning ends before the boundary output;
+- preserve every active block and ordered-tool correlation across an exact
+  turn-scoped retry diagnostic; and
 - preserve the active block across provider compaction, status, token-usage,
   plan/task-progress, ignored/unsupported, and other non-transcript maintenance
   notifications; and
@@ -372,15 +396,16 @@ Forbidden downstream effect:
 ## Raw Event Audit Table
 
 Unless a row explicitly says the reasoning block is preserved, a user/text,
-first ordered-tool creation, result-first tool creation, turn, or terminal-error
-boundary prefixes its listed output with the applicable status-neutral
-`SEGMENT_END(reasoning)` event(s). Matching updates to an already-created tool
-card do not receive that prefix.
+first ordered-tool creation, result-first tool creation, turn, or applicable
+terminal-error boundary prefixes its listed output with the applicable
+status-neutral `SEGMENT_END(reasoning)` event(s). Matching updates to an
+already-created tool card and turn-scoped retry diagnostics do not receive that
+prefix.
 
 | Raw Method | Raw Shape / Guard | Normalized Output | Owner | Decision |
 | --- | --- | --- | --- | --- |
 | `turn/started` | turn lifecycle start | close every active content-bearing reasoning block with ordered `SEGMENT_END(reasoning)` events, then `TURN_STARTED(turnId)` and projected `AGENT_STATUS { status: "running", can_interrupt }` | `codex-turn-event-converter.ts` | Keep |
-| `turn/completed` | turn lifecycle end | close the turn-scoped reasoning block with `SEGMENT_END(reasoning)`, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle", can_interrupt: false }` | `codex-turn-event-converter.ts` | Keep |
+| `turn/completed` | turn lifecycle end | when it matches the active turn, close the turn-scoped reasoning block with `SEGMENT_END(reasoning)`, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle", can_interrupt: false }`; suppress an explicitly identified stale completion while a different turn is active | `codex-thread-notification-handler.ts`, `codex-turn-event-converter.ts` | Keep; exact stale boundaries have no state or emission effect |
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED(run_bash)` with exact stable item `command` and `cwd` arguments when present | `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Keep; projection only, with no command execution or fabricated CWD |
@@ -414,10 +439,13 @@ card do not receive that prefix.
 | `rawResponseItem/completed` | `item.type = context_compaction` or `item.type = compaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.raw_response_compaction_item, status=compacted, rotation_eligible=true)` | `codex-raw-response-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as completed provider-boundary marker/rotation signal; de-dupe with current item lifecycle and deprecated thread surfaces |
 | `rawResponseItem/completed` | `item.type = compaction_trigger` | none | `codex-raw-response-event-converter.ts` | Keep ignored for storage; trigger is not a completed boundary |
 | `thread/started` | thread lifecycle start | none | `codex-thread-lifecycle-event-converter.ts` | Keep as explicit no-op |
-| `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status, can_interrupt }` | `codex-thread-lifecycle-event-converter.ts` | Keep |
+| `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status, can_interrupt }`; a matching failed/error status is converted to a turn-terminal `ERROR`, while an explicitly identified stale failed/error status is suppressed when a different turn is active | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep; stale terminal status cannot settle the active turn |
 | `thread/tokenUsage/updated` | token accounting update | Codex thread-state side effect; `CodexAgentRunBackend` emits ready `TOKEN_USAGE_UPDATED` from the thread snapshot with scoped/idempotent usage metadata | `codex-thread-notification-handler.ts`, `codex-thread-token-usage.ts`, `codex-agent-run-backend.ts` | Keep as thread-owned token state; do not parse raw usage in higher layers |
 | `thread/compacted` | provider-owned context compaction boundary | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.thread_compacted, rotation_eligible=true)` | `codex-thread-lifecycle-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as storage-only marker/rotation boundary; not semantic compaction |
-| `error` | runtime error payload | close every active content-bearing reasoning block with ordered status-neutral `SEGMENT_END(reasoning)` events, then projected error `AGENT_STATUS` and `ERROR` | `codex-thread-lifecycle-event-converter.ts` | Keep |
+| `error` | native turn error with `willRetry === true` and a resolved turn | `ERROR { error_scope: "turn", error_effect: "diagnostic", turn_id }`; preserve active turn/status, reasoning, ordered-tool state, and pending MCP correlation | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as visible non-terminal diagnostic; Codex owns retry and later same-turn events remain admissible |
+| `error` | native turn error with `willRetry: false` (or otherwise not `true`) for the matching active turn | close only that turn's reasoning with status-neutral `SEGMENT_END(reasoning)`, clear matching turn/tool state, then emit `ERROR { error_scope: "turn", error_effect: "terminal", turn_id }` and project error lifecycle | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as exact turn-terminal boundary |
+| `error` | explicitly identified terminal error for an older turn while a different turn is active | none | `codex-thread-notification-handler.ts` | Suppress; do not mutate or emit against the newer active turn |
+| `error` | runtime-scoped terminal or unclassified error without turn-diagnostic authority | close every active content-bearing reasoning block with ordered status-neutral `SEGMENT_END(reasoning)` events, clear global ordered-tool state, then emit `ERROR` and project applicable error lifecycle | `codex-thread-lifecycle-event-converter.ts` | Keep as global/fail-safe boundary |
 
 ## Legacy / Removed Raw-Name Assumptions
 
@@ -479,6 +507,12 @@ Output shape:
   current or future support seam.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Emit and persist ready `TOKEN_USAGE_UPDATED` events from the thread/backend boundary, preserving `per_turn` versus `cumulative_snapshot` scope, instead of parsing raw token payloads or summing totals in higher runtime layers. Promote supported Codex cache/reasoning/context fields (`cachedInputTokens`, `reasoningOutputTokens`, `modelContextWindow`) into canonical token-usage fields before ledger enrichment, including `gross_includes_cache` input semantics, `cache_read_input_tokens`, `reasoning_output_tokens`, `latest_prompt_tokens`, and `effective_context_window_tokens`.
 - Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy transition-field transport.
+- Treat native Codex `error.willRetry === true` as a visible turn diagnostic,
+  never as permission to clear or reopen a turn. Preserve exact turn identity,
+  reasoning, ordered-tool and pending MCP correlation, and admit the provider's
+  later same-turn output without resubmission. Treat matching non-retryable
+  errors as exact turn-terminal boundaries, and suppress explicitly stale
+  terminal error/status/completion boundaries while a newer turn is active.
 - Treat provider/session compaction signals as storage-only boundary metadata: non-rotating in-progress provenance for Codex `contextCompaction` starts, marker append plus eligible segmented archive rotation for completed provider boundaries, and no marker/rotation for `compaction_trigger`. Never treat provider compaction as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.
 - Do not infer `edit_file` success from published-artifact transport on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.

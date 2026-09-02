@@ -24,7 +24,7 @@ Reference images:
 
 - Project Type (`Git`/`Non-Git`): `Git` monorepo
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect`
 - Current Branch: `codex/codex-runtime-event-stream-reconnect`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect`
 - Bootstrap Base Branch: `origin/personal` at `5fb16658e7bd2aefd750f99eb596a17382e161ac` (`docs(delivery): record v1.4.66 release completion`)
@@ -39,7 +39,7 @@ Reference images:
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/runtime-evidence.md` | Durable production evidence supplement | Exact run/turn identity, retry and completion timeline, AutoByteus trace divergence, installed Codex protocol, and localized fault chain | Requirements, investigation notes, design spec | `REQ-001`, `REQ-002`, `REQ-003`; `AC-001`, `AC-002`, `AC-003` | `Complete` | `N/A` — evidence only | Keep aligned and include in all downstream handoffs |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/runtime-evidence.md` | Durable production evidence supplement | Exact run/turn identity, retry and completion timeline, AutoByteus trace divergence, installed Codex protocol, and localized fault chain | Requirements, investigation notes, design spec | `REQ-001`, `REQ-002`, `REQ-003`; `AC-001`, `AC-002`, `AC-003` | `Complete` | `N/A` — evidence only | Keep aligned and include in all downstream handoffs |
 
 ## Source Log
 

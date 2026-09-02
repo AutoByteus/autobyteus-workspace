@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Preserve retry diagnostics and contain stale turn boundaries
 
-- Triggering role, report path, and round: Architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/design-review-report.md`; `ARCH-REV-003`.
+- Triggering role, report path, and round: Architecture reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/done/codex-runtime-event-stream-reconnect/design-review-report.md`; `ARCH-REV-003`.
 - Triggering finding IDs: `N/A` — this is the initial implementation baseline; `AR-F-001` and `AR-F-002` were resolved in the reviewed solution package.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

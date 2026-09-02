@@ -1,0 +1,18 @@
+# Packaged Electron Isolated Launch Smoke — macOS ARM64
+
+Started: 2026-09-02T21:15:15+02:00
+Command: env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+
+> autobyteus@1.4.66 test:e2e:electron /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web
+> node scripts/run-electron-e2e.mjs --skip-build --adapter direct --executable /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+{"type":"electron-e2e-ready","executablePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus","port":62684,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-h56R2g","ownsDataRoot":true,"clientBaseUrl":"http://127.0.0.1:62684","healthUrl":"http://127.0.0.1:62684/rest/health"}
+
+Finished: 2026-09-02T21:15:18+02:00
+Exit code: 0
+
+## Post-launch cleanup verification
+PASS isolated data root removed: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-h56R2g
+PASS no listener remains on owned port: 62684
+Launch smoke cleanup result: PASS

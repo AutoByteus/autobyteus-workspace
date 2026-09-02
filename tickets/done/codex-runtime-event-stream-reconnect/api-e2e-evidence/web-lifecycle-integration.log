@@ -1,0 +1,24 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web
+
+stderr | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (2 tests) 63ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  18:13:03
+   Duration  8.69s (transform 5.10s, setup 4.30s, collect 3.85s, tests 63ms, environment 133ms, prepare 119ms)
