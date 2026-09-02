@@ -1,0 +1,265 @@
+--- a/autobyteus-web/tests/integration/codex-stale-turn-boundary-projection.integration.test.ts
++++ b/autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+@@ -1,4 +1,7 @@
+-import { beforeEach, describe, expect, it, vi } from 'vitest';
++import fs from 'node:fs/promises';
++import os from 'node:os';
++import path from 'node:path';
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+ import { createPinia, setActivePinia } from 'pinia';
+ import { AgentContext } from '~/types/agent/AgentContext';
+ import { AgentRunState } from '~/types/agent/AgentRunState';
+@@ -17,7 +20,10 @@
+ import { CodexThreadEventName } from '../../../autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-name.js';
+ import { RuntimeKind } from '../../../autobyteus-server-ts/src/runtime-management/runtime-kind-enum.js';
+ import { AgentRunEventMessageMapper } from '../../../autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.js';
++import { AgentRunMemoryRecorder } from '../../../autobyteus-server-ts/src/agent-memory/services/agent-run-memory-recorder.js';
+ 
++const tempDirs = new Set<string>();
++
+ const waitFor = async (predicate: () => boolean, timeoutMs = 2_000): Promise<void> => {
+   const startedAt = Date.now();
+   while (!predicate()) {
+@@ -46,8 +52,8 @@
+   messages: [],
+ }));
+ 
+-const createNativeToProjectionHarness = () => {
+-  const runId = 'run-codex-stale-boundary';
++const createNativeToProjectionHarness = (memoryDir?: string) => {
++  const runId = 'run-codex-turn-lifecycle';
+   const runContext = new AgentRunContext({
+     runId,
+     config: new AgentRunConfig({
+@@ -55,7 +61,8 @@
+       agentDefinitionId: 'codex-agent',
+       llmModelIdentifier: 'gpt-5.6-sol',
+       autoExecuteTools: true,
+-      workspaceId: '/tmp/codex-stale-boundary',
++      workspaceId: '/tmp/codex-turn-lifecycle',
++      ...(memoryDir ? { memoryDir } : {}),
+       llmConfig: null,
+       skillAccessMode: 'NONE' as never,
+       memberTeamContext: null,
+@@ -64,7 +71,7 @@
+       threadId: 'thread-1',
+       codexThreadConfig: {
+         model: 'gpt-5.6-sol',
+-        workingDirectory: '/tmp/codex-stale-boundary',
++        workingDirectory: '/tmp/codex-turn-lifecycle',
+         reasoningEffort: 'medium',
+         serviceTier: null,
+         approvalPolicy: CodexApprovalPolicy.NEVER,
+@@ -113,8 +120,211 @@
+   return { thread, run, projectionContext, canonicalEvents, wireMessages };
+ };
+ 
+-describe('Codex stale turn boundary native-to-live projection', () => {
++const readJsonl = async (filePath: string): Promise<Record<string, unknown>[]> =>
++  (await fs.readFile(filePath, 'utf8'))
++    .split('\n')
++    .map((line) => line.trim())
++    .filter(Boolean)
++    .map((line) => JSON.parse(line) as Record<string, unknown>);
++
++afterEach(async () => {
++  await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
++  tempDirs.clear();
++});
++
++describe('Codex turn lifecycle native-to-live projection', () => {
+   beforeEach(() => setActivePinia(createPinia()));
++
++  it('keeps one active response and persists later same-turn work across a retry diagnostic', async () => {
++    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'codex-retry-projection-memory-'));
++    tempDirs.add(memoryDir);
++    const {
++      thread,
++      run,
++      projectionContext,
++      canonicalEvents,
++      wireMessages,
++    } = createNativeToProjectionHarness(memoryDir);
++    const memoryRecorder = new AgentRunMemoryRecorder();
++    const detachMemoryRecorder = memoryRecorder.attachToRun(run);
++
++    try {
++      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
++        threadId: 'thread-1',
++        turn: { id: 'turn-retry' },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_STARTED, {
++        turnId: 'turn-retry',
++        item: {
++          id: 'tool-retry',
++          type: 'commandExecution',
++          command: 'pwd',
++          status: 'inProgress',
++        },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, {
++        turnId: 'turn-retry',
++        item: {
++          id: 'reasoning-before-retry',
++          type: 'reasoning',
++          summary: [{ text: 'reasoning before retry' }],
++        },
++      });
++      await waitFor(() => wireMessages.some((message) =>
++        message.type === 'TOOL_EXECUTION_STARTED' &&
++        message.payload.invocation_id === 'tool-retry'
++      ));
++
++      thread.handleAppServerNotification(CodexThreadEventName.ERROR, {
++        threadId: 'thread-1',
++        turnId: 'turn-retry',
++        willRetry: true,
++        error: {
++          code: 'STREAM_DISCONNECTED',
++          message: 'Reconnecting... 1/5',
++        },
++      });
++      await waitFor(() => wireMessages.some((message) =>
++        message.type === 'ERROR' &&
++        message.payload.error_effect === 'diagnostic'
++      ));
++
++      const activeMessage = projectionContext.conversation.messages.find(
++        (message) => message.type === 'ai',
++      );
++      const activeTool = activeMessage?.type === 'ai'
++        ? activeMessage.segments.find((segment) =>
++          'invocationId' in segment && segment.invocationId === 'tool-retry'
++        ) as ToolInvocationLifecycle | undefined
++        : undefined;
++      expect(thread.activeTurnId).toBe('turn-retry');
++      expect(run.getStatusSnapshot().status).toBe('running');
++      expect(canonicalEvents).toContainEqual(expect.objectContaining({
++        eventType: AgentRunEventType.ERROR,
++        statusHint: null,
++        payload: expect.objectContaining({
++          code: 'STREAM_DISCONNECTED',
++          error_scope: 'turn',
++          error_effect: 'diagnostic',
++          turn_id: 'turn-retry',
++        }),
++      }));
++      expect(wireMessages).toContainEqual(expect.objectContaining({
++        type: 'ERROR',
++        payload: expect.objectContaining({
++          code: 'STREAM_DISCONNECTED',
++          error_scope: 'turn',
++          error_effect: 'diagnostic',
++          turn_id: 'turn-retry',
++        }),
++      }));
++      expect(canonicalEvents.some((event) =>
++        event.eventType === AgentRunEventType.SEGMENT_END &&
++        event.payload.turn_id === 'turn-retry'
++      )).toBe(false);
++      expect(projectionContext.conversation.messages.filter((message) => message.type === 'ai'))
++        .toHaveLength(1);
++      expect(activeMessage).toMatchObject({ isComplete: false });
++      expect(activeTool).toMatchObject({ status: 'executing', error: null });
++      expect(activeMessage?.type === 'ai'
++        ? activeMessage.segments.some((segment) =>
++          segment.type === 'error' &&
++          segment.code === 'STREAM_DISCONNECTED' &&
++          segment.message === 'Reconnecting... 1/5'
++        )
++        : false).toBe(true);
++
++      thread.handleAppServerNotification(CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED, {
++        turnId: 'turn-retry',
++        item: {
++          type: 'functionCallOutput',
++          call_id: 'tool-retry',
++          output: '/tmp/codex-retry\n',
++        },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, {
++        turnId: 'turn-retry',
++        item: {
++          id: 'tool-retry',
++          type: 'commandExecution',
++          command: 'pwd',
++          status: 'completed',
++          aggregatedOutput: '/tmp/codex-retry\n',
++        },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, {
++        turnId: 'turn-retry',
++        item: {
++          id: 'reasoning-after-retry',
++          type: 'reasoning',
++          summary: [{ text: 'reasoning after retry' }],
++        },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_STARTED, {
++        turnId: 'turn-retry',
++        item: { id: 'message-after-retry', type: 'agentMessage' },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
++        turnId: 'turn-retry',
++        itemId: 'message-after-retry',
++        delta: 'final response after retry',
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, {
++        turnId: 'turn-retry',
++        item: { id: 'message-after-retry', type: 'agentMessage' },
++      });
++      thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
++        threadId: 'thread-1',
++        turn: { id: 'turn-retry' },
++      });
++
++      await waitFor(() => wireMessages.some((message) =>
++        message.type === 'TURN_COMPLETED' && message.payload.turn_id === 'turn-retry'
++      ));
++      await memoryRecorder.waitForIdle(run.runId);
++
++      const finalMessages = projectionContext.conversation.messages.filter(
++        (message) => message.type === 'ai',
++      );
++      expect(finalMessages).toHaveLength(1);
++      expect(finalMessages[0]).toMatchObject({ isComplete: true });
++      expect(projectionContext.state.currentStatus).toBe('idle');
++      expect(activeTool).toMatchObject({ status: 'success', error: null });
++      expect(finalMessages[0]?.type === 'ai'
++        ? finalMessages[0].segments.some((segment) =>
++          segment.type === 'text' && segment.content === 'final response after retry'
++        )
++        : false).toBe(true);
++
++      const traces = await readJsonl(path.join(memoryDir, 'raw_traces_active.jsonl'));
++      expect(traces).toEqual(expect.arrayContaining([
++        expect.objectContaining({
++          trace_type: 'reasoning',
++          turn_id: 'turn-retry',
++          content: expect.stringContaining('reasoning after retry'),
++        }),
++        expect.objectContaining({
++          trace_type: 'tool_call',
++          turn_id: 'turn-retry',
++          tool_call_id: 'tool-retry',
++          tool_name: 'run_bash',
++        }),
++        expect.objectContaining({
++          trace_type: 'tool_result',
++          turn_id: 'turn-retry',
++          tool_call_id: 'tool-retry',
++        }),
++        expect.objectContaining({
++          trace_type: 'assistant',
++          turn_id: 'turn-retry',
++          content: 'final response after retry',
++        }),
++      ]));
++    } finally {
++      await memoryRecorder.waitForIdle(run.runId);
++      detachMemoryRecorder();
++    }
++  });
+ 
+   it('keeps one active B response through late terminal and completion facts for A', async () => {
+     const {

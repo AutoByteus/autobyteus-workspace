@@ -231,6 +231,14 @@ export const createCodexThreadEventHarness = (
     get convertedEventCount() {
       return convertedEvents.length;
     },
+    emitRuntimeError(code: string, message: string): AgentRunEvent[] {
+      const batchStart = convertedBatches.length;
+      thread.emitRuntimeError(code, message);
+      return convertedBatches
+        .slice(batchStart)
+        .filter((batch) => batch.method === CodexThreadEventName.ERROR)
+        .flatMap((batch) => batch.events);
+    },
     emitThroughThread(input: ThreadEventInput): AgentRunEvent[] {
       if (input.method === CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED) {
         return emitLocalMcpCompletion(input.params);

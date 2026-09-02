@@ -1,0 +1,19 @@
+# Post-acceptance target refresh and release preflight
+timestamp_utc=2026-09-02T19:30:45Z
+user_acceptance=its working. lets finalize and release a new version
++ git fetch origin personal --tags
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+HEAD=fb65f564f65a56daf520216aff4403337e18b7c0
+origin/personal=5fb16658e7bd2aefd750f99eb596a17382e161ac
+bootstrap_base=5fb16658e7bd2aefd750f99eb596a17382e161ac
+ticket_vs_origin_personal(left=target_only right=ticket_only)=0	1
+web_version=1.4.66
+message_gateway_version=1.4.66
+latest_version_tag=voice-runtime-v0.1.1
+local_v1.4.67_present=no
+remote_v1.4.67_present=no
+working_branch=codex/codex-runtime-event-stream-reconnect
+result=PASS: target unchanged; no renewed verification required; v1.4.67 is the next available stable patch.
+latest_stable_workspace_tag=v2026.02.26-personal-desktop-e2e.3
+latest_semver_release_tag=v1.4.66

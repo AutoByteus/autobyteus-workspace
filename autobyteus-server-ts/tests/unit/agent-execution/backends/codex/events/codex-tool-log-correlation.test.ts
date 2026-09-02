@@ -63,6 +63,57 @@ const emitRawToolOutput = (
 });
 
 describe("Codex TOOL_LOG correlation", () => {
+  it("retains exact tool identity across a retry diagnostic", () => {
+    const harness = createCodexThreadEventHarness("run-retry-tool-log");
+    const started = emitMcpStarted(
+      harness,
+      "turn-retry",
+      "call-retry",
+      "delegate_task",
+    );
+
+    const diagnostic = harness.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        turnId: "turn-retry",
+        willRetry: true,
+        error: { code: "STREAM_DISCONNECTED", message: "Reconnecting... 2/5" },
+      },
+    });
+    const rawOutput = emitRawToolOutput(harness, {
+      turnId: "turn-retry",
+      item: {
+        type: "functionCallOutput",
+        call_id: "call-retry",
+        output: "continued after retry",
+      },
+    });
+
+    expectStrictTeamAdmission([...started, ...diagnostic, ...rawOutput]);
+    expect(diagnostic).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.ERROR,
+        statusHint: null,
+        payload: expect.objectContaining({
+          error_scope: "turn",
+          error_effect: "diagnostic",
+          turn_id: "turn-retry",
+        }),
+      }),
+    ]);
+    expect(rawOutput).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOOL_LOG,
+        payload: expect.objectContaining({
+          turnId: "turn-retry",
+          tool_invocation_id: "call-retry",
+          tool_name: "delegate_task",
+          log_entry: "continued after retry",
+        }),
+      }),
+    ]);
+  });
+
   it("correlates started/local-completed/raw output and admits it through the strict Team boundary", () => {
     const harness = createCodexThreadEventHarness("run-codex-tool-log");
     const started = emitMcpStarted(harness);
