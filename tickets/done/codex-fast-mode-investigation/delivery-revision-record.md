@@ -9,6 +9,7 @@
 | `DR-003` | `API-REV-003` Pass / 98.7% plus `CRR-004` Not Applicable | `DR-002` held / Round 3 pending | Browser-validation hold lifted; docs reconfirmed; updated handoff ready for explicit user verification; finalization held | `api-e2e-execution-coverage-report.md`; `api-e2e-test-review-report.md`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/dr-003-round3-return-handoff.log` |
 | `DR-004` | User message “finalize and release”; mandatory post-acceptance target refresh | `DR-003` ready / finalization held | User verified; accepted state protected; six new base commits integrated and checked; archive/finalization plus stable v1.4.65 release authorized and in progress | `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `release-notes.md`; `delivery-evidence/dr-004-post-acceptance-*.log` |
 | `DR-005` | Completion of archived ticket push and merge/push to `personal` | `DR-004` finalization/release in progress | Repository finalized on `personal`; stable v1.4.65 release pending | `handoff-summary.md`; `release-deployment-report.md`; `docs-sync-report.md`; `delivery-evidence/dr-005-repository-finalization.log` |
+| `DR-006` | Stable `v1.4.65` release, rollout verification, and safe ticket cleanup | `DR-005` repository finalized / release pending | Stable release published; all five workflows passed; outputs verified; ticket worktree and branches removed | `handoff-summary.md`; `release-deployment-report.md`; `docs-sync-report.md`; `release-notes.md`; `delivery-evidence/release-v1.4.65-*.log`; `delivery-evidence/dr-006-post-finalization-cleanup.log` |
 
 ## Revision Entries
 
@@ -114,3 +115,36 @@
 - Why this delivery revision was recorded: Establish exact repository finalization and remote ancestry before version/tag/publication work.
 - Next recipient/action: Delivery runs `pnpm release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md`, verifies all tag-triggered workflows and published outputs, then performs safe cleanup.
 - Remaining blockers, rollback concerns, or untested scope: No repository blocker. Release infrastructure remains to execute. Do not manually dispatch a second release for the fresh tag unless recovery is actually required.
+
+
+### DR-006 — Stable v1.4.65 released, verified, and cleaned up
+
+- Date: 2026-09-02
+- Delivery round and trigger: Completion of the user-authorized stable release after DR-005 repository finalization.
+- Triggering upstream report, verification, or evidence: Explicit user instruction “finalize and release”; `DR-005`; release helper output; five tag-triggered workflow results; registry/release verification.
+- Prior authoritative result: `DR-005 Pass — repository finalized on personal; stable v1.4.65 release pending.`
+- Current authoritative result: `Pass — stable v1.4.65 is published from the exact release commit, every tag-triggered workflow passed, outputs were independently verified, and safe ticket cleanup completed.`
+- Release execution:
+  - ran `pnpm release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md` in a clean isolated checkout;
+  - bumped `autobyteus-web` and `autobyteus-message-gateway` from `1.4.64` to `1.4.65`;
+  - synchronized curated notes and the managed messaging manifest to `v1.4.65`;
+  - created/pushed release commit `754860d8e4a9b29454728f9dab861ba805e1c3c6` and annotated tag `v1.4.65` (tag object `2ef9f30dd85f6384726b1ac4c49398d690749626`);
+  - published https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.65 as a stable, non-draft release with 21 assets and the curated body.
+- Workflow verification: All five workflows completed successfully against exact SHA `754860d8e4a9b29454728f9dab861ba805e1c3c6`:
+  - iOS App Store Connect Release `33587668322` — build/test and TestFlight upload passed; `1.4.65 (127)`; delivery UUID `13d36e7b-06f0-4f98-b56f-3a814a7a3abd`;
+  - Desktop Release `33587668323` — all five desktop architecture/OS builds and GitHub publication passed;
+  - Server Docker Release `33587668343` — default linux/amd64 + linux/arm64 image published;
+  - Release Messaging Gateway `33587668325` — runtime archive/metadata/checksum published;
+  - Android APK Release `33587668332` — APK/checksum published.
+- Registry verification: `autobyteus/autobyteus-server:1.4.65` and `:latest` both resolve to multi-arch digest `sha256:b8650d626573ec1b603e22cca9e4010023c99832bea72136c58df44750a0947d`; amd64 manifest `sha256:bcf560077ccf520e3168eb96683c7bec5a526d9b0c044e2bbaaa0747283e3201`; arm64 manifest `sha256:d15902abe73b4c5edb75890fa2e24cacfa22214593fee4fc65e97a70646b0d1b`.
+- Documentation result: The synchronized README and Codex integration guide remain accurate; release/publication adds no new long-lived behavior-doc impact. Ticket release records and evidence were updated.
+- Cleanup result:
+  - confirmed the archived ticket commit is an ancestor of remote `personal` and the stable tag/target are durable;
+  - removed `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation`;
+  - removed local and remote `codex/codex-fast-mode-investigation`;
+  - pruned the worktree registration;
+  - deliberately left the user's dirty/stale primary `personal` worktree untouched.
+- Evidence: `delivery-evidence/release-v1.4.65-command.log`; `delivery-evidence/release-v1.4.65-workflow-monitor.log`; `delivery-evidence/release-v1.4.65-verification.log`; `delivery-evidence/dr-006-post-finalization-cleanup.log`.
+- Why this delivery revision was recorded: Establish a terminal authoritative delivery result rather than inferring release/deployment success from the release commit or a missing record, and preserve exact publication, rollout, registry, iOS-boundary, and cleanup evidence.
+- Next recipient/action: None. Normal monitoring only. A published stable tag must not be rewritten; any corrective change requires a later patch release.
+- Remaining blockers, rollback concerns, or untested scope: No delivery blocker remains. The iOS workflow uploads to App Store Connect/TestFlight but does not submit for final App Store review/public release. Round 1 full live-enabled server suite remains non-clean (`63` failed files / `177` failed tests) for unrelated/stale debt, and generic server typecheck remains unusable due the pre-existing `TS6059` configuration mismatch. Neither is relabeled as clean or attributed to this change.

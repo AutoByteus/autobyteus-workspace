@@ -3,8 +3,8 @@
 ## Scope
 
 - Ticket: `codex-fast-mode-investigation`
-- Current delivery revision: `DR-005`
-- Trigger: `CRR-003` cumulative delivery handoff after implementation-source Pass and proportional durable test-code Pass for API/E2E `API-REV-002`
+- Current delivery revision: `DR-006`
+- Trigger: Initial `CRR-003` delivery handoff, followed by `API-REV-003`, explicit user acceptance, repository finalization, and stable `v1.4.65` release
 - Bootstrap base reference: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`
 - Integrated base reference used for docs sync: `origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284`, integrated at ticket HEAD `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`
 - Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-004-post-acceptance-normalizer.log`; API/E2E authority remains `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md` (`API-REV-003`, Pass / 98.7%)
@@ -52,16 +52,20 @@ No public API, database schema, persisted record format, UI surface, packaging p
 
 ## Verification
 
-- Fresh Delivery refreshes left `origin/personal` unchanged at `773bce779f195c22194c6bed1b242be6e222d06e`; it is already an ancestor of reviewed/API-E2E-tested HEAD `06bcb57cf365ebc6ba12aef4ba4472e091fcd066` with divergence `3 ahead / 0 behind`.
-- No merge or post-refresh duplicate executable rerun was required because no new base commit entered the validated state. `API-REV-003` validates the exact unchanged source/test HEAD through the requested real browser journey; Delivery changed only documentation and ticket-local artifacts.
-- `git diff --check`, integrated ancestry, no-unmerged-path, durable doc assertion, deprecated production/live-projection absence, cumulative-artifact presence, Round 2/3 evidence presence, Round 3 cleanup, and residual-health-statement checks passed.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-001-integration-docs-handoff.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-003-round3-return-handoff.log`.
+- Post-acceptance base integration is authoritative: `origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284` was merged at `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5` after checkpoint `c91749e089ddd9658231eafb351918c22922e914`.
+- The six new base commits had no ticket-path overlap or material user-facing effect; shared-package preparation and the focused normalizer suite passed `1` file / `10` tests.
+- API/E2E `API-REV-003` remains the browser/runtime authority at `98.7%`, including real package import, Daily Assistant, Codex Fast selection, exact response, persisted/runtime correlation, WebSocket/publication, and cleanup.
+- Archived ticket commit `b463101fba3b546c478086d4a19a98e761aacd8f`, target merge `e1a1422b0306bd0f0fa98cc0a0de71637d97c904`, and release commit/tag target `754860d8e4a9b29454728f9dab861ba805e1c3c6` retain the synchronized long-lived docs.
+- Stable publication did not change the behavior contract or require an additional long-lived docs edit. Release records and curated notes were updated instead.
+- Release `v1.4.65`, 21 assets, five successful tag workflows, App Store Connect/TestFlight upload, and the versioned/latest multi-arch Docker digest were verified.
+- `git diff --check` and release evidence checks passed before the terminal record commit.
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next delivery action: User verification and release authorization are complete. Archive the ticket, finalize the ticket branch and `personal`, publish stable `v1.4.65` with the documented release helper, verify rollout outputs, and perform safe cleanup.
-- Notes: The Round 1 full live-enabled server command remains non-clean (`63` failed files / `177` failed tests) for broad unrelated/stale repository debt, while the exact changed-boundary catalog test passed inside that run and focused runs. The generic server typecheck remains unusable because of the pre-existing `rootDir=src` plus included-tests `TS6059` mismatch. Neither condition is relabeled as clean or attributed to this change.
+- Result: `Pass — terminal`
+- Final outcome: Stable `v1.4.65` is published and verified; the ticket is archived; the dedicated ticket worktree and local/remote ticket branches are removed.
+- Additional docs impact at release: `None`. Versioning, assets, Docker publication, and TestFlight upload are accurately recorded in ticket release artifacts and do not alter the long-lived Fast behavior contract.
+- Notes: The Round 1 full live-enabled server command remains non-clean (`63` failed files / `177` failed tests) for broad unrelated/stale repository debt, while the exact changed-boundary catalog test passed. Generic server typecheck remains unusable due the pre-existing `rootDir=src` plus included-tests `TS6059` mismatch. Neither is relabeled as clean or attributed to this change.
 
 ## Blocked Or Escalated Follow-Up
 
@@ -94,3 +98,11 @@ No public API, database schema, persisted record format, UI surface, packaging p
 - Archived ticket commit `b463101fba3b546c478086d4a19a98e761aacd8f` and target merge `e1a1422b0306bd0f0fa98cc0a0de71637d97c904` contain the same synchronized README and Codex integration documentation.
 - Repository finalization changed placement/integration state only; it did not change capability discovery, stored/runtime Fast behavior, UI ownership, persistence, or packaging.
 - Result: `Pass — no additional long-lived documentation edit required before the authorized stable release.`
+
+
+## DR-006 Stable Release And Cleanup Check
+
+- Release helper synchronized package versions, managed messaging manifest, and curated release notes at commit `754860d8e4a9b29454728f9dab861ba805e1c3c6`, then created/pushed annotated tag `v1.4.65`.
+- All five tag-triggered release workflows passed. The GitHub release is stable and contains 21 assets; App Store Connect/TestFlight upload passed; the versioned and latest multi-arch server images share verified digest `sha256:b8650d626573ec1b603e22cca9e4010023c99832bea72136c58df44750a0947d`.
+- These publication outputs do not change provider `priority` discovery, AutoByteus `fast` persistence/runtime, generic UI ownership, or migration posture.
+- Result: `Pass — no additional long-lived documentation edit required; terminal release and cleanup records are authoritative.`

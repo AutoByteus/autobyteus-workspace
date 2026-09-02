@@ -1,0 +1,17 @@
+Stable release workflow monitor — v1.4.65
+Observed: 2026-09-02 Europe/Berlin
+Release commit/tag target: 754860d8e4a9b29454728f9dab861ba805e1c3c6
+
+PASS  iOS App Store Connect Release   run 33587668322
+      https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668322
+PASS  Desktop Release                run 33587668323
+      https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668323
+PASS  Server Docker Release          run 33587668343
+      https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668343
+PASS  Release Messaging Gateway      run 33587668325
+      https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668325
+PASS  Android APK Release            run 33587668332
+      https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668332
+
+All five tag-triggered workflows completed successfully against exact head SHA
+754860d8e4a9b29454728f9dab861ba805e1c3c6. No recovery dispatch was used.

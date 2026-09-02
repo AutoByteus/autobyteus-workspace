@@ -2,143 +2,137 @@
 
 ## Release / Publication / Deployment Scope
 
-The user explicitly verified the DR-003 browser result and requested finalization plus release. Current scope is repository finalization followed by the documented stable `v1.4.65` release, its five tag-triggered workflows, published output verification, and safe cleanup.
+The user explicitly accepted the completed real-browser result and instructed Delivery to “finalize and release.” Scope included latest-base reintegration, archival and target merge, stable patch release `v1.4.65`, all five tag-triggered publication/deployment workflows, output verification, and safe ticket cleanup.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-revision-record.md`
-- Current delivery revision ID: `DR-005`
-- Notes: Repository finalization is complete on `personal`; stable `v1.4.65` release is authorized and pending.
+- Handoff summary: `tickets/done/codex-fast-mode-investigation/handoff-summary.md`
+- Delivery revision record: `tickets/done/codex-fast-mode-investigation/delivery-revision-record.md`
+- Current delivery revision: `DR-006`
+- Status: `Released and verified`
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`
-- Latest tracked remote base reference checked: `origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284`
-- Base advanced since bootstrap or previous refresh: `Yes — six commits after DR-003 acceptance`
-- New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint commit result: `Completed — c91749e089ddd9658231eafb351918c22922e914`
-- Integration method: `Merge`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `Yes`
-- Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): `N/A — new base commits were integrated and the focused normalizer suite passed 1 file / 10 tests.`
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): `N/A`
-- Evidence: accepted-state checkpoint `c91749e089ddd9658231eafb351918c22922e914`; integration merge `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-004-post-acceptance-prepare-shared.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-004-post-acceptance-normalizer.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-004-post-acceptance-cleanup.log`
+- Bootstrap base: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`
+- Post-acceptance tracked base: `origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284`
+- Accepted-state checkpoint: `c91749e089ddd9658231eafb351918c22922e914`
+- Integration method/result: merged latest base without conflict as `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`
+- Changed-path overlap: none with ticket implementation, durable test, README, or Codex integration docs
+- Post-integration check: shared-package preparation passed; focused Codex normalizer passed `1` file / `10` tests
+- Renewed user verification: not required because the six base commits were unrelated, had no effective-path overlap, and the focused check passed
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `Yes`
-- Initial verification / acceptance reference: `2026-09-02 user message — “finalize and release” after DR-003 browser result`
-- Renewed verification required after later re-integration: `No — six new base commits have no ticket-path overlap or material user-facing effect; focused integration check passed`
-- Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: DR-004 integration assessment and focused `10/10` evidence
+- Explicit user completion/verification: `Yes`
+- Reference: `2026-09-02 — “finalize and release”`, after `API-REV-003 Pass / 98.7%`
+- Additional requested real-browser validation: completed before acceptance
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated: `autobyteus-server-ts/docs/modules/codex_integration.md`; root `README.md`
-- No-impact rationale (if applicable): `N/A`
+- Result: `Updated and verified`
+- Updated: `autobyteus-server-ts/docs/modules/codex_integration.md`; `README.md`
+- Release-stage impact: `No additional long-lived docs edit`. Versioning/publication changed release records only; the documented behavior remains accurate.
+- Artifact: `tickets/done/codex-fast-mode-investigation/docs-sync-report.md`
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation`
+- Moved to `tickets/done/codex-fast-mode-investigation`: `Yes`
+- Archived ticket commit: `b463101fba3b546c478086d4a19a98e761aacd8f`
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Authorized — 1.4.64 -> 1.4.65; pending repository finalization`
-- Tag: `Authorized — v1.4.65; confirmed absent locally/remotely before finalization`
-- Release commit: `Pending documented release helper`
+- Version bump: `1.4.64 -> 1.4.65` in `autobyteus-web` and `autobyteus-message-gateway`
+- Managed messaging manifest: synchronized to `v1.4.65` / artifact `1.4.65`
+- Release commit: `754860d8e4a9b29454728f9dab861ba805e1c3c6`
+- Annotated tag: `v1.4.65`; tag object `2ef9f30dd85f6384726b1ac4c49398d690749626`; peeled target `754860d8e4a9b29454728f9dab861ba805e1c3c6`
+- Remote `personal` at release publication: `754860d8e4a9b29454728f9dab861ba805e1c3c6`
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/investigation-notes.md`
 - Ticket branch: `codex/codex-fast-mode-investigation`
-- Ticket branch commit result: `Completed — archived ticket commit b463101fba3b546c478086d4a19a98e761aacd8f`
-- Ticket branch push result: `Completed — origin/codex/codex-fast-mode-investigation at b463101fba3b546c478086d4a19a98e761aacd8f`
-- Finalization target remote: `origin`
-- Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `Yes — 6 commits, to bed4c05a1c7860c7bd392c61dd7d26c239598284`
-- Delivery-owned edits protected before re-integration: `Completed — c91749e089ddd9658231eafb351918c22922e914`
-- Re-integration before final merge result: `Completed — a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5; focused 10/10 Pass`
-- Target branch update result: `Completed — refreshed origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284 before merge`
-- Merge into target result: `Completed — e1a1422b0306bd0f0fa98cc0a0de71637d97c904`
-- Push target branch result: `Completed — origin/personal advanced to e1a1422b0306bd0f0fa98cc0a0de71637d97c904`
-- Repository finalization status: `Completed`
-- Blocker (if applicable): `N/A`
+- Ticket push: completed at `b463101fba3b546c478086d4a19a98e761aacd8f`
+- Finalization target: `origin/personal`
+- Target merge: `e1a1422b0306bd0f0fa98cc0a0de71637d97c904`
+- Target push: completed before release
+- Release execution used a clean isolated checkout because the user's primary `personal` worktree was dirty/stale and was intentionally not modified.
+- Result: `Completed`
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
-- Method: `Release Script`
-- Method reference / command: `pnpm release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md`
-- Release/publication/deployment result: `Blocked — authorized stable release is the next operation`
-- Release notes handoff result: `Used — archived artifact ready for the release helper`
-- Blocker (if applicable): Ordered release operation pending; no technical blocker.
+- Method: `pnpm release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md`
+- Result: `Pass`
+- Stable release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.65
+- Published: `2026-09-02T03:39:23Z`
+- Draft/prerelease: `false / false`
+- Curated body: matches archived notes, ignoring one terminal newline
+- Assets: `21`
+- Recovery/manual second dispatch: `None`
+
+### Workflow Results
+
+| Workflow | Run | Result | Verified output |
+| --- | --- | --- | --- |
+| iOS App Store Connect Release | [33587668322](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668322) | `Pass` | Build/test and App Store Connect/TestFlight upload; `1.4.65 (127)`; delivery UUID `13d36e7b-06f0-4f98-b56f-3a814a7a3abd` |
+| Desktop Release | [33587668323](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668323) | `Pass` | Windows, macOS x64/arm64, Linux x64/arm64; GitHub release publication |
+| Server Docker Release | [33587668343](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668343) | `Pass` | Default linux/amd64 + linux/arm64 image; version and latest tags |
+| Release Messaging Gateway | [33587668325](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668325) | `Pass` | Archive, metadata, checksum |
+| Android APK Release | [33587668332](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33587668332) | `Pass` | APK and checksum |
+
+All workflows used exact head SHA `754860d8e4a9b29454728f9dab861ba805e1c3c6`.
+
+### Server Docker Verification
+
+- Image tags: `autobyteus/autobyteus-server:1.4.65`; `autobyteus/autobyteus-server:latest`
+- Both registry tags resolve to: `sha256:b8650d626573ec1b603e22cca9e4010023c99832bea72136c58df44750a0947d`
+- linux/amd64: `sha256:bcf560077ccf520e3168eb96683c7bec5a526d9b0c044e2bbaaa0747283e3201`
+- linux/arm64: `sha256:d15902abe73b4c5edb75890fa2e24cacfa22214593fee4fc65e97a70646b0d1b`
+- Registry verification: `docker buildx imagetools inspect` passed for both versioned and latest tags
+- `zh` variant: not part of the tag-triggered default release; its conditional workflow step was skipped by design
+
+### iOS Publication Boundary
+
+The IPA upload to App Store Connect/TestFlight completed with “UPLOAD SUCCEEDED with no errors.” This workflow does not submit the build for App Store review or make it publicly available in the App Store; that remains a separate product-release action.
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation`
-- Worktree cleanup result: `Blocked — repository finalization and release are still in progress`
-- Worktree prune result: `Blocked — repository finalization and release are still in progress`
-- Local ticket branch cleanup result: `Blocked — repository finalization and release are still in progress`
-- Remote branch cleanup result: `Not required` at DR-003; no ticket branch was pushed by Delivery
-- Blocker (if applicable): Repository finalization and the authorized release must complete before cleanup is safe.
-
-## Escalation / Reroute
-
-`N/A — no technical blocker, upstream defect, or unresolved review finding remains.`
-
-## Release Notes Summary
-
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/release-notes.md`
-- Archived release notes artifact used for release/publication: `Pending DR-004 archive and stable release`
-- Release notes status: `Updated`
-
-## Deployment Steps
-
-The documented stable tag path will trigger Desktop, Android APK, iOS, messaging-gateway, and server Docker workflows. No manual second dispatch will be used after the fresh tag.
+- Dedicated ticket worktree: `Removed`
+- Local ticket branch: `Removed`
+- Remote ticket branch: `Removed` after confirming it was an ancestor of remote `personal`
+- Worktree registration: `Pruned`
+- Stable target/tag/release retained: `Verified`
+- Primary dirty/stale `personal` worktree: `Untouched`; pre-existing `package.json`, `.article-work/`, and generated application-dist changes were not modified
+- Evidence: `tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-006-post-finalization-cleanup.log`
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: `Directly Usable — No Migration`
-- Delivery action required: `None`
-- Result and evidence: Existing `llmConfig.service_tier: "fast"` remains canonical and covered by focused runtime tests and prior real-run evidence. Provider catalog rows are runtime-derived. No schema, rewrite, backfill, discard/rebuild, downtime, or recovery step is required.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: `N/A`
+- Approved result: `Directly Usable — No Migration`
+- Action: `None`
+- Existing `llmConfig.service_tier: "fast"` remains canonical. No schema rewrite, backfill, downtime, or recovery step is required.
 
-## Verification Checks
+## Verification Evidence
 
-- Fresh `git fetch origin --prune`: passed; base unchanged.
-- Integrated ancestry/divergence: passed; `origin/personal` is an ancestor, `3 ahead / 0 behind`.
-- Reviewed/API-E2E source/test HEAD unchanged: passed at `06bcb57cf365ebc6ba12aef4ba4472e091fcd066`.
-- `git diff --check`: passed.
-- Durable documentation contract assertions: passed.
-- Deprecated production/live-test projection absence: passed.
-- Cumulative package and Round 2 focused live evidence presence: passed.
-- API/E2E authority: Pass / 98.7%; focused real Codex 0.152.0 catalog scenario executed unskipped and passed `1/1`, and the real-browser Daily Assistant Fast journey passed end to end.
-- Residual truthfulness: the full live-enabled server suite remains non-clean (`63` failed files / `177` failed tests), and the generic typecheck remains blocked by the pre-existing `TS6059` configuration mismatch. Neither is attributed to or relabeled by this ticket.
+- `tickets/done/codex-fast-mode-investigation/delivery-evidence/release-v1.4.65-command.log`
+- `tickets/done/codex-fast-mode-investigation/delivery-evidence/release-v1.4.65-workflow-monitor.log`
+- `tickets/done/codex-fast-mode-investigation/delivery-evidence/release-v1.4.65-verification.log`
+- `tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-006-post-finalization-cleanup.log`
 
-### DR-002 / DR-003 Real-Browser Validation
+## Residual Repository Health
 
-- Investigation recorded before startup: `Yes`.
-- Planned path: isolated `pnpm dev` stack -> Settings package import from `/Users/normy/autobyteus_org/autobyteus-agents` -> Daily Assistant -> Codex Fast selection -> real browser turn -> persisted/runtime audit -> owned-state cleanup.
-- Current authoritative execution result: `API-REV-003 Pass / 98.7%`; exact response `LIVE_FAST_BROWSER_OK`, Idle completion, persisted/runtime `service_tier: "fast"`, WebSocket/publication correlation, and owned-state cleanup passed.
-- Proportional review result: `CRR-004 Not Applicable`; no Round 3 source, fixture, or repository-resident durable test changed. `CRR-003` remains the passed review for historical durable test edits.
-- Delivery decision: DR-003 is ready for explicit user verification but does not authorize archival, push/merge, release, deployment, or cleanup before acceptance.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-002-round3-hold.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-003-round3-return-handoff.log`.
+- Round 1's full live-enabled server suite remains non-clean: `63` failed files / `177` failed tests. The exact changed-boundary catalog file passed in that run and focused runs; the broad failures are unrelated/stale debt and are not relabeled as clean or attributed to this change.
+- Generic server package typecheck remains unusable due the pre-existing `rootDir=src` plus included-tests `TS6059` mismatch. The production build passed; generic typecheck is not claimed clean.
 
 ## Rollback Criteria
 
-- Before repository finalization: discard the Delivery-owned documentation/artifact edits or stop using the ticket worktree; no remote or target state has changed.
-- After a future target merge: revert the ticket's implementation/docs merge if structured `priority` catalogs stop exposing the existing Fast control, existing stored `fast` configurations regress, reasoning behavior changes, or an unauthorized runtime/header UI appears.
-- Do not restore deprecated dual-read fallback automatically. A provider-contract change requires a new investigated/approved change.
-- No data rollback or migration rollback is expected because no persisted data is transformed.
+- A published stable tag must not be rewritten. If rollback becomes necessary, revert the ticket merge on `personal`, restore deployment state as appropriate, and publish a later patch release.
+- Trigger rollback only for a confirmed regression such as structured `priority` catalogs no longer exposing Fast, persisted `fast` becoming unusable, reasoning semantics changing, or unauthorized runtime/header UI appearing.
+- Do not restore deprecated dual-read fallback automatically; any provider-contract change requires a new investigated change.
+- No data rollback is expected because no persisted data was transformed.
+
+## Escalation / Reroute
+
+`N/A — no technical blocker, deployment-local issue, upstream defect, or unresolved review finding remains.`
 
 ## Final Status
 
-`Pass — repository finalized on personal; stable v1.4.65 release authorized and pending.`
+`Pass — repository finalization, stable v1.4.65 publication, rollout verification, archival, and safe ticket cleanup completed.`

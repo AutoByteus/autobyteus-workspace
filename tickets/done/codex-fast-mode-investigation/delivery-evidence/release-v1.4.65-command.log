@@ -1,0 +1,38 @@
+command: pnpm release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md
+timestamp=2026-09-02T03:36:11Z
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-release-20260902-0524
+> bash scripts/desktop-release.sh release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.64 -> 1.4.65
+Updating autobyteus-message-gateway/package.json: 1.4.64 -> 1.4.65
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.65
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-release-20260902-0524/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.65[0m
+[32mServer version: 0.1.1[0m
+[personal 754860d8e] chore(release): bump workspace release version to 1.4.65
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 12 insertions(+), 16 deletions(-)
+remote:
+remote: GitHub found 828 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 357 high, 383 moderate, 68 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   e6822d70d..754860d8e  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.65 -> v1.4.65
+Release complete and pushed: branch 'personal', tag 'v1.4.65'.
+exit_status=0

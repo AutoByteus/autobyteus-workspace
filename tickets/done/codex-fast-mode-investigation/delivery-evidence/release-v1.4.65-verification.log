@@ -1,0 +1,42 @@
+Stable release verification — v1.4.65
+Observed: 2026-09-02 Europe/Berlin
+
+Repository and tag
+- origin/personal: 754860d8e4a9b29454728f9dab861ba805e1c3c6
+- annotated tag object: 2ef9f30dd85f6384726b1ac4c49398d690749626
+- tag peeled commit: 754860d8e4a9b29454728f9dab861ba805e1c3c6
+- release commit: 754860d8e4a9b29454728f9dab861ba805e1c3c6
+
+Version/manifest
+- autobyteus-web/package.json: 1.4.65
+- autobyteus-message-gateway/package.json: 1.4.65
+- managed messaging manifest releaseTag/artifactVersion and URLs: v1.4.65 / 1.4.65
+
+GitHub release
+- URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.65
+- stable: yes (draft=false, prerelease=false)
+- publishedAt: 2026-09-02T03:39:23Z
+- targetCommitish: 754860d8e4a9b29454728f9dab861ba805e1c3c6
+- assets: 21
+- release body: matches archived curated notes; only a terminal newline differs
+
+Server Docker
+- tags: autobyteus/autobyteus-server:1.4.65 and :latest
+- version digest: sha256:b8650d626573ec1b603e22cca9e4010023c99832bea72136c58df44750a0947d
+- latest digest:  sha256:b8650d626573ec1b603e22cca9e4010023c99832bea72136c58df44750a0947d
+- linux/amd64 manifest: sha256:bcf560077ccf520e3168eb96683c7bec5a526d9b0c044e2bbaaa0747283e3201
+- linux/arm64 manifest: sha256:d15902abe73b4c5edb75890fa2e24cacfa22214593fee4fc65e97a70646b0d1b
+- registry verification: docker buildx imagetools inspect passed for both tags
+- zh image: not in scope for a tag-triggered default release; workflow step skipped by design
+
+iOS
+- App Store Connect/TestFlight upload: UPLOAD SUCCEEDED with no errors
+- iOS marketing/build: 1.4.65 (127)
+- Delivery UUID: 13d36e7b-06f0-4f98-b56f-3a814a7a3abd
+- Scope: uploaded to App Store Connect/TestFlight; not submitted for App Store review/public release
+
+Other outputs
+- Desktop workflow published Windows, macOS x64/arm64, and Linux x64/arm64 outputs.
+- Android workflow published APK and checksum.
+- Messaging-gateway workflow published archive, metadata, and checksum.
+- GitHub release contains 21 total assets.

@@ -1,0 +1,41 @@
+DR-006 post-finalization cleanup
+UTC 2026-09-02T04:13:05Z
+
+Preconditions:
+release_tag_commit=754860d8e4a9b29454728f9dab861ba805e1c3c6
+remote_personal=754860d8e4a9b29454728f9dab861ba805e1c3c6
+ticket_commit=b463101fba3b546c478086d4a19a98e761aacd8f
+ticket_is_ancestor_of_remote_personal=yes
+ticket_worktree_clean=yes
+
+Primary personal worktree intentionally preserved:
+## personal...origin/personal [behind 63]
+ M package.json
+?? .article-work/
+?? applications/brief-studio/dist/
+?? applications/socratic-math-teacher/dist/
+
+Removing dedicated ticket worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+ticket_worktree_removed=yes
+
+Deleting local ticket branch: codex/codex-fast-mode-investigation
+Deleted branch codex/codex-fast-mode-investigation (was b463101fb).
+local_ticket_branch_removed=yes
+
+Deleting remote ticket branch: origin/codex/codex-fast-mode-investigation
+remote_ticket_branch_removed=yes
+
+Pruning registered worktrees:
+worktree_registration_removed=yes
+
+Remote retained authorities:
+754860d8e4a9b29454728f9dab861ba805e1c3c6	refs/heads/personal
+2ef9f30dd85f6384726b1ac4c49398d690749626	refs/tags/v1.4.65
+754860d8e4a9b29454728f9dab861ba805e1c3c6	refs/tags/v1.4.65^{}
+
+Primary personal worktree after cleanup (intentionally unchanged):
+## personal...origin/personal [behind 63]
+ M package.json
+?? .article-work/
+?? applications/brief-studio/dist/
+?? applications/socratic-math-teacher/dist/
