@@ -88,6 +88,8 @@ describe("member collaboration instruction provider parity", () => {
 
     expect(expected).toBe(expectedInstruction("/StudentStudyGroup/student_one"));
     for (const prompt of [providerSharedPrompt, nativeAutoByteusPrompt]) {
+      const normalizedPrompt = prompt.replace(/\s+/g, " ");
+
       expect(prompt).toContain(expected);
       expect(occurrences(prompt, expected)).toBe(1);
       expect(occurrences(prompt, "## AgentTeam Addressing")).toBe(1);
@@ -113,6 +115,14 @@ describe("member collaboration instruction provider parity", () => {
       expect(prompt).toContain("Never use both to deliver\nthe same work.");
       expect(prompt).toContain("genuinely new clarification");
       expect(prompt).toContain("It is not an alias for the newly spawned task execution.");
+      expect(prompt).toContain(
+        "Select the single rule whose `when` condition most specifically applies",
+      );
+      expect(prompt).toContain(
+        "Do not notify additional recipients for the same outcome.",
+      );
+      expect(normalizedPrompt).not.toContain("Apply every matching rule");
+      expect(normalizedPrompt).not.toContain("follow distinct recipients");
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(providerSharedPrompt).not.toContain("## Bash Operating Practice");

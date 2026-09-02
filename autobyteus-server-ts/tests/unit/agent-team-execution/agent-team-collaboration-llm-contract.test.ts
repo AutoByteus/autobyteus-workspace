@@ -14,6 +14,9 @@ import {
 const sha256 = (value: string): string =>
   createHash("sha256").update(value, "utf8").digest("hex");
 
+const APPROVED_SINGLE_RECIPIENT_HANDOFF_PARAGRAPH =
+  "When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.";
+
 describe("approved AgentTeam collaboration LLM contract", () => {
   it("pins the exact approved prompt, tool descriptions, and field descriptions", () => {
     expect({
@@ -33,7 +36,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateRecipient: "5a7dae3f8f1c6d0ac490282440af382887ca2a90a91993f07360e5696cc080fd",
       delegateDescription: "36c2f6b7bf5d8cab0b50024ccb0af343709ab94e38ee4b2657b64af1a6f84db3",
       delegateReferences: "2041ac773cd01e078ab457db50cfd561cdfe8839d835cc172a875b540726582b",
-      collaborationPrompt: "aee05d80b6b135a28d8bece23cea12a039f7605f328e930aaf44438b9d9cc4ad",
+      collaborationPrompt: "1c63e9fea21d2edb3a8ce46cc4843f9eecde53b97938d2f87ff1213764349976",
     });
   });
 
@@ -60,5 +63,18 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       "The delegator uses `review_task_result`",
     );
     expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).not.toMatch(/REQ-|DEC-|TODO|TBD/);
+  });
+
+  it("encodes SCN-001 as one most-specific rule and at most one recipient", () => {
+    const ruleBasedHandoffParagraph = AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION
+      .split("### Rule-Based Handoffs\n\n")[1]
+      ?.split("\n\nDo not claim that a message")[0];
+
+    expect(ruleBasedHandoffParagraph).toBe(
+      APPROVED_SINGLE_RECIPIENT_HANDOFF_PARAGRAPH,
+    );
+    expect(ruleBasedHandoffParagraph).not.toContain("Apply every matching rule");
+    expect(ruleBasedHandoffParagraph).not.toContain("follow distinct recipients");
+    expect(ruleBasedHandoffParagraph).not.toContain("Combine applicable reasons");
   });
 });
