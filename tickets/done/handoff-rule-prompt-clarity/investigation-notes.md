@@ -131,7 +131,7 @@ N/A — not applicable.
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md` | Requirements Engineer | Requirements-round history. | Entire package. | All | Current | Part of approval basis. |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md` | Requirements Engineer | Requirements-round history. | Entire package. | All | Current | Part of approval basis. |
 
 ## Assumptions, Unknowns, And Risks
 

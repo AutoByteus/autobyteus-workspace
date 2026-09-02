@@ -125,8 +125,8 @@
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md` | Canonical evidence base. | All | Current | Approved with requirements package. |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md` | Requirements-round history. | All | Current | Approved with requirements package. |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md` | Canonical evidence base. | All | Current | Approved with requirements package. |
+| `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md` | Requirements-round history. | All | Current | Approved with requirements package. |
 
 ## Assumptions
 
@@ -181,7 +181,7 @@
 - Structural surfaces reviewed: Shared collaboration instruction constant, Team-member instruction renderer, provider prompt composition parity, prompt-contract tests, durable prompt documentation.
 - Payload/content surfaces reviewed: Exact fixed prompt paragraph, semantic test assertions, pinned prompt hash, documentation wording.
 - Structural-impact triggers: `None`
-- Evidence paths: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md` and the source/test/doc paths recorded there.
+- Evidence paths: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md` and the source/test/doc paths recorded there.
 - Decision rationale: The approved change replaces fixed prompt content and directly affected verification/documentation within existing shared surfaces. It changes no API/external contract, persistence schema/invariant, security/privacy boundary, concurrency/lifecycle behavior, deployment topology, subsystem ownership, migration, architectural pattern, or structural code organization.
 - Selected route: `Implementation Engineer`
 - Outcome classification: `Approved Direct-Implementation`

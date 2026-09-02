@@ -6,7 +6,7 @@
 - Trigger: Direct low-risk `API-REV-001` Pass at 98% confidence; 3 files / 10 focused tests passed and every critical acceptance criterion was directly proven.
 - Bootstrap base reference: `personal@773bce779f195c22194c6bed1b242be6e222d06e`
 - Integrated base reference used for docs sync: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`; ticket `HEAD@4d4ae1b7b7f84fa4ae0ce6dc2f7b5c47cceaef56`
-- Post-integration verification reference: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/delivery-evidence/dr-001-initial-base-refresh.txt`; no new base commit existed, so `API-REV-001` remains executable authority for the exact integrated `HEAD`.
+- Post-integration verification reference: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/handoff-rule-prompt-clarity/delivery-evidence/dr-001-initial-base-refresh.txt`; no new base commit existed, so `API-REV-001` remains executable authority for the exact integrated `HEAD`.
 
 ## Why Docs Were Updated
 
@@ -17,10 +17,10 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/autobyteus-server-ts/docs/modules/prompt_engineering.md` | Canonical source/composition description and example collaboration prompt. | `Updated` | Integrated candidate contains the exact approved paragraph and describes Agent-side selection/no fan-out. |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/autobyteus-server-ts/docs/modules/agent_team_execution.md` | Canonical Team execution/runtime composition description. | `Updated` | Integrated candidate records one most-specific rule and one recipient across supported providers. |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/autobyteus-server-ts/docs/modules/agent_communication.md` | Canonical `get_handoff_rules` service/tool result contract. | `No change` | Existing ordered possible-rule `{when, recipient_address}` contract remains accurate; no server-side evaluation or schema changed. |
-| `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/README.md` | Repository-wide run/release guidance. | `No change` | No setup, operator command, public API, deployment, or release procedure changed. |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docs/modules/prompt_engineering.md` | Canonical source/composition description and example collaboration prompt. | `Updated` | Integrated candidate contains the exact approved paragraph and describes Agent-side selection/no fan-out. |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docs/modules/agent_team_execution.md` | Canonical Team execution/runtime composition description. | `Updated` | Integrated candidate records one most-specific rule and one recipient across supported providers. |
+| `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/docs/modules/agent_communication.md` | Canonical `get_handoff_rules` service/tool result contract. | `No change` | Existing ordered possible-rule `{when, recipient_address}` contract remains accurate; no server-side evaluation or schema changed. |
+| `/home/autobyteus/workspace/autobyteus-workspace/README.md` | Repository-wide run/release guidance. | `No change` | No setup, operator command, public API, deployment, or release procedure changed. |
 
 ## Docs Updated
 

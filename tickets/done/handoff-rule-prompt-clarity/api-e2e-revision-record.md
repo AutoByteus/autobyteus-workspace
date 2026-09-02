@@ -12,7 +12,7 @@ The latest `api-e2e-coverage-investigation.md` and `api-e2e-execution-coverage-r
 
 ### API-REV-001 — Exact handoff-prompt validation baseline
 
-- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/implementation-handoff.md`; round 1.
+- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/handoff-rule-prompt-clarity/implementation-handoff.md`; round 1.
 - Triggering finding or scenario IDs: `SCN-001`; implementation baseline `IR-001`.
 - Related revision IDs: `RER-002`, `IR-001`; architecture-design, architecture-review, code-review, and delivery revisions `N/A`.
 - Why recorded: Establishes the initial independent executable validation result for direct Small/Low package `HRPC-2026-09-01`.
