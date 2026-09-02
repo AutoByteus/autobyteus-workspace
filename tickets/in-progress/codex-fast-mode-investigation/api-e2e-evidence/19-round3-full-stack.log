@@ -1,0 +1,303 @@
+Round: API/E2E Round 3
+Scenario: API-BROWSER-001 real full-stack browser journey
+Command: pnpm dev
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+Preflight time: 2026-09-02T02:46:29Z
+Pre-existing development root: absent
+Preflight port 8000: free
+Preflight port 3000: free
+
+
+> autobyteus-workspace@ dev /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+> pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 120ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../.autobyteus/development/server-data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/db/development.db"
+
+SQLite database development.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/db/development.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:31260) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Application package root path does not exist or is not a directory: /Users/normy/2026-07-18-hackathon-worktrees/evidence-desk-latest-platform-refresh/applications/evidence-desk/dist/importable-package
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-02T02:46:47.719Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-02T02:46:47.860Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Agent definition cache populated with 50 items.
+[2026-09-02T02:46:47.893Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+{"level":30,"time":1788317207899,"pid":31260,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53259"}
+{"level":30,"time":1788317207924,"pid":31260,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8000"}
+[2026-09-02T02:46:47.924Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8000
+[2026-09-02T02:46:47.925Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8000
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+> autobyteus@1.4.64 dev /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3000
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3000/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 36ms
+✔ Vite server built in 245ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[nitro] ✔ Nuxt Nitro server built in 2542ms
+ℹ Vite client warmed up in 1ms
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data
+ℹ ✨ new dependencies optimized: crypto-js/sha256, @iconify/vue, zod, @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: qrcode
+ℹ ✨ optimized dependencies changed. reloading
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 42 items.
+[2026-09-02T02:48:09.576Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T02:48:09.582Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 10 items.
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+[2026-09-02T02:48:32.987Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-02T02:48:33.014Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 31 items.
+ℹ ✨ new dependencies optimized: @xterm/xterm, @xterm/addon-fit, @novnc/novnc
+ℹ ✨ optimized dependencies changed. reloading
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+Created agent session 2da1db09-9cae-4037-99e3-101063e55549 for run daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+Agent WebSocket connected: session=2da1db09-9cae-4037-99e3-101063e55549, run=daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516'.
+Closed agent session 2da1db09-9cae-4037-99e3-101063e55549
+Agent WebSocket disconnected: 2da1db09-9cae-4037-99e3-101063e55549

@@ -1,0 +1,38 @@
+DR-001 delivery integration/docs/handoff evidence
+timestamp=2026-09-01T18:26:20Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+branch=codex/codex-fast-mode-investigation
+bootstrap_base=773bce779f195c22194c6bed1b242be6e222d06e
+reviewed_head=06bcb57cf365ebc6ba12aef4ba4472e091fcd066
+--- remote refresh ---
+before_origin_personal=773bce779f195c22194c6bed1b242be6e222d06e
+after_origin_personal=773bce779f195c22194c6bed1b242be6e222d06e
+origin_personal_unchanged_from_bootstrap=PASS
+--- integrated-state ancestry ---
+head=06bcb57cf365ebc6ba12aef4ba4472e091fcd066
+merge_base=773bce779f195c22194c6bed1b242be6e222d06e
+behind=0
+ahead=3
+tracked_base_is_ancestor=PASS
+reviewed_api_e2e_head_unchanged=PASS
+no_unmerged_paths=PASS
+integration_method=Already current
+new_base_commits_integrated=No
+post_integration_executable_rerun=No
+no_rerun_rationale=The freshly fetched base remained the bootstrap/validated base and was already an ancestor of reviewed HEAD; no new code entered the validated state.
+--- documentation and artifact hygiene ---
+git_diff_check=PASS
+durable_doc_contract_assertions=PASS
+deprecated_production_and_live_projection_absent=PASS
+required_cumulative_artifacts_present=PASS
+round2_focused_live_evidence_present=PASS
+--- residual repository health (not relabeled) ---
+residual_health_statements_present=PASS
+--- final delivery artifact readiness ---
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+delivery-revision-record.md=present
+release-notes.md=present
+final_delivery_artifact_assertions=PASS
+finalization_actions_before_user_verification=None

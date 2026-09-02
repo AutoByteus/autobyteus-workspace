@@ -1,0 +1,45 @@
+=== git diff --check ===
+=== deprecated production references ===
+none
+=== live parity deprecated references ===
+none
+=== current intentional repository references ===
+autobyteus-server-ts/docs/modules/codex_integration.md:200:- `additionalSpeedTiers` / `additional_speed_tiers` containing `fast` adds a
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts:146:      additionalSpeedTiers: ["fast"],
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts:150:      additional_speed_tiers: [" Fast "],
+=== changed diff ===
+diff --git a/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts b/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+index 91227ecde..f44c5a172 100644
+--- a/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+@@ -81,11 +81,12 @@ const toRawModelCapabilities = (rowValue: unknown): RawModelCapabilities | null
+     ),
+   );
+ 
+-  const additionalSpeedTiers =
+-    row["additionalSpeedTiers"] ?? row["additional_speed_tiers"];
+-  const advertisesFast = Array.isArray(additionalSpeedTiers)
+-    ? additionalSpeedTiers.some(
+-        (value) => asTrimmedString(value)?.toLowerCase() === "fast",
++  const serviceTiers = row["serviceTiers"];
++  const advertisesFast = Array.isArray(serviceTiers)
++    ? serviceTiers.some(
++        (value) =>
++          asTrimmedString(asObject(value)?.["id"])?.toLowerCase() ===
++          "priority",
+       )
+     : false;
+ 
+@@ -185,6 +186,7 @@ describeCodexModelCatalogIntegration(
+     it("preserves each live model's advertised reasoning sequence through catalog and GraphQL", async () => {
+       const rawModels = await collectRawModelCapabilities();
+       expect(rawModels.length).toBeGreaterThan(0);
++      expect(rawModels.some((model) => model.advertisesFast)).toBe(true);
+ 
+       const catalogModels = await new CodexModelCatalog().listModels();
+       expect(catalogModels.length).toBeGreaterThan(0);
+=== status ===
+ M autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/codex-fast-mode-investigation/

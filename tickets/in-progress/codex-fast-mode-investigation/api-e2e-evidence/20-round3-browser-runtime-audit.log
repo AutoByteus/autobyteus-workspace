@@ -1,0 +1,76 @@
+API-BROWSER-001 — Real browser / Daily Assistant / Codex Fast runtime audit
+Execution date: 2026-09-02 (Europe/Berlin)
+Result: PASS
+
+Environment
+- Project worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+- Canonical stack command: pnpm dev
+- Backend readiness: DEV_SERVER_READY http://127.0.0.1:8000
+- Frontend readiness: DEV_WEB_READY http://127.0.0.1:3000
+- Isolated data root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data
+- Browser tool: AutoByteus open_tab; tab id 758f2e; viewport 450x738
+
+Real browser journey
+1. Opened http://127.0.0.1:3000 in a real browser tab.
+2. Opened Settings > Agent Packages.
+3. The clean dev bootstrap had already registered the documented template package, so the browser journey first removed it and observed `Agent package removed.`.
+4. Entered and imported /Users/normy/autobyteus_org/autobyteus-agents through the Agent Packages UI and observed `Agent package imported.`.
+5. The imported package row reported Local Path, Shared Agents 8, Team-local Agents 54, Teams 15, and the exact source path.
+6. Opened Agents and selected Daily Assistant. Its card reported 18 tools and skill shell-first-operating-practice.
+7. Opened the Daily Assistant run workspace, selected runtime Codex App Server, model GPT-5.6-Sol, and Fast mode = fast.
+8. Browser-resident run configuration before launch was:
+   runtimeKind: codex_app_server
+   llmModelIdentifier: gpt-5.6-sol
+   workspaceId: temp_ws_default
+   llmConfig.service_tier: fast
+9. Started the agent and sent from the browser:
+   Reply with exactly LIVE_FAST_BROWSER_OK and nothing else.
+10. The browser rendered assistant response `LIVE_FAST_BROWSER_OK` and status `Idle`.
+11. Final bounded DOM audit at http://127.0.0.1:3000/workspace found Daily Assistant, Idle, one exact prompt occurrence, and the expected response marker.
+
+Cross-boundary/runtime corroboration
+- AutoByteus run id: daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+- Codex platform agent run id: 01a06008-ea44-7d81-b67f-cfda65cb9f1f
+- Runtime metadata persisted by the real backend records:
+  runtimeKind: codex_app_server
+  llmModelIdentifier: gpt-5.6-sol
+  llmConfig.service_tier: fast
+- Backend server log records WebSocket attach, session creation, WebSocket connection, and publication of the codex_app_server run for the same AutoByteus run id.
+- Raw runtime trace records the exact browser prompt and the assistant response `LIVE_FAST_BROWSER_OK` for turn 01a06008-eb64-7543-89de-44669c9e8ae5.
+- This evidence traverses the actual frontend, backend, WebSocket session, AutoByteus run persistence, and Codex App Server runtime; no mock transport or stubbed assistant response was used.
+
+Captured runtime metadata excerpt before isolated-state cleanup
+{
+  "runId": "daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516",
+  "agentDefinitionId": "daily-assistant",
+  "llmModelIdentifier": "gpt-5.6-sol",
+  "llmConfig": {
+    "service_tier": "fast"
+  },
+  "runtimeKind": "codex_app_server",
+  "platformAgentRunId": "01a06008-ea44-7d81-b67f-cfda65cb9f1f",
+  "preparedAt": "2026-09-02T02:53:11.530Z",
+  "startedAt": "2026-09-02T02:53:12.401Z"
+}
+
+Captured raw-trace excerpts before isolated-state cleanup
+{"turn_id":"01a06008-eb64-7543-89de-44669c9e8ae5","seq":1,"trace_type":"user","content":"Reply with exactly LIVE_FAST_BROWSER_OK and nothing else.","source_event":"AgentRun.postUserMessage"}
+{"turn_id":"01a06008-eb64-7543-89de-44669c9e8ae5","seq":2,"trace_type":"assistant","content":"LIVE_FAST_BROWSER_OK","source_event":"SEGMENT_END"}
+
+Captured backend lifecycle excerpts
+Agent websocket attached for run daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+Created agent session 2da1db09-9cae-4037-99e3-101063e55549 for run daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+Agent WebSocket connected: session=2da1db09-9cae-4037-99e3-101063e55549, run=daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516
+Published codex_app_server agent run 'daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516'.
+Closed agent session 2da1db09-9cae-4037-99e3-101063e55549
+Agent WebSocket disconnected: 2da1db09-9cae-4037-99e3-101063e55549
+
+Primary evidence
+- Full-stack lifecycle log: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/19-round3-full-stack.log
+- Runtime metadata (temporary isolated state, removed during cleanup): /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/memory/agents/daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516/run_metadata.json
+- Raw trace (temporary isolated state, removed during cleanup): /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development/server-data/memory/agents/daily_assistant_02fb5512fa2f4bf1bbecd2f7898d8516/raw_traces_active.jsonl
+- Package-import screenshot: /Users/normy/.autobyteus/browser-artifacts/758f2e-1788317331771.png
+- Completed live-run screenshot: /Users/normy/.autobyteus/browser-artifacts/758f2e-1788317606633.png
+
+Conclusion
+PASS. Daily Assistant was imported/configured through the real browser UI, launched against the live Codex App Server runtime with persisted service_tier=fast, and returned the exact expected live response.
