@@ -1,0 +1,9 @@
+$ node --check autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs
+$ git diff --check
+$ browser evidence assertions
+browser evidence: 11144 bytes; 4/4 scenarios Pass; cleanup complete
+$ owned process scan
+no owned browser/Nuxt process remains
+$ cleanup explicit server shared-package build output
+removed autobyteus-application-backend-sdk/dist
+removed autobyteus-application-sdk-contracts/dist

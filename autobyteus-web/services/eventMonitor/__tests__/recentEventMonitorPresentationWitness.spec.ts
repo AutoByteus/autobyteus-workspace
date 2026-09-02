@@ -114,7 +114,6 @@ describe('recent Event Monitor presentation witness', () => {
     ['thinking content', (items: any[]) => { aiSegments(items)[1].content = 'changed'; }],
     ['tool summary', (items: any[]) => { aiSegments(items)[2].arguments.query = 'forecast'; }],
     ['tool status', (items: any[]) => { aiSegments(items)[2].status = 'approved'; }],
-    ['tool error', (items: any[]) => { aiSegments(items)[2].error = 'visible error'; }],
     ['tool approval target', (items: any[]) => { aiSegments(items)[2].approvalTarget.agentRunId = 'member-run-b'; }],
     ['terminal command', (items: any[]) => { aiSegments(items)[3].command = 'ls'; }],
     ['write path', (items: any[]) => { aiSegments(items)[4].path = '/workspace/new.txt'; }],
@@ -148,6 +147,7 @@ describe('recent Event Monitor presentation witness', () => {
     const segments = aiSegments(afterItems);
     segments[2].logs.push('Activity-only log');
     segments[2].result = { output: 'Activity-only result' };
+    segments[2].error = 'Activity-only error';
     segments[2].rawContent = 'not rendered';
     segments[3].description = 'not rendered';
     segments[4].originalContent = 'not rendered';

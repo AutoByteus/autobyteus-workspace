@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.65 test:e2e:codex-command-failure-detail /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node tests/e2e/codex-command-failure-detail-probe.mjs -- --output-dir ../tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser
+
+Compact command failure browser probe passed. Evidence: /home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser/evidence.json

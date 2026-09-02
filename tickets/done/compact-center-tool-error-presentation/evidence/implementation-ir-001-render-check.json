@@ -1,0 +1,173 @@
+{
+  "result": "Pass",
+  "browserVersion": "149.0.7827.196",
+  "diagnostic": {
+    "characters": 348978,
+    "lines": 1915
+  },
+  "desktopGeometry": {
+    "documentClientWidth": 1280,
+    "documentScrollWidth": 1280,
+    "documentHeight": 900,
+    "centerCard": {
+      "x": 371,
+      "y": 236,
+      "width": 404.5,
+      "height": 38,
+      "top": 236,
+      "right": 775.5,
+      "bottom": 274,
+      "left": 371
+    },
+    "centerSurface": {
+      "x": 355,
+      "y": 184,
+      "width": 436.5,
+      "height": 279,
+      "top": 184,
+      "right": 791.5,
+      "bottom": 463,
+      "left": 355
+    },
+    "activitySurface": {
+      "x": 811.5,
+      "y": 184,
+      "width": 436.5,
+      "height": 279,
+      "top": 184,
+      "right": 1248,
+      "bottom": 463,
+      "left": 811.5
+    },
+    "followingEvent": {
+      "x": 371,
+      "y": 290,
+      "width": 404.5,
+      "height": 46,
+      "top": 290,
+      "right": 775.5,
+      "bottom": 336,
+      "left": 371
+    },
+    "followingActivity": {
+      "x": 827.5,
+      "y": 381,
+      "width": 404.5,
+      "height": 66,
+      "top": 381,
+      "right": 1232,
+      "bottom": 447,
+      "left": 827.5
+    }
+  },
+  "narrowGeometry": {
+    "documentClientWidth": 390,
+    "documentScrollWidth": 390,
+    "documentHeight": 844,
+    "centerCard": {
+      "x": 82,
+      "y": 288,
+      "width": 276,
+      "height": 38,
+      "top": 288,
+      "right": 358,
+      "bottom": 326,
+      "left": 82
+    },
+    "centerSurface": {
+      "x": 66,
+      "y": 236,
+      "width": 308,
+      "height": 188,
+      "top": 236,
+      "right": 374,
+      "bottom": 424,
+      "left": 66
+    },
+    "activitySurface": {
+      "x": 66,
+      "y": 444,
+      "width": 308,
+      "height": 279,
+      "top": 444,
+      "right": 374,
+      "bottom": 723,
+      "left": 66
+    },
+    "followingEvent": {
+      "x": 82,
+      "y": 342,
+      "width": 276,
+      "height": 66,
+      "top": 342,
+      "right": 358,
+      "bottom": 408,
+      "left": 82
+    },
+    "followingActivity": {
+      "x": 82,
+      "y": 641,
+      "width": 276,
+      "height": 66,
+      "top": 641,
+      "right": 358,
+      "bottom": 707,
+      "left": 82
+    }
+  },
+  "assertions": {
+    "centerHasNoErrorDom": true,
+    "centerHasNoDiagnosticText": true,
+    "activityDefaultCollapsed": true,
+    "highlightDidNotExpand": true,
+    "expansionPreservedCompleteError": true,
+    "collapseReopenPreservedContent": true,
+    "noDesktopOrNarrowHorizontalOverflow": true
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ]
+}

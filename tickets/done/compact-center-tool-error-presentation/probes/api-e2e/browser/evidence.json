@@ -1,0 +1,276 @@
+{
+  "startedAt": "2026-09-02T05:52:39.878Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/usr/bin/chromium",
+  "fixturePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/fixtures/codex-command-failure-detail.page.vue",
+  "installedPagePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/pages/__codex-command-failure-detail-probe.vue",
+  "routePath": "/__codex-command-failure-detail-probe",
+  "diagnostic": {
+    "length": 348978,
+    "lines": 1915
+  },
+  "scenarios": {
+    "AE2E-SCN-001": {
+      "result": "Pass",
+      "description": "Large failed center status is compact, red, contextual, diagnostic-free in DOM/accessibility text, and overflow-safe at desktop and narrow widths.",
+      "details": {
+        "centerText": "Center event monitor\n\nEvent before failure\n\nrun_bash\n· /bin/bash -lc 'rg evidence | head -1400; printf CODEX_FAILURE_STDERR_MARKER >&2; exit 23'\n\nEvent after failure remains reachable",
+        "centerAccessibility": "- article:\n  - heading \"Center event monitor\" [level=2]\n  - paragraph: Event before failure\n  - button \"run_bash · /bin/bash -lc 'rg evidence | head -1400; printf CODEX_FAILURE_STDERR_MARKER >&2; exit 23'\"\n  - paragraph: Event after failure remains reachable",
+        "desktopRowBox": {
+          "x": 371,
+          "y": 278,
+          "width": 404.5,
+          "height": 38
+        },
+        "narrowRowBox": {
+          "x": 82,
+          "y": 452,
+          "width": 276,
+          "height": 38
+        },
+        "viewport": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "desktopScreenshot": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser/desktop-collapsed-progressive-disclosure.png",
+        "narrowScreenshot": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser/narrow-collapsed-progressive-disclosure.png"
+      }
+    },
+    "AE2E-SCN-002": {
+      "result": "Pass",
+      "description": "Click, Enter, and Space navigate each standalone/team live/replay center row to the exact Activity item without auto-opening Error.",
+      "details": [
+        {
+          "mode": "standalone-live",
+          "interaction": "click",
+          "snapshot": {
+            "mode": "standalone-live",
+            "ready": true,
+            "activeRunId": "browser-standalone-command-failure",
+            "activeTab": "progress",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        },
+        {
+          "mode": "standalone-replay",
+          "interaction": "Enter",
+          "snapshot": {
+            "mode": "standalone-replay",
+            "ready": true,
+            "activeRunId": "browser-standalone-command-failure",
+            "activeTab": "progress",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        },
+        {
+          "mode": "team-live",
+          "interaction": "Space",
+          "snapshot": {
+            "mode": "team-live",
+            "ready": true,
+            "activeRunId": "browser-team-member-command-failure",
+            "activeTab": "progress",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        },
+        {
+          "mode": "team-replay",
+          "interaction": "click",
+          "snapshot": {
+            "mode": "team-replay",
+            "ready": true,
+            "activeRunId": "browser-team-member-command-failure",
+            "activeTab": "progress",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        }
+      ]
+    },
+    "AE2E-SCN-003": {
+      "result": "Pass",
+      "description": "Direct view and explicit highlight keep Activity outer details available while Error stays collapsed across standalone/team and live/replay store paths.",
+      "details": [
+        {
+          "mode": "standalone-live",
+          "accessibility": "- article:\n  - heading \"Activity panel\" [level=2]\n  - paragraph: Activity before failure\n  - text: \"run_bash #exec-c Failed Arguments Logs (1) Error\"\n  - paragraph: Activity after failure remains reachable",
+          "snapshot": {
+            "mode": "standalone-live",
+            "ready": true,
+            "activeRunId": "browser-standalone-command-failure",
+            "activeTab": "terminal",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        },
+        {
+          "mode": "standalone-replay",
+          "accessibility": "- article:\n  - heading \"Activity panel\" [level=2]\n  - paragraph: Activity before failure\n  - text: \"run_bash #exec-c Failed Arguments Logs (1) Error\"\n  - paragraph: Activity after failure remains reachable",
+          "snapshot": {
+            "mode": "standalone-replay",
+            "ready": true,
+            "activeRunId": "browser-standalone-command-failure",
+            "activeTab": "terminal",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        },
+        {
+          "mode": "team-live",
+          "accessibility": "- article:\n  - heading \"Activity panel\" [level=2]\n  - paragraph: Activity before failure\n  - text: \"run_bash #exec-c Failed Arguments Logs (1) Error\"\n  - paragraph: Activity after failure remains reachable",
+          "snapshot": {
+            "mode": "team-live",
+            "ready": true,
+            "activeRunId": "browser-team-member-command-failure",
+            "activeTab": "terminal",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        },
+        {
+          "mode": "team-replay",
+          "accessibility": "- article:\n  - heading \"Activity panel\" [level=2]\n  - paragraph: Activity before failure\n  - text: \"run_bash #exec-c Failed Arguments Logs (1) Error\"\n  - paragraph: Activity after failure remains reachable",
+          "snapshot": {
+            "mode": "team-replay",
+            "ready": true,
+            "activeRunId": "browser-team-member-command-failure",
+            "activeTab": "terminal",
+            "highlightedId": "exec-command-failure-browser",
+            "diagnosticLength": 348978,
+            "diagnosticLines": 1915,
+            "activityErrorLength": 348978,
+            "activityErrorLines": 1915,
+            "activityErrorMatches": true,
+            "activityStatus": "error",
+            "activityInvocationId": "exec-command-failure-browser"
+          }
+        }
+      ]
+    },
+    "AE2E-SCN-004": {
+      "result": "Pass",
+      "description": "Explicit Activity disclosure preserves the exact large multiline diagnostic through expand, collapse, and reopen in every context.",
+      "details": {
+        "observations": [
+          {
+            "mode": "standalone-live",
+            "length": 348978,
+            "lines": 1915
+          },
+          {
+            "mode": "standalone-replay",
+            "length": 348978,
+            "lines": 1915
+          },
+          {
+            "mode": "team-live",
+            "length": 348978,
+            "lines": 1915
+          },
+          {
+            "mode": "team-replay",
+            "length": 348978,
+            "lines": 1915
+          }
+        ],
+        "expandedScreenshot": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser/desktop-expanded-activity-detail.png"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 22558,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "fixture": "removed"
+  },
+  "port": 35025,
+  "baseUrl": "http://127.0.0.1:35025",
+  "browserVersion": "149.0.7827.196",
+  "result": "Pass",
+  "finishedAt": "2026-09-02T05:52:52.905Z",
+  "artifacts": {
+    "evidencePath": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser/evidence.json",
+    "nuxtLogPath": "/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/browser/nuxt.log"
+  }
+}

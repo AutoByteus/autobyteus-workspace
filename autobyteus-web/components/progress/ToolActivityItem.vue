@@ -96,7 +96,8 @@
 
         <!-- Error Section -->
         <div v-if="activity.error">
-           <div 
+          <div
+            data-test="tool-activity-error-toggle"
             class="flex items-center gap-1.5 mb-1.5 cursor-pointer hover:text-red-800 transition-colors"
             @click.stop="toggleSection('error')"
           >
@@ -106,7 +107,7 @@
             />
             <span class="text-xs font-semibold text-red-600">{{ $t('workspace.components.progress.ToolActivityItem.error') }}</span>
           </div>
-          <div v-show="sectionStates.error" class="pl-5">
+          <div v-show="sectionStates.error" data-test="tool-activity-error-body" class="pl-5">
              <div class="bg-red-50 border border-red-200 rounded p-2.5 font-mono text-xs text-red-700 whitespace-pre-wrap">
                {{ activity.error }}
              </div>
@@ -134,7 +135,7 @@ const sectionStates = reactive({
   args: false,
   logs: false,
   result: false,
-  error: true
+  error: false
 });
 
 const toggleExpand = () => {

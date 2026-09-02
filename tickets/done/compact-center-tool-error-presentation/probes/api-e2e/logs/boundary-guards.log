@@ -1,0 +1,12 @@
+$ corepack pnpm -C autobyteus-web guard:web-boundary
+
+> autobyteus@1.4.65 guard:web-boundary /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+$ corepack pnpm -C autobyteus-web guard:localization-boundary
+
+> autobyteus@1.4.65 guard:localization-boundary /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.

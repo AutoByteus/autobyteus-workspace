@@ -117,4 +117,28 @@ describe('event monitor active trace browse presentation', () => {
       ],
     });
   });
+
+  it('keeps replayed failure detail out of the compact center presentation', () => {
+    const errorMessage = 'replayed diagnostic\nExit code: 23';
+    const event: EventMonitorActiveTracePageEventDto = {
+      __typename: 'EventMonitorActiveTracePageEvent', eventId: 'failed-tool-event',
+      turnGroupId: 'failed-tool-turn', occurredAtMs: 20,
+      visuals: [{
+        __typename: 'EventMonitorToolCardVisual', kind: 'tool_card', eventId: 'failed-tool-event',
+        visualId: 'failed-tool-visual', kindOrdinal: 0, invocationId: 'failed-call', cardKind: 'tool_call',
+        toolName: 'run_bash', statusKey: 'error', errorMessage,
+        summaryArgs: { __typename: 'EventMonitorToolSummaryArgs', command: 'exit 23' },
+        approvalTarget: null,
+      }],
+    };
+
+    const [item] = buildEventMonitorActiveTraceBrowsePresentation([event]);
+    expect(item?.kind).toBe('assistant');
+    if (item?.kind !== 'assistant') throw new Error('Expected assistant presentation.');
+    const visual = item.visuals[0];
+    expect(visual?.kind).toBe('tool');
+    if (visual?.kind !== 'tool') throw new Error('Expected tool presentation.');
+    expect(visual.presentation).not.toHaveProperty('errorMessage');
+    expect(visual.presentation.statusKey).toBe('error');
+  });
 });
