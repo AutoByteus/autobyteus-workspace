@@ -1,5 +1,13 @@
 const lines = (...values: string[]): string => values.join("\n");
 
+const RULE_BASED_HANDOFF_LLM_INSTRUCTION = [
+  "When you finish your own work or are blocked, call `get_handoff_rules`.",
+  "Evaluate the returned rules against your outcome. Select the single rule whose",
+  "`when` condition most specifically applies, and notify only its `recipient_address`",
+  "using `send_message_to`. Do not notify additional recipients for the same outcome.",
+  "If no rule applies, finish normally.",
+].join(" ");
+
 export const SEND_MESSAGE_TO_LLM_DESCRIPTION = lines(
   "Send one self-contained ordinary message to an already existing AgentRun. Use",
   "exactly one selector: recipient_address for one canonical absolute non-root",
@@ -118,11 +126,7 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "",
   "### Rule-Based Handoffs",
   "",
-  "When you finish your own work or are blocked, call `get_handoff_rules`. Apply",
-  "every matching rule and notify each exact returned `recipient_address` using",
-  "`send_message_to`. Combine applicable reasons for the same recipient and",
-  "follow distinct recipients in their returned order. If no rule applies, finish",
-  "normally.",
+  RULE_BASED_HANDOFF_LLM_INSTRUCTION,
   "",
   "Do not claim that a message, delegation, or handoff succeeded unless the",
   "corresponding tool confirms success.",

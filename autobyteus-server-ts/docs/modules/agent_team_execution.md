@@ -377,9 +377,12 @@ address rule, Team coordinator ingress rule, and the complete intent-first
 collaboration contract. The exact copy distinguishes ordinary communication
 with an existing execution from spawning a fresh independently owned task
 execution, prohibits duplicate work-packet delivery, records exact returned run
-identity, preserves formal result/review lifecycle tools, and defines ordered
-rule-based handoffs. It injects no flat recipient, representative, or delegation
-roster. Runtime exposure automatically includes `get_handoff_rules`,
+identity, preserves formal result/review lifecycle tools, and presents possible
+rule-based handoffs that the Agent evaluates against its outcome. The
+Agent selects the single rule whose condition most specifically applies and
+notifies only that rule's recipient; it does not fan out one outcome to
+additional recipients. The renderer injects no flat recipient, representative,
+or delegation roster. Runtime exposure automatically includes `get_handoff_rules`,
 `send_message_to`, and `delegate_task` for a valid Team context, with identical
 copy across AutoByteus, Codex, and Claude.
 

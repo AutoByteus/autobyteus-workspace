@@ -167,8 +167,10 @@ contacts an already existing mounted execution, while `delegate_task` spawns one
 fresh independently tracked task execution and delivers its complete assignment.
 It also explains exact returned ingress identities, genuine later
 clarification, duplicate-dispatch prohibition, formal task result/review tools,
-ordered `get_handoff_rules`, and delivery confirmation. The renderer contains
-no flat recipient or delegation-target roster.
+Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
+the single rule whose condition most specifically applies, notification of only
+that rule's recipient, no-rule completion, and delivery confirmation. The
+renderer contains no flat recipient or delegation-target roster.
 
 For example, a Team-bound Agent can receive this shape:
 
@@ -191,6 +193,10 @@ These operations are not interchangeable. Never use both to deliver the same wor
 After successful delegation, genuinely new clarification may be sent to the exact
 active task ingress using the returned `target_agent_run_id`. Formal task output
 and review use `submit_task_result` and `review_task_result`.
+
+### Rule-Based Handoffs
+
+When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.
 ```
 
 The runtime renderer owns the complete exact wording and is shared by
