@@ -1,0 +1,15 @@
+DR-004 release cleanup verification
+started_at_utc=2026-09-02T06:51:53Z
+checkout=personal
+personal_before=14778528eddb00237c5e1b3a0df0d665fc6a3646
+release_tag_commit=14778528eddb00237c5e1b3a0df0d665fc6a3646
+ticket_local_before=80e0d8e257d50801bfd0d883eb4cbb0c38feda5b
+ticket_remote_before=80e0d8e257d50801bfd0d883eb4cbb0c38feda5b
+ticket_commit_ancestor_of_personal=yes
+ticket_commit_ancestor_of_release_tag=yes
+remote_ticket_branch_deleted=yes
+Deleted branch requirements/compact-center-tool-error-presentation (was 80e0d8e25).
+local_ticket_branch_deleted=yes
+dedicated_worktree=N/A — primary worktree was used
+worktree_prune=not required
+completed_at_utc=2026-09-02T06:51:57Z

@@ -1,0 +1,23 @@
+
+> autobyteus-workspace@ release /home/autobyteus/workspace/autobyteus-workspace
+> bash scripts/desktop-release.sh release 1.4.66 -- --release-notes tickets/done/compact-center-tool-error-presentation/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.65 -> 1.4.66
+Updating autobyteus-message-gateway/package.json: 1.4.65 -> 1.4.66
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.66
+[32mSynced default release manifest: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.66[0m
+[32mServer version: 0.1.1[0m
+[personal 14778528e] chore(release): bump workspace release version to 1.4.66
+ 4 files changed, 17 insertions(+), 17 deletions(-)
+ rewrite .github/release-notes/release-notes.md (93%)
+remote:
+remote: GitHub found 830 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 359 high, 383 moderate, 68 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+   55b3f8d4f..14778528e  personal -> personal
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.66 -> v1.4.66
+Release complete and pushed: branch 'personal', tag 'v1.4.66'.
