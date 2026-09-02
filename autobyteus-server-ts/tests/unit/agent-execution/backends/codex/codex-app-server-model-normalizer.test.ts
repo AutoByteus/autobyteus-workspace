@@ -77,13 +77,13 @@ describe("codex app-server model normalizer", () => {
     expect(resolveCodexSessionReasoningEffort(null)).toBeNull();
   });
 
-  it("adds Fast mode schema only when a Codex model advertises the fast speed tier", () => {
+  it("adds Fast mode schema only when a Codex model advertises the priority service tier", () => {
     const modelInfo = mapCodexModelListRowToModelInfo({
       model: "gpt-fast",
       displayName: "GPT Fast",
       defaultReasoningEffort: "high",
       supportedReasoningEfforts: ["medium", "high"],
-      additionalSpeedTiers: ["fast", "flex"],
+      serviceTiers: [{ id: "priority", name: "Fast" }],
     });
 
     expect(modelInfo).not.toBeNull();
@@ -105,29 +105,55 @@ describe("codex app-server model normalizer", () => {
     );
   });
 
-  it("omits Fast mode schema for models without the fast speed tier", () => {
+  it("normalizes case and whitespace in structured service tier IDs", () => {
     const modelInfo = mapCodexModelListRowToModelInfo({
-      model: "gpt-standard",
-      supportedReasoningEfforts: ["medium"],
-      additionalSpeedTiers: ["flex"],
-    });
-
-    expect(modelInfo).not.toBeNull();
-    expect(parameterByName(modelInfo?.config_schema, "reasoning_effort")).not.toBeNull();
-    expect(parameterByName(modelInfo?.config_schema, "service_tier")).toBeNull();
-  });
-
-  it("supports snake_case additional speed tier metadata", () => {
-    const modelInfo = mapCodexModelListRowToModelInfo({
-      id: "gpt-snake",
-      supported_reasoning_efforts: [],
-      additional_speed_tiers: [" Fast "],
+      id: "gpt-normalized-tier",
+      serviceTiers: [{ id: " PRIORITY ", name: "Provider-defined label" }],
     });
 
     expect(modelInfo).not.toBeNull();
     expect(parameterByName(modelInfo?.config_schema, "service_tier")).toMatchObject({
       enum_values: ["fast"],
     });
+  });
+
+  it("omits Fast mode schema for non-priority, malformed, or missing service tiers", () => {
+    const modelInfo = mapCodexModelListRowToModelInfo({
+      model: "gpt-standard",
+      supportedReasoningEfforts: ["medium"],
+      serviceTiers: [
+        { id: "flex" },
+        { id: "" },
+        { name: "Fast" },
+        "priority",
+        null,
+        42,
+      ],
+    });
+    const missingServiceTiers = mapCodexModelListRowToModelInfo({
+      model: "gpt-no-tiers",
+    });
+
+    expect(modelInfo).not.toBeNull();
+    expect(parameterByName(modelInfo?.config_schema, "reasoning_effort")).not.toBeNull();
+    expect(parameterByName(modelInfo?.config_schema, "service_tier")).toBeNull();
+    expect(parameterByName(missingServiceTiers?.config_schema, "service_tier")).toBeNull();
+  });
+
+  it("does not fall back to deprecated additional speed tier metadata", () => {
+    const camelCaseModelInfo = mapCodexModelListRowToModelInfo({
+      id: "gpt-deprecated-camel",
+      additionalSpeedTiers: ["fast"],
+    });
+    const snakeCaseModelInfo = mapCodexModelListRowToModelInfo({
+      id: "gpt-deprecated-snake",
+      additional_speed_tiers: [" Fast "],
+    });
+
+    expect(camelCaseModelInfo).not.toBeNull();
+    expect(snakeCaseModelInfo).not.toBeNull();
+    expect(parameterByName(camelCaseModelInfo?.config_schema, "service_tier")).toBeNull();
+    expect(parameterByName(snakeCaseModelInfo?.config_schema, "service_tier")).toBeNull();
   });
 
   it("normalizes only the in-scope Codex Fast service tier", () => {

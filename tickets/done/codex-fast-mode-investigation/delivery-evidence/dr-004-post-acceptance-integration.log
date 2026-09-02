@@ -1,0 +1,24 @@
+DR-004 post-acceptance integration evidence
+timestamp=2026-09-02T03:31:30Z
+user_acceptance=2026-09-02 finalize and release
+bootstrap_base=773bce779f195c22194c6bed1b242be6e222d06e
+refreshed_base=bed4c05a1c7860c7bd392c61dd7d26c239598284
+accepted_checkpoint=c91749e089ddd9658231eafb351918c22922e914
+integrated_head=a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5
+merge_base=bed4c05a1c7860c7bd392c61dd7d26c239598284
+behind=0
+ahead=5
+integrated_ancestry=PASS
+new_base_commits:
+bed4c05a1 docs(delivery): record completed handoff prompt delivery
+775cdec29 Merge handoff rule prompt clarity
+8f463d36a docs(delivery): archive verified handoff prompt ticket
+4d4ae1b7b test(api-e2e): validate handoff prompt clarity
+c2468e8c4 docs(implementation): record handoff prompt baseline
+87679f93a fix(collaboration): select one handoff recipient
+ticket_path_overlap=None
+post_integration_check_and_cleanup=PASS
+renewed_verification=Not required; no overlap/material user-facing change and focused check passed
+web_version=1.4.64
+gateway_version=1.4.64
+release_v1.4.65_available=PASS

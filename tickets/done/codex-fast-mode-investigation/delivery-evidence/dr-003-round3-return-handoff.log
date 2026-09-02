@@ -1,0 +1,41 @@
+DR-003 Round 3 return / integrated handoff evidence
+timestamp=2026-09-02T03:10:57Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+branch=codex/codex-fast-mode-investigation
+--- post-Round-3 remote refresh ---
+pre_fetch_base=773bce779f195c22194c6bed1b242be6e222d06e
+post_fetch_base=773bce779f195c22194c6bed1b242be6e222d06e
+head=06bcb57cf365ebc6ba12aef4ba4472e091fcd066
+merge_base=773bce779f195c22194c6bed1b242be6e222d06e
+behind=0
+ahead=3
+post_round3_base_refresh=PASS_UNCHANGED_ALREADY_CURRENT
+post_refresh_executable_rerun=No
+no_rerun_rationale=No base/source/fixture/durable-test commit entered the validated state; API-REV-003 directly exercised the exact unchanged HEAD.
+--- Round 3 authoritative result ---
+round3_api_e2e_and_review_result=PASS
+--- browser evidence ---
+package_import_screenshot_bytes=143155
+completion_screenshot_bytes=72920
+browser_screenshots_present=PASS
+--- owned state cleanup recheck ---
+absent=.autobyteus/development
+absent=autobyteus-application-backend-sdk/dist
+absent=autobyteus-application-sdk-contracts/dist
+absent=autobyteus-web/.nuxt
+owned_state_and_ports_clean=PASS
+--- delivery docs and residual truthfulness ---
+delivery_docs_and_residual_assertions=PASS
+finalization_actions_before_explicit_user_verification=None
+--- final DR-003 artifact readiness ---
+docs-sync-report.md=present
+handoff-summary.md=present
+release-deployment-report.md=present
+delivery-revision-record.md=present
+release-notes.md=present
+final_dr003_artifact_assertions=PASS
+status_snapshot:
+## codex/codex-fast-mode-investigation...origin/personal [ahead 3]
+ M README.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+?? tickets/in-progress/codex-fast-mode-investigation/

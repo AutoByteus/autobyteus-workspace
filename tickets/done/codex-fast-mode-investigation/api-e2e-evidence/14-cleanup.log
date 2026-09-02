@@ -1,0 +1,6 @@
+Cleanup verification:
+ABSENT (removed): autobyteus-application-backend-sdk/dist
+ABSENT (removed): autobyteus-application-sdk-contracts/dist
+ABSENT (removed): autobyteus-web/.nuxt
+Post-cleanup/post-commit status:
+?? tickets/in-progress/codex-fast-mode-investigation/

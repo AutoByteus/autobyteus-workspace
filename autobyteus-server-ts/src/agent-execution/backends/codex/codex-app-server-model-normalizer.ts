@@ -52,8 +52,8 @@ const toReasoningEffortConfigParameter = (
   };
 };
 
-const toServiceTierConfigParameter = (additionalSpeedTiers: string[]): Record<string, unknown> | null => {
-  if (!additionalSpeedTiers.includes("fast")) {
+const toServiceTierConfigParameter = (supportsFast: boolean): Record<string, unknown> | null => {
+  if (!supportsFast) {
     return null;
   }
   return {
@@ -69,11 +69,11 @@ const toServiceTierConfigParameter = (additionalSpeedTiers: string[]): Record<st
 const toCodexConfigSchema = (
   supportedEfforts: string[],
   defaultReasoningEffort: string | null,
-  additionalSpeedTiers: string[],
+  supportsFast: boolean,
 ): Record<string, unknown> | undefined => {
   const parameters = [
     toReasoningEffortConfigParameter(supportedEfforts, defaultReasoningEffort),
-    toServiceTierConfigParameter(additionalSpeedTiers),
+    toServiceTierConfigParameter(supportsFast),
   ].filter((parameter): parameter is Record<string, unknown> => parameter !== null);
 
   return parameters.length > 0 ? { parameters } : undefined;
@@ -101,20 +101,16 @@ const toSupportedReasoningEfforts = (row: JsonObject): string[] => {
   return efforts;
 };
 
-const toAdditionalSpeedTiers = (row: JsonObject): string[] => {
-  const source = row.additionalSpeedTiers ?? row.additional_speed_tiers;
+const supportsCodexFastServiceTier = (row: JsonObject): boolean => {
+  const source = row.serviceTiers;
   if (!Array.isArray(source)) {
-    return [];
+    return false;
   }
 
-  const speedTiers: string[] = [];
-  for (const entry of source) {
-    const value = asString(entry)?.toLowerCase() ?? null;
-    if (value && !speedTiers.includes(value)) {
-      speedTiers.push(value);
-    }
-  }
-  return speedTiers;
+  return source.some((entry) => {
+    const entryId = asString(asObject(entry)?.id)?.toLowerCase() ?? null;
+    return entryId === "priority";
+  });
 };
 
 export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null => {
@@ -128,11 +124,10 @@ export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null 
     model.defaultReasoningEffort ?? model.default_reasoning_effort,
   );
   const supportedReasoningEfforts = toSupportedReasoningEfforts(model);
-  const additionalSpeedTiers = toAdditionalSpeedTiers(model);
   const configSchema = toCodexConfigSchema(
     supportedReasoningEfforts,
     defaultReasoningEffort,
-    additionalSpeedTiers,
+    supportsCodexFastServiceTier(model),
   );
   const displayName = asString(model.displayName) ?? modelName;
 

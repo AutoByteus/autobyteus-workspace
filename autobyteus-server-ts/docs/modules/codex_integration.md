@@ -197,10 +197,13 @@ model settings.
   null. App Server decides whether a directly submitted non-empty value is
   supported; thread bootstrap does not own a duplicate capability cache or a
   second `model/list` lookup.
-- `additionalSpeedTiers` / `additional_speed_tiers` containing `fast` adds a
-  `service_tier` enum parameter labeled **Fast mode**. Only `fast` is exposed;
-  leaving the control at Default/off omits the setting and preserves Codex's
-  default service tier.
+- Canonical structured `serviceTiers` metadata is the capability authority for
+  Fast mode. A tier entry whose trimmed, case-normalized `id` is `priority`
+  adds a `service_tier` enum parameter labeled **Fast mode**. Deprecated
+  `additionalSpeedTiers` / `additional_speed_tiers` metadata is not consulted.
+  Only the AutoByteus product/runtime value `fast` is exposed; leaving the
+  control at Default/off omits the setting and preserves Codex's default
+  service tier.
 - Backend normalization accepts only `llmConfig.service_tier === "fast"` for
   this feature. Unsupported values such as `flex` or arbitrary strings, and
   camelCase caller attempts such as `serviceTier`, are ignored before requests

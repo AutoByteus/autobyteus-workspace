@@ -1,0 +1,136 @@
+=== platform ===
+Darwin MacBookPro 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:18:58 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T6000 arm64
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+=== runtimes ===
+v22.23.1
+10.28.2
+codex-cli 0.152.0
+=== full-suite related scenario lines ===
+9836:stdout | tests/integration/services/codex-model-catalog.integration.test.ts
+9841:stdout | tests/integration/services/codex-model-catalog.integration.test.ts > Codex model catalog and GraphQL integration (live transport) > preserves each live model's advertised reasoning sequence through catalog and GraphQL
+9846: ✓ tests/integration/services/codex-model-catalog.integration.test.ts (1 test) 771ms
+15546: Test Files  63 failed | 593 passed | 17 skipped (673)
+15547:      Tests  177 failed | 3414 passed | 76 skipped (3667)
+=== full-suite failure families ===
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged role prompts with context-first validation and publication ordering
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch reinforcement without replacing role-local ownership
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+ FAIL  tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+ FAIL  tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > validates package roots and counts shared agents, team-local agents, and teams
+ FAIL  tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves only one exact current address/run match while retaining its configured launch placement
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > keeps standalone and Team memory identity separate
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService current V1 tree > groups stored V1 roots by Team definition and exact configured Agent address
+ FAIL  tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService current V1 tree > lists and filters current run/member targets without route/path compatibility identity
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects current-schema admission before constructing a new team run
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a managed offline run before consulting pre-existing-run readiness
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > blocks root, nested, delegated, and task-team restoration before the team backend constructs providers
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > returns an active RootTeamRun without attempting restore
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > returns null when exact current-package restore fails
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > projects one exact current Agent error into a failed lifecycle result
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > builds one canonical mixed root config and records its execution tree
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a missing, blank, or invalid 'Team' runtime before workspace activation
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a missing, blank, or invalid 'Team' runtime before workspace activation
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a missing, blank, or invalid 'Team' runtime before workspace activation
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a missing, blank, or invalid 'Agent' runtime before workspace activation
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a missing, blank, or invalid 'Agent' runtime before workspace activation
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects a missing, blank, or invalid 'Agent' runtime before workspace activation
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > deduplicates workspace activation by canonical root and rejects unknown members before create
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects invalid 'full hierarchy' coverage before allocation, manager creation, or persistence
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects invalid 'root-only application-style expansion' coverage before allocation, manager creation, or persistence
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects invalid required 'Team scope' values before allocation, manager creation, or persistence
+ FAIL  tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService current root lifecycle > rejects invalid required 'Agent member' values before allocation, manager creation, or persistence
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > removes only exact standalone and recursive team Codex/Claude snapshots and is idempotent
+ FAIL  tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation
+ FAIL  tests/unit/config/streaming-content-flush-interval-setting.test.ts > streaming content flush interval setting > falls back for invalid runtime input undefined
+ FAIL  tests/unit/context-files/context-file-owner-types.test.ts > context-file-owner-types > normalizes team member route keys and extracts stored filename/display name
+ FAIL  tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > starts with no selected mode and no implicit priority
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm import acquires no Prisma client or datasource
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm defaults to non-query log kinds
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors explicit environment query-log policy only
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors typed policy and typed-false precedence
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm rejects a conflicting post-bind logging policy
+ FAIL  tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade
+ FAIL  tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+ FAIL  tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and initializes a SkillWorkspace for skill_ws_ IDs
+ FAIL  tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/files
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /images
+ FAIL  tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts > TeamCommunicationMessageProcessor > emits one normalized message-centric event for an accepted inter-agent message with child references
+ FAIL  tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts > TeamCommunicationMessageProcessor > does not emit file-first sidecar events or scan prose paths
+ FAIL  tests/unit/external-channel/services/channel-binding-service.test.ts > ChannelBindingService > checks explicit and default team route bindings against member identity
+ FAIL  tests/unit/external-channel/services/channel-run-output-delivery-service.test.ts > ChannelRunOutputDeliveryService > uses route-inclusive delivery keys and advances publish state
+ FAIL  tests/unit/external-channel/services/channel-run-output-delivery-service.test.ts > ChannelRunOutputDeliveryService > keeps team delivery keys stable when a coordinator member run id is learned later
+ FAIL  tests/unit/external-channel/services/reply-callback-service.test.ts > ReplyCallbackService > accepts team target identity for coordinator replies
+ FAIL  tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > parses direct assistant text from segment payload variants
+ FAIL  tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > classifies segment end text as final text
+ FAIL  tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > parses team member events and filters to the coordinator member
+ FAIL  tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > accepts restored coordinator links by route key and captures member run id
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > publishes coordinator follow-up outputs without leaking worker turns
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > publishes clean callback text from overlapping coordinator stream fragments
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > restores durable output records after restart and skips records already published
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > does not publish recovered team output after the same route is rebound to another target node
+ FAIL  tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts > ChannelRunOutputDeliveryRuntime > does not publish explicit member output after the same route is rebound to the default team target
+ FAIL  tests/unit/run-history/services/published-artifact-projection-service.test.ts > PublishedArtifactProjectionService > reads historical published-artifact summaries and revision text from durable projection storage
+ FAIL  tests/unit/run-history/services/team-run-history-service.test.ts > TeamRunHistoryService current execution tree > returns exact resume identity/tree and reports missing current packages
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > projects FILE_CHANGE events, keeps live content transient, and persists metadata only
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > canonicalizes absolute and relative FILE_CHANGE references to one workspace row
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > ignores unrelated activity events and only consumes FILE_CHANGE
+ FAIL  tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > records failed FILE_CHANGE status
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-long-turn-cadence.probe.test.ts > Codex long-turn cadence probe > runs one oversized Codex task and reports backend event cadence over time
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-raw-vs-backend-cadence.probe.test.ts > Codex raw-vs-backend cadence probe > compares native raw text-delta cadence to backend SEGMENT_CONTENT cadence in the same run
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts > CodexThreadManager integration (live transport) > restores an existing remote Codex thread and continues the same thread id
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts > CodexThreadManager integration (live transport) > reuses one live app-server client for two threads on the same workspace
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > creates a real thread, sends a live turn, and reaches completion
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > steers the exact active live turn without starting a phantom replacement
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > requests terminal approval, approves it, and completes the command
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > requests terminal approval, denies it, and leaves the command unapplied
+ FAIL  tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > interrupts an active long-running terminal turn
+ FAIL  tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > emits media segment events
+ FAIL  tests/unit/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.test.ts > resolveCompactionLineageScope > uses the owning team run and member run IDs for member-local lineage
+ FAIL  tests/unit/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.test.ts > resolveCompactionLineageScope > fails closed for blank team run
+ FAIL  tests/unit/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.test.ts > resolveCompactionLineageScope > fails closed for blank member run
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp false for regular workspace IDs
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp true for temp workspace ID

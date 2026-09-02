@@ -1,0 +1,34 @@
+
+> autobyteus@1.4.64 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/ModelConfigSection.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-web
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (19 tests) 100ms
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (10 tests) 119ms
+
+ Test Files  2 passed (2)
+      Tests  29 passed (29)
+   Start at  19:45:27
+   Duration  7.15s (transform 3.20s, setup 12.55s, collect 211ms, tests 219ms, environment 494ms, prepare 285ms)
+

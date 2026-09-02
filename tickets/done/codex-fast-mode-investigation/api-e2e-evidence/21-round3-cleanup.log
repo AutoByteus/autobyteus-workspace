@@ -1,0 +1,21 @@
+API-BROWSER-001 cleanup audit
+UTC timestamp: 2026-09-02T02:57:35Z
+Owned resources selected for cleanup (all confirmed absent before Round 3 startup):
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-application-backend-sdk/dist
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-application-sdk-contracts/dist
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-web/.nuxt
+Port listeners before removal (expected none after pnpm dev shutdown):
+none on 3000
+none on 8000
+Existence verification after removal:
+REMOVED: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/.autobyteus/development
+REMOVED: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-application-backend-sdk/dist
+REMOVED: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-application-sdk-contracts/dist
+REMOVED: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/autobyteus-web/.nuxt
+Port listeners after removal (expected none):
+none on 3000
+none on 8000
+Browser completion screenshot retained: /Users/normy/.autobyteus/browser-artifacts/758f2e-1788317606633.png (72920 bytes)
+Browser tab 758f2e status: closed
+Cleanup result: PASS

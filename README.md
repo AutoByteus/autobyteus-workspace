@@ -421,9 +421,10 @@ pnpm -C autobyteus-web test
 
 ## Codex Runtime Model Configuration
 
-Codex launch and resume flows use schema-driven model configuration. When the
-Codex App Server model catalog reports a model with the `fast` speed tier, the
-runtime/model config UI exposes **Fast mode** and persists it as
+Codex launch and resume flows use schema-driven model configuration. When a
+Codex App Server model-catalog row advertises provider tier ID `priority` in
+its structured `serviceTiers` metadata, the runtime/model config UI exposes
+**Fast mode** and persists the distinct AutoByteus product value as
 `llmConfig.service_tier = "fast"`. Reasoning effort remains a separate setting
 such as `llmConfig.reasoning_effort = "high"`.
 

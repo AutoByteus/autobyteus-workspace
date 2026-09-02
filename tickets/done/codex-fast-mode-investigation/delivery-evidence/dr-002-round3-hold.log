@@ -1,0 +1,16 @@
+DR-002 user-requested real-browser validation hold
+timestamp=2026-09-02T02:48:12Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation
+branch=codex/codex-fast-mode-investigation
+head=06bcb57cf365ebc6ba12aef4ba4472e091fcd066
+tracked_base_without_refresh=773bce779f195c22194c6bed1b242be6e222d06e
+delivery_fetch_or_integration=None
+delivery_process_startup_or_cleanup=None
+prior_handoff_final_authority=Withdrawn/Held
+latest_completed_api_e2e_result=API-REV-002
+current_api_e2e_investigation_round=3
+round3_plan_and_delivery_hold_assertions=PASS
+api_e2e_owned_generated_paths_observed_and_not_removed:
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+finalization_actions=None

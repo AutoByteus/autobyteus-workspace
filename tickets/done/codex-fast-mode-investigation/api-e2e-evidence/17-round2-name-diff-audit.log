@@ -1,0 +1,34 @@
+Round: API/E2E Round 2
+Purpose: TEST-001 focused name/diff audit before commit
+
+--- git status --short --branch ---
+## codex/codex-fast-mode-investigation...origin/personal [ahead 2]
+ M autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/codex-fast-mode-investigation/
+
+--- git diff --check ---
+
+--- durable test diff ---
+diff --git a/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts b/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+index f44c5a172..3073dca78 100644
+--- a/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+@@ -183,7 +183,7 @@ describeCodexModelCatalogIntegration(
+       await getCodexAppServerClientManager().close();
+     });
+ 
+-    it("preserves each live model's advertised reasoning sequence through catalog and GraphQL", async () => {
++    it("preserves each live model's advertised reasoning and Fast capabilities through catalog and GraphQL", async () => {
+       const rawModels = await collectRawModelCapabilities();
+       expect(rawModels.length).toBeGreaterThan(0);
+       expect(rawModels.some((model) => model.advertisesFast)).toBe(true);
+
+--- corrected scenario name matches ---
+186:    it("preserves each live model's advertised reasoning and Fast capabilities through catalog and GraphQL", async () => {
+
+--- deprecated raw capability fields in durable live test (expect no matches) ---
+No deprecated capability references found.
+
+Exit status: 0

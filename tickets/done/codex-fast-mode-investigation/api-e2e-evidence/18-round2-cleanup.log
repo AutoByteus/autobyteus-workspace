@@ -1,0 +1,17 @@
+Round: API/E2E Round 2
+Purpose: remove only generated shared-package outputs created by prepare:shared
+
+Before cleanup: present autobyteus-application-backend-sdk/dist
+Before cleanup: present autobyteus-application-sdk-contracts/dist
+Removed: autobyteus-application-backend-sdk/dist
+Removed: autobyteus-application-sdk-contracts/dist
+
+After cleanup: absent autobyteus-application-backend-sdk/dist
+After cleanup: absent autobyteus-application-sdk-contracts/dist
+
+--- git status --short --branch ---
+## codex/codex-fast-mode-investigation...origin/personal [ahead 2]
+ M autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts
+?? tickets/in-progress/codex-fast-mode-investigation/
+
+Exit status: 0

@@ -81,11 +81,12 @@ const toRawModelCapabilities = (rowValue: unknown): RawModelCapabilities | null 
     ),
   );
 
-  const additionalSpeedTiers =
-    row["additionalSpeedTiers"] ?? row["additional_speed_tiers"];
-  const advertisesFast = Array.isArray(additionalSpeedTiers)
-    ? additionalSpeedTiers.some(
-        (value) => asTrimmedString(value)?.toLowerCase() === "fast",
+  const serviceTiers = row["serviceTiers"];
+  const advertisesFast = Array.isArray(serviceTiers)
+    ? serviceTiers.some(
+        (value) =>
+          asTrimmedString(asObject(value)?.["id"])?.toLowerCase() ===
+          "priority",
       )
     : false;
 
@@ -182,9 +183,10 @@ describeCodexModelCatalogIntegration(
       await getCodexAppServerClientManager().close();
     });
 
-    it("preserves each live model's advertised reasoning sequence through catalog and GraphQL", async () => {
+    it("preserves each live model's advertised reasoning and Fast capabilities through catalog and GraphQL", async () => {
       const rawModels = await collectRawModelCapabilities();
       expect(rawModels.length).toBeGreaterThan(0);
+      expect(rawModels.some((model) => model.advertisesFast)).toBe(true);
 
       const catalogModels = await new CodexModelCatalog().listModels();
       expect(catalogModels.length).toBeGreaterThan(0);
