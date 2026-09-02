@@ -1,15 +1,17 @@
 # Handoff Summary
 
-## Ticket And Handoff State
+## Ticket And Final State
 
 - Ticket: `codex-runtime-event-stream-reconnect`
-- Delivery revision: `DR-004`
-- Current state: User verification passed; the archived ticket is merged and pushed to `personal`; release `v1.4.67` is in progress.
-- Ticket branch: `codex/codex-runtime-event-stream-reconnect`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67`
+- Delivery revision: `DR-006`
+- Current state: `Complete` — user verification, repository finalization, stable release, rollout verification, and safe ticket cleanup passed.
+- Archived ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect`
+- Finalization checkout: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67`
 - Reviewed implementation commit: `fb65f564f65a56daf520216aff4403337e18b7c0`
-- Refreshed finalization base: `origin/personal` at `5fb16658e7bd2aefd750f99eb596a17382e161ac`
-- Integration method: Already current; the base had not advanced and no merge/rebase/checkpoint was needed.
+- Archived ticket commit: `b75feba1ce69f6233b131629a21463894d7fd605`
+- Merge commit on `personal`: `f2eb54158aa27d4d230206827097d1becad92707`
+- Finalization-record commit: `ed4b667ad86915e8245ecd72a93d567015968a9e`
+- Release commit/tag: `335e80939a40a2d5c8eab30ffa3493f67ad90e7b` / `v1.4.67`
 
 ## Delivered Behavior
 
@@ -22,62 +24,53 @@
 
 ## Durable Coverage And Documentation
 
-- The joined lifecycle integration was renamed to `autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts`.
+- The joined lifecycle integration is `autobyteus-web/tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts`.
 - It retains stale-A/active-B coverage and adds retry-diagnostic continuation, frontend projection, final idle/completion, and later same-turn JSONL fact assertions.
 - Canonical runtime documentation was synchronized in `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`.
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/docs-sync-report.md`
 
-## Validation
+## Validation And User Acceptance
 
 - Source review: `CRR-001 Pass`, `9.75/10`; implementation commit `fb65f564f` had no findings.
 - API/E2E: `API-REV-001 Pass`, `96.6%` final confidence; all critical acceptance criteria have direct evidence and no category is below `90%`.
 - Proportional durable test-code review: `CRR-002 Pass`; no findings.
 - Focused evidence includes 167/167 server tests, 2/2 joined lifecycle integration tests, two selected real server-WebSocket tests, 15/15 run-view reader tests, static/boundary checks, and one selected real Codex App Server lifecycle/persistence test.
-- Delivery integration refresh: `Pass`; refreshed `origin/personal` equals the bootstrap base. No source behavior changed and no redundant executable rerun was required.
-- Delivery docs validation: `Pass`; targeted content checks and `git diff --check` succeeded.
+- Delivery refresh: the accepted candidate remained current with `origin/personal@5fb16658e7bd2aefd750f99eb596a17382e161ac`; no renewed verification was needed.
+- Explicit user acceptance: `Yes` — “its working. lets finalize and release a new version”.
 
-## Local macOS ARM64 Test Build
+## Historical Local macOS ARM64 Test Build
 
-- Build result: `Pass`; README-guided local personal build completed with exit code 0.
-- Version/platform: `AutoByteus 1.4.66`, macOS ARM64, bundle ID `com.autobyteus.app`.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.zip`
-- Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG SHA-256: `afc1d6cf494bd86228d0a59076febd4d91013c3129eb72dbe07fbd32c1789d33`
-- ZIP SHA-256: `67dc1a90bfb54343269683d33c3b82e47c421d665545e8cbe5bb0d1e999aaa2d`
-- Package verification: `Pass`; compiled packaged server contains the retry-diagnostic fix, DMG/ZIP integrity passed, and staged plus packaged `node-pty` ARM64 helpers and real spawn probes passed.
-- Isolated launch smoke: `Pass`; the packaged executable reached `/rest/health` on an isolated port/data root, then removed its owned root and listener.
-- Signing posture: local test build only, ad-hoc/linker signed without a distribution identity; notarization, timestamping, publication, and release-policy proof were intentionally not performed.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/electron-build-macos-arm64.log`
-- Package verification log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/electron-build-verification-macos-arm64.log`
-- Launch smoke log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/electron-launch-smoke-macos-arm64.log`
+- The README-guided local personal `1.4.66` build, package verification, and isolated direct launch smoke passed before user acceptance.
+- Verification-time checksums: DMG `afc1d6cf494bd86228d0a59076febd4d91013c3129eb72dbe07fbd32c1789d33`; ZIP `67dc1a90bfb54343269683d33c3b82e47c421d665545e8cbe5bb0d1e999aaa2d`.
+- It was a local ad-hoc/linker-signed package, not the distribution artifact. The temporary package/worktree was removed only after acceptance and verified release; the authoritative build, package, and launch logs remain archived with this ticket.
 
-## User Verification Guidance
+## Stable Release `v1.4.67`
 
-- Confirm a Codex run that encounters visible retry/reconnect diagnostics continues showing later reasoning/tool/assistant output and ends idle/completed rather than becoming falsely terminal.
-- Confirm no duplicate user turn appears during recovery.
-- If a genuine non-retryable Codex turn failure is available to exercise, confirm it still ends in the existing error state.
-- Deterministic automated coverage already exercises the exact retry sequence because inducing a real provider-stream retry on demand is not controllable.
-- Install/open the DMG above or launch the unpacked app, then exercise the Codex run that previously showed retry cards without later output.
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.67
+- Release metadata: stable (`isDraft=false`, `isPrerelease=false`), exact target `335e80939a40a2d5c8eab30ffa3493f67ad90e7b`, 21 assets.
+- All tag-triggered workflows completed successfully:
+  - Desktop Release: `33674310763`
+  - iOS App Store Connect Release: `33674310997`
+  - Android APK Release: `33674311067`
+  - Release Messaging Gateway: `33674310814`
+  - Server Docker Release: `33674311041`
+- Docker Hub version and `latest` both resolve to OCI index `sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a` for linux/amd64 and linux/arm64.
+- App Store Connect/TestFlight upload succeeded for `1.4.67 (129)`, Delivery UUID `78dd11ed-9421-4eb3-beff-b6332b1ab059`. This uploads the build but does not submit or publish an App Store review/release.
+- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/delivery-evidence/release-v1.4.67-verification.log`
 
-## Residual Risks And Boundaries
+## Persisted Data And Residual Risks
 
-- The unchanged retry diagnostic card may still look visually severe; presentation redesign was explicitly out of scope.
-- The real Codex execution validated current CLI/process/persistence fidelity but did not naturally encounter a retry; exact retry behavior was injected at the supported native notification boundary and traversed real downstream owners.
-- Future incompatible Codex protocol changes may require revisiting `willRetry` handling.
-- Historical application traces that already lost post-diagnostic events remain unchanged.
+- Persisted-data decision: `Directly Usable — No Migration`; no schema, reader, migration, rewrite, or backfill changed.
+- A natural provider retry was not controllably induced; the exact supported native retry notification was deterministically injected through every relevant production owner, while a separate real Codex App Server run passed.
+- The unchanged retry diagnostic card can still look visually severe; presentation redesign was out of scope.
+- Future incompatible Codex protocol changes may require revisiting `willRetry` handling. Previously discarded historical events remain unreconstructed by design.
 
-## User Acceptance And Finalization
+## Cleanup
 
-- Explicit user completion/verification received: `Yes` — “its working. lets finalize and release a new version”.
-- Post-acceptance refresh: `Pass`; `origin/personal` remains `5fb16658e7bd2aefd750f99eb596a17382e161ac` with zero target-only commits relative to the accepted ticket state.
-- Renewed verification required: `No`; the finalization target did not advance and the user-facing candidate did not change.
-- Repository finalization: `Completed` — ticket commit `b75feba1c`, merge commit `f2eb54158`, and pushed `origin/personal` verified.
-- Ticket state: Archived at `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect`.
-- Release: `v1.4.67` authorized; this is the next unused stable patch after `v1.4.66`.
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect-release-v1.4.67/tickets/done/codex-runtime-event-stream-reconnect/release-notes.md`.
-- Next action: Execute the documented release script for `v1.4.67`, verify all release workflows and published outputs, record terminal evidence, then clean up the ticket branch/worktree when safe.
+- The remote and local ticket branches were deleted after the ticket commit was verified as an ancestor of both pushed `personal` and `v1.4.67`.
+- The dedicated ticket worktree and its accepted local package were removed; worktree prune completed.
+- Pre-existing unrelated changes in the primary `personal` worktree were left untouched.
 
 ## Current Status
 
-`DR-004 Pass — repository finalization is complete on personal; v1.4.67 release and rollout verification are in progress.`
+`DR-006 Pass — v1.4.67 is released and verified; repository finalization and safe ticket cleanup are complete with no blocker.`

@@ -1,0 +1,36 @@
+# Post-finalization cleanup evidence
+timestamp_utc=2026-09-02T20:16:16Z
+ticket_commit=b75feba1ce69f6233b131629a21463894d7fd605
+release_commit=335e80939a40a2d5c8eab30ffa3493f67ad90e7b
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+ * branch                codex/codex-runtime-event-stream-reconnect -> FETCH_HEAD
+remote_personal=335e80939a40a2d5c8eab30ffa3493f67ad90e7b
+ticket_is_ancestor_of_remote_personal=yes
+ticket_is_ancestor_of_release_tag=yes
+ticket_worktree_tracked_clean=yes
+primary_worktree_preexisting_status:
+ M package.json
+?? .article-work/
+?? applications/brief-studio/dist/
+?? applications/socratic-math-teacher/dist/
++ git push origin --delete codex/codex-runtime-event-stream-reconnect
+remote:
+remote: GitHub found 841 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 368 high, 385 moderate, 68 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/codex-runtime-event-stream-reconnect
+remote_ticket_branch_absent=yes
++ git worktree remove --force dedicated ticket worktree
+ticket_worktree_absent=yes
++ git branch -D local ticket branch (after ancestry proof)
+Deleted branch codex/codex-runtime-event-stream-reconnect (was b75feba1c).
++ git worktree prune
+local_ticket_branch_absent=yes
+primary_worktree_post_cleanup_status:
+ M package.json
+?? .article-work/
+?? applications/brief-studio/dist/
+?? applications/socratic-math-teacher/dist/
+result=PASS: remote/local ticket branches and dedicated ticket worktree removed after ancestry verification; pre-existing primary worktree changes were untouched.

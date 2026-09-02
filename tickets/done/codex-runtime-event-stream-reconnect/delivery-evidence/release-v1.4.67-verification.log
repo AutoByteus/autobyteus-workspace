@@ -1,0 +1,86 @@
+Release verification — v1.4.67
+verified_at_utc=2026-09-02T20:15:53Z
+local_personal=335e80939a40a2d5c8eab30ffa3493f67ad90e7b
+remote_personal=335e80939a40a2d5c8eab30ffa3493f67ad90e7b
+local_tag_object=264484ce7b05a9eb156689844918b91af51d116a
+local_tag_commit=335e80939a40a2d5c8eab30ffa3493f67ad90e7b
+remote_tag_object=264484ce7b05a9eb156689844918b91af51d116a
+remote_tag_commit=335e80939a40a2d5c8eab30ffa3493f67ad90e7b
+
+Package versions:
+autobyteus-web=1.4.67
+autobyteus-message-gateway=1.4.67
+
+GitHub release:
+{"asset_count":21,"assets":["autobyteus-message-gateway-1.4.67-node-generic.tar.gz","autobyteus-message-gateway-1.4.67-node-generic.tar.gz.json","autobyteus-message-gateway-1.4.67-node-generic.tar.gz.sha256","AutoByteus_personal_android-1.4.67-release.apk","AutoByteus_personal_android-1.4.67-release.apk.sha256","AutoByteus_personal_linux-arm64-1.4.67.AppImage","AutoByteus_personal_linux-x64-1.4.67.AppImage","AutoByteus_personal_macos-arm64-1.4.67.dmg","AutoByteus_personal_macos-arm64-1.4.67.dmg.blockmap","AutoByteus_personal_macos-arm64-1.4.67.zip","AutoByteus_personal_macos-arm64-1.4.67.zip.blockmap","AutoByteus_personal_macos-x64-1.4.67.dmg","AutoByteus_personal_macos-x64-1.4.67.dmg.blockmap","AutoByteus_personal_macos-x64-1.4.67.zip","AutoByteus_personal_macos-x64-1.4.67.zip.blockmap","AutoByteus_personal_windows-1.4.67.exe","latest-linux-arm64.yml","latest-linux.yml","latest-mac.yml","latest.yml","release-manifest.json"],"isDraft":false,"isPrerelease":false,"name":"v1.4.67","publishedAt":"2026-09-02T19:39:18Z","tagName":"v1.4.67","targetCommitish":"335e80939a40a2d5c8eab30ffa3493f67ad90e7b","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.67"}
+
+Tag-triggered workflows:
+[{"conclusion":"success","created_at":"2026-09-02T19:36:24Z","event":"push","head_branch":"v1.4.67","head_sha":"335e80939a40a2d5c8eab30ffa3493f67ad90e7b","html_url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33674311067","id":33674311067,"name":"Android APK Release","status":"completed","updated_at":"2026-09-02T19:40:27Z"},{"conclusion":"success","created_at":"2026-09-02T19:36:24Z","event":"push","head_branch":"v1.4.67","head_sha":"335e80939a40a2d5c8eab30ffa3493f67ad90e7b","html_url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33674310763","id":33674310763,"name":"Desktop Release","status":"completed","updated_at":"2026-09-02T19:58:09Z"},{"conclusion":"success","created_at":"2026-09-02T19:36:24Z","event":"push","head_branch":"v1.4.67","head_sha":"335e80939a40a2d5c8eab30ffa3493f67ad90e7b","html_url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33674310814","id":33674310814,"name":"Release Messaging Gateway","status":"completed","updated_at":"2026-09-02T19:39:21Z"},{"conclusion":"success","created_at":"2026-09-02T19:36:24Z","event":"push","head_branch":"v1.4.67","head_sha":"335e80939a40a2d5c8eab30ffa3493f67ad90e7b","html_url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33674311041","id":33674311041,"name":"Server Docker Release","status":"completed","updated_at":"2026-09-02T20:12:58Z"},{"conclusion":"success","created_at":"2026-09-02T19:36:24Z","event":"push","head_branch":"v1.4.67","head_sha":"335e80939a40a2d5c8eab30ffa3493f67ad90e7b","html_url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33674310997","id":33674310997,"name":"iOS App Store Connect Release","status":"completed","updated_at":"2026-09-02T19:49:25Z"}]
+
+Docker Hub manifest: autobyteus/autobyteus-server:1.4.67
+content-type: application/vnd.oci.image.index.v1+json
+docker-content-digest: sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a
+{
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "digest": "sha256:69fdfe7a6f0cca2d4b4b9b5f2f62e9bf06b2a31f480917d8aa273c83c27e35a0",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "digest": "sha256:278cedf0a28d1da4038924f8766f44c071ff7cc1001c61cc074bea4e0e2fb54c",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  ]
+}
+
+Docker Hub manifest: autobyteus/autobyteus-server:latest
+content-type: application/vnd.oci.image.index.v1+json
+docker-content-digest: sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a
+{
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "digest": "sha256:69fdfe7a6f0cca2d4b4b9b5f2f62e9bf06b2a31f480917d8aa273c83c27e35a0",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "digest": "sha256:278cedf0a28d1da4038924f8766f44c071ff7cc1001c61cc074bea4e0e2fb54c",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  ]
+}
+
+Workflow-published Docker index digest: sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a
+iOS upload: version 1.4.67 build 129; Delivery UUID 78dd11ed-9421-4eb3-beff-b6332b1ab059; upload step status success.
+
+iOS source excerpts:
+Build And Test iOS App	Generate, build, and run implementation checks	2026-09-02T19:45:45.0889010Z iOS marketing version: 1.4.67
+Build And Test iOS App	Generate, build, and run implementation checks	2026-09-02T19:45:45.0889330Z iOS build number: 129
+Archive And Upload To App Store Connect	Upload IPA to App Store Connect/TestFlight	2026-09-02T19:49:15.4478050Z Delivery UUID: 78dd11ed-9421-4eb3-beff-b6332b1ab059
+Archive And Upload To App Store Connect	Summarize iOS TestFlight upload	2026-09-02T19:49:15.4835980Z [36;1m  echo "Upload step status: \`success\`"[0m
+
+Server source excerpts:
+Build And Push Server Image	Build and push default multi-arch image	2026-09-02T20:00:28.2145502Z #110 pushing manifest for docker.io/***/***-server:1.4.67@sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a
+Build And Push Server Image	Build and push default multi-arch image	2026-09-02T20:00:31.9384482Z #110 pushing manifest for docker.io/***/***-server:1.4.67@sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a 3.7s done
+Build And Push Server Image	Build and push default multi-arch image	2026-09-02T20:00:34.9365304Z #110 pushing manifest for docker.io/***/***-server:latest@sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a
+Build And Push Server Image	Build and push default multi-arch image	2026-09-02T20:00:37.1927691Z #110 pushing manifest for docker.io/***/***-server:latest@sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a 2.3s done
+Build And Push Server Image	Build and push default multi-arch image	2026-09-02T20:12:28.7201537Z   "containerimage.digest": "sha256:86505905ca5761122d01731660fef5b7b33aa65108c0df96e7f68a5e4c64f96a",
+
+result=PASS: refs, versions, release metadata/assets, five workflows, Docker manifests, and iOS upload are verified.
