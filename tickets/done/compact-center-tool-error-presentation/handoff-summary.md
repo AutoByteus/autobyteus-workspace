@@ -11,7 +11,7 @@
 - Architecture design/review: `N/A — not applicable`
 - Source review: `N/A — not applicable`
 - Proportional API/E2E test-code review: `N/A — direct low-risk route`
-- Current state: Integrated and docs-synchronized handoff ready for explicit user verification; repository finalization and release are held.
+- Current state: User verified on 2026-09-02 and explicitly authorized finalization and release. The post-acceptance target refresh found no new base commits; repository finalization and stable `v1.4.66` release are in progress.
 
 ## User-Facing Change
 
@@ -28,13 +28,13 @@
 - Delivery fetch: `git fetch --prune origin` on 2026-09-02; `origin/personal` remained the bootstrap base and is an ancestor of the candidate.
 - Integration method/result: `Already current`; `git merge --ff-only origin/personal` returned `Already up to date`.
 - Post-integration rerun: Not required because no base commit entered after API/E2E validation; Delivery changed only the canonical architecture paragraph and delivery artifacts.
-- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/delivery-evidence/dr-001-integration-refresh.log`.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/delivery-evidence/dr-001-integration-refresh.log`.
 
 ## Documentation Sync
 
 - Result: `Pass`.
 - Updated: `autobyteus-web/docs/agent_execution_architecture.md`.
-- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/docs-sync-report.md`.
+- Report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/docs-sync-report.md`.
 - Durable truth: failed-tool detail is preserved in Activity/persistence, omitted from the compact center card, and default-collapsed until explicit Activity disclosure.
 
 ## Validation Evidence
@@ -48,7 +48,7 @@
 - Real provider: Focused real Codex App Server failed-command persistence test passed.
 - Persisted data: `Not Affected`; no migration, fallback, model, transport, or schema change.
 - Repository-wide typecheck: completed with 3,131 unrelated baseline diagnostics and named no changed implementation/API/E2E path; it is reported as a baseline failure, not a pass.
-- API/E2E artifacts and exact commands: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/api-e2e-execution-coverage-report.md` and `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/probes/api-e2e/`.
+- API/E2E artifacts and exact commands: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/api-e2e-execution-coverage-report.md` and `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/probes/api-e2e/`.
 
 ## Residual Risk
 
@@ -58,28 +58,28 @@
 
 ## Cumulative Artifact Package
 
-- Requirements: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/requirements-doc.md`
-- Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/investigation-notes.md`
-- Requirements revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/requirements-revision-record.md`
-- Supplemental analysis: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/observed-long-failure-analysis.md`
+- Requirements: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/requirements-doc.md`
+- Investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/investigation-notes.md`
+- Requirements revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/requirements-revision-record.md`
+- Supplemental analysis: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/observed-long-failure-analysis.md`
 - Design/architecture artifacts: `N/A — not applicable`
-- Implementation handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/implementation-handoff.md`
-- Implementation revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/implementation-revision-record.md`
+- Implementation handoff: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/implementation-handoff.md`
+- Implementation revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/implementation-revision-record.md`
 - Code-review artifacts: `N/A — not applicable`
-- API/E2E investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/api-e2e-coverage-investigation.md`
-- API/E2E report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/api-e2e-execution-coverage-report.md`
-- API/E2E revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/api-e2e-revision-record.md`
-- Docs sync: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/docs-sync-report.md`
-- Delivery revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/delivery-revision-record.md`
-- Release/deployment report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/release-deployment-report.md`
-- Draft release notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/release-notes.md`
+- API/E2E investigation: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/api-e2e-coverage-investigation.md`
+- API/E2E report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/api-e2e-execution-coverage-report.md`
+- API/E2E revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/api-e2e-revision-record.md`
+- Docs sync: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/docs-sync-report.md`
+- Delivery revisions: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/delivery-revision-record.md`
+- Release/deployment report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/release-deployment-report.md`
+- Draft release notes: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/release-notes.md`
 
-## User Verification And Finalization Hold
+## User Verification And Finalization
 
-Explicit user verification has not yet been received. Before finalization, please verify:
-
-1. A failed tool row remains compact and red in the center stream and contains no diagnostic body.
-2. Clicking the row opens/highlights the matching Activity item without opening Error.
-3. Activity Error starts collapsed; expanding it shows the complete diagnostic and collapse/reopen preserves it.
-
-On explicit acceptance, Delivery will refresh `origin/personal` again, protect the accepted state, re-integrate/recheck if the target advanced, archive the ticket under `tickets/done/`, commit/push the ticket branch, merge/push `personal`, and perform only explicitly authorized/applicable release and safe cleanup work.
+- Verification reference: User message on 2026-09-02: `now finalize and release thanks.`
+- Accepted state protection: Local checkpoint `b65d57593d1cd978d11fe9ce88ba9a3a64be2b12` contains the validated package, synchronized architecture doc, and DR-001 handoff.
+- Post-acceptance refresh: `origin/personal` remained `29fffb99a2219bd0848697b01001228e4568b287`, already an ancestor of the accepted checkpoint. No re-integration or renewed verification was required.
+- Ticket archive: Moved to `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation` before the final ticket-branch commit.
+- Release authorization: Stable `v1.4.66`, verified absent locally/remotely and next after package version/tag `1.4.65` / `v1.4.65`.
+- Evidence: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/delivery-evidence/dr-002-user-verification-refresh.log`.
+- Remaining sequence: Commit/push the archived ticket branch, merge/push current `personal`, run the documented release helper once, verify the tag-triggered workflows/publication, record final evidence, and clean up only when safe.

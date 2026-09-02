@@ -6,7 +6,7 @@
 - Trigger: Delivery ingress after direct-route API/E2E `API-REV-001` passed at `19413c3a95dcc20398767387b69a818a288359f8` with 99% confidence.
 - Bootstrap base reference: `origin/personal@29fffb99a2219bd0848697b01001228e4568b287` from `investigation-notes.md`.
 - Integrated base reference used for docs sync: `origin/personal@29fffb99a2219bd0848697b01001228e4568b287`; it is already an ancestor of validated HEAD `19413c3a95dcc20398767387b69a818a288359f8`.
-- Post-integration verification reference: `/home/autobyteus/workspace/autobyteus-workspace/tickets/in-progress/compact-center-tool-error-presentation/delivery-evidence/dr-001-integration-refresh.log`; `git merge --ff-only origin/personal` returned `Already up to date`.
+- Post-integration verification reference: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/compact-center-tool-error-presentation/delivery-evidence/dr-001-integration-refresh.log`; `git merge --ff-only origin/personal` returned `Already up to date`.
 
 ## Why Docs Were Updated
 
