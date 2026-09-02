@@ -17,6 +17,20 @@ const logger = {
 
 const hasEntries = (value: Readonly<JsonObject>): boolean => Object.keys(value).length > 0;
 
+const isExplicitStaleTurnBoundary = (
+  eventTurnId: string | null,
+  activeTurnId: string | null,
+): boolean => Boolean(
+  eventTurnId &&
+  activeTurnId &&
+  eventTurnId !== activeTurnId,
+);
+
+const noEmissionResult = (): CodexNotificationHandlingResult => Object.freeze({
+  localDerivedEvents: Object.freeze([]),
+  emitNativeMessage: false,
+});
+
 export type CodexNotificationHandlingResult = Readonly<{
   localDerivedEvents: readonly CodexLocalDerivedEventInput[];
   emitNativeMessage: boolean;
@@ -36,8 +50,11 @@ export const handleAppServerNotification = (
     const turn = asObject(params.turn);
     codexThread.markTurnStarted(asString(turn?.id));
   } else if (eventMethod === CodexThreadEventName.TURN_COMPLETED) {
-    const turn = asObject(params.turn);
-    codexThread.markTurnCompleted(asString(turn?.id));
+    const eventTurnId = resolveTurnIdFromAppServerMessage(params);
+    if (isExplicitStaleTurnBoundary(eventTurnId, codexThread.activeTurnId)) {
+      return noEmissionResult();
+    }
+    codexThread.markTurnCompleted(eventTurnId);
   } else if (eventMethod === CodexThreadEventName.THREAD_STARTED) {
     const thread = asObject(params.thread);
     const nextThreadId = asString(thread?.id);
@@ -56,7 +73,11 @@ export const handleAppServerNotification = (
     ) {
       codexThread.setCurrentStatus("RUNNING");
     } else if (statusType === "error" || statusType === "failed") {
-      const turnId = resolveTurnIdFromAppServerMessage(params) ?? codexThread.activeTurnId;
+      const eventTurnId = resolveTurnIdFromAppServerMessage(params);
+      if (isExplicitStaleTurnBoundary(eventTurnId, codexThread.activeTurnId)) {
+        return noEmissionResult();
+      }
+      const turnId = eventTurnId ?? codexThread.activeTurnId;
       if (turnId) {
         codexThread.markTurnFailed(turnId);
         localDerivedEvents.push({
@@ -77,13 +98,23 @@ export const handleAppServerNotification = (
       codexThread.setCurrentStatus("ERROR");
     }
   } else if (eventMethod === CodexThreadEventName.ERROR) {
-    const turnId = resolveTurnIdFromAppServerMessage(params) ?? codexThread.activeTurnId;
+    const eventTurnId = resolveTurnIdFromAppServerMessage(params);
+    const errorEffect = params.willRetry === true ? "diagnostic" : "terminal";
+    if (
+      errorEffect === "terminal" &&
+      isExplicitStaleTurnBoundary(eventTurnId, codexThread.activeTurnId)
+    ) {
+      return noEmissionResult();
+    }
+    const turnId = eventTurnId ?? codexThread.activeTurnId;
     if (turnId) {
-      codexThread.markTurnFailed(turnId);
+      if (errorEffect === "terminal") {
+        codexThread.markTurnFailed(turnId);
+      }
       eventParams = {
         ...params,
         error_scope: "turn",
-        error_effect: "terminal",
+        error_effect: errorEffect,
         turn_id: turnId,
       };
     }
