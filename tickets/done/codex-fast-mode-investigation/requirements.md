@@ -28,7 +28,7 @@ Replace AutoByteus's deprecated Codex Fast capability discovery with the current
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/fast-mode-probe-report.md` | Runtime/protocol/code evidence | `REQ-001`–`REQ-006` | `AC-001`–`AC-010` | Complete / `N/A` evidence | Establishes current correctness and structured metadata availability. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/fast-mode-probe-report.md` | Runtime/protocol/code evidence | `REQ-001`–`REQ-006` | `AC-001`–`AC-010` | Complete / `N/A` evidence | Establishes current correctness and structured metadata availability. |
 
 ## Design Health Assessment
 

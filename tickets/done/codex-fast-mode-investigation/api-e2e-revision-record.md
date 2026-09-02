@@ -12,7 +12,7 @@
 
 ### API-REV-001 — Canonical structured Fast catalog parity baseline
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/code-review-report.md`; API/E2E Round 1.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/code-review-report.md`; API/E2E Round 1.
 - Triggering finding or scenario IDs: known stale live raw `advertisesFast` projection; `API-CAT-001`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-001`, `SR-002`; `ARCH-REV-001`; `IR-001`; `CRR-001`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: establish the first authoritative API/E2E result after source review and make live coverage independently assert the approved canonical structured contract.
@@ -37,10 +37,10 @@
 None. `API-REV-001` has prior result `N/A`. The two initial 0-test setup failures in this same round were resolved locally before the completed result: `prepare:shared` fixed server integration imports and `nuxi prepare` fixed frontend generated metadata.
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`
   - this `api-e2e-revision-record.md`
-  - retained logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/`
+  - retained logs under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/`
 - Prior result and confidence: `N/A`
 - Current result and confidence: `Pass / 96.9%`
 - New or remaining failure IDs: no feature failure ID. `API-REG-001` remains a non-blocking broad repository failure: 63 failed files / 177 failed tests across unrelated/stale suites, while the target catalog scenario passed.
@@ -53,7 +53,7 @@ None. `API-REV-001` has prior result `N/A`. The two initial 0-test setup failure
 
 ### API-REV-002 — Truthful reasoning-and-Fast live scenario name
 
-- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md`; API/E2E Round 2.
+- Triggering role, report path, and round: `/code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md`; API/E2E Round 2.
 - Triggering finding or scenario IDs: `CRR-002` / `TEST-001`; `API-CAT-001`.
 - Related solution, architecture-review, implementation, code-review, API/E2E, or delivery revision IDs: `SR-001`, `SR-002`; `ARCH-REV-001`; `IR-001`; `CRR-001`, `CRR-002`; `API-REV-001`; delivery `N/A`.
 - Why this coverage/execution revision was recorded: proportional review confirmed all live structured-capability logic and evidence but found that the durable scenario name and runner output described only reasoning. The name therefore had to state both advertised reasoning and Fast capability parity before delivery.
@@ -81,10 +81,10 @@ None. `API-REV-001` has prior result `N/A`. The two initial 0-test setup failure
 | `TEST-001` | `Local Fix` / `/api_e2e_engineer` | Scenario description now explicitly names both advertised reasoning and Fast capability parity; unchanged live assertions were rerun | Commit `06bcb57cf365ebc6ba12aef4ba4472e091fcd066`; `api-e2e-evidence/16-round2-live-catalog-name-rerun.log`; `17-round2-name-diff-audit.log` | Resolved |
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`
-  - this `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-revision-record.md`
-  - retained Round 2 logs `15-round2-prepare-shared.log` through `18-round2-cleanup.log` under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`
+  - this `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-revision-record.md`
+  - retained Round 2 logs `15-round2-prepare-shared.log` through `18-round2-cleanup.log` under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/`
 - Prior result and confidence: `Pass / 96.9%`
 - Current result and confidence: `Pass / 96.9%`
 - New or remaining failure IDs: none for the feature or durable test. `API-REG-001` remains the preserved non-blocking Round 1 broad repository failure; it was not rerun or relabeled.
@@ -122,12 +122,12 @@ None. `API-REV-001` has prior result `N/A`. The two initial 0-test setup failure
 No new failure was discovered. `TEST-001` remains resolved by Round 2; Round 3 did not modify the durable test and therefore introduces no additional proportional test-code review surface.
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`
-  - this `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/19-round3-full-stack.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/20-round3-browser-runtime-audit.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/21-round3-cleanup.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`
+  - this `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/19-round3-full-stack.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/20-round3-browser-runtime-audit.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/21-round3-cleanup.log`
   - browser screenshots `/Users/normy/.autobyteus/browser-artifacts/758f2e-1788317331771.png` and `/Users/normy/.autobyteus/browser-artifacts/758f2e-1788317606633.png`.
 - Prior result and confidence: `Pass / 96.9%`
 - Current result and confidence: `Pass / 98.7%`

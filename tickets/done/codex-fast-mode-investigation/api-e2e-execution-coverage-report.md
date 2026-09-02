@@ -2,22 +2,22 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/fast-mode-probe-report.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/solution-revision-record.md` (`SR-001`, `SR-002`)
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/implementation-revision-record.md` (`IR-001`)
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
-- API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md` (`Fail`; `TEST-001` Local Fix)
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/fast-mode-probe-report.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/solution-revision-record.md` (`SR-001`, `SR-002`)
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/implementation-revision-record.md` (`IR-001`)
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/code-review-revision-record.md` (`CRR-001`, `CRR-002`)
+- API/E2E Test Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md` (`Fail`; `TEST-001` Local Fix)
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-003`
 - Current Execution Round: `3`
 - Trigger: explicit user request to start the real backend/frontend, import `/Users/normy/autobyteus_org/autobyteus-agents` through the browser, run Daily Assistant with Codex Fast, and validate the result like a real user using `open_tab`.
@@ -26,7 +26,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: `Yes`
 - Investigation plan followed: `Yes` — Round 3's temporary real-browser plan was recorded before service startup. The canonical isolated stack, package import, Daily Assistant/Codex Fast journey, runtime-state/log correlation, and owned-resource cleanup were then executed exactly as planned.
 - Existing coverage decisions revised during execution, with evidence:
@@ -178,27 +178,27 @@ None.
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/01-normalizer-unit.log` | Focused mapping evidence | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/02-live-codex-catalog-graphql.log` | Initial live setup failure | Retained | 0 tests; missing shared output |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/03-prepare-shared.log` | Setup remediation | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/04-live-codex-catalog-graphql-retry.log` | Corrected live parity | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/05-live-codex-catalog-graphql-positive.log` | Final positive live parity | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/06-runtime-propagation-unit.log` | Preserved runtime evidence | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/07-generic-config-ui-unit.log` | Initial frontend setup failure | Retained | 0 tests; missing Nuxt metadata |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/08-nuxt-prepare.log` | Frontend setup remediation | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/09-generic-config-ui-unit-retry.log` | Generic form evidence | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/10-server-production-build.log` | Build/bootstrap evidence | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/11-diff-legacy-audit.log` | Diff/legacy audit | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/12-full-server-live-codex.log` | Full live-enabled repository evidence | Retained | Overall Fail; target Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/13-environment-and-full-suite-summary.log` | Runtime and failure summary | Retained | Non-secret |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/14-cleanup.log` | Cleanup evidence | Retained | Generated outputs removed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/15-round2-prepare-shared.log` | Round 2 setup prerequisite | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/16-round2-live-catalog-name-rerun.log` | Round 2 focused live `API-CAT-001` evidence | Retained | Pass — 1/1; corrected runner name visible |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/17-round2-name-diff-audit.log` | Round 2 one-line name/diff/legacy audit | Retained | Pass |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/18-round2-cleanup.log` | Round 2 cleanup evidence | Retained | Generated shared outputs removed |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/19-round3-full-stack.log` | Canonical backend/frontend build, readiness, WebSocket/run, and shutdown lifecycle | Retained | Pass; both readiness markers and actual Codex run publication present |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/20-round3-browser-runtime-audit.log` | Browser journey plus persisted runtime/trace correlation | Retained | Pass; exact response and `service_tier: "fast"` captured |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-evidence/21-round3-cleanup.log` | Tab/service/port/isolated-state cleanup audit | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/01-normalizer-unit.log` | Focused mapping evidence | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/02-live-codex-catalog-graphql.log` | Initial live setup failure | Retained | 0 tests; missing shared output |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/03-prepare-shared.log` | Setup remediation | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/04-live-codex-catalog-graphql-retry.log` | Corrected live parity | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/05-live-codex-catalog-graphql-positive.log` | Final positive live parity | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/06-runtime-propagation-unit.log` | Preserved runtime evidence | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/07-generic-config-ui-unit.log` | Initial frontend setup failure | Retained | 0 tests; missing Nuxt metadata |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/08-nuxt-prepare.log` | Frontend setup remediation | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/09-generic-config-ui-unit-retry.log` | Generic form evidence | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/10-server-production-build.log` | Build/bootstrap evidence | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/11-diff-legacy-audit.log` | Diff/legacy audit | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/12-full-server-live-codex.log` | Full live-enabled repository evidence | Retained | Overall Fail; target Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/13-environment-and-full-suite-summary.log` | Runtime and failure summary | Retained | Non-secret |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/14-cleanup.log` | Cleanup evidence | Retained | Generated outputs removed |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/15-round2-prepare-shared.log` | Round 2 setup prerequisite | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/16-round2-live-catalog-name-rerun.log` | Round 2 focused live `API-CAT-001` evidence | Retained | Pass — 1/1; corrected runner name visible |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/17-round2-name-diff-audit.log` | Round 2 one-line name/diff/legacy audit | Retained | Pass |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/18-round2-cleanup.log` | Round 2 cleanup evidence | Retained | Generated shared outputs removed |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/19-round3-full-stack.log` | Canonical backend/frontend build, readiness, WebSocket/run, and shutdown lifecycle | Retained | Pass; both readiness markers and actual Codex run publication present |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/20-round3-browser-runtime-audit.log` | Browser journey plus persisted runtime/trace correlation | Retained | Pass; exact response and `service_tier: "fast"` captured |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-evidence/21-round3-cleanup.log` | Tab/service/port/isolated-state cleanup audit | Retained | Pass |
 | `/Users/normy/.autobyteus/browser-artifacts/758f2e-1788317331771.png` | Package-import browser screenshot | Retained | Exact imported local-package row |
 | `/Users/normy/.autobyteus/browser-artifacts/758f2e-1788317606633.png` | Completed live Daily Assistant browser screenshot | Retained | Exact prompt/response and Idle state |
 

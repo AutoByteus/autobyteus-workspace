@@ -23,14 +23,14 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/s
 - Refreshed base: `origin/personal` at `773bce779f195c22194c6bed1b242be6e222d06e`
 - Remote refresh: `git fetch origin --prune` succeeded on 2026-09-01 before worktree creation.
 - Expected finalization target: `personal`.
-- Artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation`
+- Artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation`
 - Note: `/Users/normy/autobyteus_org/browser_docker` is the selected Codex execution workspace, not the repository owning this integration.
 
 ## Supplemental Artifact Inventory
 
 | Artifact Path | Purpose | Related IDs | Status / Approval |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/fast-mode-probe-report.md` | Runtime, protocol, model-list, code-path, and real-run evidence | `REQ-001`–`REQ-006`; `AC-001`–`AC-010` | Complete / `N/A` evidence |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/fast-mode-probe-report.md` | Runtime, protocol, model-list, code-path, and real-run evidence | `REQ-001`–`REQ-006`; `AC-001`–`AC-010` | Complete / `N/A` evidence |
 
 The rejected draft effective-tier UI/UX supplement was removed after the user declined that behavior; it is not part of the authoritative package.
 

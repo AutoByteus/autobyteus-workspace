@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — Discover Codex Fast from canonical structured service tiers
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/design-review-report.md`; Round 1 / `ARCH-REV-001` Pass.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/design-review-report.md`; Round 1 / `ARCH-REV-001` Pass.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

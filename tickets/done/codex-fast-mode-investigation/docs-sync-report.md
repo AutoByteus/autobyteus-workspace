@@ -3,11 +3,11 @@
 ## Scope
 
 - Ticket: `codex-fast-mode-investigation`
-- Current delivery revision: `DR-003`
+- Current delivery revision: `DR-004`
 - Trigger: `CRR-003` cumulative delivery handoff after implementation-source Pass and proportional durable test-code Pass for API/E2E `API-REV-002`
 - Bootstrap base reference: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`
-- Integrated base reference used for docs sync: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`, already contained by reviewed HEAD `06bcb57cf365ebc6ba12aef4ba4472e091fcd066`
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/delivery-evidence/dr-003-round3-return-handoff.log`; API/E2E authority is `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md` (`API-REV-003`, Pass / 98.7%)
+- Integrated base reference used for docs sync: `origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284`, integrated at ticket HEAD `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-004-post-acceptance-normalizer.log`; API/E2E authority remains `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md` (`API-REV-003`, Pass / 98.7%)
 
 ## Why Docs Were Updated
 
@@ -55,12 +55,12 @@ No public API, database schema, persisted record format, UI surface, packaging p
 - Fresh Delivery refreshes left `origin/personal` unchanged at `773bce779f195c22194c6bed1b242be6e222d06e`; it is already an ancestor of reviewed/API-E2E-tested HEAD `06bcb57cf365ebc6ba12aef4ba4472e091fcd066` with divergence `3 ahead / 0 behind`.
 - No merge or post-refresh duplicate executable rerun was required because no new base commit entered the validated state. `API-REV-003` validates the exact unchanged source/test HEAD through the requested real browser journey; Delivery changed only documentation and ticket-local artifacts.
 - `git diff --check`, integrated ancestry, no-unmerged-path, durable doc assertion, deprecated production/live-projection absence, cumulative-artifact presence, Round 2/3 evidence presence, Round 3 cleanup, and residual-health-statement checks passed.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/delivery-evidence/dr-001-integration-docs-handoff.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/delivery-evidence/dr-003-round3-return-handoff.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-001-integration-docs-handoff.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/delivery-evidence/dr-003-round3-return-handoff.log`.
 
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Present the DR-003 handoff with completed real-browser evidence for explicit user verification. Hold ticket archival, commits/pushes owned by finalization, target merge/push, release/deployment, and cleanup until acceptance.
+- Next delivery action: User verification and release authorization are complete. Archive the ticket, finalize the ticket branch and `personal`, publish stable `v1.4.65` with the documented release helper, verify rollout outputs, and perform safe cleanup.
 - Notes: The Round 1 full live-enabled server command remains non-clean (`63` failed files / `177` failed tests) for broad unrelated/stale repository debt, while the exact changed-boundary catalog test passed inside that run and focused runs. The generic server typecheck remains unusable because of the pre-existing `rootDir=src` plus included-tests `TS6059` mismatch. Neither condition is relabeled as clean or attributed to this change.
 
 ## Blocked Or Escalated Follow-Up
@@ -71,7 +71,7 @@ No public API, database schema, persisted record format, UI surface, packaging p
 
 - Trigger: The user requested an additional full-stack browser journey after DR-001, and API/E2E Round 3 was recorded before service startup.
 - Current docs impact: `No additional impact established yet.` The DR-001 documentation edits remain accurate for the last completed source/test state, but their final delivery authority is held until Round 3 completes.
-- Authoritative pre-execution plan: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`.
+- Authoritative pre-execution plan: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-coverage-investigation.md`.
 - Result: `Pass for documentation status recording; delivery continuation held.` Do not infer the Round 3 browser result, cleanup result, or final acceptance from this entry.
 
 ## DR-003 Completed Real-Browser Re-entry Check
@@ -80,3 +80,11 @@ No public API, database schema, persisted record format, UI surface, packaging p
 - Repository HEAD and durable code/test scope remained unchanged; `CRR-004` is correctly `Not Applicable` for Round 3 and preserves the prior review passes.
 - The completed journey confirms the DR-001 documentation statements rather than changing the provider/product contract, persistence posture, UI ownership, packaging, or deployment method.
 - Result: `Pass — no additional long-lived documentation edit required.` The existing README and Codex integration edits remain the authoritative documentation delta.
+
+## DR-004 Post-Acceptance Integration Check
+
+- The user explicitly accepted the DR-003 browser result and requested finalization plus release.
+- The mandatory refresh advanced `origin/personal` from `773bce779f195c22194c6bed1b242be6e222d06e` to `bed4c05a1c7860c7bd392c61dd7d26c239598284` by six commits concerning agent-team handoff prompt selection and that ticket's records.
+- Delivery protected the accepted state at `c91749e089ddd9658231eafb351918c22922e914`, merged the new base as `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`, confirmed no overlap with the Codex implementation/docs paths, and passed the focused normalizer suite `10/10`.
+- The new base does not change Fast discovery, stored/runtime `fast`, the generic configuration form, the real-browser journey, packaging, or release documentation. Renewed verification is not required.
+- Result: `Pass — existing long-lived documentation remains accurate on the post-acceptance integrated state.`

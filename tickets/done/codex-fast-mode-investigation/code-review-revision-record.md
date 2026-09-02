@@ -6,18 +6,18 @@ The latest canonical `code-review-report.md` or `api-e2e-test-review-report.md` 
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/code-review-report.md` | Implementation Review / initial `IR-001` source-review handoff | `N/A` | `Pass` | None |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md` | Proportional Test-Code Review / `API-REV-001` durable integration-test update | `Pass` (implementation source review) | `Fail` (proportional test-code review) | `TEST-001` |
-| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md` | Proportional Test-Code Re-review / `API-REV-002` name-only correction | `Fail` (proportional test-code review) | `Pass` (proportional test-code review) | `TEST-001` resolved |
-| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md` | Proportional Test-Code Review / `API-REV-003` user-requested browser validation | `Pass` (Round 2 proportional test-code review) | `Not Applicable` (no Round 3 durable test change) | None |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/code-review-report.md` | Implementation Review / initial `IR-001` source-review handoff | `N/A` | `Pass` | None |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md` | Proportional Test-Code Review / `API-REV-001` durable integration-test update | `Pass` (implementation source review) | `Fail` (proportional test-code review) | `TEST-001` |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md` | Proportional Test-Code Re-review / `API-REV-002` name-only correction | `Fail` (proportional test-code review) | `Pass` (proportional test-code review) | `TEST-001` resolved |
+| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md` | Proportional Test-Code Review / `API-REV-003` user-requested browser validation | `Pass` (Round 2 proportional test-code review) | `Not Applicable` (no Round 3 durable test change) | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial canonical Fast capability-discovery source-review pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/code-review-report.md`
 - Review entry point and round: `Implementation Review`, Round 1
-- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/implementation-handoff.md`; no finding/scenario ID; commit `811180684b9b1e2b1c1294fb87f2623b561dee07`.
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/implementation-handoff.md`; no finding/scenario ID; commit `811180684b9b1e2b1c1294fb87f2623b561dee07`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -38,9 +38,9 @@ None.
 
 ### CRR-002 — Structured Fast live-parity test review requires a truthful scenario name
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Proportional Test-Code Review`, Round 1
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`; `API-REV-001`, `API-CAT-001`; durable coverage commit `f6c16014ff0868606ec8a400b74ea24de90fbe0f`.
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`; `API-REV-001`, `API-CAT-001`; durable coverage commit `f6c16014ff0868606ec8a400b74ea24de90fbe0f`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -61,9 +61,9 @@ None. `CRR-001` had no findings.
 
 ### CRR-003 — Reasoning-and-Fast live scenario name passes re-review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Proportional Test-Code Review`, Round 2 re-review
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`; `API-REV-002`, `API-CAT-001`, `TEST-001`; durable coverage commit `06bcb57cf365ebc6ba12aef4ba4472e091fcd066`.
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`; `API-REV-002`, `API-CAT-001`, `TEST-001`; durable coverage commit `06bcb57cf365ebc6ba12aef4ba4472e091fcd066`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -86,9 +86,9 @@ None. `CRR-001` had no findings.
 
 ### CRR-004 — Round 3 browser evidence requires no durable test-code review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Proportional Test-Code Review`, Round 3
-- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`; `API-REV-003`, `API-BROWSER-001`; no test-review finding ID.
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/api-e2e-execution-coverage-report.md`; `API-REV-003`, `API-BROWSER-001`; no test-review finding ID.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`

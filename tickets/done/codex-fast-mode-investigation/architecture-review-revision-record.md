@@ -1,6 +1,6 @@
 # Architecture Review Revision Record
 
-The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/design-review-report.md` remains authoritative. This record preserves the concise architecture-review chronology.
+The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/design-review-report.md` remains authoritative. This record preserves the concise architecture-review chronology.
 
 ## Revision Index
 
@@ -12,9 +12,9 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-inv
 
 ### ARCH-REV-001 — Initial clean-cut capability-discovery design pass
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture-review handoff after `SR-002` recorded the user's 2026-09-01 approval of the deprecated capability-discovery cleanup and rejection of effective-tier UI/runtime changes.
-- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/solution-revision-record.md`; no architecture finding ID.
+- Triggering role, report path, and finding IDs: `/solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/solution-revision-record.md`; no architecture finding ID.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Pass`

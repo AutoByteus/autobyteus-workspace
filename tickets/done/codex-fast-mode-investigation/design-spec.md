@@ -26,7 +26,7 @@ Inside the existing Codex model normalizer, replace deprecated speed-tier parsin
 
 | Artifact Path | Purpose | Related IDs | Relationship | Status |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/in-progress/codex-fast-mode-investigation/fast-mode-probe-report.md` | Protocol/runtime/model-list evidence | `REQ-001`–`REQ-006`; `AC-001`–`AC-010` | Proves current execution correctness and canonical metadata availability | Complete / approval `N/A` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation/fast-mode-probe-report.md` | Protocol/runtime/model-list evidence | `REQ-001`–`REQ-006`; `AC-001`–`AC-010` | Proves current execution correctness and canonical metadata availability | Complete / approval `N/A` |
 
 ## Task Design Health Assessment
 

@@ -1,0 +1,6 @@
+DR-004 post-acceptance integration cleanup
+timestamp=2026-09-02T03:26:34Z
+removed=autobyteus-application-sdk-contracts/dist
+removed=autobyteus-application-backend-sdk/dist
+retained_preexisting=autobyteus-ts/dist
+cleanup=PASS
