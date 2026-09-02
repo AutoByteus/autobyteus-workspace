@@ -67,4 +67,16 @@ describe('toolCardPresentation', () => {
     expect(approved.approvalTarget).toBeNull();
     expect(approved.approvalTargetPrimitives).toEqual([]);
   });
+
+  it('keeps Activity-only failure detail out of the compact center presentation and witness', () => {
+    const diagnostic = 'first line\ncomplete Activity diagnostic\nExit code: 23';
+    const presentation = buildToolCardPresentation(toolSegment({
+      status: 'error',
+      error: diagnostic,
+    }));
+
+    expect(presentation).not.toHaveProperty('errorMessage');
+    expect(getToolCardPresentationWitnessValues(presentation)).not.toContain(diagnostic);
+    expect(presentation.statusKey).toBe('error');
+  });
 });

@@ -28,7 +28,6 @@ export interface ToolCardPresentation {
   toolName: string;
   statusKey: ToolCardStatusPresentationKey;
   summary: ToolDisplaySummary | null;
-  errorMessage: string | null;
   approvalTarget: ToolApprovalTarget | null;
   approvalTargetPrimitives: ToolCardPresentationPrimitive[];
 }
@@ -38,7 +37,6 @@ export interface EventMonitorPageToolCardInput {
   toolName: string;
   statusKey: ToolCardStatusPresentationKey;
   summaryArgs: Record<string, string | null | undefined>;
-  errorMessage: string | null;
   approvalTarget: ToolApprovalTarget | null;
 }
 
@@ -67,7 +65,6 @@ export const buildEventMonitorPageToolCardPresentation = (
     toolName: input.toolName,
     statusKey: input.statusKey,
     summary: getToolDisplaySummary(input.toolName, input.summaryArgs, { preferCompactPath: true }),
-    errorMessage: input.errorMessage,
     approvalTarget,
     approvalTargetPrimitives: flattenApprovalTarget(approvalTarget),
   };
@@ -104,7 +101,6 @@ export const buildToolCardPresentation = (
     toolName,
     statusKey,
     summary: deriveSummary(segment, toolName),
-    errorMessage: segment.error || null,
     approvalTarget,
     approvalTargetPrimitives: flattenApprovalTarget(approvalTarget),
   };
@@ -118,6 +114,5 @@ export const getToolCardPresentationWitnessValues = (
   presentation.summary?.kind ?? null,
   presentation.summary?.text ?? null,
   presentation.summary?.title ?? null,
-  presentation.errorMessage,
   ...presentation.approvalTargetPrimitives,
 ];

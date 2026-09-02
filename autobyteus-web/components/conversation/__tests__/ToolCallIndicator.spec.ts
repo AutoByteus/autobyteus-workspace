@@ -142,32 +142,50 @@ describe('ToolCallIndicator.vue', () => {
     expect(summary.attributes('title')).toBe(command);
   });
 
-  it('keeps the inline error details row available without restoring the failed label', () => {
+  it('keeps a failed tool compact without rendering any short error detail', () => {
     const wrapper = mountIndicator({
       status: 'error',
       errorMessage: 'Permission denied',
     });
 
-    expect(wrapper.text()).toContain('Permission denied');
+    expect(wrapper.text()).not.toContain('Permission denied');
     expect(wrapper.text().toLowerCase()).not.toContain('failed');
+    expect(wrapper.find('[data-test="tool-error-message"]').exists()).toBe(false);
     expect(wrapper.find('[data-icon="heroicons:exclamation-circle-solid"]').exists()).toBe(true);
   });
 
-  it('preserves multiline diagnostic structure in the inline error details row', () => {
+  it('does not copy a very large multiline diagnostic into center visible or DOM text', () => {
+    const lines = Array.from({ length: 1915 }, (_, index) => `line-${index}: ${'x'.repeat(170)}`);
+    const diagnosticPrefix = lines.join('\n');
+    const diagnostic = `${diagnosticPrefix}${'x'.repeat(348_978 - diagnosticPrefix.length)}`;
     const wrapper = mountIndicator({
       status: 'error',
-      errorMessage: 'CODEX_FAILURE_STDERR_MARKER\nExit code: 23',
+      toolName: 'run_bash',
+      args: { command: 'rg evidence | head -1400' },
+      errorMessage: diagnostic,
     });
 
-    const errorMessage = wrapper.get('[data-test="tool-error-message"]');
-    expect(errorMessage.text()).toContain('CODEX_FAILURE_STDERR_MARKER\nExit code: 23');
-    expect(errorMessage.classes()).toContain('whitespace-pre-wrap');
+    expect(diagnostic).toHaveLength(348_978);
+    expect(diagnostic.split('\n')).toHaveLength(1915);
+    expect(wrapper.text()).toContain('run_bash');
+    expect(wrapper.text()).toContain('rg evidence | head -1400');
+    expect(wrapper.text()).not.toContain('line-0:');
+    expect(wrapper.find('[data-test="tool-error-message"]').exists()).toBe(false);
   });
 
   it('keeps non-awaiting rows navigable to the Activity panel', async () => {
     const wrapper = mountIndicator({ status: 'success' });
 
     await wrapper.get('[role="button"]').trigger('click');
+
+    expect(setActiveTab).toHaveBeenCalledWith('progress');
+    expect(setHighlightedActivity).toHaveBeenCalledWith('run-1', 'abc123def456');
+  });
+
+  it.each(['keydown.enter', 'keydown.space'])('keeps failed-row %s navigation to the exact Activity item', async (event) => {
+    const wrapper = mountIndicator({ status: 'error', errorMessage: 'diagnostic' });
+
+    await wrapper.get('[role="button"]').trigger(event);
 
     expect(setActiveTab).toHaveBeenCalledWith('progress');
     expect(setHighlightedActivity).toHaveBeenCalledWith('run-1', 'abc123def456');

@@ -73,7 +73,6 @@ const toAssistantVisual = (
         toolName: visual.toolName,
         statusKey: visual.statusKey as ToolCardStatusPresentationKey,
         summaryArgs: visual.summaryArgs,
-        errorMessage: visual.errorMessage ?? null,
         approvalTarget: (visual.approvalTarget ?? null) as ToolApprovalTarget | null,
       }),
     };
