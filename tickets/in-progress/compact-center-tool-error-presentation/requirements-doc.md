@@ -2,13 +2,13 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current requirements revision ID: `RER-002`
+- Status: `Approved Direct-Implementation`
+- Current requirements revision ID: `RER-003`
 - Package identifier: `AUT-WEB-COMPACT-TOOL-ERROR-001`
 - Request / ticket: `compact-center-tool-error-presentation`
 - Requirements owner: Requirements Engineer (`/requirements_engineer`)
 - Date: 2026-09-02
-- Approval state and reference: Not yet approved. `RER-002` incorporates the user's clarification that the right-side Activity Error subsection must also start collapsed, like Result; explicit approval of the complete revised package has not yet been recorded.
+- Approval state and reference: Approved by the user on 2026-09-02 in direct response to the `RER-002` review summary: “Yes, approved.” `RER-003` records approval and routing without changing intended behavior.
 
 ## Problem And Desired Outcome
 
@@ -133,11 +133,11 @@ The prior package's backend mapping, explicit-error precedence, output/exit-code
 - Product prototype ticket record and folder (externally owned): `N/A — not applicable`
 - Prototype revision or commit: `N/A — not applicable`
 - UI/UX user-confirmation reference: User messages on 2026-09-02: the middle failed state should be a simple row like successful tool activity but red and without error content; the right-side Activity Error must start closed like Result so the user chooses whether to open it.
-- Approved visual-reference baseline: Pending formal requirements approval. Current-state evidence is `evidence/user-center-error-flood.png`, `evidence/user-activity-error-detail.png`, and `evidence/user-activity-error-expanded-default.png`.
+- Approved visual-reference baseline: The user explicitly approved the normative target described in this document on 2026-09-02. Current-state evidence is `evidence/user-center-error-flood.png`, `evidence/user-activity-error-detail.png`, and `evidence/user-activity-error-expanded-default.png`; no separate future-state prototype was requested.
 - Normative visual and interaction details, including the approved final references: The center failed state is the same compact row pattern as normal/successful tool activity, with existing red border/exclamation icon, tool name, compact context, chevron, and navigation; the entire inline error body is absent. The right Activity outer card retains its current default and shows a collapsed Error heading/chevron like Result; the full body appears only after explicit Error activation.
 - Explicitly illustrative fixture content or permitted implementation variation: The captured command, worktree paths, document text, 348,978-character count, and exit code are evidence fixtures. Any failure payload length/content must produce the same compact-center outcome.
 - Required screens, states, transitions, feedback, responsive behavior, or accessibility outcomes: Active and replayed standalone/team center event monitors; right Activity panel; desktop and narrow widths; pointer and Enter/Space navigation. Error text must not remain in the center card's accessible text when visually removed.
-- Explicitly unresolved product decisions: No behavioral ambiguity remains after the user's clarification; formal approval of `DEC-001`, `DEC-002`, and the complete revised package remains pending.
+- Explicitly unresolved product decisions: None. The user's 2026-09-02 approval covers `DEC-001`, `DEC-002`, `ASM-002`, and the complete `RER-002` intended behavior.
 
 ## Quality And Non-Functional Requirements
 
@@ -178,15 +178,15 @@ The prior package's backend mapping, explicit-error precedence, output/exit-code
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| `ASM-001` | The user's “middle area” is the center event-monitor conversation rendering `ToolCallIndicator`, and “right side” is the Activity panel rendering `ToolActivityItem`. | Maps the supplied language/screenshots to verified product surfaces. | Confirm through screenshots and current component hierarchy; user may correct during approval. | High confidence |
-| `ASM-002` | The requested no-detail rule applies to failed cards using the shared center tool-card presentation, not only Codex `run_bash`. | A shared surface should not behave inconsistently based on tool family when the stated issue is placement of detail. | Included explicitly in this approval baseline. | Proposed for approval |
+| `ASM-001` | The user's “middle area” is the center event-monitor conversation rendering `ToolCallIndicator`, and “right side” is the Activity panel rendering `ToolActivityItem`. | Maps the supplied language/screenshots to verified product surfaces. | Confirmed through screenshots, current component hierarchy, clarification, and package approval. | Confirmed |
+| `ASM-002` | The requested no-detail rule applies to failed cards using the shared center tool-card presentation, not only Codex `run_bash`. | A shared surface should not behave inconsistently based on tool family when the stated issue is placement of detail. | Included explicitly in `RER-002` and accepted by the user's 2026-09-02 package approval. | Approved |
 
 ## Open Decisions And Questions
 
 | Decision / Question ID | Question | Why It Matters | Options / Evidence | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| `DEC-001` | Is any center error excerpt desired? | Determines whether card height can still grow and whether detail remains duplicated. | User already stated the middle does not need detailed content. Proposed decision: **no excerpt, no generic body, and no expandable center detail**; use existing red failed treatment and Activity navigation. | User | Proposed for approval |
-| `DEC-002` | May Activity Error auto-open on failure, initial render, replay, selection, or center-card navigation? | Auto-opening would reproduce Activity flooding and contradict the user's choice to inspect details on demand. | User explicitly clarified: **no**. Error starts collapsed like Result and opens only after the user activates Error; highlighting/opening the outer item is not consent to reveal the body. | User | Proposed for approval as part of `RER-002` |
+| `DEC-001` | Is any center error excerpt desired? | Determines whether card height can still grow and whether detail remains duplicated. | **Approved decision: no excerpt, no generic body, and no expandable center detail**; use existing red failed treatment and Activity navigation. | User | Approved 2026-09-02 |
+| `DEC-002` | May Activity Error auto-open on failure, initial render, replay, selection, or center-card navigation? | Auto-opening would reproduce Activity flooding and contradict the user's choice to inspect details on demand. | **Approved decision: no.** Error starts collapsed like Result and opens only after the user activates Error; highlighting/opening the outer item is not consent to reveal the body. | User | Approved 2026-09-02 |
 
 ## Traceability
 
@@ -203,7 +203,7 @@ The prior package's backend mapping, explicit-error precedence, output/exit-code
 
 ## Downstream Architecture Input
 
-- Approved scenario IDs and product-level behavior paths architecture must map: Pending approval; candidate scenario basis is `SCN-001` through `SCN-004`.
+- Approved scenario IDs and product-level behavior paths downstream must preserve: `SCN-001` through `SCN-004`, approved on 2026-09-02.
 - Product and system constraints architecture must preserve: Full Activity/raw/replay diagnostic; default-collapsed Error even after navigation/highlighting; explicit user expansion; existing outer-card and Result defaults; exact invocation correlation; existing failed styling/tool context; live/replay and standalone/team equivalence; approval/non-error behavior; and no backend contract change.
 - Decisions intentionally deferred to architecture design: None at product level. Downstream owns the exact production-path change that prevents center rendering while keeping Activity data intact.
 - Technical facts architecture should verify: `handleToolExecutionFailed` writes one error to both segment and Activity; `buildToolCardPresentation` exposes the segment error as `errorMessage`; `ToolCallIndicator.vue` renders that property inline; `ToolActivityItem.vue` independently renders `activity.error` and currently initializes `sectionStates.error` to `true` while `result` is `false`; existing unit/browser tests intentionally require visible duplicate detail and lack the new default-collapse contract.
@@ -217,27 +217,27 @@ The prior package's backend mapping, explicit-error precedence, output/exit-code
 - Requirements and acceptance criteria are testable and traceable: `Yes`
 - Applicable scenarios are covered with validity and evidence: `Yes`
 - Prototype and supplemental evidence is integrated consistently: `Yes`
-- Applicable UI/UX approval and final visual-reference basis are recorded: `No — current-state screenshots are recorded; explicit approval of the described target is pending`
+- Applicable UI/UX approval and final visual-reference basis are recorded: `Yes — the user approved the normative target on 2026-09-02; current-state screenshots are linked and no separate prototype was requested`
 - Material assumptions and open decisions are visible: `Yes`
-- User approval received: `No`
-- Requirements package ready for downstream route: `No`
-- Remaining blocker: Explicit user approval of revised `RER-002`, including `DEC-001` (no center excerpt), `DEC-002` (Activity Error never auto-opens), and `ASM-002` (shared failed-tool-card scope).
+- User approval received: `Yes — 2026-09-02: “Yes, approved.”`
+- Requirements package ready for downstream route: `Yes`
+- Remaining blocker: `None`
 
 ## Architecture Design Routing Assessment
 
-Complete this section only after `Status` is `Approved` and the Readiness Check passes.
+This assessment follows the user's explicit approval and the passed Readiness Check.
 
-- Assessment status: `N/A — not started; approval not yet received`
-- Assessment owner and date: `N/A — pending approval`
-- Preliminary task size: `N/A — pending approval`
-- Preliminary architectural risk: `N/A — pending approval`
-- Structural surfaces reviewed: `N/A in formal assessment`; investigation covers frontend event presentation, shared state projection, Activity correlation, and durable tests.
-- Payload/content surfaces reviewed: `N/A in formal assessment`; investigation includes short and 348,978-character failure payloads plus current default-visible Activity detail.
-- Structural-impact triggers: `N/A — formal assessment deferred`
-- Evidence paths: `investigation-notes.md`; `observed-long-failure-analysis.md`
-- Decision rationale: The package is not yet approved, so no downstream route may be selected.
-- Selected route: `N/A — pending approval and assessment`
-- Outcome classification: `N/A — requirements remain Ready for Approval`
-- Direct-route conditions all satisfied: `N/A — pending assessment`
-- Architecture design, review, and design-revision artifacts: `N/A — not yet created`
-- Downstream re-entry trigger: Explicit user approval, followed by the Requirements Engineer readiness and routing assessment.
+- Assessment status: `Complete`
+- Assessment owner and date: Requirements Engineer (`/requirements_engineer`), 2026-09-02
+- Preliminary task size: `Medium`
+- Preliminary architectural risk: `Low`
+- Structural surfaces reviewed: Existing frontend tool-card presentation, center conversation component, Activity item with independent outer-card and per-section disclosure state, navigation/highlight behavior, and focused unit/browser validation. Current ownership and components already support the approved behavior.
+- Payload/content surfaces reviewed: Short, multiline, and observed 348,978-character/1,915-line error strings; live and replayed segment/Activity projections; no payload shape change.
+- Structural-impact triggers: `Absent` — no API/external contract, persistence schema/invariant, security/privacy boundary, concurrency/lifecycle, deployment topology, ownership boundary, migration, new architectural pattern, or structural refactoring change is required by the approved behavior.
+- Evidence paths: `investigation-notes.md`; `observed-long-failure-analysis.md`; current source and test paths recorded in the Source Log.
+- Decision rationale: The approved change uses existing presentation and disclosure controls, preserves transport/persistence/replay contracts, and requires no architecture-owned product or technical decision. Scope spans two related UI surfaces plus durable live/replay and responsive validation, supporting a preliminary Medium size, but remains bounded and Low risk.
+- Selected route: `Implementation Engineer`
+- Outcome classification: `Approved Direct-Implementation`
+- Direct-route conditions all satisfied: `Yes` — Medium, Low risk, no present or unknown structural-impact trigger, existing ownership/surfaces are sufficient, and no architecture-owned decision is deferred.
+- Architecture design, review, and design-revision artifacts: `N/A — not applicable for the direct route`
+- Downstream re-entry trigger: Implementation Engineer must recheck the route and return `Design Impact` if implementation evidence reveals a structural trigger, or `Requirement Gap` if a new product decision is required.

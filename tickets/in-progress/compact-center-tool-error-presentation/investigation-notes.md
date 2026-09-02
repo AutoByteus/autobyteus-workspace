@@ -9,15 +9,15 @@
 - Base or reference revision: `origin/personal@29fffb99a2219bd0848697b01001228e4568b287`
 - Bootstrap result: Base fetched/current; repository was clean; dedicated ticket branch created successfully.
 - Bootstrap blocker: None
-- Current requirements revision ID: `RER-002`
-- Investigation status: `RER-002` complete with Activity default-collapse clarification; ready for approval, not approved or routed
+- Current requirements revision ID: `RER-003`
+- Investigation status: Approved requirements and complete direct-implementation routing assessment; ready for rule-based handoff
 
 ## Initial Request And Clarifications
 
 - Original request: Investigate why a failed command shows a very long, mostly normal-looking output in the center event-monitor area, then improve the UI so the middle area does not display detailed error content; existing red failed treatment is enough because the right-side Activity item already provides Error detail.
 - Clarifications received: The user emphasized that the center failed state should use the same simple-row information hierarchy as a normal/successful tool row, only red and without inline Error content. The user then clarified that the right-side Activity Error subsection must also start closed like Result, so the user explicitly chooses whether to open it; navigation/highlighting is not an instruction to auto-open Error.
 - User-supplied facts and constraints: Three screenshots identify the center flooding, the existing Activity diagnostic surface, and the current default-open Error state; raw traces under AutoByteus memory were suggested as the evidence source.
-- Initial ambiguity: Whether the example represented a false failure or a genuine command failure with accumulated stdout; whether the no-detail rule applies only to `run_bash` or the shared failed tool card. Investigation resolved the first and proposes the shared-card interpretation for approval.
+- Initial ambiguity: Whether the example represented a false failure or a genuine command failure with accumulated stdout; whether the no-detail rule applies only to `run_bash` or the shared failed tool card. Investigation resolved the first; the user's package approval accepted the shared-card scope in `ASM-002`.
 
 ## Product And Domain Understanding
 
@@ -36,6 +36,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 2026-09-02 | User | Initial request and two supplied screenshots | Establish desired presentation and evidence target | Center detail is unwanted; existing red state is enough; Activity is the detailed surface | Capture as target behavior and preserve Activity |
 | 2026-09-02 | User | Follow-up clarification and third screenshot | Resolve Activity initial-state behavior | Center should match the normal/successful simple row except for red failure state; Activity Error must be closed by default like Result and opened only by user choice | Record as `RER-002`, `REQ-008`, `AC-010`, and `DEC-002` |
+| 2026-09-02 | User | “Yes, approved.” in direct response to the `RER-002` review summary | Establish approval authority | User explicitly approved the complete revised behavior: compact red center row, no center error body, default-collapsed Activity Error, explicit expansion, and preserved full diagnostic | Record `RER-003`, close `DEC-001`/`DEC-002`/`ASM-002`, pass readiness, and assess route |
 | 2026-09-02 | Image | `evidence/user-activity-error-expanded-default.png` (SHA-256 `ca408a56ceadaa3520259c2c83c5aa92cc3bbfa0278966901a8f645a2121edc6`) | Verify the clarified right-side issue | Failed `run_bash` outer Activity card is open; Arguments is collapsed; Error is expanded and immediately shows its body | Change only Error subsection's default to collapsed; preserve outer card and other section defaults |
 | 2026-09-02 | Image | `evidence/user-center-error-flood.png` | Inspect whole product context | One failed `run_bash` card expands vertically with a huge red monospaced body and hides later center events | Require error-size-independent compact center card |
 | 2026-09-02 | Image | `evidence/user-activity-error-detail.png` | Inspect detailed surface | Right Activity already exposes complete Arguments and Error sections for the same command | Keep Activity detail and navigation |
@@ -48,7 +49,7 @@
 | 2026-09-02 | Test | `autobyteus-web/components/conversation/__tests__/ToolCallIndicator.spec.ts` | Locate durable current expectations | Tests require one-line and multiline inline center errors and navigation | Replace superseded assertions; retain navigation/status coverage |
 | 2026-09-02 | Test | `autobyteus-web/components/progress/__tests__/ToolActivityItem.spec.ts` | Check Activity disclosure coverage | Existing focused fixture uses `error: null`; no failed-Error initial-collapse/explicit-expansion contract was found | Add focused short/large-error disclosure coverage downstream |
 | 2026-09-02 | Test | `autobyteus-web/tests/e2e/codex-command-failure-detail-probe.mjs` and fixture | Locate rendered current expectation | Browser probe explicitly requires identical diagnostic in center and Activity at desktop/narrow widths | Revise probe to compact center plus complete Activity detail |
-| 2026-09-02 | Doc/Contract | `tickets/done/codex-command-failure-detail/requirements-doc.md` (`REQ-CODEX-COMMAND-FAILURE-DETAIL-20260901`, `RER-002`) | Check prior approved intent | Prior package intentionally required both surfaces to display the enriched error; current request is a material UI supersession | Record exact supersession boundary and obtain new approval |
+| 2026-09-02 | Doc/Contract | `tickets/done/codex-command-failure-detail/requirements-doc.md` (`REQ-CODEX-COMMAND-FAILURE-DETAIL-20260901`, `RER-002`) | Check prior approved intent | Prior package intentionally required both surfaces to display the enriched error; current request is a material UI supersession | Exact supersession boundary recorded and approved in `RER-003` |
 | 2026-09-02 | Command | `pnpm -C autobyteus-web exec vitest run ... --no-watch` | Attempt a fresh focused baseline | Not executable in current environment: `pnpm: command not found` | Downstream must run focused tests in a prepared project environment |
 
 ## Relevant Existing Behavior And Supported Product Paths
@@ -93,7 +94,7 @@
 - Security or privacy boundary change: None intended.
 - Concurrency or lifecycle change: None intended.
 - Deployment, migration, ownership-boundary, architectural-pattern, or structural-refactoring change: None evident at requirements stage; a shared presentation/test contract changes but product architecture need not.
-- Confirmed absent, present, or unknown: No structural-impact trigger is currently evident; formal route assessment awaits approval.
+- Confirmed absent, present, or unknown: Confirmed absent for the approved scope. The post-approval assessment found no API/external contract, persisted-data invariant, security/privacy, concurrency/lifecycle, deployment, ownership, migration, new-pattern, or structural-refactoring trigger.
 
 ## Runtime, Probe, Or Reproduction Findings
 
@@ -111,7 +112,7 @@
 | User | Center event monitor must not be flooded by detailed command error output | Direct | No center error body or excerpt | None material |
 | User | Existing red error treatment is enough in center | Direct | Preserve red failed styling/icon and compact metadata | Exact shade/layout remains existing design-system behavior |
 | User | Right Activity provides full Error detail but currently opens it automatically | Direct | Preserve full detail and navigation, but initialize Error closed like Result and open only on explicit user action | No material open question; outer Activity card remains unchanged |
-| Prior approved package | Diagnostic must be retained and useful | Strong historical contract | Supersede only duplication, not transport/data/detail availability | Requires explicit new package approval |
+| Prior approved package | Diagnostic must be retained and useful | Strong historical contract | Supersede only duplication/default disclosure, not transport/data/detail availability | Supersession explicitly approved in this package on 2026-09-02 |
 
 ## External Contracts, Standards, And Dependencies
 
@@ -152,7 +153,7 @@
 - Visualizer or prototype source path: `N/A — not requested`
 - Approved UI/UX specification path, when applicable: `N/A — not applicable`
 - Review URL: `N/A — not applicable`
-- Explicit user-confirmation reference: Target behavior and Activity default-collapse clarification stated in user messages on 2026-09-02; formal complete-package approval pending.
+- Explicit user-confirmation reference: On 2026-09-02 the user replied “Yes, approved.” directly to the `RER-002` review summary covering compact center status and default-collapsed Activity Error.
 - Journeys and scenarios validated: Current-state only through screenshots/source.
 - Final visual-reference paths: `N/A — no future-state prototype`
 - Product decisions supported by evidence: Compact red center row; Activity Error collapsed by default like Result; full detail after explicit expansion.
@@ -173,7 +174,7 @@
 
 | ID | Type (`Assumption`/`Unknown`/`Risk`) | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| `AUR-001` | Assumption | No-detail applies to all failed invocations using the shared center tool card, not only `run_bash` | Avoids inconsistent UX and matches surface-level user wording | User approval of `ASM-002` | Proposed |
+| `AUR-001` | Assumption | No-detail applies to all failed invocations using the shared center tool card, not only `run_bash` | Avoids inconsistent UX and matches surface-level user wording | Accepted through user approval of `ASM-002` | Resolved |
 | `AUR-002` | Risk | An implementation may hide error visually but leave hundreds of kilobytes in center accessible text/DOM | Would retain usability/performance problems | `AC-002` DOM/accessibility/geometry validation | Open until validation |
 | `AUR-003` | Risk | Removing the error before Activity projection could erase the user's diagnostic | Would violate the central information-hierarchy intent | Preserve event/Activity/replay state; `AC-004`–`AC-006` | Open until validation |
 | `AUR-004` | Risk | Prior durable tests enforce the now-unwanted duplicate presentation | Implementation could appear broken until tests are coherently revised, or retain legacy duplication | Explicit supersession and `AC-008` | Open until implementation |
@@ -185,13 +186,13 @@
 - The observed tool was correctly marked failed according to its process exit status; the large red body is mostly valid output accumulated before failure. The requested fix is presentation hierarchy, not reclassification.
 - Error detail must remain canonical and complete for Activity/replay. Compacting the center by truncating shared state would be incorrect.
 - The existing center red border/icon and Activity navigation already implement most desired behavior; the unwanted center behavior is the inline body. In Activity, the unwanted behavior is specifically `sectionStates.error: true`; the outer card and Result/other section defaults are preserved.
-- The prior command-failure-detail package intentionally introduced/validated duplicate detailed rendering. This ticket is a material but narrow supersession requiring explicit approval.
+- The prior command-failure-detail package intentionally introduced/validated duplicate detailed rendering. This ticket is a material but narrow UI supersession explicitly approved on 2026-09-02.
 - Very large payload validation is mandatory; testing only a one-line error would miss both the center and default-open Activity flooding modes.
 - The user's normal/success comparison establishes a consistent information hierarchy: center rows summarize status, while right-side detail sections reveal content on demand.
 
 ## Notes For Downstream Architecture Design Or Direct Implementation
 
-- Use `SCN-001` through `SCN-004` as the product scenario basis after approval.
+- Use approved `SCN-001` through `SCN-004` as the product scenario basis.
 - Keep the right Activity error string and trace/replay contract authoritative. Do not solve the UI issue by changing backend enrichment or discarding `segment.error` before Activity has it; collapsed means not shown by default, not deleted or truncated.
 - Reconcile `ToolCardPresentation` witness values and both current component/browser tests rather than introducing a compatibility switch that keeps old duplicate behavior.
 - Retain center navigation/highlighting and keyboard activation for failed cards; navigation and highlighting must not auto-expand Activity Error.

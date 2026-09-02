@@ -8,6 +8,7 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 | --- | --- | --- | --- | --- | --- |
 | `RER-001` | User reported center event-monitor flooding, supplied center/Activity screenshots, specified that detail belongs only in Activity, and requested a new ticket bootstrap | `N/A` | `Ready for Approval` | `BEH-001`–`BEH-004`; `REQ-001`–`REQ-007`; `AC-001`–`AC-009`; `SCN-001`–`SCN-004`; `DEC-001` | Initial evidence-backed compact-center requirements baseline created; prior duplicate-detail UI obligations identified for precise supersession |
 | `RER-002` | User clarified that failed center presentation must match the simple successful row pattern except for red state, and that right-side Activity Error must start collapsed like Result and open only by user choice | `Ready for Approval` | `Ready for Approval` | `BEH-001`, `BEH-002`; `REQ-004`, `REQ-007`, `REQ-008`; `AC-002`–`AC-005`, `AC-007`, `AC-008`, `AC-010`; `SCN-002`–`SCN-004`; `QR-004`, `QR-005`; `DEC-002` | Revised the same ticket to require progressive disclosure on both surfaces while preserving complete Activity diagnostics and the outer Activity-card default |
+| `RER-003` | User explicitly approved the complete `RER-002` behavior with “Yes, approved.” | `Ready for Approval` | `Approved Direct-Implementation` | Approval of `BEH-001`–`BEH-004`, `REQ-001`–`REQ-008`, `AC-001`–`AC-010`, `SCN-001`–`SCN-004`, `QR-001`–`QR-005`, `ASM-001`–`ASM-002`, `DEC-001`–`DEC-002`; routing assessment | Approval recorded, readiness passed, and bounded Medium/Low direct-implementation route selected with no structural-impact trigger |
 
 ## Revision Entries
 
@@ -43,3 +44,20 @@ The latest `requirements-doc.md` and `investigation-notes.md` remain authoritati
 - Downstream architecture or direct-implementation route impact: No route selected before approval. Investigation identifies the current independent outer-card and per-section defaults so downstream does not mistakenly collapse the whole Activity item or alter Result.
 - Remaining gaps, assumptions, or blocked decisions: Explicit approval of `DEC-001`, `DEC-002`, and `ASM-002`; prepared-environment executable validation across live, replay, direct-view, selection/highlight, desktop, and narrow states.
 - Next action or recipient: User reviews and explicitly approves or revises `RER-002`. Requirements Engineer then records approval, performs the routing assessment, and applies the dynamic handoff rule.
+
+
+### RER-003 — Explicit approval and direct-implementation routing
+
+- Triggering user feedback, prototype package, downstream feedback, or investigation evidence: The user replied “Yes, approved.” directly to the Requirements Engineer's `RER-002` review summary and remote ticket reference.
+- Prior authoritative status: `Ready for Approval` (`RER-002`)
+- Current authoritative status: `Approved Direct-Implementation` (`RER-003`)
+- Requirement, behavior, acceptance-criteria, scenario, or decision IDs affected: No intended behavior changed. Approval now governs `BEH-001`–`BEH-004`, `REQ-001`–`REQ-008`, `AC-001`–`AC-010`, `SCN-001`–`SCN-004`, `QR-001`–`QR-005`, `ASM-001`–`ASM-002`, and `DEC-001`–`DEC-002`; the Architecture Design Routing Assessment was completed.
+- Scenario-basis or scenario-validity changes: No scenario content or validity changed; all four documented scenarios are now the approved product-level basis for downstream implementation and validation.
+- Why this revision was recorded: Preserve the explicit approval reference, close the approval gate, and record the required post-approval architecture-routing assessment without rewriting the prior refinement history.
+- Canonical artifact sections changed: Document Status, UI approval reference, assumptions/decisions, Downstream Architecture Input, Readiness Check, Architecture Design Routing Assessment, investigation approval evidence/status, and this revision record.
+- Supplemental artifacts added, changed, or removed: None.
+- Prototype evidence or product decisions incorporated: No Product Design work applied. The user approved the text-defined target and current-state evidence package; `DEC-001` and `DEC-002` are closed as approved.
+- User approval impact: Requirements are approved. No renewed approval is needed unless intended behavior or scope changes.
+- Downstream architecture or direct-implementation route impact: Complete assessment classifies the package as preliminary Medium size and Low architectural risk with no present or unknown structural-impact trigger. Selected route is direct Requirements-to-Implementation; architecture design/review artifacts are not applicable.
+- Remaining gaps, assumptions, or blocked decisions: None at the requirements stage. Implementation must run prepared-environment component and browser validation and return `Design Impact` or `Requirement Gap` if contrary evidence appears.
+- Next action or recipient: Apply the current dynamic handoff rule for `Approved Direct-Implementation` and send the cumulative package to its exact returned recipient.
