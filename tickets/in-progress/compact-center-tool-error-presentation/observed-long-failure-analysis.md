@@ -13,6 +13,7 @@
 - Screenshot evidence:
   - `evidence/user-center-error-flood.png`
   - `evidence/user-activity-error-detail.png`
+  - `evidence/user-activity-error-expanded-default.png`
 
 The raw trace is not copied into this ticket because its failure payload is very large and contains unrelated ticket/document content. This supplement retains only the minimum evidence needed to explain and verify the product issue.
 
@@ -56,9 +57,9 @@ The frontend deliberately duplicates the canonical error:
 2. The same handler writes `segment.error` to the matching Activity item.
 3. `buildToolCardPresentation` copies the segment error to `presentation.errorMessage`.
 4. `ToolCallIndicator` interpolates the entire `presentation.errorMessage` into an inline whitespace-preserving red body.
-5. `ToolActivityItem` independently interpolates the entire `activity.error` in its expandable Error section.
+5. `ToolActivityItem` independently interpolates the entire `activity.error` in its expandable Error section and initializes that Error subsection open (`sectionStates.error: true`) while Result starts closed (`sectionStates.result: false`).
 
-No center-specific maximum length, summary, or placement guard exists. Therefore a 348,978-character diagnostic is rendered twice, including once in the primary event stream.
+No center-specific maximum length, summary, or placement guard exists. Therefore a 348,978-character diagnostic is rendered twice, including once in the primary event stream; the Activity copy is also visible immediately without an explicit disclosure action.
 
 This duplication is not accidental legacy code: delivered package `REQ-CODEX-COMMAND-FAILURE-DETAIL-20260901` explicitly required identical detailed diagnostics in the center and Activity surfaces, and its unit/browser tests enforce that requirement. The current user request supersedes that UI choice while retaining the useful backend and Activity detail.
 
@@ -69,7 +70,7 @@ This duplication is not accidental legacy code: delivered package `REQ-CODEX-COM
 | Was the tool falsely marked failed by the frontend? | No evidence of a frontend misclassification. The process/pipeline returned non-zero and the terminal event is explicitly failed. |
 | Why does the “error” contain normal output? | The tool error contains accumulated output emitted before the non-zero pipeline, followed by `Exit code: 1`. |
 | Is loss/truncation of backend diagnostic required? | No. The user wants the complete detail preserved in Activity, not removed from the event contract. |
-| What product defect should this ticket correct? | Information hierarchy: detailed failure output is duplicated into the center stream instead of remaining in the Activity diagnostic surface. |
+| What product defect should this ticket correct? | Information hierarchy: the center stream duplicates detailed failure output, and Activity opens the Error body by default instead of disclosing it on user demand like Result. |
 | Should the one-off shell pipeline be changed by this ticket? | No. It explains the fixture but is not the requested product behavior change. |
 
 ## Verification Implications
@@ -77,6 +78,7 @@ This duplication is not accidental legacy code: delivered package `REQ-CODEX-COM
 - Use a deterministic large multiline diagnostic so validation proves center height/text is independent of error size.
 - Assert the diagnostic is absent from center visible and accessible text, not merely clipped with CSS.
 - Assert the same exact diagnostic remains in the matching Activity Error section and replayed state.
-- Exercise click plus Enter/Space navigation/highlighting from the failed center card to Activity.
+- Assert Activity Error is collapsed by default for live, replayed, directly viewed, selected, and highlighted items; the outer Activity card and Result/other section defaults remain unchanged.
+- Exercise click plus Enter/Space navigation/highlighting from the failed center card to Activity; confirm this does not auto-open Error, then explicitly open Error and verify the complete diagnostic.
 - Update the existing browser probe that currently requires both center and Activity to show identical diagnostic text.
 - Preserve provider/backend error mapping, raw trace, and failure status.
