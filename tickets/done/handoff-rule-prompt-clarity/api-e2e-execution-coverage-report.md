@@ -2,21 +2,21 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-revision-record.md`
+- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-doc.md`
+- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md`
 - Design Spec: `N/A — not applicable`
 - Supplemental Task Artifacts: `N/A — not applicable`
 - Architecture Design Revision Record: `N/A — not applicable`
 - Design Review Report: `N/A — not applicable`
 - Architecture Review Revision Record: `N/A — not applicable`
-- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/implementation-revision-record.md`
+- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/implementation-revision-record.md`
 - Code Review Report: `N/A — not applicable`
 - Code Review Revision Record: `N/A — not applicable`
 - Delivery Revision Record: `N/A — initial validation`
-- Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/api-e2e-revision-record.md`
+- Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Execution Round: `1`
 - Trigger: Initial direct-route implementation `IR-001`

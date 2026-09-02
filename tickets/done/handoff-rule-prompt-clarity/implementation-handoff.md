@@ -3,9 +3,9 @@
 ## Upstream Artifact Package
 
 - Upstream route: `Direct Requirements-to-Implementation`
-- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-doc.md`
-- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/investigation-notes.md`
-- Requirements revision record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-revision-record.md`
+- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-doc.md`
+- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md`
+- Requirements revision record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md`
 - Requirements routing assessment: `requirements-doc.md`, section `Architecture Design Routing Assessment`
 - Design spec: `N/A — not applicable`
 - Supplemental task artifacts: `N/A — not applicable`
@@ -19,7 +19,7 @@
 The shared AgentTeam collaboration prompt now contains the exact approved REQ-003 paragraph as one uninterrupted paragraph. It tells a completed or blocked Team-bound Agent to evaluate possible rules, select the single most specifically applicable rule, notify only that rule's recipient, avoid additional recipients for the same outcome, and finish normally when none applies. The exact prompt hash, focused SCN-001 assertions, provider-parity assertions, and durable prompt/team-execution documentation were updated. The handoff-rule service/schema, compilation, addressing, message delivery, delegation, lifecycle, and standalone-Agent composition were not changed.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/implementation-revision-record.md`
+- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related architecture design revision IDs: `N/A`
 - Related architecture-review revision IDs: `N/A`
@@ -33,7 +33,7 @@ The shared AgentTeam collaboration prompt now contains the exact approved REQ-00
 
 - Task size (`Small`/`Medium`/`Large`): `Small`
 - Architecture risk (`Low`/`High`): `Low`
-- Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-doc.md`
+- Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-doc.md`
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: The completed delta is limited to one existing shared prompt constant, two focused unit-test files, and two directly affected durable documentation pages. It introduces no API/schema, persistence, security, concurrency, deployment, lifecycle, ownership-boundary, migration, or structural change.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E`

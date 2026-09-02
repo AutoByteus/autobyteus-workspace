@@ -12,11 +12,11 @@
 
 ## Upstream Package Reviewed
 
-- Requirements: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-doc.md`
-- Requirements investigation: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/investigation-notes.md`
-- Requirements revision: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-revision-record.md`
-- Implementation handoff: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/implementation-handoff.md`
-- Implementation revision: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/implementation-revision-record.md`
+- Requirements: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-doc.md`
+- Requirements investigation: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/investigation-notes.md`
+- Requirements revision: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-revision-record.md`
+- Implementation handoff: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/implementation-handoff.md`
+- Implementation revision: `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/implementation-revision-record.md`
 - Design, architecture-review, and source-review artifacts: `N/A — not applicable` for this direct Small/Low route.
 - Supplemental task artifacts: `N/A — not applicable`.
 

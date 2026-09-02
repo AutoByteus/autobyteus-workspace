@@ -12,7 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 
 ### IR-001 — Single-recipient handoff prompt baseline
 
-- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/in-progress/handoff-rule-prompt-clarity/requirements-doc.md`; initial implementation.
+- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/.codex/worktrees/handoff-rule-prompt-clarity/tickets/done/handoff-rule-prompt-clarity/requirements-doc.md`; initial implementation.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
