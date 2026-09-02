@@ -8,6 +8,7 @@
 | `DR-002` | User-requested real-browser full-stack validation; code-review routing hold | `DR-001` ready / finalization held | Prior handoff withdrawn from final use; API/E2E Round 3 pending; finalization remains held | `api-e2e-coverage-investigation.md`; `handoff-summary.md`; `docs-sync-report.md`; `release-deployment-report.md`; `delivery-evidence/dr-002-round3-hold.log` |
 | `DR-003` | `API-REV-003` Pass / 98.7% plus `CRR-004` Not Applicable | `DR-002` held / Round 3 pending | Browser-validation hold lifted; docs reconfirmed; updated handoff ready for explicit user verification; finalization held | `api-e2e-execution-coverage-report.md`; `api-e2e-test-review-report.md`; `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/dr-003-round3-return-handoff.log` |
 | `DR-004` | User message “finalize and release”; mandatory post-acceptance target refresh | `DR-003` ready / finalization held | User verified; accepted state protected; six new base commits integrated and checked; archive/finalization plus stable v1.4.65 release authorized and in progress | `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `release-notes.md`; `delivery-evidence/dr-004-post-acceptance-*.log` |
+| `DR-005` | Completion of archived ticket push and merge/push to `personal` | `DR-004` finalization/release in progress | Repository finalized on `personal`; stable v1.4.65 release pending | `handoff-summary.md`; `release-deployment-report.md`; `docs-sync-report.md`; `delivery-evidence/dr-005-repository-finalization.log` |
 
 ## Revision Entries
 
@@ -94,3 +95,22 @@
 - Why this delivery revision was recorded: Preserve the explicit acceptance, target advancement, accepted-state protection, integration evidence, renewed-verification decision, and release version/method before irreversible repository and release operations.
 - Next recipient/action: Delivery archives and final-commits/pushes the ticket branch, refreshes and merges/pushes `personal`, publishes and verifies stable `v1.4.65`, then performs only safe cleanup.
 - Remaining blockers, rollback concerns, or untested scope: No technical blocker. Release success still depends on remote workflow/publishing infrastructure. Do not rewrite a published stable tag; any correction after publication requires a later patch release. Existing Round 1 full-suite and TS6059 residuals remain unchanged.
+
+### DR-005 — Repository finalized on personal
+
+- Date: 2026-09-02
+- Delivery round and trigger: Completion of the user-authorized archived ticket commit/push and final target merge/push sequence from DR-004.
+- Triggering upstream report, verification, or evidence: `DR-004`; archived ticket commit `b463101fba3b546c478086d4a19a98e761aacd8f`; target merge `e1a1422b0306bd0f0fa98cc0a0de71637d97c904`.
+- Prior authoritative result: `DR-004 Pass — user verified; latest base integrated and checked; repository finalization and stable v1.4.65 release authorized.`
+- Current authoritative result: `Pass — ticket branch and archived package were pushed; the ticket was merged into current personal and the target push completed. Repository finalization is complete; stable v1.4.65 release remains pending.`
+- Repository finalization sequence:
+  - pushed `origin/codex/codex-fast-mode-investigation` at `b463101fba3b546c478086d4a19a98e761aacd8f`;
+  - refreshed `origin/personal` and confirmed it remained `bed4c05a1c7860c7bd392c61dd7d26c239598284`;
+  - merged the ticket with `--no-ff` as `e1a1422b0306bd0f0fa98cc0a0de71637d97c904` in a clean isolated finalization clone because the user's primary `personal` worktree is dirty/stale and was intentionally not modified;
+  - pushed `personal` and verified the remote head equals `e1a1422b0306bd0f0fa98cc0a0de71637d97c904`.
+- Verification: Ticket and base commits are merge ancestors; archived artifacts and synchronized docs are present; non-raw-evidence diff hygiene passed. DR-004 focused `10/10` remains the executable authority because no source changed after it.
+- Documentation result: No additional long-lived doc impact during repository finalization.
+- Release state: Current version remains `1.4.64`; next stable `v1.4.65` is authorized, available, and pending the documented release helper.
+- Why this delivery revision was recorded: Establish exact repository finalization and remote ancestry before version/tag/publication work.
+- Next recipient/action: Delivery runs `pnpm release 1.4.65 -- --release-notes tickets/done/codex-fast-mode-investigation/release-notes.md`, verifies all tag-triggered workflows and published outputs, then performs safe cleanup.
+- Remaining blockers, rollback concerns, or untested scope: No repository blocker. Release infrastructure remains to execute. Do not manually dispatch a second release for the fresh tag unless recovery is actually required.

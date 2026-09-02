@@ -1,0 +1,11 @@
+DR-005 repository finalization evidence
+timestamp=2026-09-02T03:35:37Z
+ticket_commit=b463101fba3b546c478086d4a19a98e761aacd8f
+target_base=bed4c05a1c7860c7bd392c61dd7d26c239598284
+target_merge=e1a1422b0306bd0f0fa98cc0a0de71637d97c904
+remote_personal=e1a1422b0306bd0f0fa98cc0a0de71637d97c904
+remote_ancestry=PASS
+archive_and_docs=PASS
+diff_hygiene=PASS
+repository_finalization=COMPLETED
+release_v1.4.65=PENDING

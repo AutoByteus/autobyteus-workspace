@@ -2,9 +2,9 @@
 
 ## Status
 
-`User verified — latest base integrated and checked; repository finalization and stable v1.4.65 release authorized and in progress.`
+`Repository finalized on personal — stable v1.4.65 release authorized and pending.`
 
-DR-001 established an integrated, docs-synchronized candidate, DR-002 held it for the requested full-stack browser journey, and DR-003 recorded API-REV-003 Pass at `98.7%`. The user then explicitly instructed Delivery to “finalize and release.” The mandatory post-acceptance refresh advanced `origin/personal` by six unrelated handoff-prompt commits; Delivery protected the accepted state, merged the new base without conflict, and passed the focused Codex normalizer check `10/10`. No ticket behavior or user-facing handoff materially changed, so renewed verification is not required. Repository finalization and stable patch release `v1.4.65` are authorized and in progress.
+DR-001 established an integrated, docs-synchronized candidate, DR-002 held it for the requested full-stack browser journey, and DR-003 recorded API-REV-003 Pass at `98.7%`. The user then explicitly instructed Delivery to “finalize and release.” DR-004 protected and integrated the accepted state against the six-commit target advance and passed the focused Codex normalizer check `10/10`. The archived ticket commit was pushed, merged to `personal`, and the target push completed. Repository finalization is complete; stable patch release `v1.4.65` is the remaining authorized delivery step.
 
 ## Classification And Review Route
 
@@ -17,7 +17,7 @@ DR-001 established an integrated, docs-synchronized candidate, DR-002 held it fo
 - Implementation source review: `CRR-001 Pass`, `9.95/10`, no source findings
 - API/E2E: `API-REV-003 Pass`, `98.7%` confidence
 - Durable test-code review: `CRR-003 Pass` for the historical durable integration-test changes; `CRR-004 Not Applicable` for Round 3; `TEST-001` remains resolved
-- Current delivery revision: `DR-004`
+- Current delivery revision: `DR-005`
 
 ## Integrated State
 
@@ -104,7 +104,7 @@ The requested browser validation is complete and the user explicitly accepted th
 - Explicit user completion/verification received: `Yes — 2026-09-02: “finalize and release”`
 - Additional user-requested validation complete: `Yes — API-REV-003 Pass / 98.7%`
 - Ticket moved to `tickets/done`: `Yes — /Users/normy/autobyteus_org/autobyteus-worktrees/codex-fast-mode-investigation/tickets/done/codex-fast-mode-investigation`
-- Ticket branch committed/pushed by Delivery: `In progress`
-- Finalization target merged/pushed: `In progress`
+- Ticket branch committed/pushed by Delivery: `Yes — b463101fba3b546c478086d4a19a98e761aacd8f`
+- Finalization target merged/pushed: `Yes — e1a1422b0306bd0f0fa98cc0a0de71637d97c904`
 - Version/tag/release/publication/deployment: `Authorized — v1.4.65 pending repository finalization`
 - Worktree/branch cleanup: `Pending repository/release completion`

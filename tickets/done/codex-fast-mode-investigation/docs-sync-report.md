@@ -3,7 +3,7 @@
 ## Scope
 
 - Ticket: `codex-fast-mode-investigation`
-- Current delivery revision: `DR-004`
+- Current delivery revision: `DR-005`
 - Trigger: `CRR-003` cumulative delivery handoff after implementation-source Pass and proportional durable test-code Pass for API/E2E `API-REV-002`
 - Bootstrap base reference: `origin/personal@773bce779f195c22194c6bed1b242be6e222d06e`
 - Integrated base reference used for docs sync: `origin/personal@bed4c05a1c7860c7bd392c61dd7d26c239598284`, integrated at ticket HEAD `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`
@@ -88,3 +88,9 @@ No public API, database schema, persisted record format, UI surface, packaging p
 - Delivery protected the accepted state at `c91749e089ddd9658231eafb351918c22922e914`, merged the new base as `a923fdf0a75b1a865a7dac6dcc2a2408bed22ac5`, confirmed no overlap with the Codex implementation/docs paths, and passed the focused normalizer suite `10/10`.
 - The new base does not change Fast discovery, stored/runtime `fast`, the generic configuration form, the real-browser journey, packaging, or release documentation. Renewed verification is not required.
 - Result: `Pass — existing long-lived documentation remains accurate on the post-acceptance integrated state.`
+
+## DR-005 Repository Finalization Check
+
+- Archived ticket commit `b463101fba3b546c478086d4a19a98e761aacd8f` and target merge `e1a1422b0306bd0f0fa98cc0a0de71637d97c904` contain the same synchronized README and Codex integration documentation.
+- Repository finalization changed placement/integration state only; it did not change capability discovery, stored/runtime Fast behavior, UI ownership, persistence, or packaging.
+- Result: `Pass — no additional long-lived documentation edit required before the authorized stable release.`
