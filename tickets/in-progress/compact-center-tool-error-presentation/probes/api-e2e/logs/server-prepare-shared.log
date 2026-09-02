@@ -1,0 +1,6 @@
+
+> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+sh: 1: pnpm: not found
+ ELIFECYCLE  Command failed.
