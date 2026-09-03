@@ -13,7 +13,7 @@
 - Architecture design revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-design-revision-record.md`
 - Design review report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md` (`Pass`)
 - Architecture review revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Triggering rework report, revision record, or evidence, when applicable: Initial implementation followed the Architecture Review pass at reviewed package commit `bde449a719ef5d28e13e31f55d5f47d07ad36b13`; no findings or rework trigger.
+- Triggering rework report, revision record, or evidence, when applicable: Initial implementation followed the Architecture Review pass at reviewed package commit `bde449a71f98e9af4debd01447531ea502819f30`; no findings or rework trigger.
 
 ## Current Implementation Summary
 
