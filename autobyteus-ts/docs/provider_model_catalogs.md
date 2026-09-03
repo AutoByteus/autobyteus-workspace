@@ -86,7 +86,7 @@ or credentials.
 | LLM | `DeepSeek V4 Pro (Qwen)` | `deepseek-v4-pro` | Qwen / Alibaba | 2026-08-06 | Friendly static-catalog label with collision-safe identifier `qwen:deepseek-v4-pro`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
 | LLM | `DeepSeek V4 Flash 0731 (Qwen)` | `deepseek-v4-flash-0731` | Qwen / Alibaba | 2026-08-06 | Friendly static-catalog label with collision-safe identifier `qwen:deepseek-v4-flash-0731`, exact unprefixed provider value, and 1M context metadata; no alias or producer field. |
 | LLM | `GLM-5.2 (Qwen)` | `glm-5.2` | Qwen / Alibaba | 2026-08-06 | Friendly static-catalog label with collision-safe identifier `qwen:glm-5.2`, exact unprefixed provider value, and conservative 198k context metadata; it is distinct from the current built-in GLM row. |
-| LLM | `gemini-3.7-flash` | `gemini-3.7-flash` | Gemini | 2026-08-22 | Uses the Gemini adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and curated 1,048,576-token context/input plus 65,536-token output limits. |
+| LLM | `gemini-3.8-flash` | `gemini-3.8-flash` | Gemini | 2026-09-02 | Current Gemini Flash row. Uses exact API-key/Vertex identity mapping, a 3.8-specific string thinking-level request policy, curated 1,048,576-token context/input plus 65,536-token output limits, and observation-time introductory/standard pricing schedules. |
 | LLM | `kimi-k3` | `kimi-k3` | Moonshot / Kimi | 2026-08-22 | Current Kimi row; thinking is always enabled, reasoning effort accepts low/high/max (default max), and curated context is 1M tokens. |
 | LLM | `glm-5.3` | `glm-5.3` | Zhipu GLM | 2026-08-22 | Current built-in GLM row; uses the GLM thinking schema, 1M-token context/input metadata, and adapter-owned request mapping. Pricing remains untrusted rather than guessed. |
 | LLM | `minimax-m3` | `MiniMax-M3` | MiniMax | 2026-08-22 | Current MiniMax row; uses 1M-token context/input metadata, tiered pricing, and the MiniMax OpenAI-compatible adapter. |
@@ -386,13 +386,26 @@ capabilities in each definition's `staticMetadata` (helpers live in
 mapping in `src/utils/gemini-model-mapping.ts` so both API-key and Vertex modes
 are covered by tests even when the provider value is currently identical.
 
-`gemini-3.7-flash` is the supported Gemini 3.7 Flash LLM ID verified on
-2026-08-22. It uses the exact same user-facing ID and provider API value for
-API-key and Vertex runtimes, reuses the shared Gemini thinking schema
-(`thinking_level` and `include_thoughts`), and reports curated limits of
-1,048,576 input/context tokens and 65,536 output tokens. Its default pricing
-configuration is `0.75` input, `3.75` output, and `0.075` cached-input read per
-1M tokens effective 2026-08-22.
+`gemini-3.8-flash` is the current Gemini Flash LLM ID verified on 2026-09-02.
+It uses the exact same user-facing ID and provider API value for API-key and
+Vertex runtimes and reports curated limits of 1,048,576 input/context tokens
+and 65,536 output tokens. The catalog exposes `low`, `medium`, and `high`
+thinking levels with `medium` as the default and retains the optional thought
+summary control.
+
+`GeminiLLM` owns the 3.8 request policy. It sends a lower-case string
+`thinkingLevel` rather than an integer thinking budget and prevents caller
+extras from reintroducing 3.8-unsupported temperature, top-P, top-K, candidate
+count, frequency penalty, or presence penalty fields. The separately current
+Gemini 3.1 Pro path retains its existing budget and sampling behavior.
+
+Pricing is selected from fixed schedules by token-usage observation time. The
+introductory schedule uses `0.75` input, `3.75` output, and `0.075` cached-input
+read per 1M tokens through 2026-12-31. The standard schedule effective
+2027-01-01 uses `1.50`, `7.50`, and `0.15`, respectively. Historical
+`gemini-3.7-flash` usage keeps its stored model identity and cost evidence, but
+3.7 is not a current catalog alias and stale selections require explicit
+reselection.
 
 The server's catalog snapshot projects this curated row without a Gemini
 metadata credential lookup or HTTP request. Live AI Studio metadata enrichment

@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Gemini 3.8 executable boundary baseline
 
-- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/gemini-3-8-flash/code-review-report.md` (`CRR-001`, Pass), API/E2E round 1.
+- Triggering role, report path, and round: Code Reviewer, `tickets/done/gemini-3-8-flash/code-review-report.md` (`CRR-001`, Pass), API/E2E round 1.
 - Triggering finding or scenario IDs: No open source finding; requested fresh coverage for SCN-001–SCN-006, broader server/API execution, installed SDK wire/error behavior, stale/current-history boundaries, and credential-gated live validation.
 - Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: `AD-REV-001`, `ARCH-REV-001`, `IR-001`, `CRR-001`; Delivery revision `N/A`.
 - Why this baseline or coverage/execution revision was recorded: This is the first completed API/E2E validation result for package `PKG-GEMINI-3-8-FLASH-2026-09-03`; prior result/confidence is therefore `N/A` rather than inferred.

@@ -4,15 +4,15 @@
 
 - Upstream route: `Architecture Design`
 - Stable package identifier: `PKG-GEMINI-3-8-FLASH-2026-09-03`
-- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md` (`RER-002`, approved)
-- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md`
-- Requirements revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md`
+- Requirements doc: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md` (`RER-002`, approved)
+- Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md`
+- Requirements revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md`
 - Requirements routing assessment: `requirements-doc.md`, section `Architecture Design Routing Assessment`
-- Design spec: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-spec.md` (`AD-REV-001`)
+- Design spec: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-spec.md` (`AD-REV-001`)
 - Supplemental task artifacts: Requirements investigation and revision records above; UI/UX supplement, runnable prototype, and visual reference are `N/A — not applicable`.
-- Architecture design revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-design-revision-record.md`
-- Design review report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md` (`Pass`)
-- Architecture review revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Architecture design revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-design-revision-record.md`
+- Design review report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-review-report.md` (`Pass`)
+- Architecture review revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
 - Triggering rework report, revision record, or evidence, when applicable: Initial implementation followed the Architecture Review pass at reviewed package commit `bde449a71f98e9af4debd01447531ea502819f30`; no findings or rework trigger.
 
 ## Current Implementation Summary
@@ -20,7 +20,7 @@
 The built-in Gemini Flash catalog and runtime mapping now use exact `gemini-3.8-flash` identity with no 3.7 alias. The catalog carries verified 3.8 limits, introductory flat prices, and two fixed observation-time price schedules. `GeminiLLM` dispatches on exact model value: 3.8 requests use lower-case string `thinkingLevel`, retain thought-summary control, filter every approved forbidden field and caller override of adapter-owned thinking/tools/abort values, and share that builder across send and stream. The non-3.8 path retains the prior 3.1 Pro thinking-budget, sampling, penalty, tools, and extra-param behavior. Focused catalog, request-boundary, mapping, continuation, pricing, stale-selection, and historical-display coverage was added or updated. The active Gemini LLM live scenario values and server metadata assertion now target 3.8.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-revision-record.md`
+- Implementation revision record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related architecture design revision IDs: `AD-REV-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
@@ -33,7 +33,7 @@ The built-in Gemini Flash catalog and runtime mapping now use exact `gemini-3.8-
 
 - Task size (`Small`/`Medium`/`Large`): `Medium`
 - Architecture risk (`Low`/`High`): `High`
-- Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md`, section `Architecture Design Routing Assessment`
+- Requirements routing assessment path: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md`, section `Architecture Design Routing Assessment`
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: The completed delta remains bounded to three production files under existing catalog, adapter, and runtime-mapping owners plus focused validation fixtures. No new public API, persistence schema, UI surface, deployment unit, dependency version, or ownership boundary was introduced. Risk remains High because the shared provider adapter now enforces an external 3.8 wire contract while preserving the separately current 3.1 Pro contract, and live provider access is still unverified.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Code Review`
@@ -106,7 +106,7 @@ The built-in Gemini Flash catalog and runtime mapping now use exact `gemini-3.8-
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`
-- Design-spec decision reference: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-spec.md`, section `Persisted Data / State Transition Decision`
+- Design-spec decision reference: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-spec.md`, section `Persisted Data / State Transition Decision`
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
 - Direct-use evidence or discard/rebuild result, when applicable: Exact current-membership validation rejects 3.7; historical display continues to use stored provider/model identity and was covered with an explicit 3.7 event assertion. No persistence source or schema changed.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`

@@ -182,8 +182,8 @@
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md` | Requirements Engineer | Canonical intended behavior and approval basis. | Whole task. | All | Approved | Explicitly approved 2026-09-03 |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md` | Requirements Engineer | Chronological requirements-round index. | RER-001–RER-002. | All | Current | Records explicit approval and routing completion |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md` | Requirements Engineer | Canonical intended behavior and approval basis. | Whole task. | All | Approved | Explicitly approved 2026-09-03 |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md` | Requirements Engineer | Chronological requirements-round index. | RER-001–RER-002. | All | Current | Records explicit approval and routing completion |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -213,6 +213,6 @@
 - Preserve the product boundary against contrived histories: normal sends end with a user prompt or function-response turn. Do not add a broad malformed-history repair feature without evidence and renewed requirements approval.
 - No persistence migration, provider-catalog redesign, UI redesign, or authentication/error redesign is authorized.
 - Canonical artifacts:
-  - `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md`
-  - `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md`
+  - `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md`

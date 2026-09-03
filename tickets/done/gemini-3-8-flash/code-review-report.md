@@ -3,20 +3,20 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md` (`RER-002`, Approved)
-- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md`
-- Requirements Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md`
-- Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-spec.md`
+- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md` (`RER-002`, Approved)
+- Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md`
+- Requirements Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md`
+- Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `N/A — not applicable`; the approved inventory contains no separate UI/UX or product-design supplement.
-- Architecture Design Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-design-revision-record.md`
+- Architecture Design Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-design-revision-record.md`
 - Relevant Architecture Design Revision IDs: `AD-REV-001`
-- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md` (`Pass`)
-- Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-review-report.md` (`Pass`)
+- Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`
-- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`
-- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-revision-record.md`
+- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-001`
 - Current Review Round: `1`
 - Trigger: Initial independent source review selected for the completed `IR-001` package because `architectural_risk=High`.

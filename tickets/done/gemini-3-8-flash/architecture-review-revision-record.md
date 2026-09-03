@@ -1,6 +1,6 @@
 # Architecture Review Revision Record
 
-The latest `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md` remains authoritative. This record is the concise chronological review history.
+The latest `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-review-report.md` remains authoritative. This record is the concise chronological review history.
 
 ## Revision Index
 
@@ -12,9 +12,9 @@ The latest `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets
 
 ### ARCH-REV-001 — Initial architecture review pass
 
-- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md`
+- Canonical design review report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-review-report.md`
 - Review round and trigger: Round 1; Architecture Designer completed `AD-REV-001` and selected independent Architecture Review because the external Gemini 3.8 request contract changes inside a shared adapter.
-- Triggering role, report path, and finding IDs: Architecture Designer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-spec.md`; no triggering finding IDs.
+- Triggering role, report path, and finding IDs: Architecture Designer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-spec.md`; no triggering finding IDs.
 - Relevant architecture design revision IDs: `AD-REV-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Pass`

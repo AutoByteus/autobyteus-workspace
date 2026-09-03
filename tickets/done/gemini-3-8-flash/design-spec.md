@@ -86,9 +86,9 @@ The behavior map is limited to the approved scenarios. A direct or manually corr
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md` | Canonical intended behavior, scenarios, requirements, and acceptance criteria. | All | Upstream authority; this design does not revise it. | RER-002 Approved, 2026-09-03. |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md` | Requirements-owned current behavior, external-contract, data, and routing evidence. | All | Starting evidence augmented by the architecture investigation above. | Complete for RER-002. |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md` | Requirements approval/revision navigation. | All | Establishes approved revision and scope boundary. | RER-001–RER-002 current. |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md` | Canonical intended behavior, scenarios, requirements, and acceptance criteria. | All | Upstream authority; this design does not revise it. | RER-002 Approved, 2026-09-03. |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md` | Requirements-owned current behavior, external-contract, data, and routing evidence. | All | Starting evidence augmented by the architecture investigation above. | Complete for RER-002. |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md` | Requirements approval/revision navigation. | All | Establishes approved revision and scope boundary. | RER-001–RER-002 current. |
 | UI/UX specification, prototype, or screenshots | N/A | N/A | Existing schema-driven UI is reused; no Product Design artifact applies. | `N/A — not applicable`. |
 
 ## Task Design Health Assessment (Mandatory)

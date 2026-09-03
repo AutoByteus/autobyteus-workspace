@@ -11,7 +11,7 @@ The curated text-LLM catalog supports the current target in each named family:
 | Provider family | Current catalog identifier | Provider request value | Legacy entries removed |
 | --- | --- | --- | --- |
 | Grok | `grok-4.6` | `grok-4.6` | `grok-4.5` |
-| Gemini Flash | `gemini-3.7-flash` | `gemini-3.7-flash` | All pre-3.7 Flash rows |
+| Gemini Flash | `gemini-3.8-flash` | `gemini-3.8-flash` | `gemini-3.7-flash` and all earlier Flash rows |
 | Kimi | `kimi-k3` | `kimi-k3` | K2.6, K2.7 Code, K2.7 Code Highspeed |
 | GLM | `glm-5.3` | `glm-5.3` | `glm-5.2` |
 | MiniMax | `minimax-m3` | `MiniMax-M3` | Older MiniMax text rows if present |
@@ -36,7 +36,7 @@ The ticket updates the normal current-model path; it does not add a separate req
 Current-model policy examples:
 
 - Grok 4.6 exposes the documented reasoning levels, including `xhigh`, and uses the current xAI endpoint.
-- Gemini 3.7 Flash exposes supported thinking levels and sends the current thinking configuration shape; it does not generate the obsolete `minimal` default.
+- Gemini 3.8 Flash exposes `low`, `medium`, and `high` thinking levels with `medium` as the default, sends the provider's lower-case string `thinkingLevel`, and omits the retired integer thinking budget plus unsupported sampling, penalty, and candidate-count fields. It does not expose `minimal`.
 - Kimi K3 uses the K3 reasoning/always-thinking contract. K2-specific normalizers and policy files are removed.
 - GLM 5.3 exposes always-enabled thinking and the current effort values. It does not generate a disabled-thinking request from the current schema.
 - MiniMax M3 uses the verified deployment endpoint and exact `MiniMax-M3` value.

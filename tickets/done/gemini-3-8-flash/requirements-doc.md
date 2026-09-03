@@ -169,8 +169,8 @@
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md` | Canonical code, product-path, external-contract, and routing evidence. | All | Complete for RER-002 | Explicitly approved 2026-09-03 |
-| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md` | Requirements-round history. | All | RER-001–RER-002 recorded | Records approval and routing completion |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md` | Canonical code, product-path, external-contract, and routing evidence. | All | Complete for RER-002 | Explicitly approved 2026-09-03 |
+| `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md` | Requirements-round history. | All | RER-001–RER-002 recorded | Records approval and routing completion |
 
 ## Assumptions
 
@@ -238,7 +238,7 @@ Although the product-visible outcome is the simple requested 3.7-to-3.8 replacem
 - Structural surfaces reviewed: Shared Gemini adapter/request configuration, prompt renderer, runtime mapping, catalog-to-server projection, current-selection guard, token-pricing resolution.
 - Payload/content surfaces reviewed: Model row, metadata values/source date, pricing periods, active documentation, test assertions, live-E2E fixtures.
 - Structural-impact triggers: `Present` — outbound external-provider request contract; potentially shared adapter behavior.
-- Evidence paths: This document and `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md`.
+- Evidence paths: This document and `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md`.
 - Decision rationale: Even though the visible catalog rename is small, a provider-valid 3.8 migration requires changing how requests express reasoning and omit unsupported fields. Architecture Designer should own the production-path decision and final size/risk classification.
 - Selected route: `Architecture Designer`
 - Outcome classification: `Approved Architecture-Ready`

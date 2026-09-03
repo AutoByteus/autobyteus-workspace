@@ -2,23 +2,23 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md` (`RER-002`, Approved)
-- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md`
-- Requirements Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md`
-- Design Spec: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-spec.md` (`AD-REV-001`)
+- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md` (`RER-002`, Approved)
+- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md`
+- Requirements Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md`
+- Design Spec: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-spec.md` (`AD-REV-001`)
 - Supplemental Task Artifacts: `N/A — not applicable`; the approved package has no separate UI/UX or prototype supplement.
-- Architecture Design Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-design-revision-record.md`
-- Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md` (`Pass`)
-- Architecture Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-handoff.md`
-- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-revision-record.md` (`IR-001`)
-- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-report.md` (`Pass`, `CRR-001`)
-- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-revision-record.md`
+- Architecture Design Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-design-revision-record.md`
+- Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-review-report.md` (`Pass`)
+- Architecture Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-handoff.md`
+- Implementation Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-revision-record.md` (`IR-001`)
+- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-report.md` (`Pass`, `CRR-001`)
+- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `N/A — initial API/E2E round`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
-- API/E2E Test-Case Ledger: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-test-case-ledger.md`
+- API/E2E Test-Case Ledger: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-test-case-ledger.md`
 - Current Investigation Round: `1`
 - Trigger: Code Reviewer handoff after `CRR-001` passed implementation snapshot `c2bdef91bd28f7643ed9766ae2097fea7ecdf24e` (production commit `880af7a98e524dfda2ccbe51a9b0533eff9f6758`).
 - Prior Investigation Reviewed: `N/A — no prior API/E2E investigation or revision record exists`
@@ -159,7 +159,7 @@ None.
 ## Test-Case Ledger Plan
 
 - Ledger required: `Yes` — seven independently meaningful cases include a potentially long full E2E suite and credential-gated live execution, creating interruption risk.
-- Canonical ledger path: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-test-case-ledger.md`
+- Canonical ledger path: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-test-case-ledger.md`
 - Ledger initialized before execution: `Yes`
 - Case granularity: independently meaningful boundary or operational journey.
 

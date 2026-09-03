@@ -4,20 +4,20 @@
 
 - Review Round: `1`
 - Trigger: `API-REV-001` passed at `96.8%` final validation confidence with four durable test-code changes requiring proportional independent review.
-- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-doc.md` (`RER-002`, Approved)
-- Requirements Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/investigation-notes.md`
-- Requirements Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/requirements-revision-record.md`
-- Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-spec.md` (`AD-REV-001`)
+- Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-doc.md` (`RER-002`, Approved)
+- Requirements Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/investigation-notes.md`
+- Requirements Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/requirements-revision-record.md`
+- Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-spec.md` (`AD-REV-001`)
 - Supplemental Task Artifacts Reviewed As Context: `N/A — not applicable`
-- Architecture Design Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-design-revision-record.md`
-- Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
-- Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-revision-record.md` (`IR-001`)
-- Original Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-report.md` (`CRR-001`, Pass)
-- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-revision-record.md`
+- Architecture Design Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-design-revision-record.md`
+- Architecture Review Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/architecture-review-revision-record.md` (`ARCH-REV-001`)
+- Implementation Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-revision-record.md` (`IR-001`)
+- Original Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-report.md` (`CRR-001`, Pass)
+- Code Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
-- Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-revision-record.md` (`API-REV-001`)
+- Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-revision-record.md` (`API-REV-001`)
 - Delivery Revision Record Reviewed As Context (delivery re-entry only): `N/A — initial delivery entry follows this review`
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `96.8%`

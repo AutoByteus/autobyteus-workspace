@@ -1,6 +1,6 @@
 # Implementation Revision Record
 
-The current code and `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-handoff.md` remain authoritative. This record is the concise implementation history.
+The current code and `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-handoff.md` remain authoritative. This record is the concise implementation history.
 
 ## Revision Index
 
@@ -12,7 +12,7 @@ The current code and `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-fla
 
 ### IR-001 — Exact Gemini 3.8 catalog and provider-contract implementation
 
-- Triggering role, report path, and round: Architecture Reviewer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/design-review-report.md`; initial implementation round after Architecture Review pass.
+- Triggering role, report path, and round: Architecture Reviewer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/design-review-report.md`; initial implementation round after Architecture Review pass.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

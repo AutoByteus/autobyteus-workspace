@@ -1,0 +1,170 @@
+# Initial delivery integration verification
+timestamp=2026-09-03T15:32:54Z
+head=554197f7782c7319cfdcdbfea4cbfc9c76d5b2b6
+base=1ab6d38af5688103f6c57bea323074d3c2299ca1
+> corepack pnpm --filter autobyteus-ts exec vitest run tests/integration/llm/api/gemini-llm-wire-contract.test.ts tests/unit/llm/api/gemini-llm.test.ts tests/unit/llm/supported-model-definitions.test.ts tests/unit/utils/gemini-model-mapping.test.ts
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-ts
+
+ ✓ tests/unit/utils/gemini-model-mapping.test.ts (13 tests) 5ms
+ ✓ tests/integration/llm/api/gemini-llm-wire-contract.test.ts (3 tests) 39ms
+ ✓ tests/unit/llm/api/gemini-llm.test.ts (11 tests) 9ms
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (6 tests) 7ms
+
+ Test Files  4 passed (4)
+      Tests  33 passed (33)
+   Start at  15:32:55
+   Duration  1.66s (transform 780ms, setup 101ms, import 2.71s, tests 60ms, environment 0ms)
+
+> corepack pnpm --filter autobyteus-server-ts build
+
+> autobyteus-server-ts@0.1.1 prebuild /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 12 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 417ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+> corepack pnpm --filter autobyteus-server-ts exec vitest run tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts tests/unit/application-platform/application-launch-host-capability-validator.test.ts tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts (1 test) 4879ms
+stdout | tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts (13 tests) 22ms
+stdout | tests/unit/application-platform/application-launch-host-capability-validator.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-platform/application-launch-host-capability-validator.test.ts (8 tests) 10ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  15:33:40
+   Duration  13.88s (transform 2.35s, setup 42ms, import 6.86s, tests 4.91s, environment 0ms)
+
+> git diff --check
+
+# Docs and handoff validation
+timestamp=2026-09-03T15:38:43Z
+> git diff --check
+> current Gemini 3.7 reference classification (non-ticket, non-test, non-generated)
+./provider-error-and-pricing-contract.md:14:| Gemini Flash | `gemini-3.8-flash` | `gemini-3.8-flash` | `gemini-3.7-flash` and all earlier Flash rows |
+./autobyteus-ts/docs/provider_model_catalogs.md:406:`gemini-3.7-flash` usage keeps its stored model identity and cost evidence, but
+./autobyteus-server-ts/docs/modules/llm_management.md:257:for the last entry remains `MiniMax-M3`). Retired Grok 4.5, Gemini 3.7 and
+classification=all three remaining references explicitly describe removed or historical behavior; none designates 3.7 as current
+generated_shared_build_output_cleanup=completed (autobyteus-application-backend-sdk/dist, autobyteus-application-sdk-contracts/dist)
+branch=requirements/gemini-3-8-flash
+head=554197f7782c7319cfdcdbfea4cbfc9c76d5b2b6
+tracked_base=1ab6d38af5688103f6c57bea323074d3c2299ca1
+ahead_behind=7	0

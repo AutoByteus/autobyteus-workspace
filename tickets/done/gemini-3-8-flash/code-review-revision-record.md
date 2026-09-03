@@ -1,21 +1,21 @@
 # Code Review Revision Record
 
-The latest `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-report.md` remains authoritative for the current source-review result. This record is the concise chronological history for implementation, failure-origin, and proportional test-review results.
+The latest `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-report.md` remains authoritative for the current source-review result. This record is the concise chronological history for implementation, failure-origin, and proportional test-review results.
 
 ## Revision Index
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-report.md` | Initial Implementation Review for `IR-001` / `Medium` / `High` | N/A | Pass | None |
-| CRR-002 | `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-test-review-report.md` | Proportional API/E2E Test Review after `API-REV-001` Pass | Pass (`CRR-001` implementation source review) | Pass | None |
+| CRR-001 | `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-report.md` | Initial Implementation Review for `IR-001` / `Medium` / `High` | N/A | Pass | None |
+| CRR-002 | `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-test-review-report.md` | Proportional API/E2E Test Review after `API-REV-001` Pass | Pass (`CRR-001` implementation source review) | Pass | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial Gemini 3.8 implementation source-review pass
 
-- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/code-review-report.md`
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/code-review-report.md`
 - Review entry point and round: `Implementation Review`, Round 1.
-- Triggering role, report path, and finding or scenario IDs: Implementation Engineer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/implementation-handoff.md`; `BEH-001`–`BEH-005`, `SCN-001`–`SCN-006`; no triggering finding IDs.
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/implementation-handoff.md`; `BEH-001`–`BEH-005`, `SCN-001`–`SCN-006`; no triggering finding IDs.
 - Relevant architecture design revision IDs: `AD-REV-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -37,9 +37,9 @@ None.
 
 ### CRR-002 — Gemini 3.8 durable API/E2E test-code review pass
 
-- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-test-review-report.md`
+- Canonical review report updated: `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, Round 1.
-- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/in-progress/gemini-3-8-flash/api-e2e-execution-coverage-report.md`; `SCN-001`, `SCN-002`, `SCN-004`, `SCN-005`, `SCN-006`; no task-scoped API/E2E failure ID.
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer; `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/tickets/done/gemini-3-8-flash/api-e2e-execution-coverage-report.md`; `SCN-001`, `SCN-002`, `SCN-004`, `SCN-005`, `SCN-006`; no task-scoped API/E2E failure ID.
 - Relevant architecture design revision IDs: `AD-REV-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
