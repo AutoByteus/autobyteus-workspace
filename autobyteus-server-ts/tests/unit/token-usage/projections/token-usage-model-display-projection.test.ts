@@ -48,6 +48,11 @@ describe("token usage model display projection", () => {
       model_value: "deepseek-v4-flash",
     }), context())).toBe("DeepSeek:deepseek-v4-flash");
     expect(resolveTokenUsageModelDisplayName(event({
+      model_provider: "GEMINI",
+      model_identifier: "gemini-3.7-flash",
+      model_value: "gemini-3.7-flash",
+    }), context())).toBe("Gemini:gemini-3.7-flash");
+    expect(resolveTokenUsageModelDisplayName(event({
       runtime_kind: "codex_app_server",
       model_provider: "OPENAI",
       model_identifier: "gpt-5.6-luna",

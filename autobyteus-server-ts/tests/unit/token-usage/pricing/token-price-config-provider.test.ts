@@ -12,7 +12,7 @@ const ENV_KEYS = [
   'VERTEX_AI_API_KEY',
 ] as const;
 
-describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
+describe('TokenPriceConfigProvider catalog policies', () => {
   const originalEnv = new Map<string, string | undefined>();
 
   beforeEach(() => {
@@ -78,6 +78,71 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
           cached_input_write_1h: true,
         },
       });
+    },
+  );
+
+  it('does not guess Gemini 3.8 pricing when the observation time is invalid', async () => {
+    const policy = await new TokenPriceConfigProvider().resolvePolicy({
+      runtime_kind: 'autobyteus',
+      model_provider: 'GEMINI',
+      model_identifier: 'gemini-3.8-flash',
+      model_value: 'gemini-3.8-flash',
+      observed_at: 'not-a-timestamp',
+    });
+
+    expect(policy).toMatchObject({
+      pricing_status: 'missing',
+      missing_reason: 'pricing_schedule_time_invalid',
+      input_price_per_million: null,
+      output_price_per_million: null,
+      cached_input_read_price_per_million: null,
+      pricing_schedule_id: null,
+      pricing_schedule_period_id: null,
+    });
+  });
+
+  it.each([
+    [
+      '2026-12-31T23:59:59.999Z',
+      'gemini-3-8-flash-introductory-2026-09-02',
+      'introductory', 0.75, 3.75, 0.075, null,
+    ],
+    [
+      '2027-01-01T00:00:00.000Z',
+      'gemini-3-8-flash-standard-2027-01-01',
+      'standard', 1.5, 7.5, 0.15, '2027-01-01T00:00:00Z',
+    ],
+  ] as const)(
+    'selects Gemini 3.8 pricing from the observation time at %s',
+    async (observedAt, scheduleId, periodId, input, output, cacheRead, effectiveFrom) => {
+      const policy = await new TokenPriceConfigProvider().resolvePolicy({
+        runtime_kind: 'autobyteus',
+        model_provider: 'GEMINI',
+        model_identifier: 'gemini-3.8-flash',
+        model_value: 'gemini-3.8-flash',
+        observed_at: observedAt,
+      });
+
+      expect(policy).toMatchObject({
+        pricing_status: 'trusted',
+        input_price_per_million: input,
+        output_price_per_million: output,
+        cached_input_read_price_per_million: cacheRead,
+        cached_input_write_price_per_million: null,
+        pricing_schedule_id: scheduleId,
+        pricing_schedule_period_id: periodId,
+        pricing_schedule_effective_from: effectiveFrom,
+        pricing_schedule_window_timezone: null,
+        trusted_dimensions: {
+          input: true,
+          output: true,
+          cached_input_read: true,
+          cached_input_write: false,
+          cached_input_write_5m: false,
+          cached_input_write_1h: false,
+        },
+      });
+      expect(policy.pricing_policy_key).toContain(`:${scheduleId}:${periodId}`);
     },
   );
 
