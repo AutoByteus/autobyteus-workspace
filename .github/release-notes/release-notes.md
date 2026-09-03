@@ -1,13 +1,14 @@
 ## What's New
 
-- Codex turns now continue normally after retryable provider-stream errors instead of being falsely marked failed.
+- Replaced the current Gemini Flash model with Gemini 3.8 Flash (`gemini-3.8-flash`) across the built-in catalog and supported Gemini runtime modes.
 
 ## Improvements
 
-- Retry diagnostics remain visible while subsequent reasoning, tools, assistant output, and completion continue through live and replay views.
-- Stale terminal events from an older Codex turn no longer settle a newer active turn.
+- Updated Gemini 3.8 requests to use `low`, `medium`, or `high` thinking levels with `medium` as the default while retaining optional thought summaries.
+- Added verified 1,048,576-token input/context and 65,536-token output limits.
+- Added introductory pricing through 2026-12-31 and the standard pricing schedule effective 2027-01-01, selected by token-usage observation time.
 
-## Fixes
+## Compatibility Notes
 
-- Use the Codex App Server `willRetry` signal to distinguish retry diagnostics from real terminal errors.
-- Preserve reasoning and tool correlation across retry diagnostics while retaining existing cleanup for non-retryable and runtime failures.
+- Removed Gemini 3.7 Flash from the current selectable catalog without an alias. Saved configurations that still select 3.7 must be explicitly updated to 3.8.
+- Historical Gemini 3.7 run and token-usage records remain unchanged.
