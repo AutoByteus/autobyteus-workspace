@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.67 test:e2e:standalone-agent-error-stop /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web
+> node tests/e2e/standalone-agent-error-stop-probe.mjs -- --output-dir tickets/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser
+
+Standalone Error Stop browser probe passed. Evidence: /home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/delivery-integration-browser/evidence.json
