@@ -81,7 +81,7 @@ describe('runTreeLiveStatusMerge', () => {
     expect(draft?.lastKnownStatus).toBe('ACTIVE');
   });
 
-  it('maps offline and error live contexts to inactive history rows while idle remains active', () => {
+  it('keeps error live contexts termination-eligible while offline contexts are inactive', () => {
     const contexts = new Map<string, any>([
       [
         'run-history-a',
@@ -103,16 +103,40 @@ describe('runTreeLiveStatusMerge', () => {
       ],
     ]);
 
-    const merged = mergeRunTreeWithLiveContexts(baseTree(), contexts as Map<string, any>);
+    const tree = baseTree();
+    tree[0]!.agents[0]!.runs[0]!.isActive = true;
+
+    const merged = mergeRunTreeWithLiveContexts(tree, contexts as Map<string, any>);
     const runA = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-a');
     const runB = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-b');
 
-    expect(runA?.isActive).toBe(false);
+    expect(runA?.isActive).toBe(true);
     expect(runA?.currentStatus).toBe(AgentStatus.Error);
     expect(runA?.lastKnownStatus).toBe('ERROR');
     expect(runB?.isActive).toBe(false);
     expect(runB?.currentStatus).toBe(AgentStatus.Offline);
     expect(runB?.lastKnownStatus).toBe('IDLE');
+  });
+
+  it('does not reactivate inactive history from error evidence in a retained context', () => {
+    const contexts = new Map<string, any>([
+      [
+        'run-history-a',
+        {
+          state: {
+            currentStatus: AgentStatus.Error,
+            conversation: { updatedAt: '2026-01-02T00:00:00.000Z' },
+          },
+        },
+      ],
+    ]);
+
+    const merged = mergeRunTreeWithLiveContexts(baseTree(), contexts as Map<string, any>);
+    const runA = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-a');
+
+    expect(runA?.currentStatus).toBe(AgentStatus.Error);
+    expect(runA?.lastKnownStatus).toBe('ERROR');
+    expect(runA?.isActive).toBe(false);
   });
 
   it('maps active-runtime idle live contexts to active history rows', () => {

@@ -19,9 +19,12 @@ interface LiveRunContext {
   };
 }
 
-const toRunStatusOverlay = (status: AgentStatus): LiveStatusOverlay => {
+const toRunStatusOverlay = (
+  status: AgentStatus,
+  existingIsActive: boolean,
+): LiveStatusOverlay => {
   if (status === AgentStatus.Error) {
-    return { currentStatus: AgentStatus.Error, isActive: false, lastKnownStatus: 'ERROR' };
+    return { currentStatus: AgentStatus.Error, isActive: existingIsActive, lastKnownStatus: 'ERROR' };
   }
 
   if (status === AgentStatus.Offline) {
@@ -35,7 +38,10 @@ const mergeHistoryRowWithContext = (
   row: RunTreeRow,
   context: LiveRunContext,
 ): RunTreeRow => {
-  const overlay = toRunStatusOverlay(normalizeAgentRuntimeStatus(context.state.currentStatus));
+  const overlay = toRunStatusOverlay(
+    normalizeAgentRuntimeStatus(context.state.currentStatus),
+    row.isActive,
+  );
   const lastActivityAt = context.state.conversation.updatedAt || row.lastActivityAt;
   const liveSummary = resolveFirstUserMessageSummary(context.state.conversation);
 

@@ -1,0 +1,389 @@
+{
+  "startedAt": "2026-09-03T14:10:33.917Z",
+  "platform": "linux-arm64",
+  "node": "v22.23.2",
+  "browserExecutable": "/usr/bin/chromium",
+  "fixturePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue",
+  "scenarios": {
+    "API-E2E-004-A": {
+      "result": "Pass",
+      "description": "Active and inactive Error rows preserve truthful browser presentation and accessibility",
+      "startedAt": "2026-09-03T14:10:46.134Z",
+      "details": {
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        },
+        "activeStopCount": 1,
+        "inactiveActions": {
+          "archive": 1,
+          "remove": 1
+        }
+      }
+    },
+    "API-E2E-004-B": {
+      "result": "Pass",
+      "description": "Enter dispatches one exact delayed success, disables only that run, and retains inactive history",
+      "startedAt": "2026-09-03T14:10:46.279Z",
+      "details": {
+        "request": {
+          "sequence": 1,
+          "mode": "success",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-09-03T14:10:46.302Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "offline",
+              "lastKnownStatus": "IDLE",
+              "isActive": false,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        },
+        "inactiveActions": {
+          "archive": 1,
+          "remove": 1
+        }
+      }
+    },
+    "API-E2E-004-C": {
+      "result": "Pass",
+      "description": "success:false preserves Error, clears pending, toasts, and remains retryable",
+      "startedAt": "2026-09-03T14:10:47.126Z",
+      "details": {
+        "request": {
+          "sequence": 2,
+          "mode": "false",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-09-03T14:10:47.148Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [
+            {
+              "sequence": 1,
+              "message": "Failed to terminate run. Please try again.",
+              "type": "error"
+            }
+          ],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        }
+      }
+    },
+    "API-E2E-004-D": {
+      "result": "Pass",
+      "description": "GraphQL and HTTP failures preserve truthful retry state without selection",
+      "startedAt": "2026-09-03T14:10:47.220Z",
+      "details": {
+        "graphqlRequest": {
+          "sequence": 3,
+          "mode": "graphql-error",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-09-03T14:10:47.270Z"
+        },
+        "httpRequest": {
+          "sequence": 4,
+          "mode": "http-error",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-09-03T14:10:47.383Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [
+            {
+              "sequence": 3,
+              "message": "Failed to terminate run. Please try again.",
+              "type": "error"
+            }
+          ],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        }
+      }
+    },
+    "API-E2E-004-E": {
+      "result": "Pass",
+      "description": "Retry succeeds and the narrow layout keeps exact actions within the viewport",
+      "startedAt": "2026-09-03T14:10:47.450Z",
+      "details": {
+        "request": {
+          "sequence": 5,
+          "mode": "success",
+          "operationName": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "run-active-error"
+          },
+          "receivedAt": "2026-09-03T14:10:47.549Z"
+        },
+        "state": {
+          "selectedRunId": null,
+          "selectedEvents": [],
+          "toasts": [
+            {
+              "sequence": 3,
+              "message": "Failed to terminate run. Please try again.",
+              "type": "error"
+            }
+          ],
+          "rows": [
+            {
+              "runId": "run-active-error",
+              "currentStatus": "offline",
+              "lastKnownStatus": "IDLE",
+              "isActive": false,
+              "source": "history"
+            },
+            {
+              "runId": "run-healthy",
+              "currentStatus": "running",
+              "lastKnownStatus": "ACTIVE",
+              "isActive": true,
+              "source": "history"
+            },
+            {
+              "runId": "run-inactive-error",
+              "currentStatus": "error",
+              "lastKnownStatus": "ERROR",
+              "isActive": false,
+              "source": "history"
+            }
+          ],
+          "pendingRunIds": []
+        },
+        "activeBox": {
+          "x": 110,
+          "y": 170,
+          "width": 270,
+          "height": 32
+        },
+        "stopBox": {
+          "x": 323.234375,
+          "y": 176,
+          "width": 20,
+          "height": 20
+        }
+      }
+    }
+  },
+  "terminationRequests": [
+    {
+      "sequence": 1,
+      "mode": "success",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-09-03T14:10:46.302Z"
+    },
+    {
+      "sequence": 2,
+      "mode": "false",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-09-03T14:10:47.148Z"
+    },
+    {
+      "sequence": 3,
+      "mode": "graphql-error",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-09-03T14:10:47.270Z"
+    },
+    {
+      "sequence": 4,
+      "mode": "http-error",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-09-03T14:10:47.383Z"
+    },
+    {
+      "sequence": 5,
+      "mode": "success",
+      "operationName": "TerminateAgentRun",
+      "variables": {
+        "agentRunId": "run-active-error"
+      },
+      "receivedAt": "2026-09-03T14:10:47.549Z"
+    }
+  ],
+  "otherGraphqlOperations": [
+    {
+      "operationName": "GetApplicationsCapability",
+      "receivedAt": "2026-09-03T14:10:45.704Z"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "receivedAt": "2026-09-03T14:10:45.706Z"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "receivedAt": "2026-09-03T14:10:45.706Z"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "receivedAt": "2026-09-03T14:10:45.709Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "Failed to terminate run 'run-active-error'.",
+      "terminationMode": "false"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to terminate run: Error: fixture GraphQL termination error\n    at Object.terminateRun (http://127.0.0.1:39171/_nuxt/pages/api-e2e-standalone-agent-error-stop.vue:140:15)\n    at async Object.onTerminateRun (http://127.0.0.1:39171/_nuxt/composables/useWorkspaceHistoryMutations.ts:66:26)",
+      "terminationMode": "graphql-error"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "terminationMode": "http-error"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to terminate run: Error: Termination HTTP 503\n    at Object.terminateRun (http://127.0.0.1:39171/_nuxt/pages/api-e2e-standalone-agent-error-stop.vue:137:31)\n    at async Object.onTerminateRun (http://127.0.0.1:39171/_nuxt/composables/useWorkspaceHistoryMutations.ts:66:26)",
+      "terminationMode": "http-error"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 26852,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": 0,
+      "finalSignalCode": null
+    },
+    "apiServer": "closed",
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "apiBaseUrl": "http://127.0.0.1:36203",
+  "port": 39171,
+  "baseUrl": "http://127.0.0.1:39171",
+  "result": "Pass",
+  "finishedAt": "2026-09-03T14:10:47.715Z",
+  "artifacts": {
+    "evidencePath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/browser/evidence.json",
+    "nuxtLogPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/browser/nuxt.log",
+    "initialScreenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/browser/initial-error-matrix.png",
+    "pendingScreenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/browser/pending-exact-run.png",
+    "successScreenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/browser/confirmed-success.png",
+    "failureScreenshotPath": "/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/evidence/browser/failure-retry-narrow.png"
+  }
+}

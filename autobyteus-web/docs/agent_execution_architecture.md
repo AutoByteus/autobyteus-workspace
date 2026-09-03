@@ -206,6 +206,18 @@ but terminal `offline` or `error` history projections must clear stale
 `AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
 browser-visible stop affordance.
 
+Standalone run-history termination eligibility is a separate lifecycle fact from
+the displayed five-state health value and from `canInterrupt`. A current local run
+in `error` remains active for the existing exact-run Terminate action until
+termination succeeds or an authoritative inactive/offline result settles it. When
+an Error live context overlays a persisted history row, it preserves that row's
+authoritative `isActive` value: an active Error row remains red and stoppable, while
+an inactive historical Error row remains red but exposes only the existing inactive
+actions. A failed or rejected termination must leave the active Error row retryable;
+only confirmed success marks the retained history row inactive. This policy is for
+standalone run termination and does not alter TeamRun or generation-interrupt
+authority.
+
 Active team recovery and refresh must keep root liveness, transport state, and
 member status separate. `isActive=true` does not imply that any particular
 member is `running` or `initializing`; members keep their own scoped status or

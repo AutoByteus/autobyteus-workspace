@@ -96,7 +96,7 @@ const summarizeDraftRun = (
 
 const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus: ProjectionRunKnownStatus } => {
   if (status === AgentStatus.Error) {
-    return { isActive: false, lastKnownStatus: 'ERROR' };
+    return { isActive: true, lastKnownStatus: 'ERROR' };
   }
 
   if (status === AgentStatus.Offline) {

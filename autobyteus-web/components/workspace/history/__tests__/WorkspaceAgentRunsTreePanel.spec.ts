@@ -519,6 +519,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     }
   };
 
+  const getRunRow = (wrapper: any, runId: string) => wrapper.get(
+    `[data-test="workspace-agent-run-row"][data-run-id="${runId}"]`,
+  );
+
+  const findTerminateRunButton = (wrapper: any, runId: string) => getRunRow(wrapper, runId).find(
+    `button[data-test="terminate-agent-run"][data-run-id="${runId}"]`,
+  );
+
   const expandTeamDefinitionGroup = async (
     wrapper: any,
     workspaceRootPath = '/ws/a',
@@ -1951,6 +1959,183 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const archiveButtons = wrapper.findAll('button[title="Archive run"]');
     expect(archiveButtons).toHaveLength(1);
+  });
+
+  it('renders the standalone Stop state matrix without changing error or inactive presentation', async () => {
+    const runs = [
+      ['run-initializing', 'initializing', true, 'ACTIVE'],
+      ['run-running', 'running', true, 'ACTIVE'],
+      ['run-idle', 'idle', true, 'ACTIVE'],
+      ['run-current-error', 'error', true, 'ERROR'],
+      ['run-offline', 'offline', false, 'IDLE'],
+      ['run-past-error', 'error', false, 'ERROR'],
+    ].map(([runId, currentStatus, isActive, lastKnownStatus], index) => ({
+      runId,
+      summary: runId,
+      lastActivityAt: `2026-01-01T00:0${index}:00.000Z`,
+      lastKnownStatus,
+      currentStatus,
+      isActive,
+      source: 'history',
+      isDraft: false,
+    }));
+    runHistoryState.nodes[0]!.agents[0]!.runs = runs;
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    for (const runId of ['run-initializing', 'run-running', 'run-idle', 'run-current-error']) {
+      expect(findTerminateRunButton(wrapper, runId).exists()).toBe(true);
+      expect(getRunRow(wrapper, runId).find('button[title="Archive run"]').exists()).toBe(false);
+      expect(getRunRow(wrapper, runId).find('button[title="Delete run permanently"]').exists()).toBe(false);
+    }
+
+    const currentErrorRow = getRunRow(wrapper, 'run-current-error');
+    const errorStop = findTerminateRunButton(wrapper, 'run-current-error');
+    expect(currentErrorRow.find('.bg-red-500').exists()).toBe(true);
+    expect(errorStop.attributes('title')).toBe('Terminate run');
+    expect(errorStop.attributes('aria-label')).toBe('Terminate run');
+
+    for (const runId of ['run-offline', 'run-past-error']) {
+      expect(findTerminateRunButton(wrapper, runId).exists()).toBe(false);
+      expect(getRunRow(wrapper, runId).find('button[title="Archive run"]').exists()).toBe(true);
+      expect(getRunRow(wrapper, runId).find('button[title="Delete run permanently"]').exists()).toBe(true);
+    }
+    expect(getRunRow(wrapper, 'run-past-error').find('.bg-red-500').exists()).toBe(true);
+  });
+
+  it('dispatches the exact error-state run from its native Stop button without selecting the row', async () => {
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const terminateButton = findTerminateRunButton(wrapper, 'run-1');
+    expect(terminateButton.element.tagName).toBe('BUTTON');
+    expect(terminateButton.attributes('type')).toBe('button');
+    expect(terminateButton.attributes('aria-label')).toBe('Terminate run');
+    expect(terminateButton.attributes('disabled')).toBeUndefined();
+
+    terminateButton.element.focus();
+    terminateButton.element.click();
+    await flushPromises();
+
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledTimes(1);
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledWith('run-1');
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+  });
+
+  it('disables only the exact error-state Stop and blocks duplicate dispatch while pending', async () => {
+    let settleTermination: ((result: boolean) => void) | undefined;
+    const pendingTermination = new Promise<boolean>((resolve) => {
+      settleTermination = resolve;
+    });
+    agentRunStoreMock.terminateRun.mockImplementationOnce(() => pendingTermination);
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[2]!, {
+      currentStatus: 'running',
+      lastKnownStatus: 'ACTIVE',
+      isActive: true,
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const errorStop = findTerminateRunButton(wrapper, 'run-1');
+    const otherStop = findTerminateRunButton(wrapper, 'run-2');
+    await errorStop.trigger('click');
+    await nextTick();
+
+    expect(errorStop.attributes('disabled')).toBeDefined();
+    expect(otherStop.attributes('disabled')).toBeUndefined();
+    await errorStop.trigger('click');
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledTimes(1);
+
+    settleTermination?.(true);
+    await flushPromises();
+    expect(findTerminateRunButton(wrapper, 'run-1').attributes('disabled')).toBeUndefined();
+  });
+
+  it('keeps error-state history and retry actions truthful when termination fails', async () => {
+    agentRunStoreMock.terminateRun.mockResolvedValueOnce(false);
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await findTerminateRunButton(wrapper, 'run-1').trigger('click');
+    await flushPromises();
+
+    const errorRow = getRunRow(wrapper, 'run-1');
+    expect(errorRow.exists()).toBe(true);
+    expect(errorRow.find('.bg-red-500').exists()).toBe(true);
+    expect(findTerminateRunButton(wrapper, 'run-1').attributes('disabled')).toBeUndefined();
+    expect(errorRow.find('button[title="Archive run"]').exists()).toBe(false);
+    expect(errorRow.find('button[title="Delete run permanently"]').exists()).toBe(false);
+    expect(addToastMock).toHaveBeenCalledWith('Failed to terminate run. Please try again.', 'error');
+  });
+
+  it('preserves the error row and restores Stop when termination throws', async () => {
+    agentRunStoreMock.terminateRun.mockRejectedValueOnce(new Error('network unavailable'));
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await findTerminateRunButton(wrapper, 'run-1').trigger('click');
+    await flushPromises();
+
+    expect(getRunRow(wrapper, 'run-1').find('.bg-red-500').exists()).toBe(true);
+    expect(findTerminateRunButton(wrapper, 'run-1').attributes('disabled')).toBeUndefined();
+    expect(addToastMock).toHaveBeenCalledWith('Failed to terminate run. Please try again.', 'error');
+  });
+
+  it('keeps the error history row and exposes only inactive actions after confirmed termination', async () => {
+    const errorRun = runHistoryState.nodes[0]!.agents[0]!.runs[1]!;
+    Object.assign(errorRun, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+    agentRunStoreMock.terminateRun.mockImplementationOnce(async () => {
+      Object.assign(errorRun, {
+        currentStatus: 'offline',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+      });
+      return true;
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await findTerminateRunButton(wrapper, 'run-1').trigger('click');
+    await flushPromises();
+
+    const settledRow = getRunRow(wrapper, 'run-1');
+    expect(settledRow.exists()).toBe(true);
+    expect(settledRow.find('.bg-red-500').exists()).toBe(false);
+    expect(findTerminateRunButton(wrapper, 'run-1').exists()).toBe(false);
+    expect(settledRow.find('button[title="Archive run"]').exists()).toBe(true);
+    expect(settledRow.find('button[title="Delete run permanently"]').exists()).toBe(true);
   });
 
   it('terminates active run from row action without selecting the row', async () => {
