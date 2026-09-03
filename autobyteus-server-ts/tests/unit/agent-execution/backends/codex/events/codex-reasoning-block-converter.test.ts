@@ -386,15 +386,18 @@ describe("Codex reasoning block conversion", () => {
 
   it.each([
     [CodexThreadEventName.TURN_STARTED, { turnId: "turn-c" }],
-    [CodexThreadEventName.ERROR, { message: "failed" }],
-  ] as Array<[string, JsonObject]>) (
+    ["runtime error", null],
+  ] as Array<[string, JsonObject | null]>) (
     "closes all tracked identities deterministically before reachable %s output",
     (method, params) => {
       const converter = createCodexThreadEventHarness("run-1");
       const firstA = emitCompletedReasoning(converter, "turn-a", "provider-a", "a");
       const firstB = emitCompletedReasoning(converter, "turn-b", "provider-b", "b");
 
-      const boundaryEvents = converter.emitThroughThread({ method, params });
+      const emitBoundary = () => params
+        ? converter.emitThroughThread({ method, params })
+        : converter.emitRuntimeError("RUNTIME_FAILED", "failed");
+      const boundaryEvents = emitBoundary();
 
       expect(boundaryEvents.slice(0, 2).map((event) => [
         event.eventType,
@@ -405,7 +408,7 @@ describe("Codex reasoning block conversion", () => {
         [AgentRunEventType.SEGMENT_END, firstA.payload.id, "turn-a", null],
         [AgentRunEventType.SEGMENT_END, firstB.payload.id, "turn-b", null],
       ]);
-      expect(converter.emitThroughThread({ method, params })
+      expect(emitBoundary()
         .filter((event) => event.eventType === AgentRunEventType.SEGMENT_END)).toEqual([]);
     },
   );

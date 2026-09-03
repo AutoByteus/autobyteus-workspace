@@ -752,6 +752,244 @@ describe("CodexThreadEventConverter through CodexThread", () => {
     expect(converted[0].statusHint).toBe("ERROR");
   });
 
+  it("preserves active reasoning and ordered-tool correlation across a retry diagnostic", () => {
+    const converter = createCodexThreadEventHarness("run-retry-diagnostic");
+    converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        turnId: "turn-b",
+        item: {
+          id: "tool-b",
+          type: "commandExecution",
+          command: "pwd",
+          status: "inProgress",
+        },
+      },
+    });
+    const reasoning = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "reasoning-b-1", type: "reasoning", summary: [{ text: "first" }] },
+      },
+    });
+    const reasoningContent = reasoning.find(
+      (event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT,
+    );
+
+    const diagnostic = converter.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        threadId: "thread-1",
+        turnId: "turn-b",
+        willRetry: true,
+        error: { code: "STREAM_DISCONNECTED", message: "Reconnecting... 1/5" },
+      },
+    });
+
+    expect(diagnostic).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.ERROR,
+        statusHint: null,
+        payload: expect.objectContaining({
+          code: "STREAM_DISCONNECTED",
+          message: "Reconnecting... 1/5",
+          error_scope: "turn",
+          error_effect: "diagnostic",
+          turn_id: "turn-b",
+        }),
+      }),
+    ]);
+    expect(diagnostic.some((event) => event.eventType === AgentRunEventType.SEGMENT_END))
+      .toBe(false);
+
+    const rawToolOutput = converter.emitThroughThread({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { type: "functionCallOutput", call_id: "tool-b", output: "continued" },
+      },
+    });
+    expect(rawToolOutput).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOOL_LOG,
+        payload: expect.objectContaining({
+          turnId: "turn-b",
+          tool_invocation_id: "tool-b",
+          tool_name: "run_bash",
+          log_entry: "continued",
+        }),
+      }),
+    ]);
+
+    const laterReasoning = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "reasoning-b-2", type: "reasoning", summary: [{ text: "second" }] },
+      },
+    });
+    expect(laterReasoning.find(
+      (event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT,
+    )?.payload).toMatchObject({
+      id: reasoningContent?.payload.id,
+      turn_id: "turn-b",
+      delta: "\n\nsecond",
+    });
+    expect(converter.emitThroughThread({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: { turn: { id: "turn-b" } },
+    })).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.SEGMENT_END,
+        payload: expect.objectContaining({
+          id: reasoningContent?.payload.id,
+          turn_id: "turn-b",
+        }),
+      }),
+      expect.objectContaining({ eventType: AgentRunEventType.TURN_COMPLETED }),
+    ]);
+  });
+
+  it("cleans only the exact active turn for an emitted turn-terminal error", () => {
+    const converter = createCodexThreadEventHarness("run-turn-terminal-cleanup");
+    converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "tool-b", type: "commandExecution", command: "pwd" },
+      },
+    });
+    const reasoningB = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "reasoning-b", type: "reasoning", summary: [{ text: "B" }] },
+      },
+    }).find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT);
+    const reasoningA = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-a",
+        item: { id: "reasoning-a", type: "reasoning", summary: [{ text: "A" }] },
+      },
+    }).find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT);
+
+    const terminal = converter.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        turnId: "turn-a",
+        willRetry: false,
+        code: "TURN_FAILED",
+        message: "A failed",
+      },
+    });
+
+    expect(terminal.map((event) => [event.eventType, event.payload.turn_id])).toEqual([
+      [AgentRunEventType.SEGMENT_END, "turn-a"],
+      [AgentRunEventType.ERROR, "turn-a"],
+    ]);
+    expect(terminal[0]?.payload.id).toBe(reasoningA?.payload.id);
+
+    const resumedB = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "reasoning-b-2", type: "reasoning", summary: [{ text: "B2" }] },
+      },
+    });
+    expect(resumedB.find(
+      (event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT,
+    )?.payload).toMatchObject({ id: reasoningB?.payload.id, delta: "\n\nB2" });
+    expect(converter.emitThroughThread({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { type: "functionCallOutput", call_id: "tool-b", output: "B result" },
+      },
+    })).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOOL_LOG,
+        payload: expect.objectContaining({ tool_name: "run_bash" }),
+      }),
+    ]);
+  });
+
+  it("keeps active B converter state when late A terminal and completion boundaries are suppressed", () => {
+    const converter = createCodexThreadEventHarness("run-stale-a-active-b");
+    converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "tool-b", type: "commandExecution", command: "pwd" },
+      },
+    });
+    const firstReasoning = converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "reasoning-b-1", type: "reasoning", summary: [{ text: "B1" }] },
+      },
+    }).find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT);
+    const listenerCountBeforeA = converter.listenerMessageCount;
+    const eventCountBeforeA = converter.convertedEventCount;
+
+    expect(converter.emitThroughThread({
+      method: CodexThreadEventName.ERROR,
+      params: {
+        turnId: "turn-a",
+        willRetry: false,
+        code: "TURN_FAILED",
+        message: "late A failure",
+      },
+    })).toEqual([]);
+    expect(converter.emitThroughThread({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: { turn: { id: "turn-a" } },
+    })).toEqual([]);
+    expect(converter.listenerMessageCount).toBe(listenerCountBeforeA);
+    expect(converter.convertedEventCount).toBe(eventCountBeforeA);
+    expect(converter.thread.activeTurnId).toBe("turn-b");
+
+    expect(converter.emitThroughThread({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { type: "functionCallOutput", call_id: "tool-b", output: "B result" },
+      },
+    })).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.TOOL_LOG,
+        payload: expect.objectContaining({
+          turnId: "turn-b",
+          tool_invocation_id: "tool-b",
+          tool_name: "run_bash",
+        }),
+      }),
+    ]);
+    expect(converter.emitThroughThread({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-b",
+        item: { id: "reasoning-b-2", type: "reasoning", summary: [{ text: "B2" }] },
+      },
+    }).find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)?.payload)
+      .toMatchObject({ id: firstReasoning?.payload.id, delta: "\n\nB2" });
+
+    const completion = converter.emitThroughThread({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: { turn: { id: "turn-b" } },
+    });
+    expect(completion.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_END,
+      AgentRunEventType.TURN_COMPLETED,
+    ]);
+    expect(completion[0]?.payload).toMatchObject({
+      id: firstReasoning?.payload.id,
+      turn_id: "turn-b",
+    });
+  });
+
   it("keeps unclassified Codex errors as content without a guessed status", () => {
     const converter = createCodexThreadEventHarness("run-1");
     const converted = converter.emitThroughThread({
@@ -764,7 +1002,7 @@ describe("CodexThreadEventConverter through CodexThread", () => {
     expect(converted[0].statusHint).toBeNull();
   });
 
-  it("does not emit a status companion for a terminal error rejected by native turn guards", () => {
+  it("does not emit a status companion for an identified terminal error", () => {
     const converter = createCodexThreadEventHarness("run-1");
     const converted = converter.emitThroughThread({
       method: CodexThreadEventName.ERROR,

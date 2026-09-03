@@ -1361,36 +1361,167 @@ describe("CodexThread token usage readiness", () => {
     ]);
   });
 
-  it("does not let an old completion or terminal error clear a newer active turn", () => {
+  it("keeps a retryable native error diagnostic on the active turn and admits later work", () => {
     const { thread } = createThread(true);
     const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
     thread.subscribeAppServerMessages((message) => messages.push(message));
     thread.markTurnStarted("turn-b");
+    thread.trackPendingMcpToolCall({
+      invocationId: "call-b",
+      turnId: "turn-b",
+      serverName: "tools",
+      toolName: "continue_work",
+      arguments: { value: 42 },
+    });
+
+    thread.handleAppServerNotification(CodexThreadEventName.ERROR, {
+      threadId: "thread-1",
+      turnId: "turn-b",
+      willRetry: true,
+      error: { code: "STREAM_DISCONNECTED", message: "Reconnecting... 1/5" },
+    } as never);
+
+    expect(thread.activeTurnId).toBe("turn-b");
+    expect(thread.currentStatus).toBe("RUNNING");
+    expect(thread.findPendingMcpToolCall({
+      turnId: "turn-b",
+      serverName: "tools",
+      toolName: "continue_work",
+    })).toMatchObject({ invocationId: "call-b", arguments: { value: 42 } });
+    expect(messages).toEqual([
+      expect.objectContaining({
+        source: "local_derived",
+        method: CodexThreadEventName.ERROR,
+        params: expect.objectContaining({
+          willRetry: true,
+          error: { code: "STREAM_DISCONNECTED", message: "Reconnecting... 1/5" },
+          error_scope: "turn",
+          error_effect: "diagnostic",
+          turn_id: "turn-b",
+        }),
+      }),
+    ]);
+
+    thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+      turnId: "turn-b",
+      itemId: "message-b",
+      delta: "continued",
+    } as never);
+    thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-b",
+      item: {
+        type: "mcpToolCall",
+        id: "call-b",
+        status: "completed",
+        result: { ok: true },
+      },
+    } as never);
+
+    expect(messages.some((message) =>
+      message.method === CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA &&
+      message.params.delta === "continued"
+    )).toBe(true);
+    expect(messages).toContainEqual(expect.objectContaining({
+      source: "local_derived",
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: expect.objectContaining({
+        turn_id: "turn-b",
+        invocation_id: "call-b",
+        tool_name: "continue_work",
+        arguments: { value: 42 },
+      }),
+    }));
+  });
+
+  it("retains matching active terminal error state and cleanup for exact non-retryable errors", () => {
+    const { thread } = createThread(true);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => messages.push(message));
+    thread.markTurnStarted("turn-b");
+    thread.trackPendingMcpToolCall({
+      invocationId: "call-b",
+      turnId: "turn-b",
+      serverName: "tools",
+      toolName: "fail_work",
+      arguments: {},
+    });
+
+    thread.handleAppServerNotification(CodexThreadEventName.ERROR, {
+      turnId: "turn-b",
+      willRetry: false,
+      code: "TURN_FAILED",
+      message: "terminal failure",
+    } as never);
+
+    expect(thread.activeTurnId).toBeNull();
+    expect(thread.currentStatus).toBe("ERROR");
+    expect(thread.findPendingMcpToolCall({
+      turnId: "turn-b",
+      serverName: "tools",
+      toolName: "fail_work",
+    })).toBeNull();
+    expect(messages).toEqual([
+      expect.objectContaining({
+        source: "local_derived",
+        method: CodexThreadEventName.ERROR,
+        params: expect.objectContaining({
+          willRetry: false,
+          error_scope: "turn",
+          error_effect: "terminal",
+          turn_id: "turn-b",
+        }),
+      }),
+    ]);
+  });
+
+  it("suppresses exact stale terminal boundaries without mutating or emitting against a newer turn", () => {
+    const { thread } = createThread(true);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => messages.push(message));
+    thread.markTurnStarted("turn-b");
+    thread.trackPendingMcpToolCall({
+      invocationId: "call-b",
+      turnId: "turn-b",
+      serverName: "tools",
+      toolName: "continue_work",
+      arguments: {},
+    });
 
     thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
       turn: { id: "turn-a" },
     } as never);
+    thread.handleAppServerNotification(CodexThreadEventName.ERROR, {
+      turnId: "turn-a",
+      willRetry: false,
+      code: "TURN_FAILED",
+      message: "old failure",
+    } as never);
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_STATUS_CHANGED, {
+      turnId: "turn-a",
+      status: { type: "failed" },
+      message: "old failed status",
+    } as never);
+
     expect(thread.activeTurnId).toBe("turn-b");
     expect(thread.currentStatus).toBe("RUNNING");
+    expect(thread.findPendingMcpToolCall({
+      turnId: "turn-b",
+      serverName: "tools",
+      toolName: "continue_work",
+    })).not.toBeNull();
+    expect(messages).toEqual([]);
 
     thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
       turn: {},
     } as never);
     expect(thread.activeTurnId).toBe("turn-b");
     expect(thread.currentStatus).toBe("RUNNING");
-
-    thread.handleAppServerNotification(CodexThreadEventName.ERROR, {
-      turnId: "turn-a",
-      code: "TURN_FAILED",
-      message: "old failure",
-    } as never);
-    expect(thread.activeTurnId).toBe("turn-b");
-    expect(thread.currentStatus).toBe("RUNNING");
-    expect(messages.at(-1)?.params).toMatchObject({
-      error_scope: "turn",
-      error_effect: "terminal",
-      turn_id: "turn-a",
-    });
+    expect(messages).toEqual([
+      expect.objectContaining({
+        source: "native_admitted",
+        method: CodexThreadEventName.TURN_COMPLETED,
+      }),
+    ]);
   });
 
   it("classifies an error status change before clearing the matching active turn", () => {

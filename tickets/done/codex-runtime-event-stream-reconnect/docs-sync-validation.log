@@ -1,0 +1,57 @@
+# Docs Sync Validation
+
+Timestamp: 2026-09-02T18:24:23+02:00
+
+$ git diff --check
+exit_code=0
+
+$ test -s <each delivery documentation artifact>
+PASS autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/docs-sync-report.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/delivery-revision-record.md
+exit_code=0
+
+$ trailing-whitespace scan across updated durable doc and delivery artifacts
+PASS autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/docs-sync-report.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md
+PASS tickets/in-progress/codex-runtime-event-stream-reconnect/delivery-revision-record.md
+exit_code=0
+
+$ rg -n "Retryable Error And Stale Turn Boundary Policy|willRetry === true|explicitly identified stale" autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+66:## Retryable Error And Stale Turn Boundary Policy
+69:turn-lifecycle authority. When `willRetry === true` and a turn can be resolved,
+408:| `turn/completed` | turn lifecycle end | when it matches the active turn, close the turn-scoped reasoning block with `SEGMENT_END(reasoning)`, then `TURN_COMPLETED(turnId)` and projected `AGENT_STATUS { status: "idle", can_interrupt: false }`; suppress an explicitly identified stale completion while a different turn is active | `codex-thread-notification-handler.ts`, `codex-turn-event-converter.ts` | Keep; exact stale boundaries have no state or emission effect |
+442:| `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status, can_interrupt }`; a matching failed/error status is converted to a turn-terminal `ERROR`, while an explicitly identified stale failed/error status is suppressed when a different turn is active | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep; stale terminal status cannot settle the active turn |
+445:| `error` | native turn error with `willRetry === true` and a resolved turn | `ERROR { error_scope: "turn", error_effect: "diagnostic", turn_id }`; preserve active turn/status, reasoning, ordered-tool state, and pending MCP correlation | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as visible non-terminal diagnostic; Codex owns retry and later same-turn events remain admissible |
+510:- Treat native Codex `error.willRetry === true` as a visible turn diagnostic,
+exit_code=0
+
+$ rg -n "DR-001|user verification|Repository finalization" delivery artifacts
+tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md:6:- Delivery revision: `DR-001`
+tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md:7:- Current state: Integrated-state refresh and docs sync passed; candidate is ready for explicit user verification.
+tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md:56:- Repository finalization: `Held`
+tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md:64:`DR-001 Pass — latest-base refresh and docs sync completed; candidate ready for user verification; repository finalization intentionally held.`
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:5:Initial delivery-stage integrated-state refresh, durable documentation synchronization, and user-verification handoff only. Repository finalization targets `personal` after explicit user verification. No version bump, tag, release, publication, or deployment was requested for this round.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:12:- Current delivery revision ID: `DR-001`
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:13:- Notes: Reviewed/API-E2E-passed candidate is current with the tracked remote base and ready for explicit user verification.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:34:- Initial verification / acceptance reference: Pending user response to `DR-001` handoff.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:49:- Archived ticket path: Pending explicit user verification and repository-finalization authorization.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:65:- Re-integration before final merge result: `Not needed` at this stage; mandatory refresh remains pending after user verification.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:69:- Repository finalization status: `Blocked`
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:88:- Blocker (if applicable): Cleanup is intentionally deferred until user verification and safe repository finalization complete.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:123:No rollout exists yet. If user verification finds that retry diagnostics still terminalize a turn, duplicate input, corrupt tool/reasoning correlation, or allow stale turn A to settle active turn B, do not finalize. After a future merge/release, revert the ticket change on `personal` and publish only a later corrective release through the documented release workflow; do not rewrite an existing tag.
+tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md:127:`DR-001 Pass — integrated state is current, documentation is synchronized, and the candidate is ready for user verification. Repository finalization and cleanup are intentionally blocked on explicit user approval; release/deployment is not currently in scope.`
+tickets/in-progress/codex-runtime-event-stream-reconnect/delivery-revision-record.md:7:| `DR-001` | Initial delivery-stage entry after `CRR-002 Pass` re-reviewed the API/E2E-owned durable lifecycle test following `API-REV-001 Pass` at `96.6%` confidence | N/A | Pass — remote base refresh confirmed the branch is current, durable docs were synchronized and validated, and the user-verification handoff is ready; repository finalization is intentionally held | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/delivery-integrated-state-refresh.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/docs-sync-validation.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/docs-sync-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/handoff-summary.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/tickets/in-progress/codex-runtime-event-stream-reconnect/release-deployment-report.md` |
+tickets/in-progress/codex-runtime-event-stream-reconnect/delivery-revision-record.md:11:### DR-001 — Initial integrated refresh, docs sync, and verification handoff
+tickets/in-progress/codex-runtime-event-stream-reconnect/docs-sync-report.md:55:- Next delivery action: Present the integrated candidate and handoff summary for explicit user verification. Keep ticket archival, final commit/push, target merge/push, release, deployment, and cleanup on hold until that signal.
+exit_code=0
+
+$ git diff --stat -- autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ .../docs/design/codex_raw_event_mapping.md         | 56 +++++++++++++++++-----
+ 1 file changed, 45 insertions(+), 11 deletions(-)
+
+Docs sync validation result: PASS.

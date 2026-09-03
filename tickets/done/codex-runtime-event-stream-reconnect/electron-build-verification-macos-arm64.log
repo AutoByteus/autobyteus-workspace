@@ -1,0 +1,96 @@
+# Local Electron Build Verification — macOS ARM64
+
+Started: 2026-09-02T21:14:42+02:00
+
+## Artifact presence and metadata
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.dmg
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.zip
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.dmg.blockmap
+PRESENT /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.zip.blockmap
+
+$ file <app executable>
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+$ plutil bundle metadata
+CFBundleIdentifier=com.autobyteus.app
+CFBundleShortVersionString=1.4.66
+CFBundleVersion=1.4.66
+
+## Packaged fix presence
+80:        const errorEffect = params.willRetry === true ? "diagnostic" : "terminal";
+21:                payload.error_effect === "diagnostic" &&
+
+## Staged terminal runtime validation
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Packaged terminal runtime validation
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Archive integrity
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $EEF9FF04
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F478FB9B
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $EC07914C
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $19C9D5B8
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $EC07914C
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $DA2728F0
+Die überprüfte CRC32-Prüfsumme ist $A39ED081
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.dmg" is VALID
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.zip.
+ZIP integrity: PASS
+
+## Checksums and sizes
+afc1d6cf494bd86228d0a59076febd4d91013c3129eb72dbe07fbd32c1789d33  /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.dmg
+67dc1a90bfb54343269683d33c3b82e47c421d665545e8cbe5bb0d1e999aaa2d  /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.zip
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.dmg size=467204938 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.66.zip size=461859257 bytes
+
+## Signing posture
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+VersionPlatform=1
+VersionMin=786432
+VersionSDK=1704448
+Hash type=sha256 size=32
+CandidateCDHash sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+CandidateCDHashFull sha256=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+Hash choices=sha256
+CMSDigest=183bce38eb383b21f21c2cdedcf6cd8781b11cdd090f942c4eacd6c09b1112f7
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=16384
+Executable Segment flags=0x1
+Page size=4096
+CDHash=183bce38eb383b21f21c2cdedcf6cd8781b11cdd
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+codesign_display_exit_code=0
+Expected local-build result: no distribution identity; signing was explicitly disabled and no release-policy claim is made.
+
+Finished: 2026-09-02T21:15:07+02:00
+Static/package verification result: PASS
+
+## Build-created workspace output cleanup
+PASS removed `autobyteus-application-backend-sdk/dist` and `autobyteus-application-sdk-contracts/dist`, both absent before this delivery build.
+The ignored packaged artifacts and staged server resources were retained for user testing.

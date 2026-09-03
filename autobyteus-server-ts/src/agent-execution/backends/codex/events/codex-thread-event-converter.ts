@@ -172,7 +172,10 @@ export class CodexThreadEventConverter {
       this.createEvent(codexEventName, eventType, payload),
     createStatusEvent: (codexEventName, payload) =>
       this.createStatusEvent(codexEventName, payload),
+    closeReasoningBlocksForBoundary: (codexEventName, payload) =>
+      this.closeReasoningBlocksForBoundary(codexEventName, payload),
     closeAllReasoningBlocks: (codexEventName) => this.closeAllReasoningBlocks(codexEventName),
+    clearOrderedToolsForBoundary: (payload) => this.clearOrderedToolsForBoundary(payload),
     clearAllOrderedTools: () => this.orderedToolBoundaryTracker.clearAll(),
   };
 

@@ -15,7 +15,12 @@ export type CodexThreadLifecycleEventConverterContext = {
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
   createStatusEvent: (codexEventName: string, payload?: Record<string, unknown>) => AgentRunEvent;
+  closeReasoningBlocksForBoundary: (
+    codexEventName: string,
+    payload: JsonObject,
+  ) => AgentRunEvent[];
   closeAllReasoningBlocks: (codexEventName: string) => AgentRunEvent[];
+  clearOrderedToolsForBoundary: (payload: JsonObject) => void;
   clearAllOrderedTools: () => void;
 };
 
@@ -38,8 +43,25 @@ export const convertCodexThreadLifecycleEvent = (
     case CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED:
       return [];
     case CodexThreadEventName.ERROR: {
-      const reasoningEnds = context.closeAllReasoningBlocks(codexEventName);
-      context.clearAllOrderedTools();
+      const turnId = typeof payload.turn_id === "string" && payload.turn_id.trim().length > 0
+        ? payload.turn_id.trim()
+        : null;
+      const isTurnDiagnostic =
+        payload.error_scope === "turn" &&
+        payload.error_effect === "diagnostic" &&
+        turnId !== null;
+      const isTurnTerminal =
+        payload.error_scope === "turn" &&
+        payload.error_effect === "terminal" &&
+        turnId !== null;
+      let reasoningEnds: AgentRunEvent[] = [];
+      if (isTurnTerminal) {
+        reasoningEnds = context.closeReasoningBlocksForBoundary(codexEventName, payload);
+        context.clearOrderedToolsForBoundary(payload);
+      } else if (!isTurnDiagnostic) {
+        reasoningEnds = context.closeAllReasoningBlocks(codexEventName);
+        context.clearAllOrderedTools();
+      }
       const nestedError = asObject(payload.error);
       const errorCode = nestedError?.code ?? payload.code;
       const errorMessage = nestedError?.message ?? payload.message;
@@ -55,7 +77,7 @@ export const convertCodexThreadLifecycleEvent = (
           ...(typeof payload.error_effect === "string"
             ? { error_effect: payload.error_effect }
             : {}),
-          ...(typeof payload.turn_id === "string" ? { turn_id: payload.turn_id } : {}),
+          ...(turnId ? { turn_id: turnId } : {}),
         };
       const errorEvent = context.createEvent(
         codexEventName,

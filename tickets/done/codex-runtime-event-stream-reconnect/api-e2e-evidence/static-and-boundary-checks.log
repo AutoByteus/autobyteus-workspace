@@ -1,0 +1,10 @@
+$ (cd autobyteus-server-ts && pnpm exec tsc -p tsconfig.build.json --noEmit)
+$ (cd autobyteus-web && pnpm guard:web-boundary)
+
+> autobyteus@1.4.66 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-event-stream-reconnect/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+$ git diff --check
+$ final API/E2E changed-file whitespace check (untracked-aware)
+Passed: 4 changed files
