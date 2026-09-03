@@ -1,0 +1,1277 @@
+
+===== ISOLATED tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts =====
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:43967) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+Custom app data directory set to: /tmp/recent-run-projection-gql-P2DSB4
+Updated config file path to /tmp/recent-run-projection-gql-P2DSB4/.env
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-03T14:25:17.784Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests | 9 failed) 251ms
+     × hydrates native reasoning through standalone and team GraphQL projections 13ms
+     × hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 8ms
+     × omits a rotated system instruction from active hydration without reading its archive 7ms
+     × projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 73ms
+     × projects a team member from active traces only and preserves its archive bytes 13ms
+     × traverses exactly 275 standalone active events in fixed pages without opening archives 9ms
+     × traverses exactly 275 team-member active events and rejects its cursor for another subject 15ms
+     × keeps a cursor valid across append and expires it after an atomic active rewrite 8ms
+     × serializes production media and shallow tool state without multi-megabyte result or log payload 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+GraphQLError: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ new AgentRunHistoryService src/run-history/services/agent-run-history-service.ts:48:76
+ ❯ getAgentRunHistoryService src/run-history/services/agent-run-history-service.ts:150:36
+ ❯ RunHistoryResolver.<instance_members_initializer> src/api/graphql/types/run-history.ts:248:36
+ ❯ new RunHistoryResolver src/api/graphql/types/run-history.ts:247:8
+ ❯ DefaultContainer.get ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:8:51
+ ❯ IOCContainer.getInstance ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:29:42
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:12:51
+ ❯ executeField ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:500:20
+ ❯ executeFields ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:422:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+GraphQLError: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:70:13
+     68|   static getInstance(): AgentTeamRunManager {
+     69|     if (!AgentTeamRunManager.instance) {
+     70|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     71|     }
+     72|     return AgentTeamRunManager.instance;
+ ❯ new TeamRunHistoryCatalogService src/run-history/services/team-run-history-catalog-service.ts:78:71
+ ❯ src/run-history/services/team-run-history-catalog-service.ts:279:21
+ ❯ getTeamRunHistoryCatalogService src/run-history/services/team-run-history-catalog-service.ts:282:3
+ ❯ new TeamRunHistoryService src/run-history/services/team-run-history-service.ts:38:46
+ ❯ getTeamRunHistoryService src/run-history/services/team-run-history-service.ts:137:3
+ ❯ TeamRunHistoryResolver.<instance_members_initializer> src/api/graphql/types/team-run-history.ts:79:35
+ ❯ new TeamRunHistoryResolver src/api/graphql/types/team-run-history.ts:78:8
+ ❯ DefaultContainer.get ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:8:51
+ ❯ IOCContainer.getInstance ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:29:42
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  14:25:10
+   Duration  7.65s (transform 4.54s, setup 21ms, import 6.62s, tests 251ms, environment 0ms)
+
+===== EXIT tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts: 1 =====
+
+===== ISOLATED tests/e2e/workspaces/workspaces-graphql.e2e.test.ts =====
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:44116) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-ORrpfh/test_ws_root
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created and registered workspace ID: agent_ws_bd5c9b5086cb89a1169c1615fe486d07c79e063f24a883c4817351f1f265496b
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace agent_ws_bd5c9b5086cb89a1169c1615fe486d07c79e063f24a883c4817351f1f265496b
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rvNrJ9/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rvNrJ9/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_9ca9e4d1477941329ae5c63bc6b627fc1f7a74e9154907aaa3493c31f49d8d17
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to remove registered workspace
+
+stderr | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Unexpected error removing workspace: Error: The process AgentRunManager is not initialized.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_9ca9e4d1477941329ae5c63bc6b627fc1f7a74e9154907aaa3493c31f49d8d17
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-Fy1oh2/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Fy1oh2/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created and registered workspace ID: agent_ws_1df141f8911141f97f8715906a83c5bdc35e3512c7202aaee3c9f1def471a56f
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Creating temp workspace at: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rvNrJ9/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rvNrJ9/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace agent_ws_1df141f8911141f97f8715906a83c5bdc35e3512c7202aaee3c9f1def471a56f
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-XTm6GW/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-XTm6GW/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created and registered workspace ID: agent_ws_d3926353142acd993c9ca9fcd69566d9397a48c3acd37878106f539f3bb70cd6
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Fy1oh2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rvNrJ9/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Closing FileSystemWorkspace agent_ws_d3926353142acd993c9ca9fcd69566d9397a48c3acd37878106f539f3bb70cd6
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-8a3OB3/test_ws_root
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-8a3OB3/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created and registered workspace ID: agent_ws_1fec24f8c0ffb0a5e1997a2cdb69be0cdc7a1631deded7695b363e3dbff45e7d
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Fy1oh2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rvNrJ9/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-XTm6GW/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Closing FileSystemWorkspace agent_ws_1fec24f8c0ffb0a5e1997a2cdb69be0cdc7a1631deded7695b363e3dbff45e7d
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Creating temp workspace at: /tmp/autobyteus-workspace-kK6Kvs/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-kK6Kvs/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-kK6Kvs/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Creating temp workspace at: /tmp/autobyteus-workspace-SYXfAT/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-SYXfAT/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-SYXfAT/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-SYXfAT/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-SYXfAT/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-ERUR0J/server-data/temp_workspace/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Creating temp workspace at: /tmp/autobyteus-workspace-ERUR0J/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ERUR0J/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-ERUR0J/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-42iEOo/created-during-list
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/created-during-list.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Creating temp workspace at: /tmp/autobyteus-workspace-42iEOo/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-42iEOo/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created and registered workspace ID: agent_ws_55425a4da0698c8612be6a55cd31361c3e9b2c169e119dc70d9a30278bb15d29
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/existing-a.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/existing-b.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/existing-a.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/existing-b.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-42iEOo/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace agent_ws_55425a4da0698c8612be6a55cd31361c3e9b2c169e119dc70d9a30278bb15d29
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-IMapZR/graphql_snapshot_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-lYLnqp.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-kXaSU5.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-OhS7ri.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-explorer-ws-e2e-wqXX26.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-1NpjK1/rename_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-file-ops-alorjg/file_ops_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-5t5ALj/ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-path-boundary-e2e-trOLD3/ignored_ws.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-8a3OB3/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AoeXwl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ATQKOS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-Fy1oh2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-oE2CER/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-ORrpfh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-0q9wb7/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-bKgPqE/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-fj1SfA/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RsdQLw/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-VY7KlW/workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rvNrJ9/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-TqTtpC/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-XTm6GW/test_ws_root.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-z3LiuG/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+Custom app data directory set to: /tmp/autobyteus-workspace-AyzGnM/server-data
+Config file not found in new data directory: Error: Configuration file not found: /tmp/autobyteus-workspace-AyzGnM/server-data/.env
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Creating temp workspace at: /tmp/autobyteus-workspace-AyzGnM/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-AyzGnM/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /tmp/autobyteus-workspace-AyzGnM/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Closing FileSystemWorkspace temp_ws_default
+
+ ❯ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests | 1 failed) 141ms
+     ✓ creates and lists workspaces 12ms
+     × removes a registered workspace from visibility, preserves files, and re-adds the same root 13ms
+     ✓ keeps a workspace registered when removeWorkspace is blocked by an active standalone run 9ms
+     ✓ returns workspace metadata from createWorkspace without acquiring file explorer 6ms
+     ✓ resolves deterministic workspace metadata without initializing the workspace 7ms
+     ✓ creates and lists the temp workspace with the backend-selected app-data-relative path 2ms
+     ✓ lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries 4ms
+     ✓ resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry 3ms
+     ✓ preserves a seeded registry when GraphQL workspace listing and creation overlap 5ms
+     ✓ rejects removing the default temp workspace 7ms
+     ✓ creates and lists the temp workspace using the configured relative override under app data dir 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+AssertionError: expected { success: false, …(3) } to match object { success: true, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "success": true,
++   "success": false,
+    "workspaceId": "agent_ws_9ca9e4d1477941329ae5c63bc6b627fc1f7a74e9154907aaa3493c31f49d8d17",
+-   "workspaceRootPath": "/tmp/autobyteus-workspace-rvNrJ9/test_ws_root",
++   "workspaceRootPath": null,
+  }
+
+ ❯ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts:272:37
+    270|     }>(removeMutation, { input: { workspaceId } });
+    271| 
+    272|     expect(removed.removeWorkspace).toMatchObject({
+       |                                     ^
+    273|       success: true,
+    274|       workspaceId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  14:25:18
+   Duration  7.52s (transform 4.39s, setup 23ms, import 6.58s, tests 141ms, environment 0ms)
+
+===== EXIT tests/e2e/workspaces/workspaces-graphql.e2e.test.ts: 1 =====
+
+===== ISOLATED tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts =====
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:44394) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E > reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 344ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  14:25:26
+   Duration  7.39s (transform 4.28s, setup 20ms, import 6.29s, tests 344ms, environment 0ms)
+
+===== EXIT tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts: 0 =====
+
+===== ISOLATED tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts =====
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:44555) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-03T14:25:41.915Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns grouped agent and team definitions for workspace history
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+ ❯ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests | 5 failed) 88ms
+     × returns grouped agent and team definitions for workspace history 8ms
+     × returns scoped history for a registered workspace id 2ms
+     × returns scoped history for the default temp workspace id 1ms
+     × rejects workspaceRunHistory for a missing or removed workspace id 3ms
+     ✓ does not expose the legacy flat workspace history fields 1ms
+     × rejects removed persisted status/activity fields while team stable fields remain queryable 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns grouped agent and team definitions for workspace history
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns scoped history for a registered workspace id
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns scoped history for the default temp workspace id
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > rejects removed persisted status/activity fields while team stable fields remain queryable
+GraphQLError: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ new AgentRunHistoryService src/run-history/services/agent-run-history-service.ts:48:76
+ ❯ getAgentRunHistoryService src/run-history/services/agent-run-history-service.ts:150:36
+ ❯ RunHistoryResolver.<instance_members_initializer> src/api/graphql/types/run-history.ts:248:36
+ ❯ new RunHistoryResolver src/api/graphql/types/run-history.ts:247:8
+ ❯ DefaultContainer.get ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:8:51
+ ❯ IOCContainer.getInstance ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:29:42
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:12:51
+ ❯ executeField ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:500:20
+ ❯ executeFields ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:422:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > rejects workspaceRunHistory for a missing or removed workspace id
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'ws-removed' ]
+
+Number of calls: 0
+
+ ❯ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts:380:48
+    378|     `);
+    379| 
+    380|     expect(getWorkspaceRootPathForHistoryMock).toHaveBeenCalledWith("w…
+       |                                                ^
+    381|     expect(getWorkspaceRunHistoryMock).not.toHaveBeenCalled();
+    382|     expect((result.errors ?? []).map((error) => error.message)).toEqua…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  14:25:34
+   Duration  7.26s (transform 4.29s, setup 21ms, import 6.41s, tests 88ms, environment 0ms)
+
+===== EXIT tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts: 1 =====
+
+===== ISOLATED tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts =====
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rest-e2e-SfGwYq/workspace
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-SfGwYq/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Created and registered workspace ID: agent_ws_d53a830dc3f61f763819fefba41a6c0eda5cd90cefb7429a82a51aa5c8cdc953
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rest-e2e-LSn3Be/workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-LSn3Be/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+Created and registered workspace ID: agent_ws_c218010b6008aa2dccf321445d8dfbd16220e516303c456e699c58f736c92fb3
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rest-e2e-6L7I7L/workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-6L7I7L/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_af9ede620755a739b2654a878fffb2dde3297329272f40dedd1fe595b58d573b
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Security error accessing path ../workspace-sibling/leak.png in workspace agent_ws_af9ede620755a739b2654a878fffb2dde3297329272f40dedd1fe595b58d573b: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rest-e2e-RgnWMN/workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-RgnWMN/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_0fb8a4f4c4a8a907ee42663493235d45377dbce3614886467bec276434ffda40
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Security error accessing path /tmp/autobyteus-workspace-rest-e2e-RgnWMN/absolute.png in workspace agent_ws_0fb8a4f4c4a8a907ee42663493235d45377dbce3614886467bec276434ffda40: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Creating new workspace for rootPath: /tmp/autobyteus-workspace-rest-e2e-vf4GVe/workspace
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace-rest-e2e-vf4GVe/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Created and registered workspace ID: agent_ws_b13df5bdbf2750ee2022b8448f0554c899509d4bb0fb100127dd8f4b96cac458
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Security error accessing path /tmp/autobyteus-workspace-rest-e2e-vf4GVe/absolute.html in workspace agent_ws_b13df5bdbf2750ee2022b8448f0554c899509d4bb0fb100127dd8f4b96cac458: Access denied: Path resolves outside the workspace boundary.
+
+ ❯ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (5 tests | 5 failed) 75ms
+     × serves encoded image paths through a real FileSystemWorkspace 40ms
+     × serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace 10ms
+     × rejects a same-prefix sibling traversal through FileSystemWorkspace 8ms
+     × rejects an absolute candidate through FileSystemWorkspace 9ms
+     × rejects an absolute candidate through the static workspace route 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ WorkspaceRemovalGuard.checkWorkspaceCanBeRemoved src/workspaces/workspace-removal-guard.ts:35:69
+ ❯ WorkspaceManager.removeRegisteredWorkspace src/workspaces/workspace-manager.ts:199:58
+ ❯ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts:41:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  14:25:42
+   Duration  5.94s (transform 3.18s, setup 19ms, import 5.09s, tests 75ms, environment 0ms)
+
+===== EXIT tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts: 1 =====
+
+===== ISOLATED tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts =====
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Agent websocket attached for run claude-ws-context-memory
+Created agent session 9f8cf423-2d3b-4127-88f3-2114284a597a for run claude-ws-context-memory
+Agent WebSocket connected: session=9f8cf423-2d3b-4127-88f3-2114284a597a, run=claude-ws-context-memory
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Closed agent session 9f8cf423-2d3b-4127-88f3-2114284a597a
+Agent WebSocket disconnected: 9f8cf423-2d3b-4127-88f3-2114284a597a
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Agent websocket attached for run claude-ws-interrupt-provider
+Created agent session d4ed6360-2a9f-4908-9503-0bc751344aa1 for run claude-ws-interrupt-provider
+Agent WebSocket connected: session=d4ed6360-2a9f-4908-9503-0bc751344aa1, run=claude-ws-interrupt-provider
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Closed agent session d4ed6360-2a9f-4908-9503-0bc751344aa1
+Agent WebSocket disconnected: d4ed6360-2a9f-4908-9503-0bc751344aa1
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Agent websocket attached for run claude-ws-interrupt-placeholder
+Created agent session dbb5b1ed-71fa-46c8-ae97-2aee9b0ad019 for run claude-ws-interrupt-placeholder
+Agent WebSocket connected: session=dbb5b1ed-71fa-46c8-ae97-2aee9b0ad019, run=claude-ws-interrupt-placeholder
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E
+Closed agent session dbb5b1ed-71fa-46c8-ae97-2aee9b0ad019
+Agent WebSocket disconnected: dbb5b1ed-71fa-46c8-ae97-2aee9b0ad019
+
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (4 tests | 3 failed | 1 skipped) 6080ms
+     × preserves provider conversation memory after interrupt instead of starting a new Claude conversation 2040ms
+     × resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION 2021ms
+     × resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation 2018ms
+     ↓ uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Error: Timed out waiting for initial fake Claude query memory capture and reserved provider session use
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:411:9
+    409|     await new Promise((resolve) => setTimeout(resolve, 10));
+    410|   }
+    411|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    412| };
+    413| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:562:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Error: Timed out waiting for initial fake Claude query and reserved provider session use
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:411:9
+    409|     await new Promise((resolve) => setTimeout(resolve, 10));
+    410|   }
+    411|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    412| };
+    413| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:629:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Error: Timed out waiting for initial placeholder fake Claude query start
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:411:9
+    409|     await new Promise((resolve) => setTimeout(resolve, 10));
+    410|   }
+    411|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    412| };
+    413| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:683:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 skipped (4)
+   Start at  14:25:49
+   Duration  12.45s (transform 3.65s, setup 25ms, import 5.54s, tests 6.08s, environment 0ms)
+
+===== EXIT tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts: 1 =====

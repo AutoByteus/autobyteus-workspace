@@ -57,7 +57,7 @@ export const liveE2eScenarios = Object.freeze({
     providerId: 'GEMINI',
     requiredSecretId: 'provider.google.vertex-express.api-key',
     geminiMode: 'VERTEX_EXPRESS',
-    model: 'gemini-3.7-flash',
+    model: 'gemini-3.8-flash',
   }),
   'gemini.vertex-express.audio': Object.freeze({
     operation: 'audio',
@@ -78,7 +78,7 @@ export const liveE2eScenarios = Object.freeze({
     providerId: 'GEMINI',
     requiredSecretId: 'provider.google.ai-studio.api-key',
     geminiMode: 'AI_STUDIO',
-    model: 'gemini-3.7-flash',
+    model: 'gemini-3.8-flash',
   }),
   'anthropic.llm': Object.freeze({
     operation: 'llm',

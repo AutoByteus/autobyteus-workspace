@@ -18,9 +18,9 @@ const MODEL_RUNTIME_MAP: Record<string, Record<string, Record<string, string>>> 
       vertex: 'gemini-3.1-pro-preview',
       api_key: 'gemini-3.1-pro-preview'
     },
-    'gemini-3.7-flash': {
-      vertex: 'gemini-3.7-flash',
-      api_key: 'gemini-3.7-flash'
+    'gemini-3.8-flash': {
+      vertex: 'gemini-3.8-flash',
+      api_key: 'gemini-3.8-flash'
     }
   },
   image: {

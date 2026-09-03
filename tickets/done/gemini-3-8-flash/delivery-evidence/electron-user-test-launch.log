@@ -1,0 +1,21 @@
+# Electron user-test launch
+
+timestamp=2026-09-03T15:51:23Z
+display=:99
+artifact=/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.67.AppImage
+initial_command=env -u ELECTRON_RUN_AS_NODE ./AutoByteus_enterprise_linux-arm64-1.4.67.AppImage
+initial_result=failed before app start: AppImage runtime requested unversioned libz.so, which is absent on this container host
+fallback_executable=/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-web/electron-dist/linux-arm64-unpacked/autobyteus
+fallback_command=env -u ELECTRON_RUN_AS_NODE ./autobyteus --no-sandbox
+fallback_reason=use the same built unpacked application; Chromium requires --no-sandbox because this container runs as root
+fallback_result=running
+main_process_pid=74401
+embedded_server_pid=74499
+embedded_server_url=http://127.0.0.1:29695
+health_result={"status":"ok","message":"Server is running"}
+window_title=autobyteus
+user_verification_state=in progress
+closed_timestamp=2026-09-03T15:52:11Z
+shutdown_result=graceful Electron and bundled-server shutdown completed
+user_verification_reference=2026-09-03: user confirmed the tested result is working and authorized finalization plus a new release
+user_verification_state=passed

@@ -14,6 +14,7 @@ import {
 } from "../../helpers/token-usage-run-record-fixtures.js";
 
 const PREFIX = "analytics-graphql-";
+const HISTORICAL_GEMINI_MODEL = "gemini-3.7-flash";
 const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const runIds = new Set<string>();
 
@@ -26,7 +27,12 @@ const cleanup = async () => {
   await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: [...runIds] } } });
   runIds.clear();
   await rootPrismaClient.tokenUsageAnalyticsDailyFacet.deleteMany({
-    where: { modelIdentifier: { startsWith: PREFIX } },
+    where: {
+      OR: [
+        { modelIdentifier: { startsWith: PREFIX } },
+        { modelIdentifier: HISTORICAL_GEMINI_MODEL },
+      ],
+    },
   });
   await rootPrismaClient.tokenUsageAnalyticsCoverage.deleteMany();
 };
@@ -313,6 +319,67 @@ describe("token usage analytics GraphQL E2E", () => {
       .toBe(result.selectedAggregate.estimatedApiTotalCost);
     expect(result.breakdownRows).toHaveLength(2);
     expect(result.breakdownRows.map((row: any) => row.costQuality.kind)).toEqual(["MISSING", "COMPLETE"]);
+  });
+
+  it("projects stored Gemini 3.7 identity and cost without current-catalog translation or repricing", async () => {
+    await new SqlTokenUsageAnalyticsRepository(rootPrismaClient)
+      .initializeCoverage(new Date("2026-09-01T00:00:00.000Z"));
+    const runId = `${PREFIX}historical-gemini-3-7`;
+    await write({
+      runId,
+      observedAt: "2026-09-02T12:00:00.000Z",
+      inputTokens: 1_000,
+      outputTokens: 100,
+      modelProvider: "GEMINI",
+      providerName: "Gemini",
+      modelIdentifier: HISTORICAL_GEMINI_MODEL,
+      modelValue: HISTORICAL_GEMINI_MODEL,
+      inputPricePerMillion: 0.75,
+      outputPricePerMillion: 3.75,
+      inputCost: 0.00075,
+      outputCost: 0.000375,
+      totalCost: 0.001125,
+    });
+
+    const response = await execute({
+      rangePreset: "CUSTOM",
+      startTime: "2026-09-01T00:00:00.000Z",
+      endTimeExclusive: "2026-09-04T00:00:00.000Z",
+      runtimeKind: null,
+      providerKey: null,
+      modelKey: null,
+    });
+
+    expect(response.errors).toBeUndefined();
+    const result = (response.data as any).tokenUsageAnalytics;
+    expect(result.breakdownRows).toHaveLength(1);
+    expect(result.breakdownRows[0]).toMatchObject({
+      modelProvider: "GEMINI",
+      providerName: "Gemini",
+      modelIdentifier: HISTORICAL_GEMINI_MODEL,
+      modelValue: HISTORICAL_GEMINI_MODEL,
+      modelDisplayName: "Gemini:gemini-3.7-flash",
+      aggregate: {
+        totalTokens: 1_100,
+        currency: "USD",
+        apiCostStatus: "estimated",
+        usageReportCount: 1,
+      },
+    });
+    expect(result.breakdownRows[0].aggregate.estimatedApiTotalCost).toBeCloseTo(0.001125, 12);
+    expect(result.filterOptions.models).toContainEqual(expect.objectContaining({
+      modelIdentifier: HISTORICAL_GEMINI_MODEL,
+      modelValue: HISTORICAL_GEMINI_MODEL,
+      displayName: "Gemini:gemini-3.7-flash",
+    }));
+    expect(await rootPrismaClient.tokenUsageRunRecord.findUnique({ where: { runId } }))
+      .toMatchObject({
+        latestModelProvider: "GEMINI",
+        latestProviderName: "Gemini",
+        latestModelIdentifier: HISTORICAL_GEMINI_MODEL,
+        latestModelValue: HISTORICAL_GEMINI_MODEL,
+        estimatedApiTotalCost: 0.001125,
+      });
   });
 
   it("keeps pre-feature run rows directly usable without analytics backfill and persists honest coverage", async () => {

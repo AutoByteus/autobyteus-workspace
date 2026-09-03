@@ -1,5 +1,6 @@
 import type { ApplicationEffectiveLaunchConfiguration } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
+import { LLMFactory } from "autobyteus-ts";
 import { buildOpenAICompatibleEndpointModelIdentifier } from "autobyteus-ts/llm/openai-compatible-endpoint-model.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { describe, expect, it, vi } from "vitest";
@@ -67,6 +68,36 @@ const model = (modelIdentifier: string, providerId: string, runtime: LLMRuntime)
 }) as never;
 
 describe("ApplicationLaunchHostCapabilityValidator current model readiness", () => {
+  it("rejects exact stale Gemini 3.7 through the production current-model registry", async () => {
+    const listLlmModels = vi.fn(async () => []);
+    const credentials = credentialPort();
+    LLMFactory.resetForTests();
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: (modelIdentifier) =>
+          LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { listLlmModels },
+      providerCredentialReadiness: credentials,
+    });
+
+    try {
+      await expect(validator.validate(configuration([{
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        llmModelIdentifier: "gemini-3.7-flash",
+      }]))).resolves.toEqual([expect.objectContaining({
+        code: "CURRENT_MODEL_SELECTION_REQUIRED",
+        message: "The selected model is no longer supported. Select a current supported model.",
+      })]);
+      expect(listLlmModels).not.toHaveBeenCalled();
+      expect(credentials.getReadiness).not.toHaveBeenCalled();
+    } finally {
+      LLMFactory.resetForTests();
+    }
+  });
+
   it("retains a stale static AutoByteus leaf and blocks before catalog or credential checks", async () => {
     const listLlmModels = vi.fn(async () => []);
     const credentials = credentialPort();

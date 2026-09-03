@@ -247,19 +247,26 @@ remain unchanged.
   `GEMINI_SETUP_MODE` is the sole activation authority.
 - The Autobyteus runtime model catalog delegates built-in LLM entries to the
   `autobyteus-ts` `LLMFactory`; package-level additions such as
-  `gemini-3.7-flash` should surface through that path rather than through a
+  `gemini-3.8-flash` should surface through that path rather than through a
   duplicate server-side Gemini model list.
 
 #### Current curated text catalog boundary
 
 The current curated flagship entries for this release are `grok-4.6`,
-`gemini-3.7-flash`, `kimi-k3`, `glm-5.3`, and `minimax-m3` (the provider value
-for the last entry remains `MiniMax-M3`). Retired Grok 4.5, pre-3.7 Gemini
-Flash, Kimi K2, GLM 5.2, and older MiniMax text entries are not aliases: a
+`gemini-3.8-flash`, `kimi-k3`, `glm-5.3`, and `minimax-m3` (the provider value
+for the last entry remains `MiniMax-M3`). Retired Grok 4.5, Gemini 3.7 and
+earlier Gemini Flash rows, Kimi K2, GLM 5.2, and older MiniMax text entries are not aliases: a
 persisted selection using one of those IDs is rejected and requires explicit
 user reselection. Provider-specific schemas and request adapters are updated
 together; callers must not reconstruct retired defaults or silently translate
 them to a current model.
+
+The current Gemini Flash row uses the exact `gemini-3.8-flash` identity in AI
+Studio, Vertex Express, and Vertex Project modes. Its package-owned request
+policy emits a lower-case string `thinkingLevel`, retains optional thought
+summaries, and omits 3.8-unsupported sampling, penalty, candidate-count, and
+integer-thinking-budget fields. The server projects this contract and its
+effective-dated pricing schedules without duplicating the model policy.
 
 Required provider credentials are resolved before a provider request. A missing
 or blank key has the stable `missing_api_key` category and an actionable

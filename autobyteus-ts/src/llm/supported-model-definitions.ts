@@ -421,12 +421,23 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     configSchema: geminiSchema
   },
   {
-    name: 'gemini-3.7-flash',
-    value: 'gemini-3.7-flash',
+    name: 'gemini-3.8-flash',
+    value: 'gemini-3.8-flash',
     provider: LLMProvider.GEMINI,
     llmClass: GeminiLLM,
-    canonicalName: 'gemini-3.7-flash', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash', '2026-08-22', GEMINI_MEDIA_CAPABILITIES),
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 3.75, { cachedInputReadTokenPricing: 0.075, pricingEffectiveDate: '2026-08-22' }) }),
+    canonicalName: 'gemini-3.8-flash', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash', '2026-09-02', GEMINI_MEDIA_CAPABILITIES),
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 3.75, {
+      cachedInputReadTokenPricing: 0.075,
+      pricingEffectiveDate: '2026-09-02',
+      pricingScheduleHistory: [
+        { kind: 'fixed', scheduleId: 'gemini-3-8-flash-introductory-2026-09-02', effectiveFrom: null,
+          period: { periodId: 'introductory', inputTokenPricing: 0.75, outputTokenPricing: 3.75, cachedInputReadTokenPricing: 0.075,
+            trustedDimensions: { input: true, output: true, cachedInputRead: true, cachedInputWrite: false, cachedInputWrite5m: false, cachedInputWrite1h: false } } },
+        { kind: 'fixed', scheduleId: 'gemini-3-8-flash-standard-2027-01-01', effectiveFrom: '2027-01-01T00:00:00Z',
+          period: { periodId: 'standard', inputTokenPricing: 1.5, outputTokenPricing: 7.5, cachedInputReadTokenPricing: 0.15,
+            trustedDimensions: { input: true, output: true, cachedInputRead: true, cachedInputWrite: false, cachedInputWrite5m: false, cachedInputWrite1h: false } } },
+      ],
+    }) }),
     configSchema: geminiSchema
   },
 

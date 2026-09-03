@@ -48,7 +48,7 @@ const model = (
   });
 
 class GeminiLLM extends ProductionGeminiLLM {
-  constructor(inputModel = model(LLMProvider.GEMINI, 'gemini-2.5-pro'), config = new LLMConfig()) {
+  constructor(inputModel = model(LLMProvider.GEMINI, 'gemini-3.8-flash'), config = new LLMConfig()) {
     super(
       inputModel,
       config,
@@ -382,7 +382,9 @@ describe('provider-native API request payloads', () => {
     );
 
     expect(functionCalls.map((call: any) => call.id)).toEqual(['call_a', 'call_b']);
+    expect(functionCalls.map((call: any) => call.name)).toEqual(['get_weather', 'get_time']);
     expect(functionResponses.map((response: any) => response.id)).toEqual(['call_a', 'call_b']);
+    expect(functionResponses.map((response: any) => response.name)).toEqual(['get_weather', 'get_time']);
     expect(functionCalls.map((call: any) => call.args.city)).toEqual(['Berlin', 'Berlin']);
     expect(resultTurn.parts.every((part: any) => part.functionResponse)).toBe(true);
     expect(syntheticAggregateUserTurns).toEqual([]);

@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, type ThinkingConfig } from '@google/genai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMProvider } from '../providers.js';
@@ -23,6 +23,16 @@ const THINKING_LEVEL_BUDGETS: Record<string, number> = {
   medium: 4096,
   high: 16384
 };
+
+const GEMINI_38_MODEL = 'gemini-3.8-flash';
+const GEMINI_38_THINKING_LEVELS = new Set(['low', 'medium', 'high']);
+const GEMINI_38_FILTERED_EXTRA_PARAM_KEYS = [
+  'thinking_level', 'thinkingLevel', 'include_thoughts', 'includeThoughts',
+  'thinkingConfig', 'thinking_config', 'thinkingBudget', 'thinking_budget',
+  'temperature', 'topP', 'top_p', 'topK', 'top_k',
+  'candidateCount', 'candidate_count', 'frequencyPenalty', 'frequency_penalty',
+  'presencePenalty', 'presence_penalty', 'tools', 'abortSignal', 'abort_signal'
+] as const;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
@@ -75,6 +85,14 @@ export class GeminiLLM extends BaseLLM {
     delete extraParams.thinking_level;
     delete extraParams.include_thoughts;
 
+    if (this.model.value === GEMINI_38_MODEL) {
+      const configuredLevel = String(thinkingLevel);
+      const normalizedLevel = GEMINI_38_THINKING_LEVELS.has(configuredLevel)
+        ? configuredLevel as 'low' | 'medium' | 'high'
+        : 'medium';
+      return this.buildGemini38GenerationConfig(extraParams, normalizedLevel, includeThoughts, tools);
+    }
+
     const config: Record<string, unknown> = {
       responseMimeType: 'text/plain',
       systemInstruction: this.systemMessage,
@@ -101,6 +119,30 @@ export class GeminiLLM extends BaseLLM {
     if (Object.keys(extraParams).length) {
       Object.assign(config, extraParams);
     }
+
+    return config;
+  }
+
+  private buildGemini38GenerationConfig(
+    extraParams: Record<string, unknown>,
+    thinkingLevel: 'low' | 'medium' | 'high',
+    includeThoughts: boolean,
+    tools?: Array<Record<string, unknown>>
+  ): Record<string, unknown> {
+    for (const key of GEMINI_38_FILTERED_EXTRA_PARAM_KEYS) {
+      delete extraParams[key];
+    }
+
+    const config: Record<string, unknown> = {
+      responseMimeType: 'text/plain',
+      systemInstruction: this.systemMessage,
+      ...extraParams,
+      // Google documents lower-case wire values; the generated SDK enum is upper-case.
+      thinkingConfig: { thinkingLevel, includeThoughts } as unknown as ThinkingConfig
+    };
+    if (this.config.maxTokens !== null) config.maxOutputTokens = this.config.maxTokens;
+    if (this.config.stopSequences !== null) config.stopSequences = this.config.stopSequences;
+    if (tools && tools.length > 0) config.tools = tools;
 
     return config;
   }
