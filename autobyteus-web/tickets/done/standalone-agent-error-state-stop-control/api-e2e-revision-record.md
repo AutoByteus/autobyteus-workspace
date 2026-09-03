@@ -14,7 +14,7 @@ the concise validation-round history.
 
 ### API-REV-001 — Standalone Error Stop executable baseline
 
-- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/implementation-handoff.md`; API/E2E round 1.
+- Triggering role, report path, and round: Implementation Engineer; `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-handoff.md`; API/E2E round 1.
 - Triggering finding or scenario IDs: `SCN-001`, `SCN-002`; `AC-001`–`AC-007`.
 - Related revision IDs: requirements `RER-002`; implementation `IR-001`; architecture-design, architecture-review, code-review, and delivery revision IDs `N/A — not applicable`.
 - Why recorded: establishes the mandatory initial API/E2E result and independent executable proof for the direct `Small` / `Low` implementation.

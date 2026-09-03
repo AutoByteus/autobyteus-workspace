@@ -199,7 +199,7 @@
 - Structural surfaces reviewed: Standalone run tree/read-model status projection, live-context overlay, history-row action eligibility, the existing termination/pending/feedback boundary, and the backend active-runtime status and termination contracts.
 - Payload/content surfaces reviewed: Existing localized Stop/Terminate label and existing failure-toast content; no new payload or content surface is required.
 - Structural-impact triggers: `None`
-- Evidence paths: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/investigation-notes.md`; source paths and targeted baseline command recorded there.
+- Evidence paths: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/investigation-notes.md`; source paths and targeted baseline command recorded there.
 - Decision rationale: The approved outcome aligns the standalone history presentation with an existing lifecycle distinction and reuses the existing exact-run termination action, pending guard, feedback, and backend contract. No API/external contract, persisted schema/invariant, security/privacy boundary, concurrency mechanism, runtime lifecycle transition, deployment topology, subsystem ownership, migration, new architectural pattern, or structural refactor is required by the approved behavior. The bounded change can proceed without an architecture-owned decision; Implementation Engineer must recheck this conclusion against implementation evidence.
 - Selected route: `Implementation Engineer`
 - Outcome classification: `Approved Direct-Implementation`

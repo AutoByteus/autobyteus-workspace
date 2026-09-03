@@ -3,9 +3,9 @@
 ## Upstream Artifact Package
 
 - Upstream route: `Direct Requirements-to-Implementation`.
-- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-doc.md`.
-- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/investigation-notes.md`.
-- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-revision-record.md` (`RER-002`).
+- Requirements doc: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-doc.md`.
+- Investigation notes: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/investigation-notes.md`.
+- Requirements revision record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-revision-record.md` (`RER-002`).
 - Requirements routing assessment: `requirements-doc.md`, section `Architecture Design Routing Assessment`.
 - Design spec: `N/A — not applicable`.
 - Supplemental task artifacts:
@@ -27,7 +27,7 @@ existing exact-run termination action and adds an explicit localized accessible
 name without changing the visual treatment or action location.
 
 - Implementation cycle: `Initial`.
-- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/implementation-revision-record.md`.
+- Implementation revision record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-revision-record.md`.
 - Current implementation revision ID: `IR-001`.
 - Related architecture design revision IDs: `N/A`.
 - Related architecture-review revision IDs: `N/A`.
@@ -40,7 +40,7 @@ name without changing the visual treatment or action location.
 
 - Task size (`Small`/`Medium`/`Large`): `Small`.
 - Architecture risk (`Low`/`High`): `Low`.
-- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-doc.md`, section `Architecture Design Routing Assessment`.
+- Requirements routing assessment path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-doc.md`, section `Architecture Design Routing Assessment`.
 - Classification confirmed or changed: `Confirmed`.
 - Evidence and rationale for confirmation or change: The completed delta is confined to the existing standalone run-tree/read-model projections, existing row action markup, and focused tests. It introduces no API, persistence, security/privacy, concurrency, deployment, ownership, migration, lifecycle-transition, or new-pattern change. The backend termination contract and existing termination owner are unchanged.
 - Selected route (`Direct API/E2E`/`Code Review`/`Architecture Designer`): `Direct API/E2E`.

@@ -2,9 +2,9 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-doc.md` (`RER-002`, Approved).
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/investigation-notes.md`.
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-revision-record.md`.
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-doc.md` (`RER-002`, Approved).
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/investigation-notes.md`.
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-revision-record.md`.
 - Design Spec: `N/A — not applicable` for the direct route.
 - Supplemental Task Artifacts:
   - `/home/autobyteus/data/memory/agent_teams/software_development_department_03636d7482c04940987839d4fb0868a6/requirements_engineer_3bce6dff03fa4f379b8a458ec801ff6e/context_files/ctx_5e5231e89f96__image.png`.
@@ -12,15 +12,15 @@
 - Architecture Design Revision Record: `N/A — not applicable`.
 - Design Review Report: `N/A — not applicable`.
 - Architecture Review Revision Record: `N/A — not applicable`.
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/implementation-handoff.md`.
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/implementation-revision-record.md` (`IR-001`).
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-handoff.md`.
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-revision-record.md` (`IR-001`).
 - Code Review Report: `N/A — not applicable` for the direct low-risk route.
 - Code Review Revision Record: `N/A — not applicable`.
 - Delivery Revision Record: `N/A — initial validation ingress`.
 - Relevant Delivery Revision IDs: `N/A`.
-- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/api-e2e-coverage-investigation.md`.
-- API/E2E Test-Case Ledger: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md`.
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/api-e2e-revision-record.md`.
+- Coverage Investigation: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-coverage-investigation.md`.
+- API/E2E Test-Case Ledger: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md`.
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-revision-record.md`.
 - Current API/E2E Revision ID: `API-REV-001`.
 - Current Execution Round: 1.
 - Trigger: Implementation Engineer direct validation handoff for implementation commit `0fe66d05bf1b2448030ad46ec215f1716a5d54a4`.

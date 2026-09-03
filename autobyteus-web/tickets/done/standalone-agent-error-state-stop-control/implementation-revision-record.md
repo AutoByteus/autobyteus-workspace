@@ -13,7 +13,7 @@ locates the initial implementation baseline and any later implementation deltas.
 
 ### IR-001 — Error-state standalone Stop baseline
 
-- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-doc.md`; initial implementation.
+- Triggering role, report path, and round: Requirements Engineer; `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-doc.md`; initial implementation.
 - Triggering finding IDs: `N/A`.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.

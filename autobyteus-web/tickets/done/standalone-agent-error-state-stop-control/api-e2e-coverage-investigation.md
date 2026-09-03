@@ -2,23 +2,23 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-doc.md` (`RER-002`, Approved).
-- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/investigation-notes.md`.
-- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/requirements-revision-record.md`.
+- Requirements Doc: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-doc.md` (`RER-002`, Approved).
+- Investigation Notes: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/investigation-notes.md`.
+- Requirements Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/requirements-revision-record.md`.
 - Design Spec: `N/A — not applicable` for the direct route.
 - Supplemental Task Artifacts: the two approved current-state PNGs listed in the requirements package.
 - Architecture Design Revision Record: `N/A — not applicable` for the direct route.
 - Design Review Report: `N/A — not applicable` for the direct route.
 - Architecture Review Revision Record: `N/A — not applicable` for the direct route.
-- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/implementation-handoff.md` (`IR-001`).
-- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/implementation-revision-record.md`.
+- Implementation Handoff: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-handoff.md` (`IR-001`).
+- Implementation Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/implementation-revision-record.md`.
 - Code Review Report: `N/A — not applicable` for the direct low-risk route.
 - Code Review Revision Record: `N/A — not applicable`.
 - Delivery Revision Record: `N/A — initial validation ingress`.
 - Relevant Delivery Revision IDs: `N/A`.
-- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/api-e2e-revision-record.md`.
+- API/E2E Revision Record: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-revision-record.md`.
 - Current API/E2E Revision ID: `API-REV-001`.
-- API/E2E Test-Case Ledger: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md`.
+- API/E2E Test-Case Ledger: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md`.
 - Current Investigation Round: 1.
 - Trigger: Implementation Engineer direct API/E2E handoff for commit `0fe66d05bf1b2448030ad46ec215f1716a5d54a4`.
 - Prior Investigation Reviewed: `N/A — no prior API/E2E result exists`.
@@ -149,7 +149,7 @@ None.
 ## Test-Case Ledger Plan
 
 - Ledger required: `Yes` — six independently meaningful cases cross two repositories and include process/browser work.
-- Canonical ledger path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md`.
+- Canonical ledger path: `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/tickets/done/standalone-agent-error-state-stop-control/api-e2e-test-case-ledger.md`.
 - Ledger initialized before execution: `Yes`.
 - Case granularity: repository projection/UI suite, client mutation suite, backend GraphQL lifecycle, backend regression, frontend regression/guards, browser journey.
 

@@ -1,0 +1,214 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/autobyteus-workspace/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+Published autobyteus agent run 'run-auto'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'run-codex' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+Published codex_app_server agent run 'run-codex'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'run-claude' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+Published claude_agent_sdk agent run 'run-claude'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+Published autobyteus agent run 'restored-autobyteus'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'restored-codex_app_server' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+Published codex_app_server agent run 'restored-codex_app_server'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+[AgentRunMemoryRecorder] skipping run 'restored-claude_agent_sdk' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+Published claude_agent_sdk agent run 'restored-claude_agent_sdk'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+[AgentRunMemoryRecorder] skipping run 'run-restore-claude-platform' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+Published claude_agent_sdk agent run 'run-restore-claude-platform'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+Published autobyteus agent run 'run-active'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+[AgentRunMemoryRecorder] skipping run 'run-terminate-ok' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+Published codex_app_server agent run 'run-terminate-ok'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+AgentRunManager initialized.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+[AgentRunMemoryRecorder] skipping run 'run-terminate-no' because AgentRunConfig.memoryDir is missing.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+Published claude_agent_sdk agent run 'run-terminate-no'.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+Published autobyteus agent run 'run-terminate-error'.
+
+stderr | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+Failed to terminate agent run 'run-terminate-error': Error: boom
+
+stdout | tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore
+AgentRunManager initialized.
+
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory 4ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory 0ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination 3ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError 1ms
+ ✓ tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore 1ms
+stdout | tests/unit/agent-execution/agent-run-termination-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-termination-service.test.ts > AgentRunService termination > routes non-native runtime runs through the manager cleanup boundary 3ms
+ ✓ tests/unit/agent-execution/agent-run-termination-service.test.ts > AgentRunService termination > routes autobyteus runtime runs through the manager cleanup boundary and records termination once 1ms
+ ✓ tests/unit/agent-execution/agent-run-termination-service.test.ts > AgentRunService termination > returns not found when no active AgentRun exists 0ms
+ ✓ tests/unit/agent-execution/agent-run-termination-service.test.ts > AgentRunService termination > skips metadata and history updates when manager termination is rejected 1ms
+ ✓ tests/unit/agent-execution/agent-run-termination-service.test.ts > AgentRunService termination > does not rewrite durable metadata and records catalog termination when metadata exists 0ms
+ ✓ tests/unit/agent-execution/agent-run-termination-service.test.ts > AgentRunService termination > ignores a neutral reasoning end and retains the following terminal error message 3ms
+stdout | tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-status-projection-service.test.ts > AgentRunStatusProjectionService > projects command overlay initializing as reconnectable active status 3ms
+ ✓ tests/unit/agent-execution/agent-run-status-projection-service.test.ts > AgentRunStatusProjectionService > projects prepared identity as offline without starting runtime 0ms
+ ✓ tests/unit/agent-execution/agent-run-status-projection-service.test.ts > AgentRunStatusProjectionService > uses active runtime status when no overlay is present 0ms
+ ✓ tests/unit/agent-execution/agent-run-status-projection-service.test.ts > AgentRunStatusProjectionService > lets the active AgentRun status win over a stale command error overlay 1ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  14:07:05
+   Duration  11.26s (transform 3.86s, setup 39ms, import 9.72s, tests 32ms, environment 0ms)
