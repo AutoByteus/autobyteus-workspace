@@ -11,10 +11,10 @@ Syncing managed messaging release manifest to v1.4.68
 [32mServer version: 0.1.1[0m
 [personal d9b63778d] chore(release): bump workspace release version to 1.4.68
  4 files changed, 14 insertions(+), 13 deletions(-)
-remote: 
-remote: GitHub found 860 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 376 high, 394 moderate, 70 low). To find out more, visit:        
-remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
-remote: 
+remote:
+remote: GitHub found 860 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 376 high, 394 moderate, 70 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
 To https://github.com/AutoByteus/autobyteus-workspace.git
    cd245ee78..d9b63778d  personal -> personal
 To https://github.com/AutoByteus/autobyteus-workspace.git

@@ -1,0 +1,125 @@
+Gemini 3.8 Flash post-finalization cleanup
+Date: 2026-09-03
+
+Before cleanup:
+worktree /home/autobyteus/workspace/autobyteus-workspace
+HEAD 806c469df956c7f66c46b05e93e19fac2c06647a
+branch refs/heads/personal
+
+worktree /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance
+HEAD 7985cf6cd88bd70b3637de523a5291327587e7ab
+branch refs/heads/codex/agent-run-history-performance
+
+worktree /home/autobyteus/workspace/.codex/worktrees/agent-team-project-task-navigation
+HEAD 30a7d6f0271b88b01cb6491c84defbd29807bc49
+branch refs/heads/codex/agent-team-project-task-navigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/agent-team-universal-task-delegation
+HEAD eb79671448e7a2485f30476155e9f7cb6ea363ff
+branch refs/heads/codex/agent-team-universal-task-delegation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/browser-tab-crash-memory-investigation
+HEAD ce83847296d9eace2f6eb832521c1d6b135c4722
+branch refs/heads/codex/browser-tab-crash-memory-investigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/codex-ultrafast-mode-frontend
+HEAD 090d3d4041ff75605bb396ffa49ffdfae0611bf8
+branch refs/heads/requirements/codex-ultrafast-mode-frontend
+
+worktree /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model
+HEAD 05fdb29945856a59afee98f870b1bca33f3c7213
+branch refs/heads/requirements/flat-agent-organization-model
+
+worktree /home/autobyteus/workspace/.codex/worktrees/fruit-shopping-nuxt-ssr
+HEAD 4d567832f71b312abd0ffb9f54585f6dd9d51b9e
+branch refs/heads/codex/fruit-shopping-nuxt-ssr
+
+worktree /home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash
+HEAD 7276a5821effbfea4dfcadb8c093b9b4e76b0b37
+branch refs/heads/requirements/gemini-3-8-flash
+
+worktree /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline
+HEAD 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+branch refs/heads/codex/initial-prototype-baseline
+
+worktree /home/autobyteus/workspace/.codex/worktrees/mcp-circular-result-investigation
+HEAD 008a6eeaeb8363368cda293ce4fa9fb61ebe92c2
+branch refs/heads/codex/mcp-circular-result-investigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker
+HEAD 40a8060ade8766a0b2f66b013a30e99350636d4b
+branch refs/heads/codex/mcp-tool-exposure-docker
+
+worktree /home/autobyteus/workspace/.codex/worktrees/server-settings-8001-investigation
+HEAD fbd7b6764bd43751956d69ffe22b943d06188444
+branch refs/heads/codex/server-settings-8001-investigation
+
+
+Removing dedicated worktree:
+worktree remove: completed
+worktree prune: completed
+Deleted branch requirements/gemini-3-8-flash (was 7276a5821).
+local ticket branch delete: completed
+remote:
+remote: GitHub found 860 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 376 high, 394 moderate, 70 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To https://github.com/AutoByteus/autobyteus-workspace.git
+ - [deleted]             requirements/gemini-3-8-flash
+remote ticket branch delete: completed
+
+After cleanup:
+worktree /home/autobyteus/workspace/autobyteus-workspace
+HEAD 806c469df956c7f66c46b05e93e19fac2c06647a
+branch refs/heads/personal
+
+worktree /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance
+HEAD 7985cf6cd88bd70b3637de523a5291327587e7ab
+branch refs/heads/codex/agent-run-history-performance
+
+worktree /home/autobyteus/workspace/.codex/worktrees/agent-team-project-task-navigation
+HEAD 30a7d6f0271b88b01cb6491c84defbd29807bc49
+branch refs/heads/codex/agent-team-project-task-navigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/agent-team-universal-task-delegation
+HEAD eb79671448e7a2485f30476155e9f7cb6ea363ff
+branch refs/heads/codex/agent-team-universal-task-delegation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/browser-tab-crash-memory-investigation
+HEAD ce83847296d9eace2f6eb832521c1d6b135c4722
+branch refs/heads/codex/browser-tab-crash-memory-investigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/codex-ultrafast-mode-frontend
+HEAD 090d3d4041ff75605bb396ffa49ffdfae0611bf8
+branch refs/heads/requirements/codex-ultrafast-mode-frontend
+
+worktree /home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model
+HEAD 05fdb29945856a59afee98f870b1bca33f3c7213
+branch refs/heads/requirements/flat-agent-organization-model
+
+worktree /home/autobyteus/workspace/.codex/worktrees/fruit-shopping-nuxt-ssr
+HEAD 4d567832f71b312abd0ffb9f54585f6dd9d51b9e
+branch refs/heads/codex/fruit-shopping-nuxt-ssr
+
+worktree /home/autobyteus/workspace/.codex/worktrees/initial-prototype-baseline
+HEAD 6493c6d04379fecf6b2c3e9b1fc7032a1ad1cbc4
+branch refs/heads/codex/initial-prototype-baseline
+
+worktree /home/autobyteus/workspace/.codex/worktrees/mcp-circular-result-investigation
+HEAD 008a6eeaeb8363368cda293ce4fa9fb61ebe92c2
+branch refs/heads/codex/mcp-circular-result-investigation
+
+worktree /home/autobyteus/workspace/.codex/worktrees/mcp-tool-exposure-docker
+HEAD 40a8060ade8766a0b2f66b013a30e99350636d4b
+branch refs/heads/codex/mcp-tool-exposure-docker
+
+worktree /home/autobyteus/workspace/.codex/worktrees/server-settings-8001-investigation
+HEAD fbd7b6764bd43751956d69ffe22b943d06188444
+branch refs/heads/codex/server-settings-8001-investigation
+
+
+local ticket branch: absent
+remote ticket branch: absent
+origin/personal: 806c469df956c7f66c46b05e93e19fac2c06647a	refs/heads/personal
+local HEAD: 806c469df956c7f66c46b05e93e19fac2c06647a
+cleanup result: completed
