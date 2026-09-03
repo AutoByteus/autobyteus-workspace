@@ -1,0 +1,38 @@
+AutoByteus v1.4.68 release workflow verification
+Date: 2026-09-03
+Release commit: d9b63778d08f1e4810076d8a5b06ae404bfafe93
+Tag: v1.4.68
+
+GitHub Release:
+- URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.68
+- Published: 2026-09-03T16:06:49Z
+- Draft: false
+- Prerelease: false
+- Target: d9b63778d08f1e4810076d8a5b06ae404bfafe93
+- Release body matches tickets/done/gemini-3-8-flash/release-notes.md.
+- Asset count: 21
+- Assets cover message-gateway tar/metadata/checksum, Android APK/checksum, Linux ARM64/x64 AppImages, macOS ARM64/x64 DMG/ZIP packages and blockmaps, Windows installer, desktop updater metadata, and release-manifest.json.
+
+Workflow results (all completed successfully at the exact release commit):
+- Desktop Release, run 33776371976
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33776371976
+  Jobs: metadata; Linux ARM64; Linux x64; Windows x64; macOS Intel x64; macOS ARM64; GitHub Release publication — all success.
+- Release Messaging Gateway, run 33776371987
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33776371987
+  Jobs: metadata; runtime package; GitHub Release publication — all success.
+- Server Docker Release, run 33776372007
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33776372007
+  Jobs: metadata; multi-architecture server image build and push — all success.
+- Android APK Release, run 33776372028
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33776372028
+  Jobs: metadata; APK build; GitHub Release publication — all success.
+- iOS App Store Connect Release, run 33776372058
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/33776372058
+  Jobs: metadata; build/test; publish-secret validation; archive/upload — all success.
+
+Published metadata checks:
+- release-manifest.json: releaseTag v1.4.68, artifactVersion 1.4.68, serverVersion 0.1.1.
+- message-gateway metadata: package/artifact version 1.4.68; archive SHA-256 a2e70761e60d20955e944333f52674286d549826debd6cecaa1af6117db6313f.
+- Android APK SHA-256: 75680c2a84016c297d3624a9a2bc8dd0223b48ebb4b0bd7f41840427e9c3da8a.
+- latest-linux-arm64.yml, latest-linux.yml, latest-mac.yml, and latest.yml all advertise version 1.4.68.
+- iOS archive: MARKETING_VERSION 1.4.68; CURRENT_PROJECT_VERSION 130; upload succeeded; Delivery UUID bcc0e3a3-0e7b-4388-a15a-2acc5d55800a; workflow artifact 9902269167.

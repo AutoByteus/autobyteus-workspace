@@ -1,0 +1,15 @@
+AutoByteus server Docker registry verification
+Date: 2026-09-03
+
+Tags checked:
+- autobyteus/autobyteus-server:1.4.68
+- autobyteus/autobyteus-server:latest
+
+Both tags resolve to OCI index digest:
+sha256:d690a25b6ebef960483693f7f9efd5e6a163f60268eaab13287836545ae81ad0
+
+Published platforms:
+- linux/amd64: sha256:596f2194b210dc85e30b54cd1be666d070e691314aab3630f33a935294dc84a5
+- linux/arm64: sha256:e5a60c4856c469ebc84a4733c312519de120b3a6177cca998c42b5c7d9188aec
+
+Result: versioned and latest multi-architecture images are published and aligned.

@@ -9,6 +9,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-
 | DR-001 | `CRR-002` proportional API/E2E test-review pass | N/A | Pass — integrated user-verification candidate | `docs-sync-report.md`; `handoff-summary.md`; `release-notes.md`; `release-deployment-report.md`; delivery verification log |
 | DR-002 | User requested a README-directed Electron build for hands-on testing | DR-001 Pass | Pass — Linux ARM64 Electron test artifact prepared | `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/electron-build-linux-arm64.log` |
 | DR-003 | User requested that Delivery open the built app | DR-002 Pass | Pass — Electron window and bundled backend running for user test | `handoff-summary.md`; `release-deployment-report.md`; `delivery-evidence/electron-user-test-launch.log` |
+| DR-004 | User verified the application and authorized finalization plus a new release | DR-003 Pass | Pass — repository finalized and v1.4.68 rollout verified | `handoff-summary.md`; `release-deployment-report.md`; repository/release/workflow/registry evidence |
 
 ## Revision Entries
 
@@ -43,7 +44,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-
 - Terminal return to `/requirements_engineer`: `Not yet eligible`
 - Terminal return message/reference: `N/A`
 - Why this baseline or delivery revision was recorded: The user requested a new delivery-owned verification artifact after DR-001. The completed build materially changes the user-verification package and must be durably recorded.
-- Next recipient/action: User tests `/home/autobyteus/workspace/autobyteus-workspace/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.67.AppImage` and reports pass/fail plus finalization/release instruction.
+- Next recipient/action: User tests `/home/autobyteus/workspace/.codex/worktrees/gemini-3-8-flash/autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.67.AppImage` and reports pass/fail plus finalization/release instruction.
 - Remaining blockers, rollback concerns, or untested scope: The AppImage was built but not claimed as user-tested. Credentialed Google response success remains subject to the already recorded access limitation. The build artifact is local and has not been published.
 
 ### DR-003 — Electron app opened for hands-on verification
@@ -62,3 +63,20 @@ The latest `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-
 - Why this baseline or delivery revision was recorded: Opening the app converted the prepared artifact into an active user-verification session, including one host-specific launch fallback that must remain visible.
 - Next recipient/action: User tests Gemini 3.8 in the open application and reports pass/fail plus finalization/release instruction.
 - Remaining blockers, rollback concerns, or untested scope: The AppImage wrapper cannot directly start on this container without an unversioned `libz.so`; the unpacked application is running correctly. This does not establish portability to a separate host. Credentialed Gemini success remains unclaimed until exercised by the user or configured test access.
+
+### DR-004 — User-verified finalization and v1.4.68 release
+
+- Delivery round and trigger: Delivery continuation after the user confirmed, `"i have tested. its working. lets finalize and release a new version"`.
+- Triggering upstream report, verification, or evidence: `DR-003`; explicit user acceptance on 2026-09-03; unchanged post-verification `origin/personal` refresh.
+- Prior authoritative result (`N/A` for `DR-001`): `DR-003 Pass — Electron window and bundled backend running for user test`
+- Current authoritative result: `Pass — the ticket is archived, the ticket and target branches were finalized and pushed, v1.4.68 was tagged and published, and all applicable release/deployment workflows and outputs were verified.`
+- Docs sync report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/gemini-3-8-flash/docs-sync-report.md` (`No new long-lived docs delta; release-state artifacts updated`)
+- Handoff summary: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/gemini-3-8-flash/handoff-summary.md`
+- Release/publication/deployment report: `/home/autobyteus/workspace/autobyteus-workspace/tickets/done/gemini-3-8-flash/release-deployment-report.md`
+- Integration and post-integration verification: No new target commit existed after user verification, so no renewed integration or user verification was required. Ticket commit `7276a5821` was pushed, merged to `personal` as `cd245ee78`, and released as commit `d9b63778d` with annotated tag `v1.4.68`.
+- User verification/finalization state: `User verification Passed; repository finalization Completed; release and rollout Completed.` The public GitHub Release contains 21 assets. Desktop, Android, iOS App Store Connect, Messaging Gateway, and Server Docker workflows all completed successfully at the exact release commit. Docker versioned/latest tags and updater/release metadata were verified.
+- Terminal return to Requirements Engineer: `Not yet eligible — safe cleanup remains`
+- Terminal return message/reference: `N/A`
+- Why this delivery revision was recorded: Explicit user acceptance authorized irreversible finalization and publication. The completed repository and release result is materially distinct from the active user-test state in DR-003 and must remain auditable before cleanup.
+- Next recipient/action: Delivery commits/pushes authoritative release evidence, removes/prunes the dedicated worktree, deletes the merged local and remote ticket branches, verifies the clean target state, and appends the terminal revision before dynamic handoff.
+- Remaining blockers, rollback concerns, or untested scope: No task or rollout blocker remains. Cleanup is pending. Automated credentialed Google response success was not claimed because approved test credentials were unavailable; the user's separate hands-on acceptance is recorded. Correct any later public defect with a new patch rather than rewriting `v1.4.68`.

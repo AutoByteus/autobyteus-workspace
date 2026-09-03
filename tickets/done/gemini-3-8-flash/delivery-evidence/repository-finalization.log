@@ -1,0 +1,28 @@
+Gemini 3.8 Flash repository finalization
+Date: 2026-09-03
+Package: PKG-GEMINI-3-8-FLASH-2026-09-03
+
+Post-user-verification target refresh:
+- origin/personal remained 1ab6d38af5688103f6c57bea323074d3c2299ca1.
+- No later base commit required re-integration or renewed user verification.
+
+Ticket archive and branch finalization:
+- Archived tickets/in-progress/gemini-3-8-flash to tickets/done/gemini-3-8-flash.
+- Ticket final commit: 7276a5821effbfea4dfcadb8c093b9b4e76b0b37
+  docs(delivery): archive Gemini 3.8 Flash ticket
+- Pushed origin/requirements/gemini-3-8-flash at 7276a5821effbfea4dfcadb8c093b9b4e76b0b37.
+
+Target finalization:
+- Merged the ticket branch into personal.
+- Merge commit: cd245ee78cd7d92e8ae0dba9c62def712774af3f
+  merge(ticket): finalize Gemini 3.8 Flash replacement
+- Pushed origin/personal at cd245ee78cd7d92e8ae0dba9c62def712774af3f before release.
+
+Release commit and tag:
+- Release commit: d9b63778d08f1e4810076d8a5b06ae404bfafe93
+  chore(release): bump workspace release version to 1.4.68
+- Annotated tag object: 81768f2abe28eea51b38c2763b0b579501807eb2
+- Tag v1.4.68 peeled target: d9b63778d08f1e4810076d8a5b06ae404bfafe93
+- origin/personal after release: d9b63778d08f1e4810076d8a5b06ae404bfafe93
+
+Cleanup is recorded separately after the post-release delivery evidence commit.
