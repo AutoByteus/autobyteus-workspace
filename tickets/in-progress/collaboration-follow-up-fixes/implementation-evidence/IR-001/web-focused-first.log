@@ -1,0 +1,58 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts components/conversation/__tests__/UserMessageFirstSubmission.spec.ts --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts (4 tests) 8ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (10 tests) 17ms
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessageFirstSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessageFirstSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts (6 tests) 9ms
+ ✓ components/conversation/__tests__/UserMessageFirstSubmission.spec.ts (3 tests) 31ms
+stderr | services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts (3 tests) 10ms
+
+ Test Files  5 passed (5)
+      Tests  26 passed (26)
+   Start at  10:41:50
+   Duration  19.03s (transform 5.87s, setup 28.17s, collect 343ms, tests 76ms, environment 3.52s, prepare 1.81s)
+

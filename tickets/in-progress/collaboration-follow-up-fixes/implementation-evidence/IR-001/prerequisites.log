@@ -1,0 +1,16 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-backend-sdk@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json
+

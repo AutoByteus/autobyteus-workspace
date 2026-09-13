@@ -1,0 +1,76 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/UserMessageFirstSubmission.spec.ts -t standalone
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+
+stderr | components/conversation/__tests__/UserMessageFirstSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/__tests__/UserMessageFirstSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/conversation/__tests__/UserMessageFirstSubmission.spec.ts (3 tests | 1 failed | 2 skipped) 22ms
+   × canonical first-submission chip through actual Pinia promotion > standalone retains one proxy and opens the final text immediately without remount 21ms
+     → expected "spy" to be called once with arguments: [ …(3) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "http://localhost:8000/rest/context-files/final/note.txt",
++   "http://localhost:8000/rest/context-files/draft/note.txt",
+    "_blank",
+    "noopener,noreferrer",
+  ]
+
+
+Number of calls: 1
+
+   ↓ canonical first-submission chip through actual Pinia promotion > team_member retains one proxy and opens the final text immediately without remount
+   ↓ canonical first-submission chip through actual Pinia promotion > org retains one proxy and opens the final text immediately without remount
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/conversation/__tests__/UserMessageFirstSubmission.spec.ts > canonical first-submission chip through actual Pinia promotion > standalone retains one proxy and opens the final text immediately without remount
+AssertionError: expected "spy" to be called once with arguments: [ …(3) ]
+
+Received: 
+
+  1st spy call:
+
+  [
+-   "http://localhost:8000/rest/context-files/final/note.txt",
++   "http://localhost:8000/rest/context-files/draft/note.txt",
+    "_blank",
+    "noopener,noreferrer",
+  ]
+
+
+Number of calls: 1
+
+ ❯ components/conversation/__tests__/UserMessageFirstSubmission.spec.ts:43:25
+     41|     await nextTick();
+     42|     await wrapper.get('button').trigger('click');
+     43|     expect(window.open).toHaveBeenCalledExactlyOnceWith('http://localh…
+       |                         ^
+     44|     expect(handle.message).toBe(rendered);
+     45|     expect(isReactive(handle.message)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  11:00:59
+   Duration  10.08s (transform 5.66s, setup 8.81s, collect 51ms, tests 22ms, environment 477ms, prepare 324ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

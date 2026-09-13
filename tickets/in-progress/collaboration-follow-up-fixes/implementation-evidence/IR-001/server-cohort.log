@@ -1,0 +1,148 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+ ✓ tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts (15 tests) 53ms
+stdout | tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-team-execution/configured-scope-readiness.test.ts (6 tests | 2 failed) 160ms
+     ✓ publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none 52ms
+     ✓ fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness 64ms
+     ✓ restore still prepares configured members before publication 8ms
+     ✓ readiness rejection remains an error for the exact worker, without starting other members 13ms
+     × org Stop before first use fences all unused workers without startup 13ms
+     × team Stop before first use fences all unused workers without startup 8ms
+stdout | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts (7 tests) 27ms
+stdout | tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts (4 tests) 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh configured scope uses existing deferred readiness > org Stop before first use fences all unused workers without startup
+AssertionError: promise rejected "Error: AgentOrg 'org-lazy' is not accepti…" instead of resolving
+ ❯ tests/integration/agent-team-execution/configured-scope-readiness.test.ts:146:149
+    144|     await expect(run.terminate()).resolves.toMatchObject({ accepted: t…
+    145|     expect(run.isActive()).toBe(false);
+    146|     await expect(run.executeAgentCommand(kind === 'org' ? 'director' :…
+       |                                                                                                                                                     ^
+    147|     expect(f.prepareNewAgentRun).not.toHaveBeenCalled(); expect(f.inpu…
+    148|   });
+
+Caused by: Error: AgentOrg 'org-lazy' is not accepting execution operations.
+ ❯ AgentOrgOperationGate.run src/agent-org-execution/domain/agent-org-operation-gate.ts:11:13
+ ❯ AgentOrgRun.executeAgentCommandWithExecutionKind src/agent-org-execution/domain/agent-org-run.ts:407:31
+ ❯ AgentOrgRun.executeAgentCommand src/agent-org-execution/domain/agent-org-run.ts:400:24
+ ❯ tests/integration/agent-team-execution/configured-scope-readiness.test.ts:146:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh configured scope uses existing deferred readiness > team Stop before first use fences all unused workers without startup
+AssertionError: promise rejected "Error: RootTeamRun 'team-lazy' is not acc…" instead of resolving
+ ❯ tests/integration/agent-team-execution/configured-scope-readiness.test.ts:146:149
+    144|     await expect(run.terminate()).resolves.toMatchObject({ accepted: t…
+    145|     expect(run.isActive()).toBe(false);
+    146|     await expect(run.executeAgentCommand(kind === 'org' ? 'director' :…
+       |                                                                                                                                                     ^
+    147|     expect(f.prepareNewAgentRun).not.toHaveBeenCalled(); expect(f.inpu…
+    148|   });
+
+Caused by: Error: RootTeamRun 'team-lazy' is not accepting materializing operations.
+ ❯ RootTeamRunMaterializationGate.run src/agent-team-execution/domain/root-team-run-materialization-gate.ts:11:13
+ ❯ RootTeamRun.executeAgentCommand src/agent-team-execution/domain/root-team-run.ts:349:37
+ ❯ tests/integration/agent-team-execution/configured-scope-readiness.test.ts:146:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 30 passed (32)
+   Start at  10:51:57
+   Duration  13.09s (transform 5.14s, setup 47ms, import 11.31s, tests 245ms, environment 0ms)
+

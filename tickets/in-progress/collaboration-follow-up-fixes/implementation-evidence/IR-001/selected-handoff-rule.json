@@ -1,0 +1,10 @@
+{
+  "at": "2026-09-13T11:12:51.214829+00:00",
+  "tool": "get_handoff_rules",
+  "selected_rule": {
+    "when": "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+    "recipient_address": "/software_engineering_team/code_reviewer"
+  },
+  "evaluation": "Initial new-ticket IR-001 complete; Medium/High confirmed; local validation completed with disclosed repository Vue diagnostics and live acceptance limits. Independent source review is required. Not an implementation Local Fix, direct Low-risk route, or discovered Design Impact. Exactly one recipient selected.",
+  "send_status": "Dispatch follows persisted/committed artifacts; successful tool response is authoritative, not preclaimed."
+}

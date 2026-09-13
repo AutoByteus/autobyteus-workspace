@@ -1,0 +1,292 @@
+
+> autobyteus@1.4.69 test:nuxt /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentSelectionStore.spec.ts stores/__tests__/runHistorySelectionActions.spec.ts stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts stores/__tests__/runHistoryStore.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentSelectionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/workspace/__tests__/workspaceNavigationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentSelectionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/workspace/__tests__/workspaceNavigationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests | 2 failed) 12ms
+   ✓ workspaceNavigationService > builds and parses agent execution routes 1ms
+   ✓ workspaceNavigationService > builds and parses team execution routes with member focus 0ms
+   ✓ workspaceNavigationService > strips workspace execution query params without disturbing others 0ms
+   × workspaceNavigationService > routes agent execution links through the agent open coordinator 8ms
+     → expected "spy" to be called with arguments: [ { runId: 'agent-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+@@ -2,7 +2,10 @@
+    {
+      "ensureWorkspaceByRootPath": [Function spy],
+      "fallbackAgentName": null,
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "runId": "agent-run-1",
++     "selectionIntent": {
++       "isCurrent": [Function isCurrent],
++     },
+    },
+  ]
+
+
+Number of calls: 1
+
+   × workspaceNavigationService > routes an absent exact team execution link through the history facade 1ms
+     → expected "spy" to be called with arguments: [ 'team-run-1', 'writer-run-1' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    "team-run-1",
+    "writer-run-1",
++   {
++     "selectionIntent": {
++       "isCurrent": [Function isCurrent],
++     },
++   },
+  ]
+
+
+Number of calls: 1
+
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (8 tests) 8ms
+ ✓ stores/__tests__/runHistorySelectionActions.spec.ts (7 tests) 10ms
+ ✓ stores/__tests__/agentSelectionStore.spec.ts (5 tests) 7ms
+ ✓ stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts (1 test) 5ms
+ ✓ composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts (5 tests) 7ms
+ ✓ composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts (1 test) 13ms
+ ❯ stores/__tests__/runHistoryStore.spec.ts (44 tests | 1 failed) 504ms
+   ✓ runHistoryStore > publishes the asynchronously loaded initial workspace catalog with exactly one topology refresh 6ms
+   ✓ runHistoryStore > fetches run history tree from GraphQL 4ms
+   ✓ runHistoryStore > strictly merges only AgentOrg roots beneath Teams using stable normalized workspace keys 16ms
+   ✓ runHistoryStore > retains each successful history-family slice when the other query fails 3ms
+   ✓ runHistoryStore > retains the prior AgentOrg slice when strict root correlation rejects a later response 2ms
+   ✓ runHistoryStore > commits only the newest initiated AgentOrg refresh and retains its slice on a later failure 2ms
+   ✓ runHistoryStore > publishes only the confirmed exact root activity and preserves other rows before refresh 54ms
+   ✓ runHistoryStore > publishes confirmed Stop to existing navigation before I/O (old-first) 157ms
+   ✓ runHistoryStore > publishes confirmed Stop to existing navigation before I/O (failure-first) 155ms
+   ✓ runHistoryStore > shares AgentOrg request generation between full history loads and focused refreshes 53ms
+   ✓ runHistoryStore > hydrates and connects newly discovered active runs from workspace history 5ms
+   ✓ runHistoryStore > fetchWorkspaceHistory does not reconcile unrelated active contexts outside the scoped workspace 2ms
+   ✓ runHistoryStore > projects backend-visible temp workspace descriptors as non-removable roots with local drafts 1ms
+   ✓ runHistoryStore > prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root 1ms
+   ✓ runHistoryStore > keeps permanent local standalone contexts visible until history reconciliation dedupes them 1ms
+   ✓ runHistoryStore > does not project history-only removed workspace roots without visible descriptors 0ms
+   ✓ runHistoryStore > preserves failed-stream member statuses without background stream resurrection 2ms
+   ✓ runHistoryStore > preserves subscribed single-agent live status during active history refresh 1ms
+   ✓ runHistoryStore > returns backend readiness error on fetchTree when backend is not ready 0ms
+   ✓ runHistoryStore > opens a run, hydrates projection, selects runContext, and connects stream when active 4ms
+   ✓ runHistoryStore > opens an inactive run and hydrates offline status without connecting stream 2ms
+   ✓ runHistoryStore > trusts history active state and reconnects an agent stream when reopening an active run 2ms
+   ✓ runHistoryStore > does not clobber live active context state when reopening an already subscribed run 2ms
+   ✓ runHistoryStore > creates draft run for selected workspace and agent 1ms
+   ✓ runHistoryStore > reuses model from existing context when creating draft run 1ms
+   ✓ runHistoryStore > prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run 1ms
+   ✓ runHistoryStore > clears copied llmConfig when model resolution changes the source model for a draft run 1ms
+   ✓ runHistoryStore > reuses an existing workspace id when local cache has matching root path 0ms
+   ✓ runHistoryStore > fetches workspaces before creating one when cache is not loaded yet 0ms
+   ✓ runHistoryStore > projects persisted history and temp drafts into workspace tree 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace 1ms
+   ✓ runHistoryStore > pruneWorkspace clears global team selection when the selected team belongs to the removed workspace 1ms
+   ✓ runHistoryStore > overlays persisted run status with matching live context only 1ms
+   ✓ runHistoryStore > projects offline draft contexts as inactive in tree projection 1ms
+   × runHistoryStore > selectTreeRun delegates to openRun for history rows 14ms
+     → expected "wrappedAction" to be called with arguments: [ 'run-1' ]
+
+Received: 
+
+  1st wrappedAction call:
+
+  [
+    "run-1",
++   {
++     "selectionIntent": {
++       "isCurrent": [Function isCurrent],
++     },
++   },
+  ]
+
+
+Number of calls: 1
+
+   ✓ runHistoryStore > selectTreeRun selects local temp context for draft rows 1ms
+   ✓ runHistoryStore > deleteRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > deleteRun does not mutate local state when backend rejects deletion 1ms
+   ✓ runHistoryStore > deleteRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveRun removes local state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveRun does not mutate local state when backend rejects archive 0ms
+   ✓ runHistoryStore > archiveRun rejects draft run IDs without backend mutation call 0ms
+   ✓ runHistoryStore > archiveTeamRun removes local team state and refreshes tree when backend succeeds 1ms
+   ✓ runHistoryStore > archiveTeamRun leaves local state unchanged when backend rejects archive 0ms
+ ✓ composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts (8 tests) 229ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > selectTreeRun delegates to openRun for history rows
+AssertionError: expected "wrappedAction" to be called with arguments: [ 'run-1' ]
+
+Received: 
+
+  1st wrappedAction call:
+
+  [
+    "run-1",
++   {
++     "selectionIntent": {
++       "isCurrent": [Function isCurrent],
++     },
++   },
+  ]
+
+
+Number of calls: 1
+
+ ❯ stores/__tests__/runHistoryStore.spec.ts:2247:24
+    2245|     }));
+    2246| 
+    2247|     expect(openRunSpy).toHaveBeenCalledWith('run-1');
+       |                        ^
+    2248|   });
+    2249| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes agent execution links through the agent open coordinator
+AssertionError: expected "spy" to be called with arguments: [ { runId: 'agent-run-1', …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+@@ -2,7 +2,10 @@
+    {
+      "ensureWorkspaceByRootPath": [Function spy],
+      "fallbackAgentName": null,
+      "resolveWorkspaceMetadataByRootPath": [Function spy],
+      "runId": "agent-run-1",
++     "selectionIntent": {
++       "isCurrent": [Function isCurrent],
++     },
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:115:30
+    113|     })
+    114| 
+    115|     expect(openAgentRunMock).toHaveBeenCalledWith({
+       |                              ^
+    116|       runId: 'agent-run-1',
+    117|       fallbackAgentName: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  services/workspace/__tests__/workspaceNavigationService.spec.ts > workspaceNavigationService > routes an absent exact team execution link through the history facade
+AssertionError: expected "spy" to be called with arguments: [ 'team-run-1', 'writer-run-1' ]
+
+Received: 
+
+  1st spy call:
+
+  [
+    "team-run-1",
+    "writer-run-1",
++   {
++     "selectionIntent": {
++       "isCurrent": [Function isCurrent],
++     },
++   },
+  ]
+
+
+Number of calls: 1
+
+ ❯ services/workspace/__tests__/workspaceNavigationService.spec.ts:131:35
+    129|     })
+    130| 
+    131|     expect(openTeamMemberRunMock).toHaveBeenCalledWith('team-run-1', '…
+       |                                   ^
+    132|     expect(openTeamRunMock).not.toHaveBeenCalled()
+    133|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 7 passed (9)
+      Tests  3 failed | 81 passed (84)
+   Start at  10:50:12
+   Duration  16.85s (transform 7.01s, setup 110.83s, collect 4.59s, tests 793ms, environment 19.05s, prepare 7.23s)
+
+ ELIFECYCLE  Command failed with exit code 1.

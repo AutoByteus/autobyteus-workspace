@@ -1,0 +1,44 @@
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 4, reused 0, downloaded 0, added 0
+Progress: resolved 7, reused 0, downloaded 3, added 0
+Progress: resolved 12, reused 0, downloaded 9, added 0
+Progress: resolved 14, reused 0, downloaded 11, added 0
+Progress: resolved 18, reused 0, downloaded 15, added 0
+Progress: resolved 20, reused 0, downloaded 19, added 0
+Progress: resolved 21, reused 0, downloaded 19, added 0
+Progress: resolved 25, reused 0, downloaded 19, added 0
+Progress: resolved 35, reused 0, downloaded 19, added 0
+Progress: resolved 39, reused 0, downloaded 19, added 0
+Progress: resolved 39, reused 0, downloaded 20, added 0
+ WARN  GET https://registry.npmjs.org/@volar/typescript/-/typescript-2.4.26.tgz error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 39, reused 0, downloaded 21, added 0
+ WARN  GET https://registry.npmjs.org/@typescript%2Ftypescript-linux-ppc64 error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+ WARN  GET https://registry.npmjs.org/@typescript%2Ftypescript-linux-riscv64 error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 39, reused 0, downloaded 22, added 0
+ WARN  Request took 26903ms: https://registry.npmjs.org/@typescript%2Ftypescript-linux-riscv64
+Progress: resolved 40, reused 0, downloaded 22, added 0
+ WARN  GET https://registry.npmjs.org/@typescript%2Ftypescript-linux-ppc64 error (ECONNRESET). Will retry in 1 minute. 1 retries left.
+ WARN  Request took 104013ms: https://registry.npmjs.org/@typescript%2Ftypescript-linux-ppc64
+Progress: resolved 41, reused 0, downloaded 22, added 0
+Packages: +22
+++++++++++++++++++++++
+Progress: resolved 41, reused 0, downloaded 22, added 22, done
+node:internal/modules/cjs/loader:671
+      throw e;
+      ^
+
+Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tsc' is not defined by "exports" in /root/.cache/pnpm/dlx/e58920f53b78ec790f44a55a965bd8bdecb683e585bdca020721035750f302f2/1a09a650055-a762/node_modules/.pnpm/vue-tsc@3.1.8_typescript@7.0.2/node_modules/typescript/package.json
+    at exportsNotFound (node:internal/modules/esm/resolve:314:10)
+    at packageExportsResolve (node:internal/modules/esm/resolve:661:9)
+    at resolveExports (node:internal/modules/cjs/loader:664:36)
+    at Function._findPath (node:internal/modules/cjs/loader:731:31)
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1415:27)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at Object.run (/root/.cache/pnpm/dlx/e58920f53b78ec790f44a55a965bd8bdecb683e585bdca020721035750f302f2/1a09a650055-a762/node_modules/.pnpm/vue-tsc@3.1.8_typescript@7.0.2/node_modules/vue-tsc/index.js:7:32)
+    at Object.<anonymous> (/root/.cache/pnpm/dlx/e58920f53b78ec790f44a55a965bd8bdecb683e585bdca020721035750f302f2/1a09a650055-a762/node_modules/.pnpm/vue-tsc@3.1.8_typescript@7.0.2/node_modules/vue-tsc/bin/vue-tsc.js:2:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10) {
+  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+
+Node.js v22.23.2

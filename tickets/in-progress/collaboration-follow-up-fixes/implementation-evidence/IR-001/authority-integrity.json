@@ -1,0 +1,147 @@
+[
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-design-revision-record.md",
+    "sha256": "ff35e1c739d6e1bc71ca74f33de55f5f63812515a0fc4f0c8a25acb509327dc9",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-design-self-validation.md",
+    "sha256": "27e4be3e2576374ff99829f30d4c928879f7b2e59648dae8ad705d8303e2da5a",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/README.md",
+    "sha256": "c7d179daab09f696d3c59076aa21cd556589d7dda77fe78c05186600c6c01bbf",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/artifact-check.json",
+    "sha256": "e7a878fbafbc133585a087ec5293e0e8ee159d16af11f74ea1bad6fa4a40c612",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/attachment-probe.cjs",
+    "sha256": "c92e1b2b4106d78afebcfad1428ed16713ec87811d5df3541bfbb1b9fda68dbd",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/attachment-probe.log",
+    "sha256": "8f38dd6f67d8ef2a44f13bd46fe88d91f4d426d3707abe006e6d2dadbb6272f4",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/diagnostic-disposition.md",
+    "sha256": "dd4a1483e5463d9cbbfc922f79bf96d47246a217b7e65514cff36c080615d4c5",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe-initial.cjs",
+    "sha256": "e79f561cb1d0af12b5f31e0152adacb7ac68362cc6788a66370596c24f605b32",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe-initial.log",
+    "sha256": "ec2387023ee98c4c6a7a915b69d9ff5254dd22ec5e3eecf1e72caded05aef166",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe.cjs",
+    "sha256": "ddee975a3d7d723891b96d0df76ed700cd1d3f534891b08daaa5aa357628598e",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe.log",
+    "sha256": "1e206eaf49b743f3f9dfe479a5038ba52eeeb959a817401e54aeb437cabc1a14",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/original-first-input-boundary.txt",
+    "sha256": "83bc2b666833457b4bb9f9fa40c4b04177dbae774fcfd5e44c40aa263105facf",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/preservation-check.json",
+    "sha256": "a9dea40bf727d5407164da6f9aa7578b1d28cce52acfa6f0768bc95de67995f6",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/selected-handoff-rule.json",
+    "sha256": "56c31018dbbaa65e568d4892e945a1a5eda561b27ac7b616ec4afe022e7bbc68",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/source-witnesses.json",
+    "sha256": "39a3a1db21fc600f266032f8d070c18daba20adccb53ed4172868c0dd23a9f05",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-investigation.md",
+    "sha256": "8ec04d886d7c6855cd92dd9a83be86197cea9230ddb66462529c495237c12ee0",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/architecture-review-revision-record.md",
+    "sha256": "9174bc3c07b6ec697420137937b394c5cc8ca5d0cb2aee42996b034b486b256e",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/design-review-report.md",
+    "sha256": "eeadb0ca588cafb37d488ced1c46a1c1a2477cffc95a893cafa6bdfdd79ed21f",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/design-spec.md",
+    "sha256": "130df429f5c6f04acb82c24252ebfb0e2d8512c41e48f4838c1b6fe1c8e0a1be",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/intake/evidence-index.json",
+    "sha256": "af7c9f622ec708cf44a8be08af5d84de97086383b23d8cdb6d3c968977f4c457",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/intake/original-personal-comparison.json",
+    "sha256": "18772204acbbe70d2b802e28afad340ae78e105246d21c8bf42c83fc411b70a6",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/intake/user-request.md",
+    "sha256": "d1596938e4f656bacef4b26fde7267260c7eff6cf21c79a14f2390c5247aee9d",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/investigation-notes.md",
+    "sha256": "6cab907dd6b573828b812f24acd9be0ecdb9b1209ae6a00e5694fa22a52b4985",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/requirements-doc.md",
+    "sha256": "961c646871768f1cb0a906927b59578b6925ee498fc880ec1c37e7d8c84e67e5",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/requirements-revision-record.md",
+    "sha256": "5879663560f1d41b0e1fbfaa227d8954fdeead9335f6b46718e0e9d007d8736f",
+    "matches_review_head": true
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/reference-resolution.json",
+    "sha256": "3e1ad4eb483772d65d10302d03bb4f5a21d148bc6b2174a7744611961f12f110",
+    "matches_review_head": "external/unchanged by this stage; no external write performed"
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/delivery-evidence/dr-010/upstream-evidence-limits.md",
+    "sha256": "bb053604be263e1e468f920df4514ec68c0b538a74003c73b3c01e85d1445c8c",
+    "matches_review_head": "external/unchanged by this stage; no external write performed"
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/handoff-summary.md",
+    "sha256": "4c5c949698fcd0dfa51b1164054210a94258e69897657a59b7698f760e21ffb6",
+    "matches_review_head": "external/unchanged by this stage; no external write performed"
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/flat-agent-organization-model/tickets/done/flat-agent-organization-model/known-issues.md",
+    "sha256": "d83f765e66bd56e5b04fd36e1c893159d342296ba280643f0477af172cf3b1f4",
+    "matches_review_head": "external/unchanged by this stage; no external write performed"
+  }
+]

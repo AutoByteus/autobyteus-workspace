@@ -1,0 +1,8 @@
+{
+  "time": "2026-09-13T11:02:17.268541+00:00",
+  "DEEPSEEK_API_KEY_in_inherited_environment": false,
+  "new_ticket_native_app_or_provider_configured": false,
+  "native_DeepSeek_first_send_reply_Open": "NOT EXECUTED \u2014 no isolated native application/provider credential setup was provisioned or exercised in this implementation stage; absence of inherited env key is not evidence about user managed credentials. API owner must preflight and validate.",
+  "renderer": "Owned Nuxt process port 31181, PID43749 stopped; Chromium contexts closed; no Electron/native shell operation.",
+  "runtime": "Controlled AgentRunActivationCandidate backend; actual roots/plans/readiness/persistence gates. Not live-provider proof."
+}

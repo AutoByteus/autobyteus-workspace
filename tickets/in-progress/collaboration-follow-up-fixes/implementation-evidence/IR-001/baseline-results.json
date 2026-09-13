@@ -1,0 +1,55 @@
+[
+  {
+    "name": "before-runtime",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/integration/agent-team-execution/configured-scope-readiness.test.ts",
+      "-t",
+      "publishes the whole|fresh standalone"
+    ],
+    "exit": 1
+  },
+  {
+    "name": "before-attachment",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+      "-t",
+      "standalone"
+    ],
+    "exit": 1
+  },
+  {
+    "name": "before-selection",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "stores/__tests__/workspaceSelectionComposition.spec.ts",
+      "-t",
+      "late prior Team success"
+    ],
+    "exit": 1
+  },
+  {
+    "name": "baseline-web-typecheck",
+    "command": [
+      "pnpm",
+      "--package=typescript@5.9.3",
+      "--package=vue-tsc@3.1.8",
+      "dlx",
+      "vue-tsc",
+      "--noEmit"
+    ],
+    "exit": 2
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "name": "completion-web",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "test:nuxt",
+      "stores/__tests__/workspaceSelectionComposition.spec.ts",
+      "stores/__tests__/agentSelectionStore.spec.ts",
+      "stores/__tests__/runHistorySelectionActions.spec.ts",
+      "stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts",
+      "stores/__tests__/runHistoryStore.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+      "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+      "composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts",
+      "services/workspace/__tests__/workspaceNavigationService.spec.ts",
+      "services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts",
+      "services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+      "services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts",
+      "services/runSubmission/__tests__/localUserSubmission.spec.ts",
+      "components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+      "components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+      "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+      "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts"
+    ],
+    "started": "2026-09-13T11:07:50.886607+00:00",
+    "finished": "2026-09-13T11:08:26.874570+00:00",
+    "exit": 0
+  },
+  {
+    "name": "completion-web-build",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "build"
+    ],
+    "started": "2026-09-13T11:08:26.875397+00:00",
+    "finished": "2026-09-13T11:09:06.316837+00:00",
+    "exit": 0
+  },
+  {
+    "name": "completion-web-typecheck",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "--package=typescript@5.9.3",
+      "--package=vue-tsc@3.1.8",
+      "dlx",
+      "vue-tsc",
+      "--noEmit"
+    ],
+    "started": "2026-09-13T11:09:06.317689+00:00",
+    "finished": "2026-09-13T11:09:52.242860+00:00",
+    "exit": 2
+  },
+  {
+    "name": "completion-web-boundary",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "guard:web-boundary"
+    ],
+    "started": "2026-09-13T11:09:52.243333+00:00",
+    "finished": "2026-09-13T11:09:52.828540+00:00",
+    "exit": 0
+  },
+  {
+    "name": "completion-localization-boundary",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+    "command": [
+      "pnpm",
+      "guard:localization-boundary"
+    ],
+    "started": "2026-09-13T11:09:52.829345+00:00",
+    "finished": "2026-09-13T11:09:53.357399+00:00",
+    "exit": 0
+  },
+  {
+    "name": "completion-whitespace",
+    "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "started": "2026-09-13T11:09:53.358010+00:00",
+    "finished": "2026-09-13T11:09:53.432818+00:00",
+    "exit": 0
+  }
+]

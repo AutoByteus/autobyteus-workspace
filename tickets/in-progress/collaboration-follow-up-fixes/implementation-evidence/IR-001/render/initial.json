@@ -1,0 +1,552 @@
+{
+  "errors": [],
+  "state": {
+    "path": "/workspace?rootSubjectKind=agent_org&orgRunId=org-run&memberAddress=/team/lead&mode=active",
+    "selected": "prior-team",
+    "address": "/team/lead",
+    "draft": "Keep this unsent draft",
+    "phase": "live",
+    "messageSame": true,
+    "trace": [
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/director",
+          "agentRunId": "agent-director"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/worker",
+          "agentRunId": "agent-worker-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/lead",
+          "agentRunId": "agent-lead-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/worker",
+          "agentRunId": "agent-team-worker-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/worker",
+          "agentRunId": "agent-worker-task"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/lead",
+          "agentRunId": "agent-task-lead"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/worker",
+          "agentRunId": "agent-task-worker"
+        }
+      },
+      {
+        "kind": "route",
+        "path": "/workspace?rootSubjectKind=agent_org&orgRunId=org-run&memberAddress=/team/lead&mode=active"
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "select",
+        "args": [
+          "org-run",
+          "/team/lead"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "openForInspection",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgRunInspection",
+        "variables": {
+          "orgRunId": "org-run"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/director",
+          "agentRunId": "agent-director"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/worker",
+          "agentRunId": "agent-worker-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/lead",
+          "agentRunId": "agent-lead-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/worker",
+          "agentRunId": "agent-team-worker-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/worker",
+          "agentRunId": "agent-worker-task"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/lead",
+          "agentRunId": "agent-task-lead"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/worker",
+          "agentRunId": "agent-task-worker"
+        }
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "select",
+        "args": [
+          "org-run",
+          "/team/lead"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/director",
+          "agentRunId": "agent-director"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/worker",
+          "agentRunId": "agent-worker-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/lead",
+          "agentRunId": "agent-lead-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/worker",
+          "agentRunId": "agent-team-worker-configured"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/worker",
+          "agentRunId": "agent-worker-task"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/lead",
+          "agentRunId": "agent-task-lead"
+        }
+      },
+      {
+        "kind": "response",
+        "name": "GetAgentOrgMemberRunProjection",
+        "variables": {
+          "orgRunId": "org-run",
+          "memberAddress": "/team/worker",
+          "agentRunId": "agent-task-worker"
+        }
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "select",
+        "args": [
+          "org-run",
+          "/team/lead"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "activeTargetFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "errorFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      },
+      {
+        "kind": "org",
+        "name": "contextFor",
+        "args": [
+          "org-run"
+        ]
+      }
+    ]
+  }
+}

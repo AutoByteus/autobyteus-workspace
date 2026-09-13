@@ -1,0 +1,40 @@
+{
+  "tooling": "vue-tsc3.1.8 / TypeScript5.9.3",
+  "baseline": "reviewed HEAD production with then-current tests; new APIs in tests are not baseline validity claims",
+  "baseline_total_diagnostics": 394,
+  "current_total_diagnostics": 386,
+  "baseline_production_diagnostics": 131,
+  "current_production_diagnostics": 131,
+  "new_production_diagnostics": [],
+  "removed_production_diagnostics": [],
+  "changed_production_current": [
+    [
+      "stores/runHistoryLoadActions.ts",
+      "TS2307",
+      "Cannot find module '@apollo/client/core' or its corresponding type declarations."
+    ],
+    [
+      "stores/runHistoryLoadActions.ts",
+      "TS7006",
+      "Parameter 'error' implicitly has an 'any' type."
+    ],
+    [
+      "stores/runHistoryLoadActions.ts",
+      "TS7006",
+      "Parameter 'result' implicitly has an 'any' type."
+    ]
+  ],
+  "scope": "Comparison omits line positions only. Repository-wide Vue typecheck remains nonzero, not Pass.",
+  "test_diagnostic_text_differences": [
+    [
+      "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+      "TS2322",
+      "Type 'string' is not assignable to type '{ reference_id: string; path: string; type: \"audio\" | \"image\" | \"video\" | \"file\" | \"pdf\" | \"csv\" | \"excel\" | \"other\"; created_at: string; updated_at: string; }'."
+    ],
+    [
+      "stores/__tests__/runHistoryTeamExecutionRows.spec.ts",
+      "TS2322",
+      "Type '\"task_team\"' is not assignable to type '\"task_team_agent\" | \"task_team_member\"'."
+    ]
+  ]
+}

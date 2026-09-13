@@ -1,0 +1,65 @@
+Implementation fixture — controlled transport, not provider acceptance Toggle fixture navigation
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Fixture workspace
+TEAMS
+PS
+Prior standalone Team
+(1)
+No workspace
+ORGS
+Restored Org
+(1)
+Exact retained conversation
+12d
+D
+director
+W
+worker
+team
+L
+lead
+W
+worker
+Task: worker · r-task
+Task: team · m-task
+lead · k-lead
+worker · worker
+Settings
+L
+lead
+Offline
+L
+lead
+
+Retained conversation:agent-lead-configured
+
+You
+Read the attached note
+
+Context files
+
+note.txt
+Context Files (0)
+(drag, paste, or upload)
+Files
+Org
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.
+
+Tasks
+0 tasks
