@@ -1,7 +1,7 @@
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
@@ -19,8 +19,10 @@ interface RunHistoryDraftStoreState {
 
 export const createDraftRunForHistoryStore = async (
   store: RunHistoryDraftStoreState,
-  options: { workspaceRootPath: string; agentDefinitionId: string },
-): Promise<void> => {
+  options: { workspaceRootPath: string; agentDefinitionId: string; selectionIntent?: WorkspaceSelectionIntent },
+): Promise<WorkspaceSelectionOutcome> => {
+  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
   const agentDefinitionStore = useAgentDefinitionStore();
   if (agentDefinitionStore.agentDefinitions.length === 0) {
     await agentDefinitionStore.fetchAllAgentDefinitions();
@@ -57,6 +59,7 @@ export const createDraftRunForHistoryStore = async (
       await llmProviderConfigStore.ensureMissingDynamicProviders(modelRuntimeKind);
     },
   });
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
   if (!resolvedModelIdentifier) throw new Error('No model is available to start a new run.');
 
   useTeamRunConfigStore().clearConfig();
@@ -82,4 +85,5 @@ export const createDraftRunForHistoryStore = async (
   store.selectedRunId = null;
   store.selectedTeamRunId = null;
   store.selectedTeamMemberAddress = null;
+  return { disposition: 'committed' };
 };

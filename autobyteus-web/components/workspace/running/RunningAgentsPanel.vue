@@ -156,6 +156,7 @@ const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => 
 };
 
 const createAgentRun = (definitionId: string) => {
+  selectionStore.beginSelectionIntent();
   const definition = agentDefinitionStore.getAgentDefinitionById(definitionId);
   if (!definition) return;
 
@@ -177,6 +178,7 @@ const createAgentRun = (definitionId: string) => {
 };
 
 const createTeamRun = (definitionId: string) => {
+  selectionStore.beginSelectionIntent();
   const definition = teamDefinitionStore.getAgentTeamDefinitionById(definitionId);
   if (!definition) return;
 
@@ -198,11 +200,13 @@ const createTeamRun = (definitionId: string) => {
 };
 
 const selectAgentRun = (runId: string) => {
+  selectionStore.beginSelectionIntent();
   selectionStore.selectRun(runId, 'agent');
   emit('run-selected', { type: 'agent', runId });
 };
 
 const selectTeamRun = (runId: string) => {
+  selectionStore.beginSelectionIntent();
   selectionStore.selectRun(runId, 'team');
   emit('run-selected', { type: 'team', runId });
 };

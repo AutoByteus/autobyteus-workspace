@@ -106,6 +106,7 @@ const createSubject = (options: Readonly<{
     tasks: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: [] },
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
     rootAgents: {
+      get: vi.fn(() => ({})),
       isActive: vi.fn(() => true),
       reserveInput: reserveRootAgentInput,
       listHandles: vi.fn(() => []),

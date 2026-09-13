@@ -1,3 +1,4 @@
+import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { inspectMountedTeamMember } from '../teamMemberInspectionCoordinator';
 import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
@@ -26,6 +27,7 @@ const team = () => buildTestTeamContext({
 
 describe('teamMemberInspectionCoordinator', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
     vi.clearAllMocks();
     mocks.mounted = team();
   });

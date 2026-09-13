@@ -52,7 +52,7 @@ export class AgentOrgTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     let prepared: PreparedFlatTeamExecution;
     try {
-      prepared = await this.factory.materialize({ ...input, prepareConfiguredAgents: true });
+      prepared = await this.factory.materialize({ ...input, prepareConfiguredAgents: input.activationMode !== "fresh" });
     } catch (error) {
       this.releaseIds([input.teamNode.teamRunId]);
       throw error;

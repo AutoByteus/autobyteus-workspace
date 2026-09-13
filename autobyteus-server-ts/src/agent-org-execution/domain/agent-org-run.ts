@@ -112,7 +112,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       initial: options.messages,
       persistence: options.persistence,
       isOpen: () => this.isAdmitting(),
-      isCurrentAgent: (identity) => this.isCurrentAgent(identity),
+      isCurrentAgent: (identity) => this.isPublishedAgent(identity),
       reserveRecipientInput: (agentRunId, message) => this.reserveAgentInput(agentRunId, message),
       replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
@@ -434,10 +434,16 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return createCollaborationMemberExecutionIdentity({ root: this.options.root, memberAddress: address, agentRunId });
   }
   private isCurrentAgent(identity: CollaborationMemberExecutionIdentity): boolean {
+    if (!this.isPublishedAgent(identity)) return false;
+    const agent = this.index.getAgent(identity.agentRunId)!;
+    return agent.host.hostKind !== "root" || this.options.rootAgents.isActive(identity.agentRunId);
+  }
+  // Published receiver membership admits first work; it is not sender authorization.
+  private isPublishedAgent(identity: CollaborationMemberExecutionIdentity): boolean {
     if (!sameRootExecutionIdentity(identity.root, this.options.root)) return false;
     const agent = this.index.getAgent(identity.agentRunId);
     const hostIsActive = agent?.host.hostKind === "root"
-      ? this.options.rootAgents.isActive(identity.agentRunId)
+      ? Boolean(this.options.rootAgents.get(identity.agentRunId))
       : Boolean(agent && this.options.teams.get(agent.host.hostRunId)?.isActive());
     return Boolean(agent && hostIsActive && agent.address === identity.memberAddress && this.index.isLiveAgent(identity.agentRunId)
       && sameCollaborationMemberExecutionIdentity(identity, this.identityFor(agent.agentRunId, agent.address)));

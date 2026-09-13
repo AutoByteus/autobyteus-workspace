@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { selectTreeRunFromHistory } from '../runHistorySelectionActions';
+import { selectTreeRunFromHistory, openTeamMemberRunFromHistory } from '../runHistorySelectionActions';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const {
@@ -15,7 +15,7 @@ const {
   isReopenRequiredMock: vi.fn(),
   reopenMock: vi.fn(),
   openMock: vi.fn(),
-  selectionMock: { selectRun: vi.fn() },
+  selectionMock: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectRun: vi.fn() },
   teamConfigMock: { clearConfig: vi.fn() },
   agentConfigMock: { clearConfig: vi.fn() },
 }));
@@ -51,7 +51,7 @@ const buildStore = () => ({
   selectedTeamMemberAddress: '/before' as string | null,
   teamResumeConfigByTeamRunId: {} as Record<string, any>,
   teamMemberInspectionByIdentity: {},
-  openTeamMemberRun: vi.fn(),
+  openTeamMemberRun: vi.fn(function(this: any, team: string, agent: string, options: any) { return openTeamMemberRunFromHistory(this, team, agent, options); }),
   openRun: vi.fn(),
   ensureWorkspaceByRootPath: vi.fn(),
   resolveWorkspaceMetadataByRootPath: vi.fn(),
@@ -77,7 +77,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
       teamRunId: 'team-recovery', agentRunId: 'run-a', memberAddress: '/member-a',
     });
 
-    expect(store.inspectTeamMember).toHaveBeenCalledWith('team-recovery', 'run-a');
+    expect(store.inspectTeamMember).toHaveBeenCalledWith('team-recovery', 'run-a', expect.objectContaining({ selectionIntent: expect.any(Object) }));
     expect(openMock).not.toHaveBeenCalled();
     expect(reopenMock).not.toHaveBeenCalled();
   });
@@ -102,6 +102,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
   it('routes a known failed local Team selection only through checkpointed recovery', async () => {
     reopenMock.mockImplementation(async (input: any) => {
       const result = {
+          disposition: 'committed',
       teamRunId: 'team-recovery',
       focusedAgentRunId: 'run-a',
       focusedMemberAddress: '/member-a',
@@ -118,7 +119,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
 
     expect(reopenMock).toHaveBeenCalledTimes(1);
     expect(store.inspectTeamMember).not.toHaveBeenCalled();
-    expect(store.openTeamMemberRun).not.toHaveBeenCalled();
+    expect(store.openTeamMemberRun).toHaveBeenCalledTimes(1);
     expect(store.selectedTeamRunId).toBe('team-recovery');
     expect(store.selectedTeamMemberAddress).toBe('/member-a');
     expect(store.selectedRunId).toBeNull();
@@ -147,6 +148,7 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
       .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
       .mockImplementationOnce(async (input: any) => {
         const result = {
+          disposition: 'committed',
           teamRunId: 'team-recovery',
           focusedAgentRunId: 'run-a',
           focusedMemberAddress: '/member-a',

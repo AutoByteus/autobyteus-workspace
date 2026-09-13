@@ -70,10 +70,10 @@ const buildTeamNode = (focusedAgentRunId: string): TeamTreeNode => {
 
 const buildActions = () => {
   const runHistoryStore = {
-    selectTreeRun: vi.fn(async () => undefined),
-    createDraftRun: vi.fn(async () => undefined),
+    selectTreeRun: vi.fn(async () => ({ disposition: 'committed' as const })),
+    createDraftRun: vi.fn(async () => ({ disposition: 'committed' as const })),
   };
-  const selectionStore = { selectedType: null, selectedRunId: null, selectRun: vi.fn() };
+  const selectionStore = { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null, selectRun: vi.fn() };
   const presentTeamStreamRecoveryFeedback = vi.fn();
   return {
     runHistoryStore,
@@ -95,7 +95,7 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
     const { actions, runHistoryStore } = buildActions();
     await actions.onSelectTeam(buildTeamNode('review_lead'));
     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
-      expect.objectContaining({ memberAddress: '/program_manager' }),
+      expect.objectContaining({ memberAddress: '/program_manager' }), expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
   });
 
@@ -103,7 +103,7 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
     const { actions, runHistoryStore } = buildActions();
     await actions.onSelectTeam(buildTeamNode('build-review-lead-run'));
     expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
-      expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }),
+      expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }), expect.objectContaining({ selectionIntent: expect.any(Object) }),
     );
   });
 

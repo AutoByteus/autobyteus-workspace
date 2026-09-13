@@ -1,3 +1,4 @@
+import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
@@ -12,7 +13,7 @@ import {
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export type TeamMemberProjectionHydrationResult = Readonly<{
-  disposition: 'authoritative' | 'hydrated';
+  disposition: 'authoritative' | 'hydrated' | 'superseded';
   agentRunId: string;
 }>;
 
@@ -39,6 +40,7 @@ const exactMountedContext = (
 const attemptHydration = async (
   team: AgentTeamContext,
   agentRunId: string,
+  intent?: WorkspaceSelectionIntent,
 ): Promise<TeamMemberProjectionHydrationResult | null> => {
   const agent = exactMountedContext(team, agentRunId);
   if (authoritativeContexts.has(agent)) {
@@ -66,6 +68,7 @@ const attemptHydration = async (
   if (projection.lastActivityAt) conversation.updatedAt = projection.lastActivityAt;
   const activities = buildActivitiesFromProjection(projection.activities ?? []);
 
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded', agentRunId };
   const currentAgent = exactMountedContext(team, agentRunId);
   const currentLocation = team.view.getAgentExecutionLocation(agentRunId)!;
   if (currentAgent !== agent
@@ -94,6 +97,7 @@ const attemptHydration = async (
 export const ensureAuthoritativeTeamMemberProjection = async (input: {
   team: AgentTeamContext;
   agentRunId: string;
+  selectionIntent?: WorkspaceSelectionIntent;
 }): Promise<TeamMemberProjectionHydrationResult> => {
   const agentRunId = input.agentRunId.trim();
   const initialAgent = exactMountedContext(input.team, agentRunId);
@@ -101,16 +105,16 @@ export const ensureAuthoritativeTeamMemberProjection = async (input: {
     return Object.freeze({ disposition: 'authoritative', agentRunId });
   }
   const existing = hydrationByContext.get(initialAgent);
-  if (existing) return existing;
+  if (existing && !input.selectionIntent) return existing;
 
   const operation = (async () => {
     for (let attempt = 0; attempt < MAX_CONFLICT_ATTEMPTS; attempt += 1) {
-      const result = await attemptHydration(input.team, agentRunId);
+      const result = await attemptHydration(input.team, agentRunId, input.selectionIntent);
       if (result) return result;
     }
     throw new Error(`Task activity for '${agentRunId}' changed while it was loading.`);
   })();
-  hydrationByContext.set(initialAgent, operation);
+  if (!input.selectionIntent) hydrationByContext.set(initialAgent, operation);
   try {
     return await operation;
   } finally {

@@ -1,9 +1,10 @@
+import { watch } from 'vue';
 import type {
   TeamMemberFocusTarget,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -14,6 +15,7 @@ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberInspectionCoordinator';
 import {
   clearTeamMemberInspectionAttempt,
+  teamMemberInspectionIdentity,
   setTeamMemberInspectionError,
   setTeamMemberInspectionLoading,
   type TeamMemberInspectionAttemptStoreState,
@@ -21,7 +23,8 @@ import {
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
-interface RunHistoryOpenOptions {
+export interface RunHistoryOpenOptions {
+  selectionIntent?: WorkspaceSelectionIntent;
   selectionMode?: RunHistorySelectionMode;
 }
 
@@ -32,8 +35,8 @@ interface RunHistorySelectionStoreLike extends TeamMemberInspectionAttemptStoreS
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
-  openTeamMemberRun(teamRunId: string, agentRunId: string, options?: RunHistoryOpenOptions): Promise<void>;
-  openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
+  openTeamMemberRun(teamRunId: string, agentRunId: string, options?: RunHistoryOpenOptions): Promise<WorkspaceSelectionOutcome>;
+  openRun(runId: string, options?: RunHistoryOpenOptions): Promise<WorkspaceSelectionOutcome>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
   inspectTeamMember(
@@ -60,107 +63,77 @@ export const openTeamMemberRunFromHistory = async (
   teamRunId: string,
   agentRunId: string,
   options: RunHistoryOpenOptions = {},
-): Promise<void> => {
+): Promise<WorkspaceSelectionOutcome> => {
+  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
   store.openingRun = true;
   store.error = null;
-  setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
+  const attempt = setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
+  const key = teamMemberInspectionIdentity(teamRunId, agentRunId);
+  const clearOwned = () => {
+    if (store.teamMemberInspectionByIdentity[key] === attempt) clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+  };
+  // Invalidate the old loading state synchronously, before the next intent starts loading.
+  const stopWatching = watch(intent.isCurrent, (current) => {
+    if (!current) { store.openingRun = false; clearOwned(); }
+  }, { flush: 'sync' });
   try {
-    const result = await openTeamRun({
+    const open = useAgentTeamRunStore().isTeamStreamReopenRequired(teamRunId)
+      ? reopenTeamRunAfterStreamLoss : openTeamRun;
+    return await open({
       teamRunId,
       agentRunId,
-      resolveWorkspaceMetadataByRootPath: (path: string) =>
-        store.resolveWorkspaceMetadataByRootPath(path),
-      ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
+      selectionIntent: intent,
+      resolveWorkspaceMetadataByRootPath: (path) => store.resolveWorkspaceMetadataByRootPath(path),
+      ensureWorkspaceByRootPath: (path) => store.ensureWorkspaceByRootPath(path),
       selectionMode: options.selectionMode,
       onCommitted: (committed) => {
         store.teamResumeConfigByTeamRunId[committed.resumeConfig.teamRunId] = committed.resumeConfig;
         store.selectedTeamRunId = committed.teamRunId;
         store.selectedTeamMemberAddress = committed.focusedMemberAddress;
         store.selectedRunId = null;
-        clearTeamMemberInspectionAttempt(store, teamRunId, agentRunId);
+        clearOwned();
       },
     });
-    void result;
-  } catch (error: any) {
-    setTeamMemberInspectionError(
-      store,
-      teamRunId,
-      agentRunId,
-      error?.message || `Failed to open team '${teamRunId}'.`,
-    );
+  } catch (error) {
+    if (!intent.isCurrent()) return { disposition: 'superseded' };
+    if (store.teamMemberInspectionByIdentity[key] === attempt) {
+      setTeamMemberInspectionError(store, teamRunId, agentRunId,
+        error instanceof Error ? error.message : `Failed to open team '${teamRunId}'.`);
+    }
     throw error;
   } finally {
-    store.openingRun = false;
+    stopWatching();
+    if (intent.isCurrent()) store.openingRun = false;
+    if (!intent.isCurrent()) clearOwned();
   }
 };
 
 export const selectTreeRunFromHistory = async (
   store: RunHistorySelectionStoreLike,
   row: RunTreeRow | TeamMemberFocusTarget,
-): Promise<void> => {
+  options: RunHistoryOpenOptions = {},
+): Promise<WorkspaceSelectionOutcome> => {
+  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
+  const selectingOptions = { ...options, selectionIntent: intent };
   if ('teamRunId' in row) {
-    const teamContextsStore = useAgentTeamContextsStore();
-    const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
-    const shouldReuseLocalTeamContext = Boolean(localTeamContext);
-
-    if (shouldReuseLocalTeamContext) {
-      const teamRunStore = useAgentTeamRunStore();
-      if (teamRunStore.isTeamStreamReopenRequired(row.teamRunId)) {
-        store.openingRun = true;
-        store.error = null;
-        setTeamMemberInspectionLoading(store, row.teamRunId, row.agentRunId);
-        try {
-          await reopenTeamRunAfterStreamLoss({
-            teamRunId: row.teamRunId,
-            agentRunId: row.agentRunId,
-            resolveWorkspaceMetadataByRootPath: (path: string) =>
-              store.resolveWorkspaceMetadataByRootPath(path),
-            ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
-            onCommitted: (committed) => {
-              store.teamResumeConfigByTeamRunId[committed.resumeConfig.teamRunId] = committed.resumeConfig;
-              store.selectedTeamRunId = committed.teamRunId;
-              store.selectedTeamMemberAddress = committed.focusedMemberAddress;
-              store.selectedRunId = null;
-              clearTeamMemberInspectionAttempt(store, row.teamRunId, row.agentRunId);
-            },
-          });
-        } catch (error: any) {
-          setTeamMemberInspectionError(
-            store,
-            row.teamRunId,
-            row.agentRunId,
-            error?.message || `Failed to recover team '${row.teamRunId}'.`,
-          );
-          throw error;
-        } finally {
-          store.openingRun = false;
-        }
-        return;
-      }
-      const result = await store.inspectTeamMember(row.teamRunId, row.agentRunId);
+    const mounted = useAgentTeamContextsStore().getTeamContextById(row.teamRunId);
+    if (mounted && !useAgentTeamRunStore().isTeamStreamReopenRequired(row.teamRunId)) {
+      const result = await store.inspectTeamMember(row.teamRunId, row.agentRunId, selectingOptions);
       if (result.disposition === 'rejected') throw new Error(result.message);
-      return;
+      return result;
     }
-    await store.openTeamMemberRun(row.teamRunId, row.agentRunId);
-    return;
+    return store.openTeamMemberRun(row.teamRunId, row.agentRunId, selectingOptions);
   }
+  if (row.source === 'history') return store.openRun(row.runId, selectingOptions);
 
-  if (row.source === 'history') {
-    await store.openRun(row.runId);
-    return;
-  }
-
-  const contextsStore = useAgentContextsStore();
-  const context = contextsStore.getRun(row.runId);
-  if (!context) {
-    return;
-  }
-
-  const selectionStore = useAgentSelectionStore();
-  selectionStore.selectRun(row.runId, 'agent');
+  if (!useAgentContextsStore().getRun(row.runId)) throw new Error(`Run '${row.runId}' is unavailable.`);
+  useAgentSelectionStore().selectRun(row.runId, 'agent');
   store.selectedRunId = row.runId;
   store.selectedTeamRunId = null;
   store.selectedTeamMemberAddress = null;
   useTeamRunConfigStore().clearConfig();
   useAgentRunConfigStore().clearConfig();
+  return { disposition: 'committed' };
 };

@@ -63,6 +63,7 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
 }))
 vi.mock('~/stores/agentSelectionStore', () => ({
   useAgentSelectionStore: () => ({
+    beginSelectionIntent: () => ({ isCurrent: () => true }),
     selectRun: selectRunMock,
     selectRunWithoutShellNavigation: selectRunWithoutShellNavigationMock,
   }),
@@ -169,7 +170,7 @@ describe('openTeamRun current exact execution identity', () => {
 
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: 'task-agent-run-1' }))
     expect(hydrated.view.getFocusedAgentRunId()).toBe('task-agent-run-1')
-    expect(result.focusedAgentRunId).toBe('task-agent-run-1')
+    expect(result.disposition === 'committed' && result.focusedAgentRunId).toBe('task-agent-run-1')
   })
 
   it('opens an exact settled task Agent through the normal inactive historical path', async () => {
@@ -334,4 +335,25 @@ describe('openTeamRun current exact execution identity', () => {
     expect(selectRunMock).not.toHaveBeenCalled()
     expect(failed.view.getFocusedAgentRunId()).toBe('run-a')
   })
+  it.each(['success', 'error'])('superseded cold Team %s cannot publish context, activities or selection', async (completion) => {
+    getTeamContextByIdMock.mockReturnValue(null)
+    let current = true, resolve!: (value: unknown) => void, reject!: (error: Error) => void
+    hydrateLiveTeamRunContextMock.mockReturnValue(new Promise((yes, no) => { resolve = yes; reject = no }))
+    const pending = openTeamRun({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })
+    current = false
+    if (completion === 'success') resolve(hydration(makeTeam())); else reject(new Error('old failure'))
+    expect(await pending).toEqual({ disposition: 'superseded' })
+    expect(addTeamContextMock).not.toHaveBeenCalled(); expect(commitActivitiesMock).not.toHaveBeenCalled()
+    expect(selectRunMock).not.toHaveBeenCalled(); expect(connectToTeamStreamMock).not.toHaveBeenCalled()
+  })
+  it('recovery checks the same guard at stream replacement beforeContextCommit', async () => {
+    const currentTeam = makeTeam(), replacement = makeTeam()
+    getTeamContextByIdMock.mockReturnValue(currentTeam)
+    hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue(hydration(replacement))
+    let current = true
+    replaceFailedTeamStreamMock.mockImplementation(async ({ beforeContextCommit }) => { current = false; beforeContextCommit() })
+    expect(await reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, selectionIntent: { isCurrent: () => current }, resolveWorkspaceMetadataByRootPath: vi.fn() })).toEqual({ disposition: 'superseded' })
+    expect(commitActivitiesMock).not.toHaveBeenCalled(); expect(markAuthorityMock).not.toHaveBeenCalled(); expect(selectRunMock).not.toHaveBeenCalled()
+  })
+
 })

@@ -97,7 +97,7 @@ export const materializeTeamRoot = async (
     applicationBinding: input.config.applicationBinding,
     activationMode: input.mode,
     callbacks,
-    prepareConfiguredAgents: true,
+    prepareConfiguredAgents: input.mode !== "fresh",
   });
   const replacementTree = prepared.stagedNoConversationBindingReplacements.reduce(
     (current, replacement) => replaceAgentPlatformBindingWithoutConversationInTree({

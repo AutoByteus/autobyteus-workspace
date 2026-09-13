@@ -1,7 +1,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
 
 export type WorkspaceHistorySubjectAction = Readonly<{
   rootSubjectKind: 'agent_org'
@@ -18,12 +18,15 @@ export const useWorkspaceHistorySubjectActions = () => {
   const orgContexts = useAgentOrgContextsStore()
   const selection = useAgentSelectionStore()
 
-  const execute = async (command: WorkspaceHistorySubjectAction): Promise<void> => {
+  const execute = async (command: WorkspaceHistorySubjectAction, options: { selectionIntent?: WorkspaceSelectionIntent } = {}): Promise<WorkspaceSelectionOutcome> => {
+    const intent = command.action === 'stop' ? undefined : options.selectionIntent ?? selection.beginSelectionIntent()
+    if (intent && !intent.isCurrent()) return { disposition: 'superseded' }
     let run = historyStore.agentOrgHistory.find((item) => item.rootRunId === command.rootRunId)
     if (!run) {
       // Exact participant links can be used before the history drawer mounts.
       // Resolve through the same strict read owner, not through live-context inference.
       await historyStore.refreshAgentOrgHistory()
+      if (intent && !intent.isCurrent()) return { disposition: 'superseded' }
       if (historyStore.historyFamilyErrors.agentOrg) {
         throw new Error(historyStore.historyFamilyErrors.agentOrg)
       }
@@ -40,10 +43,12 @@ export const useWorkspaceHistorySubjectActions = () => {
           await router.replace({ path: '/workspace', query: { ...route.query, mode: 'history' } })
         }
       }
-      return
+      return { disposition: 'committed' }
     }
 
-    await orgContexts.openForInspection(run.rootRunId)
+    try { await orgContexts.openForInspection(run.rootRunId, intent) }
+    catch (error) { if (!intent!.isCurrent()) return { disposition: 'superseded' }; throw error }
+    if (!intent!.isCurrent()) return { disposition: 'superseded' }
     const context = orgContexts.contextFor(run.rootRunId)
     if (!context) throw new Error(`AgentOrg inspection '${run.rootRunId}' is unavailable.`)
     if (command.action === 'inspect') {
@@ -64,6 +69,7 @@ export const useWorkspaceHistorySubjectActions = () => {
       ...(command.action !== 'open' && command.memberAddress ? { memberAddress: command.memberAddress } : {}),
       ...(command.action === 'inspect' ? { agentRunId: command.agentRunId } : {}),
     } })
+    return { disposition: 'committed' }
   }
   return { execute }
 }

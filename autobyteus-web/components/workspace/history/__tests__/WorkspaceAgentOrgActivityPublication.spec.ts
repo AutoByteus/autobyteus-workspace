@@ -5,7 +5,7 @@ import { computed, defineComponent, h, reactive } from 'vue'
 import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue'
 import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts'
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState'
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useAgentSelectionStore, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
@@ -52,7 +52,7 @@ const historyResponse = () => ({ data: { listCollaborationRootHistory: [{
   archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: taskBearingView().execution_tree,
 }] } })
 let wrapper: ReturnType<typeof mount> | undefined
-let stopResult: Promise<void>
+let stopResult: Promise<void | WorkspaceSelectionOutcome>
 let stopError: unknown
 let stopped: boolean
 let stoppedInspectionAvailable: boolean

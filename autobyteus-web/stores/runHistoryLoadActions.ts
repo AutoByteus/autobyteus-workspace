@@ -1,3 +1,5 @@
+import { watch } from 'vue';
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import { getApolloClient } from '~/utils/apolloClient';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -44,6 +46,7 @@ import {
 export type RunHistorySelectionMode = 'desktop' | 'mobile';
 
 interface RunHistoryOpenOptions {
+  selectionIntent?: WorkspaceSelectionIntent;
   selectionMode?: RunHistorySelectionMode;
 }
 
@@ -333,28 +336,36 @@ export const openHistoricalRun = async (
   store: RunHistoryFetchStoreLike,
   runId: string,
   options: RunHistoryOpenOptions = {},
-): Promise<void> => {
+): Promise<WorkspaceSelectionOutcome> => {
+  const intent = options.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (!intent.isCurrent()) return { disposition: 'superseded' };
+  const stopWatching = watch(intent.isCurrent, (current) => { if (!current) store.openingRun = false; }, { flush: 'sync' });
   store.openingRun = true;
   store.error = null;
 
   try {
     const result = await openAgentRun({
       runId,
+      selectionIntent: intent,
       fallbackAgentName: store.findAgentNameByRunId(runId),
       resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
         store.resolveWorkspaceMetadataByRootPath(rootPath),
       selectionMode: options.selectionMode,
     });
 
+    if (result.disposition === 'superseded' || !intent.isCurrent()) return { disposition: 'superseded' };
     store.resumeConfigByRunId[runId] = result.resumeConfig;
     store.selectedRunId = result.runId;
     store.selectedTeamRunId = null;
     store.selectedTeamMemberAddress = null;
+    return { disposition: 'committed' };
   } catch (error: any) {
+    if (!intent.isCurrent()) return { disposition: 'superseded' };
     store.error = error?.message || `Failed to open run '${runId}'.`;
     throw error;
   } finally {
-    store.openingRun = false;
+    stopWatching();
+    if (intent.isCurrent()) store.openingRun = false;
   }
 };
 

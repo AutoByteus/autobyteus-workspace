@@ -198,6 +198,7 @@ const {
   hydrateTeamMemberActivitiesFromProjectionMock,
 } = vi.hoisted(() => {
   const selection = {
+    beginSelectionIntent: () => ({ isCurrent: () => true }),
     selectedType: null as string | null,
     selectedRunId: null as string | null,
     selectRun: vi.fn((runId: string, type: string) => {
@@ -2230,7 +2231,7 @@ describe('runHistoryStore', () => {
 
   it('selectTreeRun delegates to openRun for history rows', async () => {
     const store = useRunHistoryStore();
-    const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue(undefined);
+    const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue({ disposition: 'committed' });
 
     await store.selectTreeRun(asRunTreeRow({
       runId: 'run-1',
@@ -2243,7 +2244,7 @@ describe('runHistoryStore', () => {
       isDraft: false,
     }));
 
-    expect(openRunSpy).toHaveBeenCalledWith('run-1');
+    expect(openRunSpy).toHaveBeenCalledWith('run-1', expect.objectContaining({ selectionIntent: expect.any(Object) }));
   });
 
   it('selectTreeRun selects local temp context for draft rows', async () => {

@@ -1,3 +1,4 @@
+import type { WorkspaceSelectionIntent, WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 import {
@@ -6,14 +7,16 @@ import {
 } from '~/stores/runHistorySelectionActions';
 
 interface RunHistorySelectionStoreLike {
-  selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget) => Promise<void>;
+  selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget, options: { selectionIntent: WorkspaceSelectionIntent }) => Promise<WorkspaceSelectionOutcome>;
   createDraftRun: (options: {
     workspaceRootPath: string;
     agentDefinitionId: string;
-  }) => Promise<void>;
+    selectionIntent: WorkspaceSelectionIntent;
+  }) => Promise<WorkspaceSelectionOutcome>;
 }
 
 interface SelectionStoreLike {
+  beginSelectionIntent(): WorkspaceSelectionIntent;
   selectedType: 'agent' | 'team' | 'team_draft' | null;
   selectedRunId: string | null;
   selectRun: (runId: string, type: 'agent' | 'team') => void;
@@ -50,11 +53,13 @@ export const useWorkspaceHistorySelectionActions = (params: {
   };
 
   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
+    const intent = params.selectionStore.beginSelectionIntent();
     try {
-      await params.runHistoryStore.selectTreeRun(run);
+      const result = await params.runHistoryStore.selectTreeRun(run, { selectionIntent: intent });
+      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
       params.emitRunSelected({ type: 'agent', runId: run.runId });
     } catch (error) {
-      console.error('Failed to open run:', error);
+      if (intent.isCurrent()) console.error('Failed to open run:', error);
     }
   };
 
@@ -66,6 +71,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
   };
 
   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): Promise<void> => {
+    const intent = params.selectionStore.beginSelectionIntent();
     const isAlreadySelectedTeam =
       params.selectionStore.selectedType === 'team'
       && params.selectionStore.selectedRunId === team.teamRunId;
@@ -88,15 +94,16 @@ export const useWorkspaceHistorySelectionActions = (params: {
     params.expandTeamMemberAncestors?.(workspaceId, team.teamRunId, targetMember.agentRunId);
 
     try {
-      await params.runHistoryStore.selectTreeRun({
+      const result = await params.runHistoryStore.selectTreeRun({
         teamRunId: targetMember.teamRunId,
         memberAddress: targetMember.memberAddress,
         agentRunId: targetMember.agentRunId,
-      });
+      }, { selectionIntent: intent });
+      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
       params.selectionStore.selectRun(team.teamRunId, 'team');
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
     } catch (error) {
-      if (!presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
+      if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
     }
   };
 
@@ -104,13 +111,15 @@ export const useWorkspaceHistorySelectionActions = (params: {
     member: TeamMemberFocusTarget,
     workspaceId = '',
   ): Promise<void> => {
+    const intent = params.selectionStore.beginSelectionIntent();
     try {
       params.setTeamExpanded(member.teamRunId, true);
       params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.agentRunId);
-      await params.runHistoryStore.selectTreeRun(member);
+      const result = await params.runHistoryStore.selectTreeRun(member, { selectionIntent: intent });
+      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {
-      if (!presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
+      if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
     }
   };
 
@@ -118,11 +127,13 @@ export const useWorkspaceHistorySelectionActions = (params: {
     workspaceRootPath: string,
     agentDefinitionId: string,
   ): Promise<void> => {
+    const intent = params.selectionStore.beginSelectionIntent();
     try {
-      await params.runHistoryStore.createDraftRun({ workspaceRootPath, agentDefinitionId });
+      const result = await params.runHistoryStore.createDraftRun({ workspaceRootPath, agentDefinitionId, selectionIntent: intent });
+      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
       params.emitRunCreated({ type: 'agent', definitionId: agentDefinitionId });
     } catch (error) {
-      console.error('Failed to create draft run:', error);
+      if (intent.isCurrent()) console.error('Failed to create draft run:', error);
     }
   };
 

@@ -3,7 +3,7 @@ import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
 import {
   ensureRunHistoryWorkspaceByRootPath,
   resolveRunHistoryWorkspaceMetadataByRootPath,
@@ -81,32 +81,35 @@ export const stripWorkspaceExecutionLinkQuery = (
 
 export const openWorkspaceExecutionLink = async (
   link: WorkspaceExecutionLink,
-): Promise<void> => {
+  selectionIntent?: WorkspaceSelectionIntent,
+): Promise<WorkspaceSelectionOutcome> => {
+  const intent = selectionIntent ?? useAgentSelectionStore().beginSelectionIntent()
+  if (!intent.isCurrent()) return { disposition: 'superseded' }
   if (link.kind === 'agent') {
-    await openAgentRun({
+    return openAgentRun({
+      selectionIntent: intent,
       runId: link.runId,
       fallbackAgentName: null,
       resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
       ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
     })
-    return
   }
 
   const mounted = useAgentTeamContextsStore().getTeamContextById(link.teamRunId)
   if (mounted && link.agentRunId) {
-    const result = await useRunHistoryStore().inspectTeamMember(link.teamRunId, link.agentRunId)
+    const result = await useRunHistoryStore().inspectTeamMember(link.teamRunId, link.agentRunId, { selectionIntent: intent })
     if (result.disposition === 'rejected') throw new Error(result.message)
-    return
+    return result
   }
   if (mounted) {
     useAgentSelectionStore().selectRun(link.teamRunId, 'team')
-    return
+    return { disposition: 'committed' }
   }
   if (link.agentRunId) {
-    await useRunHistoryStore().openTeamMemberRun(link.teamRunId, link.agentRunId)
-    return
+    return useRunHistoryStore().openTeamMemberRun(link.teamRunId, link.agentRunId, { selectionIntent: intent })
   }
-  await openTeamRun({
+  return openTeamRun({
+    selectionIntent: intent,
     teamRunId: link.teamRunId,
     agentRunId: link.agentRunId,
     resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,

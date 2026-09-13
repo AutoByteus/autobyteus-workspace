@@ -14,6 +14,7 @@ import {
   findAgentNameByRunId as findAgentNameFromHistory,
   formatRunHistoryRelativeTime,
 } from '~/stores/runHistoryReadModel';
+import type { WorkspaceSelectionIntent, WorkspaceSelectionOutcome } from './agentSelectionStore';
 import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
 import {
   type RunTreeRow,
@@ -120,16 +121,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
       this.refreshRunNavigationTopology('agent-org-history-refresh');
     },
 
-    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode } = {}): Promise<void> {
-      await openHistoricalRun(this, runId, options);
-      this.refreshRunNavigationTopology('standalone-open');
+    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {}): Promise<WorkspaceSelectionOutcome> {
+      const result = await openHistoricalRun(this, runId, options);
+      if (result.disposition === 'committed') this.refreshRunNavigationTopology('standalone-open');
+      return result;
     },
 
     async createDraftRun(options: {
       workspaceRootPath: string;
       agentDefinitionId: string;
-    }): Promise<void> {
-      await createDraftRunForHistoryStore(this, options);
+      selectionIntent?: WorkspaceSelectionIntent;
+    }): Promise<WorkspaceSelectionOutcome> {
+      return createDraftRunForHistoryStore(this, options);
     },
 
     async createWorkspace(rootPath: string): Promise<string> {
@@ -483,7 +486,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     async inspectTeamMember(
       teamRunId: string,
       agentRunId: string,
-      options: { selectionMode?: RunHistorySelectionMode } = {},
+      options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
     ): Promise<TeamMemberInspectionResult> {
       return inspectTeamMemberForStore(this, teamRunId, agentRunId, options);
     },
@@ -498,16 +501,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
     async openTeamMemberRun(
       teamRunId: string,
       agentRunId: string,
-      options: { selectionMode?: RunHistorySelectionMode } = {},
-    ): Promise<void> {
-      await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
-      this.refreshRunNavigationTopology('team-open');
+      options: { selectionMode?: RunHistorySelectionMode; selectionIntent?: WorkspaceSelectionIntent } = {},
+    ): Promise<WorkspaceSelectionOutcome> {
+      const result = await openTeamMemberRunFromHistory(this, teamRunId, agentRunId, options);
+      if (result.disposition === 'committed') this.refreshRunNavigationTopology('team-open');
+      return result;
     },
 
     async selectTreeRun(
       row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberFocusTarget,
-    ): Promise<void> {
-      await selectTreeRunFromHistory(this, row);
+      options: { selectionIntent?: WorkspaceSelectionIntent } = {},
+    ): Promise<WorkspaceSelectionOutcome> {
+      return selectTreeRunFromHistory(this, row, options);
     },
 
     formatRelativeTime(isoTime: string): string {

@@ -20,7 +20,8 @@ import type { CollaborationAgentPlatformBinding } from "../../agent-collaboratio
 
 export type PreparedAgentOrgConfiguredAgent = Readonly<{
   handle: ConfiguredAgentExecutionHandle;
-  activation: PreparedConfiguredAgentActivation;
+  stagedPlatformBindings: PreparedConfiguredAgentActivation["stagedPlatformBindings"];
+  stagedNoConversationBindingReplacements: PreparedConfiguredAgentActivation["stagedNoConversationBindingReplacements"];
   commitAfterDurability(): void;
   abort(): Promise<void>;
 }>;
@@ -55,16 +56,17 @@ export class AgentOrgRootAgentExecutionRegistry {
     const handle = await this.createHandle(sourceNode, mode, this.options.callbacks);
     this.reserve(sourceNode.agentRunId, handle);
     try {
-      const activation = await handle.prepareConfiguredActivation();
+      const activation = mode === "fresh" ? null : await handle.prepareConfiguredActivation();
       let state: "prepared" | "committed" | "aborted" = "prepared";
       return Object.freeze({
         handle,
-        activation,
+        stagedPlatformBindings: activation?.stagedPlatformBindings ?? Object.freeze([]),
+        stagedNoConversationBindingReplacements: activation?.stagedNoConversationBindingReplacements ?? Object.freeze([]),
         commitAfterDurability: () => {
           if (state !== "prepared" || this.prepared.get(sourceNode.agentRunId) !== handle) {
             throw new Error(`AgentRun '${sourceNode.agentRunId}' is not prepared for AgentOrg publication.`);
           }
-          activation.commitAfterDurability();
+          activation?.commitAfterDurability();
           this.prepared.delete(sourceNode.agentRunId);
           this.active.set(sourceNode.agentRunId, handle);
           state = "committed";
@@ -73,7 +75,7 @@ export class AgentOrgRootAgentExecutionRegistry {
           if (state !== "prepared") return;
           state = "aborted";
           this.prepared.delete(sourceNode.agentRunId);
-          try { await activation.abort(); } finally { handle.dispose(); }
+          try { await activation?.abort(); } finally { handle.dispose(); }
         },
       });
     } catch (error) {

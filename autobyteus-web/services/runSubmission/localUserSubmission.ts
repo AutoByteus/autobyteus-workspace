@@ -1,3 +1,4 @@
+import { reactive } from 'vue';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
 import {
@@ -61,12 +62,12 @@ export const beginLocalUserSubmission = (
   options: BeginLocalUserSubmissionOptions,
 ): LocalUserSubmissionHandle => {
   const occurredAt = nowIso();
-  const submittedMessage: UserMessage = {
+  const submittedMessage = reactive<UserMessage>({
     type: 'user',
     text: options.text,
     timestamp: new Date(occurredAt),
     contextFilePaths: [...options.attachments],
-  };
+  });
 
   context.state.conversation.messages.push(submittedMessage);
   commitRecentEventMonitorEffect(context, 'STRUCTURAL');

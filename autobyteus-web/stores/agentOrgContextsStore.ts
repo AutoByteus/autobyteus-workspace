@@ -1,3 +1,4 @@
+import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore'
 import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
 import { RootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts'
 import { defineStore } from 'pinia'
@@ -106,10 +107,11 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     contexts.value[id]?.select(selection)
   }
 
-  const readInspection = async (id: string): Promise<void> => {
+  const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
     const generation = Symbol(id)
     generations.set(id, generation)
-    const current = () => generations.get(id) === generation
+    const ownsGeneration = () => generations.get(id) === generation
+    const current = () => ownsGeneration() && (!intent || intent.isCurrent())
     try {
       const result = await getApolloClient().query({ query: GetAgentOrgRunInspection,
         variables: { orgRunId: id }, fetchPolicy: 'network-only', context: { queryDeduplication: false } })
@@ -129,22 +131,23 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     } catch (cause) {
       if (current()) { report(id, cause); throw cause }
     } finally {
-      if (current()) generations.delete(id)
+      if (ownsGeneration()) generations.delete(id)
     }
   }
 
-  const openForInspection = (id: string): Promise<void> => {
+  const openForInspection = (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
+    if (intent && !intent.isCurrent()) return Promise.resolve()
     deferredDisposals.delete(id)
     if (operations.value[id]) return Promise.resolve()
     const context = contexts.value[id]
     if (context?.phase === 'historical' || (context?.phase === 'live' && services.get(id)?.isReady())) return Promise.resolve()
     const inFlight = inspections.get(id)
-    if (inFlight) return inFlight
+    if (inFlight && !intent) return inFlight
     retireStream(id)
-    const operation = readInspection(id).finally(() => {
+    const operation = readInspection(id, intent).finally(() => {
       if (inspections.get(id) === operation) inspections.delete(id)
     })
-    inspections.set(id, operation)
+    if (!intent) inspections.set(id, operation)
     return operation
   }
 

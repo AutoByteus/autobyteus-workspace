@@ -11,7 +11,8 @@ const mocks = vi.hoisted(() => ({
 vi.mock('vue-router', () => ({ useRoute: () => mocks.route, useRouter: () => ({ push: mocks.push, replace: mocks.replace }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => mocks.history }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => mocks.contexts }))
-vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ clearSelection: mocks.clear }) }))
+vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({
+    beginSelectionIntent: () => ({ isCurrent: () => true }), clearSelection: mocks.clear }) }))
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -31,7 +32,7 @@ describe('Org browse is inspection and Stop retains the same exact route', () =>
   it.each(['open', 'select', 'inspect'] as const)('uses observed inactive truth, not stale active row, for %s', async (action) => {
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action,
       memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
-    expect(mocks.contexts.openForInspection).toHaveBeenCalledExactlyOnceWith('org-run')
+    expect(mocks.contexts.openForInspection).toHaveBeenCalledExactlyOnceWith('org-run', expect.objectContaining({ isCurrent: expect.any(Function) }))
     expect(mocks.contexts.stopAndInspect).not.toHaveBeenCalled()
     expect(mocks.push).toHaveBeenCalledWith({ path: '/workspace', query: {
       rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-run', mode: 'history',

@@ -1,5 +1,6 @@
 import type { AgentOrgRunHistoryItem, TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
+import type { WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export interface WorkspaceHistorySectionState {
@@ -83,8 +84,8 @@ export interface WorkspaceHistorySectionActions {
     member: TeamMemberFocusTarget,
     workspaceId?: string,
   ) => Promise<void> | void;
-  onOpenAgentOrgRun?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
-  onSelectAgentOrgMember?: (run: AgentOrgRunHistoryItem, address: string) => Promise<void> | void;
-  onInspectAgentOrgExecution?: (run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => Promise<void> | void;
-  onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
+  onOpenAgentOrgRun?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onSelectAgentOrgMember?: (run: AgentOrgRunHistoryItem, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onInspectAgentOrgExecution?: (run: AgentOrgRunHistoryItem, agentRunId: string, address: string) => Promise<void | WorkspaceSelectionOutcome> | void;
+  onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
 }

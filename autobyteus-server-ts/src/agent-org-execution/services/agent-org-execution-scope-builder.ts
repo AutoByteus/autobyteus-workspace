@@ -188,8 +188,8 @@ export class AgentOrgExecutionScopeBuilder {
 
   private agentPlan(prepared: PreparedAgentOrgConfiguredAgent) {
     return Object.freeze({
-      stagedPlatformBindings: prepared.activation.stagedPlatformBindings,
-      stagedNoConversationBindingReplacements: prepared.activation.stagedNoConversationBindingReplacements,
+      stagedPlatformBindings: prepared.stagedPlatformBindings,
+      stagedNoConversationBindingReplacements: prepared.stagedNoConversationBindingReplacements,
       commitAfterDurability: prepared.commitAfterDurability,
       abort: prepared.abort,
     });

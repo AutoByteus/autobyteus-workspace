@@ -1,5 +1,5 @@
 import type { TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
@@ -21,29 +21,38 @@ export interface OpenTeamRunWithCoordinatorInput {
   resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
+  selectionIntent?: WorkspaceSelectionIntent;
   selectionMode?: TeamRunOpenSelectionMode;
   onCommitted?: (result: OpenTeamRunWithCoordinatorResult) => void;
 }
 export interface OpenTeamRunWithCoordinatorResult {
+  disposition: 'committed';
   teamRunId: string;
   focusedAgentRunId: string;
   focusedMemberAddress: string;
   resumeConfig: TeamRunResumeConfigPayload;
 }
 
-export const openTeamRun = async (
-  input: OpenTeamRunWithCoordinatorInput,
-): Promise<OpenTeamRunWithCoordinatorResult> => {
+export function openTeamRun(input: OpenTeamRunWithCoordinatorInput & { selectRun: false }): Promise<OpenTeamRunWithCoordinatorResult>;
+export function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection>;
+export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection> {
+  const intent = input.selectRun === false ? undefined
+    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const contexts = useAgentTeamContextsStore();
   if (contexts.getTeamContextById(input.teamRunId)) {
     throw new Error(`Team context '${input.teamRunId}' is already mounted.`);
   }
   const preferredAgentRunId = input.agentRunId?.trim() || null;
   const runStore = useAgentTeamRunStore();
-  const hydrated = await hydrateLiveTeamRunContext({
-    ...input,
-    agentRunId: preferredAgentRunId,
-  });
+  let hydrated: Awaited<ReturnType<typeof hydrateLiveTeamRunContext>>;
+  try {
+    hydrated = await hydrateLiveTeamRunContext({ ...input, agentRunId: preferredAgentRunId });
+  } catch (error) {
+    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+    throw error;
+  }
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const context = hydrated.hydratedContext;
   if (contexts.getTeamContextById(input.teamRunId)) {
     throw new Error(`Team context '${input.teamRunId}' became mounted while it was loading.`);
@@ -67,7 +76,8 @@ export const openTeamRun = async (
     useTeamRunConfigStore().selectDraft(null);
     useAgentRunConfigStore().clearConfig();
   }
-  const result = {
+  const result: OpenTeamRunWithCoordinatorResult = {
+    disposition: 'committed',
     teamRunId: input.teamRunId,
     focusedAgentRunId,
     focusedMemberAddress,
@@ -77,11 +87,14 @@ export const openTeamRun = async (
   if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
   else runStore.disconnectTeamStream(input.teamRunId);
   return result;
-};
+}
 
-export const reopenTeamRunAfterStreamLoss = async (
-  input: OpenTeamRunWithCoordinatorInput,
-): Promise<OpenTeamRunWithCoordinatorResult> => {
+export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput & { selectRun: false }): Promise<OpenTeamRunWithCoordinatorResult>;
+export function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection>;
+export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordinatorInput): Promise<OpenTeamRunWithCoordinatorResult | SupersededSelection> {
+  const intent = input.selectRun === false ? undefined
+    : input.selectionIntent ?? useAgentSelectionStore().beginSelectionIntent();
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const contexts = useAgentTeamContextsStore();
   const current = contexts.getTeamContextById(input.teamRunId);
   const preferredAgentRunId = input.agentRunId?.trim()
@@ -94,19 +107,32 @@ export const reopenTeamRunAfterStreamLoss = async (
   if (!runStore.isTeamStreamReopenRequired(input.teamRunId)) {
     throw new Error(`Team stream '${input.teamRunId}' is not awaiting recovery.`);
   }
-  const hydrated = await hydrateTeamRunContextForStreamRecovery({
-    ...input,
-    agentRunId: preferredAgentRunId,
-  });
+  let hydrated: Awaited<ReturnType<typeof hydrateTeamRunContextForStreamRecovery>>;
+  try {
+    hydrated = await hydrateTeamRunContextForStreamRecovery({ ...input, agentRunId: preferredAgentRunId });
+  } catch (error) {
+    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+    throw error;
+  }
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const context = hydrated.hydratedContext;
   const focus = context.view.focusAgentForInspection(preferredAgentRunId);
   if (focus.disposition === 'rejected') throw new Error(focus.message);
-  await runStore.replaceFailedTeamStream({
-    rootTeamRunId: input.teamRunId,
-    candidateContext: context,
-    expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
-    beforeContextCommit: () => commitTeamRunHydrationActivities(hydrated),
-  });
+  try {
+    await runStore.replaceFailedTeamStream({
+      rootTeamRunId: input.teamRunId,
+      candidateContext: context,
+      expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
+      beforeContextCommit: () => {
+        if (intent && !intent.isCurrent()) throw new Error('Workspace selection superseded.');
+        commitTeamRunHydrationActivities(hydrated);
+      },
+    });
+  } catch (error) {
+    if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
+    throw error;
+  }
+  if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   markCommittedTeamRunHydrationAuthority(hydrated);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();
@@ -118,7 +144,8 @@ export const reopenTeamRunAfterStreamLoss = async (
     useTeamRunConfigStore().selectDraft(null);
     useAgentRunConfigStore().clearConfig();
   }
-  const result = {
+  const result: OpenTeamRunWithCoordinatorResult = {
+    disposition: 'committed',
     teamRunId: input.teamRunId,
     focusedAgentRunId,
     focusedMemberAddress,
@@ -126,4 +153,4 @@ export const reopenTeamRunAfterStreamLoss = async (
   };
   input.onCommitted?.(result);
   return result;
-};
+}
