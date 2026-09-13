@@ -1,0 +1,446 @@
+[requirements/collaboration-follow-up-fixes a88cad9e3] chore(delivery): finalize collaboration follow-up ticket
+ 450 files changed, 118906 insertions(+), 24 deletions(-)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/api-e2e-coverage-investigation.md (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/LAST-CHECKPOINT.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/README.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/entry-baseline.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/archive-and-integrity.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/archive-and-integrity.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/case-reconciliation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/cleanup-integrity.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/complete-package.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/completion-integrity.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/confidence.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/credential-cleanup.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/credential-cleanup.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/evidence-manifest.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/execution-dispositions.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/execution-receipts.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/final-validation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/handoff-reference-files.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/navigation-reconciliation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/process-cleanup.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/reconcile.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/remove-owned-credential.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/runtime-archive-manifest.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/runtime-owned-sanitized.tar.gz
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/selected-handoff-rule.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/source-integrity.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/stop-owned-processes.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/user-tool-choice.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/visual-inspection.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/write-reports.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/bootstrap-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/bootstrap-initial-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/bootstrap-initial.mjs.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/bootstrap.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/bootstrap.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/browser.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/cleanup-ui-discovery.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/final-ui-stops-checkpoint.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/final-ui-stops.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/final-ui-stops.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/final-ui-stops.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/fixture-isolation-correction.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/lib.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-catalog.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-configured-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-credential-configured.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-credential-start.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-credential.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-credential.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-desktop-reopen-chip-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-draft-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-draft.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-first-open-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-first-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-first-sent-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-narrow-live-chip-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-prepare.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen-history-discovery.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen-interruption.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen-selected.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen-selected.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-run-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-run.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-send-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-send.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-send.mjs
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-whitespace.log => done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-setup.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-setup.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/navigation-observer.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-configure-dom.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-configure-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-configure.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-first-work-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-first-work-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-first-work-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-first-work.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-first-work.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-initial-unfocused-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-initial.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-initial-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-initial.mjs.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-interruption.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-response.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-second-interruption.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-second.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch-second.mjs.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-launch.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-run.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-unused-desktop-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-unused-narrow-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-unused-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-unused.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/org-unused.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/owned-roots-stopped-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/provider-preflight.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-desktop-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-desktop-final-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-desktop-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-desktop-interruption.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-desktop-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-desktop.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-initial.mjs.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-leave-final-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-leave-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-leave-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-leave.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow-final-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow-layout-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow-pending-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow-settled-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication-narrow.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/renderer.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/runtime-observer.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/bootstrap.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/native-configured.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/native-desktop-reopen-chip.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/native-draft.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/native-first-open.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/native-first-sent.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/native-narrow-live-chip.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/org-configure.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/org-first-work.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/org-initial-unfocused.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/org-unused-desktop.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/org-unused-narrow.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/owned-roots-stopped.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/publication-desktop-final.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/publication-leave-final.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/publication-narrow-final.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/publication-narrow-pending.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/publication-narrow-settled.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/task-created.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-configured.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-first-work-complete.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-first-work.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-model-options.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-restored.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-stopped.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-unused-desktop.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-unused-narrow.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-unused-steady-narrow.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/screenshots/team-unused-steady.png
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/seed-agent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/seed-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/seed-team.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/seed.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/server-current.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/server.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/start-stack.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/task-create-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/task-create.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/task-create.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/task-created-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/task-created.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-configure.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-configured-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-final-stop.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-complete-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-complete-initial.mjs.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-complete.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-complete.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-complete.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-oracle-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-first-work.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-launch-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-launch-interruption.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-launch-response.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-launch.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-model-options-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-model-options.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore-complete.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore-complete.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore-oracle-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore-response.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore-result.json
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-server-typecheck.log => done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restore.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-restored-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-run.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-stop-intent.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-stop-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-stop.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-stop.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-stopped-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-confirm.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-desktop-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-disposition.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-disposition.mjs
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-narrow-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-result.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-steady-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-steady-narrow-dom.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/team-unused-steady.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-backend-sdk-build.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-backend-sdk-build.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-frontend-sdk-build.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-frontend-sdk-build.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-sdk-contracts-build.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/autobyteus-application-sdk-contracts-build.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/coverage-inventory.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/guard-localization-boundary.json
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-localization-boundary.log => done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/guard-localization-boundary.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/guard-web-boundary.json
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-boundary.log => done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/guard-web-boundary.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/planned-commands.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/post-repository-confidence.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/run-checks.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-build.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-build.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-preservation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-preservation.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-readiness.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/server-readiness.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/web-preservation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/web-preservation.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/web-regressions.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/repository/web-regressions.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/runtime/environment.json
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/api-e2e-execution-coverage-report.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/api-e2e-revision-record.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/api-e2e-test-case-ledger.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/api-e2e-test-review-report.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-design-revision-record.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-design-self-validation.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/README.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/artifact-check.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/artifact-manifest.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/attachment-probe.cjs (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/attachment-probe.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/diagnostic-disposition.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/handoff-reference-files.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe-initial.cjs (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe-initial.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe.cjs (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/navigation-probe.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/original-first-input-boundary.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/preservation-check.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/selected-handoff-rule.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-evidence/AD-REV-001/source-witnesses.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-investigation.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/architecture-review-revision-record.md (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/README.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/autobyteus-application-backend-sdk.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/autobyteus-application-frontend-sdk.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/autobyteus-application-sdk-contracts.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/checks.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/command-results.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/completion-integrity.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/completion-web.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/entry.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/evidence-sha256.json
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001 => done/collaboration-follow-up-fixes/code-review-evidence/CRR-001}/final-localization-boundary.log (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-whitespace.log => done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/final-server-typecheck.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/final-server.log
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001 => done/collaboration-follow-up-fixes/code-review-evidence/CRR-001}/final-web-boundary.log (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/handoff-reference-files.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/inventory-verification.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/prerequisite-cleanup.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/review-notes.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/selected-handoff-rule.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/source-size-audit.json
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fifth.log => done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/source-whitespace.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/typecheck-verification.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-001/write-report.py
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-002/README.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-002/completion-integrity.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-002/entry-and-scope-verification.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-002/handoff-reference-files.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-002/prior-revision-record.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/code-review-evidence/CRR-002/selected-handoff-rule.json
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/code-review-report.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/code-review-revision-record.md (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/collab-dr001-checkpoint.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/collab-dr001-integration.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/docs-paths.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/docs-validation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/integration.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/preservation.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/routing-decision.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/upstream-evidence-limits.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-001/upstream-reference-files.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/archive-integrity.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/fetch.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/handoff-reference-files.txt
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/integration.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/merge.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/prior-dr-001/docs-sync-report.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/prior-dr-001/handoff-summary.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/prior-dr-001/release-deployment-report.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/prior-dr-001/release-notes.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/publish-audit.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/reference-resolution.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/remote-before.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/staged-diff-check-original.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/staging-audit.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/target-other-owner-manifest.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/target-status-before.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-evidence/dr-002/user-acceptance.json
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/delivery-revision-record.md
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/design-review-report.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/design-spec.md (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/docs-sync-report.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/handoff-summary.md
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/artifact-whitespace-disposition.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/artifact-whitespace.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/authority-integrity.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/base-head.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-check.py (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-restoration.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-results.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/baseline-web-typecheck.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-attachment.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-runtime.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/before-selection.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/compare-typecheck.py (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/complete-integrity.py (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-checks.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-checks.py (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-integrity.json (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-localization-boundary.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-boundary.log
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-build.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web-typecheck.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-web.log (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/final-first.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/completion-whitespace.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/current-source-test.diff (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/evidence-sha256.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-checks.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-checks.py (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-localization-boundary.log
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-prepare.log (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fourth.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-server-typecheck.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-server.log (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-boundary.log
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-build.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web-typecheck.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-web.log (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/final-whitespace.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/handoff-reference-files.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/initial-status.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/initial-web-check.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/install.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/local-checks.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/native-preflight.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/navigation-investigation.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/prerequisites.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/prisma-generate.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-final-chip.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-final-chip.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-pending-team.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-pending-team.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-publication.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-publication.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-retained.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-retained.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-direct.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-direct.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-mounted.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/1502-unused-mounted.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-final-chip.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-final-chip.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-pending-team.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-pending-team.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-publication.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-publication.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-retained.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-retained.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-direct.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-direct.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-mounted.html (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/390-unused-mounted.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/buttons.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/evidence.json (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/second.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fifth.log} (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/seventh.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/final-first.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fixture.vue (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/sixth.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/fourth.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial-dom.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.json (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/third.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/initial.png (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/inspect-discovery.mjs (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/inspect-initial.mjs (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/inspect.mjs (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-typecheck.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/second.log} (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/server.log (100%)
+ rename tickets/{in-progress/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-whitespace.log => done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/seventh.log} (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/sixth.log
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/render/third.log
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/runtime-final-focused.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/selected-handoff-rule.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-first.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-second.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/selection-composition-third.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-cohort-second.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-cohort.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-first.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-focused.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-paths.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-prerequisites.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-second.log (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/server-typecheck.log
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/source-commit.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/source-inventory.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/source-paths.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/typecheck-comparison-current.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/typecheck-comparison.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/upstream-reference-files.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-checks.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-checks.py (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-web-typecheck.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-web.log (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/implementation-evidence/IR-001/verification-whitespace.log
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-cohort.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-focused-first.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-paths.txt (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-first.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-regression-second.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-typecheck-first.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-typecheck-pinned.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-evidence/IR-001/web-typecheck-tooling.log (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-handoff.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/implementation-revision-record.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/intake/evidence-index.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/intake/original-personal-comparison.json (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/intake/user-request.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/investigation-notes.md (100%)
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/release-deployment-report.md
+ create mode 100644 tickets/done/collaboration-follow-up-fixes/release-notes.md
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/requirements-doc.md (100%)
+ rename tickets/{in-progress => done}/collaboration-follow-up-fixes/requirements-revision-record.md (100%)

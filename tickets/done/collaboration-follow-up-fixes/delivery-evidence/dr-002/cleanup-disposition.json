@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-09-13T12:41:20.366559+00:00",
+  "result": "Not required \u2014 deliberate safe retention",
+  "task_worktree": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+  "local_task_branch": "requirements/collaboration-follow-up-fixes",
+  "reason": "Preexisting ignored core dist/web build/Nuxt/test temp/dependency resources are outside Delivery deletion scope; preserve them rather than force-remove worktree.",
+  "remote_task_branch": "Retained review trail",
+  "worktree_prune": "Not required; no removal",
+  "target_other_owner_files_preserved": 434,
+  "delivery_runtime_started": false,
+  "deployment_release_cutover": "Not selected or performed"
+}

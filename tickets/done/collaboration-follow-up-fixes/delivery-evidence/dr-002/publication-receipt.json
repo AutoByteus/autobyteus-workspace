@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-09-13T12:41:20.366559+00:00",
+  "result": "Repository content publication completed",
+  "source_commit": "5710fdd5347bb1b3c464775dd9e32470c88a2ef5",
+  "reviewed_artifact": "270d0d72ec8b2feec2b4699b1687f5caa8707108",
+  "safety_checkpoint": "55bac1f2a5908747d9aa13e8d6662e797c120fa7",
+  "bootstrap_base": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+  "publication_commit": "a88cad9e395f961294b5bbcb29a6726f0fdf6129",
+  "task_branch": "requirements/collaboration-follow-up-fixes",
+  "target_branch": "requirements/flat-agent-organization-model",
+  "task_push": "Completed",
+  "target_refresh": "Completed; no advance",
+  "merge": "Completed \u2014 fast-forward",
+  "base_push": "Completed",
+  "remote_task_sha": "a88cad9e395f961294b5bbcb29a6726f0fdf6129",
+  "remote_base_sha": "a88cad9e395f961294b5bbcb29a6726f0fdf6129",
+  "personal_sha_before_and_after": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+  "target_integrity": {
+    "target_references_resolve_and_match": 465,
+    "target_other_owner_unchanged": 434,
+    "old_aorg_ticket_unchanged": true,
+    "followup_archived": true
+  },
+  "closing_records": "This receipt describes the verified content/archive publication commit. The follow-on Delivery-record-only commit must also be pushed task\u2192base before terminal handoff; its exact final SHA is in the durable terminal receipt.",
+  "terminal_receipt_directory": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR002-20260913T123527Z",
+  "release_deployment_cutover": "Not required; not performed",
+  "cleanup": "Not required \u2014 explicit preexisting-resource retention, no Delivery runtime to tear down"
+}
