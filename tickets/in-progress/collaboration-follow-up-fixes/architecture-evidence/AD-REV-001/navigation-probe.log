@@ -1,0 +1,17 @@
+{
+  "scope": "actual current selection action, inspection action/coordinator; Vue memory router; delayed projection and Team view/Pinia dependencies controlled; AppLeftPanel event body mirrored; not original API38 timing or hosted reproduction",
+  "before": "/workspace?rootSubjectKind=agent_org&orgRunId=chosen-org&memberAddress=/team/lead&mode=active",
+  "after": "/workspace",
+  "selectedType": "team",
+  "selectedRunId": "prior-team",
+  "focused": "requested-agent",
+  "records": [
+    {
+      "event": "run-selected",
+      "payload": {
+        "type": "team",
+        "runId": "prior-team"
+      }
+    }
+  ]
+}

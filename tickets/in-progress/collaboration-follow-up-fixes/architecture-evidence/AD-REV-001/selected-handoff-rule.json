@@ -1,0 +1,36 @@
+{
+  "package": "COLLAB-FOLLOWUP-001",
+  "revision": "AD-REV-001",
+  "outcome": "Architecture Design Complete",
+  "task_size": "Medium",
+  "architectural_risk": "High",
+  "selected_rule": {
+    "when": "When Architecture Designer has completed the architecture design and classifies the result as task_size=Large or architectural_risk=High, and the cumulative architecture package is ready for independent architecture review.",
+    "recipient_address": "/software_engineering_team/architecture_reviewer"
+  },
+  "rationale": "Initial new-ticket architecture baseline with High lifecycle/identity/concurrency risk. Not a revision of the old completed AORG package; no Requirement Gap or terminal blocker.",
+  "all_rules": [
+    {
+      "when": "When Architecture Designer classifies a missing or conflicting intended-behavior decision found during package validation, architecture review, or downstream engineering as Requirement Gap because the canonical requirements require revision and any intended-behavior change requires renewed user approval.",
+      "recipient_address": "/requirements_engineer"
+    },
+    {
+      "when": "When Architecture Designer classifies the outcome as Non-Requirement Blocked because an external dependency, unsafe workspace, or other terminal condition must be returned to the department coordinator for user-facing resolution.",
+      "recipient_address": "/requirements_engineer"
+    },
+    {
+      "when": "When Architecture Designer has completed the architecture design and classifies the result as task_size=Large or architectural_risk=High, and the cumulative architecture package is ready for independent architecture review.",
+      "recipient_address": "/software_engineering_team/architecture_reviewer"
+    },
+    {
+      "when": "When a Requirement Gap, Design Impact, or Unclear finding has been resolved in the updated architecture artifacts, the result remains task_size=Large or architectural_risk=High, and the revised package is ready for another architecture review.",
+      "recipient_address": "/software_engineering_team/architecture_reviewer"
+    },
+    {
+      "when": "When Architecture Designer has completed the architecture design, classifies the result as task_size=Small or Medium and architectural_risk=Low, and the cumulative architecture package is ready for direct implementation without Architecture Reviewer. Include the classification, rationale, and route decision in the handoff.",
+      "recipient_address": "/software_engineering_team/implementation_engineer"
+    }
+  ],
+  "notify_only": "/software_engineering_team/architecture_reviewer",
+  "recordedAt": "2026-09-13T10:20:18.276536+00:00"
+}
