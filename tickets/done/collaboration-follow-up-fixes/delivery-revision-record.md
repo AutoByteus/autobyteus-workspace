@@ -10,6 +10,8 @@ Old AORG DR records are historical context, not prior delivery results for this 
 
 | DR-002 | Explicit user completion and recorded-base finalization, followed by workflow continuation | DR-001 awaiting verification | Delivery Completed; user verified, archived, ticket/base published; final record receipt identified in release report | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; release-notes.md; delivery-evidence/dr-002/ |
 
+| DR-003 | User clarification that separate finished task worktree should be cleaned | DR-002 published; worktree retained | Delivery Completed; ignored local files backed up and verified, task worktree/local branch removed, base worktree preserved | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; delivery-evidence/dr-003/ |
+
 ## Revision Entries
 ### DR-001 — Initial integrated verification candidate
 - Recorded: 2026-09-13T12:32:11.759582+00:00.
@@ -39,3 +41,15 @@ Old AORG DR records are historical context, not prior delivery results for this 
 - Cleanup disposition: retain task worktree/local branch to preserve preexisting ignored resources; no forced deletion; remote review branch retained. No native/release/cutover/data operation.
 - Docs sync: [docs-sync-report.md](docs-sync-report.md); summary: [handoff-summary.md](handoff-summary.md); publication: [release-deployment-report.md](release-deployment-report.md).
 - Terminal return: eligible after final record-only publication verification; current rules and actual message receipt govern the terminal handoff. No sent ID fabricated. All applicable release/cleanup gates are truthfully Not required.
+
+### DR-003 — Complete separate ticket-worktree cleanup
+- Trigger/authority: user clarified that finalization should clean the separate ticket worktree while the base has its own worktree; verbatim `delivery-evidence/dr-003/user-direction.json`.
+- Prior result: DR-002 source/ticket publication complete, local task worktree retained. That retention is superseded, not rewritten as past cleanup.
+- Current result: **Delivery Completed** including actual worktree and merged-local-branch removal. Full ignored-resource archive verified before removal; no new source/test or product acceptance change.
+- Integration: refreshed origin/requirements/flat-agent-organization-model at8547bc56e, already current. Cleanup is administrative; no new executable run or renewed product verification needed.
+- User verification for product/base finalization remains DR-002. Release/deployment/cutover remain Not required; old IR049 gate is not waived.
+- Canonical docs-sync/handoff/release reports updated; DR-002 copies retained under `delivery-evidence/dr-003/prior-dr-002/`.
+- Cleanup:70,068 regular files plus5,218 symlinks archived and verified without following external links; exact worktree removed; local merged branch deleted. Remote review branch and separate base worktree preserved.434 other-owner base files unchanged, all513 incoming terminal references resolve.
+- Backup verifier's intentional read-only interruption/streaming replacement is disclosed; no source/API failure is inferred.
+- Result evidence: `delivery-evidence/dr-003/cleanup-result.json`, `backup-verification.json`, updated cumulative index. Exact post-record push/terminal receipt directory is identified in the release report.
+- Next/terminal action: push the administrative record update on the finalized base, verify final refs, obtain fresh completion handoff rule and notify Requirements of this cumulative cleanup update. No additional worktree creation or feature merge needed.

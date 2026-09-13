@@ -1,7 +1,7 @@
 # Docs Sync Report — COLLAB-FOLLOWUP-001
 
 ## Scope
-- Delivery revision: **DR-003**, post-finalization worktree cleanup; DR-001/002 runtime docs retained; date: 2026-09-13T12:32:11.759582+00:00.
+- Delivery revision: **DR-002**, user-accepted base finalization; DR-001 sync retained; date: 2026-09-13T12:32:11.759582+00:00.
 - Trigger: CRR-002 successful proportional disposition after API-REV-001 Pass.
 - Classification: **Medium / High / Confirmed / Reviewed**; not inherited Large.
 - Bootstrap and checked remote base: `origin/requirements/flat-agent-organization-model` at `345d8e0befabe68052ff0e42d0ec9a560ef85326`.
@@ -41,9 +41,3 @@ that the original publication incident's historical cause is known.
 - Documentation-only validation and whitespace/scope results: [docs-validation.json](delivery-evidence/dr-001/docs-validation.json).
 - No additional executable rerun: no new base/effective code integrated, current API/reviewer checks cover unchanged source, user declined redundant open_tab reruns. This is not a new API Pass or a green Vue typecheck.
 - DR-002: explicit user verification received and recorded in `delivery-evidence/dr-002/user-acceptance.json`. Post-acceptance base refresh is unchanged; no further long-lived doc/source/test edit needed. Proceed with archived ticket → task push → merge/push recorded base. Release/cutover remains out of scope; authoritative publication outcome is in the release/deployment report.
-
-## DR-003 Cleanup-Only Continuation
-- Additional long-lived runtime/docs impact: **No impact**. The six synchronized docs and product source/test are unchanged.
-- Base refresh at8547bc56e was already current. No additional product rerun or renewed acceptance needed for administrative cleanup.
-- Completed ticket worktree and merged local branch removed after full ignored-file backup/verification; base worktree retained. Current authoritative cleanup outcome is in the release/deployment report and `delivery-evidence/dr-003/cleanup-result.json`.
-- DR-002 retention is superseded, not silently treated as earlier cleanup. Prior canonical reports are preserved under `delivery-evidence/dr-003/prior-dr-002/`.
