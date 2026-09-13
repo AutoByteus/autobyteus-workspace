@@ -1,0 +1,118 @@
+{
+  "package": "COLLAB-FOLLOWUP-001",
+  "revision": "RER-002",
+  "recordedAt": "2026-09-13T09:58:19.532527+00:00",
+  "referenceBranch": "origin/personal",
+  "referenceCommit": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+  "taskBaseBranch": "origin/requirements/flat-agent-organization-model",
+  "taskBaseCommit": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+  "remoteHeadsVerification": "git ls-remote --heads origin refs/heads/personal refs/heads/requirements/flat-agent-organization-model returned the exact pins above during this approval round; no base change",
+  "comparisons": [
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "originalSha256": "cb467a397d40a456d5c844acc8f72cdabb1df20d257992568237c0db91a4c103",
+      "currentSha256": "cb467a397d40a456d5c844acc8f72cdabb1df20d257992568237c0db91a4c103",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentContextsStore.ts",
+      "originalSha256": "f112d2d7c69c604128c5f0ce3fa4fd99932d888b2794f54af6b9cf0d5ddbba8a",
+      "currentSha256": "f112d2d7c69c604128c5f0ce3fa4fd99932d888b2794f54af6b9cf0d5ddbba8a",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "originalSha256": "d1449467692c572b7a4ecedd95d884e260ec493f2419302cd7a38b247f86a2c2",
+      "currentSha256": "76dd6eb2f311b69eac2af23dd9d3c35d7f0fe1682aa880d201c246c5d19023aa",
+      "byteIdentical": false
+    },
+    {
+      "path": "autobyteus-web/services/eventMonitor/recentEventMonitorMutationCoordinator.ts",
+      "originalSha256": "c86fec0de249d90707945f5a52356157ba7da32f85214875fa3c668d467073c5",
+      "currentSha256": "c86fec0de249d90707945f5a52356157ba7da32f85214875fa3c668d467073c5",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/services/eventMonitor/recentEventMonitorPresentationWitness.ts",
+      "originalSha256": "0c15de425c0dba10a7c757ab29317d72b617bb23d1a818dbf0f49303d21969b8",
+      "currentSha256": "0c15de425c0dba10a7c757ab29317d72b617bb23d1a818dbf0f49303d21969b8",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextAttachmentPresentation.ts",
+      "originalSha256": "ec122c4b427469c4ccbd34aa49c3adaf651adf6f37fad3696f0122d2b678e29d",
+      "currentSha256": "ec122c4b427469c4ccbd34aa49c3adaf651adf6f37fad3696f0122d2b678e29d",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/components/conversation/UserMessage.vue",
+      "originalSha256": "cb0bcb0d71a73a9e42531c1b999bc436200c004ec66085c3965515daf12c09fe",
+      "currentSha256": "cb0bcb0d71a73a9e42531c1b999bc436200c004ec66085c3965515daf12c09fe",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentSelectionStore.ts",
+      "originalSha256": "ff1330b8de32e9fe1d50ca61a4013cb884d7877ecd3d8ea50a65ef18725178ec",
+      "currentSha256": "ff1330b8de32e9fe1d50ca61a4013cb884d7877ecd3d8ea50a65ef18725178ec",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/services/workspace/workspaceNavigationService.ts",
+      "originalSha256": "6ae8b56cc8ed3ca02fd4e84116730a65624a090872b618d5fbb5cad4d6e0bdff",
+      "currentSha256": "6ae8b56cc8ed3ca02fd4e84116730a65624a090872b618d5fbb5cad4d6e0bdff",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryNavigationStoreActions.ts",
+      "originalSha256": "73d91c1dbc4fc87d9cfe25dbd7e9e6fae692874152c6e54acc30d4fd2ae0000e",
+      "currentSha256": "1ea4da51a2a6254e737e8091c5f8c7b5a4ab76a2884a7f97ae0ead59f4f7de38",
+      "byteIdentical": false
+    },
+    {
+      "path": "autobyteus-web/stores/runHistoryNavigationPatches.ts",
+      "originalSha256": "9a24b7012fd8fda7fa7396d7ca4c3e245564265cb947f0a9d7ecddc108708f4a",
+      "currentSha256": "9a24b7012fd8fda7fa7396d7ca4c3e245564265cb947f0a9d7ecddc108708f4a",
+      "byteIdentical": true
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/TeamStreamingService.ts",
+      "originalSha256": "718cfa8045df2de1c5664162cb47e05cf90b48191918f286e7c6135e2b7bdfd4",
+      "currentSha256": "485d4fc313f2bd4ff0be8e277df9d0484863b6bdfe508269352b6d04f77fad01",
+      "byteIdentical": false
+    }
+  ],
+  "additionalSources": [
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "0b65c6047da8ce148076429e3795f654547086bc6f5f63c050c13c60ab8e40cb"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "0fb19e00c0b3a68426b2945af9d323344d43dd45f7e8b14885e2bf603e2c7d00"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "ca9902d291556d20c74894b7a2f49333bd84340230cbceaed13ac84466410bbd"
+    },
+    {
+      "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "revision": "345d8e0befabe68052ff0e42d0ec9a560ef85326",
+      "sha256": "50da0dcd4c25be78d67c4bdf28663e857c39622dfaac457b65ce062a4ea9b561"
+    },
+    {
+      "pathAtRevision": "autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts",
+      "revision": "5645b49d6f51faa60bd3545bc8e3f0e7e3f96793",
+      "sha256": "ad154b453d1398c3f0fe6825eae1bad72ec85ab2057420a75c1b0143f63e41a8"
+    }
+  ],
+  "interpretation": [
+    "Original Team unused configured direct/nested Agents remain Offline; current Team and Org preparation starts configured member readiness before input. This is verified source difference, not runtime/provider-wide coverage.",
+    "Original navigation-presentation updates and explicit selection are separate paths. Current Org ownership is new; one recorded navigation failure still needs source-cause/reproduction evidence.",
+    "Standalone Send/promotion, presentation coordinator/witness, UserMessage and attachment opener are byte-identical. localUserSubmission difference adds nullable Org navigation target/guard, not changed standalone attachment finalization. This does not prove absence/presence of the stale-chip failure on an original hosted build."
+  ],
+  "newRuntimeValidation": "None; source comparison only",
+  "approvalReference": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/requirements-revision-record.md#rer-002--approved-corrections-and-teamorg-startup-parity"
+}
