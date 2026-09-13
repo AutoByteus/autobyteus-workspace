@@ -1,0 +1,260 @@
+{
+  "at": "2026-09-13T12:05:59.609105+00:00",
+  "archive": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/runtime-owned-sanitized.tar.gz",
+  "archiveSha256": "cbe8e74961a1696ba00e443054b89711c960d3d352340e4b688c032ff55d49cb",
+  "files": [
+    {
+      "path": "server-data/agents/autobyteus-memory-compactor/agent-config.json",
+      "sha256": "d5f3bd9134194478cdd73a09782e1c5a7b3a900b2a40ac54b043a9832413c2fd",
+      "bytes": 275,
+      "mtimeNs": 1789299452887061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-memory-compactor/agent.md",
+      "sha256": "cf057a5fcc0736183b451d667a4bd9d47c65d8172ed65755d6973f503b5d284f",
+      "bytes": 2891,
+      "mtimeNs": 1789299452885061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-retrospective-skill-improver/agent-config.json",
+      "sha256": "a389c222f3e42e3e8f4cf54e14610034ea24b2b8695cb0ce8900aebee74c17cf",
+      "bytes": 354,
+      "mtimeNs": 1789299452891061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-retrospective-skill-improver/agent.md",
+      "sha256": "19285601d2a22224e6ef15b5999588212c69b685c3385e769dbf521efd596106",
+      "bytes": 1520,
+      "mtimeNs": 1789299452891061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/SKILL.md",
+      "sha256": "68360b7d316b93e59189901bd0c1787e4f7f680670e01805e7e2c447c2e299c6",
+      "bytes": 4132,
+      "mtimeNs": 1789299452907061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/examples.md",
+      "sha256": "3904fa1c9d4a7f501534cfccdcd98074b0c5974cdde5e46decad1f1c53334e38",
+      "bytes": 1744,
+      "mtimeNs": 1789299452899061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/high-signal-trace-patterns.md",
+      "sha256": "d063db52711dc1d9261135c909d3ac704dbe84980c7fa4581f186fba16ebe672",
+      "bytes": 1655,
+      "mtimeNs": 1789299452906061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/package-improvement-playbook.md",
+      "sha256": "ea81af072d1da35eb9fe56dcbf4e3d2e4a03916453a35d170336c61b5387ea61",
+      "bytes": 1283,
+      "mtimeNs": 1789299452900061000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/followup-assistant/agent-config.json",
+      "sha256": "fbf6251fdd025050ec26329231f7f66cfe76bb0d65e6f88a2ba5016c27830f33",
+      "bytes": 398,
+      "mtimeNs": 1789299354795108010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agents/followup-assistant/agent.md",
+      "sha256": "d2ec85fb57ed97240948fd8838b8e95bb55ee20c11670c7a237f07b064d9a0cc",
+      "bytes": 452,
+      "mtimeNs": 1789299354793108010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agent-teams/followup-flat-team/team-config.json",
+      "sha256": "01d1fe2f2f7d74eb447940fcf72c721b489bb989237c8b60dbf3ac8a44ba7478",
+      "bytes": 759,
+      "mtimeNs": 1789299354818108010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agent-teams/followup-flat-team/team.md",
+      "sha256": "22a9b11766b40c8c5d73b36dafe7e0230d7348e6622dce40eab61789d358ea4b",
+      "bytes": 475,
+      "mtimeNs": 1789299354818108010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agent-orgs/followup-organization/org-config.json",
+      "sha256": "26f35da1f463223903b61a137b8a64122706a0eba0a420c1f6b1d68aa9568822",
+      "bytes": 801,
+      "mtimeNs": 1789299354847108010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/agent-orgs/followup-organization/org.md",
+      "sha256": "bc8b913263ec192adcc17b375c9b17e80c4bb078000dcbea3241efc2c4107218",
+      "bytes": 466,
+      "mtimeNs": 1789299354847108010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_org_run_history_index.json",
+      "sha256": "f5cc1b9568025e4079a0162f0ea8ad89511ff9b0f986e80344e01bfe05891783",
+      "bytes": 485,
+      "mtimeNs": 1789301060104491008,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/agent_org_communication_messages.json",
+      "sha256": "dd7a0f735f166370af79e7bbb0ac42a351e89c73a3cdc5e981096a46b63f3b19",
+      "bytes": 2592,
+      "mtimeNs": 1789300495865351011,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/agent_org_run_execution_tree.json",
+      "sha256": "d559231b448add8e562ff8a5a432ed6b4eb9915d7ce63c114fbeb332764c0bd6",
+      "bytes": 6340,
+      "mtimeNs": 1789301060079491008,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/agent_org_task_delegation_records.json",
+      "sha256": "5d80710efb847c92c5e80b2e040cca6059223f29174b8ed7407c8c17f79e2c78",
+      "bytes": 975,
+      "mtimeNs": 1789301060073491008,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/followup_assistant_216e424e97ee45b9b0ed416beb8f8652/raw_traces_active.jsonl",
+      "sha256": "07f03325ab38c74d68fa893cdefe3b9dfba50daf488db4019b2e3b82418dc648",
+      "bytes": 9637,
+      "mtimeNs": 1789300155882381006,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/followup_assistant_addd51e26f024892b80673b6d6c74d68/raw_traces_active.jsonl",
+      "sha256": "2705b43ef02b13df8f7908ec24240397292c62b414fb15d3d6d7aed14f97c32a",
+      "bytes": 7232,
+      "mtimeNs": 1789300155753381006,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/followup_flat_team_2ef41ec0472f4dc0ad2b2909f6ffddac/followup_assistant_3adf5e0e66f848ce9cec314516090bec/raw_traces_active.jsonl",
+      "sha256": "eaaf424c383b48a06ce5859aea6d3fbdb034f63543b49126bfe6706734b48d3d",
+      "bytes": 7257,
+      "mtimeNs": 1789300161242381008,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/followup_flat_team_2ef41ec0472f4dc0ad2b2909f6ffddac/followup_assistant_43e9e427a4954d7d81694eb898327d1c/raw_traces_active.jsonl",
+      "sha256": "0c68a46dc96d1ba53728d220ba9ed938952c75d538d19a693709cb3d98972040",
+      "bytes": 14820,
+      "mtimeNs": 1789300498933351012,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_orgs/followup_organization_957cde061da84a70bb80c4c5f1b2debf/followup_flat_team_2ef41ec0472f4dc0ad2b2909f6ffddac/followup_flat_team_204ab7d377ff442fb41231250dc60c28/followup_assistant_8f603b5a6a7048ad8d98c85e713a9d7e/raw_traces_active.jsonl",
+      "sha256": "339e659c9e39412fe96bdc7668008702a2b38cf422a22c61d2ba8e626ec04f83",
+      "bytes": 12073,
+      "mtimeNs": 1789300503454027000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_teams/followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c/followup_assistant_3216f1eef95047aeaf4e5ef3ddfc3724/raw_traces_active.jsonl",
+      "sha256": "fdadafc66a98f7c7026a5b6de8ed86326a9a1979d39a01de0435c2ea1d962d0b",
+      "bytes": 7235,
+      "mtimeNs": 1789299873794798000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_teams/followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c/followup_assistant_caf73835e91b406c9d21a773d978f62c/raw_traces_active.jsonl",
+      "sha256": "dd8d457235053027a5d1df00696077a8aad35b826af0985f1734acc974718be5",
+      "bytes": 9028,
+      "mtimeNs": 1789300900873996003,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_teams/followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c/followup_assistant_cb0fba23888c47c381cc9c403109ff15/raw_traces_active.jsonl",
+      "sha256": "e74a6a0f4a6b7a8010198679f2c6ef74f7a2899eaa431022da4bd5f5f32b75ee",
+      "bytes": 6582,
+      "mtimeNs": 1789300894817996000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_teams/followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c/task_delegation_records.json",
+      "sha256": "50b8fbc7c7ba35c362902a6d733cd1214d99d2a0ac41e2de482113a4fe89acee",
+      "bytes": 116,
+      "mtimeNs": 1789299538154321012,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_teams/followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c/team_communication_messages.json",
+      "sha256": "470134efa1c052ac059aec27e96da818672012baa051d25f852686db62b5c630",
+      "bytes": 573,
+      "mtimeNs": 1789299865565451010,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agent_teams/followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c/team_run_execution_tree.json",
+      "sha256": "6f7f0e873b57e63209b3ac28fe38f2691574c0f7dd7ed504af81119b228e39eb",
+      "bytes": 2877,
+      "mtimeNs": 1789300894819996000,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/context_files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt",
+      "sha256": "eb18461a6fc179438940c42704165b8b60361c5dd843b5f8d6acab4bd9a93ac6",
+      "bytes": 75,
+      "mtimeNs": 1789300531283027013,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/raw_traces_active.jsonl",
+      "sha256": "9602fc3053d3373f6d5d022a31e7015ad141420c73c3882cd57b5ec0d73b3a04",
+      "bytes": 4661,
+      "mtimeNs": 1789300535323434001,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/run_metadata.json",
+      "sha256": "8e1030e9422901e12d6648061d346883ae85cb0beb9fb03af71cae7f2d21dd42",
+      "bytes": 721,
+      "mtimeNs": 1789300532537027014,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/agents/followup_assistant_fd25bd7a808f48e1a17fb008bc8f6286/working_context_snapshot.json",
+      "sha256": "8539565504a2408c6886de02a848c9b4cc19c580fdbf0d6451c8f6a970950436",
+      "bytes": 4775,
+      "mtimeNs": 1789300535323434001,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/run_history_index.json",
+      "sha256": "4b1c87b4035dabad4d90c8219230e781c2978f4a024e35c22f722670a9d737b3",
+      "bytes": 466,
+      "mtimeNs": 1789301060210491008,
+      "mode": 420
+    },
+    {
+      "path": "server-data/memory/team_run_history_index.json",
+      "sha256": "c61566cd0c51dec51da0b21d05b9a22b575c802d3c590ca6a948d9228d13dee8",
+      "bytes": 479,
+      "mtimeNs": 1789301006092852011,
+      "mode": 420
+    },
+    {
+      "path": "workspace/COLLAB-API01-first-text.txt",
+      "sha256": "eb18461a6fc179438940c42704165b8b60361c5dd843b5f8d6acab4bd9a93ac6",
+      "bytes": 75,
+      "mtimeNs": 1789300531208027013,
+      "mode": 420
+    }
+  ],
+  "excluded": "Database/vault/master keys/.env/browser profile/cache excluded; exact original text fixture and owned definitions/memory retained. PAX decimal mtime verified exactly; no metadata normalization."
+}

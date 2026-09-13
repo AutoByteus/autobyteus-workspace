@@ -1,0 +1,46 @@
+{
+  "at": "2026-09-13T12:08:12.507297+00:00",
+  "result": "Pass for current ordinary SCN003/004 journeys",
+  "scope": "Two distinct ordinary publication-only pulses (desktop and narrow) plus third pulse with deliberate same-Org receiver leave/return; actual provider tool work, prior standalone Team, existing task and exact configured mounted sender. No synthetic event/promise/browser fixture.",
+  "observations": [
+    {
+      "mode": "desktop",
+      "frames": 111,
+      "domPolls": 163,
+      "writerEvents": 383,
+      "explicitRouterPushes": 0,
+      "explicitIntentBegins": 0,
+      "sameFinalDraft": true,
+      "finalAgentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+      "observerErrors": []
+    },
+    {
+      "mode": "narrow",
+      "frames": 105,
+      "domPolls": 7,
+      "writerEvents": 315,
+      "explicitRouterPushes": 0,
+      "explicitIntentBegins": 0,
+      "sameFinalDraft": true,
+      "finalAgentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+      "observerErrors": [
+        "TimeoutError: locator.getAttribute: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"agent-org-agent-row-followup_assistant_43e9e427a4954d7d81694eb898327d1c\"]')\u001b[22m\n",
+        "TimeoutError: locator.getAttribute: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"agent-org-agent-row-followup_assistant_43e9e427a4954d7d81694eb898327d1c\"]')\u001b[22m\n"
+      ]
+    },
+    {
+      "mode": "leave",
+      "frames": 97,
+      "domPolls": 177,
+      "writerEvents": 596,
+      "explicitRouterPushes": 2,
+      "explicitIntentBegins": 2,
+      "sameFinalDraft": true,
+      "finalAgentRunId": "followup_assistant_43e9e427a4954d7d81694eb898327d1c",
+      "observerErrors": []
+    }
+  ],
+  "actualWriter": "Only deliberate leave/return calls useWorkspaceHistorySubjectActions.ts execute\u2192router.push; ordinary publication cycles call real history refresh/topology/context updates without selection intent or router writes. All observed exact Org context identities remain correct.",
+  "historicalCause": "UNASSIGNED. This is current functional acceptance from repeated normal instrumented evidence, NOT a claim CD003 caused or repaired the historical incident. SCN004 deterministic fixture is not used to substitute for SCN003. No different current writer demonstrated; no Design Impact inferred.",
+  "narrowLimit": "Sidebar unmounts at390. Two observer DOM locator timeouts are local measurement errors; browser/context/router and real wire persisted. Width restored only to read final task row; no refocus/reload/resend."
+}

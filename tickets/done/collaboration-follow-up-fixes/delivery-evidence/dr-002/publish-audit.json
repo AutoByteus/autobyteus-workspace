@@ -1,0 +1,20 @@
+{
+  "backup": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR002-20260913T123527Z",
+  "file_count": 433,
+  "sha256_manifest": "/home/autobyteus/workspace/.codex/delivery-archives/COLLAB-FOLLOWUP-001-DR002-20260913T123527Z/manifest.json",
+  "patterns": [
+    "private-key",
+    "provider-key",
+    "github-token",
+    "aws-key",
+    "bearer"
+  ],
+  "findings": [],
+  "archives": [
+    {
+      "path": "tickets/in-progress/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/final/runtime-owned-sanitized.tar.gz",
+      "files": 36,
+      "bytes": 116279
+    }
+  ]
+}

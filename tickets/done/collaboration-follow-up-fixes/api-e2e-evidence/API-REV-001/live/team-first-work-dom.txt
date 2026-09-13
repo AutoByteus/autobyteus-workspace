@@ -1,0 +1,48 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone." After the tool succeeds, reply exactly COLLAB-API01-TEAM-COORDINATOR-READY. Do not delegate any tasks or contact /reviewer.
+now
+C
+coordinator
+now
+L
+lead
+now
+R
+reviewer
+now
+Settings
+C
+coordinator
+Running
+You
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone." After the tool succeeds, reply exactly COLLAB-API01-TEAM-COORDINATOR-READY. Do not delegate any tasks or contact /reviewer.
+Context Files (0)
+(drag, paste, or upload)
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.
+
+Tasks
+0 tasks

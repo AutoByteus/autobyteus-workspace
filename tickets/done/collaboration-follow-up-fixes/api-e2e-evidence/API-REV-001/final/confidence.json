@@ -1,0 +1,24 @@
+{
+  "postRepository": [
+    50,
+    90,
+    75,
+    85,
+    95,
+    75,
+    95
+  ],
+  "postRepositoryOverall": 80.7,
+  "final": [
+    95,
+    95,
+    95,
+    95,
+    95,
+    95,
+    95
+  ],
+  "finalOverall": 95.0,
+  "method": "Simple mean; every critical current AC directly executed, scoped repository negatives supply edge/lifecycle controls. Historical causal attribution is expressly not asserted.",
+  "broaderValidation": "Required \u2014 completed browser/real server/provider/lifecycle"
+}

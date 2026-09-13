@@ -1,0 +1,7 @@
+{
+  "at": "2026-09-13T11:43:46.625Z",
+  "result": "Pass",
+  "initialNonzero": "Snapshot <1 second after create before settled tree observation: aria initializing, gray dot, Offline center; no binding or user work. Corrected observation waits for genuine settled status without rerunning launch.",
+  "steady": "All three accessibility labels offline, gray dot, selected center Offline, bindings null. No reload or Send.",
+  "checkpointCorrection": "Previous checkpoint hardcoded still initializing was wrong; structured team-unused-steady.json is authoritative actual rows and corrects it."
+}

@@ -1,0 +1,6 @@
+{
+  "at": "2026-09-13T11:38:57.883Z",
+  "url": "http://127.0.0.1:3611/workspace",
+  "form": "Team Definition\nFollowup Flat Team\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used by this team run.\n\nDefault LLM Model (Global)\nOpenAI / GPT-5.6-Sol (default reasoning: low)\n\nThis model will be used by all members unless overridden.\n\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nultra\nFast mode ⓘ\nDefault\nfast\nWorkspace Directory\nExisting\nNew\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (3)",
+  "workspace": "/tmp/collab-api01-yyjdm4jz/workspace"
+}

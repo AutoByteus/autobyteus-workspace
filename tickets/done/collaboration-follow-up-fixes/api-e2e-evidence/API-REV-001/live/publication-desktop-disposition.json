@@ -1,0 +1,16 @@
+{
+  "at": "2026-09-13T11:53:15.548718+00:00",
+  "result": "Pass \u2014 observed original publication-only ordering",
+  "checks": {
+    "actualTargetRunningThenIdle": true,
+    "oneSend": true,
+    "selectedFinalExact": true,
+    "draftRetained": true,
+    "correctConversation": true,
+    "noUnrequestedRoute": true,
+    "noObserverDrop": true
+  },
+  "originalNonzero": "Oracle incorrectly required agentRunId URL param for configured member; actual public configured route uses memberAddress; exact ID is in actual Org context and data-test row. Task route may use agentRunId.",
+  "evidence": "Original result retained untouched; 163 polls same selected root/address/ID/draft; no router writer called; real task status progressed running\u2192idle. No input replay.",
+  "causeLimit": "Original historical writer remains unassigned; not attributed to controlled SCN004."
+}

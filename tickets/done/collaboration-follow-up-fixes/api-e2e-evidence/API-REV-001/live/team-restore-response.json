@@ -1,0 +1,19 @@
+{
+  "request": {
+    "operationName": "RestoreAgentTeamRun",
+    "variables": {
+      "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c"
+    },
+    "query": "mutation RestoreAgentTeamRun($teamRunId: String!) {\n  restoreAgentTeamRun(teamRunId: $teamRunId) {\n    __typename\n    success\n    message\n    teamRunId\n  }\n}"
+  },
+  "body": {
+    "data": {
+      "restoreAgentTeamRun": {
+        "__typename": "RestoreAgentTeamRunResult",
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c"
+      }
+    }
+  }
+}

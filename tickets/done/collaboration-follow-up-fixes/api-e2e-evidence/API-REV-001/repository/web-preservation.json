@@ -1,0 +1,32 @@
+{
+  "name": "web-preservation",
+  "case": "REPO-WEB",
+  "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+  "command": [
+    "pnpm",
+    "test:nuxt",
+    "--run",
+    "stores/__tests__/agentSelectionStore.spec.ts",
+    "stores/__tests__/runHistorySelectionActions.spec.ts",
+    "stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts",
+    "stores/__tests__/runHistoryStore.spec.ts",
+    "composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+    "composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+    "composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+    "composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts",
+    "services/workspace/__tests__/workspaceNavigationService.spec.ts",
+    "services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts",
+    "services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+    "services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts",
+    "services/runSubmission/__tests__/localUserSubmission.spec.ts",
+    "components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+    "components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+    "--maxWorkers=2"
+  ],
+  "started": "2026-09-13T11:32:44.353971+00:00",
+  "exit": 0,
+  "finished": "2026-09-13T11:33:38.626226+00:00",
+  "tail": "ctype.\n\nstderr | services/workspace/__tests__/workspaceNavigationService.spec.ts\nWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.\n\nstdout | stores/__tests__/agentSelectionStore.spec.ts\nserverStore: Initializing server config\nserverStore: Not in Electron environment. Skipping server initialization.\n\n \u2713 stores/__tests__/agentSelectionStore.spec.ts (5 tests) 6ms\nstdout | services/workspace/__tests__/workspaceNavigationService.spec.ts\nserverStore: Initializing server config\nserverStore: Not in Electron environment. Skipping server initialization.\n\n \u2713 services/workspace/__tests__/workspaceNavigationService.spec.ts (5 tests) 6ms\nstderr | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts\nWarning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.\n\nstdout | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts\nserverStore: Initializing server config\nserverStore: Not in Electron environment. Skipping server initialization.\n\n \u2713 stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts (1 test) 6ms\n\n Test Files  17 passed (17)\n      Tests  157 passed (157)\n   Start at  11:32:49\n   Duration  49.19s (transform 6.63s, setup 64.05s, collect 3.69s, tests 3.79s, environment 13.32s, prepare 7.33s)\n\n"
+}

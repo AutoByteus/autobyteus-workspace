@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-09-13T12:33:43.147428+00:00",
+  "get_handoff_rules_called": true,
+  "rules_observed": [
+    "Delivery Completed after all verification/finalization/applicable gates -> /requirements_engineer",
+    "Code/packaging Local Fix -> /software_engineering_team/implementation_engineer",
+    "Design Impact/Requirement Gap/Unclear requiring classification -> /software_engineering_team/architecture_designer"
+  ],
+  "current_outcome": "Integrated; docs sync Pass; ordinary user-verification hold",
+  "selected_rule": null,
+  "reason": "Not Delivery Completed; no discovered source/packaging/design issue requiring reroute. Await explicit user verification, no completion handoff.",
+  "message_sent": false
+}

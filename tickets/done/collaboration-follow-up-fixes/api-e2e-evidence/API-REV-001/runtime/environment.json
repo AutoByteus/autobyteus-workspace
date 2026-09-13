@@ -1,0 +1,79 @@
+{
+  "root": "/tmp/collab-api01-yyjdm4jz",
+  "dataDir": "/tmp/collab-api01-yyjdm4jz/server-data",
+  "workspace": "/tmp/collab-api01-yyjdm4jz/workspace",
+  "server": "http://127.0.0.1:8611",
+  "renderer": "http://127.0.0.1:3611",
+  "cdp": "http://127.0.0.1:9231",
+  "processes": [
+    {
+      "name": "server",
+      "pid": 61253,
+      "processGroup": 61253,
+      "command": [
+        "node",
+        "dist/app.js",
+        "--data-dir",
+        "/tmp/collab-api01-yyjdm4jz/server-data",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8611"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts",
+      "started": "2026-09-13T11:35:00.012259+00:00",
+      "stoppedAt": "2026-09-13T11:37:27.505147+00:00",
+      "stopReason": "Before any Run/Send: override ambient additional package roots to avoid unrelated external catalog discovery."
+    },
+    {
+      "name": "renderer",
+      "pid": 61254,
+      "processGroup": 61254,
+      "command": [
+        "pnpm",
+        "dev",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "3611"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web",
+      "started": "2026-09-13T11:35:00.013177+00:00"
+    },
+    {
+      "name": "browser",
+      "pid": 61255,
+      "processGroup": 61255,
+      "command": [
+        "/usr/bin/chromium",
+        "--headless",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--remote-debugging-address=127.0.0.1",
+        "--remote-debugging-port=9231",
+        "--user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile",
+        "about:blank"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes",
+      "started": "2026-09-13T11:35:00.014160+00:00"
+    },
+    {
+      "name": "server-current",
+      "pid": 62067,
+      "processGroup": 62067,
+      "command": [
+        "node",
+        "dist/app.js",
+        "--data-dir",
+        "/tmp/collab-api01-yyjdm4jz/server-data",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8611"
+      ],
+      "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts",
+      "started": "2026-09-13T11:37:27.506525+00:00"
+    }
+  ],
+  "ownership": "New API01 resources only; other services8000/shared browser9222 untouched."
+}

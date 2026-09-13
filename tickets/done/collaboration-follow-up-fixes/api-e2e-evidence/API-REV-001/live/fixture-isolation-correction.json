@@ -1,0 +1,7 @@
+{
+  "classification": "API fixture-isolation correction",
+  "prior": "Ambient AUTOBYTEUS_AGENT_PACKAGE_ROOTS caused read-only discovery of external definition catalogs. Seed writes verified exclusively under new own data root; no external definition writes found.",
+  "action": "Stopped only own initial server before any Run/Send. Explicitly empty additional definition/skill/application paths on replacement. No run/input replay or product defect claimed.",
+  "oldPid": 61253,
+  "newPid": 62067
+}

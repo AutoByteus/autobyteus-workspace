@@ -1,0 +1,27 @@
+{
+  "retrievedAt": "2026-09-13T12:20:39.466675+00:00",
+  "tool": "get_handoff_rules",
+  "selected": {
+    "when": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+    "recipient_address": "/software_engineering_team/code_reviewer"
+  },
+  "otherRules": [
+    {
+      "when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+      "recipient_address": "/software_engineering_team/code_reviewer"
+    },
+    {
+      "when": "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+      "recipient_address": "/software_engineering_team/delivery_engineer"
+    }
+  ],
+  "evaluation": {
+    "result": "Pass",
+    "task_size": "Medium",
+    "architectural_risk": "High",
+    "route": "Reviewed",
+    "durableChanges": [],
+    "proportionalTestCode": "Not Applicable \u2014 Reviewer to record in separate report"
+  },
+  "sent": false
+}

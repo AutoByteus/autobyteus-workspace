@@ -1,0 +1,13 @@
+{
+  "name": "autobyteus-application-frontend-sdk-build",
+  "case": "SETUP",
+  "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-frontend-sdk",
+  "command": [
+    "pnpm",
+    "build"
+  ],
+  "started": "2026-09-13T11:31:54.859419+00:00",
+  "exit": 0,
+  "finished": "2026-09-13T11:31:56.470457+00:00",
+  "tail": "\n> @autobyteus/application-frontend-sdk@0.1.0 build /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-application-frontend-sdk\n> tsc -p tsconfig.build.json\n\n"
+}

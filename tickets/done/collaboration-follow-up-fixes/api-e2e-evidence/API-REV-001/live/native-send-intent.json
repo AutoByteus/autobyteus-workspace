@@ -1,0 +1,22 @@
+{
+  "at": "2026-09-13T11:55:32.340Z",
+  "draftId": "temp-1789300518033-1",
+  "prompt": "Read the attached text and reply exactly COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47. Do not use tools.",
+  "answer": "COLLAB-API01-NATIVE-RECEIVED orchard-cobalt-47",
+  "label": "COLLAB-API01-first-text.txt",
+  "file": "/tmp/collab-api01-yyjdm4jz/workspace/COLLAB-API01-first-text.txt",
+  "sha256": "eb18461a6fc179438940c42704165b8b60361c5dd843b5f8d6acab4bd9a93ac6",
+  "uploads": [
+    {
+      "at": 1789300531291,
+      "url": "http://127.0.0.1:8611/rest/context-files/upload",
+      "status": 200,
+      "body": {
+        "storedFilename": "ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt",
+        "displayName": "COLLAB-API01-first-text.txt",
+        "locator": "/rest/drafts/agent-runs/temp-1789300518033-1/context-files/ctx_7cc05bba0bf6__COLLAB-API01-first-text.txt",
+        "phase": "draft"
+      }
+    }
+  ]
+}

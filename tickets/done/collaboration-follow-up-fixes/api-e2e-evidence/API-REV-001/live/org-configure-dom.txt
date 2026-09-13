@@ -1,0 +1,81 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-R...
+5m
+C
+coordinator
+5m
+L
+lead
+5m
+R
+reviewer
+5m
+Settings
+Agent Org
+Followup Organization
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime used by this organization run.
+
+Default LLM Model
+Select a model
+
+Used across the organization unless a placement is customized.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+Automatically allows tool calls and access requests for this run.
+
+Auto approve tools
+Member overrides (5)
+
+Model configuration for /director is not ready: The selected model is unavailable for the current runtime.
+
+Run Agent Org
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+1 Messages
+Message
+Sep 13, 11:44 AM
+
+to lead
+
+Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone.
+
+Message
+lead
+Sep 13, 11:44 AM
+
+Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone.
+
+Tasks
+0 tasks

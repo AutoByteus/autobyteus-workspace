@@ -1,0 +1,19 @@
+{"checks":{"actualTargetRunningThenIdle":true,"oneSend":true,"selectedFinalExact":false,"draftRetained":true,"correctConversation":true,"noUnrequestedRoute":false,"noObserverDrop":true},"statuses":["initializing","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","running","idle"],"routerEvents":[]}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(Object.values(checks).every(Boolean))
+
+    at file:///home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/publication.mjs:6:1964 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

@@ -1,0 +1,95 @@
+{
+  "providerCredentialSettings": [
+    {
+      "provider": {
+        "id": "ANTHROPIC",
+        "name": "Anthropic"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "AUTOBYTEUS",
+        "name": "AutoByteus"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "DEEPSEEK",
+        "name": "DeepSeek"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "GEMINI",
+        "name": "Gemini"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "GLM",
+        "name": "GLM"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "GROK",
+        "name": "Grok"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "KIMI",
+        "name": "Kimi"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "LMSTUDIO",
+        "name": "LM Studio"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "MINIMAX",
+        "name": "MiniMax"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "MISTRAL",
+        "name": "Mistral"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "OLLAMA",
+        "name": "Ollama"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "OPENAI",
+        "name": "OpenAI"
+      },
+      "apiKeyConfigured": false
+    },
+    {
+      "provider": {
+        "id": "QWEN",
+        "name": "Qwen"
+      },
+      "apiKeyConfigured": false
+    }
+  ]
+}

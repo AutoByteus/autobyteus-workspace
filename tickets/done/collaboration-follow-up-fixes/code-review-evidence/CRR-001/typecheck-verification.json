@@ -1,0 +1,10 @@
+{
+  "method": "Read-only independent parse of owner completed pinned Vue logs, compare file/code/message including multiplicity, omitting position only; no new compiler execution",
+  "baseline_total": 394,
+  "current_total": 386,
+  "baseline_production": 131,
+  "current_production": 131,
+  "new_production": [],
+  "removed_production": [],
+  "verdict": "Repository-wide Vue typecheck remains Fail exit2; no new production diagnostic evidenced"
+}

@@ -1,0 +1,9 @@
+[requirements/collaboration-follow-up-fixes 55bac1f2a] chore(delivery): checkpoint validated collaboration follow-up reports
+ 7 files changed, 594 insertions(+)
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/api-e2e-revision-record.md
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/api-e2e-test-review-report.md
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/code-review-report.md
+ create mode 100644 tickets/in-progress/collaboration-follow-up-fixes/code-review-revision-record.md

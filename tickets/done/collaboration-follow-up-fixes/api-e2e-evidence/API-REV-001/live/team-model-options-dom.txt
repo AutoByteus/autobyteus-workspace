@@ -1,0 +1,125 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+Followup Flat Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (3)
+Run Team
+
+Team / needs a model before launch.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+.claude
+.codex
+.pnpm-store
+apple-fruit-shop
+autobyteus_rpa_llm_workspace
+autobyteus_rpa_llm_workspace.backup-20260706043026
+autobyteus-agents
+autobyteus-marketing-workspace
+autobyteus-mcps
+autobyteus-private-agents
+autobyteus-private-mcps
+autobyteus-private-skills
+autobyteus-skills
+autobyteus-web-prototype
+autobyteus-web-prototype-worktrees
+autobyteus-workspace
+bird-game
+browser-docker
+brui_core
+dario-game
+fox-german-grammar-video
+gemini-ai-studio-runs
+google-flow-audio-consistency-fox-football
+google-flow-continuity-keyframes-test
+google-flow-coordinate-calibration
+google-flow-dog-10s
+google-flow-encouragement-cartoon-40s
+google-flow-multiclip-fox-football
+google-flow-omni-flash-test
+google-flow-panda-skateboard-motivation
+google-flow-same-voice-fox-football
+google-flow-skateboard-anime-40s
+linkedin-posts
+send-message-delegate-task-semantics-prototype
+super-dario-game
+application-form-before-submit.png
+application-form-prepared.png
+dog-image.png
+flow_10s_run_initial.png
+flow_coord_baseline.json
+flow_coord_cdp_screenshot.png
+flow_coord_x11_screenshot.png
+jet-game.html
+job-page.png
+linkedin_post_screenshot.png
+medium-after-blank-before-fig1.png
+medium-after-enter-end-prev.png
+medium-after-final-publish-click.png
+medium-after-image1.png
+medium-after-paste-top.png
+medium-after-upload-image1.png
+medium-caption-click-plus.png
+medium-draft-full-before-publish.png
+medium-image-menu-open2.png
+medium-new-story-initial.png
+medium-plus-menu-open.png
+medium-prepublish-modal.png
+medium-published-article-top.png
+medium-published-top.png
+medium-render-v14-screenshot.png
+native-file-dialog.png
+native-file-dialog2.png
+x-home.png
+youtube_audio_mRs6aqnmSnM.mp3
+youtube_video_mRs6aqnmSnM.mp4
+youtube_video_tool_test2.mp4
+youtube_video_tool_test3.mp4
+No file selected
+
+Select a file from the explorer to view or edit its content.
+
+OPENAI
+GPT-5.3-Codex-Spark (default reasoning: high)
+GPT-5.5 (default reasoning: medium)
+GPT-5.6-Luna (default reasoning: medium)
+GPT-5.6-Sol (default reasoning: low)
+GPT-5.6-Terra (default reasoning: medium)
+GPT-6-Astra (default reasoning: medium)

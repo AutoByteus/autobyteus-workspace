@@ -1,0 +1,154 @@
+{
+  "at": "2026-09-13T12:04:57.459952+00:00",
+  "ownedRoots": [
+    61254,
+    61255,
+    62067
+  ],
+  "before": [
+    {
+      "pid": 61254,
+      "ppid": 1,
+      "pgid": 61254,
+      "state": "S",
+      "cmd": "node /usr/bin/pnpm dev --host 127.0.0.1 --port 3611 "
+    },
+    {
+      "pid": 61255,
+      "ppid": 1,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --show-component-extension-options --enable-gpu-rasterization --no-default-browser-check --disable-pings --media-router=0 --disable-dev-shm-usage --enable-remote-extensions --load-extension --headless --no-sandbox --disable-dev-shm-usage --remote-debugging-address=127.0.0.1 --remote-debugging-port=9231 --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --noerrdialogs --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank "
+    },
+    {
+      "pid": 61290,
+      "ppid": 61255,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --no-sandbox --headless --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl "
+    },
+    {
+      "pid": 61292,
+      "ppid": 61255,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=zygote --no-sandbox --headless --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl "
+    },
+    {
+      "pid": 61314,
+      "ppid": 61290,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=gpu-process --no-sandbox --disable-dev-shm-usage --enable-gpu-rasterization --headless --ozone-platform=headless --use-angle=swiftshader-webgl --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAAAEAAAAAAAAAAAAAGAASAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190708988185955192 "
+    },
+    {
+      "pid": 61317,
+      "ppid": 61255,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --disable-dev-shm-usage --use-angle=swiftshader-webgl --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190708989122997041 "
+    },
+    {
+      "pid": 61327,
+      "ppid": 61292,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --no-sandbox --disable-dev-shm-usage --use-angle=swiftshader-webgl --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190708990060038890 "
+    },
+    {
+      "pid": 61366,
+      "ppid": 61292,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=renderer --top-chrome-webui --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9231 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1789064681604100 --launch-time-ticks=234618579314 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190708990997080739 "
+    },
+    {
+      "pid": 61375,
+      "ppid": 61292,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9231 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=7 --time-ticks-at-unix-epoch=-1789064681604100 --launch-time-ticks=234618605108 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190708992871164437 "
+    },
+    {
+      "pid": 61376,
+      "ppid": 61292,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9231 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=6 --time-ticks-at-unix-epoch=-1789064681604100 --launch-time-ticks=234618610419 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190708991934122588 "
+    },
+    {
+      "pid": 61401,
+      "ppid": 61254,
+      "pgid": 61254,
+      "state": "S",
+      "cmd": "sh -c nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3611 "
+    },
+    {
+      "pid": 61402,
+      "ppid": 61401,
+      "pgid": 61254,
+      "state": "S",
+      "cmd": "node /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 0.0.0.0 --host 127.0.0.1 --port 3611 "
+    },
+    {
+      "pid": 61502,
+      "ppid": 61402,
+      "pgid": 61254,
+      "state": "S",
+      "cmd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/node_modules/.pnpm/@esbuild+linux-arm64@0.27.3/node_modules/@esbuild/linux-arm64/bin/esbuild --service=0.27.3 --ping "
+    },
+    {
+      "pid": 61609,
+      "ppid": 61402,
+      "pgid": 61254,
+      "state": "S",
+      "cmd": "/usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 3611 "
+    },
+    {
+      "pid": 61610,
+      "ppid": 61402,
+      "pgid": 61254,
+      "state": "S",
+      "cmd": "/usr/bin/node --enable-source-maps /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --host 127.0.0.1 --port 3611 "
+    },
+    {
+      "pid": 62067,
+      "ppid": 1,
+      "pgid": 62067,
+      "state": "S",
+      "cmd": "node dist/app.js --data-dir /tmp/collab-api01-yyjdm4jz/server-data --host 127.0.0.1 --port 8611 "
+    },
+    {
+      "pid": 62751,
+      "ppid": 61255,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=utility --utility-sub-type=audio.mojom.AudioService --lang=en-US --service-sandbox-type=none --no-sandbox --disable-dev-shm-usage --use-angle=swiftshader-webgl --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190709017234252511 "
+    },
+    {
+      "pid": 67533,
+      "ppid": 62067,
+      "pgid": 67533,
+      "state": "S",
+      "cmd": "bash --norc --noprofile -i "
+    },
+    {
+      "pid": 67878,
+      "ppid": 62067,
+      "pgid": 67878,
+      "state": "S",
+      "cmd": "bash --norc --noprofile -i "
+    },
+    {
+      "pid": 67902,
+      "ppid": 61292,
+      "pgid": 61255,
+      "state": "S",
+      "cmd": "/usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=0 --enable-crash-reporter=,built on Ubuntu 24.04.4 LTS --noerrdialogs --user-data-dir=/tmp/collab-api01-yyjdm4jz/browser-profile --change-stack-guard-on-fork=enable --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9231 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=43 --time-ticks-at-unix-epoch=-1789064681604100 --launch-time-ticks=236008453029 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11049574281890751507,7614465013288089762,262144 --disable-features=PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,1281817181914346927,13892350554767024352,4 --trace-process-track-uuid=3190709026604671001 "
+    }
+  ],
+  "forcedOwnedDescendants": [],
+  "remainingLive": [],
+  "sharedServer47StillPresent": true,
+  "sharedBrowser9222NotTouched": true
+}

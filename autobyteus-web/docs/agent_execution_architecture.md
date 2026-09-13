@@ -48,7 +48,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators are intended to reconcile onto the already-visible local message rather than append a duplicate. The accepted API-FIND-040 exception below records one actual standalone native first-Send chip retaining its draft URL until reload/reselect; durable final associations are intact. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators reconcile onto the same canonical reactive UserMessage retained by the submission handle and visible conversation, updating its mounted chip rather than a raw alias or duplicate row. The current first text Send/Open scope is recorded below; storage and opener behavior are unchanged. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
   - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
@@ -885,6 +885,27 @@ commits it before returning, and member resolution is read-only. Selection
 reveal consumes ancestry indexes, while labels that depend on elapsed time use
 a minute clock rather than background stream traffic.
 
+### Explicit User Selection Ownership
+
+`agentSelectionStore` owns one ephemeral `WorkspaceSelectionIntent`, represented
+by a token with an `isCurrent()` guard. Explicit Agent, Team, Org, history, draft
+and participant-link selection begins the intent at the selecting ingress.
+Selecting hydration/focus, recovery and candidate commits carry that guard;
+outer shell navigation, loading and error completion also obey their current
+attempt. Superseded work returns without reclaiming the newer selection.
+
+Background publication and temporary-ID promotion do not begin a user intent.
+They can update real messages, task state and statuses without becoming an
+implicit navigation command. Existing exact-identity, activity-revision and
+request-generation guards remain independent protections; this adds no global
+queue/router owner, persisted intent, publication suppression or polling.
+
+Controlled delayed explicit-selection regression tests and current real
+publication/leave-return journeys cover different boundaries. The latter passed
+repeatedly without a selecting writer; they do not identify the writer of the
+historical single mounted-publication redirect or prove this guard repaired that
+original incident. Its cause remains unassigned.
+
 ### Workspace History Archive And Delete Actions
 
 `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
@@ -927,12 +948,20 @@ viewer. Friendly recognized-upload labels preserve raw storage names and genuine
 custom names. Unsupported local metadata remains separate from admitted
 recorded non-media attachments.
 
-**Accepted API-FIND-040 limitation:** one real native DeepSeek standalone desktop
-first text Send retained an obsolete draft URL in the visible chip (404), while
-saved trace/file used the finalized URI. Ordinary reload/reselect returned 200
-with exact original bytes. This is accepted for a separate future ticket, not
-fixed, and not attributed to an introducing commit. No Org/task/narrow failure,
-unknown-file ingestion or further native-image success is inferred.
+**Canonical local-message ownership:** `beginLocalUserSubmission` creates a
+Vue `reactive<UserMessage>` before appending it to the conversation and returns
+that same proxy in the submission handle. `finalizeLocalSubmissionAttachments`
+updates its descriptors through the existing presentation effect; the rendered
+chip observes the new final locator without remounting or creating a second
+message. The former raw-handle alias is not another message owner.
+
+Current follow-up evidence includes an actual AutoByteus/DeepSeek standalone
+first text Send, reply and immediate sent-chip Open with final200/original bytes,
+plus narrow and ordinary same-input reopen. The archived API-FIND-040 failure
+remains a historical observation, not a current limitation declared by these
+docs or an attribution to an introducing revision. Storage, separate text/JSON
+links and backend ownership did not change. Unknown-file ingestion, additional
+media/providers and native Electron-shell validation are not inferred.
 
 ### Uploaded Context Attachment Orchestration
 
@@ -942,7 +971,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the intended store path replaces draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send. The accepted standalone native live-chip exception above remains unresolved.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 

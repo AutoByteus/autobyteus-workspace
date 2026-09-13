@@ -62,6 +62,14 @@ initial focused Agent for the familiar Team journey. Browser launch input does
 not supply concrete TeamRun/AgentRun IDs; the server allocates and validates
 them.
 
+Launching makes the root and configured scope available without starting unused
+Agents or binding their provider conversations. They remain truthfully Offline,
+including the initially focused coordinator, until supported work requires them.
+The first real input/delivery starts the required member; a visible selection is
+not evidence of an active worker. The same fresh-unused policy applies to direct
+and mounted-Team Agents in a new AgentOrg. Restore and delegated task preparation
+remain separate existing journeys, not fresh-unused launches.
+
 The effective standalone configuration is resolved for each direct Agent from
 the Team root plus any exact Agent override. Definition defaults seed the new
 draft but are not persisted merely because a schema default is displayed.

@@ -1,0 +1,93 @@
+{
+  "at": "2026-09-13T12:00:21.419Z",
+  "id": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+  "tree": {
+    "schemaVersion": 2,
+    "createdAt": "2026-09-13T11:38:58.149Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [
+      {
+        "from": "/coordinator",
+        "to": "/lead",
+        "rules": [
+          "When the user requests a message to the lead."
+        ]
+      },
+      {
+        "from": "/lead",
+        "to": "/coordinator",
+        "rules": [
+          "When the user asks to return a message to the coordinator."
+        ]
+      }
+    ],
+    "rootTeam": {
+      "address": "/",
+      "teamDefinitionId": "followup-flat-team",
+      "teamDefinitionName": "Followup Flat Team",
+      "teamRunId": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+      "coordinatorAddress": "/coordinator",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+      },
+      "members": [
+        {
+          "address": "/coordinator",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_caf73835e91b406c9d21a773d978f62c",
+          "platformAgentRunId": "01a09a94-fa15-74b2-9e31-2c744436ad1c",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/lead",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_3216f1eef95047aeaf4e5ef3ddfc3724",
+          "platformAgentRunId": "01a09a95-37ac-7d32-998c-0b5c0f63aca8",
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        },
+        {
+          "address": "/reviewer",
+          "agentDefinitionId": "followup-assistant",
+          "role": null,
+          "description": null,
+          "agentRunId": "followup_assistant_cb0fba23888c47c381cc9c403109ff15",
+          "platformAgentRunId": null,
+          "launchConfiguration": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/tmp/collab-api01-yyjdm4jz/workspace"
+          }
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "body": "C\ncoordinator\nIdle\nYou\nSend one ordinary message to /lead using send_message_to: \"Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone.\" After the tool succeeds, reply exactly COLLAB-API01-TEAM-COORDINATOR-READY. Do not delegate any tasks or contact /reviewer.\nC\ncoordinator\nThinking\nsend_message_to\n\nCOLLAB-API01-TEAM-COORDINATOR-READY\n\nContext Files (0)\n(drag, paste, or upload)"
+}

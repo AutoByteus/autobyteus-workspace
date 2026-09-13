@@ -108,7 +108,20 @@ handles. Each mounted Team uses the same flat Team execution machinery as a
 standalone Team while keeping its definition identity, direct coordinator,
 Team-local handoffs, and independent launchability.
 
-Launching activates the full Org scope with no focused recipient. The user must
+Launching makes the full Org scope available with no focused recipient. Unused
+configured Agents, both direct and inside mounted Teams, remain genuinely
+unstarted and provider-unbound with Offline status. Fresh creation publishes
+their exact handles and placements without calling configured activation
+preparation; root availability does not imply that every worker has started.
+Supported first work activates only the required execution. Restore and
+task-execution preparation retain their separate existing policies.
+
+Org message receiver admission checks exact published membership, allowing an
+unused configured recipient to receive its first work. Sender and task-origin
+authentication still require the active/current exact Agent identity; published
+membership is not a replacement for origin authorization.
+
+The user must
 select an exact Agent or Team before a recipient-requiring interaction. Selecting
 a Team focuses its direct coordinator; there is no first-member or Org
 coordinator fallback.

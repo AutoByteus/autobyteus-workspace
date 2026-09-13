@@ -1,0 +1,6 @@
+{
+  "at": "2026-09-13T11:44:09.441Z",
+  "id": "followup_flat_team_8ecfcd5831be4c3b818b8985aa37951c",
+  "prompt": "Send one ordinary message to /lead using send_message_to: \"Reply exactly COLLAB-API01-TEAM-LEAD-READY. Do not use tools or message anyone.\" After the tool succeeds, reply exactly COLLAB-API01-TEAM-COORDINATOR-READY. Do not delegate any tasks or contact /reviewer.",
+  "url": "http://127.0.0.1:3611/workspace"
+}

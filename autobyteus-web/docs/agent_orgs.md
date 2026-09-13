@@ -111,6 +111,12 @@ Server launch validation remains authoritative after the UI readiness check.
 execution tree. Launch intentionally has no focused recipient. The workspace
 asks the user to choose an exact Agent or Team before using the composer.
 
+The full configured scope is available, but unused direct and mounted-Team Agents
+remain genuinely unstarted, provider-unbound and Offline. Only supported work
+starts the required execution. Root availability and Agent activity are different
+facts; choosing a recipient does not itself start that Agent. Existing Restore
+and task-execution preparation policies remain distinct from fresh launch.
+
 - Selecting a direct Agent focuses that exact Agent.
 - Selecting a Team focuses its direct coordinator.
 - Missing or stale focus fails closed; there is no first-member fallback.
@@ -195,6 +201,17 @@ row owner: standalone selection uses query-free `/workspace`, while an Org
 selection uses its exact `rootSubjectKind=agent_org`, root-run, and mode query.
 The transition retires the other selection family rather than keeping a stale
 Org center or two highlighted rows.
+
+Explicit user navigation owns one ephemeral selection intent in
+`agentSelectionStore`. Selecting hydration/focus and its outer navigation,
+loading and error completion may commit only while that intent is current.
+Background task/member publication and temporary-ID promotion do not create a
+new user intent: live data continues to update without becoming a selection
+command or discarding the selected context's draft. Existing identity, activity
+and request-generation checks still apply. Current real publication and explicit
+leave/return journeys pass; the writer responsible for the historical single
+publication-related redirect remains unassigned, so this is not a causal claim
+about that incident or a guarantee against every future timing interleaving.
 
 For a focused live direct Agent or Agent inside a mounted Team, the header gear
 opens that exact AgentRun in the established locked Agent configuration form.
@@ -293,7 +310,7 @@ checks still govern atomic publication. No global Apollo setting, timer, polling
 or permanent stopped overlay is introduced. Root lifecycle, Agent statuses and
 mounted-Team aggregates remain separate authorities.
 
-### Attachments And Accepted Limitations
+### Attachments And Follow-Up Scope
 
 The shared chooser captures exact Org/AgentRun ownership before asynchronous
 work. Preparation, draft finalization, Open, removal and captured Send use that
@@ -302,15 +319,21 @@ attachment facts survive initial, cold and earlier-page hydration; files from
 another sender remain owned by their original execution. Friendly upload labels
 do not alter saved names/URIs or genuine custom names.
 
-The finalized task branch explicitly retains three user-accepted issues, not
-fixes: a standalone native desktop first-Send text chip can use a stale draft
-URL (404) until ordinary reload/reselect obtains the saved final URL (200,
-original bytes); eager pre-message Team Idle/green differs from original
-Offline/unstarted; one mounted publication navigated to a prior Team and a
-separate follow-up did not reproduce. The observed 404 is not evidence of an
-Org/task/narrow failure or durable file loss. Separate text/JSON link opening is
-accepted existing behavior, not itself a new defect. See the archived ticket's
-`known-issues.md` for exact evidence and follow-up ownership.
+The collaboration follow-up keeps one canonical reactive local UserMessage in
+both the visible conversation and the submission handle. Final attachment
+descriptors therefore update the already-mounted chip, rather than a raw alias.
+Current standalone AutoByteus/DeepSeek first text Send and immediate real chip
+Open return the final file with original bytes; narrow and ordinary same-input
+reopen also pass. Separate text/JSON link opening and saved ownership remain
+unchanged. This does not extend acceptance to additional media/providers or a
+new Electron-shell build.
+
+The archived AORG ticket's accepted failures and original evidence remain
+historical, read-only records. The follow-up validates fresh-unused Offline,
+current publication/selection behavior, and immediate text attachment access
+independently; it does not rewrite those old results or assign the original
+navigation incident's cause. See the current follow-up ticket's validation
+report for the exact acceptance scope.
 
 ## Store And Component Ownership
 

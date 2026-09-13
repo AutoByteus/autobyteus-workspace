@@ -1,0 +1,6 @@
+{
+  "at": "2026-09-13T11:45:02.916209+00:00",
+  "firstHelper": "UI echoed prompt matched prematurely; no Pass claimed.",
+  "completionHelper": "Read-only wait used wrong message.role vs actual trace_type. Stopped exact helper only and corrected.",
+  "sendCount": "Original single Send only, no retry/resend, actual raw replies already present."
+}

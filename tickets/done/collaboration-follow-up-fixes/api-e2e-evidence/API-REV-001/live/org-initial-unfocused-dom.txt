@@ -1,0 +1,48 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+Send one ordinary message to /lead using send_message_to: "Reply exactly COLLAB-API01-TEAM-LEAD-R...
+8m
+C
+coordinator
+8m
+L
+lead
+8m
+R
+reviewer
+8m
+ORGS
+Followup Organization
+(1)
+New - Followup Organization
+now
+D
+director
+R
+receiver
+research team
+Settings
+Choose an Agent or Team
+
+Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No file selected
+
+Select a file from the explorer to view or edit its content.

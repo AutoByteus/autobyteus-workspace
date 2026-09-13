@@ -1,0 +1,18 @@
+{
+  "name": "server-readiness",
+  "case": "REPO-SERVER",
+  "cwd": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/integration/agent-team-execution/configured-scope-readiness.test.ts",
+    "--no-watch",
+    "--maxWorkers=2"
+  ],
+  "started": "2026-09-13T11:31:57.568832+00:00",
+  "exit": 0,
+  "finished": "2026-09-13T11:32:07.316907+00:00",
+  "tail": "emove_channel_idempotency/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260517090000_add_app_data_migration_records/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260624090000_add_token_usage_ledger_events/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260625193000_token_usage_component_pricing_explainability/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260629120000_add_token_usage_display_fields/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260702093000_token_usage_execution_address/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260726090000_add_secret_vault/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260730090000_add_token_usage_provider_name/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260801090000_token_usage_member_display_name/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260814090000_team_run_execution_tree_v1/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260819090000_add_token_usage_run_records/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260820090000_redesign_app_data_migration_summary/\n    \u2514\u2500 migration.sql\n  \u2514\u2500 20260822090000_add_token_usage_analytics/\n    \u2514\u2500 migration.sql\n\nstdout | tests/integration/agent-team-execution/configured-scope-readiness.test.ts\nAgentFactory (Singleton) initialized.\n\n \u2713 tests/integration/agent-team-execution/configured-scope-readiness.test.ts (8 tests) 275ms\n\n Test Files  1 passed (1)\n      Tests  8 passed (8)\n   Start at  11:31:58\n   Duration  8.95s (transform 4.74s, setup 27ms, import 7.71s, tests 275ms, environment 0ms)\n\n"
+}

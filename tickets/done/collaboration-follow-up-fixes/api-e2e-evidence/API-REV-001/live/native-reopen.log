@@ -1,0 +1,13 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Open COLLAB-API01-first-text.txt', exact: true }) to be visible[22m
+
+    at /home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/tickets/in-progress/collaboration-follow-up-fixes/api-e2e-evidence/API-REV-001/live/native-reopen.mjs:2:506 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.2

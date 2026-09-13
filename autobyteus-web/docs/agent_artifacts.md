@@ -292,8 +292,13 @@ exact AgentRun; message/task reference URLs remain separately root-owned. Open
 uses saved ownership, not the current viewer or configured source at the same
 address. Separate text/JSON links remain accepted existing presentation.
 
-One accepted standalone native first-Send chip can retain a draft URL404 until
-reload/reselect yields final200 and exact stored bytes (API-FIND-040). This is
-not fixed or a durable-loss finding. See the task branch's archived
-`known-issues.md`; do not infer that passing retained-file checks prove this live
-chip path correct.
+The local submission handle and conversation now share the same canonical Vue
+reactive UserMessage. Finalization replaces that message's attachment descriptors
+through the existing presentation effect, so its mounted chip uses the finalized
+locator without a remount, duplicate message, reload or resend. Current
+AutoByteus/DeepSeek standalone first text Send includes an actual immediate
+sent-chip Open returning final200 with original bytes, as well as narrow and
+ordinary same-input reopen. Retained-file checks alone are not that live-chip
+proof. Storage and separate-link opening are unchanged; the archived API-FIND-040
+failure remains historical evidence, not evidence of durable loss. No additional
+media/provider or native Electron-shell coverage is implied.

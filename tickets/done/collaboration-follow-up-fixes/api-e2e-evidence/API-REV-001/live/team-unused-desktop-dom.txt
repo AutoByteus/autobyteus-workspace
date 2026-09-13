@@ -1,0 +1,46 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+workspace
+TEAMS
+FF
+Followup Flat Team
+(1)
+New - Followup Flat Team
+now
+C
+coordinator
+now
+L
+lead
+now
+R
+reviewer
+now
+Settings
+R
+reviewer
+Offline
+Context Files (0)
+(drag, paste, or upload)
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.
+
+Tasks
+0 tasks

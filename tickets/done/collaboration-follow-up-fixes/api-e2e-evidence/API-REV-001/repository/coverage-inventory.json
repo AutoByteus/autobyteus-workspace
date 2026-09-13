@@ -1,0 +1,182 @@
+[
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-activation-planner.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-task-publication.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-task-settlement-event-retirement.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-termination.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-server-ts/tests/unit/agent-team-execution/flat-team-execution-factory.test.ts",
+    "group": "server",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/__tests__/workspaceSelectionComposition.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/__tests__/agentSelectionStore.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/__tests__/runHistorySelectionActions.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/composables/workspace/__tests__/useWorkspaceRouteSelection.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/runSubmission/__tests__/localUserSubmission.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/conversation/__tests__/UserMessageFirstSubmission.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  },
+  {
+    "path": "/home/autobyteus/workspace/.codex/worktrees/collaboration-follow-up-fixes/autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts",
+    "group": "web",
+    "decision": "Still Valid",
+    "reason": "Approved lazy readiness/exact origin-recipient/persistence/Stop/task, current selection ownership/publication, or canonical submitted-message preservation; controlled boundaries do not replace real user acceptance."
+  }
+]

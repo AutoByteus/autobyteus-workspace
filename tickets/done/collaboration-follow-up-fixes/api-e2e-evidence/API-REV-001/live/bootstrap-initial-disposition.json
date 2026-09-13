@@ -1,0 +1,8 @@
+{
+  "at": "2026-09-13T11:36:16.567065+00:00",
+  "classification": "API setup oracle error",
+  "reason": "Initial helper polled /health; server uses /rest/health. No user Run/Send was performed by the helper. Stop exact helper only; preserve source/log and correct readiness path.",
+  "stoppedPids": [
+    61628
+  ]
+}

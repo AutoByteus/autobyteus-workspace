@@ -215,6 +215,15 @@ terminal status has already been projected.
 
 ## Root And Agent Lifecycle
 
+Fresh standalone Team creation and fresh Org-mounted Team materialization pass
+`prepareConfiguredAgents: false`. Configured handles and topology are available,
+but unused Agents have no started worker or provider binding and report Offline.
+The first supported user input, peer delivery, or task work activates the exact
+required execution; selecting a row or publishing the root is not worker startup.
+This is an execution policy, not a UI color/status override. Restore and task
+preparation retain their existing activation policy and are not forced through
+the fresh-unused rule.
+
 `AgentTeamRunManager` alone owns root Team liveness. Its lookup vocabulary is
 deliberately precise:
 
