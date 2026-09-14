@@ -208,3 +208,23 @@ An indeterminate write/read-back locks Save until the existing Refresh verifies
 canonical state; it must not be presented as a confirmed failure or replayed.
 This does not unlock active AgentOrg member settings, add mounted-Team save/root
 authority, or restore nested configured Team authoring.
+
+### Historical Content And Current Tool Decisions
+
+First inspection of a mounted task still loads its exact conversation, attachments
+and Activity; it does not return a blank monitor merely because live events have
+arrived. For a currently live member of an active, synchronized Team, hydration
+composes historical content with the same AgentRun's actual observed tool state,
+matched by exact invocation ID. Parsed history cannot erase a pending manual
+approval or regress an approved/executing call. Explicit terminal outcomes cannot
+be made pending again; conflicting identities/outcomes fail the candidate without
+partially publishing either conversation or Activity.
+
+The current tool's arguments, type and available routing metadata survive. Missing
+historical tool entries can retain one observed live invocation, not a copy of the
+whole live conversation. Existing selection, identity, readiness and content-revision
+guards still apply. Retired/inactive/disconnected member inspections load history
+without carrying obsolete live permissions forward. Approval remains the normal
+ToolCallIndicator → exact AgentRun/invocation command path, not an Activity control,
+handler replay, automatic approval or new pending-decision registry. Task startup
+continues to honor the configured recipient's `autoExecuteTools` policy.
