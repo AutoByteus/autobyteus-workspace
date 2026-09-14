@@ -7,6 +7,7 @@ The latest [code-review-report.md](code-review-report.md) is authoritative for s
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | code-review-report.md | Round 1 Implementation Review / IR-001 completion | N/A | Pass | None |
 | CRR-002 | code-review-report.md | Round 2 API/E2E Failure-Origin / API-REV-001 F-001 | Pass | Fail — Local Fix, implementation | F-001 |
+| CRR-003 | code-review-report.md | Round 3 user-directed design-impact reconsideration / F-001 | Fail — Local Fix | Fail — Design Impact | F-001 |
 
 ## Revision Entries
 ### CRR-001 — Initial lazy configured restore source-review baseline
@@ -49,3 +50,24 @@ None — CRR-001 had no findings.
 - Required next: bounded implementation correction via existing Org owner/read-only inspection, durable retained-recovery regression, source re-review then API recheck F-001 and complete B02–B04. API remains Fail72.1%; no successful-test review.
 - Selected most-specific current rule: “When API/E2E failure-origin review confirms that the owning problem is an implementation defect.” Exact recipient `/software_engineering_team/implementation_engineer`. Delivery confirmed: send_message_to returned accepted=true / DELIVERED to exact run `implementation_engineer_f84b5074541a47fea830604d1bcb77c3`, with cumulative package and review/probe commit aff8fc9b5. No second recipient for this outcome.
 - Constraints: no user-server/conversation use, reset/migration/release; future merge target origin/requirements/flat-agent-organization-model, not personal. Incoming other-owner local artifacts preserved.
+
+
+### CRR-003 — Route the exposed inactive-Org lifecycle design gap upstream
+- Date: 2026-09-14; round3, focused failure-origin classification revision. Canonical `code-review-report.md` updated; prior CRR-002 source/diagnostic evidence retained.
+- Trigger: user explicitly asks to treat the earlier design/review exposure gap as Design Impact and send detailed findings to Solution Designer, including how original personal implemented retained-Team status reconciliation. API failure remains API-REV-001/F-001/B01/SCN-001/AC-001/002.
+- Related solution SR-005 approval, SR-006/SR-008 evidence, SR-007/DS-REV-001; architecture ARCH-REV-001; implementation IR-001; API API-REV-001; delivery N/A.
+- Prior result: Fail / Local Fix, implementation-owned. Current: **Fail / Design Impact, Solution Designer-owned**.
+- Why classification changes: existing primitives do not eliminate the need to resolve the omitted DS-002/DS-005 integration decision: live-only checkpoint recovery versus inactive inspection/reconciliation, with consistent retained focus/status/continuation publication. User requires authoritative design correction before implementation-only patch. Runtime origin remains pre-existing; no new source regression or new intended behavior inferred.
+- Detailed design brief added to canonical report. Original-personal reference5645b49d6 runHistoryLoadActions.ts:194–209 supplies the useful root/member liveness reconciliation pattern; adapt through Org-owned boundaries, not nested-Team copying. Old Team checkpoint routine itself is active-only and not sufficient for inactive roots.
+
+#### Prior Finding Resolution
+| Finding ID | Prior Status | Current Status | Related Revisions | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-001 | Open — Local Fix | Open — Design Impact; not fixed | API-REV-001, CRR-002→003, DS-REV-001 | Existing two restart logs/DOM/telemetry and CRR-002 probes unchanged; current user requests authoritative design resolution |
+
+- New/remaining findings: F-001 only. Scenario/material-premise changes: none; CR-C08 supported/reclassified, CR-C09/10 rejected causes retained. ARCH-PM-001/002 unaffected.
+- Score change: none beyond CRR-002 affected Runtime Correctness8.0; no full audit, rerun or additional speculative deductions.
+- Superseded route: prior implementation-only F-001 handoff to existing run implementation_engineer_f84b5074541a47fea830604d1bcb77c3. Solution Designer must coordinate hold/revised design with that execution; preserve any work, no duplicate assignment. No stop/hold receipt claimed by reviewer.
+- Selected most-specific current rule from get_handoff_rules: “When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.” Exact recipient `/software_engineering_team/solution_designer`. Delivery pending; only this recipient for CRR-003.
+- Next: investigate/revise authoritative design, renewed approval only if intended behavior changes, applicable review routing, implementation/source re-review, API F-001/B02–B04. No successful-test/delivery result.
+- Constraints unchanged: no user-server/conversation mutation/reset/migration/release; eventual Delivery target origin/requirements/flat-agent-organization-model, not personal. Other-owner local artifacts untouched.
