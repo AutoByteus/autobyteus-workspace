@@ -237,3 +237,14 @@ tool intent, or recorded approval provenance, does not alone authorize a current
 Approve control. Preserve actual same-live-run decision evidence only while the
 existing identity and stream-readiness guards hold; never infer permission by
 replaying trace entries or changing `autoExecuteTools`.
+
+## Stopping And Retained Activity
+
+Stopping a Team retires its runtime and stream while keeping the selected
+workspace and each member’s existing Activity available for inspection. Completed
+tool details and System instructions do not require a new message, refocus, or
+reload to remain visible. Stopped Activity is historical presentation, not
+permission to execute an old tool decision. Later deliberate input uses the
+normal restore and history-hydration path; Stop itself does not activate Agents
+or fetch replacement Activity. Existing recent-window and history-source limits
+still apply.

@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
 import { CreateAgentTeamRun, RestoreAgentTeamRun, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
@@ -208,7 +207,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         this.disconnectTeamStream(rootTeamRunId);
         team?.view.setRootTeamActive(false);
         team?.view.listAgentContextEntries().forEach(({ agentContext }) => {
-          applyOfflineOrTerminalCleanup(agentContext); useAgentActivityStore().clearActivities(agentContext.state.runId);
+          applyOfflineOrTerminalCleanup(agentContext);
         });
         const history = useRunHistoryStore();
         history.markTeamAsInactive(rootTeamRunId);

@@ -33,7 +33,6 @@ const {
   mockDenyTool,
   mockInterruptGeneration,
   mockMutate,
-  mockClearActivities,
   mockReplaceProjectionActivitiesIfRevisions,
   mockHydrateLiveTeamRunContext,
   teamContextsStoreMock,
@@ -55,7 +54,6 @@ const {
   mockDenyTool: vi.fn(),
   mockInterruptGeneration: vi.fn(),
   mockMutate: vi.fn(),
-  mockClearActivities: vi.fn(),
   mockReplaceProjectionActivitiesIfRevisions: vi.fn(() => 'replaced' as const),
   mockHydrateLiveTeamRunContext: vi.fn(),
   teamContextsStoreMock: {
@@ -118,7 +116,6 @@ vi.mock('~/utils/apolloClient', () => ({
 
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => ({
-    clearActivities: mockClearActivities,
     getCompactionActivities: vi.fn(() => []),
     replaceProjectionActivitiesIfRevisions: mockReplaceProjectionActivitiesIfRevisions,
   }),
