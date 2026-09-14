@@ -9,6 +9,7 @@ The latest [code-review-report.md](code-review-report.md) is authoritative for s
 | CRR-002 | code-review-report.md | Round 2 API/E2E Failure-Origin / API-REV-001 F-001 | Pass | Fail — Local Fix, implementation | F-001 |
 | CRR-003 | code-review-report.md | Round 3 user-directed design-impact reconsideration / F-001 | Fail — Local Fix | Fail — Design Impact | F-001 |
 | CRR-004 | code-review-report.md | Round 4 Implementation Re-review / IR-002 | Fail — Design Impact | Pass — source; API pending | F-001 |
+| CRR-005 | code-review-report.md | Round 5 API/E2E Failure-Origin / API-REV-002 | Pass — source | Fail — Design Impact | F-001 resolved; F-002 open |
 
 ## Revision Entries
 ### CRR-001 — Initial lazy configured restore source-review baseline
@@ -90,3 +91,25 @@ None — CRR-001 had no findings.
 - Verification: reviewer182 tests/13 files exit0; diff whitespace and source line audits pass (14/469/255/400 effective nonempty, all deltas<220). Supplied IR-002 red2 failures/typecheck Fail/preview qualifications read. No new paired baseline or full build/typecheck pass claim; no reviewer live restart/provider action or production/test correction.
 - Selected sole current rule: “When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.” Exact recipient `/software_engineering_team/api_e2e_engineer`. Delivery confirmed: send_message_to returned accepted=true / DELIVERED to exact run `api_e2e_engineer_450b25f17f2245fe89b9c52cd17038ae`, with cumulative package and review commit09c9e1fd7. Only API/E2E notified for CRR-004. Governing single-recipient contract excludes duplicate informational forwarding. Next stage API F-001-first/RET-06/07 and remaining B02–B04, not delivery or successful-test review.
 - Constraints unchanged: incoming other-owner local files/generated outputs preserved; no user-server/conversation mutation/reset/migration/release/push/merge. Eventual Delivery target origin/requirements/flat-agent-organization-model, not personal.
+
+
+### CRR-005 — Manual task approval lost by first inspection projection
+- Date2026-09-14; focused API/E2E Failure-Origin round5. Trigger API-REV-002/F-002/B04, user original-personal analysis request. Canonical report updated; full prior source report preserved at gitc0bbe9c27.
+- Authority SR-005 unchanged, SR-006 evidence, SR-009/DS-REV-002, ARCH-REV-002, IR-002/IR-001, CRR-004, API-REV-002 Fail/confidence75.0%; DR N/A.
+- Prior result Pass(source). Current **Fail Design Impact**, Medium/High confirmed. F-002 confirmed pre-existing source defect on supported manual-task inspection; exact preselection browser frame not captured, so no unique live-frame attribution or assertion transport is fault-free.
+
+#### Prior Finding Resolution
+| Finding | Prior | Current | Related revisions / evidence |
+| --- | --- | --- | --- |
+| F-001 | Source resolved, API pending | Resolved in actual frontend | API-REV-002 actual mounted/direct kept-open restart and exact continuation; DOM/zero/per-recipient telemetry |
+| F-002 | New API failure, owner unconfirmed | Open — Design Impact | Actual twice-reproduced task Running/Parsed/no approval; source replace-after-revision-capture; real stream/hydrator diagnostic |
+
+- Current defect: first task hydration overwrites already-received live awaiting-approval with history parsed; revision guards only detect during-fetch changes. Historical projection is not a pending-interaction authority. Do not require approval UI solely from a parsed trace.
+- User policy question checked against current and original personal inheritance; user acknowledged remembering incorrectly. No intended policy change approved. Test worker false; task startup does not force true.
+- Personal comparison: local personald1a399a59 Aug30 focus-only path did not replace; Aug31 commit9ba13698f introduced necessary exact hydration to fix blank task monitor; Sep11 origin/personal5645b49d6 contains current replacement mechanism. Historical live validation used autoExecuteTools true and early task selection. No old runtime rerun or assumption about user's actual past deployment. New personal-task-approval-comparison.md preserves details; do not blindly revert blank-monitor fix.
+- Candidates CR-C13 promote supported manual-task defect;14 reject always-auto assumption;15 reject withdrawn API-only F-003 as frontend defect;16 reject blanket historical-personal equivalence. ARCH-PM-001/002 unchanged;003 actual resolution;004 no new Team status rewrite. No new speculative machinery.
+- Prior source-review gap narrowly acknowledged: task preservation coverage omitted approval-before-first-inspection authority. Runtime Correctness10.0→8.0 only, no full-score/overall recomputation. F-001 correction remains valid.
+- Reviewer checks: final3files18tests Pass (2 diagnostic cases demonstrate bug/control,16 existing); initial probe mock navigation omission corrected, initial log retained; temporary web probe removed. Source attribution diff exit0 from child base to tested source. No source/durable-test fix, live runtime/browser or global tsc/build rerun.
+- Selected most-specific current rule: “When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.” Exact recipient `/software_engineering_team/solution_designer`; delivery pending. Bounded history/live approval design authority must preserve manual/auto semantics and required hydration. No implementation-only F-002 request sent; only one recipient for this result.
+- Actual frontend acceptance only: API diagnostic approval is corroboration, not task journey Pass; native API inference not frontend acceptance. API missing B02–B04 remain incomplete. No successful-test/delivery review.
+- All ownership/side-effect constraints preserved; other-owner local artifacts untouched, no user server/conversations/reset/migration/rename/push/merge/release. Eventual target origin/requirements/flat-agent-organization-model, not personal.

@@ -1,0 +1,16 @@
+Read-only source attribution
+Base 72dee5ad2c2e332272a0c00eb36af1a036bd69fb
+Tested c0bbe9c270e350dce9141860106bfc315a8567b7
+Command git diff --quiet BASE TESTED -- listed paths
+Exit 0 (0 means unchanged)
+autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts
+autobyteus-web/services/runOpen/teamMemberInspectionCoordinator.ts
+autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+autobyteus-web/services/agentStreaming/TeamStreamingService.ts
+autobyteus-web/services/runHydration/runProjectionConversation.ts
+autobyteus-web/services/runHydration/runProjectionActivityHydration.ts
+autobyteus-web/components/conversation/ToolCallIndicator.vue
+autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts
+autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts
+
+Original personal pinned 5645b49d6f51faa60bd3545bc8e3f0e7e3f96793 read-only git show: task-delegation-service.ts forwards configured source to mixed-task-agent-execution-registry.ts; registry107 copies sourceNode; mixed-agent-member-handle.ts444 forwards node.autoExecuteTools. No forced true. Original teamMemberProjectionHydrationService.ts likewise captures current revisions then replaces activities/conversation on unchanged revisions. No original runtime rerun or current branch tip claim.
