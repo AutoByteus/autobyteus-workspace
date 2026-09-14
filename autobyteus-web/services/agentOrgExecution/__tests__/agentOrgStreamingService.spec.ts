@@ -1,3 +1,4 @@
+import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
 import { taskBearingView } from './taskBearingOrgFixture'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
@@ -24,7 +25,9 @@ vi.mock('~/utils/remoteAccess/websocketAuth', () => ({
   buildAuthenticatedWebSocketUrl: (url: string) => url,
 }))
 vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: () => ({ query: mocks.query }),
+  getApolloClient: () => ({ query: (request: any) => request.query === GetAgentOrgRunInspection
+    ? Promise.resolve({ data: { getAgentOrgRunInspection: { ...snapshot.payload } } })
+    : mocks.query(request) }),
 }))
 vi.mock('../agentOrgContextHydration', () => ({
   stageAgentOrgExecutionContext: async (input: unknown) => ({ context: await mocks.hydrate(input), commitActivities: vi.fn() }),

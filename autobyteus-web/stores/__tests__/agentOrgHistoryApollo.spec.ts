@@ -5,12 +5,14 @@ import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/W
 import type { WorkspaceHistorySectionState } from '~/components/workspace/history/workspaceHistorySectionContracts'
 import { flushPromises, mount } from '@vue/test-utils'
 import { ControlledOrgApollo, historyData } from '~/test-support/agentOrgApolloFixture'
+import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
 import { useRunHistoryStore } from '../runHistoryStore'
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport'
 const io = vi.hoisted(() => ({ client: null as any }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ agentDefinitions: [], fetchAllAgentDefinitions: async () => undefined }) }))
+let recovery: ReturnType<typeof vi.spyOn>
 let wrapper: ReturnType<typeof mount>
 const HISTORY = 'ListCollaborationRootHistory', WORKSPACE = 'ListWorkspaceRunHistory'
 let transport: ControlledOrgApollo, store: ReturnType<typeof useRunHistoryStore>
@@ -21,12 +23,13 @@ function releaseWorkspace() { transport.pending(WORKSPACE).forEach(r => r.respon
 async function count(n: number) { await vi.waitFor(() => expect(transport.named(HISTORY)).toHaveLength(n)); return transport.named(HISTORY) }
 beforeEach(() => {
   setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client
+  recovery = vi.spyOn(useAgentOrgContextsStore(), 'reconcileRetainedHistory')
   store = useRunHistoryStore(); store.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
   expect(row().isActive).toBe(true)
   wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions), state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {} }) }), { global: { stubs: { Icon: true } } })
   expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
 })
-afterEach(() => { wrapper.unmount(); transport.client.stop() })
+afterEach(() => { wrapper.unmount(); transport.client.stop(); vi.restoreAllMocks() })
 
 describe.each(['full', 'focused'])('old %s history', older => {
   it.each(['full', 'focused'].flatMap(newer => [true, false].flatMap(oldFirst => ['inactive', 'network', 'graphql', 'malformed'].map(result => ({ newer, oldFirst, result })))))(
@@ -56,11 +59,14 @@ describe.each(['full', 'focused'])('old %s history', older => {
       else if (result === 'graphql') latest.graphqlError('new GraphQL failure')
       else latest.respond({ listCollaborationRootHistory: [{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: null, archived_at: null, is_active: false, summary: '', org: {} }] })
       releaseWorkspace(); await current; await flushPromises()
+      expect(recovery).toHaveBeenCalledTimes(result === 'inactive' ? 1 : 0)
+      if (result === 'inactive') expect(recovery).toHaveBeenCalledWith(['org-run'])
       const error = store.historyFamilyErrors.agentOrg
       if (result === 'inactive') expect(error).toBeNull()
       else expect(error).toBeTruthy()
       if (!oldFirst) { finishOld(); await old; await flushPromises() }
       expect(row()).toEqual({ ...original, isActive: false })
+      expect(recovery).toHaveBeenCalledTimes(result === 'inactive' ? 1 : 0)
       expect(store.historyFamilyErrors.agentOrg).toBe(error)
       expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(false)
       if (older === 'full' || newer === 'full') {

@@ -1,3 +1,4 @@
+import { readAgentOrgRunInspection } from './agentOrgRunInspection'
 import type { OrgWorkspaceSelection } from './agentOrgExecutionViewIndex'
 import {
   CollaborationStreamServerMessageSchema,
@@ -87,6 +88,14 @@ export class AgentOrgStreamingService {
     }
   }
 
+  requestRecovery(): void {
+    if (this.released || this.isReady() || this.socket || this.activeGeneration
+      || this.transparentRecoveryScheduled || this.transparentRecoveryInFlight
+      || this.context?.phase !== 'reopen_required') return
+    this.resetTransparentRecovery()
+    this.scheduleTransparentRecovery(this.context.error ?? 'AgentOrg stream recovery is required.')
+  }
+
   private openSocket(): void {
     if (this.released) return
     if (this.socket?.readyState === WebSocket.OPEN || this.socket?.readyState === WebSocket.CONNECTING) return
@@ -122,6 +131,27 @@ export class AgentOrgStreamingService {
 
   private async reopenOwned(generation: StreamGeneration | null): Promise<void> {
     if (!this.ownsOperation(generation)) return
+    if (generation === null) {
+      const view = await readAgentOrgRunInspection(this.options.orgRunId)
+      if (!this.ownsOperation(null)) return
+      if (!view.is_active) {
+        this.recoveryCheckpoint = null
+        this.recoveryFocus = null
+        const staged = await stageAgentOrgExecutionContext({
+          source: 'inspection', orgRunId: this.options.orgRunId, view,
+          isCurrent: () => this.ownsOperation(null),
+        })
+        if (!this.ownsOperation(null)) return
+        const candidate = shallowReactive(staged.context)
+        candidate.setActive(false)
+        candidate.select(this.context?.selection ?? null)
+        this.options.publish(candidate, staged.commitActivities)
+        this.context = candidate
+        this.options.onInactive?.()
+        this.disconnect()
+        return
+      }
+    }
     let checkpoint: ExecutionCheckpoint
     try {
       checkpoint = await this.fetchCheckpoint()

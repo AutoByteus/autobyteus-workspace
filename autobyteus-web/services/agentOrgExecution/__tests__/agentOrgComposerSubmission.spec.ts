@@ -272,7 +272,9 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     org.select({ kind: 'agent_execution', agentRunId: 'agent-team-worker-configured' })
     active.activeAgentContext!.requirement = 'mounted draft'
     mocks.query.mockImplementation(async ({ query, variables }: any) => ({ data:
-      query.definitions[0].name.value === 'GetAgentOrgExecutionCheckpoint'
+      query.definitions[0].name.value === 'GetAgentOrgRunInspection'
+        ? { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } }
+        : query.definitions[0].name.value === 'GetAgentOrgExecutionCheckpoint'
         ? { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: sequence, hasOpenExecutionWork: false } }
         : { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
           conversation: [], activities: [], hasEarlierActiveTraceEvents: false } },
@@ -308,6 +310,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
       if (query.definitions[0].name.value === 'GetAgentOrgExecutionCheckpoint') {
         return { data: { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: sequence, hasOpenExecutionWork: false } } }
       }
+      if (query.definitions[0].name.value === 'GetAgentOrgRunInspection') return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } } }
       projectionStarted = true
       await heldProjection
       return { data: { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
@@ -494,14 +497,23 @@ describe('observational Org history, exact deliberate continuation and retained 
     await flushPromises(); expect(org.phase).toBe('historical')
   })
 
-  it('failed Stop leaves last committed active context and selection unchanged', async () => {
+  it('failed Stop retains last-known identity but requires fresh observation after invalidating the old transport', async () => {
     const { org, context } = await open()
     mocks.mutate.mockRejectedValue(new Error('stop rejected'))
     const store = useAgentOrgContextsStore()
     await expect(store.stopAndInspect('org-run')).rejects.toThrow('stop rejected')
     expect(store.contextFor('org-run')).toBe(org); expect(org.isActive).toBe(true)
-    expect(org.selectedTarget()?.context).toBe(context); expect(socket.readyState).toBe(1)
-    expect(store.operations).toEqual({}); expect(store.activeTargetFor('org-run')?.access).toBe('live')
+    expect(org.selectedTarget()?.context).toBe(context); expect(socket.readyState).toBe(3)
+    expect(org.phase).toBe('reopen_required')
+    expect(store.operations).toEqual({}); expect(store.activeTargetFor('org-run')?.access).toBe('read_only')
+    store.reconcileRetainedHistory(['org-run'])
+    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2))
+    expect(store.activeTargetFor('org-run')?.access).toBe('read_only')
+    const replacement = Socket.instances[1]!
+    replacement.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'after-stop-rejection' } })
+    replacement.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView() } })
+    await vi.waitFor(() => expect(store.activeTargetFor('org-run')?.access).toBe('live'))
+    expect(store.activeTargetFor('org-run')?.context).toBe(context)
   })
 })
 

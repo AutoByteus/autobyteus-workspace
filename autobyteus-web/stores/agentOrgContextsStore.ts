@@ -1,6 +1,5 @@
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore'
 import { isDraftUploadedContextAttachment, coerceDraftUploadedContextAttachment } from '~/utils/contextFiles/contextAttachmentModel'
-import { RootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts'
 import { defineStore } from 'pinia'
 import { ref, shallowReactive, watch } from 'vue'
 import type { AgentContext } from '~/types/agent/AgentContext'
@@ -12,8 +11,7 @@ import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agen
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
-import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
-import { getApolloClient } from '~/utils/apolloClient'
+import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
 import { buildOrgMemberDraftContextFileOwner, buildOrgMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner'
@@ -34,6 +32,12 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     errors.value = { ...errors.value, [id]: cause instanceof Error ? cause.message : String(cause) }
   }
 
+  const retainSubmissionExclusion = (id: string, context?: AgentOrgExecutionContext) => {
+    context?.listAgentContextEntries().forEach((entry) => {
+      if (submissions.has(keyFor(id, entry.agentRunId))) entry.context.submissionPending = true
+    })
+  }
+
   const publish = (id: string, candidate: AgentOrgExecutionContext, commitActivities: () => void) => {
     const previous = contexts.value[id]
     // Validate retained identity before committing any projection or activity.
@@ -48,6 +52,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     }
     commitActivities()
     if (previous) candidate.adoptLocalContexts(previous)
+    retainSubmissionExclusion(id, candidate)
     const requested = pendingFocus.value[id]
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
@@ -63,6 +68,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const markHistorical = (id: string) => {
     generations.delete(id)
     contexts.value[id]?.setActive(false)
+    retainSubmissionExclusion(id, contexts.value[id])
     useRunHistoryStore().applyAgentOrgActivity(id, false)
     retireStream(id)
   }
@@ -113,13 +119,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const ownsGeneration = () => generations.get(id) === generation
     const current = () => ownsGeneration() && (!intent || intent.isCurrent())
     try {
-      const result = await getApolloClient().query({ query: GetAgentOrgRunInspection,
-        variables: { orgRunId: id }, fetchPolicy: 'network-only', context: { queryDeduplication: false } })
+      const view = await readAgentOrgRunInspection(id)
       if (!current()) return
-      if (result.errors?.length) throw new Error(result.errors.map((e: { message: string }) => e.message).join(', '))
-      const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAgentOrgRunInspection)
-      if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_id !== id) throw new Error('AgentOrg inspection root mismatch.')
-      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: id, view: envelope.root_org, isCurrent: current })
+      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: id, view, isCurrent: current })
       if (!current()) return
       const candidate = shallowReactive(staged.context)
       publish(id, candidate, staged.commitActivities)
@@ -151,10 +153,19 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     return operation
   }
 
+  const reconcileRetainedHistory = (orgRunIds: readonly string[]): void => {
+    for (const id of new Set(orgRunIds)) {
+      if (contexts.value[id]?.phase !== 'reopen_required' || operations.value[id] || inspections.has(id)) continue
+      const service = services.get(id)
+      if (service) service.requestRecovery()
+      else void openForInspection(id).catch(() => undefined) // readInspection owns errors.
+    }
+  }
+
   const accessFor = (id: string, agentRunId: string): 'live' | 'continuable' | 'read_only' => {
     const org = contexts.value[id]
     const agent = org?.index.agents.get(agentRunId)
-    if (!org || !agent || operations.value[id]) return 'read_only'
+    if (!org || !agent || operations.value[id] || submissions.has(keyFor(id, agentRunId))) return 'read_only'
     if (org.phase === 'historical' && !org.isActive && !agent.task) return 'continuable'
     if (org.phase === 'live' && org.isActive && agent.live && services.get(id)?.isReady()) return 'live'
     return 'read_only'
@@ -166,7 +177,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const access = accessFor(id, agentRunId)
     if (!org || org.getAgentContext(agentRunId) !== context || org.index.requireAgent(agentRunId).address !== address
       || access === 'read_only') throw new Error('AgentOrg send target is not ready or is stale.')
-    if (operations.value[id] || context.submissionPending) throw new Error('AgentOrg member submission is already pending.')
+    if (operations.value[id] || context.submissionPending || submissions.has(keyFor(id, agentRunId))) throw new Error('AgentOrg member submission is already pending.')
     if (access === 'continuable') operations.value = { ...operations.value, [id]: 'continuation' }
     let attachments = contextPaths.map((attachment) => ({ ...attachment }))
     const messageId = crypto.randomUUID()
@@ -240,6 +251,10 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     errors.value = { ...errors.value, [id]: null }
     operations.value = { ...operations.value, [id]: 'stop' }
     generations.delete(id)
+    retireStream(id)
+    // The old transport cannot publish during Stop, including a rejected Stop.
+    // Keep last-known activity, but require fresh observation before input.
+    if (contexts.value[id]?.isActive) contexts.value[id]?.requireReopen('AgentOrg stop is pending.')
     try {
       await useAgentOrgRunStore().terminate(id)
       markHistorical(id)
@@ -250,5 +265,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { contexts, errors, operations, openForInspection, disconnect, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { contexts, errors, operations, reconcileRetainedHistory, openForInspection, disconnect, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })

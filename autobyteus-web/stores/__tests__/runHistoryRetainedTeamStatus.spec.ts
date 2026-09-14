@@ -109,3 +109,26 @@ describe('history and strict Team stream status reconciliation', () => {
     expect(h.connect).not.toHaveBeenCalled(); expect(h.ws.send).not.toHaveBeenCalled(); expect(io.mutate).not.toHaveBeenCalled();
   });
 });
+
+
+it('RET-07: authoritative inactive history reconciles the retained Team worker without refocus or runtime startup', async () => {
+  const h = harness(); h.ready();
+  h.team.view.focusAgentForInspection('configured-verifier');
+  const retained = h.team.view.getAgentContext('configured-verifier')!;
+  retained.requirement = 'retained worker draft';
+  retained.contextFilePaths = [{ locator: '/retained.txt' } as any];
+  const terminal = h.team.view.getAgentContext('first')!;
+  terminal.state.currentStatus = AgentStatus.Error;
+  const disconnect = vi.spyOn(useAgentTeamRunStore(), 'disconnectTeamStream').mockImplementation(() => h.stream.disconnect());
+  await reconcileDiscoveredActiveRuns({ workspaceGroups: [] } as any);
+  expect(h.team.view.isRootTeamActive()).toBe(false);
+  expect(h.team.view.getFocusedAgentRunId()).toBe('configured-verifier');
+  expect(h.team.view.getAgentContext('configured-verifier')).toBe(retained);
+  expect(retained.state.currentStatus).toBe(AgentStatus.Offline);
+  expect(terminal.state.currentStatus).toBe(AgentStatus.Error);
+  expect(retained.requirement).toBe('retained worker draft');
+  expect(retained.contextFilePaths).toEqual([{ locator: '/retained.txt' }]);
+  expect(disconnect).toHaveBeenCalledWith(ROOT);
+  expect(h.connect).not.toHaveBeenCalled();
+  expect(io.mutate).not.toHaveBeenCalled(); expect(h.ws.send).not.toHaveBeenCalled();
+});

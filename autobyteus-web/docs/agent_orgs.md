@@ -372,3 +372,25 @@ report for the exact acceptance scope.
 
 Backend contract details are in
 [`autobyteus-server-ts/docs/modules/agent_orgs.md`](../../autobyteus-server-ts/docs/modules/agent_orgs.md).
+
+### Retained Org Recovery After Transport Loss
+
+An already-mounted Org remains read-only while the server's state is unknown.
+Disconnected stream recovery first uses the same exact-root, read-only inspection
+reader as manual inspection. A validated inactive view is fully hydrated and
+published by the Org contexts store before the old service is retired. Matching
+AgentContext objects, current focus, drafts and tracked submissions are retained;
+configured members become Offline and continuable. Observation never restores a
+root, starts a provider, replays input or treats a query failure as inactivity.
+
+An active inspection does not make the stream ready: existing checkpoint-before,
+CONNECTED/snapshot, and checkpoint-after validation still applies. Stop invalidates
+the old transport before awaiting termination. A rejected Stop preserves last-known
+activity and identity but requires fresh observation and synchronization before input.
+
+Successful current-generation full or Org-only history loads can request another
+bounded recovery cycle for already-retained unsynchronized roots. Returned row IDs
+are only a trigger; inspection, not a history status string or absent row, determines
+Org liveness. Scheduled/in-flight recovery and local stop/continuation remain
+coalesced under their existing owners. Standalone Team history reconciliation is
+unchanged. Real restart/provider acceptance is tracked in the follow-up ticket.

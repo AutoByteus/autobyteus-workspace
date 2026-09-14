@@ -1,3 +1,4 @@
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { watch } from 'vue';
 import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
@@ -144,6 +145,7 @@ export const fetchRunHistoryTree = async (
       // A newer full or focused Org-family request owns the slice.
     } else if (agentOrgResult.status === 'fulfilled') {
       store.agentOrgHistory = agentOrgResult.value;
+      useAgentOrgContextsStore().reconcileRetainedHistory(agentOrgResult.value.map((row) => row.rootRunId));
       store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
     } else {
       const detail = agentOrgResult.reason instanceof Error
@@ -180,6 +182,7 @@ export const refreshAgentOrgHistoryForStore = async (
     const rows = await readAgentOrgHistory(getApolloClient());
     if (generation !== store.agentOrgRequestGeneration) return;
     store.agentOrgHistory = rows;
+    useAgentOrgContextsStore().reconcileRetainedHistory(rows.map((row) => row.rootRunId));
     store.historyFamilyErrors = { ...store.historyFamilyErrors, agentOrg: null };
   } catch (error) {
     if (generation !== store.agentOrgRequestGeneration) return;
