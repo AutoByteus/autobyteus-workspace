@@ -1,0 +1,7 @@
+{
+  "targetPid": 86192,
+  "managerPid": 86191,
+  "signal": "SIGKILL",
+  "purpose": "test-owned unexpected process loss; no graceful task settlement; same-data reopen",
+  "originalManagerBufferedStdout": "not persisted on abrupt manager cleanup; traces/browser observations retained"
+}

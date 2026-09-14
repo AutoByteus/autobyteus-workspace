@@ -1,0 +1,15 @@
+API-REV-003 cleanup UTC 2026-09-14T10:37:35Z
+CUA confirmed closed owned tabs 1211480363,1211480366,1211480369,1211480372; older diagnostic tabs left unchanged.
+Graceful manager stop consumed=True cycle5 log=True
+SIGTERM verified owned 86512 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50381
+SIGTERM verified owned 86513 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50381
+SIGTERM verified owned 86497 node ./node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 50381
+SIGTERM verified owned 86496 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 50381
+SIGTERM verified owned 85868 node tickets/in-progress/flat-agent-organization-model-follow-up/validation/runtime-probe-r3/collector.mjs
+Observer SHA256 492da35fa187a810783cb9ed8992189020d821d88a8cd477f3692b560ceb8314
+Removed only identical temporary dev observer plugin; evidence copy retained.
+Storage root mode 0o755
+Owned ports listener check exit 1 
+Retained isolated DB/runtime data, test provider threads, fixture/tests/evidence and generated SDK outputs. No user services/data, migration/reset, push/merge/release/deploy.
+git diff --check exit 0
+Final documentation whitespace check exit 0

@@ -235,6 +235,11 @@ This is an execution policy, not a UI color/status override. Work-bearing task
 preparation still stages identity before durable task publication and release.
 An uncertain commit or post-durability local/publication failure is nonretryable
 until safe root reopen; a definite failed write can retry after confirmed cleanup.
+Reopening is a safety/reconciliation boundary, not permission to replay an old
+message automatically. Distinguish a pending send whose admission was lost from
+an input already accepted before process loss. Inspect canonical state and use
+the existing deliberate-input path; do not infer acceptance from frame deliveries
+across multiple browser tabs or from an unchanged status color.
 
 `AgentTeamRunManager` alone owns root Team liveness. Its lookup vocabulary is
 deliberately precise:

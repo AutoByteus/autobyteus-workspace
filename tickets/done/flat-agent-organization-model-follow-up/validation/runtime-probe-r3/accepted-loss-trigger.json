@@ -1,0 +1,33 @@
+{
+  "observedAcceptedInput": {
+    "at": "2026-09-14T10:23:50.758Z",
+    "tabId": "ed97993f-88e8-4f4c-8a79-b12dbac44ac7",
+    "kind": "incoming",
+    "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d",
+    "frame": {
+      "type": "MEMBER_INPUT_MESSAGE",
+      "payload": {
+        "change_sequence": 978,
+        "recipient_agent_run_id": "aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0",
+        "message_id": "client_7774525f-88d0-4e5b-b829-329e98c99920",
+        "dedupe_key": "member_input:aorg_validation_team_8bf0444f9dfe4f46a1c0e61b4f768a5d:aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0:client_7774525f-88d0-4e5b-b829-329e98c99920",
+        "content": "Remember ACCEPTED-LOSS-R3-731. Then write 200 words about oranges. Do not use tools.",
+        "input_origin": "user_message",
+        "received_at": "2026-09-14T10:23:50.658Z",
+        "context_file_paths": [],
+        "sender_agent_run_id": null,
+        "parent_communication_message_id": null
+      }
+    }
+  },
+  "server": {
+    "serverUrl": "http://127.0.0.1:50244",
+    "port": 50244,
+    "pid": 96474,
+    "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001",
+    "database": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/db/aorg-api-rev001.db",
+    "cycle": 2
+  },
+  "signal": "SIGKILL",
+  "managerPid": 96169
+}

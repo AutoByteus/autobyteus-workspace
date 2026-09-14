@@ -1,0 +1,95 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)":
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - generic: Orgs
+  - button "AORG Validation Org (1)" [expanded]:
+    - generic: AORG Validation Org
+    - generic: (1)
+  - treeitem "Stopped Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - generic "Stopped"
+    - generic: Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools.
+  - generic: 5h
+  - tree "AORG Validation Org execution hierarchy":
+    - treeitem "direct, offline, /direct, aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa" [level=1]:
+      - generic: D
+      - generic: direct
+    - treeitem "later, offline, /later, aorg_validation_agent_9423fc355378455685c5ddf75435a608" [level=1] [selected]:
+      - generic: L
+      - generic: later
+    - treeitem "unused, offline, /unused, aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588" [level=1]:
+      - generic: U
+      - generic: unused
+    - 'treeitem "team. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "later - A608" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - generic: You
+  - generic: Read the attached text file and reply with its exact single-line content, then ATTACHMENT-RECEIVED-REV001. Do not inspect any other files.
+  - paragraph: Context files
+  - list:
+    - button "Open attachment-rev001.txt": attachment-rev001.txt
+  - generic: L
+  - generic: later
+  - button "Thinking":
+    - generic: Thinking
+  - button "run_bash · /bin/bash -lc \"cat '/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/context_files/ctx_fb4ff5336e0e__attachment-rev001.txt'\"":
+    - generic: run_bash
+    - generic "/bin/bash -lc \"cat '/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/context_files/ctx_fb4ff5336e0e__attachment-rev001.txt'\"": · /bin/bash -lc "cat '/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/context_files/ctx_fb4ff5336e0e__attachment-rev001.txt'"
+  - paragraph: ATTACHMENT-CONTENT-REV001-ORANGE-731 ATTACHMENT-RECEIVED-REV001
+  - generic: You
+  - generic: Recall the exact attachment content from our previous turn, then reply RET06-DIRECT-BEFORE-R2. Do not use tools.
+  - generic: L
+  - generic: later
+  - paragraph: RET06-DIRECT-BEFORE-R2
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..." [active]: RET06-DIRECT-DRAFT-R2
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

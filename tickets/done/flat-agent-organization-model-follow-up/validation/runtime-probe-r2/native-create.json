@@ -1,0 +1,7 @@
+{
+  "createAgentOrgRun": {
+    "success": true,
+    "message": "Agent organization run created successfully.",
+    "agentOrgRunId": "aorg_validation_org_95689ec2280849059af61000797357e5"
+  }
+}

@@ -1,0 +1,219 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/.env
+[dotenv@17.3.1] injecting env (8) from tests/.tmp/aorg-api-rev001/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50244
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50244
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "aorg-api-rev001.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/db/aorg-api-rev001.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:35181) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-14T03:54:19.464Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-14T03:54:19.642Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-14T03:54:19.643Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1789358059652,"pid":35181,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:51026"}
+{"level":30,"time":1789358059685,"pid":35181,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:50244"}
+[2026-09-14T03:54:19.685Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50244
+[2026-09-14T03:54:19.686Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50244
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session 3eb53b6d-ad00-4d19-a458-b319c6d63b7a for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=3eb53b6d-ad00-4d19-a458-b319c6d63b7a, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session 65bbe693-729a-4abb-9256-f5591ac056a2 for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=65bbe693-729a-4abb-9256-f5591ac056a2, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+{"level":30,"time":1789358063694,"pid":35181,"hostname":"normys-MacBook-Pro.local","reqId":"req-f","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3' was not found.","stack":"Error: Active AgentOrg 'aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:233:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3' was not found."}
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+{"level":30,"time":1789358071712,"pid":35181,"hostname":"normys-MacBook-Pro.local","reqId":"req-u","err":{"type":"GraphQLError","message":"Active AgentOrg 'aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3' was not found.","stack":"Error: Active AgentOrg 'aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3' was not found.\n    at AgentOrgRunResolver.getAgentOrgExecutionCheckpoint (file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/dist/api/graphql/types/agent-org-run.js:233:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentOrgExecutionCheckpoint"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Active AgentOrg 'aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3' was not found."}
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa'.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Published codex_app_server agent run 'aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181'.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'summary', 'details' ]
+}
+Published codex_app_server agent run 'aorg_validation_agent_88444438ccbd45ebbafcee769accca27'.
+Closed agent session 65bbe693-729a-4abb-9256-f5591ac056a2
+Closed agent session 3eb53b6d-ad00-4d19-a458-b319c6d63b7a
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_9423fc355378455685c5ddf75435a608/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session 8905cdcf-6172-4042-805e-2c7780e21f5a for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=8905cdcf-6172-4042-805e-2c7780e21f5a, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+Created terminal session 3242f0f3-8c52-452a-ae4c-03d0fde6b28e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3242f0f3-8c52-452a-ae4c-03d0fde6b28e
+Terminal websocket attached for cwd /Users/normy
+Resolved configured temp workspace root to TempWorkspace.
+Published codex_app_server agent run 'aorg_validation_agent_9423fc355378455685c5ddf75435a608'.
+Closed agent session 8905cdcf-6172-4042-805e-2c7780e21f5a
+Closed PTY session 3242f0f3-8c52-452a-ae4c-03d0fde6b28e
+Terminal WebSocket disconnected: 3242f0f3-8c52-452a-ae4c-03d0fde6b28e
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Created terminal session 9d37d663-f8f8-4b55-8da1-70d7f044bf93 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9d37d663-f8f8-4b55-8da1-70d7f044bf93
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_orgs/aorg_validation_org_be2fb0ac445a4e79822bf75b91e4c9c3/aorg_validation_team_6fed878a53bf427d969bd1527de832d6/aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9/raw_traces_active.jsonl
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session bd32e4b9-8d1d-44ce-a438-b63bc49b8b59 for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=bd32e4b9-8d1d-44ce-a438-b63bc49b8b59, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Agent team websocket attached for team run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Created agent session 702a30d4-608f-48db-a575-6a28b232015d for run aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Agent Team WebSocket connected: session=702a30d4-608f-48db-a575-6a28b232015d, run=aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/memory/agent_teams/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15/aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1/raw_traces_active.jsonl
+Created terminal session 716d0022-e823-401b-a9c0-496e6db2184f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 716d0022-e823-401b-a9c0-496e6db2184f
+Terminal websocket attached for cwd /Users/normy
+[2026-09-14T06:58:51.233Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session bd32e4b9-8d1d-44ce-a438-b63bc49b8b59
+Closed agent session 702a30d4-608f-48db-a575-6a28b232015d
+{"level":30,"time":1789369131266,"pid":35181,"hostname":"normys-MacBook-Pro.local","reqId":"req-jn","res":{"statusCode":503},"msg":"request aborted - refusing to accept new requests as server is closing"}
+Closed PTY session 9d37d663-f8f8-4b55-8da1-70d7f044bf93
+Terminal WebSocket disconnected: 9d37d663-f8f8-4b55-8da1-70d7f044bf93
+Closed PTY session 716d0022-e823-401b-a9c0-496e6db2184f
+Terminal WebSocket disconnected: 716d0022-e823-401b-a9c0-496e6db2184f
+[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181',
+  nativeEventName: 'item/completed',
+  reasonCode: 'CODEX_SEGMENT_TURN_INACTIVE'
+}
+[2026-09-14T06:58:51.506Z] [INFO] [server.runtime] Server closed cleanly.

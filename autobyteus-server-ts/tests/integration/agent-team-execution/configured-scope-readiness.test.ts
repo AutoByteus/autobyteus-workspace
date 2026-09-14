@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
+import { AgentRunEventType, type AgentRunEvent } from '../../../src/agent-execution/domain/agent-run-event.js';
 import { AgentRunActivationCandidate } from '../../../src/agent-execution/services/agent-run-activation-candidate.js';
 import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import { materializeTeamRoot } from '../../../src/agent-team-execution/services/team-root-materializer.js';
@@ -39,12 +40,17 @@ const fixture = () => {
     order.push(`prepare:${runId}`);
     if (runId === blocked) await gate;
     if (runId === fail) throw new Error('controlled readiness failure');
+    let listener: ((event: AgentRunEvent) => void) | undefined;
+    const acceptInput = () => {
+      inputs.push(runId);
+      listener?.({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status: 'idle' }, statusHint: 'IDLE' });
+    };
     const run = {
       runId, isActive: () => active.has(runId), getStatusSnapshot: () => ({ status: 'idle' }),
-      subscribeToEvents: () => () => undefined,
-      postUserMessage: async () => { inputs.push(runId); return { accepted: true }; },
+      subscribeToEvents: (callback: (event: AgentRunEvent) => void) => { listener = callback; return () => { listener = undefined; }; },
+      postUserMessage: async () => { acceptInput(); return { accepted: true }; },
       reserveUserMessage: async () => ({ reserved: true, reservation: {
-        agentRunId: runId, cancel: vi.fn(), commit: () => ({ release: () => { inputs.push(runId); } }),
+        agentRunId: runId, cancel: vi.fn(), commit: () => ({ release: acceptInput }),
       } }),
       fenceForRootShutdown: async () => ({ accepted: true }),
       terminate: async () => { active.delete(runId); return { accepted: true }; },
@@ -100,7 +106,7 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
 };
 const identity = (id: string) => createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity('org-lazy'), agentRunId: id, memberAddress: `/${id}` });
 
-describe('fresh configured scope uses existing deferred readiness', () => {
+describe('fresh and restored configured scope use deferred readiness', () => {
   it('publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none', async () => {
     const f = fixture(); const run = await org(f);
     expect(run.isActive()).toBe(true);
@@ -133,9 +139,27 @@ describe('fresh configured scope uses existing deferred readiness', () => {
     expect((await Promise.all([a, b])).every(r => r.accepted)).toBe(true);
     expect(f.inputs).toEqual(['lead', 'lead']); expect(f.active.has('unused')).toBe(false);
   });
-  it('restore still prepares configured members before publication', async () => {
-    const f = fixture(); await team(f, 'restore');
-    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(2); expect(f.active.size).toBe(2);
+  it('restores full Offline scope and durably readies only each addressed member', async () => {
+    const f = fixture(); const run = await team(f, 'restore');
+    expect(run.isActive()).toBe(true);
+    expect(run.getLeafAgentStatusSnapshots().map(s => s.details.status)).toEqual(['offline', 'offline']);
+    expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(f.active.size).toBe(0);
+
+    await expect(run.executeAgentCommand('lead', {
+      kind: 'post_message', message: new AgentInputUserMessage('first retained work'),
+    })).resolves.toMatchObject({ accepted: true });
+    expect(f.prepareNewAgentRun.mock.calls.map(([input]) => input.runId)).toEqual(['lead']);
+    expect([...f.active.keys()]).toEqual(['lead']);
+    expect(run.getLeafAgentStatusSnapshots().map(s => s.details.status)).toEqual(['idle', 'offline']);
+
+    await expect(run.executeAgentCommand('unused', {
+      kind: 'post_message', message: new AgentInputUserMessage('later authorized work'),
+    })).resolves.toMatchObject({ accepted: true });
+    expect(f.prepareNewAgentRun.mock.calls.map(([input]) => input.runId)).toEqual(['lead', 'unused']);
+    expect(f.inputs).toEqual(['lead', 'unused']);
+    expect(f.order).toEqual(['prepare:lead', 'publish:lead', 'prepare:unused', 'publish:unused']);
+    expect(run.getLeafAgentStatusSnapshots().map(s => s.details.status)).toEqual(['idle', 'idle']);
   });
   it('readiness rejection remains an error for the exact worker, without starting other members', async () => {
     const f = fixture(); const run = await org(f); f.fail('director');

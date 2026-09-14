@@ -1,0 +1,114 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (2)":
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (2)
+  - generic: Orgs
+  - button "AORG Validation Org (2)" [expanded]:
+    - generic: AORG Validation Org
+    - generic: (2)
+  - treeitem "Running Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools." [expanded]:
+    - generic "Running"
+    - generic: Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.
+  - button "Stop Agent Org":
+  - generic: 1h
+  - tree "AORG Validation Org execution hierarchy":
+    - treeitem "direct, idle, /direct, aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5" [level=1]:
+      - generic: D
+      - generic: direct
+    - treeitem "later, offline, /later, aorg_validation_agent_7e10b6db44cc49598c1efc506f50e7d8" [level=1]:
+      - generic: L
+      - generic: later
+    - treeitem "unused, offline, /unused, aorg_validation_agent_ee7517b3a23f4db198d1d0c866073547" [level=1]:
+      - generic: U
+      - generic: unused
+    - 'treeitem "team. Team status: Idle" [expanded] [level=1]':
+      - 'img "Team status: Idle"'
+      - generic: team
+    - treeitem "lead, offline, /team/lead, aorg_validation_agent_73a7fe460d394afcb8d21e8e29ca90d7" [level=2]:
+      - generic: L
+      - generic: lead
+    - treeitem "worker, idle, /team/worker, aorg_validation_agent_43a763a163d848489099c2f72d09cc81" [level=2] [selected]:
+      - generic: W
+      - generic: worker
+    - treeitem "unused, offline, /team/unused, aorg_validation_agent_c6b29efe357e4a549f131205d36cbfc2" [level=2]:
+      - generic: U
+      - generic: unused
+  - treeitem "Stopped Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools.":
+    - generic "Stopped"
+    - generic: Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools.
+  - generic: 6h
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: W
+  - heading "worker" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Remember NATIVE-MOUNTED-731-R2. Reply exactly NATIVE-MOUNTED-731-R2. Do not use tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: NATIVE-MOUNTED-731-R2
+  - generic: You
+  - generic: What exact marker did I ask you to remember? Reply with it then NATIVE-MOUNTED-RESUMED-R2. Do not use tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: NATIVE-MOUNTED-731-R2 NATIVE-MOUNTED-RESUMED-R2
+  - generic: You
+  - generic: Remember BROWSER-NATIVE-MOUNTED-R3. Reply with this marker only. Do not use tools.
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: BROWSER-NATIVE-MOUNTED-R3
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..." [active]: NATIVE-MOUNTED-UNSENT-DRAFT-R3
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

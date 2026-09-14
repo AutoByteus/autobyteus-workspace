@@ -1,0 +1,8 @@
+{
+  "treeUnchanged": true,
+  "active": [
+    "aorg_validation_agent_fac928909be146fea15f264ee6cb8ef0"
+  ],
+  "invalidDirectPathUserTraceCount": 0,
+  "qualification": "Direct-member trace path was incorrect for mounted member; do not use that zero as evidence. Actual nested-scope final trace has exactly one user entry across rejected attempt+retry, see storage-fault-retry-proof.json. Tree unchanged and no active target are valid observations."
+}

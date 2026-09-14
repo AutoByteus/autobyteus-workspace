@@ -1,0 +1,48 @@
+{
+  "frontendApproveCount": 1,
+  "commands": [
+    {
+      "at": "2026-09-14T10:07:39.733Z",
+      "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+      "kind": "frontend-outgoing",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+      "frame": {
+        "type": "APPROVE_TOOL",
+        "payload": {
+          "invocation_id": "exec-8da84a98-32dd-4210-a6d2-255f0f8a3d9f",
+          "agent_run_id": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3",
+          "reason": null
+        }
+      }
+    }
+  ],
+  "record": {
+    "taskId": "task_b72f110a2fc6491c8b7d01bf01141149",
+    "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+    "recipientAddress": "/worker",
+    "taskExecution": {
+      "agentRunId": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3"
+    },
+    "description": "Immediately submit exactly TASK05-R3-A once using submit_task_result, then stop. Do not use other tools or read files.",
+    "referenceFiles": [],
+    "status": "accepted",
+    "updates": [
+      {
+        "submissionId": "submission_0d2bd8f800dd41aea34ca13e31b68915",
+        "message": "TASK05-R3-A",
+        "referenceFiles": [],
+        "createdAt": "2026-09-14T10:07:39.737Z"
+      },
+      {
+        "reviewId": "review_4e5760bf618946369b4ac52c486d0a15",
+        "reviewedSubmissionId": "submission_0d2bd8f800dd41aea34ca13e31b68915",
+        "decision": "accept",
+        "comment": null,
+        "referenceFiles": [],
+        "createdAt": "2026-09-14T10:08:16.164Z"
+      }
+    ],
+    "createdAt": "2026-09-14T10:06:51.427Z"
+  },
+  "assignmentUserCount": 1
+}

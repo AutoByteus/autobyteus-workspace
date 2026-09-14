@@ -1,0 +1,45 @@
+{
+  "frontendSendAttempts": [
+    {
+      "at": "2026-09-14T10:32:19.570Z",
+      "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+      "kind": "frontend-outgoing",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+      "frame": {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "Reply PENDING-EXTERNAL-R3 only. Do not use tools.",
+          "context_file_paths": [],
+          "image_urls": [],
+          "agent_run_id": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+          "message_id": "client_68cd2af7-7ddc-46e9-94af-b779e7775483",
+          "dedupe_key": "member_input:aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15:aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1:client_68cd2af7-7ddc-46e9-94af-b779e7775483"
+        }
+      }
+    },
+    {
+      "at": "2026-09-14T10:33:30.528Z",
+      "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+      "kind": "frontend-outgoing",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+      "frame": {
+        "type": "SEND_MESSAGE",
+        "payload": {
+          "content": "Reply PENDING-EXTERNAL-R3 only. Do not use tools.",
+          "context_file_paths": [],
+          "image_urls": [],
+          "agent_run_id": "aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1",
+          "message_id": "client_a691b629-793c-4efe-8a81-8d09b114cc71",
+          "dedupe_key": "member_input:aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15:aorg_validation_agent_1e77c9936e3344d8ab666a91260764d1:client_a691b629-793c-4efe-8a81-8d09b114cc71"
+        }
+      }
+    }
+  ],
+  "uniqueAcceptedMessageIds": [
+    "client_a691b629-793c-4efe-8a81-8d09b114cc71"
+  ],
+  "persistedUserCount": 1,
+  "assistant": [
+    "PENDING-EXTERNAL-R3"
+  ]
+}

@@ -1,0 +1,314 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (2)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (2)
+  - button "Active team run Remember BROWSER-NATIVE-TEAM-R3. Reply with that marker only. Do not use tools.":
+    - img "Active team run"
+    - generic: Remember BROWSER-NATIVE-TEAM-R3. Reply with that marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: 2m
+  - button "Active team run Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - img "Active team run"
+    - generic: Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: 6h
+  - tree "Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools. organization tree":
+    - treeitem "Agent, lead, level 1, idle, /lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: 6h
+    - treeitem "Agent, worker, level 1, offline, /worker" [expanded] [level=1]:
+      - button "Collapse worker" [expanded]:
+      - generic: W
+      - generic: worker
+      - generic: 6h
+    - treeitem "Temporary task agent, Reply REPAIR-WAIT-R3 only, use no tools and wait for human follow-up; do not submit yet., level 2, In progress · Idle, /worker" [level=2]:
+      - generic: "Task: Reply REPAIR-WAIT-R3 only, use no tools and wait for …"
+      - generic: In progress · Idle
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: 6h
+  - generic: Orgs
+  - button "AORG Validation Org (2)":
+    - generic: AORG Validation Org
+    - generic: (2)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: "You received a message from sender name: worker, sender id: aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181 message: Reply TEAM-PEER-R2 only. Do not use tools."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: TEAM-PEER-R2
+  - generic: You
+  - generic: "Call delegate_task exactly once with recipient_address /worker. Task instructions: Reply TASK-RESULT-R2 and then submit that exact result using submit_task_result once; do not use any other tool or read files. After delegating, wait for its submitted result, then call review_task_result to accept it exactly once. Do not create more tasks."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - button "Thinking":
+    - generic: Thinking
+  - button "review_task_result":
+    - generic: review_task_result
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: Delegated once, but review failed because the task was not yet awaiting review.
+  - generic: You
+  - generic: "Task task_df359fe62c3d4417adb4003fcc1f4418 result submitted: TASK-RESULT-R2"
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "review_task_result":
+    - generic: review_task_result
+  - paragraph:
+    - text: Task
+    - code: task_df359fe62c3d4417adb4003fcc1f4418
+    - text: accepted.
+  - generic: You
+  - generic: "Call delegate_task exactly once with recipient_address /worker. Task instructions: Submit exactly APPROVAL-REPRO-R2 using submit_task_result once immediately, then stop. Do not use other tools or read files. After delegating, reply TASK-CREATED only; do not review or create another task."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - paragraph: TASK-CREATED
+  - generic: You
+  - generic: "Task task_afa32c990cca4dd091dab14c61e4cc57 result submitted: APPROVAL-REPRO-R2"
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: APPROVAL-REPRO-R2
+  - generic: You
+  - generic: "Create exactly one new task with delegate_task recipient_address /worker. Task instructions: Immediately submit exactly TASK05-R3-A using submit_task_result once, then stop; do not use other tools or read files. After delegating reply TASK-CREATED-R3-A and wait. Do not review any task until I explicitly ask."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - paragraph: TASK-CREATED-R3-A
+  - generic: L
+  - generic: lead
+  - note "System Task Notification":
+    - paragraph:
+      - text: "Task task_b72f110a2fc6491c8b7d01bf01141149 result submitted:"
+      - text: TASK05-R3-A
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: TASK05-R3-A
+  - generic: You
+  - generic: Accept task task_b72f110a2fc6491c8b7d01bf01141149 once using review_task_result with decision accept. Do not create tasks or review any other task.
+  - generic: L
+  - generic: lead
+  - button "review_task_result":
+    - generic: review_task_result
+  - paragraph: Task accepted.
+  - generic: You
+  - generic: "Create exactly one new task with delegate_task recipient_address /worker. Task instructions: Immediately submit exactly TASK05-R3-B using submit_task_result once, then stop; do not use other tools or read files. After delegating reply TASK-CREATED-R3-B and wait. Do not review any task until I explicitly ask."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - paragraph: TASK-CREATED-R3-B
+  - generic: L
+  - generic: lead
+  - note "System Task Notification":
+    - paragraph:
+      - text: "Task task_d0058baf60954ecfbb92431c6c5743ba result submitted:"
+      - text: TASK05-R3-B
+  - paragraph: TASK05-R3-B
+  - generic: You
+  - generic: Accept task task_d0058baf60954ecfbb92431c6c5743ba once using review_task_result with decision accept. Do not create tasks or review any other task.
+  - generic: L
+  - generic: lead
+  - button "review_task_result":
+    - generic: review_task_result
+  - paragraph: Task accepted.
+  - generic: You
+  - generic: "Create exactly one task via delegate_task to /worker. Task instructions: Reply READY-TASK-C only, use no tools, then wait for the human to send the result text to submit. Do not call submit_task_result until the human explicitly tells you. After delegation reply TASK-CREATED-C and wait; do not review until I ask."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - paragraph: TASK-CREATED-C
+  - generic: L
+  - generic: lead
+  - note "System Task Notification":
+    - paragraph:
+      - text: "Task task_d067db10140d47ac8372ae013b98b414 result submitted:"
+      - text: TASK05-R3-C
+  - paragraph: TASK05-R3-C
+  - generic: You
+  - generic: Accept task task_d067db10140d47ac8372ae013b98b414 once using review_task_result with decision accept. Do not create tasks or review any other task.
+  - generic: L
+  - generic: lead
+  - button "review_task_result":
+    - generic: review_task_result
+  - paragraph: Task accepted.
+  - generic: You
+  - generic: "Delegate exactly one task to /worker. Task instructions: Reply REPAIR-WAIT-R3 only, use no tools and wait for human follow-up; do not submit yet. After delegating reply CREATED-REPAIR-R3 and wait. Do not review or create more tasks."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - paragraph: CREATED-REPAIR-R3
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team" [selected]: Team
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 1 Messages":
+    - heading "Messages" [level=3]
+    - generic: 1 Messages
+  - button "Tasks 6 tasks" [expanded]:
+    - generic: Tasks
+    - generic: 6 tasks
+  - complementary:
+    - article:
+      - button "Reply with exactly TASK-RESULT-R2, then submit that exact text once using submit_task_result. Do not use any other tool and do not read files.. Accepted. lead → worker. Updated 11:03" [pressed]:
+        - generic: Reply with exactly TASK-RESULT-R2, then submit that exact text once using submit_task_result. Do not use any other tool and do not read files.
+        - text: Accepted
+        - generic: Updated 11:03
+        - generic: lead → worker
+      - button "Result submitted · Result 1. worker → lead. 11:02. TASK-RESULT-R2":
+        - generic: Result submitted · Result 1
+        - paragraph: worker → lead
+        - time: 11:02
+        - paragraph: TASK-RESULT-R2
+      - button "Result 1 accepted. lead → worker. 11:03. Result accepted.":
+        - generic: Result 1 accepted
+        - paragraph: lead → worker
+        - time: 11:03
+        - paragraph: Result accepted.
+    - article:
+      - button "Immediately submit exactly APPROVAL-REPRO-R2 once using submit_task_result, then stop. Do not use other tools or read files.. Interrupted. lead → worker. Updated 11:12":
+        - generic: Immediately submit exactly APPROVAL-REPRO-R2 once using submit_task_result, then stop. Do not use other tools or read files.
+        - text: Interrupted
+        - generic: Updated 11:12
+        - generic: lead → worker
+      - button "Result submitted · Result 1. worker → lead. 11:11. APPROVAL-REPRO-R2":
+        - generic: Result submitted · Result 1
+        - paragraph: worker → lead
+        - time: 11:11
+        - paragraph: APPROVAL-REPRO-R2
+      - button "Task interrupted. System lifecycle event. 11:12. Root TeamRun terminated.":
+        - generic: Task interrupted
+        - paragraph: System lifecycle event
+        - time: 11:12
+        - paragraph: Root TeamRun terminated.
+    - article:
+      - button "Immediately submit exactly TASK05-R3-A once using submit_task_result, then stop. Do not use other tools or read files.. Accepted. lead → worker. Updated 12:08":
+        - generic: Immediately submit exactly TASK05-R3-A once using submit_task_result, then stop. Do not use other tools or read files.
+        - text: Accepted
+        - generic: Updated 12:08
+        - generic: lead → worker
+      - button "Result submitted · Result 1. worker → lead. 12:07. TASK05-R3-A":
+        - generic: Result submitted · Result 1
+        - paragraph: worker → lead
+        - time: 12:07
+        - paragraph: TASK05-R3-A
+      - button "Result 1 accepted. lead → worker. 12:08. Result accepted.":
+        - generic: Result 1 accepted
+        - paragraph: lead → worker
+        - time: 12:08
+        - paragraph: Result accepted.
+    - article:
+      - button "Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.. Accepted. lead → worker. Updated 12:10":
+        - generic: Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.
+        - text: Accepted
+        - generic: Updated 12:10
+        - generic: lead → worker
+      - button "Result submitted · Result 1. worker → lead. 12:09. TASK05-R3-B":
+        - generic: Result submitted · Result 1
+        - paragraph: worker → lead
+        - time: 12:09
+        - paragraph: TASK05-R3-B
+      - button "Result 1 accepted. lead → worker. 12:10. Result accepted.":
+        - generic: Result 1 accepted
+        - paragraph: lead → worker
+        - time: 12:10
+        - paragraph: Result accepted.
+    - article:
+      - button "Reply READY-TASK-C only, use no tools, then wait for the human to send the result text to submit. Do not call submit_task_result until the human explicitly tells you.. Accepted. lead → worker. Updated 12:12":
+        - generic: Reply READY-TASK-C only, use no tools, then wait for the human to send the result text to submit. Do not call submit_task_result until the human explicitly tells you.
+        - text: Accepted
+        - generic: Updated 12:12
+        - generic: lead → worker
+      - button "Result submitted · Result 1. worker → lead. 12:11. TASK05-R3-C":
+        - generic: Result submitted · Result 1
+        - paragraph: worker → lead
+        - time: 12:11
+        - paragraph: TASK05-R3-C
+      - button "Result 1 accepted. lead → worker. 12:12. Result accepted.":
+        - generic: Result 1 accepted
+        - paragraph: lead → worker
+        - time: 12:12
+        - paragraph: Result accepted.
+    - article:
+      - button "Reply REPAIR-WAIT-R3 only, use no tools and wait for human follow-up; do not submit yet.. In progress. lead → worker. Updated 12:16":
+        - generic: Reply REPAIR-WAIT-R3 only, use no tools and wait for human follow-up; do not submit yet.
+        - text: In progress
+        - generic: Updated 12:16
+        - generic: lead → worker
+  - separator
+  - main:
+    - heading "Task assigned" [level=3]
+    - text: Accepted
+    - button "lead"
+    - generic: →
+    - button "worker"
+    - button "Participant details":
+    - time: 14. Sept., 10:59
+    - paragraph: Reply with exactly TASK-RESULT-R2, then submit that exact text once using submit_task_result. Do not use any other tool and do not read files.

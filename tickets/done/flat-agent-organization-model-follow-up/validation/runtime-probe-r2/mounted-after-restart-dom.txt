@@ -1,0 +1,114 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)":
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - generic: Orgs
+  - button "AORG Validation Org (1)" [expanded]:
+    - generic: AORG Validation Org
+    - generic: (1)
+  - treeitem "Stopped Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - generic "Stopped"
+    - generic: Remember marker ORG-DIRECT-A-REV001. Reply with this marker only. Do not use tools.
+  - generic: 5h
+  - tree "AORG Validation Org execution hierarchy":
+    - treeitem "direct, offline, /direct, aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa" [level=1]:
+      - generic: D
+      - generic: direct
+    - treeitem "later, offline, /later, aorg_validation_agent_9423fc355378455685c5ddf75435a608" [level=1]:
+      - generic: L
+      - generic: later
+    - treeitem "unused, offline, /unused, aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588" [level=1]:
+      - generic: U
+      - generic: unused
+    - 'treeitem "team. Team status: Offline" [expanded] [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+    - treeitem "lead, offline, /team/lead, aorg_validation_agent_df5162ce6f5d48c5a468e1c566055860" [level=2]:
+      - generic: L
+      - generic: lead
+    - treeitem "worker, offline, /team/worker, aorg_validation_agent_88444438ccbd45ebbafcee769accca27" [level=2] [selected]:
+      - generic: W
+      - generic: worker
+    - treeitem "unused, offline, /team/unused, aorg_validation_agent_67797fc707f14c1395f0a6be9d583fc9" [level=2]:
+      - generic: U
+      - generic: unused
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: W
+  - heading "worker" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - generic: You
+  - generic: Remember marker ORG-MOUNTED-A-REV001. Reply with this marker only. Do not use tools.
+  - generic: W
+  - generic: worker
+  - paragraph: ORG-MOUNTED-A-REV001
+  - generic: You
+  - generic: "You received a message from sender name: direct, sender id: aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa message: Reply with ORG-PEER-C-REV001 and the marker you remembered before restart. Do not use tools."
+  - generic: W
+  - generic: worker
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: ORG-PEER-C-REV001 ORG-MOUNTED-A-REV001
+  - generic: You
+  - generic: Reply with the original ORG-MOUNTED marker you remember, followed by RET06-BEFORE-R2. Do not use tools.
+  - generic: W
+  - generic: worker
+  - paragraph: ORG-MOUNTED-A-REV001 RET06-BEFORE-R2
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..." [active]: RET06-MOUNTED-DRAFT-R2
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 1 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 1 Messages
+  - complementary:
+    - button "Message 14. Sept., 05:56 from direct Reply with ORG-PEER-C-REV001 and the marker you remembered before restart. Do not use tools.":
+      - generic: Message
+      - generic: 14. Sept., 05:56
+      - paragraph: from direct
+      - paragraph: Reply with ORG-PEER-C-REV001 and the marker you remembered before restart. Do not use tools.
+  - separator
+  - main:
+    - generic: Message
+    - generic: direct
+    - button "Participant details":
+    - generic: 14. Sept., 05:56
+    - paragraph: Reply with ORG-PEER-C-REV001 and the marker you remembered before restart. Do not use tools.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

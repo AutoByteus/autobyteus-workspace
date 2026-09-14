@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+  "records": [
+    {
+      "taskId": "task_df359fe62c3d4417adb4003fcc1f4418",
+      "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "aorg_validation_agent_688d943bb70140cbbbfa5606a66fc564"
+      },
+      "description": "Reply with exactly TASK-RESULT-R2, then submit that exact text once using submit_task_result. Do not use any other tool and do not read files.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_d0367921863c471b880f72313adae7b1",
+          "message": "TASK-RESULT-R2",
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T09:02:23.794Z"
+        },
+        {
+          "reviewId": "review_58496f35548a4adf80a1bc92e33d4825",
+          "reviewedSubmissionId": "submission_d0367921863c471b880f72313adae7b1",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T09:03:21.964Z"
+        }
+      ],
+      "createdAt": "2026-09-14T08:59:33.374Z"
+    },
+    {
+      "taskId": "task_afa32c990cca4dd091dab14c61e4cc57",
+      "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "aorg_validation_agent_1b465e696bc04339a92d9ec8d2ee291b"
+      },
+      "description": "Immediately submit exactly APPROVAL-REPRO-R2 once using submit_task_result, then stop. Do not use other tools or read files.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "submissionId": "submission_1947edcfa405433e9aa8fa0e0175a586",
+          "message": "APPROVAL-REPRO-R2",
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T09:11:23.139Z"
+        },
+        {
+          "interruptionId": "interrupt_74cb14431c2f4aefa5d91d06635a3013",
+          "reason": "Root TeamRun terminated.",
+          "createdAt": "2026-09-14T09:12:36.597Z"
+        }
+      ],
+      "createdAt": "2026-09-14T09:10:18.384Z"
+    },
+    {
+      "taskId": "task_b72f110a2fc6491c8b7d01bf01141149",
+      "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "aorg_validation_agent_7f6a33c41a60410c8683c92d40b7eaa3"
+      },
+      "description": "Immediately submit exactly TASK05-R3-A once using submit_task_result, then stop. Do not use other tools or read files.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_0d2bd8f800dd41aea34ca13e31b68915",
+          "message": "TASK05-R3-A",
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T10:07:39.737Z"
+        },
+        {
+          "reviewId": "review_4e5760bf618946369b4ac52c486d0a15",
+          "reviewedSubmissionId": "submission_0d2bd8f800dd41aea34ca13e31b68915",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T10:08:16.164Z"
+        }
+      ],
+      "createdAt": "2026-09-14T10:06:51.427Z"
+    },
+    {
+      "taskId": "task_d0058baf60954ecfbb92431c6c5743ba",
+      "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "aorg_validation_agent_f1fb33446be747c7aef2580337e54022"
+      },
+      "description": "Immediately submit exactly TASK05-R3-B once using submit_task_result, then stop. Do not use other tools or read files.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_80d82e28c85a4830b7020fbeb90d2e3f",
+          "message": "TASK05-R3-B",
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T10:09:45.870Z"
+        },
+        {
+          "reviewId": "review_ef49b7f618154469a42417a8fe263284",
+          "reviewedSubmissionId": "submission_80d82e28c85a4830b7020fbeb90d2e3f",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T10:10:10.533Z"
+        }
+      ],
+      "createdAt": "2026-09-14T10:09:11.033Z"
+    },
+    {
+      "taskId": "task_d067db10140d47ac8372ae013b98b414",
+      "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "aorg_validation_agent_b6c7b3205c9a47f994b18cbeb2ea8dd2"
+      },
+      "description": "Reply READY-TASK-C only, use no tools, then wait for the human to send the result text to submit. Do not call submit_task_result until the human explicitly tells you.",
+      "referenceFiles": [],
+      "status": "accepted",
+      "updates": [
+        {
+          "submissionId": "submission_02121a310bba468b84b6e730c29e00e5",
+          "message": "TASK05-R3-C",
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T10:11:40.728Z"
+        },
+        {
+          "reviewId": "review_3f23b69041b14a4fba22c8f608c7268a",
+          "reviewedSubmissionId": "submission_02121a310bba468b84b6e730c29e00e5",
+          "decision": "accept",
+          "comment": null,
+          "referenceFiles": [],
+          "createdAt": "2026-09-14T10:12:09.005Z"
+        }
+      ],
+      "createdAt": "2026-09-14T10:10:49.973Z"
+    },
+    {
+      "taskId": "task_630a8d37a3e74d0385c82bcea29c3c3d",
+      "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+      "recipientAddress": "/worker",
+      "taskExecution": {
+        "agentRunId": "aorg_validation_agent_f61d3595b85f4ed3912a763e2b8f533f"
+      },
+      "description": "Reply REPAIR-WAIT-R3 only, use no tools and wait for human follow-up; do not submit yet.",
+      "referenceFiles": [],
+      "status": "active",
+      "updates": [],
+      "createdAt": "2026-09-14T10:16:16.764Z"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "record": {
+    "taskId": "task_426cbe966f594b0a9f908bf656830996",
+    "delegatorAgentRunId": "aorg_validation_agent_a90ea0977f344252806b424c2e5ce4cf",
+    "recipientAddress": "/worker",
+    "taskExecution": {
+      "agentRunId": "aorg_validation_agent_0789934219d54f87afbc089817ba2036"
+    },
+    "description": "Immediately submit exactly AFTER-REPAIR-NEW-TASK-R3 once using submit_task_result; use no other tools.",
+    "referenceFiles": [],
+    "status": "accepted",
+    "updates": [
+      {
+        "submissionId": "submission_f17c3f2f54164bf78a9cafc34d7177c1",
+        "message": "AFTER-REPAIR-NEW-TASK-R3",
+        "referenceFiles": [],
+        "createdAt": "2026-09-14T10:22:22.292Z"
+      },
+      {
+        "reviewId": "review_b677b68d92d04c59a074ea86a5406b67",
+        "reviewedSubmissionId": "submission_f17c3f2f54164bf78a9cafc34d7177c1",
+        "decision": "accept",
+        "comment": null,
+        "referenceFiles": [],
+        "createdAt": "2026-09-14T10:22:54.051Z"
+      }
+    ],
+    "createdAt": "2026-09-14T10:21:40.504Z"
+  },
+  "assignmentCount": 1,
+  "submitApprovalCommands": [
+    {
+      "at": "2026-09-14T10:22:22.289Z",
+      "tabId": "c7924759-3388-4a59-9dbc-6b2fe845c791",
+      "kind": "frontend-outgoing",
+      "url": "ws://127.0.0.1:50244/ws/agent-team/aorg_validation_team_cbfec9eb178f4aac9a13b609c8c30a15",
+      "frame": {
+        "type": "APPROVE_TOOL",
+        "payload": {
+          "invocation_id": "exec-d2c6bb0f-6bb0-4cc2-bb66-1341fde225de",
+          "agent_run_id": "aorg_validation_agent_0789934219d54f87afbc089817ba2036",
+          "reason": null
+        }
+      }
+    }
+  ]
+}

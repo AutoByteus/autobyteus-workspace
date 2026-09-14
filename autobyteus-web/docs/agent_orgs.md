@@ -145,8 +145,10 @@ exact connection generation and recovers automatically. Recovery preserves the
 exact selected Team or Agent, verifies the replacement snapshot against durable
 checkpoints, and prevents the stale socket from regaining ownership. There is
 no manual **Reconnect** action. The client makes at most five recovery attempts;
-if none succeeds, it leaves the Org offline and presents exactly one localized
-notice instead of remaining indefinitely in **Connecting**.
+if none succeeds, it leaves the stream non-ready and presents exactly one
+localized notice instead of remaining indefinitely in **Connecting**. A network
+or inspection failure does not prove that the Org is inactive: retain last-known
+activity until exact-root observation establishes its current state.
 
 A mounted Team uses the same Team workspace panel and task/communication
 presentation as a standalone Team. Its live task monitor continues to update
@@ -393,4 +395,4 @@ bounded recovery cycle for already-retained unsynchronized roots. Returned row I
 are only a trigger; inspection, not a history status string or absent row, determines
 Org liveness. Scheduled/in-flight recovery and local stop/continuation remain
 coalesced under their existing owners. Standalone Team history reconciliation is
-unchanged. Real restart/provider acceptance is tracked in the follow-up ticket.
+unchanged. Root observation and member readiness remain separate responsibilities.

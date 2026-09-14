@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
@@ -235,10 +236,12 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         ],
       });
       createBackends.push(firstBackend);
-      await teamRunManager.createTeamRun({
+      const freshTeam = await teamRunManager.createTeamRun({
         config: teamConfig,
         teamDefinitionName: "Agent Tools lifecycle Team",
       });
+      expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBeNull();
+      await expect(freshTeam.postMessage(new AgentInputUserMessage("Start lifecycle probe"), memberNode.agentRunId)).resolves.toMatchObject({ accepted: true });
       const currentRun = agentRunManager.getActiveRun(memberNode.agentRunId);
       expect(currentRun).not.toBeNull();
       const firstServerUrl = activate();
@@ -267,7 +270,9 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         context: restoredContext,
       }));
       hasNativeConversationActivity = true;
-      await teamRunManager.restoreTeamRun(teamConfig.rootTeam.teamRunId);
+      const restoredTeam = await teamRunManager.restoreTeamRun(teamConfig.rootTeam.teamRunId);
+      expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBeNull();
+      await expect(restoredTeam.postMessage(new AgentInputUserMessage("Continue lifecycle probe"), memberNode.agentRunId)).resolves.toMatchObject({ accepted: true });
       const restoredRun = agentRunManager.getActiveRun(memberNode.agentRunId);
       expect(restoredRun).not.toBeNull();
       expect(restoredRun).not.toBe(currentRun);

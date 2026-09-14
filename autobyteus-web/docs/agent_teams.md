@@ -111,7 +111,10 @@ the exact execution.
 Root Team lifecycle is a binary manager-owned fact. Each Agent owns its own
 `offline | initializing | idle | running | error` status. Connection state,
 root lifecycle, Agent status, task lifecycle, and command overlays are not
-interchangeable.
+interchangeable. A restored standalone Team scope can be Active while every
+configured Agent remains Offline: the Team stream can reopen scope without
+starting providers. Green/Idle is not evidence of model reasoning. Do not copy
+Org container-status expectations onto a Team or start workers to reconcile status.
 
 Task delegation remains supported. A task Agent or task Team is shown as a
 transient execution row while the Tasks surface retains the durable record,
@@ -228,3 +231,9 @@ without carrying obsolete live permissions forward. Approval remains the normal
 ToolCallIndicator → exact AgentRun/invocation command path, not an Activity control,
 handler replay, automatic approval or new pending-decision registry. Task startup
 continues to honor the configured recipient's `autoExecuteTools` policy.
+
+Historical traces are not a complete journal of pending tool decisions. A parsed
+tool intent, or recorded approval provenance, does not alone authorize a current
+Approve control. Preserve actual same-live-run decision evidence only while the
+existing identity and stream-readiness guards hold; never infer permission by
+replaying trace entries or changing `autoExecuteTools`.

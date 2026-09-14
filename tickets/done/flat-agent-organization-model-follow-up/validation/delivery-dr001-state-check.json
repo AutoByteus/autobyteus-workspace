@@ -1,0 +1,57 @@
+{
+  "package": "AORG-FOLLOWUP-20260914-001",
+  "delivery_revision": "DR-001",
+  "head": "4bbfd4ee3fbe95fd8f3e8ac1a555f8a5dc10746a",
+  "base": "72dee5ad2c2e332272a0c00eb36af1a036bd69fb",
+  "integration": "Already current; fetched origin requirements/flat-agent-organization-model; 21 ahead / 0 behind; base ancestor confirmed",
+  "production_delta_from_IR003": [],
+  "reviewed_durable_fingerprints": [
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts",
+      "sha256": "f8fd2007eac3b8db903065abff1e2ee099b2b82a57b73b868fe1a2affa409de5",
+      "review_match": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts",
+      "sha256": "240993403ce8d828bd6f3c6ceaabe3cb44ccb47beb1cb2779855920e73fb4bce",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/README.md",
+      "sha256": "cefa065dafbd24c2a3ea8badbe94b5a1cec251a5d0e779f8a1e8f0057da95090",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/agents/aorg-validation-agent/agent.md",
+      "sha256": "c3b8e62fd15601fb8784bbd6cf6179cdcd350f3883b06c253c776e7ab4b720c4",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/agents/aorg-validation-agent/agent-config.json",
+      "sha256": "028a45042f9bda6401c4dd66fcffbcd2ebd808e4fdca31ed03f2f8406aa77add",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/agent-teams/aorg-validation-team/team.md",
+      "sha256": "97e0c89c6e77662e0866b621defd75a81b6ebb3dda31a8901164cf87d83ff164",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/agent-teams/aorg-validation-team/team-config.json",
+      "sha256": "1c544787c40e59981738556c8e2d31b4f10e8c609e9507adb985aac0666ba256",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/agent-orgs/aorg-validation-org/org.md",
+      "sha256": "40bc56c647a1fc8726aacedad4434e78b885099e73abaaf5fa2c112165b02c76",
+      "review_match": true
+    },
+    {
+      "path": "test-support/fixtures/lazy-configured-restore/agent-orgs/aorg-validation-org/org-config.json",
+      "sha256": "5a966a476698b5eb9607e92815e2553574d376d79accc061f67a971f635d2b8a",
+      "review_match": true
+    }
+  ],
+  "runtime_tests_rerun": false,
+  "rationale": "No base commits integrated, no production/test modifications since validated/reviewed candidate. Documentation-only delivery additions."
+}

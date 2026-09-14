@@ -1,0 +1,64 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "AORG Validation Org (1)" [expanded]:
+    - generic: AORG Validation Org
+    - generic: (1)
+  - treeitem "Running New - AORG Validation Org" [expanded] [selected]:
+    - generic "Running"
+    - generic: New - AORG Validation Org
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "AORG Validation Org execution hierarchy":
+    - treeitem "direct, offline, /direct, aorg_validation_agent_02efb8ca459b4c28bbf90ef95d0fdcfa" [level=1]:
+      - generic: D
+      - generic: direct
+    - treeitem "later, offline, /later, aorg_validation_agent_9423fc355378455685c5ddf75435a608" [level=1]:
+      - generic: L
+      - generic: later
+    - treeitem "unused, offline, /unused, aorg_validation_agent_b3f833ebf6eb42468fe4bada1433e588" [level=1]:
+      - generic: U
+      - generic: unused
+    - 'treeitem "team. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Choose an Agent or Team" [level=2]
+  - paragraph: Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Terminal" [selected]: Terminal
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - textbox "Terminal input"
+  - generic: ➜ Terminal initialized
+  - generic: AgentFactory (Singleton) initialized.
+  - generic: The default interactive shell is now zsh.
+  - generic: "To update your account to use zsh, please run `chsh"
+  - generic: "-s /bin/zsh`."
+  - generic: For more details, please visit https://support.apple
+  - generic: .com/kb/HT208050.
+  - generic: ~ $

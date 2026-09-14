@@ -1,0 +1,425 @@
+[
+  {
+    "type": "CONNECTED",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "session_id": "a3f37bd7-b603-4893-bb21-9dbb4d957452"
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_VIEW_SNAPSHOT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "schema_version": 1,
+      "root_org": {
+        "base_change_sequence": 558,
+        "is_active": true,
+        "execution_tree": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "createdAt": "2026-09-14T08:56:45.331Z",
+          "archivedAt": null,
+          "applicationBinding": null,
+          "handoffs": [],
+          "rootOrg": {
+            "address": "/",
+            "orgDefinitionId": "aorg-validation-org",
+            "orgDefinitionName": "AORG Validation Org",
+            "orgRunId": "aorg_validation_org_95689ec2280849059af61000797357e5",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+            },
+            "members": [
+              {
+                "address": "/direct",
+                "agentDefinitionId": "aorg-validation-agent",
+                "role": null,
+                "description": null,
+                "agentRunId": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                }
+              },
+              {
+                "address": "/later",
+                "agentDefinitionId": "aorg-validation-agent",
+                "role": null,
+                "description": null,
+                "agentRunId": "aorg_validation_agent_7e10b6db44cc49598c1efc506f50e7d8",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                }
+              },
+              {
+                "address": "/unused",
+                "agentDefinitionId": "aorg-validation-agent",
+                "role": null,
+                "description": null,
+                "agentRunId": "aorg_validation_agent_ee7517b3a23f4db198d1d0c866073547",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                }
+              },
+              {
+                "address": "/team",
+                "teamDefinitionId": "aorg-validation-team",
+                "role": null,
+                "description": null,
+                "teamRunId": "aorg_validation_team_92aff0d84fbb46febb19646225e4c952",
+                "coordinatorAddress": "/team/lead",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                },
+                "members": [
+                  {
+                    "address": "/team/lead",
+                    "agentDefinitionId": "aorg-validation-agent",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "aorg_validation_agent_73a7fe460d394afcb8d21e8e29ca90d7",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "autobyteus",
+                      "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                    }
+                  },
+                  {
+                    "address": "/team/worker",
+                    "agentDefinitionId": "aorg-validation-agent",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "autobyteus",
+                      "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                    }
+                  },
+                  {
+                    "address": "/team/unused",
+                    "agentDefinitionId": "aorg-validation-agent",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "aorg_validation_agent_c6b29efe357e4a549f131205d36cbfc2",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "autobyteus",
+                      "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-server-ts/tests/.tmp/aorg-api-rev001/temp_workspace"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              }
+            ],
+            "taskExecutions": []
+          }
+        },
+        "task_records": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "orgRunId": "aorg_validation_org_95689ec2280849059af61000797357e5",
+          "records": []
+        },
+        "communication_messages": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "orgRunId": "aorg_validation_org_95689ec2280849059af61000797357e5",
+          "messages": []
+        },
+        "agent_statuses": [
+          {
+            "member_address": "/direct",
+            "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          },
+          {
+            "member_address": "/later",
+            "agent_run_id": "aorg_validation_agent_7e10b6db44cc49598c1efc506f50e7d8",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          },
+          {
+            "member_address": "/unused",
+            "agent_run_id": "aorg_validation_agent_ee7517b3a23f4db198d1d0c866073547",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          },
+          {
+            "member_address": "/team/lead",
+            "agent_run_id": "aorg_validation_agent_73a7fe460d394afcb8d21e8e29ca90d7",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          },
+          {
+            "member_address": "/team/worker",
+            "agent_run_id": "aorg_validation_agent_43a763a163d848489099c2f72d09cc81",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          },
+          {
+            "member_address": "/team/unused",
+            "agent_run_id": "aorg_validation_agent_c6b29efe357e4a549f131205d36cbfc2",
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "probe": "SEND_MESSAGE",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "target_agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+      "command_id": "d0e72d16-f771-4b26-92e9-1c3dfdae1788",
+      "content": "Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.",
+      "context_file_paths": [],
+      "image_urls": [],
+      "message_id": "9dfeb299-37bb-4330-8c6d-bd53e7367db5",
+      "dedupe_key": "44c12ec4-2129-4494-aea6-861c1588fb5e"
+    }
+  },
+  {
+    "type": "ROOT_LIFECYCLE",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "is_active": true
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 559,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "initializing",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 560,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "MEMBER_INPUT_MESSAGE",
+          "payload": {
+            "message_id": "9dfeb299-37bb-4330-8c6d-bd53e7367db5",
+            "dedupe_key": "44c12ec4-2129-4494-aea6-861c1588fb5e",
+            "content": "Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.",
+            "input_origin": "user_message",
+            "received_at": "2026-09-14T09:05:31.939Z",
+            "context_file_paths": [],
+            "sender_agent_run_id": null,
+            "parent_communication_message_id": null
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 561,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "initializing",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "command_id": "d0e72d16-f771-4b26-92e9-1c3dfdae1788",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 562,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 563,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "TURN_STARTED",
+          "payload": {
+            "turn_id": "turn_0002"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 564,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "ROOT_EXECUTION_EVENT",
+    "payload": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "aorg_validation_org_95689ec2280849059af61000797357e5",
+      "change_sequence": 565,
+      "event": {
+        "kind": "agent_presentation",
+        "member_address": "/direct",
+        "agent_run_id": "aorg_validation_agent_1a5c6234821546cb96ac764eadf01df5",
+        "message": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null
+          }
+        }
+      }
+    }
+  }
+]

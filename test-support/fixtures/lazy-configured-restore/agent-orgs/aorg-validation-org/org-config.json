@@ -1,0 +1,31 @@
+{
+  "members": [
+    {
+      "memberName": "direct",
+      "ref": "aorg-validation-agent",
+      "refType": "agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "later",
+      "ref": "aorg-validation-agent",
+      "refType": "agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "unused",
+      "ref": "aorg-validation-agent",
+      "refType": "agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "team",
+      "ref": "aorg-validation-team",
+      "refType": "agent_team",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

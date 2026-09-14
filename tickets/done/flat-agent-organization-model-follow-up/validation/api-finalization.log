@@ -1,0 +1,31 @@
+Mon Sep 14 07:07:26 UTC 2026
+ .../configured-scope-readiness.test.ts             | 38 ++++++++++++++++++----
+ ...m-agent-tools-mcp-lifecycle.integration.test.ts |  9 +++--
+ .../investigation-notes.md                         |  3 ++
+ .../solution-revision-record.md                    |  6 ++++
+ 4 files changed, 47 insertions(+), 9 deletions(-)
+OWNED PROCESS/LISTENER CHECK
+  PID  PPID ARGS
+Generated shared SDK dist retained (untracked build output); regenerate or clean via normal project tooling before next build. No forced deletion performed.
+ M autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+ M tickets/in-progress/flat-agent-organization-model-follow-up/investigation-notes.md
+ M tickets/in-progress/flat-agent-organization-model-follow-up/solution-revision-record.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? test-support/fixtures/
+?? tickets/in-progress/flat-agent-organization-model-follow-up/api-e2e-coverage-investigation.md
+?? tickets/in-progress/flat-agent-organization-model-follow-up/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/flat-agent-organization-model-follow-up/api-e2e-revision-record.md
+?? tickets/in-progress/flat-agent-organization-model-follow-up/api-e2e-test-case-ledger.md
+?? tickets/in-progress/flat-agent-organization-model-follow-up/status-implementation-comparison.md
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-finalization.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r01-final.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r01-rerun.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r01.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r02-final.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r02-mcp-rerun.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r02.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-r03-web.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/api-setup.log
+?? tickets/in-progress/flat-agent-organization-model-follow-up/validation/runtime-probe/

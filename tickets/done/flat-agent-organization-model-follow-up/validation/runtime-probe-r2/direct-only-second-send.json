@@ -1,0 +1,31 @@
+{
+  "pid": 15327,
+  "at": "2026-09-14T09:03:59.828Z",
+  "active": [
+    {
+      "runId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "active": true,
+      "status": {
+        "status": "running",
+        "agent_id": "aorg_validation_agent_9423fc355378455685c5ddf75435a608"
+      }
+    }
+  ],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareRestoreAgentRunFromPlatformState",
+      "runId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "startedAt": "2026-09-14T09:03:48.692Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e14-07d6-7eb2-b0ba-b0f575e029a5"
+    },
+    {
+      "method": "prepareRestoreAgentRun",
+      "runId": "aorg_validation_agent_9423fc355378455685c5ddf75435a608",
+      "startedAt": "2026-09-14T09:03:48.692Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a09e14-07d6-7eb2-b0ba-b0f575e029a5"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "getAgentOrgMemberRunProjection": {
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.",
+        "media": null,
+        "ts": 1789376212.869
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "The user wants me to remember a specific marker: \"NATIVE-ORANGE-731-R2\".\nThey've instructed me to reply with that marker only and not to use any tools.\n\nThis is a simple memory test, and the instructions are clear. I should just repeat back the marker exactly as requested.\n",
+        "media": null,
+        "ts": 1789376250.811
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "\n\nNATIVE-ORANGE-731-R2",
+        "media": null,
+        "ts": 1789376250.811
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "What exact marker did I ask you to remember earlier? Reply with it followed by NATIVE-RESUMED-R2. Do not use tools.",
+        "media": null,
+        "ts": 1789376640.137
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "The user is asking me to recall the exact marker from the previous turn.\nIn the previous turn, the user asked me to remember \"NATIVE-ORANGE-731-R2\" and reply with that marker only.\nNow, the user is asking \"What exact marker did I ask you to remember earlier?\" and instructing me to reply with it followed by \"NATIVE-RESUMED-R2\".\nI must not use tools.\n\nSo, the response should be \"NATIVE-ORANGE-731-R2 NATIVE-RESUMED-R2\".\nWait, the instruction says \"Reply with it followed by NATIVE-RESUMED-R2\".\nSo I will output: NATIVE-ORANGE-731-R2 NATIVE-RESUMED-R2.\nI will double check the marker from the previous turn: \"NATIVE-ORANGE-731-R2\".\n\nConstructing the final response.\nThe user explicitly said \"Do not use tools.\"\n\nFinal Answer: NATIVE-ORANGE-731-R2 NATIVE-RESUMED-R2.\nI should just output the text as requested.\n",
+        "media": null,
+        "ts": 1789376646.036
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "\n\nNATIVE-ORANGE-731-R2 NATIVE-RESUMED-R2",
+        "media": null,
+        "ts": 1789376646.036
+      },
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "Remember the exact marker NATIVE-ORANGE-731-R2. Reply with that marker only. Do not use tools.",
+        "media": null,
+        "ts": 1789376731.943
+      },
+      {
+        "kind": "reasoning",
+        "role": null,
+        "content": "The user is asking me to remember a specific marker: `NATIVE-ORANGE-731-R2`.\nI need to reply with that marker only.\nThe user explicitly instructed \"Do not use tools.\"\n\nTherefore, I will simply output the marker.\n\nNATIVE-ORANGE-731-R2\n",
+        "media": null,
+        "ts": 1789376736.738
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "\n\nNATIVE-ORANGE-731-R2",
+        "media": null,
+        "ts": 1789376736.738
+      }
+    ]
+  }
+}

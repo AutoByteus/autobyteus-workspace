@@ -1,0 +1,75 @@
+{
+  "ensureProviderModelCatalog": {
+    "ownerProvider": {
+      "id": "LMSTUDIO"
+    },
+    "sources": [
+      {
+        "state": "READY",
+        "safeMessage": null
+      }
+    ],
+    "llmModels": [
+      {
+        "modelIdentifier": "deepseek-ocr:lmstudio@localhost:1234",
+        "name": "deepseek-ocr"
+      },
+      {
+        "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+        "name": "google/gemma-4-26b-a4b"
+      },
+      {
+        "modelIdentifier": "google/gemma-4-31b:lmstudio@localhost:1234",
+        "name": "google/gemma-4-31b"
+      },
+      {
+        "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234",
+        "name": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled"
+      },
+      {
+        "modelIdentifier": "qwen/qwen3.6-27b:lmstudio@localhost:1234",
+        "name": "qwen/qwen3.6-27b"
+      },
+      {
+        "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+        "name": "qwen/qwen3.6-35b-a3b"
+      },
+      {
+        "modelIdentifier": "qwen/qwen3.8-27b:lmstudio@localhost:1234",
+        "name": "qwen/qwen3.8-27b"
+      },
+      {
+        "modelIdentifier": "qwen3.5-27b:lmstudio@localhost:1234",
+        "name": "qwen3.5-27b"
+      },
+      {
+        "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@localhost:1234",
+        "name": "qwen3.5-27b-claude-4.6-opus-distilled-mlx"
+      },
+      {
+        "modelIdentifier": "qwen3.6-27b:lmstudio@localhost:1234",
+        "name": "qwen3.6-27b"
+      },
+      {
+        "modelIdentifier": "qwen3.6-27b-mtplx-optimized-speed:lmstudio@localhost:1234",
+        "name": "qwen3.6-27b-mtplx-optimized-speed"
+      },
+      {
+        "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@localhost:1234",
+        "name": "qwen3.6-27b-ud-mlx"
+      },
+      {
+        "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234",
+        "name": "text-embedding-nomic-embed-text-v1.5"
+      },
+      {
+        "modelIdentifier": "unsloth/gemma-4-26b-a4b-it:lmstudio@localhost:1234",
+        "name": "unsloth/gemma-4-26b-a4b-it"
+      },
+      {
+        "modelIdentifier": "unsloth/gemma-4-31b-it:lmstudio@localhost:1234",
+        "name": "unsloth/gemma-4-31b-it"
+      }
+    ]
+  }
+}

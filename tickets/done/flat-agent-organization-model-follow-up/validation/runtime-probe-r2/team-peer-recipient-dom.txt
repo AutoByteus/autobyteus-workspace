@@ -1,0 +1,98 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - button "Active team run Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - img "Active team run"
+    - generic: Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: 5h
+  - tree "Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools. organization tree":
+    - treeitem "Agent, lead, level 1, idle, /lead" [active] [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: 5h
+    - treeitem "Agent, worker, level 1, idle, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 5h
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: 5h
+  - generic: Orgs
+  - button "AORG Validation Org (2)":
+    - generic: AORG Validation Org
+    - generic: (2)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: "You received a message from sender name: worker, sender id: aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181 message: Reply TEAM-PEER-R2 only. Do not use tools."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: TEAM-PEER-R2
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team" [selected]: Team
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 1 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 1 Messages
+  - complementary:
+    - button "Message 14. Sept., 10:58 from worker Reply TEAM-PEER-R2 only. Do not use tools.":
+      - generic: Message
+      - generic: 14. Sept., 10:58
+      - paragraph: from worker
+      - paragraph: Reply TEAM-PEER-R2 only. Do not use tools.
+  - separator
+  - main:
+    - generic: Message
+    - generic: worker
+    - button "Participant details":
+    - generic: 14. Sept., 10:58
+    - paragraph: Reply TEAM-PEER-R2 only. Do not use tools.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

@@ -1,0 +1,143 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs AV AORG Validation Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: AV
+    - generic: AORG Validation Team
+    - generic: (1)
+  - button "Active team run Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools." [expanded]:
+    - img "Active team run"
+    - generic: Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools.
+  - button "Terminate team":
+  - generic: now
+  - tree "Remember marker TEAM-WORKER-A-REV001. Reply with this marker only. Do not use tools. organization tree":
+    - treeitem "Agent, lead, level 1, running, /lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: now
+    - treeitem "Agent, unused, level 1, offline, /unused" [level=1]:
+      - generic: U
+      - generic: unused
+      - generic: now
+  - generic: Orgs
+  - button "AORG Validation Org (2)":
+    - generic: AORG Validation Org
+    - generic: (2)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Running"':
+    - generic: Running
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: "You received a message from sender name: worker, sender id: aorg_validation_agent_43f222f8ff3d4ab7a86502dc40e1d181 message: Reply TEAM-PEER-R2 only. Do not use tools."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: TEAM-PEER-R2
+  - generic: You
+  - generic: "Call delegate_task exactly once with recipient_address /worker. Task instructions: Reply TASK-RESULT-R2 and then submit that exact result using submit_task_result once; do not use any other tool or read files. After delegating, wait for its submitted result, then call review_task_result to accept it exactly once. Do not create more tasks."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - button "Thinking":
+    - generic: Thinking
+  - button "review_task_result":
+    - generic: review_task_result
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: Delegated once, but review failed because the task was not yet awaiting review.
+  - generic: You
+  - generic: "Task task_df359fe62c3d4417adb4003fcc1f4418 result submitted: TASK-RESULT-R2"
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "review_task_result":
+    - generic: review_task_result
+  - paragraph:
+    - text: Task
+    - code: task_df359fe62c3d4417adb4003fcc1f4418
+    - text: accepted.
+  - generic: You
+  - generic: "Call delegate_task exactly once with recipient_address /worker. Task instructions: Submit exactly APPROVAL-REPRO-R2 using submit_task_result once immediately, then stop. Do not use other tools or read files. After delegating, reply TASK-CREATED only; do not review or create another task."
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - button "delegate_task":
+    - generic: delegate_task
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Stop generation":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team"
+    - tab "Terminal"
+    - tab "Activity" [selected]: Activity
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - heading "To-Do" [level=3]
+  - generic: 0 Tasks
+  - heading "Activity" [level=3]
+  - generic: 5 Events
+  - article:
+    - button "System instructions. AutoByteus-supplied · Codex baseInstructions. Available. Captured 14.09.2026, 10:58:03. 6195 characters.":
+      - generic: System instructions
+      - generic: AutoByteus-supplied · Codex baseInstructions
+      - generic: Captured 14.09.2026, 10:58:03 · 6195 characters
+      - generic: Available
+  - generic: delegate_task
+  - generic: "#exec-6"
+  - generic: Success
+  - generic: Arguments
+  - generic: Result
+  - generic: review_task_result
+  - generic: "#exec-d"
+  - generic: Failed
+  - generic: Arguments
+  - generic: Error
+  - generic: review_task_result
+  - generic: "#exec-a"
+  - generic: Success
+  - generic: Arguments
+  - generic: Result
+  - generic: delegate_task
+  - generic: "#exec-1"
+  - generic: Approved
+  - generic: Arguments

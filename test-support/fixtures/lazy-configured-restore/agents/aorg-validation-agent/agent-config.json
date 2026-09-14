@@ -1,0 +1,17 @@
+{
+  "toolNames": [
+    "send_message_to",
+    "delegate_task",
+    "submit_task_result",
+    "review_task_result",
+    "read_file"
+  ],
+  "skillNames": [],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

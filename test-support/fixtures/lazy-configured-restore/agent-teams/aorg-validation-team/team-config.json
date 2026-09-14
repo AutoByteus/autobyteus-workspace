@@ -1,0 +1,23 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    {
+      "memberName": "lead",
+      "ref": "aorg-validation-agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "worker",
+      "ref": "aorg-validation-agent",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "unused",
+      "ref": "aorg-validation-agent",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}
