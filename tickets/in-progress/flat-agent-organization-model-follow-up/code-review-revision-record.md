@@ -133,3 +133,22 @@ None — CRR-001 had no findings.
 - Independent16files142tests Pass, validation/crr006-local-tests.log (19 owner/render/command +19 pure). Supplied red/typecheck/renderer limits retained. Plain web tsc remains Fail/exit2 and inherited server limits; no reviewer global tsc/build/provider/frontend acceptance or no-new-errors claim. Reviewer modified no production/durable tests. Log-only commita6a19e666 preceded completed report because unavailable `python` prevented initial writing; retried with python3, no premature handoff.
 - Selected sole current source-Pass rule to exact `/software_engineering_team/api_e2e_engineer`; send_message_to confirmed accepted=true / DELIVERED to existing run `api_e2e_engineer_450b25f17f2245fe89b9c52cd17038ae` with complete package and review commitce3444699. Only API/E2E notified. Next TASK-05/06/F-002 FIRST with exact incoming/pre-selection capture and actual visible click/one submission/review/settlement/repeat/control, preserve F-001 and finish B02–B04. No extra informational recipient.
 - Other-owner files/generated outputs preserved; no user server/conversations/reset/migration/rename/push/merge/release. Eventual Delivery target origin/requirements/flat-agent-organization-model, not personal.
+
+
+### CRR-007 — Successful API durable-test review
+- Date2026-09-14; first proportional successful-test review / cumulative round7. Trigger API-REV-003 Pass. Separate canonical api-e2e-test-review-report.md created; CRR-006 code-review-report.md/source scorecard unchanged.
+- Authority approved SR-005 unchanged, SR-006 evidence, SR-010/DS-REV-003, ARCH-REV-003, IR-003 (IR-001/002 retained), CRR-006 source Pass; SR-011 evidence-only; API-REV-003 Pass/confidence95.6% (not pass rate), prior API Fail75.0%. Tested HEAD4b0d356ac/source1f407b3bf; DR N/A.
+- Current **Pass — proportional test review**, Medium/High reviewed route. No prior proportional finding, no new actionable finding/classification. No production audit/scorecard or API-confidence recomputation.
+
+#### Prior Finding Resolution
+| Finding | Prior status | Current status | Authority / verification |
+| --- | --- | --- | --- |
+| F-001 | Resolved in actual API-REV-002; preserved CRR-006 | Resolved, preserved in API-REV-003 | Actual retained native/direct/mounted/Team restart/continuation evidence, API report |
+| F-002 | CRR-006 source resolved; actual frontend pending | Resolved in actual frontend | API-REV-003 two manual late selections + early control; exact pre-selection request/owning state, visible frontend click once, single submission/ordinary accepted review. Sample task-A proof read; no reviewer live rerun |
+| F-003 | Withdrawn/rejected API-only candidate | Remains rejected | No new protocol finding or machinery |
+
+- Reviewed two API integration corrections plus seven importable Agent/flat-Team/coordinator-free-Org sample files. Exact SHA-256 inventory in separate report. No removals/new Round3 API durable edits; IR-003 owner regressions already reviewed. Other-owner tests/fixtures stay local/uncommitted by reviewer.
+- Stale eager expectation becomes zero-start then exact first/later work while preserving actual bytes-before-publication assertion. Typed status fixture event is emitted on accepted input; lifecycle test now deliberately starts member before unchanged rejected-stop/accepted-stop/MCP restore assertions. Shared isolated fixture has no secrets/launch defaults/run IDs. All proportional checks Pass.
+- Diff/surrounding code/existing execution evidence sufficient; no test/typecheck/API rerun. Changed8+1 suites passed in carried API67files348; Round3 narrow19 included in16files142. No source limits/forced test splitting applied.
+- Explicit API limits retained: exact post-durable exception not live-injected; direct-external-only live bound-empty; no exhaustive provider/fault/Claude/Electron claim; failed global typecheck qualifications; wrong initial mounted trace count invalidated, actual accepted native attempt not pending proof, repeated frame receipt not duplicate sends. API-owned actual Pass not inflated or independently rerun.
+- Next Delivery after current get_handoff_rules matching successful-test-Pass rule, exact recipient/receipt to be recorded. No Delivery Completed or user verification implied. Constraints: other-owner artifacts/generated outputs/isolated data preserved; no user server/conversations/reset/migration/rename/push/merge/release. Eventual target origin/requirements/flat-agent-organization-model, not personal.
