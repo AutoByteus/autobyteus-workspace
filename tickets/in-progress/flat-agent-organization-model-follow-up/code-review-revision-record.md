@@ -113,3 +113,23 @@ None — CRR-001 had no findings.
 - Selected most-specific current rule: “When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.” Exact recipient `/software_engineering_team/solution_designer`; send_message_to confirmed accepted=true / DELIVERED to `solution_designer_b1a3b7b01d35499d9fa06baf799a2046`, including cumulative package and review/personal-history commit4056ecfc1. No additional recipient notified. Bounded history/live approval design authority must preserve manual/auto semantics and required hydration. No implementation-only F-002 request sent; only one recipient for this result.
 - Actual frontend acceptance only: API diagnostic approval is corroboration, not task journey Pass; native API inference not frontend acceptance. API missing B02–B04 remain incomplete. No successful-test/delivery review.
 - All ownership/side-effect constraints preserved; other-owner local artifacts untouched, no user server/conversations/reset/migration/rename/push/merge/release. Eventual target origin/requirements/flat-agent-organization-model, not personal.
+
+
+### CRR-006 — Revised current-tool/history reconciliation source accepted
+- Date2026-09-14; Implementation Review round6. Trigger IR-003/F-002. Canonical full report/scorecard updated; previous CRR-005 report preserved in git a269262fd.
+- Authority SR-005 unchanged, SR-006 evidence, SR-010/DS-REV-003, ARCH-REV-003, IR-003 with IR-001/002 retained; API-REV-002 Fail/confidence75.0%; DR and successful-test review N/A. Source1f407b3bf vs a269262fd; incoming f5d9029f634e427ebeebc26db70548383063d8a8.
+- Prior CRR-005 Fail Design Impact. Current **Pass at source boundary**, Medium/High; actual F-002 acceptance pending.
+
+#### Prior Finding Resolution
+| Finding | Prior | Current | Related revisions / verification |
+| --- | --- | --- | --- |
+| F-001 | Actual frontend resolved API-REV-002 | Resolved, preserved | IR-002 unchanged; independent20 retained Org +6 Team tests; actual evidence remains authority |
+| F-002 | Open Design Impact/source defect | Source resolved; actual acceptance pending | SR-010/DS-REV-003, ARCH-REV-003, IR-003; exact history/current-tool composition, independent16files142tests, original-source red2/control1 |
+| F-003 | Withdrawn/rejected API-only candidate | Remains rejected | No supported frontend replay path, no protocol change/deduction |
+
+- CR-C13 correction verified. CR-C17/18 implement reviewed terminal/identity/publication/live-applicability contracts, no new scenario/machinery. ARCH-PM-001–004 preserved;005 confirmed supported source path. Original actual pre-selection frame still unrecorded; unique upstream attribution/actual closure not claimed.
+- Two production files155/156 effective nonempty, deltas+18/-3,+161/-0, source/whitespace guards pass. One detached decision governs both views, current args/type/metadata preserved, explicit terminal precedence, equivalent duplicate normalization, missing invocation retained without copied live text. Same ready/live run only; existing selection/revision/coalescing/bounded retry/synchronous publication retained. No handlers replayed or composition commands.
+- Full scoped source10.0/10,100/100; affected Runtime Correctness8.0→10.0 only at source boundary. Unaffected IR-001/002 evidence reused, not global re-audit.
+- Independent16files142tests Pass, validation/crr006-local-tests.log (19 owner/render/command +19 pure). Supplied red/typecheck/renderer limits retained. Plain web tsc remains Fail/exit2 and inherited server limits; no reviewer global tsc/build/provider/frontend acceptance or no-new-errors claim. Reviewer modified no production/durable tests. Log-only commita6a19e666 preceded completed report because unavailable `python` prevented initial writing; retried with python3, no premature handoff.
+- Selected sole current source-Pass rule to exact `/software_engineering_team/api_e2e_engineer`; receipt pending. Next TASK-05/06/F-002 FIRST with exact incoming/pre-selection capture and actual visible click/one submission/review/settlement/repeat/control, preserve F-001 and finish B02–B04. No extra informational recipient.
+- Other-owner files/generated outputs preserved; no user server/conversations/reset/migration/rename/push/merge/release. Eventual Delivery target origin/requirements/flat-agent-organization-model, not personal.
