@@ -8,6 +8,7 @@ The latest [code-review-report.md](code-review-report.md) is authoritative for s
 | CRR-001 | code-review-report.md | Round 1 Implementation Review / IR-001 completion | N/A | Pass | None |
 | CRR-002 | code-review-report.md | Round 2 API/E2E Failure-Origin / API-REV-001 F-001 | Pass | Fail — Local Fix, implementation | F-001 |
 | CRR-003 | code-review-report.md | Round 3 user-directed design-impact reconsideration / F-001 | Fail — Local Fix | Fail — Design Impact | F-001 |
+| CRR-004 | code-review-report.md | Round 4 Implementation Re-review / IR-002 | Fail — Design Impact | Pass — source; API pending | F-001 |
 
 ## Revision Entries
 ### CRR-001 — Initial lazy configured restore source-review baseline
@@ -71,3 +72,21 @@ None — CRR-001 had no findings.
 - Selected most-specific current rule from get_handoff_rules: “When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.” Exact recipient `/software_engineering_team/solution_designer`. Delivery confirmed: send_message_to returned accepted=true / DELIVERED to exact run `solution_designer_b1a3b7b01d35499d9fa06baf799a2046`, with cumulative failure/design package and review commit578ca1d50. Message explicitly requests original-personal comparison and coordinator hold/revised-basis coordination with the previously notified implementation execution. No hold receipt claimed. Only this recipient notified for CRR-003.
 - Next: investigate/revise authoritative design, renewed approval only if intended behavior changes, applicable review routing, implementation/source re-review, API F-001/B02–B04. No successful-test/delivery result.
 - Constraints unchanged: no user-server/conversation mutation/reset/migration/release; eventual Delivery target origin/requirements/flat-agent-organization-model, not personal. Other-owner local artifacts untouched.
+
+
+### CRR-004 — Revised retained Org recovery source accepted
+- Date2026-09-14; Implementation Review round4. Trigger Implementation Engineer IR-002 completion/F-001. Canonical `code-review-report.md` replaced with current full implementation report/scorecard; prior failure-origin report remains in git e4490e173.
+- Related SR-005 approval, SR-006 evidence, SR-009/DS-REV-002, ARCH-REV-002; IR-002 (IR-001 retained); API-REV-001 Fail/confidence72.1%; DR N/A. Source8bc62ce5f vs e4490e173; incoming evidence735f39ea1.
+- Prior result CRR-003 Fail Design Impact. Current **Pass at source boundary**, Medium/High confirmed; API acceptance remains pending.
+
+#### Prior Finding Resolution
+| Finding ID | Prior Status | Current Status | Related Revisions | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-001 | Open — Design Impact, source/API unresolved | Source resolved; actual API closure pending | SR-009/DS-REV-002, ARCH-REV-002, IR-002, CRR-004 | Strict disconnected inspection/staging/store publication; no inactive checkpoint/socket; 13 files182 tests independently pass, including20 RET cases; validation/crr004-local-tests.log |
+
+- Scenario/material-premise changes: none. CR-C08 correction verified; CR-C11/12 accepted only on approved restart/history and ownership-preservation contracts. ARCH-PM-001/002 unchanged;003 implemented;004 rejects unsupported identical Team rewrite. No new finding/speculative machinery.
+- Review specifics: same retained context/draft/focus, pending attachment settlement/no replay, active checkpoint barriers, unknown failures, current history generations, bounded recovery coalescing and Stop release before terminate await verified. Rejected Stop becomes read-only until fresh inspection/snapshot, as reviewed lifetime contract requires. No leaf/color/remount fix.
+- Full current source scorecard10.0/10,100/100; affected Runtime Correctness8.0→10.0 at source boundary. Unaffected backend evidence reused, not rerun. Actual API result remains Fail; source score is not acceptance probability.
+- Verification: reviewer182 tests/13 files exit0; diff whitespace and source line audits pass (14/469/255/400 effective nonempty, all deltas<220). Supplied IR-002 red2 failures/typecheck Fail/preview qualifications read. No new paired baseline or full build/typecheck pass claim; no reviewer live restart/provider action or production/test correction.
+- Selected sole current rule: “When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.” Exact recipient `/software_engineering_team/api_e2e_engineer`. Delivery pending. Governing single-recipient contract excludes duplicate informational forwarding. Next stage API F-001-first/RET-06/07 and remaining B02–B04, not delivery or successful-test review.
+- Constraints unchanged: incoming other-owner local files/generated outputs preserved; no user-server/conversation mutation/reset/migration/release/push/merge. Eventual Delivery target origin/requirements/flat-agent-organization-model, not personal.

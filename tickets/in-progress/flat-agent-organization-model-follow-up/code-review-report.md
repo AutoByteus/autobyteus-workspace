@@ -1,94 +1,143 @@
 # Code Review Report
 
 ## Latest Authoritative Result
-**Fail — Design Impact, Solution Designer-owned. CRR-003 / focused failure-origin classification revision, round 3, 2026-09-14.**
+**Pass — Implementation Source Re-review, CRR-004, round 4, 2026-09-14.**
 
-F-001 is confirmed: retained Org reconnect requires an active-only checkpoint, so ordinary server restart strands the previously focused member in `reopen_required` with its last Idle status. Separate history rows become Offline. This is a pre-existing source defect exposed by the approved restart scenario, **not an introduced lazy-runtime regression** and not a missing Offline setter or demonstrated Vue stale-reference bug.
+F-001 is **resolved at the reviewed source boundary; actual API acceptance remains pending**. IR-002 implements SR-009 / DS-REV-002 / ARCH-REV-002 under unchanged approved SR-005. Medium / High confirmed. Supported Product Scenario Gate: Pass. Material-Premise Gate: Pass. Current scoped source score: 10.0/10 (100/100). No new source finding.
 
-Medium / High confirmed. Supported Product Scenario Gate: **Pass**; Material-Premise Gate: **Pass** (finding grounded in supported scenario). Overall review fails for F-001. API-REV-001 remains Fail/72.1%; its incomplete B02–B04 cases also prevent validation Pass. Next owner: Solution Designer for authoritative design correction before implementation. This supersedes CRR-002’s local-fix route; F-001 remains unresolved. No successful-test review or delivery handoff.
+API-REV-001 remains **Fail / confidence72.1%**, not a pass percentage. This source Pass neither rewrites that result nor certifies actual restart/provider behavior. Next: API/E2E recheck F-001 first, then finish B02–B04 and RET-06/07. No successful-test review or delivery result.
 
-## Review Round Meta / Authority
-- Package AORG-FOLLOWUP-20260914-001. Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up`; branch `codex/flat-agent-organization-model-follow-up`.
-- Approved [requirements-doc.md](requirements-doc.md): SR-005; [design-spec.md](design-spec.md): DS-REV-001/SR-007; [investigation-notes.md](investigation-notes.md), [solution-revision-record.md](solution-revision-record.md), SR-006 evidence and SR-008 evidence-only supplement.
-- Architecture: [design-review-report.md](design-review-report.md), [architecture-review-revision-record.md](architecture-review-revision-record.md), ARCH-REV-001. Implementation: [implementation-handoff.md](implementation-handoff.md), [implementation-revision-record.md](implementation-revision-record.md), IR-001.
-- Prior source result: CRR-001 Pass, preserved in [code-review-revision-record.md](code-review-revision-record.md) and report at git `b4b8f042f:.../code-review-report.md`. This canonical report now records the latest focused result; prior 100/100 is **not current approval of the failed scenario**.
-- Failure trigger: API/E2E Engineer's [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), API-REV-001, F-001/B01/SCN-001/AC-001 and truthful-status AC-002. Read [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md), [api-e2e-test-case-ledger.md](api-e2e-test-case-ledger.md), [api-e2e-revision-record.md](api-e2e-revision-record.md) and relevant runtime evidence.
-- Current classification trigger: user explicitly directs Design Impact routing so Solution Designer resolves the exposed design/review gap, and explicitly requests reference to the original personal implementation. This is a process/design direction, not approval of unspecified new product behavior. Prior CRR-002 source findings remain valid; no new execution or source fact is claimed.
-- Cumulative supplements retained: restart-resume-analysis.md, team-backend-abstraction-analysis.md, status-implementation-comparison.md, bootstrap-handoff.md, solution-handoff.md, validation/README.md. SR-008 neither changes approved intent nor certifies runtime equivalence.
-- Source e8db80a9c; tested HEAD b4b8f042f06ffbd9e6e4dbfa09c684d7149103ca; base72dee5ad2c2e332272a0c00eb36af1a036bd69fb. Current production remains unchanged; incoming API tests/fixtures/evidence and Designer notes remain local and untouched. Delivery revision: N/A.
-- Skill: focused failure-origin review, not full structural/size audit or successful API/E2E test review. No production or durable-test fix by reviewer.
+## Review Round Meta / Cumulative Authority
+- Entry point: Implementation Review, round4, trigger IR-002 / F-001. Prior result CRR-003 Fail / Design Impact, preceded by CRR-002 failure-origin and CRR-001 initial source baseline. See [code-review-revision-record.md](code-review-revision-record.md).
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up`, branch `codex/flat-agent-organization-model-follow-up`; package AORG-FOLLOWUP-20260914-001.
+- Source/test/docs commit `8bc62ce5f2ede9a074b903130e0f21e88a31023c`, base `e4490e1738d58dedf7bda94fa5ce985801854d55`; incoming evidence HEAD `735f39ea12e8e9ce8382f1d1cde675cc9d1a78d8`. IR-001 backend source `e8db80a9c90ef67ae744d62de1a27440553a4c48` unchanged.
+- Requirements authority: [requirements-doc.md](requirements-doc.md), SR-005; approval evidence SR-006. Investigation [investigation-notes.md](investigation-notes.md), AINV-007–011; history [solution-revision-record.md](solution-revision-record.md), SR-009. SR-008 remains evidence-only.
+- Design authority: [design-spec.md](design-spec.md), DS-REV-002 including preserved DS-REV-001. [design-review-report.md](design-review-report.md) and [architecture-review-revision-record.md](architecture-review-revision-record.md), ARCH-REV-002 Pass, ARCH-REV-001 history. Earlier handoff text saying review pending is historical sequencing, not the current review result.
+- Implementation: [implementation-handoff.md](implementation-handoff.md), [implementation-revision-record.md](implementation-revision-record.md), IR-002; IR-001 retained. Existing assignment resumed after Designer hold and architecture Pass, not the superseded CRR-002 direction.
+- Relevant supplements retained: solution-recovery-handoff.md, solution-handoff.md, bootstrap-handoff.md, restart-resume-analysis.md, status-implementation-comparison.md, team-backend-abstraction-analysis.md, validation/README.md.
+- Triggering API authority retained: api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md, api-e2e-test-case-ledger.md, api-e2e-revision-record.md, API-REV-001 / F-001/B01/SCN-001/AC-001/002. Exact prior execution/evidence remains indexed there and in CRR-002/003. Delivery DR and successful-test review: N/A — not reached.
+- Skill and shared design principles/template applied. Full current scorecard below; unaffected backend source evidence from CRR-001 (report in git `b4b8f042f`) reused, not rerun or inferred anew.
 
-## Supported Scenario / Forward Production Path
-**SCN-001 / BEH-001, BEH-003 / DS-002, DS-005**, with REQ-002 truthful lifecycle: user has sent legitimate work to an Org-mounted member, keeps its conversation open, restarts server, then continues the retained conversation. This is explicitly approved normal operation, not a contrived concurrency, file mutation or generic network-failure premise.
+## Review Scope / Classification
+Medium / High, independent source re-review required. All four changed production files and all five changed/new test files plus current Org documentation reviewed. Rechecked F-001 first, strict reader, complete hydration/adoption, history generations, service lifetime/Stop, pending submissions, active recovery, Team preservation. Traced unchanged server inspection and existing context/row/header boundaries as necessary.
 
-1. Previously focused `/team/worker` has real conversation and Idle runtime status.
-2. Test-owned server restarts with the same data/port; no active roots/providers exist in new process.
-3. Existing Org WebSocket closes → `AgentOrgStreamingService.ts:104–120` retains context and enters `reopen_required` → bounded transparent recovery.
-4. `attemptTransparentRecovery` (385–401) calls `reopenOwned` (123–138) whenever a retained context exists. `reopenOwned` requires `fetchCheckpoint` **before** opening another socket or staging a candidate.
-5. `fetchCheckpoint` (429–445) calls `getAgentOrgExecutionCheckpoint`; server `api/graphql/types/agent-org-run.ts:107–113` uses `getActive` and rejects inactive retained roots. That is a legitimate checkpoint contract, but the recovery caller incorrectly requires it for ordinary inactive-root recovery.
-6. All bounded recovery attempts fail; `scheduleTransparentRecovery` (369–377) reports error. No new snapshot publication or `onInactive` callback occurs. `AgentOrgExecutionContext.requireReopen` leaves the member's last `currentStatus` unchanged.
-7. Separately, `runHistoryLoadActions.ts:143–147,172–183` refreshes Org history rows without reconciling retained Org member contexts. `agentOrgHistoryRows.ts:48–72` uses historical/Offline values when context is not live. Thus rows are Offline while `TeamWorkspaceSurface.vue:15–18` still renders retained `target.context.state.currentStatus` as Idle.
-8. Refocus invokes current read-only inspection through `agentOrgContextsStore.openForInspection/readInspection` and `getAgentOrgRunInspection` (server resolver78–80), replacing/adopting a correctly hydrated inactive context without provider startup. This explains observed focus-only recovery.
+Excluded: whole backend re-audit, backend naming/wrapper/nested-Team changes, provider policy, migration/reset, actual browser/server restart or provider execution, unrelated typecheck cleanup. API-owned local test/fixture changes are retained evidence, not a successful-test review.
 
-The Org WebSocket itself is also active-only (`services/agent-streaming/agent-org-stream-handler.ts:42–48`). Merely skipping the checkpoint and opening another socket would not admit a historical snapshot. Existing read-only inspection is the applicable current capability; no automatic runtime restore is necessary or authorized merely to update status.
+## Upstream Behavior / Production-Path Basis Confirmation
+Basis **Confirmed**. No newly discovered or changed intended behavior; no material ambiguity. ARCH-REV-002 resolves the earlier design gap, but this review independently verifies the implementation.
 
-## Evidence / Exact Failure Execution
-- API-owned command: `node tickets/in-progress/flat-agent-organization-model-follow-up/validation/runtime-probe/server.mjs`; frontend `BACKEND_NODE_BASE_URL=http://127.0.0.1:50244 pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 50381`.
-- Keep actual mounted-worker conversation focused after reply/Idle, restart owned server on same data/port, wait for status; then select direct and worker without Send/reload. Two independent retained-tab restarts: PID26991→35181 and35181→43597.
-- Expected: after authoritative inactive observation, same-leaf header Offline with retained conversation/identity; no need for manual refocus and no provider startup to obtain status.
-- Observed: header Idle/sidebar Offline and backend active/pending/events empty. Stable DOM additionally contains **“Live updates could not recover automatically…”**, so this is failed recovery, not merely a missed render tick.
-- `validation/runtime-probe/server-cycle-2.log:122,124` and `server-cycle-3.log:119,124` independently record GraphQL `getAgentOrgExecutionCheckpoint` errors: active Org not found, for exact retained Org ID. These logs materially identify the failed boundary beyond the initial UI hypothesis.
-- DOM: org-after-restart-before-input-dom.txt, org-second-before-restart-dom.txt, org-second-after-restart-dom.txt, org-second-after-restart-stable-dom.txt (worker selected52; Idle63; recovery alert65), org-second-refocus-dom.txt (Offline62).
-- Screenshot `org-second-after-restart.png` independently inspected by reviewer: selected worker, gray row, green Idle header. Telemetry `second-after-restart-telemetry.json` and `refocus-zero-telemetry.json`: PID43597, empty registry/candidate/event arrays before/after refocus.
-- API telemetry/server helpers inspected: real methods are wrapped for observation, not replaced with fake responses; controls restart only owned processes. No evidence that instrumentation causes the active-root query precondition failure.
+| Behavior | Status | Current path / preservation evidence |
+| --- | --- | --- |
+| BEH-001 / SCN-001 | Confirmed | Retained Org after restart: socket loss → strict inspection → inactive full staging → store publication/history → same focused Offline context → existing deliberate continuation. Mounted and direct RET-01 pass. |
+| BEH-002 / SCN-002 | Confirmed | Observation never restores/sends; authorized later human/peer work and IR-001 work-driven activation remain unchanged. Actual remaining peer matrix stays API-owned. |
+| BEH-003 / continuity contract | Confirmed | Store identity validation before activity commit; adoption retains AgentContext/draft/focus; tracked pending submission exclusion survives historical cleanup and normal settle; active checkpoint path and task tests preserved. |
+| BEH-004 / SCN-003 | Confirmed | Team production unchanged; existing authoritative history reconciliation updates retained leaf/root and preserves terminal Error. Added RET-07 local preservation passes; actual full Team acceptance pending. |
+| BEH-005 / SCN-004 | Confirmed | No backend activation/task staging delta from IR-001; fresh/work-driven behavior not reimplemented. Existing task/checkpoint/composer tests rerun. |
 
-## Focused Diagnostic Checks (Not Product Fixes)
-Reviewer executed two temporary probes against unchanged current source:
-1. `pnpm -C autobyteus-web test:nuxt tests/crr002-status-probe.spec.ts --run`: **2 passed**. Actual Org context/store + mounted Team surface/status display, with transport/query fixtures: both inactive event and historical candidate adoption update the existing header to Offline and preserve AgentContext identity. Rejects the proposed missing-setter/simple stale-proxy explanation at this boundary.
-2. `pnpm -C autobyteus-web test:nuxt tests/crr002-recovery-probe.spec.ts --run`: **1 passed, reproducing the defect**, not acceptance. Real OrgStreamingService and real context; socket/clock/GraphQL boundary controlled to reproduce the already-recorded production rejection. Result: 5 checkpoint attempts, 1 original socket, 1 original publication, **0 inactive callbacks**, phase reopen_required, member status Idle, error active Org not found.
+## Supported Product Scenario And Reachability Gate
+| Basis | Independent actor/event/contract | Supported forward lifecycle and consequence | Evidence / disposition |
+| --- | --- | --- | --- |
+| SCN-001 / BEH-001,003 | User keeps used conversation open across ordinary server restart and later continues it | Real restart removes live root, browser loses socket, retained scope needs authoritative inactive observation without work; correct focused status/identity and continuation | Approved SR-005; twice-reproduced API failure; server inspection contract; ARCH-PM-003. Supported Normal Scenario, reachable, Use. |
+| SCN-001 / recovery ownership | Same operational restart, existing subsequent successful history refresh after original retries exhaust | Both current history loaders → retained store → existing bounded recovery; returned IDs trigger inspection, not inferred inactivity | DS-REV-002; actual history refresh callers; RET-04 real loader functions. Supported Normal Scenario, Use. |
+| BEH-003 / current-operation preservation | Existing Stop command and retained publication/submission ownership contract | Stop/replacement/disposal invalidates obsolete asynchronous work; pending attachment submission remains single-owner while restart observation changes context; no replay or partial publication | DS-REV-002 safeguards / RET-05; store Stop and submit entry paths. Supported Explicit Edge Scenario by governing preservation contract, Use; no new concurrent-user product feature inferred. |
+| SCN-003 / BEH-004 | User keeps Team worker open across restart | Independent Team history route reconciles root/member without live checkpoint | ARCH-PM-004 rejection of identical missing-path inference retained; actual supported Team workflow remains Use, no speculative rewrite. |
 
-Probe sources/logs retained under `validation/crr002-{status,recovery}-probe.spec.ts` and matching `.log`; temporary copies removed from web/tests. To rerun, copy each source to its original web/tests filename then execute the corresponding command and remove that copy. These are diagnostic artifacts, not durable regression coverage; no live server restart by reviewer. Existing API 348 server/39 frontend passes remain supplied evidence, not rerun here. Strict global typecheck limitations remain unchanged.
+### Candidate Finding And Mechanism Gate
+| Candidate | Observation / mechanism | Independent basis, path, state/consequence | Evidence / disposition |
+| --- | --- | --- | --- |
+| CR-C08 / F-001 (rechecked) | Inactive retained recovery previously blocked by live-only checkpoint | SCN-001 normal restart above; no active root, focused Idle stranded | New service lines131–154 supplies strict inspection/staging before active admission; 20 RET cases and independent182 tests. Promote supported correction; prior source finding resolved, API pending. |
+| CR-C11 | History-triggered bounded retry and shared inspection | Approved restart can outlast existing retry window; later current history invokes owner, no omitted/error-row inference | Store156–164/service91–97/loaders148,185; RET-04 and Apollo generation tests. Promote proportionate required design mechanism, no defect. |
+| CR-C12 | Stop retirement and pending exclusion | BEH-003/DS-REV-002 governing lifetime and exact-input preservation on supported Stop/Send/restart path | Store251–264 releases before await; publish/markHistorical reassert tracked submissions; RET-05 and rejected-Stop test. Promote preserved contract, no defect or additional machinery. |
+| CR-C09/10 (retained) | Missing setter/reactivity or new backend laziness as F-001 cause | Earlier hypotheses contradicted by actual source/path evidence | Reject as attribution; setters already work and backend unchanged. No deduction. |
+| ARCH-PM-004 (retained) | Require same Team rewrite solely because its checkpoint is live-only | Team has independent authoritative history reconciliation | Reject identical missing-path inference, not Team's supported restart scenario. No deduction. |
 
-## Candidate Finding And Mechanism Gate
-| ID | Observation / Scenario And Independent Trigger | Forward Path / Consequence | Evidence | Disposition |
+ARCH-PM-001/002 confirmed unchanged from CRR-001; ARCH-PM-003 confirmed and implemented; ARCH-PM-004 rejection preserved. No new unsupported scenario, held material premise, or speculative recovery obligation.
+
+## F-001 Resolution / Ownership Detail
+- `agentOrgRunInspection.ts:6–15` rejects GraphQL errors, validates full current envelope and exact root, returns existing typed view. Store manual inspection now shares it; no duplicate query/validation.
+- `AgentOrgStreamingService.reopenOwned:131–175`: only disconnected retained recovery inspects first. Valid inactive view clears old checkpoint metadata, stages full projections with release guards, normalizes candidate before adoption, selects current focus and invokes store publish. Context assignment precedes `onInactive`; after that callback only disconnect runs, so no resurrection. No inactive checkpoint, new socket or restore. Readiness rejects on release rather than resolving as live.
+- Active observation still flows through existing checkpoint-before → CONNECTED/snapshot → checkpoint-after/window verification. Still-current task checkpoint replacement remains the live path. Unknown/malformed/projection failures publish nothing and use bounded errors, not error-string activity inference.
+- Store publish validates matching address before activity commit; existing hydrator validates root/tree/task/message/projection correlation. Activity revision conflicts prevent candidate adoption. Existing adoption keeps exact local AgentContext, composer fields and current selection. History activity updates only through owner publication/markHistorical; mounted header reads retained currentStatus and history rows use historical state coherently.
+- Stop deletes inspection generation and **releases old service before awaiting terminate**. `ownsOperation(null)` alone could not protect a disconnected service; released state now does. Rejected Stop retains last-known active identity/selection but read-only/reopen_required until fresh existing inspection/snapshot; regression verifies recovery. This realizes reviewed RET-05, not an unapproved new stop policy.
+- Tracked pending submission remains the store authority through publication and `setActive(false)` cleanup; access checks remain read-only while tracked. Existing submission catch/finally settles once, preserves newer draft and finalized attachment identity, sends no replay. No status callback deletes/acknowledges submission.
+- Current full and focused Org history publications invoke store reconciliation only after parsed successful current-generation results. Unretained/omitted IDs do not allocate/close roots; active operations/in-flight work coalesce; when no service exists, recovery reuses existing inspection/error ownership.
+- Original-personal reference `5645b49d6f51faa60bd3545bc8e3f0e7e3f96793` remains the observation→retained-owner reconciliation pattern. Current Team equivalent is unchanged at history loader280+. No old nested-Team or active-only hydration copying.
+
+## Structural / Design Checks
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | DS-REV-002 health/ownership assessment preserved; four-file bounded delta. | None |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | SR-005 unchanged; SR-009 and ARCH-REV-002 govern recovery, not SR-008 reassurance. | None |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-002/005 now span restart, strict observation, complete publication and later explicit continuation. | None |
+| Ownership boundary preservation and clarity | Pass | Stream owns scheduling; store owns context, submission and retirement. | None |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Inspection reader validates/query only; hydration and projections stay with existing owners. | None |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing server inspection, hydrator, activity revisions and scheduler reused. | None |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Embedded inspection query removed from store and shared with service. | None |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Existing AgentOrgExecutionViewDto returned; no parallel state/DTO. | None |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Both history loaders call one store reconciliation method. | None |
+| Empty indirection check (no pass-through-only boundary) | Pass | Reader owns strict envelope/root validation, not empty forwarding. | None |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Four files retain query, transport, context and history concerns. | None |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | History invokes store API, not service map; existing store/history collaboration remains explicit. | None |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No history bypass to retained leaf state or provider internals. | None |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Org reader colocated in existing agentOrgExecution folder. | None |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | One small shared reader; no new recovery subsystem. | None |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Exact Org ID, read-only view, void bounded trigger; no new endpoint/schema. | None |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | readAgentOrgRunInspection/requestRecovery/reconcileRetainedHistory match responsibilities. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared validation; single scheduler and publication callback. | None |
+| Patch-on-patch complexity control | Pass | Replaces unconditional disconnected checkpoint admission, no fallback-by-error. | None |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Old embedded query removed; no new temporary route remains. | None |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | RET-01–05 actual service/store/hydrator; retained mounted header; RET-07 Team preservation. | None |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | One coherent 314-line retained-recovery spec with common socket/view/projection helpers. | None |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Active fixtures supply required inspection; rejected-Stop expectation now proves revised lifetime contract. | None |
+| API/E2E readiness for the next workflow stage | Pass | 182 independent focused tests pass; real API acceptance and incomplete matrix clearly retained. | None |
+
+## Source File Size And Structure Audit
+Effective nonempty lines independently counted; additions/deletions from e4490e173→8bc62ce5f. Tests excluded from source limits.
+
+| Source (relative web/) | Lines | Delta +/− | >500 / >220 | SoC / placement | Required action |
+| --- | --- | --- | --- | --- | --- |
+| services/agentOrgExecution/agentOrgRunInspection.ts | 14 | 15/0 | Pass / Pass | Strict read-only query/validation | None |
+| services/agentOrgExecution/agentOrgStreamingService.ts | 469 | 30/0 | Pass / Pass | Existing transport lifecycle owner | None |
+| stores/agentOrgContextsStore.ts | 255 | 27/12 | Pass / Pass | Context/submission/publication owner | None |
+| stores/runHistoryLoadActions.ts | 400 | 3/0 | Pass / Pass | Existing history generation/publication | None |
+
+## Legacy / Persisted Data / Cleanup / Docs
+All checks Pass: no new compatibility mechanism, old-behavior retention, dual reads/writes or version fallback. Removed obsolete embedded query and unconditional disconnected active-checkpoint prerequisite. Active/inactive branches represent current lifecycle states, not compatibility versions. No newly dead helper/temporary route identified; no required removals. Existing backend deferred wrappers are not new in-scope compatibility machinery.
+
+F-001 persisted data **Not Affected**; cumulative IR-001 **Directly Usable — No Migration** remains. Server inspection reads validated current packages without restore/repair/providers. No schema or transition mechanics added; migration safety N/A. Docs impact Yes: `autobyteus-web/docs/agent_orgs.md` explains unknown/inactive/active recovery, rejected Stop, owner reconciliation and downstream acceptance limits; matches reviewed source.
+
+## Executed / Supplied Verification
+Independent reviewer command in web:
+```sh
+pnpm test:nuxt services/agentOrgExecution/__tests__ stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/agentOrgInspection.spec.ts stores/__tests__/agentOrgHistoryApollo.spec.ts stores/__tests__/agentOrgRetainedRecovery.spec.ts stores/__tests__/runHistoryRetainedTeamStatus.spec.ts stores/__tests__/runHistoryStore.spec.ts --run
+```
+**Exit0, 13 files / 182 tests Pass**, [crr004-local-tests.log](validation/crr004-local-tests.log). Includes 20 retained-recovery cases, strict active tests, composer/task/attachments, real Apollo generation checks and local Team preservation. Expected negative-case logs/Apollo cache-option warnings occur; no test failure. `git diff --check e4490e173 8bc62ce5f` Pass; four source line counts checked. No production/durable-test edit by reviewer.
+
+Supplied IR-002 red evidence has two expected pre-fix historical-vs-reopen_required failures for mounted/direct. Real service/store/hydrator/member model is used in durable retained tests; mounted worker uses real TeamWorkspaceSurface/status with surrounding event monitor/actions stubbed. Direct case checks real retained model/access, not a separately mounted direct header. Apollo/socket/time controlled, not real backend/provider. Full/focused loader functions are exercised with controlled transport and history publication; separate real Apollo generation suite verifies admission. These are proportionate implementation tests, not RET-06/07 acceptance.
+
+Read [ir002-checks.md](validation/ir002-checks.md), red/local-test/typecheck logs and preview qualification. Supplied plain web `tsc --noEmit` remains **Fail exit2**, including absent Vue declarations, unchanged Apollo import/dependent callbacks and other workspace diagnostics. Reader/service/context production files have no reported diagnostics in that supplied log; no new paired baseline or global no-new-errors claim. Reviewer did not rerun global tsc/build. IR-001 server rootDir/expanded diagnostic qualifications remain unchanged; earlier production compile/backend301-test evidence is historical, not a new rerun. IR-002 preview was an isolated renderer/transport fixture, not actual restarted-server/global-sidebar/composer acceptance; no reviewer browser rerun.
+
+## Review Scorecard
+Current scoped source score **10.0/10 (100/100)**, arithmetic mean, not acceptance probability or test-pass confidence. Revalidate affected categories below; unaffected backend evidence preserved from CRR-001. No evidenced source weakness requiring deduction. Pending actual validation is the next gate, not an invented source defect.
+
+| Priority | Category | Score | Why | Weakness / expected improvement |
 | --- | --- | --- | --- | --- |
-| CR-C08 / F-001 | Ordinary approved kept-open restart leaves an inactive retained Org, but recovery demands active-only checkpoint | Socket close → mandatory checkpoint rejection → no inactive publication → stale focused status and disabled continuation until inspection/refocus | Two real server logs/DOM/telemetry, source trace, recovery diagnostic | **Promote**, Design Impact in the approved restart/recovery path |
-| CR-C09 | Suspected missing Offline setter / broken mounted-header reactive update | setActive(false) already cleans all member statuses; controlled delivery updates same retained header | Existing cleanup, two status propagation probes | **Reject as origin**; do not add redundant setters/remount keys |
-| CR-C10 | Blame new eager activation or reviewed backend delta | Actual registry empty at failure; implicated frontend/recovery/server-query files byte-identical to base | git diff --quiet base→tested HEAD exits0; runtime telemetry | **Reject attribution**; do not alter lazy provider readiness |
+| 1 | Data-Flow Spine Inventory and Clarity | 10.0 | DS-002/005 extends through inactive observation/publication/continuation | None in scope |
+| 2 | Ownership Clarity and Boundary Encapsulation | 10.0 | Stream/store/reader retain distinct authority; no history bypass | None |
+| 3 | API / Interface / Query / Command Clarity | 10.0 | Exact-root typed read and owner-bounded void triggers | None |
+| 4 | Separation of Concerns and File Placement | 10.0 | Four existing-boundary files; source limits pass | None |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10.0 | One validator, existing DTO/staging/scheduler | None |
+| 6 | Naming Quality and Local Readability | 10.0 | Concrete reader, recovery, reconciliation names | None |
+| 7 | API/E2E Readiness | 10.0 | Durable integration boundary, red evidence,182 passing tests, explicit live matrix | No source blocker; execute downstream acceptance |
+| 8 | Runtime Correctness And Behavioral Fidelity | 10.0 | F-001 source correction independently verified; strict active/unknown, Stop and submission preservation | Prior8.0 restored at source boundary only; actual API pending |
+| 9 | No Backward-Compatibility / No Legacy Retention | 10.0 | Current lifecycle branches, no version fallback | None |
+| 10 | Cleanup Completeness | 10.0 | Old embedded query/admission removed; no temporary source route | None |
 
-ARCH-PM-001/002 (binding continuity/durability) unchanged and not implicated. No new behavior ID or design requirement introduced. Missing native/task/uncertainty executions are coverage obligations, not additional inferred product defects.
+## Findings / Classification / Routing
+No new finding. F-001 source resolution verified as above and indexed in CRR-004; end-to-end closure pending API. Failure classification N/A — source Pass. Medium / High unchanged. Get current handoff rules and route cumulative package to API/E2E; exact rule/receipt recorded in CRR-004. No duplicate informational forwarding under governing single-recipient contract.
 
-## Original Personal Comparison — User-Requested Insight
-Read-only reference `5645b49d6f51faa60bd3545bc8e3f0e7e3f96793` (the package's pinned original-personal comparison), not a fetched current tip or runtime rerun.
-- Original `autobyteus-web/stores/runHistoryLoadActions.ts:131+`, especially194–209, reconciles retained Team contexts against authoritative active-Team history: absent active root → root inactive → every member cleanup (preserving existing Error where intended). This works through the existing Team view even for nested membership.
-- That same Team reconciliation remains in current source at277–293. Org history publication at143–147/182 updates its own rows but has no equivalent retained Org-context reconciliation. This is a useful parity insight, not a mandate to copy Team internals into Org callers.
-- Original Team `hydrateTeamRunContextForStreamRecovery` also requires live checkpoints (319–335). Therefore the older checkpoint routine by itself is **not** a drop-in solution for inactive-root recovery. The useful principle is separate authoritative liveness reconciliation/read-only inspection from live-stream checkpoint recovery.
-- No evidence that flattening/naming caused F-001, and no nested-Team refactor needed. Preserve Org-owned context publication, exact identities, drafts and activity-generation guards rather than bypassing them.
-
-## Finding F-001 / Classification / Required Design Correction
-**Design Impact — Solution Designer**, superseding the prior Local Fix classification at the user's explicit direction. F-001 and its implementation origin remain unchanged. Existing primitives may permit a small eventual code change, but DS-REV-001 treated frontend reconnect/status reuse as sufficient without specifying how a retained inactive Org is reconciled when live-only recovery is unavailable. Choosing and recording that lifecycle/authority integration belongs in the authoritative design rather than being left to an implementation-only patch.
-
-The gap is concrete: DS-002/DS-005 must span ordinary restart → loss of live stream → authoritative inactive observation → retained context/status/continuation publication. Current design covers lazy root materialization and per-Agent status projection but does not resolve the live-checkpoint versus inactive-inspection branch, or how separate history activity and retained focused context remain consistent. ARCH-REV-001 and CRR-001 did not catch that mismatch. This is not a request to change approved work-driven activation or add speculative recovery guarantees.
-
-### Requested Solution Designer Work
-1. Amend canonical investigation/design and solution revision history for F-001 using the confirmed forward source path, server errors, DOM/telemetry and diagnostic probes. Preserve approved SR-005 behavior and BEH/SCN/AC IDs; identify the affected DS-002/DS-005 lifecycle explicitly.
-2. **Study the original personal implementation** at pinned `5645b49d6f51faa60bd3545bc8e3f0e7e3f96793`, especially `autobyteus-web/stores/runHistoryLoadActions.ts:131+,194–209`. It derives active Team IDs from authoritative history, marks retained non-active Team roots inactive and cleans member statuses through existing Team view/context ownership. The current Team equivalent remains at277–293. Use this as the design reference for the missing Org reconciliation, adapting to Org ownership rather than restoring nested-Team machinery.
-3. Define one coherent owner/path for publishing verified inactive Org state to retained focused contexts and history/status views, and the relationship to existing read-only `getAgentOrgRunInspection`, context staging/adoption, stream retirement and continuation eligibility. Specify where existing code is reused, corrected or removed so a second competing status authority is not added.
-4. Distinguish live-root checkpoint recovery from confirmed inactive-root inspection and unknown/unreachable-server state. Both Org checkpoint and WebSocket connect are active-only; merely retrying or bypassing the checkpoint cannot create a historical snapshot. Original Team checkpoint hydration also remains active-only, so do not copy it blindly as the inactive solution.
-5. Preserve exact member/root identity, conversation/history/attachments, drafts and pending-submission ownership, generation guards, authorized continuation and task/fresh behavior. No automatic provider startup just to refresh status, UI color mask, arbitrary query-error→Offline rule, error-string parsing contract or remount workaround.
-6. Define durable tests through the retained-context/recovery boundary and observable kept-open browser acceptance: after authoritative inactive observation, same focused header and row Offline without refocus/reload/input; no provider candidates/activation; later legitimate Send resumes correctly. Also preserve active-stream recovery and unknown-server safety within existing supported contracts. API must recheck F-001 first and finish B02–B04; these remain unproven, not new inferred defects.
-7. Produce a proportionate revised design and apply current size/risk/review routing before revised implementation. Medium / High currently remains. If intended behavior must change beyond approved SR-005, obtain renewed explicit user approval before making that change authoritative.
-
-### Superseded Handoff Coordination
-CRR-002 was already delivered to existing Implementation Engineer run `implementation_engineer_f84b5074541a47fea830604d1bcb77c3`. This CRR-003 reclassification **supersedes implementation-only authorization for F-001**. Solution Designer, as coordinator, should promptly coordinate the hold/revised basis with that existing execution and preserve any work already done. Do not duplicate the assignment or discard local changes. Only Solution Designer receives this current result under the single-recipient handoff contract.
-
-## Failure Origin / Prior Review Gap / Affected Score
-- Origin: **pre-existing implementation defect**, reachable by this ticket's approved scenario. Not an implementation change after review; no implicated production-source delta between base72dee5ad and tested b4b8f042f.
-- Earlier review gap: **Yes, narrowly**. CRR-001 confirmed DS-005 projections but did not trace automatic retained-context reconnect far enough to compare mandatory checkpoint admission with the inactive-root resolver/stream preconditions and separate history reconciliation. That contradiction was source-detectable. The browser made it conclusive; it is not an unknowable runtime-only defect.
-- Update only affected category: **Runtime Correctness And Behavioral Fidelity, 10.0→8.0**, rationale CR-C08/F-001: approved restart lifecycle can retain false Idle status and remain recovery-blocked. Restore clean score only after source correction and relevant evidence. No fresh full scorecard/overall average or unrelated structural deduction in this focused round; unaffected CRR-001 checks remain historical supporting evidence.
-- API test fixture corrections do not explain F-001; no successful-test review performed. No defect inferred for interrupted standalone peer test or incomplete native/task/fault cases.
-
-## Residual Risks / Routing
-Cumulative authority and all API evidence retained. No user server/conversation, generated API outputs, other-owner docs, tests or fixture package altered. No release/reset/merge/push. Future Delivery target remains `origin/requirements/flat-agent-organization-model`, not personal.
-
-After report/CRR-003 persistence, select current Design Impact rule and deliver the cumulative failure/design package to its exact Solution Designer recipient only. Routing confirmation is recorded in CRR-003. API-REV-001 remains failed and unfinished critical validation must resume after revised design, implementation and review. No new test execution in CRR-003; CRR-002 evidence and affected score8.0 remain, without additional deductions for this routing revision.
+## Residual Risks / Required Next Stage
+1. API **F-001 first**, actual same focused mounted/direct header+row/root after isolated server restart, zero active/pending/provider candidates before work, no refocus/reload/input, cleared recovery error after valid publication; then explicit continuation with exact conversation/attachments.
+2. RET-07 actual standalone Team kept-open status/continuation; finish B02–B04 actual native, bound-empty binding replacement, replay/uncertainty and task repair/settled/new once-release. Prior Codex proof does not complete missing coverage.
+3. Preserve strict typecheck qualifications, no global build/typecheck claim. Later successful API tests need separate proportional test-code review.
+4. Incoming Designer/architecture/API local docs/tests/fixtures/generated outputs preserved, not silently committed by reviewer. No user server/conversations, migration/reset, release/deployment/push/merge. Eventual Delivery target `origin/requirements/flat-agent-organization-model`, NOT personal.
