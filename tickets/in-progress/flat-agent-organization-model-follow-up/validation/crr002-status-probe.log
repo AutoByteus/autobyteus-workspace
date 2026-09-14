@@ -1,0 +1,32 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/crr002-status-probe.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | tests/crr002-status-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/crr002-status-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/crr002-status-probe.spec.ts > CRR002 focused status propagation > inactive-event preserves mounted header observability
+{"mode":"inactive-event","model":"offline","target":"offline","same":true,"dom":"WworkerOffline"}
+
+stdout | tests/crr002-status-probe.spec.ts > CRR002 focused status propagation > historical-snapshot preserves mounted header observability
+{"mode":"historical-snapshot","model":"offline","target":"offline","same":true,"dom":"WworkerOffline"}
+
+ ✓ tests/crr002-status-probe.spec.ts (2 tests) 30ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  09:11:09
+   Duration  6.51s (transform 3.44s, setup 5.57s, collect 246ms, tests 30ms, environment 243ms, prepare 156ms)
+
