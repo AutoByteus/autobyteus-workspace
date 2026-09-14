@@ -1,0 +1,6 @@
+{
+  "at": 1789395901.7501829,
+  "pid": 73109,
+  "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 50254 --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001",
+  "fault": "SIGKILL test-owned server while frontend has known active Team; user then clicks Stop. No simulated API command/reply."
+}

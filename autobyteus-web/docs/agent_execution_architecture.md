@@ -181,6 +181,30 @@ checks alone do not prove a response was acquired after Stop. Staged activity
 replacement remains guarded by current generation and activity revision, with
 no global client switch or new persistence/lifecycle owner.
 
+### Retained Activity After Termination
+
+Runtime termination and Activity disposal are separate responsibilities. Successful
+Team termination retires the stream and applies existing Offline/terminal cleanup
+without clearing any retained member's Activity. Standalone Agent termination
+also keeps its Activity; Org termination retains the monitor and uses its existing
+staged inspection owner. Do not replace these distinct lifecycle paths with a
+shared stop-time cache or a provider restart merely to display history.
+
+Completed tool arguments/results and System instructions remain inspectable for
+the same selected run without Send, reload or refocus. Activity remains keyed by
+exact AgentRun identity: another member's entries must not fill an empty member's
+panel. Existing recent-window and projection-source limits still apply; this is
+not a new unlimited event journal or a promise to freeze all final event updates.
+A rejected/failed Stop preserves retained content and existing uncertainty/error
+handling; failure alone must not be presented as confirmed Offline.
+
+Historical cards do not authorize execution. Existing Team inline conversation
+approval buttons can still look enabled after Stop, but the retired stream and
+cleared approval targets prevent an old decision from dispatching or starting a
+runtime. Later deliberate Send uses normal recovery/hydration and manual policy.
+Compare exact Activity identities to detect duplication: a legitimately new
+System capture or tool event is new Activity, not a duplicate of an old card.
+
 ### Stopped-Run Follow-Up Recovery
 
 Single-agent and team follow-up chat share the same backend-owned recovery

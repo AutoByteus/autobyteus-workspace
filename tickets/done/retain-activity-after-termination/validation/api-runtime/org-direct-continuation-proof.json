@@ -1,0 +1,38 @@
+{
+  "oldIds": [
+    "rt_1789395480807_5945b072-53a5-4c34-9ad6-bd8fee6e40e6",
+    "530950816"
+  ],
+  "after": [
+    {
+      "activityId": "rt_1789395480807_5945b072-53a5-4c34-9ad6-bd8fee6e40e6",
+      "kind": "system_instruction",
+      "toolName": null,
+      "status": null,
+      "timestamp": "2026-09-14T14:18:00.807Z"
+    },
+    {
+      "activityId": "530950816",
+      "kind": "tool",
+      "toolName": "read_file",
+      "status": "success",
+      "timestamp": "2026-09-14T14:18:50.951Z"
+    },
+    {
+      "activityId": "rt_1789395621769_169ffe59-5bdc-4c94-a942-99fec1b72127",
+      "kind": "system_instruction",
+      "toolName": null,
+      "status": null,
+      "timestamp": "2026-09-14T14:20:21.769Z"
+    },
+    {
+      "activityId": "389860154",
+      "kind": "tool",
+      "toolName": "read_file",
+      "status": "success",
+      "timestamp": "2026-09-14T14:20:27.836Z"
+    }
+  ],
+  "oldEachOnce": true,
+  "qualification": "Org native re-preparation emitted a NEW system instruction capture plus one new read_file, so2\u21924 is two distinct new events, not duplicate old IDs. No forced two\u2192three assertion."
+}

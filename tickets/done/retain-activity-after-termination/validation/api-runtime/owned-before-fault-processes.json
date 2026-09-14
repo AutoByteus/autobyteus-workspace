@@ -1,0 +1,37 @@
+[
+  {
+    "pid": 73109,
+    "ppid": 73108,
+    "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 50254 --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/autobyteus-server-ts/tests/.tmp/activity-retain-api001"
+  },
+  {
+    "pid": 83169,
+    "ppid": 73109,
+    "command": "/Users/normy/.hermes/node/bin/node --input-type=module --eval \\012import { createRequire } from 'node:module';\\012\\012const requireFrom = process.env.AUTOBYTEUS_PTY_BRIDGE_REQUIRE_FROM || import.meta.url;\\012const require = createRequire(requireFrom);\\012const { spawn } = require('node-pty');\\012\\012let ptyProcess = null;\\012let closing = false;\\012let closeTimer = null;\\012const disposables = [];\\012\\012const send = (payload) => {\\012  if (typeof process.send === 'function' && process.connected !== false) {\\012    try { process.send(payload); } catch {}\\012  }\\012};\\012\\012const remember = (disposable) => {\\012  if (disposable && typeof disposable.dispose === 'function') {\\012    disposables.push(disposable);\\012  }\\012};\\012\\012const disposeListeners = () => {\\012  while (disposables.length > 0) {\\012    try { disposables.pop()?.dispose?.(); } catch {}\\012  }\\012};\\012\\012const closePty = (exitCode = 0) => {\\012  if (closing) return;\\012  closing = true;\\012  disposeListeners();\\012\\012  const pty = ptyProcess;\\012  ptyProcess = null;\\012  if (pty) {\\012    try { pty.kill('SIGHUP'); } catch {}\\012    try { pty.destroy?.(); } catch {}\\012  }\\012\\012  if (closeTimer) clearTimeout(closeTimer);\\012  closeTimer = setTimeout(() => process.exit(exitCode), 25);\\012  closeTimer.unref?.();\\012};\\012\\012try {\\012  const cwd = process.cwd();\\012  const env = {\\012    ...process.env,\\012    TERM: process.env.TERM || 'xterm-256color',\\012    PS1: process.env.PS1 || '\\\\w $ '\\012  };\\012\\012  ptyProcess = spawn('bash', ['--norc', '--noprofile', '-i'], {\\012    name: 'xterm-256color',\\012    cwd,\\012    env,\\012    cols: Number(process.env.AUTOBYTEUS_PTY_BRIDGE_COLS || 80),\\012    rows: Number(process.env.AUTOBYTEUS_PTY_BRIDGE_ROWS || 24)\\012  });\\012\\012  remember(ptyProcess.onData((data) => {\\012    if (closing) return;\\012    process.stdout.write(data);\\012  }));\\012\\012  remember(ptyProcess.onExit((event = {}) => {\\012    send({ type: 'exit', exitCode: event.exitCode, signal: event.signal });\\012    closePty(0);\\012  }));\\012\\012  process.stdin.on('data', (chunk) => {\\012    if (closing || !ptyProcess) return;\\012    try { ptyProcess.write(Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk)); } catch {}\\012  });\\012  process.stdin.on('end', () => closePty(0));\\012  process.stdin.on('error', () => closePty(0));\\012\\012  process.on('message', (message) => {\\012    if (!message || typeof message !== 'object') return;\\012    if (message.type === 'resize' && ptyProcess) {\\012      const rows = Number(message.rows || 24);\\012      const cols = Number(message.cols || 80);\\012      try { ptyProcess.resize(cols, rows); } catch {}\\012      return;\\012    }\\012    if (message.type === 'close') {\\012      closePty(0);\\012    }\\012  });\\012\\012  process.once('SIGTERM', () => closePty(0));\\012  process.once('SIGINT', () => closePty(0));\\012  process.once('SIGHUP', () => closePty(0));\\012\\012  process.stdin.resume();\\012  send({ type: 'ready' });\\012} catch (error) {\\012  send({ type: 'error', message: error instanceof Error ? error.message : String(error) });\\012  console.error(error);\\012  process.exit(1);\\012}\\012"
+  },
+  {
+    "pid": 85719,
+    "ppid": 73109,
+    "command": "codex app-server"
+  },
+  {
+    "pid": 85735,
+    "ppid": 85719,
+    "command": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 85736,
+    "ppid": 85719,
+    "command": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node /Users/normy/.codex/plugins/cache/openai-bundled/unified-computer-use/26.901.51231/scripts/launch.mjs"
+  },
+  {
+    "pid": 85846,
+    "ppid": 85736,
+    "command": "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+  },
+  {
+    "pid": 83170,
+    "ppid": 83169,
+    "command": "bash --norc --noprofile -i"
+  }
+]

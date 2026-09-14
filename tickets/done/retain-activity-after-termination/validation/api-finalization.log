@@ -1,0 +1,21 @@
+API-REV-001 cleanup UTC 2026-09-14T14:26:54Z
+CUA closed four owned tabs1211480406/409/412/415, including actual retained attachment preview. No user tab modified/closed.
+Owned descendant already exited / not signalled 83170
+Owned descendant already exited / not signalled 85846
+Owned descendant already exited / not signalled 85736
+Owned descendant already exited / not signalled 85735
+Owned descendant already exited / not signalled 85719
+Owned descendant already exited / not signalled 83169
+Owned descendant already exited / not signalled 73109
+SIGTERM verified owned 73108 node tickets/in-progress/retain-activity-after-termination/validation/api-runtime/server.mjs
+SIGTERM verified owned 74045 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50391
+SIGTERM verified owned 74046 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/retain-activity-after-termination/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50391
+SIGTERM verified owned 73727 node ./node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 50391
+SIGTERM verified owned 73726 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 50391
+SIGTERM verified owned 73120 node tickets/in-progress/retain-activity-after-termination/validation/api-runtime/collector.mjs
+Removed identical temporary observer SHA256 faf799aded6d5f71c47aa3127e30df68aa41da8ee644c4aa83f0e833b279080d
+Copied test-only final memory traces/trees/records, not DB secrets; original isolated runtime/DB retained.
+Owned ports listener check exit 1 
+git diff --check exit 0 
+No API durable edits/removals or production source edits. Test scripts/evidence/generated SDK build outputs retained for reproduction; upstream untracked docs untouched. No user server/data/auth/model service changes, migration/reset, push/merge/release/deploy.
+Final documentation git diff --check exit 0

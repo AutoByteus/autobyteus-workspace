@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "aorg_validation_team_a4836495c78048ea8f28aa1ccc1b4843",
+  "messages": [
+    {
+      "messageId": "collabmsg_GwN3k5hXlSgxnroEfkovhexM72abb5b0",
+      "senderAgentRunId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+      "receiverAgentRunId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+      "content": "Reply TEAM-WORKER-ONE only; do not use tools.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-14T14:13:12.188Z"
+    },
+    {
+      "messageId": "collabmsg__m3fmivTUuD9ZmV4X1G6iuQjyg6YsNKq",
+      "senderAgentRunId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+      "receiverAgentRunId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+      "content": "Reply TEAM-WORKER-TWO only; do not use tools.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-09-14T14:15:43.340Z"
+    }
+  ]
+}

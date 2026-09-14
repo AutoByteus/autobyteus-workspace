@@ -1,0 +1,22 @@
+{
+  "pid": 73109,
+  "at": "2026-09-14T14:14:19.449Z",
+  "active": [],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "aorg_validation_agent_8738bf014c4c4574bd07a4d948135562",
+      "startedAt": "2026-09-14T14:11:40.944Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a0a042-6575-7e10-bece-e63ecd22aaff"
+    },
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "aorg_validation_agent_324b634a512a4fa79a97b33b2693ba66",
+      "startedAt": "2026-09-14T14:13:12.188Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "01a0a043-c989-7340-9480-db1b186e9881"
+    }
+  ]
+}

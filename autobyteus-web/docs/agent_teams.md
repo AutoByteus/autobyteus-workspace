@@ -248,3 +248,6 @@ permission to execute an old tool decision. Later deliberate input uses the
 normal restore and history-hydration path; Stop itself does not activate Agents
 or fetch replacement Activity. Existing recent-window and history-source limits
 still apply.
+
+For Agent/Org parity, failure-state preservation and historical-control limits,
+see [Retained Activity After Termination](./agent_execution_architecture.md#retained-activity-after-termination).
