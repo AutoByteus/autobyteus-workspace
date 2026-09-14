@@ -15,7 +15,7 @@ import {
 import {
   createCollaborationAgentNoConversationBindingReplacement,
   createCollaborationAgentPlatformBinding,
-  type CollaborationAgentNoConversationBindingReplacement,
+  type CollaborationAgentPlatformBindingChange,
   type CollaborationAgentPlatformBinding,
 } from "../domain/collaboration-agent-platform-binding.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
@@ -24,19 +24,15 @@ export class ConfiguredAgentActivationPlanner {
   constructor(private readonly input: {
     identity: CollaborationMemberExecutionIdentity;
     mode: ConfiguredAgentActivationMode;
-    platformAgentRunId: string | null;
     manager?: AgentRunManager;
     activityInspector?: AgentConversationActivityInspector;
   }) {}
 
-  async prepare(config: AgentRunConfig): Promise<Readonly<{
+  async prepare(config: AgentRunConfig, currentPlatformAgentRunId: string | null): Promise<Readonly<{
     candidate: AgentRunActivationCandidate;
-    bindingChange:
-      | Readonly<{ kind: "adopt_or_retain"; binding: CollaborationAgentPlatformBinding }>
-      | Readonly<{ kind: "replace_without_conversation"; replacement: CollaborationAgentNoConversationBindingReplacement }>
-      | null;
+    bindingChange: CollaborationAgentPlatformBindingChange | null;
   }>> {
-    const plan = this.resolvePlan(config);
+    const plan = this.resolvePlan(config, currentPlatformAgentRunId);
     const candidate = await this.prepareCandidate(plan, config);
     const binding = this.createExternalBinding(candidate);
     const bindingChange = plan.kind === "replace_external_without_conversation"
@@ -58,7 +54,7 @@ export class ConfiguredAgentActivationPlanner {
       && !isAgentRunActivationQuarantineError(error);
   }
 
-  private resolvePlan(config: AgentRunConfig): ActivationPlan {
+  private resolvePlan(config: AgentRunConfig, currentPlatformAgentRunId: string | null): ActivationPlan {
     const external = isExternalProviderRuntimeKind(config.runtimeKind);
     if (this.input.mode === "fresh") {
       if (external) this.assertNoPriorConversationActivity(config);
@@ -67,7 +63,7 @@ export class ConfiguredAgentActivationPlanner {
     if (external) {
       const activity = this.inspectConversationActivity(config);
       if (activity.kind === "none") {
-        const previous = this.input.platformAgentRunId?.trim() || null;
+        const previous = currentPlatformAgentRunId?.trim() || null;
         return previous
           ? Object.freeze({ kind: "replace_external_without_conversation", expectedPreviousPlatformAgentRunId: previous })
           : Object.freeze({ kind: "new" });
@@ -79,7 +75,7 @@ export class ConfiguredAgentActivationPlanner {
           { cause: activity.error },
         );
       }
-      const platformAgentRunId = this.input.platformAgentRunId?.trim() || null;
+      const platformAgentRunId = currentPlatformAgentRunId?.trim() || null;
       if (platformAgentRunId) return Object.freeze({ kind: "restore_external", platformAgentRunId });
       throw new CollaborationAgentActivationError(
         "COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING",

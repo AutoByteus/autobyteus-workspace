@@ -1,6 +1,8 @@
+import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
+import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { FlatTeamExecutionCallbacks } from "../local/flat-team-execution-callbacks.js";
-import { buildDeliveryEndpointForParticipant, type InterAgentMessageDeliveryHandler } from "../domain/inter-agent-message-delivery.js";
-import { createTeamAgentPlatformBinding, type TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
+import type { InterAgentMessageDeliveryHandler } from "../domain/inter-agent-message-delivery.js";
+import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
 import { toTeamAgentEvent } from "./team-agent-event-adapter.js";
@@ -15,7 +17,7 @@ export const createTeamFlatExecutionCallbacks = (input: {
   taskCommands: MemberTaskCommandCapability;
   publish(event: TeamRunEvent): void;
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
-  acceptPlatformBinding(binding: TeamAgentPlatformBinding): Promise<void>;
+  commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
 }): FlatTeamExecutionCallbacks => Object.freeze({
   buildMemberExecutionContext: ({ identity, sourceNode }) => input.memberExecutionContextBuilder.build({
     teamContext: input.teamContext,
@@ -63,7 +65,15 @@ export const createTeamFlatExecutionCallbacks = (input: {
       payload: eventPayload,
     });
   },
-  acceptPlatformBinding: (_identity, binding) => input.acceptPlatformBinding(createTeamAgentPlatformBinding(binding)),
+  commitPlatformBindingChange: async (change) => {
+    try { await input.commitPlatformBindingChange(change); }
+    catch (error) {
+      if (error instanceof TeamAgentPlatformBindingError && error.indeterminate) {
+        throw new CollaborationAgentActivationError(error.code, error.message, { cause: error, indeterminate: true });
+      }
+      throw error;
+    }
+  },
   applicationExecutionContext: (identity) => input.teamContext.applicationBinding
     ? Object.freeze({
         applicationId: input.teamContext.applicationBinding.applicationId,

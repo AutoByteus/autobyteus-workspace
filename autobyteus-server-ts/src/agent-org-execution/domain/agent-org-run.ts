@@ -13,7 +13,7 @@ import { RootCommunicationEngine } from "../../agent-collaboration/execution/com
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
-import type { CollaborationAgentPlatformBinding } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
+import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
@@ -25,7 +25,7 @@ import { AgentOrgTeamExecutionDirectory } from "../services/agent-org-team-execu
 import { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
 import { AgentOrgTaskLifecycleAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-lifecycle-adapter.js";
 import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
-import { adoptAgentOrgPlatformBinding } from "../services/agent-org-run-execution-tree-mutator.js";
+import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -228,21 +228,24 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.taskEngine.reviewTaskResult(context, input);
   }
 
-  async adoptAgentPlatformBinding(binding: CollaborationAgentPlatformBinding): Promise<void> {
+  async commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       await this.options.persistence.commitTreeMutation({
-      prepareAgainstCurrent: () => {
-        const mutation = adoptAgentOrgPlatformBinding({ tree: this.tree, binding });
-        return {
-          nextTree: mutation.tree,
-          cancelBeforeDurability: () => undefined,
-          commitAfterDurability: () => {
-            this.tree = mutation.tree;
-            this.index = new AgentOrgExecutionIndex(this.tree);
-          },
-        };
-      },
+        prepareAgainstCurrent: () => {
+          this.assertAdmitting();
+          const tree = change.kind === "adopt_or_retain"
+            ? adoptAgentOrgPlatformBinding({ tree: this.tree, binding: change.binding }).tree
+            : replaceAgentOrgPlatformBindingWithoutConversation({ tree: this.tree, replacement: change.replacement });
+          return {
+            nextTree: tree,
+            cancelBeforeDurability: () => undefined,
+            commitAfterDurability: () => {
+              this.tree = tree;
+              this.index = new AgentOrgExecutionIndex(this.tree);
+            },
+          };
+        },
       });
     });
   }

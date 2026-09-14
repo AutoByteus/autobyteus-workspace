@@ -113,8 +113,17 @@ configured Agents, both direct and inside mounted Teams, remain genuinely
 unstarted and provider-unbound with Offline status. Fresh creation publishes
 their exact handles and placements without calling configured activation
 preparation; root availability does not imply that every worker has started.
-Supported first work activates only the required execution. Restore and
-task-execution preparation retain their separate existing policies.
+Restore likewise reconstructs the full direct-Agent and mounted-Team scope
+without preparing any configured runtime. Retained history and bindings remain
+intact; only supported first work readies the addressed execution, preserving
+restore mode and exact conversation identity. Later human or peer work can ready
+another member while unrelated members remain Offline. Binding adoption or
+verified no-conversation replacement commits through
+`AgentOrgRun.commitAgentPlatformBindingChange` against its current durable tree
+before cache update, runtime publication or accepted input. Expected-old
+replacement checks and indeterminate/nonretryable failure semantics are retained.
+Task-execution preparation still stages its assigned execution before durable
+publication and work release; settled tasks are not relaunched by scope restore.
 
 Org message receiver admission checks exact published membership, allowing an
 unused configured recipient to receive its first work. Sender and task-origin

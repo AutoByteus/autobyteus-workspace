@@ -82,7 +82,7 @@ export class ConfiguredAgentExecutionHandle {
       throw new Error("Agent identity and member context must identify the same execution.");
     }
     if (!options.callbacks || typeof options.callbacks.publishAgentEvent !== "function"
-      || typeof options.callbacks.acceptPlatformBinding !== "function") {
+      || typeof options.callbacks.commitPlatformBindingChange !== "function") {
       throw new Error("RootAgentExecutionCallbacks are required.");
     }
     this.platformAgentRunId = options.execution.platformAgentRunId?.trim() || null;
@@ -92,7 +92,6 @@ export class ConfiguredAgentExecutionHandle {
     this.planner = new ConfiguredAgentActivationPlanner({
       identity: this.identity,
       mode: options.activationMode,
-      platformAgentRunId: this.platformAgentRunId,
       manager: options.agentRunManager,
       activityInspector: options.activityInspector,
     });
@@ -154,7 +153,7 @@ export class ConfiguredAgentExecutionHandle {
     if (this.agentRun || this.readinessAttempt) {
       throw new Error(`AgentRun '${this.identity.agentRunId}' already entered live readiness.`);
     }
-    const prepared = await this.planner.prepare(await this.buildAgentRunConfig());
+    const prepared = await this.planner.prepare(await this.buildAgentRunConfig(), this.platformAgentRunId);
     let state: "prepared" | "published" | "aborted" = "prepared";
     return Object.freeze({
       stagedPlatformBindings: Object.freeze(
@@ -230,13 +229,18 @@ export class ConfiguredAgentExecutionHandle {
     this.unsubscribe?.();
     this.unsubscribe = null;
     let prepared: Awaited<ReturnType<ConfiguredAgentActivationPlanner["prepare"]>> | null = null;
+    let durabilityCommitted = false;
     try {
-      prepared = await this.planner.prepare(await this.buildAgentRunConfig());
+      prepared = await this.planner.prepare(await this.buildAgentRunConfig(), this.platformAgentRunId);
       const binding = prepared.bindingChange?.kind === "replace_without_conversation"
         ? prepared.bindingChange.replacement.binding
         : prepared.bindingChange?.binding;
-      if (binding) {
-        await this.options.callbacks.acceptPlatformBinding(this.identity, binding);
+      if (binding && prepared.bindingChange) {
+        if (!sameCollaborationMemberExecutionIdentity(this.identity, binding.execution)) {
+          throw new Error("Provider binding change does not match the configured Agent identity.");
+        }
+        await this.options.callbacks.commitPlatformBindingChange(prepared.bindingChange);
+        durabilityCommitted = true;
         this.platformAgentRunId = binding.platformAgentRunId;
       }
       const run = prepared.candidate.commitPublication();
@@ -245,7 +249,13 @@ export class ConfiguredAgentExecutionHandle {
       return run;
     } catch (error) {
       let cleanupConfirmed = prepared === null;
-      let failure = error;
+      let failure = durabilityCommitted
+        ? new CollaborationAgentActivationError(
+            this.readinessFailureCode(error),
+            "Provider binding committed durably but Agent readiness publication failed.",
+            { cause: error, indeterminate: true },
+          )
+        : error;
       if (prepared) {
         const cleanup = await prepared.candidate.abort();
         cleanupConfirmed = cleanup.kind === "aborted";

@@ -114,8 +114,12 @@ asks the user to choose an exact Agent or Team before using the composer.
 The full configured scope is available, but unused direct and mounted-Team Agents
 remain genuinely unstarted, provider-unbound and Offline. Only supported work
 starts the required execution. Root availability and Agent activity are different
-facts; choosing a recipient does not itself start that Agent. Existing Restore
-and task-execution preparation policies remain distinct from fresh launch.
+facts; choosing a recipient does not itself start that Agent. Restore also makes
+the full scope available without preparing configured workers. After a server
+restart, sending to one retained Agent continues that conversation while
+unrelated direct and mounted-Team Agents stay Offline. Existing history and
+provider bindings are retained, not reset; later legitimate human or peer work
+can activate another member. Assigned task preparation/release remains separate.
 
 - Selecting a direct Agent focuses that exact Agent.
 - Selecting a Team focuses its direct coordinator.

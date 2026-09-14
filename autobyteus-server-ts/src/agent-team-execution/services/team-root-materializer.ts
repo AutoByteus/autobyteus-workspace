@@ -10,17 +10,12 @@ import type { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import { createTeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import type { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
 import { createTeamFlatExecutionCallbacks } from "./team-flat-execution-callbacks.js";
-import {
-  adoptAgentPlatformBindingInTree,
-  replaceAgentPlatformBindingWithoutConversationInTree,
-} from "./team-run-execution-tree-mutator.js";
 import { TeamRunEventPublisher } from "./team-run-event-publisher.js";
 import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 
@@ -86,8 +81,8 @@ export const materializeTeamRoot = async (
     deliverInterAgentMessage: (intent) => root
       ? root.deliverInterAgentMessage(intent)
       : Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." }),
-    acceptPlatformBinding: (binding) => root
-      ? root.adoptAgentPlatformBinding(binding)
+    commitPlatformBindingChange: (change) => root
+      ? root.commitAgentPlatformBindingChange(change)
       : Promise.reject(new Error("RootTeamRun construction is incomplete.")),
   });
   const prepared = await input.factory.materialize({
@@ -97,32 +92,14 @@ export const materializeTeamRoot = async (
     applicationBinding: input.config.applicationBinding,
     activationMode: input.mode,
     callbacks,
-    prepareConfiguredAgents: input.mode !== "fresh",
+    prepareConfiguredAgents: false,
   });
-  const replacementTree = prepared.stagedNoConversationBindingReplacements.reduce(
-    (current, replacement) => replaceAgentPlatformBindingWithoutConversationInTree({
-      tree: current,
-      replacement: {
-        binding: createTeamAgentPlatformBinding(replacement.binding),
-        expectedPreviousPlatformAgentRunId: replacement.expectedPreviousPlatformAgentRunId,
-      },
-    }),
-    input.tree,
-  );
-  const tree = prepared.stagedPlatformBindings.reduce(
-    (current, binding) => adoptAgentPlatformBindingInTree({
-      tree: current,
-      binding: createTeamAgentPlatformBinding(binding),
-    }).tree,
-    replacementTree,
-  );
+  const tree = input.tree;
   try {
     if (input.persistInitialPackage) {
       await requireCommitted(input.executionTreeStore.write(input.teamMemoryDir, tree), "execution tree");
       await requireCommitted(input.taskRecordsStore.write(input.teamMemoryDir, input.tasks), "task records");
       await requireCommitted(input.communicationStore.write(input.teamMemoryDir, input.messages), "communication messages");
-    } else if (!isDeepStrictEqual(tree, input.tree)) {
-      await requireCommitted(input.executionTreeStore.write(input.teamMemoryDir, tree), "execution tree");
     }
     const persistence = new TeamRunPersistenceCoordinator({
       rootTeamRunId: tree.rootTeam.teamRunId,
@@ -151,4 +128,3 @@ export const materializeTeamRoot = async (
     throw error;
   }
 };
-import { isDeepStrictEqual } from "node:util";

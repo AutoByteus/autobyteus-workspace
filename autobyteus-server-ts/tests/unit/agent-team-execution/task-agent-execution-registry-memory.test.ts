@@ -171,7 +171,7 @@ describe("TaskAgentExecutionRegistry task-agent memory", () => {
           agentRunId: identity.agentRunId,
         })),
         publishAgentEvent: publish,
-        acceptPlatformBinding: vi.fn(async () => undefined),
+        commitPlatformBindingChange: vi.fn(async () => undefined),
       },
     });
     const message = new AgentInputUserMessage("start task", SenderType.USER);

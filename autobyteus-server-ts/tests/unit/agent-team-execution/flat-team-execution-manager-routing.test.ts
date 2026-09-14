@@ -100,7 +100,7 @@ const createMixedManager = () => {
         agentRunId: identity.agentRunId,
       })),
       publishAgentEvent: vi.fn(),
-      acceptPlatformBinding: vi.fn(async () => undefined),
+      commitPlatformBindingChange: vi.fn(async () => undefined),
     },
     workspaceManager: { ensureWorkspaceByRootPath: vi.fn() },
   });

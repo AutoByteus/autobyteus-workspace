@@ -106,13 +106,20 @@ join that attempt. `AgentRunManager` returns a private activation candidate that
 is not visible through active lookup and has no input/event surface until the
 governing durability step succeeds:
 
-- A fresh external member creates one provider conversation and stages its
-  exact non-local ID as a `TeamAgentPlatformBinding`. `RootTeamRun` adopts that
-  binding through a lock-head execution-tree mutation before publication.
-- A restored external member must have an exact persisted provider binding.
-  Local conversation activity with a null binding is an explicit non-resumable
-  failure, not permission to create a replacement. Codex resume has no
-  start-thread fallback; Claude resumes the same preselected UUID.
+- At first work, a configured external member carries the complete
+  `CollaborationAgentPlatformBindingChange` through the root-owned callback.
+  `RootTeamRun.commitAgentPlatformBindingChange` commits against the current
+  tree under its persistence lock before local cache update, candidate
+  publication, or input acceptance.
+- A restored external member with real conversation activity continues its
+  exact persisted provider binding. Activity with a null binding fails closed,
+  not by creating a replacement. Codex resume has no start-thread fallback;
+  Claude resumes the same preselected UUID.
+- Verified absence of conversation activity permits a new provider conversation.
+  A retained non-null empty-conversation binding is replaced only after an
+  expected-old comparison in that same durable root boundary. Unreadable
+  activity never permits replacement. This uses the current storage format;
+  no migration or reset is needed.
 - A restored native member with canonical prior activity restores the same
   local AgentRun ID, memory directory, and WorkingContext. A restored native
   member with no activity may create fresh. Native members never stage or adopt
@@ -215,14 +222,19 @@ terminal status has already been projected.
 
 ## Root And Agent Lifecycle
 
-Fresh standalone Team creation and fresh Org-mounted Team materialization pass
-`prepareConfiguredAgents: false`. Configured handles and topology are available,
-but unused Agents have no started worker or provider binding and report Offline.
-The first supported user input, peer delivery, or task work activates the exact
-required execution; selecting a row or publishing the root is not worker startup.
-This is an execution policy, not a UI color/status override. Restore and task
-preparation retain their existing activation policy and are not forced through
-the fresh-unused rule.
+Fresh and restored standalone Teams and Org-mounted Teams pass
+`prepareConfiguredAgents: false`. The full configured topology is available,
+but configured Agents remain unstarted and Offline until required by work.
+Restore retains its mode, member identity, history and saved provider binding;
+Offline does not mean that a retained member has no history or binding.
+The first supported input or peer delivery activates only its exact receiver;
+selecting a row or publishing the root is not worker startup. Concurrent first
+inputs for the same member share one readiness attempt. Different members
+prepare independently and serialize only their root persistence mutations.
+This is an execution policy, not a UI color/status override. Work-bearing task
+preparation still stages identity before durable task publication and release.
+An uncertain commit or post-durability local/publication failure is nonretryable
+until safe root reopen; a definite failed write can retry after confirmed cleanup.
 
 `AgentTeamRunManager` alone owns root Team liveness. Its lookup vocabulary is
 deliberately precise:

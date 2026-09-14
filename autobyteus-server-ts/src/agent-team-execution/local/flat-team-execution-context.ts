@@ -21,6 +21,13 @@ export class FlatAgentExecutionContext implements TeamAgentMemberRuntimeContext 
     this.platformAgentRunId = input.platformAgentRunId;
   }
   getPlatformAgentRunId(): string | null { return this.platformAgentRunId; }
+  replaceCommittedPlatformAgentRunId(expectedPrevious: string, platformAgentRunId: string): void {
+    const normalized = platformAgentRunId.trim();
+    if (!normalized || normalized === expectedPrevious || this.platformAgentRunId !== expectedPrevious) {
+      throw new Error("Flat Team Agent committed provider replacement does not match the expected binding.");
+    }
+    this.platformAgentRunId = normalized;
+  }
   adoptPlatformAgentRunId(platformAgentRunId: string): void {
     const normalized = platformAgentRunId.trim();
     if (!normalized) throw new Error("platformAgentRunId is required.");

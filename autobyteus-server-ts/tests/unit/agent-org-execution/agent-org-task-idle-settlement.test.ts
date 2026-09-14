@@ -53,7 +53,7 @@ describe("Org-root task publication through durable activation and idle settleme
     await persistence.commitInitial({ tree, tasks, messages });
     let run: AgentOrgRun | undefined;
     const callbacks: FlatTeamExecutionCallbacks = {
-      buildMemberExecutionContext: vi.fn(async () => ({} as never)), acceptPlatformBinding: vi.fn(),
+      buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
       publishAgentEvent: (identity, event) => run?.onAgentExecutionEvent(identity, event),
     };
     const rootAgents = new AgentOrgRootAgentExecutionRegistry({ root, callbacks });

@@ -20,7 +20,7 @@ describe("Org-root prepared task publishers", () => {
     const seen: string[] = [];
     const callbacks: FlatTeamExecutionCallbacks = {
       buildMemberExecutionContext: vi.fn(async () => ({} as never)),
-      acceptPlatformBinding: vi.fn(),
+      commitPlatformBindingChange: vi.fn(),
       publishAgentEvent: vi.fn((identity, event) => {
         expect(identity.root).toEqual(root);
         if (event.kind !== "status_overlay") throw new Error("Expected exact status event");
@@ -77,7 +77,7 @@ describe("Org-root prepared task publishers", () => {
   it.each(["agent", "team"] as const)("keeps aborted %s preparation and subsequent callbacks private", async (kind) => {
     const handles = observeConfiguredHandles();
     const forward = vi.fn();
-    const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), acceptPlatformBinding: vi.fn() };
+    const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn() };
     const prepared = kind === "team"
       ? await new AgentOrgTeamExecutionDirectory(new FlatTeamExecutionFactory()).prepareRootTaskTeam({
           task: teamInput("aborted"), physicalScope: { root, ancestorTeamRunIds: ["aborted"] }, callbacks })
@@ -96,7 +96,7 @@ describe("Org-root prepared task publishers", () => {
     const failure = new Error("Provider preparation rejected");
     const handles = observeConfiguredHandles(failure);
     const forward = vi.fn();
-    const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), acceptPlatformBinding: vi.fn() };
+    const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn() };
     const prepare = kind === "team"
       ? new AgentOrgTeamExecutionDirectory(new FlatTeamExecutionFactory()).prepareRootTaskTeam({
           task: teamInput("failed"), physicalScope: { root, ancestorTeamRunIds: ["failed"] }, callbacks })
@@ -113,7 +113,7 @@ describe("Org-root prepared task publishers", () => {
   it("releases only the exact root-Agent preparation once and then forwards live events", async () => {
     const handles = observeConfiguredHandles();
     const seen: string[] = [];
-    const callbacks = { buildMemberExecutionContext: vi.fn(async () => ({} as never)), acceptPlatformBinding: vi.fn(),
+    const callbacks = { buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
       publishAgentEvent: vi.fn<FlatTeamExecutionCallbacks["publishAgentEvent"]>((identity, event) => {
         expect(identity.root).toEqual(root); expect(identity.memberAddress).toBe("/worker");
         if (event.kind === "status_overlay") seen.push(`${identity.agentRunId}:${event.snapshot.details.status}`);

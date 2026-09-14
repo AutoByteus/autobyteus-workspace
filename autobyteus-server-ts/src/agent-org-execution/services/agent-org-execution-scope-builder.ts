@@ -1,4 +1,5 @@
-import { isDeepStrictEqual } from "node:util";
+import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
+import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createRootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -17,18 +18,9 @@ import type { TaskExecutionIdentityCapabilities } from "../../agent-team-executi
 import { AgentOrgRun } from "../domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { ValidatedAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
-import { validateAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
-import { AgentOrgRootAgentExecutionRegistry, type PreparedAgentOrgConfiguredAgent } from "./agent-org-root-agent-execution-registry.js";
+import { AgentOrgRootAgentExecutionRegistry } from "./agent-org-root-agent-execution-registry.js";
 import { AgentOrgTeamExecutionDirectory } from "./agent-org-team-execution-directory.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "./agent-org-runtime-config-projector.js";
-import type {
-  CollaborationAgentNoConversationBindingReplacement,
-  CollaborationAgentPlatformBinding,
-} from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
-import {
-  adoptAgentOrgPlatformBinding,
-  replaceAgentOrgPlatformBindingWithoutConversation,
-} from "./agent-org-run-execution-tree-mutator.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 
 /** Builds one complete Org scope before publication; no synthetic Team root exists. */
@@ -86,9 +78,18 @@ export class AgentOrgExecutionScopeBuilder {
         }
         run.onAgentExecutionEvent(identity, event);
       },
-      acceptPlatformBinding: (_identity, binding) => {
-        if (!run) return Promise.reject(new Error("AgentOrg construction is incomplete."));
-        return run.adoptAgentPlatformBinding(binding);
+      commitPlatformBindingChange: async (change) => {
+        if (!run) throw new Error("AgentOrg construction is incomplete.");
+        try { await run.commitAgentPlatformBindingChange(change); }
+        catch (error) {
+          if (error instanceof RootTaskPersistenceFinalizationIndeterminateError) {
+            throw new CollaborationAgentActivationError(
+              "COLLABORATION_AGENT_BINDING_COMMIT_INDETERMINATE", error.message,
+              { cause: error, indeterminate: true },
+            );
+          }
+          throw error;
+        }
       },
       applicationExecutionContext: (identity) => input.state.executionTree.applicationBinding
         ? Object.freeze({
@@ -111,8 +112,6 @@ export class AgentOrgExecutionScopeBuilder {
     });
     const teams = new AgentOrgTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
     const plans: Array<Readonly<{
-      stagedPlatformBindings: readonly CollaborationAgentPlatformBinding[];
-      stagedNoConversationBindingReplacements: readonly CollaborationAgentNoConversationBindingReplacement[];
       commitAfterDurability(): void;
       abort(): Promise<void>;
     }>> = [];
@@ -120,7 +119,7 @@ export class AgentOrgExecutionScopeBuilder {
       for (const member of input.state.executionTree.rootOrg.members) {
         if ("agentRunId" in member) {
           const prepared = await rootAgents.prepareConfigured(projectAgentOrgConfiguredAgentNode(member), input.activationMode);
-          plans.push(this.agentPlan(prepared));
+          plans.push(prepared);
         } else {
           const teamNode = projectAgentOrgConfiguredTeamNode(member);
           const prepared = await teams.prepareConfigured({
@@ -131,35 +130,15 @@ export class AgentOrgExecutionScopeBuilder {
             activationMode: input.activationMode,
           });
           plans.push(Object.freeze({
-            stagedPlatformBindings: prepared.prepared.stagedPlatformBindings,
-            stagedNoConversationBindingReplacements: prepared.prepared.stagedNoConversationBindingReplacements,
             commitAfterDurability: prepared.commitAfterDurability,
             abort: prepared.abort,
           }));
         }
       }
-      let tree = input.state.executionTree;
-      for (const replacement of plans.flatMap((plan) => plan.stagedNoConversationBindingReplacements)) {
-        tree = replaceAgentOrgPlatformBindingWithoutConversation({ tree, replacement });
-      }
-      for (const binding of plans.flatMap((plan) => plan.stagedPlatformBindings)) {
-        tree = adoptAgentOrgPlatformBinding({ tree, binding }).tree;
-      }
-      const state = validateAgentOrgStatePackage({
-        executionTree: tree,
-        taskRecords: input.state.taskRecords,
-        communicationMessages: input.state.communicationMessages,
-      });
+      const state = input.state;
+      const tree = state.executionTree;
       if (input.persistInitialPackage) {
         await input.persistence.commitInitial({ tree, tasks: state.taskRecords, messages: state.communicationMessages });
-      } else if (!isDeepStrictEqual(tree, input.state.executionTree)) {
-        await input.persistence.commitTreeMutation({
-          prepareAgainstCurrent: () => ({
-            nextTree: tree,
-            cancelBeforeDurability: () => undefined,
-            commitAfterDurability: () => undefined,
-          }),
-        });
       }
       run = new AgentOrgRun({
         root,
@@ -186,14 +165,6 @@ export class AgentOrgExecutionScopeBuilder {
     }
   }
 
-  private agentPlan(prepared: PreparedAgentOrgConfiguredAgent) {
-    return Object.freeze({
-      stagedPlatformBindings: prepared.stagedPlatformBindings,
-      stagedNoConversationBindingReplacements: prepared.stagedNoConversationBindingReplacements,
-      commitAfterDurability: prepared.commitAfterDurability,
-      abort: prepared.abort,
-    });
-  }
   private requireActive(run: AgentOrgRun | null): AgentOrgRun {
     if (!run?.isActive()) throw new TaskDelegationError("AGENT_ORG_RUN_NOT_ACTIVE", "AgentOrg is not active.");
     return run;

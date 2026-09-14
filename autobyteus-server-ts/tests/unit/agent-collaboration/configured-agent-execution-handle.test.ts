@@ -24,7 +24,7 @@ const taskCommands = (root: ReturnType<typeof createTeamRootExecutionIdentity>) 
   reviewTaskResult: vi.fn(),
 });
 
-const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOBYTEUS) => {
+const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOBYTEUS, mode: "fresh" | "restore" = "fresh") => {
   const root = kind === "agent_team"
     ? createTeamRootExecutionIdentity("root-run")
     : createAgentOrgRootExecutionIdentity("root-run");
@@ -45,9 +45,10 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     }),
     tasks: taskCommands(root),
   });
+  const activity = { kind: "none" as "none" | "present" };
   const fakeRun = {
     runId: identity.agentRunId,
-    isActive: () => true,
+    isActive: vi.fn(() => true),
     getStatusSnapshot: () => ({ status: "idle" }),
     subscribeToEvents: vi.fn(() => () => undefined),
     reserveUserMessage: vi.fn(),
@@ -63,8 +64,12 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     commitPublication: () => fakeRun,
     abort,
   }));
+  const prepareRestoreAgentRunFromPlatformState = vi.fn(async ({ platformAgentRunId }) => ({
+    runId: identity.agentRunId, runtimeKind, platformAgentRunId,
+    commitPublication: () => fakeRun, abort,
+  }));
   const publishAgentEvent = vi.fn();
-  const acceptPlatformBinding = vi.fn();
+  const commitPlatformBindingChange = vi.fn();
   const handle = new ConfiguredAgentExecutionHandle({
     identity,
     physicalScope: scope,
@@ -78,10 +83,10 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
       workspaceRootPath: null,
       platformAgentRunId: null,
     },
-    activationMode: "fresh",
+    activationMode: mode,
     memberExecutionContext,
-    callbacks: { publishAgentEvent, acceptPlatformBinding },
-    agentRunManager: { prepareNewAgentRun } as never,
+    callbacks: { publishAgentEvent, commitPlatformBindingChange },
+    agentRunManager: { prepareNewAgentRun, prepareRestoreAgentRunFromPlatformState } as never,
     memoryLocator: {
       getLocation: (physicalScope: typeof scope, agentRunId: string) => ({
         scope: physicalScope,
@@ -89,9 +94,9 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
         memoryDir: `/memory/${physicalScope.root.rootSubjectKind}/${physicalScope.root.rootRunId}/${physicalScope.ancestorTeamRunIds.join("/")}/${agentRunId}`,
       }),
     } as never,
-    activityInspector: { inspect: () => ({ kind: "none" as const }) } as never,
+    activityInspector: { inspect: () => activity } as never,
   });
-  return { handle, root, identity, scope, memberExecutionContext, prepareNewAgentRun, fakeRun, abort, publishAgentEvent };
+  return { activity, commitPlatformBindingChange, prepareRestoreAgentRunFromPlatformState, handle, root, identity, scope, memberExecutionContext, prepareNewAgentRun, fakeRun, abort, publishAgentEvent };
 };
 
 describe("ConfiguredAgentExecutionHandle", () => {
@@ -131,7 +136,7 @@ describe("ConfiguredAgentExecutionHandle", () => {
       execution: {} as never,
       activationMode: "fresh",
       memberExecutionContext: fixture.memberExecutionContext,
-      callbacks: { publishAgentEvent: vi.fn(), acceptPlatformBinding: vi.fn() },
+      callbacks: { publishAgentEvent: vi.fn(), commitPlatformBindingChange: vi.fn() },
     })).toThrow("same root");
   });
 });
@@ -144,7 +149,7 @@ describe("accepted task-system input presentation", () => {
     f.publishAgentEvent.mockClear();
     const input = new AgentInputUserMessage("Saved task result is ready.", SenderType.SYSTEM, null,
       markTaskDelegationSystemTaskNotificationMetadata({ task_id: "task-one" }));
-    expect(input.metadata.suppress_system_task_notification).toBe(true);
+    expect(input.metadata["suppress_system_task_notification"]).toBe(true);
     f.fakeRun.postUserMessage.mockResolvedValueOnce({ accepted: false, code: "NOT_ACTIVE" });
     expect(await f.handle.postMessage(input)).toMatchObject({ accepted: false });
     expect(f.publishAgentEvent.mock.calls.filter(([, event]) => event.kind === "member_input")).toHaveLength(0);
@@ -161,5 +166,40 @@ describe("accepted task-system input presentation", () => {
     expect(adapter.adapt(f.identity, { kind: "member_input", message: human })).toMatchObject({
       kind: "publish", message: { type: "MEMBER_INPUT_MESSAGE" },
     });
+  });
+});
+
+
+describe("on-demand binding readiness", () => {
+  it("plans later readiness from the committed binding, not the constructor's null binding", async () => {
+    const f = build("agent_org", RuntimeKind.CODEX_APP_SERVER, "restore");
+    await f.handle.getOrCreateAgentRun();
+    expect(f.commitPlatformBindingChange).toHaveBeenCalledWith(expect.objectContaining({
+      kind: "adopt_or_retain", binding: expect.objectContaining({ platformAgentRunId: "external-thread" }),
+    }));
+    f.fakeRun.isActive.mockReturnValue(false);
+    f.activity.kind = "present";
+    await f.handle.getOrCreateAgentRun();
+    expect(f.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith(expect.objectContaining({ platformAgentRunId: "external-thread" }));
+    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+  });
+
+  it("marks publication failure after durability indeterminate and never repeats candidate preparation", async () => {
+    const f = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    f.fakeRun.subscribeToEvents.mockImplementation(() => { throw new Error("publication failed"); });
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
+    expect(f.commitPlatformBindingChange).toHaveBeenCalledTimes(1);
+    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    expect(f.abort).toHaveBeenCalledTimes(1);
+  });
+
+  it("retains cleanup quarantine as nonretryable even on a definite root rejection", async () => {
+    const f = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    f.commitPlatformBindingChange.mockRejectedValue(new Error("rejected"));
+    f.abort.mockResolvedValue({ kind: "quarantined", error: new Error("cleanup unavailable") } as never);
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true, code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
+    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
   });
 });

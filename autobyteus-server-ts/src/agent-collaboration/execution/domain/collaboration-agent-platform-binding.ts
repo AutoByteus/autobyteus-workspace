@@ -13,6 +13,10 @@ export type CollaborationAgentNoConversationBindingReplacement = Readonly<{
   expectedPreviousPlatformAgentRunId: string;
 }>;
 
+export type CollaborationAgentPlatformBindingChange =
+  | Readonly<{ kind: "adopt_or_retain"; binding: CollaborationAgentPlatformBinding }>
+  | Readonly<{ kind: "replace_without_conversation"; replacement: CollaborationAgentNoConversationBindingReplacement }>;
+
 export const createCollaborationAgentPlatformBinding = (input: {
   execution: CollaborationMemberExecutionIdentity;
   platformAgentRunId: string;

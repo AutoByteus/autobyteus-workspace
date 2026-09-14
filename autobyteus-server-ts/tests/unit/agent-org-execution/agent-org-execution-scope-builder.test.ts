@@ -1,3 +1,4 @@
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -16,7 +17,7 @@ const roots: string[] = [];
 afterEach(() => { while (roots.length) rmSync(roots.pop()!, { recursive: true, force: true }); });
 
 describe("AgentOrgExecutionScopeBuilder restore", () => {
-  it("durably replaces a verified no-conversation binding before publishing the whole Org scope", async () => {
+  it("restores scope lazily and durably replaces a no-conversation binding on first work", async () => {
     const orgRunId = "org-idle-restore";
     const agentRunId = "agent-verifier";
     const previousPlatformAgentRunId = "thread-system-instruction-only";
@@ -59,6 +60,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       isActive: () => true,
       getStatusSnapshot: () => ({ status: "idle" }),
       subscribeToEvents: vi.fn(() => () => undefined),
+      postUserMessage: vi.fn(async () => ({ accepted: true })),
       interrupt: vi.fn(async () => ({ accepted: true as const })),
     };
     const candidate = new AgentRunActivationCandidate({
@@ -103,12 +105,16 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       activityInspector: { inspect: () => ({ kind: "none" as const }) } as never,
     });
 
-    const building = builder.build({
+    const run = await builder.build({
       state,
       persistence,
       activationMode: "restore",
       persistInitialPackage: false,
     });
+    expect(prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(write).not.toHaveBeenCalled();
+    expect(run.getAgentStatusSnapshots()[0]!.details.status).toBe("offline");
+    const sending = run.executeAgentCommand(agentRunId, { kind: "post_message", message: new AgentInputUserMessage("Continue") });
     await vi.waitFor(() => expect(write).toHaveBeenCalledTimes(1));
 
     expect(prepareNewAgentRun).toHaveBeenCalledTimes(1);
@@ -117,7 +123,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     expect(publicationOrder).toEqual([]);
 
     releaseDurability();
-    const run = await building;
+    expect(await sending).toMatchObject({ accepted: true });
 
     expect(run.isActive()).toBe(true);
     expect(run.getExecutionTreeSnapshot().rootOrg.members[0]).toMatchObject({

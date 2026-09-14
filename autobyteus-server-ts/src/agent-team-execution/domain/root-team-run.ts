@@ -41,9 +41,9 @@ import type {
 import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import { TaskDelegationService } from "../task-delegation/task-delegation-service.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
-import type { TeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
-import { TeamAgentPlatformBindingError } from "./team-agent-platform-binding.js";
-import { adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
+import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
+import { TeamAgentPlatformBindingError, createTeamAgentPlatformBinding } from "./team-agent-platform-binding.js";
+import { adoptAgentPlatformBindingInTree, replaceAgentPlatformBindingWithoutConversationInTree } from "../services/team-run-execution-tree-mutator.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
 
@@ -160,14 +160,22 @@ export class RootTeamRun {
   getTaskRecordsSnapshot(): TaskDelegationRecordsSnapshot { return this.taskDelegation.getSnapshot(this.teamRunId); }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot { return this.messages; }
 
-  async adoptAgentPlatformBinding(binding: TeamAgentPlatformBinding): Promise<void> {
+  async commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     this.assertAdmitting();
     let liveCommitStarted = false;
     let result: Awaited<ReturnType<TeamRunPersistenceCoordinator["commitExecutionTreeMutation"]>>;
     try {
       result = await this.options.persistence.commitExecutionTreeMutation({
         prepareAgainstCurrent: () => {
-          const mutation = adoptAgentPlatformBindingInTree({ tree: this.tree, binding });
+          this.assertAdmitting();
+          const binding = createTeamAgentPlatformBinding(
+            change.kind === "adopt_or_retain" ? change.binding : change.replacement.binding,
+          );
+          const mutation = change.kind === "adopt_or_retain"
+            ? adoptAgentPlatformBindingInTree({ tree: this.tree, binding })
+            : { outcome: "adopted", tree: replaceAgentPlatformBindingWithoutConversationInTree({
+                tree: this.tree, replacement: { ...change.replacement, binding },
+              }) };
           return {
             nextTree: mutation.tree,
             requiresWrite: mutation.outcome === "adopted",
@@ -182,7 +190,6 @@ export class RootTeamRun {
         },
       });
     } catch (error) {
-      if (error instanceof TeamAgentPlatformBindingError) throw error;
       if (liveCommitStarted) {
         this.enterLifecycleFailStop();
         throw new TeamAgentPlatformBindingError(
@@ -191,6 +198,7 @@ export class RootTeamRun {
           { cause: error, indeterminate: true },
         );
       }
+      if (error instanceof TeamAgentPlatformBindingError) throw error;
       throw new TeamAgentPlatformBindingError(
         "TEAM_AGENT_PLATFORM_BINDING_COMMIT_FAILED",
         "The team provider binding did not commit.",

@@ -1,3 +1,4 @@
+import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
@@ -13,6 +14,7 @@ import type {
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import {
   createCollaborationMemberExecutionIdentity,
+  sameCollaborationMemberExecutionIdentity,
   type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
@@ -116,9 +118,31 @@ export class FlatTeamAgentExecutionHandle {
       applicationExecutionContext: this.options.callbacks.applicationExecutionContext?.(identity) ?? null,
       callbacks: {
         publishAgentEvent: (member, event) => this.options.callbacks.publishAgentEvent(member, event),
-        acceptPlatformBinding: async (member, binding) => {
-          await this.options.callbacks.acceptPlatformBinding(member, binding);
-          this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
+        commitPlatformBindingChange: async (change) => {
+          const binding = change.kind === "adopt_or_retain" ? change.binding : change.replacement.binding;
+          if (!sameCollaborationMemberExecutionIdentity(identity, binding.execution)) {
+            throw new Error("Flat Team binding change does not match the Agent identity.");
+          }
+          const previous = this.context.getPlatformAgentRunId();
+          if (change.kind === "replace_without_conversation"
+            ? previous !== change.replacement.expectedPreviousPlatformAgentRunId
+            : previous !== null && previous !== binding.platformAgentRunId) {
+            throw new Error("Flat Team Agent execution has a conflicting provider binding.");
+          }
+          await this.options.callbacks.commitPlatformBindingChange(change);
+          try {
+            if (change.kind === "replace_without_conversation") {
+              this.context.replaceCommittedPlatformAgentRunId(
+                change.replacement.expectedPreviousPlatformAgentRunId, binding.platformAgentRunId,
+              );
+            } else this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
+          } catch (cause) {
+            throw new CollaborationAgentActivationError(
+              "COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED",
+              "Provider binding is durable but the Flat Team Agent cache could not be updated.",
+              { cause, indeterminate: true },
+            );
+          }
         },
       },
       agentRunManager: this.options.agentRunManager,
@@ -146,7 +170,7 @@ export class FlatTeamAgentExecutionHandle {
       skillAccessMode: this.options.config.skillAccessMode,
       runtimeKind: this.options.config.runtimeKind,
       workspaceRootPath: this.options.config.workspaceRootPath,
-      platformAgentRunId: this.options.config.platformAgentRunId,
+      platformAgentRunId: this.context.getPlatformAgentRunId(),
     });
   }
 }

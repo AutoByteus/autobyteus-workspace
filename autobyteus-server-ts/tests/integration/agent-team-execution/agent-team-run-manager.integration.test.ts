@@ -241,7 +241,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       callbacks: expect.objectContaining({
         buildMemberExecutionContext: expect.any(Function),
         publishAgentEvent: expect.any(Function),
-        acceptPlatformBinding: expect.any(Function),
+        commitPlatformBindingChange: expect.any(Function),
         applicationExecutionContext: expect.any(Function),
       }),
     }));
@@ -288,9 +288,9 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecutionCallbacks) => {
       expect(Object.keys(callbacks).sort()).toEqual([
-        "acceptPlatformBinding",
         "applicationExecutionContext",
         "buildMemberExecutionContext",
+        "commitPlatformBindingChange",
         "publishAgentEvent",
       ]);
     });

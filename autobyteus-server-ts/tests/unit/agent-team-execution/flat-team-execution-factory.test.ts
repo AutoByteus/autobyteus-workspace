@@ -10,7 +10,7 @@ import { testAgentNode, testAgentTeamNode } from "../../fixtures/current-team-ru
 const callbacks = Object.freeze({
   buildMemberExecutionContext: vi.fn(),
   publishAgentEvent: vi.fn(),
-  acceptPlatformBinding: vi.fn(),
+  commitPlatformBindingChange: vi.fn(),
 });
 
 const node = (address: "/" | "/ReviewTeam", teamRunId: string) => testAgentTeamNode({

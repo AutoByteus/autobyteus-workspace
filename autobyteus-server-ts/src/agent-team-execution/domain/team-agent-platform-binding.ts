@@ -28,10 +28,6 @@ export class TeamAgentPlatformBindingError extends Error {
   readonly indeterminate: boolean;
 }
 
-export interface TeamAgentPlatformBindingAcceptor {
-  accept(binding: TeamAgentPlatformBinding): Promise<void>;
-}
-
 export const createTeamAgentPlatformBinding = (input: {
   execution: CollaborationMemberExecutionIdentity;
   platformAgentRunId: string;

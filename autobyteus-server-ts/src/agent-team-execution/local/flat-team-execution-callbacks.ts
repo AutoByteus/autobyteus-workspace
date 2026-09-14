@@ -2,7 +2,7 @@ import type { ApplicationExecutionContext } from "../../application-orchestratio
 import type { ConfiguredAgentExecutionSpec } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
-import type { CollaborationAgentPlatformBinding } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
+import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type {
   CollaborationMemberExecutionIdentity,
   RootExecutionPhysicalScope,
@@ -17,6 +17,6 @@ export type FlatTeamExecutionCallbacks = Readonly<{
     sourceNode: import("../domain/team-run-config.js").TeamRunAgentNode;
   }>): Promise<MemberExecutionContext>;
   publishAgentEvent(identity: CollaborationMemberExecutionIdentity, event: CollaborationAgentExecutionEvent): void;
-  acceptPlatformBinding(identity: CollaborationMemberExecutionIdentity, binding: CollaborationAgentPlatformBinding): Promise<void>;
+  commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
   applicationExecutionContext?(identity: CollaborationMemberExecutionIdentity): ApplicationExecutionContext | null;
 }>;
