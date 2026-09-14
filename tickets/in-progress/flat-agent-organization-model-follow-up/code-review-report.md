@@ -148,7 +148,7 @@ No new blocking source finding. **F-002 source resolved; actual API closure pend
 Classification **N/A — source Pass**; Medium/High affirmed. Successful-test review N/A.
 
 ## Recommended Recipient / Routing
-Current get_handoff_rules obtained. Sole most-specific rule: “When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.” Exact recipient `/software_engineering_team/api_e2e_engineer`. Complete package/report/CRR-006/log handoff; receipt recorded after confirmation. Only this recipient notified, governing single-recipient contract overrides additional informational forwarding.
+Current get_handoff_rules obtained. Sole most-specific rule: “When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.” Exact recipient `/software_engineering_team/api_e2e_engineer`. Complete package/report/CRR-006/log delivered: send_message_to returned accepted=true / DELIVERED to existing run `api_e2e_engineer_450b25f17f2245fe89b9c52cd17038ae`, review commitce3444699; receipt recorded in revision history. Only this recipient notified, governing single-recipient contract overrides additional informational forwarding.
 
 ## Residual Risks / Required Downstream Work
 - **F-002 FIRST, TASK-05/06:** actual frontend delegation/manual parent Approve, remain parent, capture exact task incoming request and pre-selection owner state, then select task, visible Approve/click, one submission, normal review/settlement. Repeat and already-hydrated control. If frame absent, isolate producer→egress→transport→dispatch and route new evidence, never infer pending from Parsed or use diagnostic API approval as acceptance.
