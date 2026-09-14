@@ -1,10 +1,11 @@
 # Delivery Handoff Summary — DR-001
 
-**User accepted finalization; repository finalization in progress (DR-002).**
+**Delivery Completed — DR-002.**
 AORG-FOLLOWUP-20260914-001; Medium / High; reviewed route.
 
 ## Candidate / integration
-Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up`.
+Durable workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base`.
+Original ticket workspace removed after verified preservation; original candidate details below are historical.
 Branch: `codex/flat-agent-organization-model-follow-up`.
 HEAD: `4bbfd4ee3fbe95fd8f3e8ac1a555f8a5dc10746a`, plus explicitly preserved reviewed API tests/fixtures, upstream authority/evidence and delivery docs.
 Freshly fetched base/only finalization target: `origin/requirements/flat-agent-organization-model` at `72dee5ad2c2e332272a0c00eb36af1a036bd69fb`, already ancestor (21 ahead / 0 behind). No integration merge or checkpoint necessary. No executable rerun: no new base/production/test delta; nine reviewed durable hashes match. [Delivery state audit](validation/delivery-dr001-state-check.json).
@@ -32,8 +33,7 @@ User acceptance received in this conversation; see [verification reference](user
 ## Docs / finalization / cleanup
 Current gate state is authoritative in release-deployment-report.md. DR-001 planning below is retained as the sequence, not an assertion of present completion.
 [Docs sync](docs-sync-report.md) Pass; [unreleased notes](release-notes.md); [release/deployment report](release-deployment-report.md); [delivery history](delivery-revision-record.md).
-No push/target merge/archive/release/deployment performed. Target is the unreleased feature branch, never personal. After user verification, fetch again, protect edits and reintegrate/recheck if needed; renew verification for material changes. Archive ticket, commit/push ticket, update/merge/push target in order. Stage exact intentional paths only after reviewing evidence content; exclude generated SDK outputs and local runtime data. No blanket staging.
-API-owned Round3 services/four tabs stopped, ports 50244/50381/50382 reported empty, observer removed and 0755 restored. Older diagnostic tabs/data/provider threads and generated outputs retained; no deletion or worktree cleanup during verification hold. Inventory and safely preserve residual local material before any later cleanup. No user-state or provider-thread deletion authorized.
+Ticket archived, committed07b625d9a, pushed, fast-forward merged and pushed to `origin/requirements/flat-agent-organization-model`. Local ticket worktree/branch cleaned after private hash-verified preservation of test data/generated outputs. No release/deployment required or performed. Full final state, residuals, cleanup, rollback and receipt follow-up details in [delivery report](release-deployment-report.md). Remote ticket branch retained; target checkout is the durable workspace.
 
 ## Complete cumulative authority index
 - [requirements-doc.md](requirements-doc.md)
@@ -66,3 +66,5 @@ Validation README, API report and ledger index focused/raw evidence; the full va
 
 ## Archive location / historical path mapping
 Ticket archived to `tickets/done/flat-agent-organization-model-follow-up` before final commit. Earlier upstream artifacts/logs retain original absolute workspace/in-progress paths as historical evidence. Resolve canonical artifacts by basename in this archived folder; validation paths are relative to this folder. Final durable checkout and commits are recorded in release-deployment-report.md. Historical reports and raw traces were not rewritten to manufacture new stage evidence.
+
+- [User acceptance](user-verification.md)

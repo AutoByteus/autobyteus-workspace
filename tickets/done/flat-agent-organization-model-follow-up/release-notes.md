@@ -7,4 +7,4 @@ AORG-FOLLOWUP-20260914-001 — candidate for `requirements/flat-agent-organizati
 - First task inspection preserves actual pending manual tool controls alongside history, without forcing automatic approval or regressing terminal outcomes.
 - First-work binding changes remain protected by the root persistence boundary; scope restore does not restart settled tasks or replay old messages.
 
-Validation: API-REV-003 Pass; CRR-006 source and CRR-007 durable-test review Pass. User accepted finalization; repository completion is tracked in release-deployment-report.md. Exact post-durable publication fault not injected live; other residuals and inherited typecheck failures are in the API report. No migration/reset, version bump, tag, release or deployment is authorized.
+Validation: API-REV-003 Pass; CRR-006 source and CRR-007 durable-test review Pass. User accepted; finalized into the unreleased base branch. Completion evidence is in release-deployment-report.md. Exact post-durable publication fault not injected live; other residuals and inherited typecheck failures are in the API report. No migration/reset, version bump, tag, release or deployment is authorized.
