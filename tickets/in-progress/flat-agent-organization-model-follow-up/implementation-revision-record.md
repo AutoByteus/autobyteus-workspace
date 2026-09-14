@@ -7,6 +7,7 @@ Current code and [implementation-handoff.md](implementation-handoff.md) are auth
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer ARCH-REV-001 Pass / initial round | N/A | Initial Baseline; Medium / High | SR-005–007, DS-REV-001, ARCH-REV-001; CRR/API-REV/DR N/A | Implementation Complete — Ready for Independent Code Review |
 | IR-002 | Architecture Reviewer ARCH-REV-002 / resumed F-001 rework | F-001 (CRR-003 design impact) | Medium / High confirmed | SR-005–009, DS-REV-002, ARCH-REV-001–002, CRR-001–003, API-REV-001; DR N/A | Implementation Complete — Ready for Independent Code Review |
+| IR-003 | ARCH-REV-003 / resumed F-002 design rework | F-002 (CRR-005) | Medium / High confirmed | SR-010, DS-REV-003, ARCH-REV-003, CRR-005, API-REV-002; DR N/A | Implementation Complete — Ready for Independent Code Review |
 
 ## IR-001 — Lazy configured restore with durable first-work binding changes
 - Date: 2026-09-14.
@@ -34,3 +35,17 @@ Current code and [implementation-handoff.md](implementation-handoff.md) are auth
 - Evidence: `validation/ir002-checks.md`, `ir002-red.log`, `ir002-local-tests.log`, `ir002-web-typecheck.log`, `ir002-preview.page.vue`, `ir002-preview.log`.
 - Limitations: actual RET-06/07 test-server restart, providers/native continuation and B02–B04 acceptance remain API-owned. Historical IR-001 passes are not current acceptance. Incoming API test/fixture/generated/evidence and Designer/reviewer artifacts preserved unchanged by this round. No user process/data or release/merge/push change.
 - Classification: Medium / High confirmed; existing-owner concurrency and readiness contracts justify continued independent source review. Current code and canonical implementation-handoff.md remain authority.
+
+
+## IR-003 — Retained current tool decisions during exact member history hydration
+- Date: 2026-09-14. Trigger: Architecture Reviewer ARCH-REV-003 Pass on SR-010 / DS-REV-003 after CRR-005 F-002 Design Impact. Resumed existing held execution; no new assignment.
+- Prior authoritative implementation result: IR-002 Complete — Ready for Independent Code Review; CRR-004 subsequently Pass. Actual API-REV-002 resolved F-001 but remained Fail/confidence75.0% for F-002 and incomplete B02–B04. No result inferred from a missing record.
+- Current result: Implementation Complete — Ready for Independent Code Review. F-002 source addressed, not independently accepted. F-001 actual acceptance preserved. F-003 API-only duplicate candidate withdrawn, no protocol change.
+- Related authority: SR-005 approval unchanged / SR-006 evidence; cumulative SR-007–010 / DS-REV-001–003; ARCH-REV-001–003; CRR-001–005; API-REV-001–002; DR N/A. Relevant source correction follows SR-010, not earlier local-fix direction.
+- Affected behavior: REQ/AC-003–005 / DS-007 manual/auto task continuity; BEH-001–005 cumulative scope/binding/recovery preserved.
+- Actual delta: `1f407b3bf` based on `a269262fd`. Two production files only: existing teamMemberProjectionHydrationService composes historical/current candidate after exact live/readiness/revision checks; new same-folder pure teamMemberToolStateReconciliation uses existing types/builders/terminal predicate. No stateful registry/handler replay/policy override/schema/Org overlay. Current Team docs updated.
+- Validation: failing-before-fix before/during inspection tests2 fail, after-hydration control1 pass. Final16files/142 local tests Pass, including19 real task approval/inspection/render/command cases and19 pure reconciliation cases; actual source import cycles and F-001 local regressions included. Browser preview visibly retained history/draft and pending controls after inspection; one exact task approval command, approved presentation. No actual provider/workflow settlement acceptance.
+- Typecheck: plain web tsc Fail/exit2, existing SFC/module/cross-workspace/fixture limitations. Initial new helper union inference errors corrected; no changed-production diagnostic in final log. No new full build/server compile or whole-repository no-new-errors claim.
+- Evidence: validation/ir003-checks.md, ir003-red.log, ir003-local-tests.log, ir003-web-typecheck.log, ir003-preview.page.vue, ir003-preview.log. These are local evidence, not a replacement for API TASK-05/06 preselection frame and full visible workflow.
+- Remaining limitations: original actual pre-selection frame not recorded; rerun must capture actual incoming request and route any concrete absent-frame boundary finding. Full B02–B04 acceptance still open. All IR-001/002 code and other-owner dirty/API/generated files preserved. Preview tab/renderer closed and temporary route removed; user servers/data untouched.
+- Classification: Medium / High confirmed; pure two-file composition preserves owned boundaries but permission/terminal/publication contracts require independent source review. Current code and canonical implementation-handoff.md remain authoritative.

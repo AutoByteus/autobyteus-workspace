@@ -1,0 +1,65 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts (3 tests | 2 failed) 46ms
+   × TASK-01/02: actual task approval before first inspection survives hydration and renders one exact command 23ms
+     → expected { type: 'tool_call', …(8) } to match object { …(3) }
+(6 matching properties omitted from actual)
+   ✓ TASK-01/02: actual task approval after first inspection survives hydration and renders one exact command 17ms
+   × TASK-01/02: actual task approval during first inspection survives hydration and renders one exact command 6ms
+     → expected { type: 'tool_call', …(8) } to match object { …(3) }
+(6 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-01/02: actual task approval before first inspection survives hydration and renders one exact command
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-01/02: actual task approval during first inspection survives hydration and renders one exact command
+AssertionError: expected { type: 'tool_call', …(8) } to match object { …(3) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "arguments": {
+-     "message": "actual task result",
++     "message": "old argument",
+    },
+    "invocationId": "submit-invocation",
+-   "status": "awaiting-approval",
++   "status": "parsed",
+  }
+
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:79:27
+     77|   expect(retained.conversation.messages.some(m => m.text.includes('His…
+     78|   expect(test.tools()).toHaveLength(1)
+     79|   expect(test.tools()[0]).toMatchObject({ invocationId: INV, status: '…
+       |                           ^
+     80|   expect(useAgentActivityStore().getToolActivities(TASK)).toEqual([exp…
+     81|   test.render()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  11:45:11
+   Duration  5.19s (transform 2.73s, setup 4.52s, collect 120ms, tests 46ms, environment 167ms, prepare 128ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
