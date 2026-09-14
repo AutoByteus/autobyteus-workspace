@@ -1,0 +1,45 @@
+
+> autobyteus@1.4.69 dev /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 13862
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+
+              █▀▀▀▀▀▀▀█▀█▀▀▀▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ █▄▄ █▄  ▀▄█ █▀▀▀█ █
+              █ █   █ █▀▀ ▄▀▄▀█ █ █   █ █
+              █ ▀▀▀▀▀ █ █▀█▀▄ █ █ ▀▀▀▀▀ █
+              █▀▀▀██▀▀█ ▀  ██▀▀█▀▀▀▀██▀▀█
+              █ ▀▀▀▀▄▀▀▀▄▄ ▀▀  ▀  █▀ ▀▄ █
+              █▄▀▀█  ▀█▄ █ ▄█ ▄ ▀ █▄▄██▀█
+              █▀▀███ ▀ ▄██ ▀   ▀█▄█▀▀▀▄ █
+              █▀▀▀ ██▀  █ ███▀█▀▀ ▀▀██▀██
+              █▀▀▀▀▀▀▀█▄█  █▀ ▄ █▀█ ▀▄█ █
+              █ █▀▀▀█ █▄▀▀ ██▀▀ ▀▀▀ ▀█▄██
+              █ █   █ █▀▀▄ █▄ █ ██  ▄▄ ▀█
+              █ ▀▀▀▀▀ █ ▄ ▀██▀  █▀▄▄▀██▀█
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  ➜ Local:    http://0.0.0.0:13862/
+  ➜ Network:  http://192.168.156.180:13862/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 52ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 825ms
+[nitro] ✔ Nuxt Nitro server built in 760ms
+ℹ Vite client warmed up in 8ms
+
+ ERROR  http proxy error: /rest/health
+Error: connect ECONNREFUSED 127.0.0.1:19876
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+
+ℹ hmr update /pages/ir002-preview.vue?macro=true, /pages/ir002-preview.vue, /app.vue?vue&type=style&index=0&lang.css
+ℹ hmr update /@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fflat-agent-organization-model-follow-up%2Fautobyteus-web%2F.nuxt%2Froutes.mjs

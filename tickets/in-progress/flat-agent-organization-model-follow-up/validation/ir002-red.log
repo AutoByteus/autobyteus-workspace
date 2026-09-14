@@ -1,0 +1,51 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentOrgRetainedRecovery.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-follow-up/autobyteus-web
+
+stderr | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentOrgRetainedRecovery.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/agentOrgRetainedRecovery.spec.ts (2 tests | 2 failed) 38ms
+   × retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /team/worker without refocus or input 32ms
+     → expected 'reopen_required' to be 'historical' // Object.is equality
+   × retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /director without refocus or input 5ms
+     → expected 'reopen_required' to be 'historical' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /team/worker without refocus or input
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /director without refocus or input
+AssertionError: expected 'reopen_required' to be 'historical' // Object.is equality
+
+Expected: "historical"
+Received: "reopen_required"
+
+ ❯ stores/__tests__/agentOrgRetainedRecovery.spec.ts:82:48
+     80|     mocks.query.mockImplementation(async ({ variables }) => variables.…
+     81|     socket.close(); await tick()
+     82|     expect(store.contextFor('org-run')!.phase).toBe('historical')
+       |                                                ^
+     83|     expect(target.value.context).toBe(retained)
+     84|     expect(retained.state.currentStatus).toBe('offline')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  09:49:47
+   Duration  6.69s (transform 3.49s, setup 5.69s, collect 257ms, tests 38ms, environment 286ms, prepare 179ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
