@@ -1,7 +1,6 @@
 # Canonical Delivery Archive
 
-Package ORG-TOKEN-MIGRATION-20260915-001. Durable target directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration`.
-Earlier absolute worktree/source paths and raw execution logs are historical provenance. Artifact links in Markdown have been normalized to this final target archive. All files below retained, including source/design/API/review records and raw failure/success logs. Product/UI supplements N/A.
+Package ORG-TOKEN-MIGRATION-20260915-001. Durable directory `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration`. Full cumulative artifacts below; raw logs retain historical command paths. Product/UI supplements N/A.
 
 - [api-e2e-batches.log](api-e2e-batches.log)
 - [api-e2e-build.log](api-e2e-build.log)
@@ -21,9 +20,13 @@ Earlier absolute worktree/source paths and raw execution logs are historical pro
 - [api-e2e-test-review-report.md](api-e2e-test-review-report.md)
 - [api-e2e-test-typecheck.log](api-e2e-test-typecheck.log)
 - [architecture-review-revision-record.md](architecture-review-revision-record.md)
+- [archive-manifest.md](archive-manifest.md)
 - [code-review-checks.log](code-review-checks.log)
 - [code-review-report.md](code-review-report.md)
 - [code-review-revision-record.md](code-review-revision-record.md)
+- [delivery-base-electron-artifacts-sha256.txt](delivery-base-electron-artifacts-sha256.txt)
+- [delivery-base-electron-build-report.md](delivery-base-electron-build-report.md)
+- [delivery-base-electron-build.log.gz](delivery-base-electron-build.log.gz)
 - [delivery-candidate-sha256.txt](delivery-candidate-sha256.txt)
 - [delivery-electron-artifacts-sha256.txt](delivery-electron-artifacts-sha256.txt)
 - [delivery-electron-build-report.md](delivery-electron-build-report.md)

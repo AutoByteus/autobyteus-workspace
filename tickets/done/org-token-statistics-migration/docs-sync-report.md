@@ -35,3 +35,6 @@ Local macOS ARM64 build completed via README command after frozen-lockfile depen
 
 ## U-VERIFY-001 / Finalization update
 User explicitly verified the app and authorized base-branch finalization. Re-fetch confirms unchanged d60f74c21 target; source/tests unchanged. No additional canonical documentation impact. Ticket archived; current gate status is release-deployment-report.md, superseding historical hold statements above.
+
+## DR-003 / DR-004 latest gate status
+Explicit U-VERIFY-001 accepted; ticket archived, committed/pushed, merged/pushed to feature base. Canonical docs unchanged after DR-001. User-requested base-worktree Electron build Pass with unchanged source. Repository finalization completed; worktree cleanup remains operationally held for old app exit. Current release-deployment-report.md and handoff-summary.md supersede historical gate states.
