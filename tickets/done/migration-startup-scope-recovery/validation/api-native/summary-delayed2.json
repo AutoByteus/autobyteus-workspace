@@ -1,0 +1,76 @@
+[
+  {
+    "at": "2026-09-15T10:57:22.304Z",
+    "kind": "bootstrap",
+    "mainPid": 42297,
+    "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed2/home",
+    "version": "42.4.1"
+  },
+  {
+    "at": "2026-09-15T10:57:22.599Z",
+    "kind": "window-created",
+    "windowId": 1
+  },
+  {
+    "at": "2026-09-15T10:57:22.617Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T10:57:22.630Z",
+    "kind": "child-spawn",
+    "pid": 42312,
+    "generation": 1,
+    "childCount": 1
+  },
+  {
+    "at": "2026-09-15T10:57:22.630Z",
+    "kind": "child-held",
+    "pid": 42312,
+    "generation": 1
+  },
+  {
+    "at": "2026-09-15T10:57:23.532Z",
+    "kind": "window-load",
+    "windowId": 1,
+    "url": "http://127.0.0.1:50572/"
+  },
+  {
+    "at": "2026-09-15T10:58:01.363Z",
+    "kind": "before-quit"
+  },
+  {
+    "at": "2026-09-15T10:58:01.367Z",
+    "kind": "will-quit"
+  },
+  {
+    "at": "2026-09-15T10:58:01.368Z",
+    "kind": "quit",
+    "code": 0
+  },
+  {
+    "at": "2026-09-15T10:58:01.381Z",
+    "kind": "manager-stopped",
+    "generation": 1,
+    "pid": null
+  },
+  {
+    "at": "2026-09-15T10:58:01.382Z",
+    "kind": "child-close",
+    "pid": 42312,
+    "code": null,
+    "signal": "SIGTERM"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-15T11:07:57.452Z",
+  "mainPid": 43344,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-quitpending/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-quitpending/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-quitpending/home/.autobyteus",
+  "childCount": 1,
+  "pid": 43354,
+  "generation": 1,
+  "ready": false,
+  "pending": true,
+  "polls": 73,
+  "snapshot": {
+    "status": "starting",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": ""
+  },
+  "windowId": 1,
+  "dom": "Starting AutoByteus...\n\nConnecting to Agent Server...\n\nInitial server startup may take a moment. Please be patient...\n\nShow technical details"
+}

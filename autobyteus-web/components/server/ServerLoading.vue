@@ -1,10 +1,10 @@
 <template>
   <div class="server-loading-container" v-if="windowNodeContextStore.isEmbeddedWindow && (serverStore.status === 'starting' || serverStore.status === 'error' || serverStore.status === 'restarting')">
     <div class="server-loading-content">
-      <div v-if="serverStore.status === 'starting'" class="loading-state">
+      <div v-if="serverStore.status === 'starting' || serverStore.status === 'restarting'" class="loading-state">
         <div class="spinner"></div>
-        <h2 class="text-xl font-semibold mt-4">{{ $t('server.components.server.ServerLoading.starting_autobyteus') }}</h2>
-        <p class="text-gray-600 mt-2">{{ serverStore.connectionMessage }}</p>
+        <h2 class="text-xl font-semibold mt-4">{{ $t(serverStore.status === 'restarting' ? 'server.components.server.ServerLoading.restarting_server' : 'server.components.server.ServerLoading.starting_autobyteus') }}</h2>
+        <p class="text-gray-600 mt-2" role="status">{{ serverStore.connectionMessage }}</p>
         
         <div v-if="serverStore.connectionAttempts > 0" class="mt-2 text-gray-600">
           Connection attempt {{ serverStore.connectionAttempts }} of {{ serverStore.maxConnectionAttempts }}...
@@ -94,12 +94,7 @@
         </div>
       </div>
 
-      <div v-else-if="serverStore.status === 'restarting'" class="restarting-state">
-        <div class="spinner"></div>
-        <h2 class="text-xl font-semibold mt-4">{{ $t('server.components.server.ServerLoading.restarting_server') }}</h2>
-        <p class="text-gray-600 mt-2">{{ $t('server.components.server.ServerLoading.please_wait_this_may_take_a') }}</p>
-        <p v-if="serverStore.errorMessage" class="text-gray-600 mt-2 font-semibold">{{ serverStore.errorMessage }}</p>
-      </div>
+
     </div>
   </div>
 </template>

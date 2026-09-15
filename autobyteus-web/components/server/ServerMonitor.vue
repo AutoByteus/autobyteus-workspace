@@ -14,7 +14,7 @@
       class="status-card p-6 rounded-lg mb-6"
       :class="{
         'bg-green-50 border border-green-200': serverStore.status === 'running',
-        'bg-yellow-50 border border-yellow-200': serverStore.status === 'starting',
+        'bg-yellow-50 border border-yellow-200': (serverStore.status === 'starting' || serverStore.status === 'restarting'),
         'bg-red-50 border border-red-200': serverStore.status === 'error'
       }"
     >
@@ -23,13 +23,13 @@
           class="w-3 h-3 rounded-full mr-3" 
           :class="{
             'bg-green-500': serverStore.status === 'running',
-            'bg-yellow-500': serverStore.status === 'starting',
+            'bg-yellow-500': (serverStore.status === 'starting' || serverStore.status === 'restarting'),
             'bg-red-500': serverStore.status === 'error'
           }"
         ></div>
         <h3 class="text-lg font-medium">
           <span v-if="serverStore.status === 'running'">{{ $t('server.components.server.ServerMonitor.server_running') }}</span>
-          <span v-else-if="serverStore.status === 'starting'">{{ $t('server.components.server.ServerMonitor.server_starting') }}</span>
+          <span v-else-if="(serverStore.status === 'starting' || serverStore.status === 'restarting')">{{ $t('server.components.server.ServerMonitor.server_starting') }}</span>
           <span v-else-if="serverStore.status === 'error'">{{ $t('server.components.server.ServerMonitor.server_error') }}</span>
           <span v-else>{{ $t('server.components.server.ServerMonitor.unknown_status') }}</span>
         </h3>
@@ -37,7 +37,7 @@
       
       <div class="mb-4">
         <p v-if="serverStore.status === 'running'" class="text-green-700">{{ $t('server.components.server.ServerMonitor.the_server_is_running_and_ready') }}</p>
-        <p v-else-if="serverStore.status === 'starting'" class="text-yellow-700">
+        <p v-else-if="(serverStore.status === 'starting' || serverStore.status === 'restarting')" class="text-yellow-700">
           {{ serverStore.connectionMessage }}
         </p>
         <p v-else-if="serverStore.status === 'error'" class="text-red-700">

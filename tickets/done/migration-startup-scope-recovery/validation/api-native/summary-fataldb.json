@@ -1,0 +1,95 @@
+[
+  {
+    "at": "2026-09-15T11:07:16.816Z",
+    "kind": "bootstrap",
+    "mainPid": 43302,
+    "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home",
+    "version": "42.4.1"
+  },
+  {
+    "at": "2026-09-15T11:07:16.995Z",
+    "kind": "window-created",
+    "windowId": 1
+  },
+  {
+    "at": "2026-09-15T11:07:17.005Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T11:07:17.016Z",
+    "kind": "child-spawn",
+    "pid": 43313,
+    "generation": 1,
+    "childCount": 1
+  },
+  {
+    "at": "2026-09-15T11:07:17.463Z",
+    "kind": "window-load",
+    "windowId": 1,
+    "url": "http://127.0.0.1:50572/"
+  },
+  {
+    "at": "2026-09-15T11:07:18.511Z",
+    "kind": "manager-error",
+    "generation": 1,
+    "pid": 43313,
+    "message": "Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/electron@42.4.1/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/prisma/schema.prisma Server log: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home/.autobyteus/server-data/logs/server.log"
+  },
+  {
+    "at": "2026-09-15T11:07:18.511Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "error",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/electron@42.4.1/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/prisma/schema.prisma Server log: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home/.autobyteus/server-data/logs/server.log",
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T11:07:18.520Z",
+    "kind": "manager-stopped",
+    "generation": 1,
+    "pid": null
+  },
+  {
+    "at": "2026-09-15T11:07:18.520Z",
+    "kind": "child-close",
+    "pid": 43313,
+    "code": 1,
+    "signal": null
+  },
+  {
+    "at": "2026-09-15T11:07:27.592Z",
+    "kind": "before-quit"
+  },
+  {
+    "at": "2026-09-15T11:07:27.619Z",
+    "kind": "will-quit"
+  },
+  {
+    "at": "2026-09-15T11:07:27.620Z",
+    "kind": "quit",
+    "code": 0
+  }
+]

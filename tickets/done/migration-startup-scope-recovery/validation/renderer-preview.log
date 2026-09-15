@@ -1,0 +1,118 @@
+
+  VITE v7.3.1  ready in 240 ms
+
+  ➜  Local:   http://127.0.0.1:4317/
+(!) Failed to run dependency scan. Skipping dependency pre-bundling. Error: The following dependencies are imported but could not be resolved:
+
+  vue (imported by /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/stores/windowNodeContextStore.ts)
+
+Are they installed?
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:31903:33
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:34111:15
+11:04:56 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from ".local/startup-delay-preview/preview.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/.local/startup-delay-preview/preview.ts:1:39
+  1  |  import { createApp, h, nextTick } from "vue";
+     |                                          ^
+  2  |  import { createPinia, setActivePinia } from "pinia";
+  3  |  import ServerLoading from "~/components/server/ServerLoading.vue";
+11:04:56 AM [vite] Internal server error: Failed to resolve import "vue" from ".local/startup-delay-preview/preview.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/.local/startup-delay-preview/preview.ts:1:39
+  1  |  import { createApp, h, nextTick } from "vue";
+     |                                          ^
+  2  |  import { createPinia, setActivePinia } from "pinia";
+  3  |  import ServerLoading from "~/components/server/ServerLoading.vue";
+      at TransformPluginContext._formatLog (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43)
+      at TransformPluginContext.error (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14)
+      at normalizeUrl (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+      at async Promise.all (index 0)
+      at async TransformPluginContext.transform (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4)
+      at async EnvironmentPluginContainer.transform (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14)
+      at async loadAndTransform (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26)
+      at async viteTransformMiddleware (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:24542:20)
+11:04:56 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "components/server/ServerLoading.vue". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/components/server/ServerLoading.vue:1:53
+  1  |  import { defineComponent as _defineComponent } from "vue";
+     |                                                       ^
+  2  |  import { ref, onMounted, watch, onBeforeUnmount } from "vue";
+  3  |  import { useServerStore } from "~/stores/serverStore";
+11:04:56 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "components/server/ServerLoading.vue". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/components/server/ServerLoading.vue:1:53
+  1  |  import { defineComponent as _defineComponent } from "vue";
+     |                                                       ^
+  2  |  import { ref, onMounted, watch, onBeforeUnmount } from "vue";
+  3  |  import { useServerStore } from "~/stores/serverStore";
+11:04:56 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "stores/windowNodeContextStore.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/stores/windowNodeContextStore.ts:2:30
+  1  |  import { defineStore } from "pinia";
+  2  |  import { computed, ref } from "vue";
+     |                                 ^
+  3  |  import { deriveNodeEndpoints } from "~/utils/nodeEndpoints";
+  4  |  import { getBrowserServerBaseUrl, isElectronEnvironment } from "~/utils/browserServerConfig";
+11:04:57 AM [vite] (client) ✨ new dependencies optimized: pinia, axios
+11:04:57 AM [vite] (client) ✨ optimized dependencies changed. reloading
+11:04:57 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from ".local/startup-delay-preview/preview.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/.local/startup-delay-preview/preview.ts:1:39
+  1  |  import { createApp, h, nextTick } from "vue";
+     |                                          ^
+  2  |  import { createPinia, setActivePinia } from "pinia";
+  3  |  import ServerLoading from "~/components/server/ServerLoading.vue";
+11:04:57 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "components/server/ServerLoading.vue". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/components/server/ServerLoading.vue:1:53
+  1  |  import { defineComponent as _defineComponent } from "vue";
+     |                                                       ^
+  2  |  import { ref, onMounted, watch, onBeforeUnmount } from "vue";
+  3  |  import { useServerStore } from "~/stores/serverStore";
+11:04:57 AM [vite] Internal server error: Failed to resolve import "vue" from ".local/startup-delay-preview/preview.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/.local/startup-delay-preview/preview.ts:1:39
+  1  |  import { createApp, h, nextTick } from "vue";
+     |                                          ^
+  2  |  import { createPinia, setActivePinia } from "pinia";
+  3  |  import ServerLoading from "~/components/server/ServerLoading.vue";
+      at TransformPluginContext._formatLog (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28999:43)
+      at TransformPluginContext.error (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28996:14)
+      at normalizeUrl (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27119:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+      at async Promise.all (index 0)
+      at async TransformPluginContext.transform (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27145:4)
+      at async EnvironmentPluginContainer.transform (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28797:14)
+      at async loadAndTransform (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:22670:26)
+      at async viteTransformMiddleware (file:///Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/vite@7.3.1_@types+node@22.19.11_jiti@1.21.7_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:24542:20)
+11:04:57 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "stores/windowNodeContextStore.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/stores/windowNodeContextStore.ts:2:30
+  1  |  import { defineStore } from "pinia";
+  2  |  import { computed, ref } from "vue";
+     |                                 ^
+  3  |  import { deriveNodeEndpoints } from "~/utils/nodeEndpoints";
+  4  |  import { getBrowserServerBaseUrl, isElectronEnvironment } from "~/utils/browserServerConfig";
+11:04:57 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "components/server/ServerLoading.vue". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/components/server/ServerLoading.vue:1:53
+  1  |  import { defineComponent as _defineComponent } from "vue";
+     |                                                       ^
+  2  |  import { ref, onMounted, watch, onBeforeUnmount } from "vue";
+  3  |  import { useServerStore } from "~/stores/serverStore";
+11:04:57 AM [vite] (client) Pre-transform error: Failed to resolve import "vue" from "stores/windowNodeContextStore.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/stores/windowNodeContextStore.ts:2:30
+  1  |  import { defineStore } from "pinia";
+  2  |  import { computed, ref } from "vue";
+     |                                 ^
+  3  |  import { deriveNodeEndpoints } from "~/utils/nodeEndpoints";
+  4  |  import { getBrowserServerBaseUrl, isElectronEnvironment } from "~/utils/browserServerConfig";
+11:05:12 AM [vite] .local/startup-delay-preview/vite.config.mjs changed, restarting server...
+11:05:12 AM [vite] (client) Re-optimizing dependencies because vite config has changed
+11:05:12 AM [vite] server restarted.
+11:06:13 AM [vite] (client) page reload preview.ts

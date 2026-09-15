@@ -1,0 +1,132 @@
+[
+  {
+    "at": "2026-09-15T10:01:42.500Z",
+    "kind": "bootstrap",
+    "mainPid": 35420,
+    "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed/home",
+    "version": "42.4.1"
+  },
+  {
+    "at": "2026-09-15T10:01:42.747Z",
+    "kind": "window-created",
+    "windowId": 1
+  },
+  {
+    "at": "2026-09-15T10:01:42.758Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T10:01:42.769Z",
+    "kind": "child-spawn",
+    "pid": 35431,
+    "generation": 1,
+    "childCount": 1
+  },
+  {
+    "at": "2026-09-15T10:01:42.769Z",
+    "kind": "child-held",
+    "pid": 35431,
+    "generation": 1
+  },
+  {
+    "at": "2026-09-15T10:01:43.227Z",
+    "kind": "window-load",
+    "windowId": 1,
+    "url": "http://127.0.0.1:50572/"
+  },
+  {
+    "at": "2026-09-15T10:03:22.772Z",
+    "kind": "manager-startup-delayed",
+    "generation": 1,
+    "pid": 35431,
+    "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details."
+  },
+  {
+    "at": "2026-09-15T10:03:22.772Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details.",
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T10:03:49.332Z",
+    "kind": "child-released",
+    "pid": 35431,
+    "generation": 1
+  },
+  {
+    "at": "2026-09-15T10:03:49.453Z",
+    "kind": "manager-error",
+    "generation": 1,
+    "pid": null,
+    "message": "Server process exited before health was available (code 0)"
+  },
+  {
+    "at": "2026-09-15T10:03:49.453Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "error",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Server process exited before health was available (code 0)",
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T10:03:49.454Z",
+    "kind": "manager-stopped",
+    "generation": 1,
+    "pid": null
+  },
+  {
+    "at": "2026-09-15T10:03:49.454Z",
+    "kind": "child-close",
+    "pid": 35431,
+    "code": 0,
+    "signal": null
+  },
+  {
+    "at": "2026-09-15T10:04:12.222Z",
+    "kind": "before-quit"
+  },
+  {
+    "at": "2026-09-15T10:04:12.335Z",
+    "kind": "will-quit"
+  },
+  {
+    "at": "2026-09-15T10:04:12.336Z",
+    "kind": "quit",
+    "code": 0
+  }
+]

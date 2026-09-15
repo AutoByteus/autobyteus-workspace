@@ -1,0 +1,5 @@
+{
+  "private_backup": "/Users/normy/autobyteus_org/delivery-retained/MIGRATION-STARTUP-20260915-001-DR002",
+  "verified_entries": 22367,
+  "exclusions": "Rebuildable node_modules and .nuxt; symbolic links retained as links, not claims of copied target contents. No private data staged."
+}

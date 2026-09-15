@@ -1,6 +1,7 @@
 import type { ChildProcess } from 'child_process'
 import axios from 'axios'
 import { EventEmitter } from 'events'
+import { setTimeout as sleep } from 'node:timers/promises'
 import { logger as rootLogger } from '../logger'
 import {
   formatEmbeddedServerClientBaseUrl,
@@ -30,7 +31,7 @@ export abstract class BaseServerManager extends EventEmitter {
   protected readonly serverWebSocketUrl: string
   protected ready: boolean = false
   protected serverStartTime: number = 0
-  protected maxStartupTime: number = 100000 // 100 seconds timeout
+  protected startupWarningAfterMs: number = 100000 // Informational only; not a deadline
   protected appDataDir: string = ''
   protected firstRun: boolean = false
   protected serverDir: string = ''
@@ -38,6 +39,7 @@ export abstract class BaseServerManager extends EventEmitter {
   protected appDataService: AppDataService
   protected runtimeEnvOverrides: Record<string, string> = {}
   protected healthPollIntervalMs: number = 250
+  private pendingStartup: { promise: Promise<void>; cancel: () => void } | null = null
   private startupGeneration: number = 0
   private settledStartupGeneration: number = 0
   private lastStartupError: Error | null = null
@@ -67,37 +69,67 @@ export abstract class BaseServerManager extends EventEmitter {
    * Wait for the server port to be free before starting the server.
    * This is to ensure that TIME_WAIT state has cleared.
    */
-  protected async waitForPortToBeFree(timeoutMs: number = (process.platform === 'linux' ? 10000 : 5000)): Promise<void> {
+  protected async waitForPortToBeFree(
+    timeoutMs: number = (process.platform === 'linux' ? 10000 : 5000),
+    signal?: AbortSignal
+  ): Promise<void> {
     const startTime = Date.now();
     while (Date.now() - startTime < timeoutMs) {
+      signal?.throwIfAborted()
       const isFree = await assertEmbeddedServerListenerPortAvailable(this.serverPort)
         .then(() => true, () => false)
+      signal?.throwIfAborted()
       if (isFree) {
         logger.info(`Port ${this.serverPort} is free.`);
         return;
       }
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await sleep(100, undefined, { signal });
     }
     throw new Error(`Port ${this.serverPort} is still in use after ${timeoutMs}ms`);
   }
 
-  /**
-   * Start the backend server.
-   * Always starts a new internal server.
-   */
-  public async startServer(): Promise<void> {
-    if (this.isServerRunning) {
-      logger.info('Server is already running')
-      return
-    }
+  /** Start once; all callers share the same pending startup, including preflight. */
+  public startServer(): Promise<void> {
+    if (this.pendingStartup) return this.pendingStartup.promise
+    if (this.isRunning()) return Promise.resolve()
 
     const generation = ++this.startupGeneration
     this.settledStartupGeneration = 0
     this.lastStartupError = null
     this.ready = false
     this.isServerRunning = false
+    const controller = new AbortController()
+    const cancelled = new Promise<never>((_, reject) => {
+      controller.signal.addEventListener('abort', () => reject(controller.signal.reason), { once: true })
+    })
+    const cancel = () => {
+      const error = generation === this.startupGeneration && this.lastStartupError
+        ? this.lastStartupError : new Error('Server startup stopped')
+      if (generation === this.startupGeneration && this.settledStartupGeneration !== generation) {
+        this.settledStartupGeneration = generation
+        this.lastStartupError = error
+      }
+      controller.abort(error)
+    }
+    this.once('stopped', cancel)
+    // Defer setup until pending ownership and cancellation are installed.
+    const work = Promise.resolve().then(() => this.startAttempt(generation, controller.signal))
+    const promise = Promise.race([work, cancelled]).finally(() => {
+      this.removeListener('stopped', cancel)
+      if (this.pendingStartup?.promise === promise) this.pendingStartup = null
+    })
+    this.pendingStartup = { promise, cancel }
+    return promise
+  }
 
+  /** Platform stop overrides must also cancel preflight/no-close startup waits. */
+  protected cancelPendingStartup(): void {
+    this.pendingStartup?.cancel()
+  }
+
+  private async startAttempt(generation: number, signal: AbortSignal): Promise<void> {
     try {
+      signal.throwIfAborted()
       const serverRoot = this.getServerRoot()
       this.serverDir = serverRoot
       
@@ -120,7 +152,8 @@ export abstract class BaseServerManager extends EventEmitter {
       this.serverStartTime = Date.now()
 
       // Wait for the port to be free to avoid TIME_WAIT conflicts
-      await this.waitForPortToBeFree();
+      await this.waitForPortToBeFree(undefined, signal);
+      signal.throwIfAborted()
 
       // Always start a new internal server process.
       await this.launchServerProcess()
@@ -128,11 +161,12 @@ export abstract class BaseServerManager extends EventEmitter {
       if (!launchedProcess) {
         throw new Error('Server launcher did not provide a child process')
       }
-      await this.waitForServerReady(generation, launchedProcess)
+      signal.throwIfAborted()
+      await this.waitForServerReady(generation, launchedProcess, signal)
     } catch (error) {
       logger.error('Failed to start server:', error)
       const normalized = error instanceof Error ? error : new Error(`${error}`)
-      this.settleStartupError(generation, normalized)
+      if (!signal.aborted) this.settleStartupError(generation, normalized)
       throw normalized
     }
   }
@@ -147,6 +181,7 @@ export abstract class BaseServerManager extends EventEmitter {
    * First sends SIGTERM for graceful shutdown, then escalates to SIGKILL if timeout expires.
    */
   public stopServer(): Promise<void> {
+    this.cancelPendingStartup()
     if (!this.serverProcess) {
       logger.info('Server is not running');
       return Promise.resolve();
@@ -156,9 +191,14 @@ export abstract class BaseServerManager extends EventEmitter {
 
     return new Promise((resolve) => {
       let forceKillTimeout: NodeJS.Timeout;
+      let stopped = false;
       
       const cleanup = () => {
+        if (stopped) return
+        stopped = true
         clearTimeout(forceKillTimeout);
+        proc.removeListener('close', onClose)
+        if (this.serverProcess !== proc) return
         this.isServerRunning = false;
         this.ready = false;
         this.serverProcess = null;
@@ -166,11 +206,12 @@ export abstract class BaseServerManager extends EventEmitter {
       };
       
       // When process closes, cleanup and resolve
-      proc.once('close', () => {
+      const onClose = () => {
         logger.info('Server process closed');
         cleanup();
         resolve();
-      });
+      };
+      proc.once('close', onClose)
 
       logger.info('Stopping server...');
       
@@ -180,8 +221,9 @@ export abstract class BaseServerManager extends EventEmitter {
         proc.kill('SIGTERM');
         
         // Step 2: Set timeout to escalate to SIGKILL if graceful fails
+        if (stopped) return
         forceKillTimeout = setTimeout(() => {
-          if (this.serverProcess) {
+          if (this.serverProcess === proc) {
             logger.warn(`Graceful shutdown timed out after ${this.gracefulShutdownTimeoutMs}ms, sending SIGKILL`);
             try {
               proc.kill('SIGKILL');
@@ -360,7 +402,6 @@ export abstract class BaseServerManager extends EventEmitter {
       this.isServerRunning = false
       this.ready = false
       this.serverProcess = null
-      this.emit('stopped');
       if (closedBeforeHealth) {
         this.settleStartupError(
           generation,
@@ -369,6 +410,7 @@ export abstract class BaseServerManager extends EventEmitter {
       } else if (code !== 0 && code !== null) {
         this.emit('error', new Error(`Server process exited with code ${code}`))
       }
+      this.emit('stopped');
     })
   }
 
@@ -386,54 +428,48 @@ export abstract class BaseServerManager extends EventEmitter {
     }
   }
 
-  /**
-   * Wait for the server to be ready or timeout.
-   */
+  /** Observe the current child until health, a genuine failure, or explicit stop. */
   protected async waitForServerReady(
     generation: number,
-    process: ChildProcess
+    process: ChildProcess,
+    signal: AbortSignal
   ): Promise<void> {
-    if (this.ready) {
-      return Promise.resolve();
-    }
+    signal.throwIfAborted()
+    if (this.ready) return
     if (this.settledStartupGeneration === generation && this.lastStartupError) {
-      return Promise.reject(this.lastStartupError)
+      throw this.lastStartupError
     }
     return new Promise<void>((resolve, reject) => {
-        let timeoutId: NodeJS.Timeout;
-        let healthIntervalId: NodeJS.Timeout;
+      let warningTimer: NodeJS.Timeout
+      let healthInterval: NodeJS.Timeout
+      let settled = false
+      const finish = (error?: Error) => {
+        if (settled) return
+        settled = true
+        clearTimeout(warningTimer)
+        clearInterval(healthInterval)
+        this.removeListener('ready', onReady)
+        this.removeListener('error', onError)
+        signal.removeEventListener('abort', onAbort)
+        if (error) reject(error)
+        else resolve()
+      }
+      const onReady = () => finish()
+      const onError = (error: Error) => finish(error)
+      const onAbort = () => finish(signal.reason)
+      this.once('ready', onReady)
+      this.once('error', onError)
+      signal.addEventListener('abort', onAbort, { once: true })
 
-        const onReadyListener = () => {
-            clearTimeout(timeoutId);
-            clearInterval(healthIntervalId);
-            this.removeListener('error', onErrorListener);
-            resolve();
-        };
-
-        const onErrorListener = (error: Error) => {
-            clearTimeout(timeoutId);
-            clearInterval(healthIntervalId);
-            this.removeListener('ready', onReadyListener);
-            reject(error);
-        };
-
-        this.once('ready', onReadyListener);
-        this.once('error', onErrorListener);
-
-        const pollHealth = () => {
-          void this.checkServerHealth(generation, process)
-        }
-        healthIntervalId = setInterval(pollHealth, this.healthPollIntervalMs)
-        pollHealth()
-
-        timeoutId = setTimeout(() => {
-            clearInterval(healthIntervalId);
-            this.removeListener('ready', onReadyListener);
-            this.removeListener('error', onErrorListener);
-            const error = new Error(`Server failed to start within ${this.maxStartupTime / 1000} seconds`);
-            this.settleStartupError(generation, error);
-            reject(error);
-        }, this.maxStartupTime);
-    });
+      const pollHealth = () => { void this.checkServerHealth(generation, process) }
+      healthInterval = setInterval(pollHealth, this.healthPollIntervalMs)
+      warningTimer = setTimeout(() => {
+        if (settled || signal.aborted || generation !== this.startupGeneration || process !== this.serverProcess) return
+        const message = 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+        logger.warn(message)
+        this.emit('startup-delayed', message)
+      }, this.startupWarningAfterMs)
+      pollHealth()
+    })
   }
 }

@@ -1,0 +1,17 @@
+{
+  "head": "3f853c7626851cb5d89178965534401e9e4aa5e4",
+  "revision": "IR-001",
+  "files": {
+    "autobyteus-web/components/server/ServerLoading.vue": "0219b059048d90f43d5b41555a2e7be7b4cfd006920da4bb203405f45ea041b2",
+    "autobyteus-web/components/server/ServerMonitor.vue": "e3d06304a47e38c5d92a6944003b31d7098f396ccd8264a1dcfc96411f80ea19",
+    "autobyteus-web/components/server/__tests__/StartupDelayPresentation.spec.ts": "4ebc4e4fb7328f4156544d36a57c0e232fa46ae596a4c27d19672e649fecd84e",
+    "autobyteus-web/docs/electron_packaging.md": "cdd5d8cb5e4f009becabeb8ba00e9a4c9c628c4d03d2338995cc6d650f13a701",
+    "autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts": "36911cc5a1ed458745bf60124af25b2388cddf465a29f77aac4ce86c3c9a65b4",
+    "autobyteus-web/electron/server/__tests__/ServerStatusManager.spec.ts": "3512a361bd24916afeb487a72c1605c8982bc2fec69fb1cb3b54dffcda126570",
+    "autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts": "dbb39537dfbab8dd9136f05dd9e02de1cf4cd0da7977fe0c4b54f6b9dd589382",
+    "autobyteus-web/electron/server/baseServerManager.ts": "5dab14f2c7605b6be07882e5dd8167242bf640eac1c5f66df5c33042dfb421aa",
+    "autobyteus-web/electron/server/serverStatusManager.ts": "4cb65c4eb07b1ed438e0f574db45d96262384a79dd4b7337dc9f3a0cab135118",
+    "autobyteus-web/electron/server/windowsServerManager.ts": "2f6ca785b9168fb45bba36645a3ea89932b38419fdf984d87ba66f83bf9e2acd",
+    "autobyteus-web/stores/serverStore.ts": "4a5f7d4d8fa3233ebf552e0074adc9eee4121651c29c0961fd78fa9db39388bd"
+  }
+}

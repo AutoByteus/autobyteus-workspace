@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-15T11:06:11.485Z",
+  "mainPid": 42714,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus",
+  "childCount": 4,
+  "pid": 43151,
+  "generation": 4,
+  "ready": true,
+  "pending": false,
+  "polls": 1027,
+  "snapshot": {
+    "status": "running",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "Healthy"
+  },
+  "windowId": 1,
+  "dom": "Shutting Down...\n\nPlease wait while we safely close the application."
+}

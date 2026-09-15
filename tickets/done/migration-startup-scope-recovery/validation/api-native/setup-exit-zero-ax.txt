@@ -1,0 +1,25 @@
+Window: "Electron", App: Electron.
+0 Standardfenster Electron, Secondary Actions: Raise
+	1 container Electron
+		2 container
+			3 HTML-Inhalte 127.0.0.1:50572/
+				4 container
+					5 Text ❌
+					6 Kopfzeile Application Error, Value: 2
+						7 Text Application Error
+					8 Text Server process exited before health was available (code 0)
+					9 Button Restart Server
+					10 Button Check Server Health
+					11 Button Show technical details
+					12 Button Show Advanced Recovery Options
+	13 Schließen-Taste
+	14 Taste „Vollbildmodus“ Help: mit dieser Taste wird auch das Fenster vergrößert, Secondary Actions: Fenster zoomen
+	15 Taste zum Minimieren
+16 menu bar
+	17 Electron
+	18 File
+	19 Edit
+	20 View
+	21 Window
+
+The focused UI element is 3 HTML-Inhalte 127.0.0.1:50572/

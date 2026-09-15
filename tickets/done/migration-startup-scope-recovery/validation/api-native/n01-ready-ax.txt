@@ -1,0 +1,55 @@
+Window: "Electron", App: Electron.
+0 Standardfenster Electron, Secondary Actions: Raise
+	1 container Electron
+		2 container
+			3 HTML-Inhalte 127.0.0.1:50572/agents
+				4 container
+					5 container Agents & teams
+						6 container Primary navigation
+							7 Inhaltsliste
+								8 container
+									9 Button Agents
+									10 Button Collapse left panel
+										11 Bild
+								12 Button Agent Teams
+								13 Button Agent Orgs
+								14 Button Skills
+								15 Button Memory
+								16 Button Nodes
+						17 container
+							18 Kopfzeile Workspaces, Value: 3
+								19 Text Workspaces
+							20 Button Add workspace
+							21 Button Temp Workspace
+						22 Button Settings
+					23 container
+						24 Textfeld (settable) Search agents by name or description...
+						25 Button Reload
+							26 Bild
+							27 Text Reload
+						28 Button Create Agent
+						29 Kopfzeile Individual agents, Value: 2
+							30 Text Individual agents
+						31 text 2 agents MC
+						32 Kopfzeile Memory Compactor, Value: 3
+							33 Text Memory Compactor
+						34 Text Summarizes the conversation history of a target agent so the target agent can continue later.
+						35 text Tools 0 None Skills 0 None
+						36 Button Run
+						37 Button View Details
+						38 Text RS
+						39 Kopfzeile Retrospective Skill Improver, Value: 3
+							40 Text Retrospective Skill Improver
+						41 Text Improves configured durable skill packages from target run work-trace evidence.
+						42 text Tools 2 run_bash send_message_to Skills 1 retrospective-skill-improver
+						43 Button Run
+						44 Button View Details
+	45 Schließen-Taste
+	46 Taste „Vollbildmodus“ Help: mit dieser Taste wird auch das Fenster vergrößert, Secondary Actions: Fenster zoomen
+	47 Taste zum Minimieren
+48 menu bar
+	49 Electron
+	50 File
+	51 Edit
+	52 View
+	53 Window

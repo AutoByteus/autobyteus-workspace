@@ -1,0 +1,30 @@
+{
+  "at": "2026-09-15T11:07:27.337Z",
+  "mainPid": 43302,
+  "profile": "production",
+  "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home",
+  "userData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/electron/userData",
+  "baseData": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home/.autobyteus",
+  "childCount": 1,
+  "pid": null,
+  "generation": 1,
+  "ready": false,
+  "pending": false,
+  "polls": 6,
+  "snapshot": {
+    "status": "error",
+    "baseUrl": "http://127.0.0.1:29695",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "graphqlWs": "ws://127.0.0.1:29695/graphql",
+      "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "",
+    "message": "Server startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/electron@42.4.1/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/prisma/schema.prisma Server log: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home/.autobyteus/server-data/logs/server.log"
+  },
+  "windowId": 1,
+  "dom": "❌\nApplication Error\n\nServer startup failed [DATABASE_MIGRATION_FAILED]: Failed to run database migrations: Error: Command failed: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/node_modules/.pnpm/electron@42.4.1/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/resources/server/prisma/schema.prisma Server log: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-fataldb/home/.autobyteus/server-data/logs/server.log\n\nRestart Server\nCheck Server Health\nShow technical details\nShow Advanced Recovery Options"
+}

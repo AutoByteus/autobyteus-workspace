@@ -1,0 +1,26 @@
+Window: "Electron", App: Electron.
+0 Standardfenster Electron, Secondary Actions: Raise
+	1 container Electron
+		2 container
+			3 HTML-Inhalte 127.0.0.1:50572/settings
+				4 container
+					5 Kopfzeile Restarting Server..., Value: 2
+						6 Text Restarting Server...
+					7 Text Startup is taking longer than usual. Waiting for the backend; see logs for details.
+					8 Text Backend service initializing...
+					9 Text http://127.0.0.1:29695/graphql
+					10 Text Health check: Healthy: ok
+					11 Text Logs available at: /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed3/home/.autobyteus/logs/app.log
+					12 Button Hide technical details
+					13 Button Run health check
+	14 Schließen-Taste
+	15 Taste „Vollbildmodus“ Help: mit dieser Taste wird auch das Fenster vergrößert, Secondary Actions: Fenster zoomen
+	16 Taste zum Minimieren
+17 menu bar
+	18 Electron
+	19 File
+	20 Edit
+	21 View
+	22 Window
+
+The focused UI element is 3 HTML-Inhalte 127.0.0.1:50572/settings

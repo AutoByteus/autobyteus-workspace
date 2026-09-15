@@ -119,6 +119,25 @@ Key features:
 - **Validation**: Checks for required server files before starting
 - **Port waiting**: Ensures port is free before binding
 
+### Delayed startup is informational
+
+Startup calls share one pending attempt, including port preflight. After 100 seconds
+of waiting for child health, the process owner emits a one-time delayed-start notice;
+it does not fail, kill/restart the backend, or launch another child. The existing
+status snapshot carries that message while remaining STARTING or RESTARTING.
+Only current-child health establishes readiness. Genuine setup, structured fatal,
+and process failures still terminate startup; explicit stop cancels pending
+observations, including the Windows no-close cleanup path. Old attempt cleanup
+cannot clear a successor.
+
+The loading overlay and server monitor display the notice with existing diagnostics.
+Ready, error, or a new attempt clears it. A living but unresponsive backend may stay
+pending: elapsed time is not proof of either failure or migration progress.
+Per-request health, port-release, and shutdown deadlines remain operation-specific.
+This does not change backend migrations or data readiness policy. Validate delayed
+desktop behavior with disposable data in a normal window-first Electron launch,
+not by launching against a user's existing profile.
+
 ### Platform-Specific Managers
 
 | Platform | Class                  | Entrypoint              |

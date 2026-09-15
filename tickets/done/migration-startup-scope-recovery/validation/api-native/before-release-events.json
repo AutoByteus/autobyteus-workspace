@@ -1,0 +1,75 @@
+[
+  {
+    "at": "2026-09-15T10:01:42.500Z",
+    "kind": "bootstrap",
+    "mainPid": 35420,
+    "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/.local/api-native-delayed/home",
+    "version": "42.4.1"
+  },
+  {
+    "at": "2026-09-15T10:01:42.747Z",
+    "kind": "window-created",
+    "windowId": 1
+  },
+  {
+    "at": "2026-09-15T10:01:42.758Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "healthCheckStatus": ""
+    }
+  },
+  {
+    "at": "2026-09-15T10:01:42.769Z",
+    "kind": "child-spawn",
+    "pid": 35431,
+    "generation": 1,
+    "childCount": 1
+  },
+  {
+    "at": "2026-09-15T10:01:42.769Z",
+    "kind": "child-held",
+    "pid": 35431,
+    "generation": 1
+  },
+  {
+    "at": "2026-09-15T10:01:43.227Z",
+    "kind": "window-load",
+    "windowId": 1,
+    "url": "http://127.0.0.1:50572/"
+  },
+  {
+    "at": "2026-09-15T10:03:22.772Z",
+    "kind": "manager-startup-delayed",
+    "generation": 1,
+    "pid": 35431,
+    "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details."
+  },
+  {
+    "at": "2026-09-15T10:03:22.772Z",
+    "kind": "status-change",
+    "snapshot": {
+      "status": "starting",
+      "baseUrl": "http://127.0.0.1:29695",
+      "urls": {
+        "graphql": "http://127.0.0.1:29695/graphql",
+        "rest": "http://127.0.0.1:29695/rest",
+        "graphqlWs": "ws://127.0.0.1:29695/graphql",
+        "transcription": "ws://127.0.0.1:29695/ws/transcribe",
+        "terminalWs": "ws://127.0.0.1:29695/ws/terminal",
+        "health": "http://127.0.0.1:29695/rest/health"
+      },
+      "message": "Startup is taking longer than usual. Waiting for the backend; see logs for details.",
+      "healthCheckStatus": ""
+    }
+  }
+]

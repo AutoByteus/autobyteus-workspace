@@ -1,0 +1,444 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/server/__tests__/StartupDelayPresentation.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web
+
+stderr | components/server/__tests__/StartupDelayPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Initializing server config
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Log file path: /isolated/server.log
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Received server status: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+serverStore: Updating server status with: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Component mounted with status: starting
+ServerMonitor: Component mounted with status: starting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Still starting, checking health again
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Updating server status with: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+serverStore: Server status update received: {
+  status: 'running',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+serverStore: Updating server status with: {
+  status: 'running',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+ServerLoading: Status changed from starting to running
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Server status update received: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+serverStore: Updating server status with: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from running to restarting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Server status update received: {
+  status: 'error',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Essential startup gate failed'
+}
+serverStore: Updating server status with: {
+  status: 'error',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Essential startup gate failed'
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from restarting to error
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Initiating server restart.
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from error to restarting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Server status update received: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+serverStore: Updating server status with: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed starting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from restarting to starting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Initializing server config
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Log file path: /isolated/server.log
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Received server status: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+serverStore: Updating server status with: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Component mounted with status: restarting
+ServerMonitor: Component mounted with status: restarting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Updating server status with: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+serverStore: Server status update received: {
+  status: 'running',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+serverStore: Updating server status with: {
+  status: 'running',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+ServerLoading: Status changed from restarting to running
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Server status update received: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+serverStore: Updating server status with: {
+  status: 'restarting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from running to restarting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Server status update received: {
+  status: 'error',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Essential startup gate failed'
+}
+serverStore: Updating server status with: {
+  status: 'error',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: 'Essential startup gate failed'
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from restarting to error
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Initiating server restart.
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from error to restarting
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+serverStore: Server status update received: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+serverStore: Updating server status with: {
+  status: 'starting',
+  baseUrl: 'http://127.0.0.1:29695',
+  urls: {
+    graphql: 'http://127.0.0.1:29695/graphql',
+    rest: 'http://127.0.0.1:29695/rest',
+    graphqlWs: '',
+    terminalWs: '',
+    transcription: '',
+    health: 'http://127.0.0.1:29695/rest/health'
+  },
+  message: undefined
+}
+
+stdout | components/server/__tests__/StartupDelayPresentation.spec.ts > projects delayed restarting through initial IPC snapshot, real store and rendered loading/monitor
+ServerLoading: Status changed from restarting to starting
+
+ ✓ components/server/__tests__/StartupDelayPresentation.spec.ts (3 tests) 73ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  11:59:50
+   Duration  5.13s (transform 2.91s, setup 4.51s, collect 52ms, tests 73ms, environment 141ms, prepare 125ms)
+

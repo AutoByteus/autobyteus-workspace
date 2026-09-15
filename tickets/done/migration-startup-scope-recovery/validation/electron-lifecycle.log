@@ -1,0 +1,16 @@
+
+> autobyteus@1.4.69 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run server/__tests__/StartupDelayLifecycle.spec.ts server/__tests__/BaseServerManager.spec.ts server/__tests__/ServerStatusManager.spec.ts
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/migration-startup-scope-recovery/autobyteus-web/electron
+
+ ✓ server/__tests__/ServerStatusManager.spec.ts (1 test) 2ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 64ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (13 tests) 83ms
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  11:02:38
+   Duration  413ms (transform 155ms, setup 0ms, collect 293ms, tests 149ms, environment 0ms, prepare 156ms)
+

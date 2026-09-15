@@ -1,0 +1,68 @@
+{
+  "all_11_upstream_entries_match": true,
+  "head": "3f853c7626851cb5d89178965534401e9e4aa5e4",
+  "staged_empty": true,
+  "durable_test_status": [
+    " M autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts",
+    " M autobyteus-web/electron/server/__tests__/ServerStatusManager.spec.ts",
+    "?? autobyteus-web/components/server/__tests__/StartupDelayPresentation.spec.ts",
+    "?? autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts"
+  ],
+  "entries": [
+    {
+      "path": "autobyteus-web/components/server/ServerLoading.vue",
+      "matches_reviewed_hash": true,
+      "sha256": "0219b059048d90f43d5b41555a2e7be7b4cfd006920da4bb203405f45ea041b2"
+    },
+    {
+      "path": "autobyteus-web/components/server/ServerMonitor.vue",
+      "matches_reviewed_hash": true,
+      "sha256": "e3d06304a47e38c5d92a6944003b31d7098f396ccd8264a1dcfc96411f80ea19"
+    },
+    {
+      "path": "autobyteus-web/components/server/__tests__/StartupDelayPresentation.spec.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "4ebc4e4fb7328f4156544d36a57c0e232fa46ae596a4c27d19672e649fecd84e"
+    },
+    {
+      "path": "autobyteus-web/docs/electron_packaging.md",
+      "matches_reviewed_hash": true,
+      "sha256": "cdd5d8cb5e4f009becabeb8ba00e9a4c9c628c4d03d2338995cc6d650f13a701"
+    },
+    {
+      "path": "autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "36911cc5a1ed458745bf60124af25b2388cddf465a29f77aac4ce86c3c9a65b4"
+    },
+    {
+      "path": "autobyteus-web/electron/server/__tests__/ServerStatusManager.spec.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "3512a361bd24916afeb487a72c1605c8982bc2fec69fb1cb3b54dffcda126570"
+    },
+    {
+      "path": "autobyteus-web/electron/server/__tests__/StartupDelayLifecycle.spec.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "dbb39537dfbab8dd9136f05dd9e02de1cf4cd0da7977fe0c4b54f6b9dd589382"
+    },
+    {
+      "path": "autobyteus-web/electron/server/baseServerManager.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "5dab14f2c7605b6be07882e5dd8167242bf640eac1c5f66df5c33042dfb421aa"
+    },
+    {
+      "path": "autobyteus-web/electron/server/serverStatusManager.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "4cb65c4eb07b1ed438e0f574db45d96262384a79dd4b7337dc9f3a0cab135118"
+    },
+    {
+      "path": "autobyteus-web/electron/server/windowsServerManager.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "2f6ca785b9168fb45bba36645a3ea89932b38419fdf984d87ba66f83bf9e2acd"
+    },
+    {
+      "path": "autobyteus-web/stores/serverStore.ts",
+      "matches_reviewed_hash": true,
+      "sha256": "4a5f7d4d8fa3233ebf552e0074adc9eee4121651c29c0961fd78fa9db39388bd"
+    }
+  ]
+}
