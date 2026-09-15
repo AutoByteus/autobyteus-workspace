@@ -1,6 +1,6 @@
-# Canonical Delivery Archive
+# Canonical Delivery Archive — DR-005
 
-Package ORG-TOKEN-MIGRATION-20260915-001. Durable directory `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration`. Full cumulative artifacts below; raw logs retain historical command paths. Product/UI supplements N/A.
+ORG-TOKEN-MIGRATION-20260915-001. Durable directory `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration`. Complete cumulative reports/revisions/logs below. Historical old-worktree paths in evidence are provenance; that worktree was safely removed. Product/UI supplements N/A.
 
 - [api-e2e-batches.log](api-e2e-batches.log)
 - [api-e2e-build.log](api-e2e-build.log)
@@ -28,6 +28,7 @@ Package ORG-TOKEN-MIGRATION-20260915-001. Durable directory `/Users/normy/autoby
 - [delivery-base-electron-build-report.md](delivery-base-electron-build-report.md)
 - [delivery-base-electron-build.log.gz](delivery-base-electron-build.log.gz)
 - [delivery-candidate-sha256.txt](delivery-candidate-sha256.txt)
+- [delivery-cleanup-report.md](delivery-cleanup-report.md)
 - [delivery-electron-artifacts-sha256.txt](delivery-electron-artifacts-sha256.txt)
 - [delivery-electron-build-report.md](delivery-electron-build-report.md)
 - [delivery-electron-build.log.gz](delivery-electron-build.log.gz)

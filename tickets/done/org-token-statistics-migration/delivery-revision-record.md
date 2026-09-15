@@ -11,6 +11,8 @@ The latest docs-sync-report.md, handoff-summary.md and release-deployment-report
 | DR-003 | U-VERIFY-001 finalization / cleanup request | DR-002 verification hold | Repository finalized; requested worktree cleanup held | release-deployment-report.md; handoff-summary.md; user-verification.md |
 | DR-004 | User requests latest-base Electron build | DR-003 repository complete / cleanup held | Base build Pass; cleanup still held | base build report/log/checksums; docs-sync/handoff/release reports |
 
+| DR-005 | User confirms base app and authorizes full cleanup | DR-004 base build Pass / cleanup held | Delivery Completed | cleanup report; final handoff/release/docs-sync; archive manifest; user-verification.md |
+
 ## DR-001 — Initial current-base documentation and verification hold
 - Date: 2026-09-15; initial delivery round for ORG-TOKEN-MIGRATION-20260915-001.
 - Trigger: code_reviewer CRR-002, api-e2e-test-review-report.md; full SR-001–004 (approved SR-003), DS-001, ARCH-REV-001, IR-001, CRR-001, API-REV-001 retained. Medium / High; reviewed route unchanged.
@@ -50,3 +52,12 @@ The latest docs-sync-report.md, handoff-summary.md and release-deployment-report
 - Current local build result Pass. Overall delivery remains Blocked for requested safe worktree removal/prune, not a source/design failure. No runtime launch/stop, profile/ledger operation, release/tag/version change or new user-verification claim.
 - Current artifacts: delivery-base-electron-build-report.md, compressed raw log, checksums; updated docs-sync-report.md, handoff-summary.md and release-deployment-report.md. Complete durable archive remains in base worktree. Final report commit is evidence-only.
 - Terminal return Not yet eligible; message N/A. Next action: provide base app path, ask user to exit old app, then finish authorized worktree cleanup without replaying merge/push.
+
+## DR-005 — Safe cleanup and terminal delivery completion
+- Date 2026-09-16; trigger U-CLEANUP-002 confirming base-worktree app use and authorizing full prior-ticket cleanup. Prior result DR-004 had repository/build complete but removal blocked by active old app.
+- Revalidated zero old-worktree executable processes, seven base-app processes, clean tracked/staged ticket state, only generated untracked/ignored files, archived evidence durable in target, exact remote ticket SHA merged into target.
+- Removed old worktree/app/build safely; target registration removed, prune dry-run clean; local branch already absent; remote ticket branch deleted with exact-SHA lease. Post-delete SSH verification transient failure resolved by successful retry. No finalization replay or process/profile operation.
+- Current authoritative result **Delivery Completed**. User verification, repository finalization, requested builds and safe cleanup Completed; production release/tag/deployment/rollout Not required. Medium/High and reviewed route retained.
+- Updated docs-sync-report.md, handoff-summary.md, release-deployment-report.md, user-verification.md, archive-manifest.md; new delivery-cleanup-report.md. Prior round entries retained. This completion receipt is a documentation-only target commit; final hash supplied with terminal message.
+- Terminal return: eligible; prepared for rule-selected Solution Designer after confirmed receipt push. Transmission status/reference is the confirmed tool-backed terminal message, not presumed before send.
+- Residual validation limits unchanged: API-owned 95%, scripted backend/pricing, default test-inclusive TS6059, no global startup-speed claim. These are disclosed scope limits, not unfinished delivery gates. No remaining blockers.

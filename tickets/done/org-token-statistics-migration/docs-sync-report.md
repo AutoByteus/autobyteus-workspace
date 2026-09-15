@@ -1,3 +1,7 @@
+# Latest Delivery Status — DR-005
+
+Docs sync remains Pass/Updated. U-VERIFY-001 accepted; repository finalized and safe cleanup Completed. Source behavior and canonical Org/token/startup docs unchanged since prior sync. See current release-deployment-report.md and handoff-summary.md; lower historical entries retain their original gate states.
+
 # Docs Sync Report — DR-002
 
 ## Scope

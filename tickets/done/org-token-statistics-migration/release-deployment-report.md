@@ -1,4 +1,4 @@
-# Delivery / Repository Finalization Report — DR-004
+# Delivery / Repository Finalization Report — DR-005
 
 Package ORG-TOKEN-MIGRATION-20260915-001; task_size **Medium**, architectural_risk **High**, independent reviewed route retained. Authoritative current gates below supersede historical executing/hold notes.
 
@@ -24,17 +24,18 @@ Package ORG-TOKEN-MIGRATION-20260915-001; task_size **Medium**, architectural_ri
 - Product decision Migration Required remains same unreleased migration ID, independent source candidates, preserved accounting/history, no successful-ledger reopen hook. Separate attachment startup readiness unchanged; no global timing claim.
 - Delivery performed no live-profile migration, ledger reset, app start/stop or real conversation. Future approved data transition/rollback needs stopped writers and consistent paired DB/memory backups; no code-only data rollback or fabricated migration status.
 
-## Cleanup — User Requested, Safely Held
-- Merged local ticket branch deletion **Completed** after detaching at da138f6db.
-- Dedicated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration`: **Blocked pending safe user-app exit**. User explicitly requested cleanup after initial retention decision, then requested replacement base build. Read-only inspection showed old app/backend still active; no process terminated and no live executable deleted.
-- Worktree prune **Pending removal**. Remote ticket branch deletion **Not required**; retained provenance.
-- User should quit old app before opening base app (same normal profile/port). Once old processes exit, remove only ticket worktree/generated outputs and prune its stale registration safely, preserving archived artifacts in this base worktree.
-- Unrelated base worktree SDK dist and org-history-resume-offline-analysis ticket untouched. Generated build outputs not staged.
+## Cleanup — Completed (U-CLEANUP-002)
+- User confirms running base-worktree app and explicitly requests full cleanup. No old-worktree processes; base-app processes present.
+- Old dedicated worktree and its generated outputs removed with audited `git worktree remove --force`; worktree registration removed; prune dry-run clean. No unrelated worktree pruned.
+- Local ticket branch deletion Completed earlier; remote ticket branch deletion now Completed with exact-SHA lease and independently verified absent. Ticket commit remains reachable in target merge.
+- Base app/profile untouched. No processes terminated. Unrelated target SDK dist/offline-analysis work unchanged.
+- Complete evidence: delivery-cleanup-report.md. Old ticket-worktree app and build paths in historical reports/checksums no longer exist by design. Base app retained at documented path.
 
-## Current Result / Routing
-Repository finalization and requested base build complete. Overall delivery **Blocked — requested safe worktree cleanup remains**. This is an operational user-app hold, not code/packaging Local Fix, Design Impact, Requirement Gap or Unclear issue requiring upstream classification. No matching routine operational-hold rule; no successful terminal handoff yet.
-- User verification: Yes.
-- Repository finalization: Yes.
-- Applicable release/deployment complete or not required: Yes.
-- Applicable safe cleanup complete: No.
-- Successful terminal eligible/sent: No; reference N/A.
+## Current Result / Terminal Return
+**Delivery Completed — DR-005.** No unresolved blocker. Requirements/design/investigation and cumulative SR-001–004 (approved SR-003), DS-001, ARCH-REV-001, IR-001, CRR-001/002, API-REV-001 and DR-001–005 retained in archive-manifest.md. Product/UI supplements N/A.
+- User verification: **Completed**, U-VERIFY-001; safe cleanup authorization U-CLEANUP-002.
+- Repository finalization: **Completed**; merge a65d81240 and delivery receipt 28e0f2d45 pushed. Cleanup receipt is the documentation-only commit containing this report; exact final SHA is supplied in terminal message after push confirmation.
+- Requested local packaging: **Completed**; no production release/tag/deployment/rollout required.
+- Applicable safe cleanup: **Completed**.
+- Successful terminal eligible: **Yes**, once this final evidence commit is pushed and checked.
+- Terminal transmission: prepared for rule-selected Solution Designer; this file precedes transmission. Exact confirmed recipient/run and final commit are in the tool-backed terminal message receipt, not an assumed send.
