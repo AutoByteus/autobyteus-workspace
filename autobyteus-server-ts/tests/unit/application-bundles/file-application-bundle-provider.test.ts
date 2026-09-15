@@ -551,6 +551,25 @@ describe("FileApplicationBundleProvider", () => {
     ).rejects.toThrow("does not resolve to a discovered bundle-owned agent_team");
   });
 
+  it.each(["missing", "null", "valid"])("uses tolerant Team resource reading for %s defaults without changing package bytes", async mode => {
+    await writeBundle();
+    const file = path.join(builtInRoot, "applications/sample-app/agent-teams/sample-team/team-config.json");
+    const input = JSON.parse(await fs.readFile(file, "utf8"));
+    input.schemaVersion = "unused metadata";
+    input.members = input.members.map((member: object) => ({ ...member, refType: "agent", extra: { opaque: true } }));
+    if (mode === "missing") delete input.defaultLaunchConfig;
+    if (mode === "null") input.defaultLaunchConfig = null;
+    if (mode === "valid") input.defaultLaunchConfig = { runtimeKind: "autobyteus", llmModelIdentifier: "model", llmConfig: { nested: [true] }, metadata: true };
+    await fs.writeFile(file, JSON.stringify(input));
+    const before = await fs.readFile(file);
+    await expect(buildProvider().validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID)).resolves.toBeUndefined();
+    expect((await buildProvider().getCatalogSnapshot()).applications).toHaveLength(1);
+    expect(await fs.readFile(file)).toEqual(before);
+    input.defaultLaunchConfig = { runtimeKind: false };
+    await fs.writeFile(file, JSON.stringify(input));
+    await expect(buildProvider().validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID)).rejects.toThrow();
+  });
+
   it("rejects bundles whose application-owned team references a missing local agent", async () => {
     await writeBundle(builtInRoot, { teamMemberRef: "missing-agent" });
     const provider = buildProvider();

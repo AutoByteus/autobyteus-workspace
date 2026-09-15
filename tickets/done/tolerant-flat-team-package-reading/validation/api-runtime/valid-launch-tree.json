@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-09-15T03:28:48.714Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "api-valid",
+    "teamDefinitionName": "api-valid",
+    "teamRunId": "api_valid_f9c526c664114fbb86fea9f321a5e7b0",
+    "coordinatorAddress": "/lead",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "llmConfig": {
+        "temperature": 0
+      },
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/lead",
+        "agentDefinitionId": "api-reading-agent",
+        "role": null,
+        "description": null,
+        "agentRunId": "api_reading_agent_7621ab1d0ee54f1d939412c139673728",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "llmConfig": {
+            "temperature": 0
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001/temp_workspace"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}

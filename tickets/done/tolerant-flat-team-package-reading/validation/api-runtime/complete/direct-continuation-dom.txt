@@ -1,0 +1,83 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "API Migrated History (1)" [expanded]:
+    - generic: API Migrated History
+    - generic: (1)
+  - treeitem "Running Remember the secret word BLUEBERRY-915 for the next message. This is test history." [expanded]:
+    - generic "Running"
+    - generic: Remember the secret word BLUEBERRY-915 for the next message. This is test history.
+  - button "Stop Agent Org":
+  - generic: 14d
+  - tree "API Migrated History execution hierarchy":
+    - treeitem "direct, idle, /direct, api-migrated-direct" [level=1] [selected]:
+      - generic: D
+      - generic: direct
+    - 'treeitem "mounted. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: mounted
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: D
+  - heading "direct - RECT" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Remember the secret word BLUEBERRY-915 for the next message. This is test history.
+  - paragraph: Context files
+  - list:
+    - button "Open retained-note.txt": retained-note.txt
+  - generic: D
+  - generic: direct
+  - paragraph: I will remember BLUEBERRY-915.
+  - generic: You
+  - generic: What secret word did I ask you to remember earlier? Reply with that word and MIGRATED-CONTINUATION-915 only. Do not call tools.
+  - generic: D
+  - generic: direct
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: BLUEBERRY-915 and MIGRATED-CONTINUATION-915
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

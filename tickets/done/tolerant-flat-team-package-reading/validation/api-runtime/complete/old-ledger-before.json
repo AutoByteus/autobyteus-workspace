@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "migration_id": "20260911_collaboration_definition_authoring_shape",
+  "display_name": "Old authoring fixture",
+  "status": "FAILED",
+  "attempts": 2,
+  "started_at": null,
+  "completed_at": null,
+  "summary": "Preserve old row inert",
+  "error_message": null,
+  "log_path": null,
+  "created_at": "2026-09-15 03:30:08",
+  "updated_at": "2026-09-15 03:30:08"
+}

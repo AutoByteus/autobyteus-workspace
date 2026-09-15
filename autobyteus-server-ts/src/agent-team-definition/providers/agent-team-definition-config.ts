@@ -144,6 +144,29 @@ export const parseAgentTeamDefinitionConfig = (
   });
 };
 
+// Normal authored input may contain metadata; canonical writes still use the strict parser.
+const pickOwnKeys = (value: Record<string, unknown>, keys: readonly string[]): Record<string, unknown> =>
+  Object.fromEntries(keys.filter((key) => Object.hasOwn(value, key)).map((key) => [key, value[key]]));
+
+export const readAgentTeamDefinitionConfig = (value: unknown): AgentTeamDefinitionConfigFile => {
+  const source = asRecord(value, "AgentTeam Definition Config");
+  const candidate = pickOwnKeys(source, ["coordinatorMemberName", "members", "handoffs", "avatarUrl", "defaultLaunchConfig"]);
+  if (candidate['defaultLaunchConfig'] === undefined) candidate['defaultLaunchConfig'] = null;
+  if (Array.isArray(candidate['members'])) {
+    candidate['members'] = candidate['members'].map((member, index) =>
+      pickOwnKeys(asRecord(member, `members[${index}]`), ["memberName", "ref", "refScope"]));
+  }
+  if (Array.isArray(candidate['handoffs'])) {
+    candidate['handoffs'] = candidate['handoffs'].map((handoff, index) =>
+      pickOwnKeys(asRecord(handoff, `handoffs[${index}]`), ["from", "to", "rules"]));
+  }
+  if (candidate['defaultLaunchConfig'] !== null) {
+    candidate['defaultLaunchConfig'] = pickOwnKeys(asRecord(candidate['defaultLaunchConfig'], "defaultLaunchConfig"),
+      ["llmModelIdentifier", "runtimeKind", "llmConfig"]);
+  }
+  return parseAgentTeamDefinitionConfig(candidate);
+};
+
 export const buildAgentTeamDefinitionConfig = (
   definition: AgentTeamDefinition,
 ): AgentTeamDefinitionConfigFile => parseAgentTeamDefinitionConfig({

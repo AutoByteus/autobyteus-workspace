@@ -6,7 +6,7 @@ import { parseAgentOrgDefinitionConfig } from "../../agent-org-definition/provid
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
 import { AgentOrgDefinitionResolver } from "../../agent-org-definition/services/agent-org-definition-resolver.js";
 import type { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
-import { parseAgentTeamDefinitionConfig } from "../../agent-team-definition/providers/agent-team-definition-config.js";
+import { readAgentTeamDefinitionConfig } from "../../agent-team-definition/providers/agent-team-definition-config.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { assertValidFlatTeamDefinition } from "../../agent-team-definition/services/flat-team-definition-validator.js";
 import type { AvailableDefinitionAdmissionResult, DefinitionAdmissionResult, RootSubjectKind, UnavailableDefinitionAdmissionResult } from "../domain/definition-admission-result.js";
@@ -117,7 +117,7 @@ export class DefinitionAdmissionService {
   private async decode(source: RegisteredDefinitionSource): Promise<AvailableDefinitionAdmissionResult | UnavailableDefinitionAdmissionResult> {
     try {
       const raw = JSON.parse(await fs.readFile(source.configPath, "utf8")) as unknown;
-      if (source.subjectKind === "agent_team") parseAgentTeamDefinitionConfig(raw);
+      if (source.subjectKind === "agent_team") readAgentTeamDefinitionConfig(raw);
       else parseAgentOrgDefinitionConfig(raw);
       await fs.access(source.markdownPath);
       const definition = source.subjectKind === "agent_team"

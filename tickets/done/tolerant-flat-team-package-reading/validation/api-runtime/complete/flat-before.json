@@ -1,0 +1,17 @@
+{
+  "task_delegation_records.json": {
+    "sha256": "46e1ca577a9e463784550e4bf51d15d5256f15a81ba00cade5e0d45ef07a26f6",
+    "mtime_ns": 1789442975025031940,
+    "inode": 402702979
+  },
+  "team_run_execution_tree.json": {
+    "sha256": "7f514edb20be0a133a309d185aeb46d302d9e0dd59f16c9ca2324d62099dbda2",
+    "mtime_ns": 1789442975024889981,
+    "inode": 402702978
+  },
+  "team_communication_messages.json": {
+    "sha256": "1625b6214c0bcdb2d8157b707a3c2e9e3a878a93d47b23688d4d7815aa7fdca9",
+    "mtime_ns": 1789442975025167023,
+    "inode": 402702980
+  }
+}

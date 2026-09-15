@@ -257,7 +257,7 @@ task rows without discarding retained inspection or introducing a second cache.
 
 Required startup migration
 `20260901_agent_org_flat_team_families_v1` performs the approved fixed-depth
-cutover for server-owned definitions and server memory run packages. It
+cutover for software-owned memory run packages and history only. It
 preflights candidates before writes, uses atomic replacement or same-root
 family rename, rereads and validates target families, updates the two history
 indexes, and reports per-item failures for restart Retry. Normal readers admit only the current family shape; no retired-shape decoder,
@@ -274,43 +274,22 @@ bounded `SUCCEEDED_WITH_WARNINGS`; required current-structure or selected
 write/reread failure is `FAILED`. Normal runtime never infers titles from trace
 files or performs backfill on read.
 
-Registered external definition repositories are read-only dependencies to this
-ticket. Their owners must publish current field-free flat Team and AgentOrg definitions
-separately; execution-tree versions do not belong in authored configs. An incompatible external definition becomes individually
-unavailable; it does not block server startup, compatible definitions, memory
-migration, or history inspection.
+Authored definition packages are maintainer-owned inputs, including definitions
+stored under server-data paths. The family migration no longer converts, moves,
+or cleans Team/Org definitions. The former definition-only authoring migration
+is unregistered and removed; existing ledger rows remain inert, without reset,
+replay, reversal, or automatic repair of partial authored conversions. The
+runtime family ID, prerequisite order, context locators, sidecar validation and
+history transfer remain unchanged.
 
-### Definition-Only Authoring Transition
-
-Required startup-only `20260911_collaboration_definition_authoring_shape` runs
-after the earlier family migration in registry order but has its own result,
-without a runtime-memory prerequisite. It inventories writable server-data Team
-and Org definitions, including physical Org-owned Team directories. Package
-recovery and exact ownership/path checks precede conversion. Already current
-field-free current configs are zero-write skips. Known prior Team/Org configs
-lose their supported numeric `schemaVersion`; Org member scope
-`agent_org_owned` becomes authored `org_local`. Only these approved keys change;
-all other JSON values must compare equal, the
-atomic write must commit, and strict reread must match the target. Invalid
-inventory/items are reported as failures for correction and restart, while
-independent valid items retain their actual outcomes.
-
-The existing initial family conversion now writes the final field-free Team
-and `org_local` Org shape directly, without intermediate branch-era formats.
-Both existing migrations reuse the strict migration-only authoring transition.
-No new migration ID or registry order is introduced; a completed migration is
-not reset or replayed to retrofit an installation. Normal
-create/edit/save/export-copy/import/reload uses only current codecs, never
-migration codecs. Definition diagnostics expose `expectedFamily`, not numeric
-`expectedSchemaVersion`. Repository-owned fixtures/configs are updated in source;
-external repositories and application bundles are not rewritten by this pass.
-
-This is a definition-only transition: Team execution-tree V2, AgentOrg
-execution-tree V1, task/message sidecars, memory paths, provider identity and
-history are unchanged. Retired definition codec names with `-v2`/`-v1` are
-replaced by `agent-team-definition-config.ts` and
-`agent-org-definition-config.ts`; numeric prior-format readers live only under
-`app-data-migrations/legacy`.
+Team readers accept unused metadata and omitted package launch defaults while
+preserving required-field and real scoped Agent admission. Org input validation
+and strict canonical writes remain unchanged. An incompatible definition becomes
+individually unavailable; it does not require startup to rewrite authoring data.
+Stored Org root restore uses persisted execution state rather than fresh enclosing
+Org instructions; individual Agent restoration still needs the appropriate Agent
+definition. Ordinary explicit authoring saves and transaction recovery remain
+separate supported operations.
 
 ## Exact Context Files And Saved References
 

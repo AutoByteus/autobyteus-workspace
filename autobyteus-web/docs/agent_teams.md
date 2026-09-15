@@ -25,12 +25,19 @@ The create/edit form owns:
 - ordered Team-local handoffs;
 - optional default launch preferences.
 
-Current Team definition config is strict and has no authored `schemaVersion`.
-Normal save/import/export uses that same field-free shape; it does not silently
-strip numeric versions or accept retired shapes. Agent member rows carry
-`memberName`, `ref`, and explicit `refScope`; they do not carry
-`refType` because a Team cannot contain another Team or AgentOrg. The UI must
-not offer deeper configured composition, and the server rejects it at admission.
+Canonical Team saves/exports remain strict and contain no `schemaVersion` or
+member `refType`. Normal package reads/import/reload extract supported fields
+and ignore unused metadata, including those fields, without rewriting source
+files. Missing or null `defaultLaunchConfig` means no package defaults; valid
+supplied defaults keep their values. Required consumed fields (including
+`avatarUrl`), value types and launch settings remain validated.
+
+Agent member rows use `memberName`, `ref`, and explicit `refScope`. Actual scoped
+Agent lookup and handoff validation determine availability: ignoring `refType`
+does not turn a nested Team reference into an Agent. An invalid parent is excluded
+whole, without partial membership or suppressing valid siblings. Package
+registration is not a count of available Teams. The UI must not offer deeper
+configured composition. See the [Team input and write contract](../../autobyteus-server-ts/docs/modules/agent_team_definition.md).
 
 Shared Teams can be created, updated, and deleted through the shared provider.
 Application-owned Teams are inspectable and editable only when the owning

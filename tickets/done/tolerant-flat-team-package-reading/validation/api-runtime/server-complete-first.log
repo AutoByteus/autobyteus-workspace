@@ -1,0 +1,145 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/.env
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/team-package-complete-api001/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50461
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50461
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-package-complete-api001.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/db/team-package-complete-api001.db"
+
+24 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:92508) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-15T03:30:17.885Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:api-untouched-org:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-orgs/api-untouched-org
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:api-invalid:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-teams/api-invalid
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:api-unconverted-parent:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-teams/api-unconverted-parent
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:article-writing-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-coloring-story-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:kids-picture-story-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:manga-video-studio-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:narrated-presentation-video-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:northstar-operating-company:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/northstar-operating-company
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:research-to-deck-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-development-department:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-development-department
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:software-product-promo-video-team:DEFINITION_CONTRACT_INVALID:/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 11 items.
+Populating agent definition cache for the first time...
+[2026-09-15T03:30:18.048Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'api-invalid' at '/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/agent-teams/api-invalid/team-config.json'; expected current Team Definition Config: defaultLaunchConfig must be an object.
+DEFINITION_CONTRACT_INVALID: skipped Team 'article-writing-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+Agent definition cache populated with 11 items.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-coloring-story-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'kids-picture-story-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'manga-video-studio-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'narrated-presentation-video-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'research-to-deck-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+DEFINITION_CONTRACT_INVALID: skipped Team 'software-product-promo-video-team' at '/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl.
+[2026-09-15T03:30:18.054Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 11 items.
+{"level":30,"time":1789443018060,"pid":92508,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:55927"}
+{"level":30,"time":1789443018090,"pid":92508,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:50461"}
+[2026-09-15T03:30:18.095Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50461
+[2026-09-15T03:30:18.096Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50461
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session 093eda80-2517-4fa4-93b1-1da941ef5806 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 093eda80-2517-4fa4-93b1-1da941ef5806
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/memory/agent_orgs/api-migrated-org/api-migrated-mounted/api-migrated-worker/raw_traces_active.jsonl
+[2026-09-15T03:31:46.862Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed PTY session 093eda80-2517-4fa4-93b1-1da941ef5806
+Terminal WebSocket disconnected: 093eda80-2517-4fa4-93b1-1da941ef5806
+[2026-09-15T03:31:47.043Z] [INFO] [server.runtime] Server closed cleanly.

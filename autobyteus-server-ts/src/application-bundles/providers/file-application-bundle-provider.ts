@@ -23,7 +23,7 @@ import {
   buildCanonicalApplicationOwnedAgentId,
   buildCanonicalApplicationOwnedTeamId,
 } from "../utils/application-bundle-identity.js";
-import { parseAgentTeamDefinitionConfig } from "../../agent-team-definition/providers/agent-team-definition-config.js";
+import { readAgentTeamDefinitionConfig } from "../../agent-team-definition/providers/agent-team-definition-config.js";
 import { parseTeamMd } from "../../agent-team-definition/utils/team-md-parser.js";
 import {
   type AgentConfigRecord,
@@ -315,7 +315,7 @@ export class FileApplicationBundleProvider {
       };
       const mdContent = await fsPromises.readFile(sourcePaths.mdPath, "utf8");
       parseTeamMd(mdContent, sourcePaths.mdPath);
-      const config = parseAgentTeamDefinitionConfig(
+      const config = readAgentTeamDefinitionConfig(
         JSON.parse(await fsPromises.readFile(sourcePaths.configPath, "utf8")),
       );
       for (const member of config.members) {

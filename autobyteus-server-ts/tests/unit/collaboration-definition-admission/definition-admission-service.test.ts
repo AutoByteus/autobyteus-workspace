@@ -68,7 +68,7 @@ const build = (input: {
 };
 
 describe('DefinitionAdmissionService', () => {
-  it('admits only exact current field-free Team and Org targets with resolved dependencies', async () => {
+  it('admits valid Team and Org targets with resolved dependencies', async () => {
     const dataRoot = await temporaryRoot();
     await writePackage(dataRoot, 'agent-teams', 'team-1', teamConfig());
     await writePackage(dataRoot, 'agent-orgs', 'org-1', orgConfig());
@@ -77,12 +77,11 @@ describe('DefinitionAdmissionService', () => {
     expect((await service.requireAvailable('agent_org', 'org-1')).definition.id).toBe('org-1');
   });
 
-  it.each(['agent_team', 'agent_org'] as const)('reports current %s family/path/key/action without a numeric diagnostic', async (subjectKind) => {
+  it('reports current Org family/path/key/action without a numeric diagnostic', async () => {
+    const subjectKind = 'agent_org';
     const dataRoot = await temporaryRoot(), externalRoot = await temporaryRoot();
-    const isTeam = subjectKind === 'agent_team';
-    const packagePath = await writePackage(externalRoot, isTeam ? 'agent-teams' : 'agent-orgs', 'versioned',
-      { ...(isTeam ? teamConfig() : orgConfig()), schemaVersion: isTeam ? 2 : 1 });
-    const configPath = path.join(packagePath, isTeam ? 'team-config.json' : 'org-config.json'), before = await fs.readFile(configPath);
+    const packagePath = await writePackage(externalRoot, 'agent-orgs', 'versioned', { ...orgConfig(), schemaVersion: 1 });
+    const configPath = path.join(packagePath, 'org-config.json'), before = await fs.readFile(configPath);
     const { service } = build({ dataRoot, externalRoots: [externalRoot] });
     const result = (await service.scan()).find((r) => r.definitionId === 'versioned');
     expect(result).toMatchObject({ status: 'unavailable', expectedFamily: subjectKind, definitionPath: packagePath,
@@ -121,7 +120,7 @@ describe('DefinitionAdmissionService', () => {
 
   it('reports an unavailable Team dependency with both physical definition paths', async () => {
     const dataRoot = await temporaryRoot();
-    const teamPath = await writePackage(dataRoot, 'agent-teams', 'team-1', { ...teamConfig(), schemaVersion: 1 });
+    const teamPath = await writePackage(dataRoot, 'agent-teams', 'team-1', { ...teamConfig(), avatarUrl: false });
     const orgPath = await writePackage(dataRoot, 'agent-orgs', 'org-1', orgConfig());
     const { service } = build({ dataRoot, team: teamDefinition(), org: orgDefinition() });
     const result = (await service.scan()).find((item) => item.subjectKind === 'agent_org');

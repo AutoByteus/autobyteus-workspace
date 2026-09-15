@@ -1,0 +1,78 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs CS Classroom Simulation Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: CS
+    - generic: Classroom Simulation Team
+    - generic: (1)
+  - button "Active team run This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not star..." [expanded]:
+    - img "Active team run"
+    - generic: This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not star...
+  - button "Terminate team":
+  - generic: now
+  - tree "This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not star... organization tree":
+    - treeitem "Agent, professor, level 1, running, /professor" [level=1] [selected]:
+      - generic: P
+      - generic: professor
+      - generic: now
+    - treeitem "Agent, student, level 1, offline, /student" [level=1]:
+      - generic: S
+      - generic: student
+      - generic: now
+  - generic: Orgs
+  - button "API Migrated History (1)":
+    - generic: API Migrated History
+    - generic: (1)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: P
+  - heading "professor" [level=4]
+  - 'generic "Agent Status: Running"':
+    - generic: Running
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not start a lesson, call tools, contact the student, or inspect any files.
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Stop generation":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team" [selected]: Team
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

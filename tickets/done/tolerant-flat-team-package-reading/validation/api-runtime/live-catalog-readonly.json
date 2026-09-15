@@ -1,0 +1,138 @@
+{
+  "data": {
+    "definitionAdmissionDiagnostics": [
+      {
+        "definitionId": "api-untouched-org",
+        "subjectKind": "agent_org",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001/agent-orgs",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentOrg Definition Config must contain exactly avatarUrl, defaultLaunchConfig, handoffs, members. Unsupported keys: schemaVersion. Missing keys: none."
+      },
+      {
+        "definitionId": "api-invalid",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "defaultLaunchConfig must be an object."
+      },
+      {
+        "definitionId": "api-unconverted-parent",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-api001/agent-teams",
+        "code": "DEFINITION_REFERENCE_UNRESOLVED",
+        "reason": "Team 'api-unconverted-parent' member 'mounted' references missing agent 'child'."
+      },
+      {
+        "definitionId": "article-writing-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      },
+      {
+        "definitionId": "kids-coloring-story-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      },
+      {
+        "definitionId": "kids-picture-story-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      },
+      {
+        "definitionId": "manga-video-studio-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      },
+      {
+        "definitionId": "narrated-presentation-video-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      },
+      {
+        "definitionId": "northstar-operating-company",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_REFERENCE_UNRESOLVED",
+        "reason": "Team 'Northstar Operating Company' member 'engineering_org' references missing agent 'engineering-org'."
+      },
+      {
+        "definitionId": "research-to-deck-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      },
+      {
+        "definitionId": "software-development-department",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_REFERENCE_UNRESOLVED",
+        "reason": "Team 'Software Development Department' member 'product_design_prototyping_team' references missing agent 'product-design-prototyping-team'."
+      },
+      {
+        "definitionId": "software-product-promo-video-team",
+        "subjectKind": "agent_team",
+        "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: avatarUrl."
+      }
+    ],
+    "agentTeamDefinitions": [
+      {
+        "id": "api-absent",
+        "name": "api-absent",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "api-null",
+        "name": "api-null",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "api-valid",
+        "name": "api-valid",
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "llmConfig": {
+            "temperature": 0
+          }
+        }
+      },
+      {
+        "id": "classroom-simulation-team",
+        "name": "Classroom Simulation Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "evidence-driven-delivery-team",
+        "name": "Evidence-Driven Delivery Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "product-design-prototyping-team",
+        "name": "Product Design & Prototyping Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-engineering-team",
+        "name": "Software Engineering Team",
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "storm-team",
+        "name": "STORM Team",
+        "defaultLaunchConfig": null
+      }
+    ]
+  }
+}

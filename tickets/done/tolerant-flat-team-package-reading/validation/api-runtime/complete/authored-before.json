@@ -1,0 +1,2272 @@
+{
+  "external": {
+    "agents/agent-team-architect/agent-config.json": {
+      "sha256": "a2544822441310c7ebfb21c35c78d3666633339994976c960ef05c1ffe7752c0",
+      "size": 193
+    },
+    "agents/agent-team-architect/agent.md": {
+      "sha256": "9761805637a56a9038ba99fb4282d5cae5a3a79b7cee5d0446854828829169ad",
+      "size": 887
+    },
+    "agents/agent-team-architect/skills/agent-team-architecture/SKILL.md": {
+      "sha256": "c5eff41ddd63550bf85e4accf78f78bbe600076c0d6d194ec34e7982dd18024e",
+      "size": 11541
+    },
+    "agents/agent-team-architect/skills/agent-team-architecture/references/agent-team-design-principles.md": {
+      "sha256": "5de71e7a9ea2111a6ea7e81d156f1d3479ffc5562b86556e394d75d132d52fd1",
+      "size": 5328
+    },
+    "agents/agent-team-architect/skills/agent-team-architecture/references/result-and-handoff-contract.md": {
+      "sha256": "e0e6d3de79bdce78ac425305f04c27bb912369cb87e32a500bdb0797e6cd9758",
+      "size": 3029
+    },
+    "agents/agent-team-architect/skills/agent-team-architecture/templates/agent-team-result-template.md": {
+      "sha256": "a6a1e4bcd93b7de72e6a89acf3ad49b4a2d3cc65ce73156c88da54feab6773ce",
+      "size": 2051
+    },
+    "agents/codex/agent-config.json": {
+      "sha256": "004e7e76161eefa56d13751fa589c54a8b71b25d0f149c5ade3a361f562ceffd",
+      "size": 411
+    },
+    "agents/codex/agent.md": {
+      "sha256": "24ed1c9ebffc6132fbeae960ccdc2278cd21eef12f581fc71a3923f09659a8d6",
+      "size": 121
+    },
+    "agents/daily-assistant/agent-config.json": {
+      "sha256": "533f2dac3fb30043f687eca5bc5d8a43f76d46b1b76fb20e65942959b4dae8c9",
+      "size": 487
+    },
+    "agents/daily-assistant/agent.md": {
+      "sha256": "7b066780ac890d569ab35cdb993f8eb907a2fbbb216a75e16d98128eb449f793",
+      "size": 294
+    },
+    "agents/product-prototyper/agent-config.json": {
+      "sha256": "0a901763c95b2d48b89542dbdd8171fc220da08be27668cf2c247fcb9bd79b8e",
+      "size": 431
+    },
+    "agents/product-prototyper/agent.md": {
+      "sha256": "f4ac8ffd5d4b63f848c60c287afc6d63388d87b64c220f553d4c7c57ca6fb7eb",
+      "size": 1736
+    },
+    "agents/research-engineer/agent-config.json": {
+      "sha256": "5e8a6130ca3e8510480146145e1423446c1f353e9c6fde09a0faf6a6456eab40",
+      "size": 435
+    },
+    "agents/research-engineer/agent.md": {
+      "sha256": "789b3762ba906e8f4c94d8b15c055449bede5cd674dc9460afb7f85a6e727601",
+      "size": 1934
+    },
+    "agents/research-engineer/skills/research-engineer/SKILL.md": {
+      "sha256": "425f3136e4b9b31303f2ace8779d5e73e7578e238af09a27e6ace2bb6892f21c",
+      "size": 12900
+    },
+    "agents/research-engineer/skills/research-engineer/research-engineering-principles.md": {
+      "sha256": "c1e0efbd03f6d66ddce759a1f2f85831d4280e840b3478f0d6d14cac91367b1c",
+      "size": 9869
+    },
+    "agents/research-engineer/skills/research-engineer/templates/experiment-plan-template.md": {
+      "sha256": "6c60a9ec0353683a97a5f17c7c89599f044e0b2269fc33dc5e3388d18c105cae",
+      "size": 917
+    },
+    "agents/research-engineer/skills/research-engineer/templates/experiment-report-template.md": {
+      "sha256": "73a5815a9ed26d6f56281cf6dabbee8387703014015f5f10e4dd27c3ec30cf11",
+      "size": 832
+    },
+    "agents/research-engineer/skills/research-engineer/templates/implementation-handoff-template.md": {
+      "sha256": "048835b83ca52c974410736c3376696eb00b0caa1310bbdcaa2dfd1c747e966e",
+      "size": 618
+    },
+    "agents/research-engineer/skills/research-engineer/templates/literature-review-template.md": {
+      "sha256": "ba47dfd8c12ce0fd5f2e3b6b4827dad8fa3ed83c760a9ee935e8bebb4c4623c6",
+      "size": 656
+    },
+    "agents/research-engineer/skills/research-engineer/templates/paper-analysis-template.md": {
+      "sha256": "8eacd26dc50c6f9b5b2b3923dca2724b025af72a4436db31dcc0f4bf524ee474",
+      "size": 929
+    },
+    "agents/research-engineer/skills/research-engineer/templates/research-brief-template.md": {
+      "sha256": "ce13953d3c585418f225bf2fb61e9d7bd8cce3a457dc54ca8c844c21796c973c",
+      "size": 484
+    },
+    "agents/research-engineer/skills/research-engineer/templates/research-decision-log-template.md": {
+      "sha256": "aaa95b9b3ccffb4bb88265ad17326d10146b56a03d1130fc8758ea366fa9364d",
+      "size": 437
+    },
+    "agents/research-engineer/skills/research-engineer/templates/research-loop-log-template.md": {
+      "sha256": "ccecbe481d056f7f3ad5f233d80e5906f8e040d1c9644e80e15270c2c9f6efaf",
+      "size": 502
+    },
+    "agents/research-engineer/skills/research-engineer/templates/research-notes-template.md": {
+      "sha256": "27d934e7eba4a2f088beb40b6fbf6c59e6b920444e43a1f5d0785c2454f85de3",
+      "size": 1369
+    },
+    "agents/research-engineer/skills/research-engineer/templates/research-plan-template.md": {
+      "sha256": "575a3c799c69141677cde384c374048cdcb6ee65fb64564787de3b9c5ebd1d4a",
+      "size": 959
+    },
+    "agents/research-engineer/skills/research-engineer/templates/source-index-template.md": {
+      "sha256": "d8a616fa584e39065e880a326cca12155697da81d68e404ed35b5599653d5408",
+      "size": 574
+    },
+    "agents/resume-designer/agent-config.json": {
+      "sha256": "427ce9e8597658eddba3d159a381b124c4e7c87430565a22ab210348ee1020ed",
+      "size": 384
+    },
+    "agents/resume-designer/agent.md": {
+      "sha256": "4dc3e5b679337fcabfedf4bf5ea4fcdaf42adaca121f9882b4c41fcc1876ed6c",
+      "size": 1089
+    },
+    "agents/resume-designer/skills/resume-designer/SKILL.md": {
+      "sha256": "26058bfa877d7f45f2e3f86e37075385578f8f386ba947e486b3e68ffd6213d4",
+      "size": 14552
+    },
+    "agents/resume-designer/skills/resume-designer/references/style-briefs.md": {
+      "sha256": "c979bfbf70dc086b9f4e1873a4df5c8b8fe3609a1715ed3edf24f58480222974",
+      "size": 4534
+    },
+    "agents/resume-designer/skills/resume-designer/templates/resume-content-model-template.md": {
+      "sha256": "f82b4504f914de9b0ee687f40fd39093122b75dffb31fbbd7b0f9081607f5049",
+      "size": 691
+    },
+    "agents/resume-designer/skills/resume-designer/templates/resume-intake-template.md": {
+      "sha256": "250437a4c45fbf8d5cd917f0a79ccea18d6a9ceb28f5afd8be8c0c554cd07fcf",
+      "size": 873
+    },
+    "agents/resume-designer/skills/resume-designer/templates/resume-render-package-template.md": {
+      "sha256": "24d7b54a4d3aa426b63520eeacfb193d38a65ee3a2b5becee0189838f5ca9f62",
+      "size": 865
+    },
+    "agents/resume-designer/skills/resume-designer/templates/resume-style-decision-template.md": {
+      "sha256": "8bc2144c1eb06307e9189a559111b603f5afbc4643ca1974da4d3bfd357b7521",
+      "size": 805
+    },
+    "agents/skill-optimizer/agent-config.json": {
+      "sha256": "c6978b0fa7dbcbfad9309107b41a0150fe8e3ed4641288534d58e2aca956ed46",
+      "size": 137
+    },
+    "agents/skill-optimizer/agent.md": {
+      "sha256": "7fdbad5faff7f4a03a4109243ea0ef8c20b0d3228c8b8b37469dae9af3c4a6e4",
+      "size": 711
+    },
+    "agents/software-tutorial-video-maker/agent-config.json": {
+      "sha256": "d8e83293df4f61d3f5906da5f274927bb31a3928a2da2a8ed16903010de391ef",
+      "size": 147
+    },
+    "agents/software-tutorial-video-maker/agent.md": {
+      "sha256": "f47858c3993978dcf1a3624a0a9d5de8f5ed49afb6778ad8ec214d270cd80026",
+      "size": 569
+    },
+    "agents/software-tutorial-video-maker/skills/software-tutorial-video-maker/SKILL.md": {
+      "sha256": "8fa9cfe275a999b615d139440d5b0c744d6383df84d3b249f4d2cb363586ff55",
+      "size": 6255
+    },
+    "agents/software-tutorial-video-maker/skills/software-tutorial-video-maker/templates/tutorial-brief-template.md": {
+      "sha256": "dd713bb5dbb37f33a01ded69fa02fb8df1caec6e19f4062060fa7ab08c85da6f",
+      "size": 343
+    },
+    "agents/software-tutorial-video-maker/skills/software-tutorial-video-maker/templates/tutorial-storyboard-template.md": {
+      "sha256": "100939b82c0e98b5cf0c60f28a905369121ea61dc88784d21128cf4747d88022",
+      "size": 355
+    },
+    "agents/software-tutorial-video-maker/skills/software-tutorial-video-maker/templates/video-package-template.md": {
+      "sha256": "03d7d38e06c91a542ad90e5730fd0872464465b3bbb50f5700592059f6f400c8",
+      "size": 497
+    },
+    "agents/software-tutorial-video-maker/skills/software-tutorial-video-maker/templates/voiceover-package-template.md": {
+      "sha256": "6d8485708ed3f11044db2a40616f1ec6223ea54f5fee13ba47582628b41bb816",
+      "size": 320
+    },
+    "agent-teams/article-writing-team/agents/article-reviewer/agent-config.json": {
+      "sha256": "3c79d657fa89da664b94f8ff423c88136a63431e038c064598237d75c9d21cff",
+      "size": 284
+    },
+    "agent-teams/article-writing-team/agents/article-reviewer/agent.md": {
+      "sha256": "092587ba812243b8f282c86b577f26dc8b7e93b2a0633e87ce5c6112831b162d",
+      "size": 442
+    },
+    "agent-teams/article-writing-team/agents/article-reviewer/skills/article-reviewer/SKILL.md": {
+      "sha256": "1c144c3a4883b07c4941d61cfbfc4c80af0be76be4ced22040cc71856f8cc9a2",
+      "size": 20460
+    },
+    "agent-teams/article-writing-team/agents/article-reviewer/skills/article-reviewer/templates/review-report-template.md": {
+      "sha256": "f9219dd859097386f015f105e9bb4c86c52a24eb210ae5e7d46fd49cc67f7ffc",
+      "size": 3265
+    },
+    "agent-teams/article-writing-team/agents/article-writer/agent-config.json": {
+      "sha256": "7afa6296701dca4cddca25762f913c06a4eb7ce1229bb2cf155bebb53a838d2a",
+      "size": 623
+    },
+    "agent-teams/article-writing-team/agents/article-writer/agent.md": {
+      "sha256": "d84892291d686b950f73bbd2c31b440055e2aab73ebc48d2afa7ceb9f09a5f86",
+      "size": 473
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-researcher/SKILL.md": {
+      "sha256": "28415d45f99edbf88334b7c9cd4219b85fd109244c57ad5af321100ee23bbfbd",
+      "size": 13158
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/SKILL.md": {
+      "sha256": "c0d1ad21045ddf775fa8ff94694f8eaebacb5d6bfbdfbf1acf051385b613d8b9",
+      "size": 21440
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/examples/example-template.md": {
+      "sha256": "a0aa7833e408e924c068de036869795711b3b9a329a8d049c298893d093f4ef4",
+      "size": 981
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/examples/normy-examples.md": {
+      "sha256": "2e26c1a000822932ae56c0e6d8c224243a7e794910762895fe35e2193f3f7e21",
+      "size": 431
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/examples/ryan-examples.md": {
+      "sha256": "a2e9a392dcf436fff12e7b4cb7d337dfbefa194a9ab08417e567e6c099d42d89",
+      "size": 14444
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/platform-output-rules.md": {
+      "sha256": "61272e085f56770767051774e5bdda8c1b1464712c76cb7a249ea9f3744059af",
+      "size": 3732
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/profiles/normy.md": {
+      "sha256": "73172ac713f79da9d815e46c93082ee88996b6558134d5d66b59937710a51e8b",
+      "size": 1273
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/profiles/profile-template.md": {
+      "sha256": "cbcc6468094c1635ebaa7313fd6337f4b27d805bcdbbba2252fe6832ce0a717d",
+      "size": 1319
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/profiles/ryan.md": {
+      "sha256": "2fb5ec4d1b9e46d39be970519a21de52aad903f5678576c9a20c87f0307e1d8c",
+      "size": 23311
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/style-registry.md": {
+      "sha256": "b17d095cfe81d20fd6eee08c8633c25ef27d6e09adb85dc23137607fa36a4125",
+      "size": 2313
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/references/style-workflow.md": {
+      "sha256": "3cf8a82b7fdd0bd51a347df0ef5601b8779e1cd8cd47fbea863a957389f7cb12",
+      "size": 15763
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/templates/outline-template.md": {
+      "sha256": "d1655258a34951ace9949d125b36761588489e0392a0eeddd87c319f9cad6d7d",
+      "size": 4765
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/templates/style-profile-notes-template.md": {
+      "sha256": "8559dfb2178551b042f5e4b22c34759d8f3676fc1b3697383ec85e0f3d89cfde",
+      "size": 1321
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/templates/visual-asset-index-template.md": {
+      "sha256": "19c476f8e3a3fc8797cd9d55c943a59062703a10819704b9ea4598d6fe7090f3",
+      "size": 1263
+    },
+    "agent-teams/article-writing-team/agents/article-writer/skills/article-writing/templates/visual-plan-template.md": {
+      "sha256": "0c52475add444dc861ccd68f71590843a9f93936309cb777e48e9f76f9742ca1",
+      "size": 2910
+    },
+    "agent-teams/article-writing-team/shared/writing-principles.md": {
+      "sha256": "39f29809312a96cd49bf7f49980a7eb341ae90061eecd11244ecdf24137f26ac",
+      "size": 21560
+    },
+    "agent-teams/article-writing-team/team-config.json": {
+      "sha256": "abe2e692d4479d0fb8500a51d4180b2f95ded9d208352a6d8071ac96d3ce58e7",
+      "size": 806
+    },
+    "agent-teams/article-writing-team/team.md": {
+      "sha256": "369725e7dc7a57c7aaff2b09aa6eabd83b49cdab07af0b0f404c4acaa098519c",
+      "size": 9568
+    },
+    "agent-teams/classroom-simulation-team/agents/professor/agent-config.json": {
+      "sha256": "2ab1a39462d525fb89fdab14599136f4494e868f783ea0c1a47d2cb85d794f8c",
+      "size": 352
+    },
+    "agent-teams/classroom-simulation-team/agents/professor/agent.md": {
+      "sha256": "e690720e774e41db8e580974350ded4cea0eeb818265b1dfd3b624511049aa50",
+      "size": 3995
+    },
+    "agent-teams/classroom-simulation-team/agents/student/agent-config.json": {
+      "sha256": "2ab1a39462d525fb89fdab14599136f4494e868f783ea0c1a47d2cb85d794f8c",
+      "size": 352
+    },
+    "agent-teams/classroom-simulation-team/agents/student/agent.md": {
+      "sha256": "3936879b8a8fda600750871591e8a7846eb8e77e4a745d4f347e455e4d2b29b3",
+      "size": 3692
+    },
+    "agent-teams/classroom-simulation-team/team-config.json": {
+      "sha256": "5e696f260f84b6f76bb4c4e5e8f3402ae7ebae21ca533955e1d4520f8868e984",
+      "size": 1699
+    },
+    "agent-teams/classroom-simulation-team/team.md": {
+      "sha256": "f92d3db4c86966ec3f8ff9b0d73da392fd5eb5f05641de6e94268bcd6ea53076",
+      "size": 5347
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/implementer/agent-config.json": {
+      "sha256": "846260fcd28954319f82150e48c81693bd87f6c3c409d0f80ea3a849909bb309",
+      "size": 181
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/implementer/agent.md": {
+      "sha256": "87b6c502f75d7376f4f25a5b70bf74ec9c3f0a111eb91ceedcc99fcc1f406155",
+      "size": 692
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/implementer/skills/implementer/SKILL.md": {
+      "sha256": "b2903d37f296847dc9738ed35c194293488089df43f91638648cb1ef755e2076",
+      "size": 2832
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/implementer/skills/implementer/templates/implementation-result-template.md": {
+      "sha256": "2b39ab50d9bd2ba0cc5865fffec7433877e95173e7330d3e6b3d32b7cf74e2ed",
+      "size": 542
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/investigator/agent-config.json": {
+      "sha256": "b8faa83b3416d44f5a07c963d9a8abda61af3fae8a3cd0d735268fceaede9661",
+      "size": 182
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/investigator/agent.md": {
+      "sha256": "f561c202efc01f4f347deddc22cf7b41ad6dbc5fd2afad52cd5d5f5222acfd26",
+      "size": 683
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/investigator/skills/investigator/SKILL.md": {
+      "sha256": "eb1605a94b580098c4ffcf15f08e79d8a3760f94be869b8ed556a85193ae0d7a",
+      "size": 2047
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/investigator/skills/investigator/templates/investigation-result-template.md": {
+      "sha256": "4863cd1b2f53b8df1ef83765bebd8ddf9b58c1ab7f88875a7a6b21242f6d202a",
+      "size": 379
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/planner/agent-config.json": {
+      "sha256": "931aa7cf3620577a807e16c097520eaaab66509a792b6d7c32ce26948bb9782c",
+      "size": 177
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/planner/agent.md": {
+      "sha256": "65b5e34c650109e7ea59d7a7cba56f751d8432c62adc6422738e3e0471ad2acc",
+      "size": 757
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/planner/skills/planner/SKILL.md": {
+      "sha256": "be9dd47f830b1be061662ae06ceea762a5b31356eb6e22c31192a2065bd30dba",
+      "size": 9621
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/planner/skills/planner/templates/plan-template.md": {
+      "sha256": "eee954a684c9714e5d3662d298e9dec46e07641c324427952acbeee3db976204",
+      "size": 1955
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/validator/agent-config.json": {
+      "sha256": "4b43b8102d68165126093ebe6d2b75b47dd7f4ae058ec4fc67c5e351dd3f3696",
+      "size": 179
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/validator/agent.md": {
+      "sha256": "1fac25fcbe985b5722d162212a8967d54eef76715206cc1306d62839121b4398",
+      "size": 671
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/validator/skills/validator/SKILL.md": {
+      "sha256": "949d5cc0a833abadef57e5316b1e723d93647181a064cfce4123407f350ec499",
+      "size": 2425
+    },
+    "agent-teams/evidence-driven-delivery-team/agents/validator/skills/validator/templates/validation-result-template.md": {
+      "sha256": "ff8088d3d046ca9ac904f64c15a29477fb9a5fd7f44263b201ad19074de765a0",
+      "size": 580
+    },
+    "agent-teams/evidence-driven-delivery-team/team-config.json": {
+      "sha256": "83daea50473c424971929803243d2ad0f04324d6ec8c5e0e1f315ebccd131c8c",
+      "size": 2980
+    },
+    "agent-teams/evidence-driven-delivery-team/team.md": {
+      "sha256": "5da32d8623e86bf002a8c700a0b373599ea1df202126a18cff0605bacbeb1bd1",
+      "size": 5598
+    },
+    "agent-teams/kids-coloring-story-team/agents/child-experience-reviewer/agent-config.json": {
+      "sha256": "aaf0095e3010085d59dbffe24b7f0bbb572e0e5a2035259f55fc3b38ed6ac482",
+      "size": 170
+    },
+    "agent-teams/kids-coloring-story-team/agents/child-experience-reviewer/agent.md": {
+      "sha256": "67125c5167a8ad322764c6d9b4dcbfbd474671c11c34eb7ace91105c7492d8d1",
+      "size": 1231
+    },
+    "agent-teams/kids-coloring-story-team/agents/child-experience-reviewer/skills/child-experience-reviewer/SKILL.md": {
+      "sha256": "3264eaca1013ec30ae7fba318effdfadb7de414269cba50e696c559e722a7005",
+      "size": 10434
+    },
+    "agent-teams/kids-coloring-story-team/agents/child-experience-reviewer/skills/child-experience-reviewer/coloring-production-principles.md": {
+      "symlink": "../../../../shared/coloring-production-principles.md"
+    },
+    "agent-teams/kids-coloring-story-team/agents/child-experience-reviewer/skills/child-experience-reviewer/templates/child-experience-review-report-template.md": {
+      "sha256": "ddc7a5380a4fa38c2684abf40e594a6e59a564fe2a3795623cde693dc51d9848",
+      "size": 5531
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/agent-config.json": {
+      "sha256": "8dd358ceaf5e9c8b4dd78c410f71f7d44997dd22149a2583b0a84b4e2a4e087c",
+      "size": 299
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/agent.md": {
+      "sha256": "b9ee621b3097ffbdd543e3ba3d7197a419388f063ac5b6509c00f3aad83c0f16",
+      "size": 1128
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/SKILL.md": {
+      "sha256": "fc8835fb926073562f421f1e26c35f3a1a3cdef3fc9c6c244acedf2187b89e11",
+      "size": 12256
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/coloring-production-principles.md": {
+      "symlink": "../../../../shared/coloring-production-principles.md"
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/templates/character-reference-index-template.md": {
+      "sha256": "60984b65e6cdaec2268ddc416c9972d414d74b4b1cdd3c21bbcd3d6837faf746",
+      "size": 1263
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/templates/image-generation-log-template.md": {
+      "sha256": "1b06af2aaf9cceb012f2b24323b7a7b2c7740e087d41c28f46deec87e2008108",
+      "size": 1686
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/templates/prompt-pack-template.md": {
+      "sha256": "74707dd5f4a1126297e8e0bcfb91f9aa1354d1ce7b722a9c9b1c24ea9e360f88",
+      "size": 4033
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/templates/visual-asset-index-template.md": {
+      "sha256": "f4bd89059cf62da3becfea8cfa64e28e332fe64138f12be57559914e9cc7d48a",
+      "size": 1956
+    },
+    "agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator/templates/visual-style-guide-template.md": {
+      "sha256": "3bbc2a4961ffd060c45c7c661f43f07deb5c98e4de7692ffd7202fc5e9701fe4",
+      "size": 1676
+    },
+    "agent-teams/kids-coloring-story-team/agents/printable-pack-producer/agent-config.json": {
+      "sha256": "e98ca090b59205f8aab02c1b5f726aa6bd858ba29055e8368be54fd72a149ff3",
+      "size": 257
+    },
+    "agent-teams/kids-coloring-story-team/agents/printable-pack-producer/agent.md": {
+      "sha256": "8b8e5b80aa39775df82fcba28d7f9476240b049c3af84640f946e330f5b4fe1c",
+      "size": 777
+    },
+    "agent-teams/kids-coloring-story-team/agents/printable-pack-producer/skills/printable-pack-producer/SKILL.md": {
+      "sha256": "805bde028d88f979889f1461a1f93cff1693d1db9ebe5659becf36258583d9b5",
+      "size": 9041
+    },
+    "agent-teams/kids-coloring-story-team/agents/printable-pack-producer/skills/printable-pack-producer/coloring-production-principles.md": {
+      "symlink": "../../../../shared/coloring-production-principles.md"
+    },
+    "agent-teams/kids-coloring-story-team/agents/printable-pack-producer/skills/printable-pack-producer/templates/printable-package-plan-template.md": {
+      "sha256": "a7c66dc5c8b4dabf53b94722ba548465bc535dc6e5ceaaaf8db83d844ffe62c0",
+      "size": 1594
+    },
+    "agent-teams/kids-coloring-story-team/agents/printable-pack-producer/skills/printable-pack-producer/templates/printable-package-report-template.md": {
+      "sha256": "b2428094704e696cc3d3dedc108a5f4c2a0e03e4f4f1b9b1d216993648d94a67",
+      "size": 2222
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/agent-config.json": {
+      "sha256": "e30e92b2da3b5bd99f288e785bd4ee38ae8d07ca8d77a3911b7a6b2adbbae558",
+      "size": 202
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/agent.md": {
+      "sha256": "361eb623b1021186c31a6931f46dd8f78f89e7a903e9b8c27e0cad25913d8717",
+      "size": 1001
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/skills/story-activity-designer/SKILL.md": {
+      "sha256": "55ecc8ff96f6ea4210f5f12992367d76239b2084fcac77dc09eea3d75e1cec26",
+      "size": 10617
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/skills/story-activity-designer/coloring-production-principles.md": {
+      "symlink": "../../../../shared/coloring-production-principles.md"
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/skills/story-activity-designer/templates/coloring-story-brief-template.md": {
+      "sha256": "e55ed58452fb409c1ff88aea4cb23be9e2b01b9355611a4b88cfa1e6428b5706",
+      "size": 2088
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/skills/story-activity-designer/templates/coloring-storyboard-template.md": {
+      "sha256": "324db9bb71e41c176c4dea400cd53700b0e29b5a812178c999525e3665b4021b",
+      "size": 1440
+    },
+    "agent-teams/kids-coloring-story-team/agents/story-activity-designer/skills/story-activity-designer/templates/source-text-index-template.md": {
+      "sha256": "6a3e4cd763e665c54da36613cc9d952cb548b45b654e728937068d2c4a29f057",
+      "size": 988
+    },
+    "agent-teams/kids-coloring-story-team/examples/david-and-goliath-a4-landscape-dry-run.md": {
+      "sha256": "7fc93163ad62f5e551099eb6de3c41b141223e02ad537ff689c57feced838ca4",
+      "size": 9035
+    },
+    "agent-teams/kids-coloring-story-team/shared/coloring-production-principles.md": {
+      "sha256": "4b81ebf794e2e470b472cd11ca3e5a41eafb632321c7d537e7057efa19fc2d83",
+      "size": 19283
+    },
+    "agent-teams/kids-coloring-story-team/team-config.json": {
+      "sha256": "0b995c19ebd04d5a853fa15d988fc9a047f2995f4338d5a670bd2adf28ff3cf8",
+      "size": 2008
+    },
+    "agent-teams/kids-coloring-story-team/team.md": {
+      "sha256": "890a12b65761e50fc07ae048c2954824a598ed789caeb173e43ab49ce31a1658",
+      "size": 10509
+    },
+    "agent-teams/kids-picture-story-team/agents/book-production-editor/agent-config.json": {
+      "sha256": "e9ecada086a7c1c6b3e8011af7e4ee8644b28f9cc2f1a9535f55e653178b376d",
+      "size": 256
+    },
+    "agent-teams/kids-picture-story-team/agents/book-production-editor/agent.md": {
+      "sha256": "9cb790eb6909c17730bacc265aaac5dc460ce4d4ce8912e341cf5cf99dcada5c",
+      "size": 815
+    },
+    "agent-teams/kids-picture-story-team/agents/book-production-editor/skills/book-production-editor/SKILL.md": {
+      "sha256": "af2fc76d4b3fcf939fbf1c53fae761bb7c48e84264b253a4656aa2a5f5ff84a1",
+      "size": 2306
+    },
+    "agent-teams/kids-picture-story-team/agents/book-production-editor/skills/book-production-editor/picture-book-production-principles.md": {
+      "symlink": "../../../../shared/picture-book-production-principles.md"
+    },
+    "agent-teams/kids-picture-story-team/agents/book-production-editor/skills/book-production-editor/templates/book-production-report-template.md": {
+      "sha256": "532bf35658185c48b3171f71eff0abb1478eaee929c818e1908147ff5e4206b9",
+      "size": 664
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-illustrator/agent-config.json": {
+      "sha256": "36f2cf53701c29755163402ad790303eb00026ac1100e7391b40dbec7a42b77a",
+      "size": 298
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-illustrator/agent.md": {
+      "sha256": "a4fb2092a370783265bf000518398defdbc518efecec4d0d6f8a817cef0aca23",
+      "size": 1266
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-illustrator/skills/picture-book-illustrator/SKILL.md": {
+      "sha256": "d7aa4a6166a140ffb98576ad1c23ad2edccc2cf723fb304d4682e6863470f681",
+      "size": 4637
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-illustrator/skills/picture-book-illustrator/picture-book-production-principles.md": {
+      "symlink": "../../../../shared/picture-book-production-principles.md"
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-illustrator/skills/picture-book-illustrator/templates/visual-asset-index-template.md": {
+      "sha256": "87fb35862537503baad15aa949299ce63520b4802fb54cf3afd63a97d87a7e06",
+      "size": 343
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-reviewer/agent-config.json": {
+      "sha256": "1bb1f7f611be9096f92ae3b85691580927c595f204bed1a49288c01bcba82d75",
+      "size": 166
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-reviewer/agent.md": {
+      "sha256": "c7e0abb40d04a2b90904f3b80a9024bc6c60b7daea9ead549e1d3abca7e0def4",
+      "size": 1012
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-reviewer/skills/picture-book-reviewer/SKILL.md": {
+      "sha256": "e156c543af077b54a0eb4d357f81a5c5c1bee183c49c4b80a1637c5b093306f0",
+      "size": 2890
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-reviewer/skills/picture-book-reviewer/picture-book-production-principles.md": {
+      "symlink": "../../../../shared/picture-book-production-principles.md"
+    },
+    "agent-teams/kids-picture-story-team/agents/picture-book-reviewer/skills/picture-book-reviewer/templates/picture-book-review-report-template.md": {
+      "sha256": "410eb6ad028b7fdbfbc4468ed131904cb125204ab72cf1ee3b405567a76b4774",
+      "size": 901
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/agent-config.json": {
+      "sha256": "d2201e8497bdf7715efbb7c5c5217626b024ede5137b0b717eb4383a6a841124",
+      "size": 204
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/agent.md": {
+      "sha256": "a7b83488c9e3766b25ca0d8a1f241c5381af1fd848c2c39485810be9353756fd",
+      "size": 1000
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/skills/story-picture-book-author/SKILL.md": {
+      "sha256": "3f3fb23fc4a06a34dfa6e5a25845ed62061602aca71cf1b08d519d8b5e77c239",
+      "size": 3934
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/skills/story-picture-book-author/picture-book-production-principles.md": {
+      "symlink": "../../../../shared/picture-book-production-principles.md"
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/skills/story-picture-book-author/templates/picture-book-brief-template.md": {
+      "sha256": "1727e6846fe52c29dbb14af97b369165e0a7fea2e4bbb19130abd1d42a913573",
+      "size": 634
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/skills/story-picture-book-author/templates/picture-book-storyboard-template.md": {
+      "sha256": "2a428a0e43fd522ed651ea5fc9cc25115f07280ec141e6e80069ad859ae79e46",
+      "size": 515
+    },
+    "agent-teams/kids-picture-story-team/agents/story-picture-book-author/skills/story-picture-book-author/templates/source-text-index-template.md": {
+      "sha256": "4903e3da274450cb3bd86d0fdbd42978270371676c4c255c0c6d236a40e01901",
+      "size": 231
+    },
+    "agent-teams/kids-picture-story-team/shared/picture-book-production-principles.md": {
+      "sha256": "29e441dd15a7f133a86740ee8452bfbf5068c99d50ca48097eb1ddf6477d6cf6",
+      "size": 5566
+    },
+    "agent-teams/kids-picture-story-team/team-config.json": {
+      "sha256": "afc0ef8a0098b59181f4d24c4f554b8ae009234bf5aa92c8045f06b48148b352",
+      "size": 1934
+    },
+    "agent-teams/kids-picture-story-team/team.md": {
+      "sha256": "0153e44efe9d93676311825c8568609f68b88cfe66e6a61d67605d09392a5ed1",
+      "size": 6511
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/agent-config.json": {
+      "sha256": "ec66cdde1163a6903f40a0d29c2f75329d8de7cbd6fe24a63c31c752a17bfea9",
+      "size": 291
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/agent.md": {
+      "sha256": "422c98a06b0ea6fc329ec91a35cd1804b1c71b2befb2793e9be4a4e9277d0f2b",
+      "size": 866
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator/SKILL.md": {
+      "sha256": "4772113ded1308ddf585243b2b513124f0ab626de5da8d81f74a4d391bb41256",
+      "size": 16425
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator/production-principles.md": {
+      "symlink": "../../../../shared/production-principles.md"
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator/templates/image-generation-log-template.md": {
+      "sha256": "8b185340b29642339cea63f34237146ee02020d3bab15a6a2b34f4846b94a78a",
+      "size": 1015
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator/templates/prompt-pack-template.md": {
+      "sha256": "581a893021c527ef0007ecabc0042d89c0696968b22a76f082d916cebe47e5c5",
+      "size": 2045
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator/templates/visual-production-package-template.md": {
+      "sha256": "d7d4eedc3b1bb39bed9bd6c2397ed534e0afa18efff92fd01a9cccaf19b17828",
+      "size": 1772
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator/templates/visual-style-guide-template.md": {
+      "sha256": "537c96e0e80b373028273b4765fa7db96e90e2a030288ec0783661bda1a0de08",
+      "size": 1120
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/agent-config.json": {
+      "sha256": "ed3c7c2bc6d661d15602d4fbdcb97f845da275cfeab8dd1747477f5ee605bcdd",
+      "size": 284
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/agent.md": {
+      "sha256": "f262effd883ce792c668276873c33ad83ceea6599a5aaaa132d301751bdfaadb",
+      "size": 581
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/SKILL.md": {
+      "sha256": "d45fdedf00abcd491593bb7c0338711e4e4f7c7a915cdc19bdc02ea6372e0d4c",
+      "size": 9970
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/production-principles.md": {
+      "symlink": "../../../../shared/production-principles.md"
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/templates/chapter-plan-template.md": {
+      "sha256": "2f14a161fa10cf4595029144b67d5b5277822fb972bf32f1e25f9c624a67cef7",
+      "size": 957
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/templates/chapter-registry-template.md": {
+      "sha256": "71ea26ff22bee274e7b9ce84fbc638a646197642f9979b18f404ab9f73f65f0b",
+      "size": 391
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/templates/character-bible-template.md": {
+      "sha256": "5b242fee50bb423c4d96e7071e209e82f68ee4151d745bd295f7d8f10d87317b",
+      "size": 880
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/templates/character-registry-template.md": {
+      "sha256": "4bcf8ac8064b64c5858ff9cb5816a9358879e13d91ccc92950174a48486846c9",
+      "size": 1256
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/templates/series-bible-template.md": {
+      "sha256": "488d5558b6c07cab182c39346d1688e3b58bd639bb640098c67e7c9ac69b3267",
+      "size": 1492
+    },
+    "agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner/templates/series-state-template.md": {
+      "sha256": "f9b1b553add278a0678ee9f8a4fc960ee547072040b51c3254d52b548d044229",
+      "size": 529
+    },
+    "agent-teams/manga-video-studio-team/agents/storyboard-director/agent-config.json": {
+      "sha256": "e1739004b5d4467372a880d9a958cb3a56775f003492479ed3cb1e66e87a5a09",
+      "size": 253
+    },
+    "agent-teams/manga-video-studio-team/agents/storyboard-director/agent.md": {
+      "sha256": "57767e6746e7212966447c7ca5e855b8958c2ed9afa173e04c26ebc57d1c7dec",
+      "size": 621
+    },
+    "agent-teams/manga-video-studio-team/agents/storyboard-director/skills/storyboard-director/SKILL.md": {
+      "sha256": "c75802099ed50480c51885e9c80ae0a3e5fd59d2591265a3a27492479517ab56",
+      "size": 7397
+    },
+    "agent-teams/manga-video-studio-team/agents/storyboard-director/skills/storyboard-director/production-principles.md": {
+      "symlink": "../../../../shared/production-principles.md"
+    },
+    "agent-teams/manga-video-studio-team/agents/storyboard-director/skills/storyboard-director/templates/continuity-ledger-template.md": {
+      "sha256": "f6bdaf6e23f72e88ad78491854193dc128145481e8f9619c3a15224b716c5190",
+      "size": 1123
+    },
+    "agent-teams/manga-video-studio-team/agents/storyboard-director/skills/storyboard-director/templates/storyboard-template.md": {
+      "sha256": "cae25cf547f93cc28a7bfc53588d8b6fdf6ca6d77be640f2fc38d1f339342cf9",
+      "size": 2292
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/agent-config.json": {
+      "sha256": "c2b0fd3513d1693ba7234cf7b36364aff49ee84f76758dfe3279618d3cebb937",
+      "size": 315
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/agent.md": {
+      "sha256": "814492dd05ed6d66babb55e304c654a5d2fc4603caa7982c2c87723e79d39417",
+      "size": 846
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer/SKILL.md": {
+      "sha256": "52dbc69bd21b25675468ef52e98e4a5ab1c582d68352a90ad74bbc7582464ffa",
+      "size": 14892
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer/production-principles.md": {
+      "symlink": "../../../../shared/production-principles.md"
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer/templates/audio-generation-log-template.md": {
+      "sha256": "150aab61400d596549f822eb7184c0ee1f1762099da83255f0b6e2864ba41129",
+      "size": 1018
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer/templates/chapter-carry-forward-template.md": {
+      "sha256": "44917e1eb6b91c4b64214c5b08631908e6b59f35bbebab8a07f7f10d40207a1b",
+      "size": 821
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer/templates/video-package-template.md": {
+      "sha256": "f201485792a80b81dfa442a9c34c143acd33ca55a7dfa27e6233131dadda60ad",
+      "size": 1278
+    },
+    "agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer/templates/voice-package-template.md": {
+      "sha256": "7edbc0282afe25cf35a236279889e19e5ad0dcb74621c9226d74d797fd3f41fa",
+      "size": 1162
+    },
+    "agent-teams/manga-video-studio-team/shared/production-principles.md": {
+      "sha256": "e4ed9726a4dc550b81cc68ce8f61c15cb0729cdbd117a2dc356b53dc752b9a4c",
+      "size": 21014
+    },
+    "agent-teams/manga-video-studio-team/team-config.json": {
+      "sha256": "89962509d25def8079d4035a7c6be36712f70a750f07793517f8c098c0cacf2c",
+      "size": 2078
+    },
+    "agent-teams/manga-video-studio-team/team.md": {
+      "sha256": "140506bf43e3269306cd9e8172203a1212ff2fb861c4be06884749d6791e9214",
+      "size": 3959
+    },
+    "agent-teams/narrated-presentation-video-team/agents/narration-script-reviewer/agent-config.json": {
+      "sha256": "be3932fd8a4b847908310bcc018e05d6d228a72efcb235a436713617a8c05b8e",
+      "size": 293
+    },
+    "agent-teams/narrated-presentation-video-team/agents/narration-script-reviewer/agent.md": {
+      "sha256": "d1b4ec529febf2e8b204c756fe841067fac353ea9dee1cf6cb7de37b2ff19e9a",
+      "size": 1724
+    },
+    "agent-teams/narrated-presentation-video-team/agents/narration-script-reviewer/skills/narration-script-reviewer/SKILL.md": {
+      "sha256": "a319b0ac718b22894eb4dab0cb6cb5fc2df0d032c90a0d520895fb5419f48ad1",
+      "size": 8173
+    },
+    "agent-teams/narrated-presentation-video-team/agents/narration-script-reviewer/skills/narration-script-reviewer/narrated-presentation-principles.md": {
+      "symlink": "../../../../shared/narrated-presentation-principles.md"
+    },
+    "agent-teams/narrated-presentation-video-team/agents/narration-script-reviewer/skills/narration-script-reviewer/templates/narration-review-report-template.md": {
+      "sha256": "8907922fa22aa609e7121519ca6728da5d8fb100c49900e08cdba83c42eed2b6",
+      "size": 4363
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/agent-config.json": {
+      "sha256": "8b028229475b5dfa19a4e235870a59279fb03abccb486fc4de8877805af7cf98",
+      "size": 431
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/agent.md": {
+      "sha256": "a17f663d577a2d92ff03d866117c361c31354b5ec83aa83401d6024524302364",
+      "size": 2207
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/SKILL.md": {
+      "sha256": "2927d010316f869f929a13a91807b8370946e6f41364ca66fc4ebe2b1366a6d0",
+      "size": 9353
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/narrated-presentation-principles.md": {
+      "symlink": "../../../../shared/narrated-presentation-principles.md"
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/templates/narration-script-template.md": {
+      "sha256": "102d6b789cb457b36b6af68956a13e429d1f400a6b7c5d3a05e1a22f4e44a7ca",
+      "size": 996
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/templates/presentation-brief-template.md": {
+      "sha256": "a738a8759ad8dd4a9580ba753520a308959d75a8d1198b38124b0d944290d68e",
+      "size": 1251
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/templates/research-notes-template.md": {
+      "sha256": "09eed1b72ec082686073035bd4d396c6c316b56181baba015330373bde54d0f7",
+      "size": 678
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/templates/slide-storyboard-template.md": {
+      "sha256": "116a1664745ff1bbf8eefc0519877c8f074eddfada4857259215628913ce5655",
+      "size": 551
+    },
+    "agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director/templates/source-material-inventory-template.md": {
+      "sha256": "d7c571167ec65b35de2073b3de7f12f2dc368fbc0a589e955cb893c15214d705",
+      "size": 422
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/agent-config.json": {
+      "sha256": "1a1b8b710037d8dcc29406c61535ac895891b026c80725d67df6cc2d89fc0724",
+      "size": 462
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/agent.md": {
+      "sha256": "e34f7c57a5377eaa96b18d337a77e1f78b06327e8e1931f3e87890ffb2a24a71",
+      "size": 5362
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/SKILL.md": {
+      "sha256": "f0b077052c003ed149ff98ecc6b47274d91e0a37746a56cb4e4e72ac577bedf1",
+      "size": 25759
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/narrated-presentation-principles.md": {
+      "symlink": "../../../../shared/narrated-presentation-principles.md"
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/audio-generation-log-template.md": {
+      "sha256": "db0b607f48fb8e5919be8165673626b298236427a6c1a38afec1f22379238aa1",
+      "size": 2875
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/final-delivery-report-template.md": {
+      "sha256": "56367f751309449169a72970d501728b0715e13b0d86016ab75b62f06bfdaa59",
+      "size": 3790
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/image-generation-log-template.md": {
+      "sha256": "425e4adedb0ed7e23fb296b2ed4d9079b34366f9ceee8a090a7a6a09a35626ec",
+      "size": 1733
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/media-resource-index-template.md": {
+      "sha256": "b8a22994f7b56b323d31c6bf00b62ed38f338187864c2cf67c72d73bb0e7b8e1",
+      "size": 1503
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/slide-video-production-log-template.md": {
+      "sha256": "43fe0addea9f731032004f537340bdc1ac2844f3524bb13b5ffc45e7ffd9abc7",
+      "size": 3797
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/slide-video-production-plan-template.md": {
+      "sha256": "28757c2bf4cdba79f67d05802fdd88531e4bf49a70f9fe3da15507d5c6e41788",
+      "size": 3123
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/video-assembly-package-template.md": {
+      "sha256": "00bfba080be4766e844f383ce3c322326910117d4ea8cba979dfca9d7e985042",
+      "size": 1246
+    },
+    "agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer/templates/voiceover-package-template.md": {
+      "sha256": "cc4dd73187cf7d21daf151ce395546e6550691e7cc4080fd7dcd9cca0254490c",
+      "size": 992
+    },
+    "agent-teams/narrated-presentation-video-team/shared/narrated-presentation-principles.md": {
+      "sha256": "555754a16a9e08da9372011ca59427213a64c2f71cb1f49472b1e20be1f0b427",
+      "size": 26649
+    },
+    "agent-teams/narrated-presentation-video-team/team-config.json": {
+      "sha256": "eb1cb842a00becc53b97463bf4691854a76cebdf9870edb64ce8e99328c5d63c",
+      "size": 1550
+    },
+    "agent-teams/narrated-presentation-video-team/team.md": {
+      "sha256": "03da4d15fbc0828e63895553950485c76384d17dfce9a25e1d0eab0395f3ed1d",
+      "size": 8285
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/infrastructure-security-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/infrastructure-security-lead/agent.md": {
+      "sha256": "7b9272f45df0b2bd33226d2596cb0324cd43367ec9da1db97abb5ee82c1fc073",
+      "size": 1717
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/platform-engineering-manager/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/platform-engineering-manager/agent.md": {
+      "sha256": "6c7d8662b0e9ae12188dec44c2d0405696521f5e1df9ec370e00471775650615",
+      "size": 1691
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/product-engineering-manager/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/product-engineering-manager/agent.md": {
+      "sha256": "8576dfa3bbb45ce03d40aa80095bfd04686064376e86e5932d3756482e90af75",
+      "size": 1699
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/qa-release-manager/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/qa-release-manager/agent.md": {
+      "sha256": "0cad10636dfe3a33b2c884fbd5f68514fcd520488d45027a963adf20971986db",
+      "size": 1665
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/vp-engineering/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/agents/vp-engineering/agent.md": {
+      "sha256": "1d092fa8215a3024957ec815fe240504d2eaa7e0000fc898098da0785631b4c5",
+      "size": 1682
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/team-config.json": {
+      "sha256": "3151b7e211b5026cae4fff32de64df2a9d0eaae9e06f60133050e6200d2b94f6",
+      "size": 2840
+    },
+    "agent-teams/northstar-operating-company/agent-teams/engineering-org/team.md": {
+      "sha256": "f01ec7c512f18e42d159dba5ac1a54aa73ed3493baf964513ccb87b395627ddd",
+      "size": 1455
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/controller/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/controller/agent.md": {
+      "sha256": "48036a3d04a8738d5102f20c939fb13a337048cc9c531595179cace6d0d5afd6",
+      "size": 1613
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/legal-compliance-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/legal-compliance-lead/agent.md": {
+      "sha256": "6fdd8acd9d0f7b45d5c686328baa9e6afa48f2970d55d54d85da520c13ae843a",
+      "size": 1695
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/people-ops-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/people-ops-lead/agent.md": {
+      "sha256": "29eeb0c51f02104b1445bfaaef1e4f72cdf489da3503f0cb8a9882ebc3fd82e1",
+      "size": 1654
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/talent-acquisition-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/talent-acquisition-lead/agent.md": {
+      "sha256": "3f2459836de69812d646c829634d1938d034cb448c2b71f3ddb422c1fc5bd018",
+      "size": 1669
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/vp-finance/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/agents/vp-finance/agent.md": {
+      "sha256": "3d7839f51ea6ce18ebfa3f0440bb34b06be0b363ccab597118db6c1a6bc8f919",
+      "size": 2142
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/team-config.json": {
+      "sha256": "189d785ceee6a260a0b087935b11a8dd60b0dd44fcfa62ca90c6cb9eef0f7c42",
+      "size": 3197
+    },
+    "agent-teams/northstar-operating-company/agent-teams/finance-people-org/team.md": {
+      "sha256": "a0a08d86fee95f74f27eee03c07899d69348e168104305e521c4dcf04092e3de",
+      "size": 1760
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/brand-content-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/brand-content-lead/agent.md": {
+      "sha256": "fd43a13622b5e3801e2a95d2c68cf576622d10af832c4538d9d8c2f215e9e05a",
+      "size": 1719
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/demand-generation-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/demand-generation-lead/agent.md": {
+      "sha256": "bdce1831f5aa71d0789a3d08c3c79addcea9ca6757ad4ae8e08ac7bc8b8fef89",
+      "size": 1913
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/facebook-marketer/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/facebook-marketer/agent.md": {
+      "sha256": "3dd51647b54565cef449212d0e772b2ae58f2f46a2db3ea7eace14b061f2c79d",
+      "size": 2037
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/linkedin-marketer/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/linkedin-marketer/agent.md": {
+      "sha256": "7fd5f36388272446a0316901a7434ca6cd678b785174c1d7b62c03101e00b9ae",
+      "size": 1951
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/marketing-operations-analytics-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/marketing-operations-analytics-lead/agent.md": {
+      "sha256": "a39a172ece6171352920068fdda7335e3cca800920f93485735d4d5a3b220701",
+      "size": 1818
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/product-marketing-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/product-marketing-lead/agent.md": {
+      "sha256": "dfecff1ac41c0183b0a5845de133a61903d0db627877b48500d9afe275fd5892",
+      "size": 1691
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/vp-marketing/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/vp-marketing/agent.md": {
+      "sha256": "f4cf867443a7c8a45b309a4ea1f1df21c6c879f84ca2ce46ad05ecb41f07cbdc",
+      "size": 1778
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/x-marketer/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/agents/x-marketer/agent.md": {
+      "sha256": "30bc1e6a29ee7daa8f01cf7d402f03dbef164321eb48ea45c4a5e30d585adb04",
+      "size": 1962
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/team-config.json": {
+      "sha256": "73d738f8ed4f288302273a16b27902acf5b511a773748ac2c20c51b6931d7ce2",
+      "size": 6921
+    },
+    "agent-teams/northstar-operating-company/agent-teams/marketing-org/team.md": {
+      "sha256": "e3929e9e80e5bd0b6abf49960a9bb15b10c60059c1350f08e773ef042b2cef4d",
+      "size": 2829
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/business-operations-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/business-operations-lead/agent.md": {
+      "sha256": "cd518480ce57164f05ba30e91f1710aec100e82360782e9743ada0e283e2fd1b",
+      "size": 1693
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/customer-operations-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/customer-operations-lead/agent.md": {
+      "sha256": "591bf57bdde3faef5c96f154dbd0e06a427e789673f2d448cb9ee23d4654faff",
+      "size": 1665
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/data-analytics-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/data-analytics-lead/agent.md": {
+      "sha256": "27ef5211a08d87560a16a80399453d47c498e374c7d773e622b8f67b967e4602",
+      "size": 1627
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/vendor-operations-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/vendor-operations-lead/agent.md": {
+      "sha256": "dc8885998ac259e504ac02cc221030166250072184a695ca3493ca2a55dbd11f",
+      "size": 1677
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/vp-operations/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/agents/vp-operations/agent.md": {
+      "sha256": "4c382e8ff3718ddd01005cb53d5a701a0142c06db247fd588e8e4466d1728af0",
+      "size": 1659
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/team-config.json": {
+      "sha256": "4a9ecece3732161cad7832fa42fd07203129141a798cbb9b80a5b8e4ca570fcb",
+      "size": 2638
+    },
+    "agent-teams/northstar-operating-company/agent-teams/operations-org/team.md": {
+      "sha256": "7adb12d2dc5b4601c6ca3e661ed10804beb7daf723369922da8eefbdf256664f",
+      "size": 1462
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/growth-product-manager/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/growth-product-manager/agent.md": {
+      "sha256": "097a07926a56b31f68e40fa26f46a2edb561c14606609bfc231a4c1eeb5823f7",
+      "size": 1647
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/platform-product-manager/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/platform-product-manager/agent.md": {
+      "sha256": "70edd4378640158cd88bed010e3978700b34c08bc7aeb98ef544709a6ebc3d29",
+      "size": 1678
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/product-design-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/product-design-lead/agent.md": {
+      "sha256": "8b19bd51485b5d5b7064433bbd4f7b72d73091c705e0d8ce7c41e5429b866d86",
+      "size": 1648
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/ux-research-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/ux-research-lead/agent.md": {
+      "sha256": "5d25705c659a243310436cc7bf68b64d2f5b818c9e01db671546ccf22df76f3c",
+      "size": 1617
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/vp-product/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/agents/vp-product/agent.md": {
+      "sha256": "8a0686f553221f2642675890881641e9ecf02ddbde1b0fb5ba254bff346cb64b",
+      "size": 1633
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/team-config.json": {
+      "sha256": "a35a75683b28ce0168c00dbbf009fc0bf2b980664cdbff4b35362ed7170ec547",
+      "size": 2541
+    },
+    "agent-teams/northstar-operating-company/agent-teams/product-org/team.md": {
+      "sha256": "211998d383703e5da8af469d2994585de8736694503b0ef5f22a9053c6d46cfa",
+      "size": 1398
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/account-executive-manager/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/account-executive-manager/agent.md": {
+      "sha256": "4d3226210425305cd74394643c3bc7eeab9c334fcc3f226f72e7360a02b7fe98",
+      "size": 1665
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/customer-success-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/customer-success-lead/agent.md": {
+      "sha256": "514a6026c1f16e9c0196e3bda99b01e3bc4041ade93c643defe8cfbe81d147e8",
+      "size": 1664
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/partnerships-lead/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/partnerships-lead/agent.md": {
+      "sha256": "7aa5f113c46fc4e9bcfaec40d759916bf5849eaa03f03ce852309fee5be4645e",
+      "size": 1638
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/vp-sales/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/agents/vp-sales/agent.md": {
+      "sha256": "934b35c8ee776c0fc69e46976fc4f5426be06068a57fee410092d06889706abd",
+      "size": 1711
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/team-config.json": {
+      "sha256": "320b873fd4582ebb7a72113ba5afbb075fa13114c530a3eb347dbf5ee35c5844",
+      "size": 1963
+    },
+    "agent-teams/northstar-operating-company/agent-teams/revenue-org/team.md": {
+      "sha256": "187ae25dd15a16697b3f52b213a3d74b0da2759c6d5549bf0dccfb88c3382952",
+      "size": 1634
+    },
+    "agent-teams/northstar-operating-company/agents/ceo/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/ceo/agent.md": {
+      "sha256": "f50b2ff8c9499c4cab8aa187305def35d9f2035f1a85a40cb0807d1a288d26f5",
+      "size": 1652
+    },
+    "agent-teams/northstar-operating-company/agents/cfo/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/cfo/agent.md": {
+      "sha256": "697bd528ee9004a859da926925a3f9a0ae98efb5b33885a5ecbf3cf25bf20e65",
+      "size": 1663
+    },
+    "agent-teams/northstar-operating-company/agents/chief-of-staff/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/chief-of-staff/agent.md": {
+      "sha256": "4584944e1723f95a7057196752f15342550f0bcb6ad2c0bedf110d6a4e1411f6",
+      "size": 1640
+    },
+    "agent-teams/northstar-operating-company/agents/chief-people-officer/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/chief-people-officer/agent.md": {
+      "sha256": "be7840247ac354d1772425004b6ede4db76d165ad5f07b2198be9dee7dd92acd",
+      "size": 1705
+    },
+    "agent-teams/northstar-operating-company/agents/cmo/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/cmo/agent.md": {
+      "sha256": "30a7beea087ba899c7301094021f5bfcf53b68158a49ff5d5f80c0a199d79874",
+      "size": 1768
+    },
+    "agent-teams/northstar-operating-company/agents/coo/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/coo/agent.md": {
+      "sha256": "ad2a0b8f7729797f2d816d94b635ccc8ca88ebaaf07f107666a57a59740f408e",
+      "size": 1681
+    },
+    "agent-teams/northstar-operating-company/agents/cpo/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/cpo/agent.md": {
+      "sha256": "5c997b9daf0f421b023d7eb6fa173a39642399102224beb9ab31d9260d5fd733",
+      "size": 1663
+    },
+    "agent-teams/northstar-operating-company/agents/cro/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/cro/agent.md": {
+      "sha256": "4a3c46370d30ca6881e3ae3da181f3b5d37f2db7114e8b9d15c721cecdf0aea0",
+      "size": 1705
+    },
+    "agent-teams/northstar-operating-company/agents/cto/agent-config.json": {
+      "sha256": "143b4db763cba8292650db3f5e5f881ef3a3448519b75b3124d35d90b73fde5f",
+      "size": 447
+    },
+    "agent-teams/northstar-operating-company/agents/cto/agent.md": {
+      "sha256": "3b266b9662ca9dd6ff2d4108ccbdacc5794fbcd03ee8fb6e3af68090397e3f8b",
+      "size": 1677
+    },
+    "agent-teams/northstar-operating-company/team-config.json": {
+      "sha256": "552861b6aa9020fcd5f8452549815167413e24b0fffab5b55d2275401db5de96",
+      "size": 21114
+    },
+    "agent-teams/northstar-operating-company/team.md": {
+      "sha256": "052627fa53e90f5def9e42075b3dd3829abbeec5471c8538fcdf926af6b2a1b9",
+      "size": 3625
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/agent-config.json": {
+      "sha256": "969dd222d3c3c76f61dbdc5d6a5b0272516b0aa70b3e3d313b4dd4e5345e2139",
+      "size": 548
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/agent.md": {
+      "sha256": "320790fece6c8498b4b2ce5b04335ce38bd40bcf9117aa17ce617a42cdcc5fa1",
+      "size": 2052
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/SKILL.md": {
+      "sha256": "b0093808fb5adbf74f9b7159c357531c826ab4599c11b543d23d54d62e1f9239",
+      "size": 22717
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/product-prototype-principles.md": {
+      "symlink": "../../../../shared/product-prototype-principles.md"
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/references/visualization-principles.md": {
+      "sha256": "8183adb5c9e8318ade573d9582fbcc30766ad02814d94ce362aca77c885a398c",
+      "size": 15834
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/requirements-visualization-brief-template.md": {
+      "sha256": "eb9002d3c90a565719435ba5a9e34b4e3dc48f76f013ea8090c0239e279aefa5",
+      "size": 887
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/requirements-visualization-design-plan-template.md": {
+      "sha256": "f12ba0d7fd29244c1219d25bffab65ef60cd22616e21cf479f2fd679e46ed406",
+      "size": 2677
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/requirements-visualization-review-template.md": {
+      "sha256": "2d2c28eb6fd7fddaca7fb77ebf3d8f8483ef0358473be1d1c9992ffa0861a11d",
+      "size": 1017
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/.gitignore": {
+      "sha256": "2a364c5a2de5c536a56ab959c0bad81994191245772465d1c5eabe57e7e6c3cc",
+      "size": 24
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/README.md": {
+      "sha256": "a2c6c72321d385f7d0f34cea50f5a1cbfca47262784a109e1da9acd64fe1ec09",
+      "size": 2141
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/index.html": {
+      "sha256": "274d6243ebb5079ed17567d04ea033dd7e771b9b14bebe5de0bc21caec5f9ba1",
+      "size": 384
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/package.json": {
+      "sha256": "9593789e197fea77b4c87d833bf8d525e5905dda61cf2e9e5ddf0374e6528a33",
+      "size": 628
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/src/App.tsx": {
+      "sha256": "c09063f7b82060e87a2454a53ee6a806026b09f4e1412348635be7bd0f4c0c04",
+      "size": 5750
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/src/main.tsx": {
+      "sha256": "ccbefe7be6c69706a1bb01c4c3f20492eb002435af6ba7e5a6d45f7c6aa3a140",
+      "size": 232
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/src/styles.css": {
+      "sha256": "af03642980c0d98e52e044249da421cbc1ce3fed35b0525e5ee8708008a8e8fc",
+      "size": 4951
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/src/vite-env.d.ts": {
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "size": 38
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/tsconfig.app.json": {
+      "sha256": "18eef6f87ef638fb29585831d4c1898a1d06b725164f01d36be48120f6afa6d7",
+      "size": 578
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/tsconfig.json": {
+      "sha256": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808",
+      "size": 119
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/tsconfig.node.json": {
+      "sha256": "2fba2f25e1859f193b54edef5d2d2cd08cae2a37fab64c08699f6f8672bea2cc",
+      "size": 413
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/exploratory-requirements-visualizer/templates/visualizer-project/vite.config.ts": {
+      "sha256": "eca485c281977125366d4800553256e419f364984e615f75a2d2bae54f7857fd",
+      "size": 136
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/SKILL.md": {
+      "sha256": "134c23a0ff35165608c792705e5303818966df6f8933e2b2492ed320c7d820a8",
+      "size": 26671
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/product-prototype-principles.md": {
+      "symlink": "../../../../shared/product-prototype-principles.md"
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/experience-story-template.md": {
+      "sha256": "28d4d2ac8ded718d4f98a706ee831154b8a3f5b75d000819d7556084305e7727",
+      "size": 1187
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/product-prototype-report-template.md": {
+      "sha256": "7529b177b5b411b4b825b5eb6f8eedc92c7c223e77f5a3610db6bd18622aee7c",
+      "size": 3190
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/prototype-assumptions-template.md": {
+      "sha256": "eeb50e68282009a0cd092dca4e02394cd37897e3c44abc61aad49e32302e3340",
+      "size": 763
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/prototype-change-log-template.md": {
+      "sha256": "e0f4197ed97d93bf7cb13fbf15b603d6ab6e9e308b5dac27287b8a8568f315de",
+      "size": 404
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/prototype-runbook-template.md": {
+      "sha256": "f121b0cbaeed7571aa64041f671dfbc92535c801b4ef18fc63e880405abcd2e3",
+      "size": 1209
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/ui-behavior-test-matrix-template.md": {
+      "sha256": "d4295e55ced40b4e0b3c943f07559024afed995a739c1e50f092ce658f26c0a7",
+      "size": 743
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-experience-prototyper/templates/ui-ux-spec-template.md": {
+      "sha256": "cea408caa8954ae351966b4e8bf0bd7a9bd754d251123973cb97b70b18b71850",
+      "size": 6405
+    },
+    "agent-teams/product-design-prototyping-team/agents/product-prototyper/skills/product-prototype-repository-management/SKILL.md": {
+      "sha256": "d1c217102ae5a9be063fbe7378ca154fe60c93f39b0c799c7136f954fdba4441",
+      "size": 12500
+    },
+    "agent-teams/product-design-prototyping-team/agents/prototype-bootstrapper/agent-config.json": {
+      "sha256": "e63aac5afe5fd052e72b74c5c8e1da8ebe868aefe94bff528b6877161e06046d",
+      "size": 451
+    },
+    "agent-teams/product-design-prototyping-team/agents/prototype-bootstrapper/agent.md": {
+      "sha256": "5d3ee55513db98852a984228fbb58fdab65e8bfa94781ec0ac27d4bf68f24e74",
+      "size": 1161
+    },
+    "agent-teams/product-design-prototyping-team/agents/prototype-bootstrapper/skills/prototype-bootstrapper/SKILL.md": {
+      "sha256": "b62946429e188a153653e61065404068e41deb4225304e7de2b3163f1b373080",
+      "size": 13393
+    },
+    "agent-teams/product-design-prototyping-team/agents/prototype-bootstrapper/skills/prototype-bootstrapper/product-prototype-principles.md": {
+      "symlink": "../../../../shared/product-prototype-principles.md"
+    },
+    "agent-teams/product-design-prototyping-team/agents/prototype-bootstrapper/skills/prototype-bootstrapper/templates/prototype-bootstrap-report-template.md": {
+      "sha256": "be1ee93eb353ed84d555a37205a214f992d22666ee3c635541a8ea55b0df6c91",
+      "size": 6126
+    },
+    "agent-teams/product-design-prototyping-team/shared/product-prototype-principles.md": {
+      "sha256": "915e8f30c9dbbde5e8057fb6bacc2998270a618db2abead11f429e432ab856f3",
+      "size": 25173
+    },
+    "agent-teams/product-design-prototyping-team/shared/templates/prototype-ticket-template.md": {
+      "sha256": "5a1f4329125157f9d82559e9c5214b52bfb28269738e122f2132eb485cf2d461",
+      "size": 1663
+    },
+    "agent-teams/product-design-prototyping-team/team-config.json": {
+      "sha256": "c5504b35e0995a409b07ad3573c9d375f7e806145ba90058eee7da58b1012f01",
+      "size": 1725
+    },
+    "agent-teams/product-design-prototyping-team/team.md": {
+      "sha256": "cb5922c35eb0abab9a4df90b24b1fd3d6536f457d1c22725e696cb8771501105",
+      "size": 3763
+    },
+    "agent-teams/research-to-deck-team/agents/deck-reviewer/agent-config.json": {
+      "sha256": "ec83761ecd5811c4d90a7e0b263f6be81b1b9e04b8180851dd52bcf5d0bef4a3",
+      "size": 247
+    },
+    "agent-teams/research-to-deck-team/agents/deck-reviewer/agent.md": {
+      "sha256": "47f35209a6342c5864809bea1bdbba2b270be5b27e36886bf18d5978fa9e3c96",
+      "size": 1440
+    },
+    "agent-teams/research-to-deck-team/agents/deck-reviewer/skills/deck-reviewer/SKILL.md": {
+      "sha256": "17ed14b43431eae3eed0f7d8c991b750fa6288ade3522a9ba952ab1fb7e54a8a",
+      "size": 4512
+    },
+    "agent-teams/research-to-deck-team/agents/deck-reviewer/skills/deck-reviewer/deck-production-principles.md": {
+      "symlink": "../../../../shared/deck-production-principles.md"
+    },
+    "agent-teams/research-to-deck-team/agents/deck-reviewer/skills/deck-reviewer/templates/slide-review-report-template.md": {
+      "sha256": "6c1d67a97b296b8e10d99666c7d33bbd4ae243e1b7c8b29aa7124f13776202bd",
+      "size": 1603
+    },
+    "agent-teams/research-to-deck-team/agents/deep-researcher/agent-config.json": {
+      "sha256": "f6798f6eef7f350d26e63aad023cf6c339fd31d443fa6a61fa20f413625f54ab",
+      "size": 283
+    },
+    "agent-teams/research-to-deck-team/agents/deep-researcher/agent.md": {
+      "sha256": "58fdb581d7d136e58e1d8e3a64cf718039ce94fdff858bb5fd99d305e70e8e4c",
+      "size": 1107
+    },
+    "agent-teams/research-to-deck-team/agents/deep-researcher/skills/deep-researcher/SKILL.md": {
+      "sha256": "e7dfac9368635e2cda13aa540d000d026cdc21b872b1e63132c79d2e5dd9f6ec",
+      "size": 4868
+    },
+    "agent-teams/research-to-deck-team/agents/deep-researcher/skills/deep-researcher/deck-production-principles.md": {
+      "symlink": "../../../../shared/deck-production-principles.md"
+    },
+    "agent-teams/research-to-deck-team/agents/deep-researcher/skills/deep-researcher/templates/research-resource-index-template.md": {
+      "sha256": "714edea43493cdd70305e8fd7370eed112af1c821045fc245d91a34f6fefe5e2",
+      "size": 1632
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/agent-config.json": {
+      "sha256": "95142088aaf8f4535e365aef9e8270ea7f9c1e747a87f3fdbd8fc3f36b8a91e1",
+      "size": 339
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/agent.md": {
+      "sha256": "83d619d9f509dd128a174e2983c9e8da652141f1f61cf91e8be32f0a5f532743",
+      "size": 1144
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/SKILL.md": {
+      "sha256": "25d7625781a1735769dee126cd6afd3c3e6ea52c16d0a7a917bb1f529f612e32",
+      "size": 9702
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/deck-production-principles.md": {
+      "symlink": "../../../../shared/deck-production-principles.md"
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/chinese_quote_compression.md": {
+      "sha256": "5dd318478e3e9f400e7af7fa20d7b92b9a896516910014959c595892a851ab67",
+      "size": 1246
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/deck_consistency_block.md": {
+      "sha256": "284367fb7f5d8a3d35e176a1d333b4de19e30d746bc529ba36e4c31c52a77b86",
+      "size": 4289
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/layout_library.md": {
+      "sha256": "0641568eb81c75ad727806cfd24689370ea9cd78d253de1dcaba2e6cb784a5fc",
+      "size": 1656
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/motif_pack.md": {
+      "sha256": "4b19a3b24fd67d76a9022d4b74a3c4cbdbecd4c0d30f1be93d3c7c9dfe8d948a",
+      "size": 3750
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/negative_prompt_block.md": {
+      "sha256": "76985f2712dfae9267cb34b3f7c1df2bbfd27bb95ec48e7c87b6e6b963e6ee20",
+      "size": 813
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/prompt_template.md": {
+      "sha256": "72f530035969919be6515521052615a2c1d85619ff9fe2fae21fd9a8e489989e",
+      "size": 4927
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/scene-catalog.md": {
+      "sha256": "4f9ada26fdf50c970b99e34c8c67448aac9ae68e6e658f57261faa2eb45f57b7",
+      "size": 4854
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/scene-entry-template.md": {
+      "sha256": "5aa96a752949dae3574f3a207bf8a9237757269c2e8dffb248c1e105b2d7d0dc",
+      "size": 426
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/scene-preset-library.md": {
+      "sha256": "e9d97045873e9703d3ee87335cb8caf1c77dbfebd7f8ffa495feef8a1cc5b690",
+      "size": 4659
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/scene_library.md": {
+      "sha256": "8e2ef5ccec769867b5d1541ec8c1385e3b1fde783e164b88d7203558d6afe30c",
+      "size": 4013
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/shot_mood_library.md": {
+      "sha256": "339ddfd18cec34a7ef1c2222bbbf9fd69c6f627aa9afcb3c6c16a587561e4ef1",
+      "size": 3274
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/storyboard_library.md": {
+      "sha256": "0b6bc36827a868dfb9ef5aff90aafe03fe1e79f64c0858324fd37535a6e24b51",
+      "size": 1522
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-pack-catalog.md": {
+      "sha256": "63f4152dd21786a680f71df420bc1f52b5cdfeb9a3a0d8dc3b6ee42683742bc9",
+      "size": 1783
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-pack-system.md": {
+      "sha256": "7df01a20971aa54be2249354f8034c0dace469d73f28c774ddf31c6644a85321",
+      "size": 1856
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/airy-relaxed/10-style-profile.md": {
+      "sha256": "7b5e5342ec37a8734fe4043e60a9fba751438982dcb826a334e455416e3e7a0e",
+      "size": 382
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/airy-relaxed/20-motif.md": {
+      "sha256": "14bd159b4fcd0aca73188cf3e85d5b12a4b49204ad2f391d505ac23dc9a9b25a",
+      "size": 237
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/airy-relaxed/30-consistency.md": {
+      "sha256": "5b4b87ea3f5fe78573ab775b82afea28753a01b19f42f3e56f26ede372384293",
+      "size": 269
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/airy-relaxed/40-scene-bias.md": {
+      "sha256": "d90bab4902eb7a9dc2a3f0f7be8c8ce65820ab81b40c3585906f5085d4727f5a",
+      "size": 258
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/airy-relaxed/manifest.toml": {
+      "sha256": "1851aa2089baf0012992a03f73cf92bb56d6248797f45bdd71fb265454f5db93",
+      "size": 206
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/base-core/00-core-foundation.md": {
+      "sha256": "344f6c993f13f67479ea666ebb8d8544b1aa3270683be91a2ac553f5796bbeee",
+      "size": 595
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/base-core/manifest.toml": {
+      "sha256": "b2351218b9eeb08f47ffd37604609613e09712db0d7872445ac3faf5beeefe12",
+      "size": 183
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/cinematic-dark/10-style-profile.md": {
+      "sha256": "3f8822488efb4759f6c1877f9f52087ee1e0cd7214e677bc5d8624db2ba1402c",
+      "size": 428
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/cinematic-dark/20-motif.md": {
+      "sha256": "4168de766706137ff24b55a28dc94a3daac7c5de6f30076970a67e56d9afa85a",
+      "size": 248
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/cinematic-dark/30-consistency.md": {
+      "sha256": "89d043f68affe25ca1c235e42d2c454b674534ad8de217fa679000a97a549892",
+      "size": 268
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/cinematic-dark/40-scene-bias.md": {
+      "sha256": "5ec81c2fbc53dfe418efc13f1f0e50f21edbed583dfeaf98faae7e1e95b63e42",
+      "size": 263
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/cinematic-dark/manifest.toml": {
+      "sha256": "7ee5e985adfd033dcef7c57a96e4c3ed24ca27b546dc7d74ba107e946b63e5a1",
+      "size": 207
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/clean-corporate/10-style-profile.md": {
+      "sha256": "31bb08a6e69cb9b961e8d50720a81b4f3cbe6df7b4f35c31d8dccdffbe948498",
+      "size": 393
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/clean-corporate/20-motif.md": {
+      "sha256": "4edb7094b893808a239aaf1df9ae5ba33d0b988c16cbf9abd8703983acba1a03",
+      "size": 234
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/clean-corporate/30-consistency.md": {
+      "sha256": "7d4f46d52e4da14bcdde50d7c1d5388a7b441a330231e17a0de3020e7bb5970b",
+      "size": 288
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/clean-corporate/40-scene-bias.md": {
+      "sha256": "12ee4b7587ab0bf25a1e60b1136d6b39d8e25896551962d59718f9bfba60507f",
+      "size": 276
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/clean-corporate/manifest.toml": {
+      "sha256": "5ad5d25fb21e4db1b56ecae491272b85d80fce03762096cadbced52d46bf9444",
+      "size": 216
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/editorial-light/10-style-profile.md": {
+      "sha256": "02c965170e44d1a98fb4183cb5e0fc759e707662ddb2b12ef1665ce5d5385d56",
+      "size": 410
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/editorial-light/20-motif.md": {
+      "sha256": "ff3471615a0382645b49be854b3439870b9aebe9ba4d663d26fb9f82620a503b",
+      "size": 226
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/editorial-light/30-consistency.md": {
+      "sha256": "df3d1efb0179261a53822d416a15736507f3f1f169184ba44d114923e8ac681c",
+      "size": 275
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/editorial-light/40-scene-bias.md": {
+      "sha256": "e5401c65e34deb1ca5f9737f7e78c1119be73516755b3abd7cb694d9ec7b4de0",
+      "size": 275
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/editorial-light/manifest.toml": {
+      "sha256": "5340749ff2ffb1bb7d09f08143cf1592eac071d617f27cc2d8b2e2f0577f5cc8",
+      "size": 213
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/neo-tech/10-style-profile.md": {
+      "sha256": "31e9d98da92168aec77dd30d2f385489f7a5dd52cd7b1469b31cf99f59ca9f53",
+      "size": 458
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/neo-tech/20-motif.md": {
+      "sha256": "54dfbd319b150eed0a99fedc451c635f3f00ddab4d2ba22b7a900f6d2b8a4c13",
+      "size": 246
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/neo-tech/30-consistency.md": {
+      "sha256": "ca64550953c8ebf1ad7e61446cc5340bbe3d143854e9d48509614cd3145a4195",
+      "size": 277
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/neo-tech/40-scene-bias.md": {
+      "sha256": "857ab28437cfea49f6b4917f6c19188e80fdbf44cf0928d6fa4e261958896c7e",
+      "size": 265
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/neo-tech/manifest.toml": {
+      "sha256": "e950c494350253db0f140156435b3bbb97e97e51b10517d8c4e7a696eb770f6f",
+      "size": 198
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/research-academic/10-style-profile.md": {
+      "sha256": "bb85d91e3eced78cef63487544be56767159aaadad47c0606b4b3a1e3ca52c90",
+      "size": 415
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/research-academic/20-motif.md": {
+      "sha256": "89474e7b557fb19f093366b28183d704db277942dd05f0b8b4dd72f01a3d452a",
+      "size": 239
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/research-academic/30-consistency.md": {
+      "sha256": "06249ced01b7496662a5d5310c43845299f2c50385d051dfa7164816efc51a26",
+      "size": 268
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/research-academic/40-scene-bias.md": {
+      "sha256": "285ca6f33ef7e7aa2c6ff1d653db1fbac3024d30c0b20296d8df0d10f2bcb855",
+      "size": 299
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/research-academic/manifest.toml": {
+      "sha256": "b97087277476cefe322e1f68e60558eb642fc82398b7c861c55bf60508a0245a",
+      "size": 227
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/warm-sermon/10-style-profile.md": {
+      "sha256": "ca12a0542da0123f1175a638f80b458a9268390b704e530d1dc6e4924daf2d26",
+      "size": 432
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/warm-sermon/20-motif.md": {
+      "sha256": "9dedad7290b2a24de73ae755627d3d35116464be39219dd822b99b3eecaabad1",
+      "size": 237
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/warm-sermon/30-consistency.md": {
+      "sha256": "deeb88a2a876ed85e4331800170e0b45f8dd505bf68d49b5ecf42f4dbfe5bf6e",
+      "size": 298
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/warm-sermon/40-scene-bias.md": {
+      "sha256": "a2812c01135e94c57fa9f43ef2b3d0ddd6bc184e2794874c44150a632fb0a654",
+      "size": 270
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/warm-sermon/manifest.toml": {
+      "sha256": "c3df3972c26a16613823eb9745bcacc567b25985d458c9653855d1b9ac82e798",
+      "size": 211
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/youth-social/10-style-profile.md": {
+      "sha256": "03b967440fe77ce7fb35d4505c90e3dc0d84108214369eb78fb0074dd1fb4b4e",
+      "size": 414
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/youth-social/20-motif.md": {
+      "sha256": "39ef9aab4595781315e05463fd83b60d6d5617532c75f2831e3826cd51d13b9f",
+      "size": 252
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/youth-social/30-consistency.md": {
+      "sha256": "317389c1de2650c636975055ed43c4c398d526c5c81065a5a83c794fef9b6cbf",
+      "size": 254
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/youth-social/40-scene-bias.md": {
+      "sha256": "3897ebdf51aaa9b951902ae0a199b4ed6892c6c926da5fc54153e17277cf1aed",
+      "size": 266
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/style-packs/youth-social/manifest.toml": {
+      "sha256": "32aa3a8178ef894acc495a4b89a9af3bd561adaf22c7d2aada0d8aa682bd0de6",
+      "size": 216
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/text_fidelity_block.md": {
+      "sha256": "9d7592ec1b03e13ed01811abd549faccfe1b7808cc588719e7df0e1fd5830f52",
+      "size": 903
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/references/typography_spacing_lock.md": {
+      "sha256": "5f406167da1bb6500566915317d7f1d36c68bd5212df45568f226a02164d1dc4",
+      "size": 1569
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/scripts/build_images_only_pptx.py": {
+      "sha256": "bea129f789081c7832f7a0191489ecd388daa77aa2ec74f908f8b4d865b6ef48",
+      "size": 2036
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/scripts/compose_style_pack_blocks.py": {
+      "sha256": "df1fae3632876b8ef33a9bb1ac4f9b2137cd84bffc8e1b6e2011fc4b98447dbd",
+      "size": 5162
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/scripts/create_style_pack.py": {
+      "sha256": "25a65667e9c53d6b76e30c6834d45507643fb6f23b321f682fe4b0521ce70eab",
+      "size": 3709
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/templates/deck-package-template.md": {
+      "sha256": "48d357529b62740e7354a9ffa4b31faacb10de9f7bc881b3882514c00190d24b",
+      "size": 568
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/templates/deck-source-index-template.md": {
+      "sha256": "61f6d8167678d2479b511921b8c4b5beed3ac755dde58621ce524be6233820e6",
+      "size": 2104
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/templates/deck-storyboard-template.md": {
+      "sha256": "6b120068957e63cfa9119068964c68f368ed7534d3a4a0038ee6269c4fadb896",
+      "size": 1034
+    },
+    "agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer/templates/slide-generation-log-template.md": {
+      "sha256": "a796b53ca9614677d8aec7a619d53bad77d0393ec85fa4b25c58a7fedcb1be38",
+      "size": 1531
+    },
+    "agent-teams/research-to-deck-team/shared/deck-production-principles.md": {
+      "sha256": "f3ba61634acdc582cb93ae72cd590c18bbc72e47f54f55754406d8cfee68e66e",
+      "size": 8144
+    },
+    "agent-teams/research-to-deck-team/team-config.json": {
+      "sha256": "c58aa11ba26547a21a9a76714c4c09a5d7c36bc5e28b4f413463e92e5e99ac0f",
+      "size": 1761
+    },
+    "agent-teams/research-to-deck-team/team.md": {
+      "sha256": "da0fe6998464f8f3de8d1c5c2132aa978d42c4b65f7ff2f3c0d045dcf3ef2604",
+      "size": 4787
+    },
+    "agent-teams/software-development-department/agents/department-head/agent-config.json": {
+      "sha256": "13c5f7a8a1c2975f8a65a52cd0528f747e879a48043e5f9e209f70a89dfdc724",
+      "size": 42
+    },
+    "agent-teams/software-development-department/agents/department-head/agent.md": {
+      "sha256": "733a542c978dc2b8b487c5c78156b327397f03aa1a6b63de62c95eb88f160db7",
+      "size": 258
+    },
+    "agent-teams/software-development-department/team-config.json": {
+      "sha256": "8419d1729900f76218066d6978d0025f0de84b61050e2bcb6444f2bcc967491f",
+      "size": 2716
+    },
+    "agent-teams/software-development-department/team.md": {
+      "sha256": "f49be0c4031c1c5e839952d1f62406bbe672754e911b3dfa0c6ba853f80f8d89",
+      "size": 2379
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/agent-config.json": {
+      "sha256": "b36a88859a4dd9c8311f693dca5c76f144520fb9904ae3742b9c551b8727bac2",
+      "size": 451
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/agent.md": {
+      "sha256": "0fafbef38727d1dadf7a527596fcdd15be0d3aa608e8a65d6fd941d7e223bd24",
+      "size": 1060
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/skills/api-e2e-engineer/SKILL.md": {
+      "sha256": "518803e55c84324e267834b8afe9b6d8ed1cd4fadc8097b5f414e3582de02327",
+      "size": 25608
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/skills/api-e2e-engineer/templates/api-e2e-coverage-investigation-template.md": {
+      "sha256": "986dc3f695823c7b6ec28f0dee04e6f9d3d50f849c5d1ca1401522f6e8872150",
+      "size": 11389
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/skills/api-e2e-engineer/templates/api-e2e-execution-coverage-report-template.md": {
+      "sha256": "25d676e33826d9e479982fb113e23cb08c46bd39ebdbda7860d17703f1299797",
+      "size": 11341
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/skills/api-e2e-engineer/templates/api-e2e-revision-record-template.md": {
+      "sha256": "c8db51840bf0e63dbe569857563c16ca3cd02d0ef803c622c6444a4b5fe0724a",
+      "size": 1895
+    },
+    "agent-teams/software-engineering-team/agents/api-e2e-engineer/skills/api-e2e-engineer/templates/api-e2e-test-case-ledger-template.md": {
+      "sha256": "a97dc8c94e246bc914b7b46cab7c783dcaf5e849c0559fc86c2d4edac5ae2085",
+      "size": 2256
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/agent-config.json": {
+      "sha256": "e3a4820f7b91e07d949829a1196910e909961647458089b57b3e9c564580257f",
+      "size": 314
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/agent.md": {
+      "sha256": "02b668c052de8294d5cae67d2baa0f0b05fbc2e3fafb7ce01732c542c2899897",
+      "size": 1849
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/SKILL.md": {
+      "sha256": "9c09522b8ccf6f883356de2b8b6a9251794e993969ee2c0aeeac96d6b076bea4",
+      "size": 12978
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/design-principles.md": {
+      "symlink": "../../../../shared/design-principles.md"
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/references/design-examples.md": {
+      "symlink": "../../../../../shared/design-examples.md"
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/templates/architecture-review-revision-record-template.md": {
+      "sha256": "8d10fbcfa270a714df6df3f5d13824a18c2a59a537087dd4ece64834ecb0e5de",
+      "size": 1663
+    },
+    "agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer/templates/design-review-report-template.md": {
+      "sha256": "488da01ab46653c82f98ae99877b08b06fe009a9e3fa35a19998f2bc13830fb6",
+      "size": 16077
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/agent-config.json": {
+      "sha256": "d0f971338aa61ad4af08756882ceb4aa9815a96cada6a48cca85d1b26a195a51",
+      "size": 306
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/agent.md": {
+      "sha256": "1e8530ad5ea8cf7bef529651a5c55c267aa521fd2a2bd128ee3f68c76753a5bd",
+      "size": 1859
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/SKILL.md": {
+      "sha256": "cff18706898c31c478c72a3debf3beb52e240fdd2ac5d9101ada454a341ce3c3",
+      "size": 22359
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/design-principles.md": {
+      "symlink": "../../../../shared/design-principles.md"
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/references/design-examples.md": {
+      "symlink": "../../../../../shared/design-examples.md"
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/templates/api-e2e-test-review-report-template.md": {
+      "sha256": "adbfdcfed8df8b622956f8de697f3356958687e085e7b1cccfbfe9639f0b2d1e",
+      "size": 4767
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/templates/code-review-report-template.md": {
+      "sha256": "bf8408f97879b334e6eb11fea579098a8da44c108d750210e1657ae76c6f2965",
+      "size": 23004
+    },
+    "agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer/templates/code-review-revision-record-template.md": {
+      "sha256": "b22bb181338f5e310932bed7d8492b09c5e36f75beb034ef1388d22687d8ed43",
+      "size": 1985
+    },
+    "agent-teams/software-engineering-team/agents/delivery-engineer/agent-config.json": {
+      "sha256": "ca0e73d5db531593edaed3a2e9507c436905e688fb4e04dc776a9d501a4a694a",
+      "size": 310
+    },
+    "agent-teams/software-engineering-team/agents/delivery-engineer/agent.md": {
+      "sha256": "398577f133697e3621638ca66217b38d29a5ecde86c5ce048d76851502deb64a",
+      "size": 896
+    },
+    "agent-teams/software-engineering-team/agents/delivery-engineer/skills/delivery-engineer/SKILL.md": {
+      "sha256": "e1928e9f628554624393c92ae66fee65ccd8bf1c2743daccee305d9e1da6e8d2",
+      "size": 11876
+    },
+    "agent-teams/software-engineering-team/agents/delivery-engineer/skills/delivery-engineer/templates/delivery-revision-record-template.md": {
+      "sha256": "33a2c4c0b1a5c20a3979f366ffb88dc491015d54e8d6402e308c2d362b13346d",
+      "size": 1721
+    },
+    "agent-teams/software-engineering-team/agents/delivery-engineer/skills/delivery-engineer/templates/docs-sync-report-template.md": {
+      "sha256": "bc98fb65ff6237e93c7e6c81a0c9f2231591e569d46dbf9c94c4a656b53da4b1",
+      "size": 1430
+    },
+    "agent-teams/software-engineering-team/agents/delivery-engineer/skills/delivery-engineer/templates/release-deployment-report-template.md": {
+      "sha256": "6e1a436560e5e9f2c9f0cdb684aea6e4dcfa98cca25818e59752b62a11a8253e",
+      "size": 4412
+    },
+    "agent-teams/software-engineering-team/agents/implementation-engineer/agent-config.json": {
+      "sha256": "0ef820c0b35dc66156a9549db80cbd7c81346f5e5e0adc2bc4e5726ef12437bd",
+      "size": 521
+    },
+    "agent-teams/software-engineering-team/agents/implementation-engineer/agent.md": {
+      "sha256": "b082b21503079a1081237c612b868f34b93f8928962a9986f96d5f7f1afc2a52",
+      "size": 972
+    },
+    "agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer/SKILL.md": {
+      "sha256": "b2ef4a964fa5abe11429473bb9bab675d6ae8203c0c25f8c566e150162920f2f",
+      "size": 13411
+    },
+    "agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer/design-principles.md": {
+      "symlink": "../../../../shared/design-principles.md"
+    },
+    "agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer/templates/implementation-handoff-template.md": {
+      "sha256": "7385dfe934d775d1e1e32262a1f2ca7ee95f40a6420ebb8d44cb91bde81e9a41",
+      "size": 5506
+    },
+    "agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer/templates/implementation-revision-record-template.md": {
+      "sha256": "a4412429f97905b55b4742edeeabcb545a39b9b4008e328dbafe435915f73515",
+      "size": 1786
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/agent-config.json": {
+      "sha256": "9f59be641b03b5702f267925e74d48efc6b379f9cb8beb8caa3de6208d57276f",
+      "size": 452
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/agent.md": {
+      "sha256": "0ec9acf007c807e09cb3d4ed702841da241d3d06621df3eef00cc01b9f64a75e",
+      "size": 1328
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/SKILL.md": {
+      "sha256": "20702346df6deed3426a9bf173ad284c14f0dfca6cde56c91ec1b848365c39ca",
+      "size": 18438
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/design-examples.md": {
+      "symlink": "../../../../shared/design-examples.md"
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/design-principles.md": {
+      "symlink": "../../../../shared/design-principles.md"
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/references/architecture-design.md": {
+      "sha256": "78ddb646402ed6d2c2eed0221246b73a493f040ffb89dd70ed91b8caef1869ad",
+      "size": 8421
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/references/requirements-engineering.md": {
+      "sha256": "cda5b7c15c7ea093d80610857430c7321d4fbbc29a45b89b0ba82bce92087065",
+      "size": 10927
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/templates/design-spec-template.md": {
+      "sha256": "c712fc6a6858ab6ef074f0fc60143ffdaa26a3d246657b7113216442aac0b69d",
+      "size": 19925
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/templates/investigation-notes-template.md": {
+      "sha256": "8967535377e0d3f03ac2a384a61ed10a04afce479f12b1cf85d4baedde6b2744",
+      "size": 7210
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/templates/requirements-doc-template.md": {
+      "sha256": "4776f73469aecae43a484cbdd0e5ffc7cc106662ff3b90a2e4b74dd456088b1b",
+      "size": 10079
+    },
+    "agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/templates/solution-revision-record-template.md": {
+      "sha256": "0ccc25d49f0ef4ad7818c231fcf8937acea172938babd6f86fe61239dda94bba",
+      "size": 2515
+    },
+    "agent-teams/software-engineering-team/shared/design-examples.md": {
+      "sha256": "5d378f38fa39b725fb29daed7284e40e8a24a30aa14dc2d9ae42abe8962afc81",
+      "size": 53148
+    },
+    "agent-teams/software-engineering-team/shared/design-principles.md": {
+      "sha256": "effcd05875da54f55abe1670cc90d11bc679aa5004691709a60049a7ede97aef",
+      "size": 37984
+    },
+    "agent-teams/software-engineering-team/team-config.json": {
+      "sha256": "819913537084483489371df13f5a5c9241678ff7f0e89d849d40b85d7d8d4669",
+      "size": 8459
+    },
+    "agent-teams/software-engineering-team/team.md": {
+      "sha256": "fcc28545d272e8285403458d2ea52d8c30f6f17ee9ac06f033ab1943da9a1e38",
+      "size": 3402
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/agent-config.json": {
+      "sha256": "3bb07915c243482eac9685b376d5b8efd0e601187075a8ce017fb4e792f0c1ff",
+      "size": 485
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/agent.md": {
+      "sha256": "3e588c003962cd73ebb25c88084331adfebcea82262db6f7fbd426dac632a342",
+      "size": 1750
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/SKILL.md": {
+      "sha256": "05b4ca8b7785b686157a77c463a7db85d3224e45a669793acade979258f7c253",
+      "size": 13228
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/promo-production-principles.md": {
+      "symlink": "../../../../shared/promo-production-principles.md"
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/audio-generation-log-template.md": {
+      "sha256": "549da9f40de6032a48bac3041acb12ef9f8f82e696f16c0e45e4475b39586977",
+      "size": 646
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/product-promo-brief-template.md": {
+      "sha256": "21ebadbf0969dced9f01ecbb6507a55ab42beb436b1faa12aff9a8f9e5044b24",
+      "size": 1452
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/promo-script-template.md": {
+      "sha256": "f5cf2ac56b979d2b7ebd4fe5e482ebd18dfc4ae958bcb38c55d2e5b3ba1871ea",
+      "size": 1218
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/promo-storyboard-template.md": {
+      "sha256": "cc7bff811346683dc447d451e888fdcf013f57fb12330d9dffe3180818b6371e",
+      "size": 1853
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/research-notes-template.md": {
+      "sha256": "9245e56dc0daba3d647a415591088b715df304f5844268940aa2c8b145d09036",
+      "size": 901
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/source-asset-inventory-template.md": {
+      "sha256": "c62f92beb581e95246e4e2a4ca21a00200aec8a2e769f0af43979f6fa87c7aa4",
+      "size": 838
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director/templates/voiceover-package-template.md": {
+      "sha256": "82c4dfae79f75181c57641c968c3628bc98b47e8a3538f68a8a58fa2513b4b53",
+      "size": 837
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-video-producer/agent-config.json": {
+      "sha256": "fdade251bad9dabf7010744cfce75ba8e34945f5528148198f7a3f8cefe0bd88",
+      "size": 254
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-video-producer/agent.md": {
+      "sha256": "2399fe9bf18bb1d51f05412463a8579711bff3e7a3e516f9669f1ca9d7de17ad",
+      "size": 1952
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-video-producer/skills/promo-video-producer/SKILL.md": {
+      "sha256": "4b0ec1a7f2923396a5ccb017393d4df57850dad067cf2a84aef77a4085f6ea96",
+      "size": 9439
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-video-producer/skills/promo-video-producer/promo-production-principles.md": {
+      "symlink": "../../../../shared/promo-production-principles.md"
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-video-producer/skills/promo-video-producer/templates/final-delivery-report-template.md": {
+      "sha256": "ec321db189051f17738928b38897d2cbb867bfebc3c19e5c607681bfce46a480",
+      "size": 1247
+    },
+    "agent-teams/software-product-promo-video-team/agents/promo-video-producer/skills/promo-video-producer/templates/video-edit-package-template.md": {
+      "sha256": "dcc3eee79dd444b335714b5a222f50840fd69293a443fa6563e48bfe185dbe77",
+      "size": 2118
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/agent-config.json": {
+      "sha256": "bfdb65845e10a6bcc2fb8074f2bc8ebeae6168a838f65c2ef947086ac4be49a4",
+      "size": 289
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/agent.md": {
+      "sha256": "741b1cd42b2729e0092c386bd6208165d258a4288a2db0ee5d7f502a971ce5c6",
+      "size": 3930
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/skills/visual-director/SKILL.md": {
+      "sha256": "8c915b037b027c41a899430100292338041aad8d8cb4e12a61b5a2701c61468b",
+      "size": 24959
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/skills/visual-director/promo-production-principles.md": {
+      "symlink": "../../../../shared/promo-production-principles.md"
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/skills/visual-director/templates/visual-asset-plan-template.md": {
+      "sha256": "3e5be6fd726945c015fa8c2111e816796bb351c90738ec7a78c618b175bc5534",
+      "size": 5096
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/skills/visual-director/templates/visual-asset-production-log-template.md": {
+      "sha256": "0e220cc5c9a8de774e1fc1fb857382512da93db9f5dc3da22e3664ccc4a4066f",
+      "size": 1853
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-director/skills/visual-director/templates/visual-source-index-template.md": {
+      "sha256": "30e6769d7ac738419fdab466e7e6ec1b91a3d85b976886e3cc9f3c1ce12b05ab",
+      "size": 3758
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-reviewer/agent-config.json": {
+      "sha256": "f0566ec859bd728df79caea668e8903d04a38a2f2abf3b32bb5b2f51c1a0b412",
+      "size": 249
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-reviewer/agent.md": {
+      "sha256": "aa84682c608d5080eadefc5e9507e4fb003c18e5fa84c0cafa0d71e925b558ae",
+      "size": 1627
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-reviewer/skills/visual-reviewer/SKILL.md": {
+      "sha256": "bbcea2a0ef5506524cc6592411622e2387d17e0cb64986faff78a4e1b7b37f31",
+      "size": 8791
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-reviewer/skills/visual-reviewer/promo-production-principles.md": {
+      "symlink": "../../../../shared/promo-production-principles.md"
+    },
+    "agent-teams/software-product-promo-video-team/agents/visual-reviewer/skills/visual-reviewer/templates/visual-review-report-template.md": {
+      "sha256": "c60662b4de6eab8aad307348dec23158ff9aeb063bebbb27868238273dda6246",
+      "size": 4227
+    },
+    "agent-teams/software-product-promo-video-team/shared/promo-production-principles.md": {
+      "sha256": "15fc5544ed533423f2d54129aad66d40a21d95cda155db95a4172e7ff44b5da3",
+      "size": 31186
+    },
+    "agent-teams/software-product-promo-video-team/team-config.json": {
+      "sha256": "0c25024070bfac8a196f7bf53a79db8f9ad9095700d0614804c15047b1e971bc",
+      "size": 1857
+    },
+    "agent-teams/software-product-promo-video-team/team.md": {
+      "sha256": "bc2613c057bbe3f010a23efb76a6f9518ca6021b865c0005c2c3cc54a636b854",
+      "size": 10360
+    },
+    "agent-teams/storm-team/agents/article-polisher-verifier/agent-config.json": {
+      "sha256": "36725972c5a6a4f802e847c508f8757591ede08ca6a61aed9695d296362c3e12",
+      "size": 473
+    },
+    "agent-teams/storm-team/agents/article-polisher-verifier/agent.md": {
+      "sha256": "c6ef44a56fa7d5918f483a14f00ef6b0dae856f71e416c48f9d3bdd5af7c49ab",
+      "size": 646
+    },
+    "agent-teams/storm-team/agents/article-polisher-verifier/skills/article-polisher-verifier/SKILL.md": {
+      "sha256": "7cb5ad31bdddbaca31d4d67bcde457cdc0bbd665a7ad1b1762a2699013dfa386",
+      "size": 2056
+    },
+    "agent-teams/storm-team/agents/article-polisher-verifier/skills/article-polisher-verifier/storm-production-principles.md": {
+      "symlink": "../../../../shared/storm-production-principles.md"
+    },
+    "agent-teams/storm-team/agents/article-polisher-verifier/skills/article-polisher-verifier/templates/verification-report-template.md": {
+      "sha256": "938be5a91e288ef9cf1ec1e90986da1d1bb13069c09fa297e2c64980643d88b6",
+      "size": 541
+    },
+    "agent-teams/storm-team/agents/cited-article-writer/agent-config.json": {
+      "sha256": "47fdcd71fcc114882be86c5703eb2f8dca0a565d729af8ea78a2f029481b9b26",
+      "size": 468
+    },
+    "agent-teams/storm-team/agents/cited-article-writer/agent.md": {
+      "sha256": "6d3c02c1ade0d898c2dc359f6800ee3a68bf9e3a0848261b214c4fcffce03cf1",
+      "size": 602
+    },
+    "agent-teams/storm-team/agents/cited-article-writer/skills/cited-article-writer/SKILL.md": {
+      "sha256": "21edc3c05601988428ebb378a70503e77cf917e60938c1ad74944ab50f15e122",
+      "size": 2000
+    },
+    "agent-teams/storm-team/agents/cited-article-writer/skills/cited-article-writer/storm-production-principles.md": {
+      "symlink": "../../../../shared/storm-production-principles.md"
+    },
+    "agent-teams/storm-team/agents/cited-article-writer/skills/cited-article-writer/templates/article-md-template.md": {
+      "sha256": "ad5a7f076874da96b59f68d2532d67a8fb8b1f2cac68b7464b7bd05dd223d074",
+      "size": 133
+    },
+    "agent-teams/storm-team/agents/cited-article-writer/skills/cited-article-writer/templates/article-sources-json-template.md": {
+      "sha256": "2f29cf6fa76acacea326a9adc826bd4f5966a4ce78a23ade3ef739d8432ca9d8",
+      "size": 268
+    },
+    "agent-teams/storm-team/agents/expert-interviewer/agent-config.json": {
+      "sha256": "ce27d823737839e08fc1b3d8d282bddd26a7f22da5ed82a3674783035b86d50d",
+      "size": 466
+    },
+    "agent-teams/storm-team/agents/expert-interviewer/agent.md": {
+      "sha256": "e9aae8131d9ec726807986a40fcaa5cab37985b87ab2efd5502466249539b6d4",
+      "size": 609
+    },
+    "agent-teams/storm-team/agents/expert-interviewer/skills/expert-interviewer/SKILL.md": {
+      "sha256": "f7c3d3f05fde04c3aed1873a4c30e328127e0e201562cc4387b9b575b74a5792",
+      "size": 1946
+    },
+    "agent-teams/storm-team/agents/expert-interviewer/skills/expert-interviewer/storm-production-principles.md": {
+      "symlink": "../../../../shared/storm-production-principles.md"
+    },
+    "agent-teams/storm-team/agents/expert-interviewer/skills/expert-interviewer/templates/interview-notes-template.md": {
+      "sha256": "1a6fdc957dba1688b3d46581765541494cb31269dcc3a2c459e50a13112b09b6",
+      "size": 233
+    },
+    "agent-teams/storm-team/agents/expert-interviewer/skills/expert-interviewer/templates/source-index-json-template.md": {
+      "sha256": "992ca29762ca8b83cd1022c49ccd48b7ed947d759ed35b14ddedc89d3aa9ca59",
+      "size": 410
+    },
+    "agent-teams/storm-team/agents/outline-architect/agent-config.json": {
+      "sha256": "6f27ffb69cc81d81824cfc7cadfe4fcb51e56946cc87df16393bb6d544515281",
+      "size": 465
+    },
+    "agent-teams/storm-team/agents/outline-architect/agent.md": {
+      "sha256": "2d57c23250913219a2c1f1e88271a32256b820e530bc828d77f8da222378d7a8",
+      "size": 581
+    },
+    "agent-teams/storm-team/agents/outline-architect/skills/outline-architect/SKILL.md": {
+      "sha256": "9650355cab9e91c95eca120b8f72a27994ecdb4e11eb9ec7a1d604d0c41dbc46",
+      "size": 1911
+    },
+    "agent-teams/storm-team/agents/outline-architect/skills/outline-architect/storm-production-principles.md": {
+      "symlink": "../../../../shared/storm-production-principles.md"
+    },
+    "agent-teams/storm-team/agents/outline-architect/skills/outline-architect/templates/storm-outline-json-template.md": {
+      "sha256": "1d946b488abcf197ccd3c7c7eb06db661aa21d18b523cf22aa5abd6c516fde5a",
+      "size": 391
+    },
+    "agent-teams/storm-team/agents/outline-architect/skills/outline-architect/templates/storm-outline-md-template.md": {
+      "sha256": "050f615ef363db65ff01acf8a20eed5ea1a4bc13101575de6a3538f2bba14c66",
+      "size": 210
+    },
+    "agent-teams/storm-team/agents/perspective-miner/agent-config.json": {
+      "sha256": "f757896e06e66dd7c954c530f3075af03aac7b1f6a27ed10f7172649b1117226",
+      "size": 465
+    },
+    "agent-teams/storm-team/agents/perspective-miner/agent.md": {
+      "sha256": "2e4b3d554f7ccdc4769f5e21b050db204fb056427a302b3d179e291b80c48f59",
+      "size": 596
+    },
+    "agent-teams/storm-team/agents/perspective-miner/skills/perspective-miner/SKILL.md": {
+      "sha256": "1a61f18ed037077c275b49dd971da7d307246d289b3dca663d1c6a097ba6441c",
+      "size": 1765
+    },
+    "agent-teams/storm-team/agents/perspective-miner/skills/perspective-miner/storm-production-principles.md": {
+      "symlink": "../../../../shared/storm-production-principles.md"
+    },
+    "agent-teams/storm-team/agents/perspective-miner/skills/perspective-miner/templates/perspectives-json-template.md": {
+      "sha256": "42339d9c0979fdf5b3fd92697b60ca386ff3824cd9bc92146f052a203c5318b4",
+      "size": 396
+    },
+    "agent-teams/storm-team/agents/topic-research-coordinator/agent-config.json": {
+      "sha256": "1e41dec3efef81d8f8b2fd30135945979e9e55c35c18160f1d575e41cad85873",
+      "size": 474
+    },
+    "agent-teams/storm-team/agents/topic-research-coordinator/agent.md": {
+      "sha256": "825a91561e524ac8594e98502c65563e05ef075fdb0e2e533173bcaea9f4c3cc",
+      "size": 645
+    },
+    "agent-teams/storm-team/agents/topic-research-coordinator/skills/topic-research-coordinator/SKILL.md": {
+      "sha256": "f123de5bdd49e7ec27a3352e33f81ffa00860724736c407f7315edd31b0b37c7",
+      "size": 1979
+    },
+    "agent-teams/storm-team/agents/topic-research-coordinator/skills/topic-research-coordinator/storm-production-principles.md": {
+      "symlink": "../../../../shared/storm-production-principles.md"
+    },
+    "agent-teams/storm-team/agents/topic-research-coordinator/skills/topic-research-coordinator/templates/topic-brief-template.md": {
+      "sha256": "9b31e5ac19419a2034ab727865719a87841ac0af9d10da3c9665fa44f993e1b6",
+      "size": 236
+    },
+    "agent-teams/storm-team/shared/handoff-template.md": {
+      "sha256": "f5f73744d1889a3e44164b783a073c303240e77b6f7d6a0b5699e93d26e38a5a",
+      "size": 645
+    },
+    "agent-teams/storm-team/shared/storm-production-principles.md": {
+      "sha256": "2c95bf3daa71cb0ae67a13c978b19630abe68b70f80585e4708a4901cc8d0fbc",
+      "size": 4851
+    },
+    "agent-teams/storm-team/shared/storm-source-notes.md": {
+      "sha256": "a468f5c73ef57d687414e619da5b4948784c389ea99424bb05ad3e383afc0cd2",
+      "size": 3754
+    },
+    "agent-teams/storm-team/team-config.json": {
+      "sha256": "9c744cfdf2bbb612324daecffb29054604c3d0464dc13bf31aefed7e3f3f7db1",
+      "size": 3431
+    },
+    "agent-teams/storm-team/team.md": {
+      "sha256": "d67babb05aa8d1bab4ee4da120651156ef0f1ee3aeb0dd2ecf55e9656a59eeae",
+      "size": 7091
+    }
+  },
+  "owned": {
+    "agents/api-reading-agent/agent-config.json": {
+      "sha256": "a6f0045e3bfb5b55f5a2aeafe424fb3bf56f6421f3255030427a4c812266a0c4",
+      "size": 62
+    },
+    "agents/api-reading-agent/agent.md": {
+      "sha256": "22eb153db4d6666016073e99bfa2e99ad487b7260a8ebaa53163c8dda4829f64",
+      "size": 197
+    },
+    "agents/api-reading-agent/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-absent/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-absent/team-config.json": {
+      "sha256": "60314d0def0791fc31e63610e011529f27916498717ddcee3c3fcbd43bc5d8bd",
+      "size": 283
+    },
+    "agent-teams/api-absent/team.md": {
+      "sha256": "2ecd7d2eebbc27608921fe1ed0eae978b93b2f55e5f158493d41a6ae6219ade6",
+      "size": 190
+    },
+    "agent-teams/api-invalid/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-invalid/team-config.json": {
+      "sha256": "641b1f77b3e62dd9cf519188e2507961b91ad5e5457571d1e8130915dbabdd95",
+      "size": 315
+    },
+    "agent-teams/api-invalid/team.md": {
+      "sha256": "99b3677d377e2067dc6514cdc2fe72a8eadfc17b49067d569d6b08b9052291ab",
+      "size": 191
+    },
+    "agent-teams/api-null/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-null/team-config.json": {
+      "sha256": "cad89320e8c06fb98736fad326d5e9ec8c0721e30e523c1611c1bc66a3163fcb",
+      "size": 314
+    },
+    "agent-teams/api-null/team.md": {
+      "sha256": "7cc01e909b4f8d28d072f2a4f455a71edc95b1775b92a51676aa2604dcb45a3c",
+      "size": 188
+    },
+    "agent-teams/api-unconverted-parent/agent-teams/child/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-unconverted-parent/agent-teams/child/team-config.json": {
+      "sha256": "60314d0def0791fc31e63610e011529f27916498717ddcee3c3fcbd43bc5d8bd",
+      "size": 283
+    },
+    "agent-teams/api-unconverted-parent/agent-teams/child/team.md": {
+      "sha256": "c7ec7c3a37850204a955253c402a72de143ea2d932b85285bd5e3391446ebdd2",
+      "size": 185
+    },
+    "agent-teams/api-unconverted-parent/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-unconverted-parent/team-config.json": {
+      "sha256": "c7e5dcb1651c142441677a7a97c4d90e74ba289aebfb37929181f706305a829f",
+      "size": 411
+    },
+    "agent-teams/api-unconverted-parent/team.md": {
+      "sha256": "9e2d74eedd04486782e100699ea786c8919c538adc5c35d3024757b50183f150",
+      "size": 202
+    },
+    "agent-teams/api-valid/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-teams/api-valid/team-config.json": {
+      "sha256": "ad050ec45f3c2722a6ab9113ed9fbb4162821e8dba5dbcb6820429bfaea4d90b",
+      "size": 470
+    },
+    "agent-teams/api-valid/team.md": {
+      "sha256": "136edde39dfde6403ca6001651a592668b894841ac8fd3eb65d26bf2154222a5",
+      "size": 189
+    },
+    "agent-orgs/api-untouched-org/asset.bin": {
+      "sha256": "ad6113e95f212ccd088ef3378c4b44557172d44c1e8152368fc63ffa830d1b30",
+      "size": 4
+    },
+    "agent-orgs/api-untouched-org/org-config.json": {
+      "sha256": "b3770d3c7799210ff0dc3875aef0df888fb08395c4b29165106da4d541dcde30",
+      "size": 112
+    },
+    "agent-orgs/api-untouched-org/org.md": {
+      "sha256": "584f04636a07a0295cb4be7b59d993553e01cd260358356528aa3a829fe5f66f",
+      "size": 197
+    }
+  }
+}

@@ -1,0 +1,602 @@
+{
+  "source": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "sourceHead": "f5534cf5eda505ade3dc5493001991c4970c823b",
+  "scope": "Top-level Team configs only; file-existence evidence, not complete admission/runtime validation",
+  "agentOrgsDirectoryExists": false,
+  "teams": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team/team-config.json",
+      "sha256": "abe2e692d4479d0fb8500a51d4180b2f95ded9d208352a6d8071ac96d3ce58e7",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "article_writer",
+          "ref": "article-writer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "article_reviewer",
+          "ref": "article-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/classroom-simulation-team/team-config.json",
+      "sha256": "5e696f260f84b6f76bb4c4e5e8f3402ae7ebae21ca533955e1d4520f8868e984",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "professor",
+          "ref": "professor",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "student",
+          "ref": "student",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/evidence-driven-delivery-team/team-config.json",
+      "sha256": "83daea50473c424971929803243d2ad0f04324d6ec8c5e0e1f315ebccd131c8c",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "investigator",
+          "ref": "investigator",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "planner",
+          "ref": "planner",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "implementer",
+          "ref": "implementer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "validator",
+          "ref": "validator",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/team-config.json",
+      "sha256": "0b995c19ebd04d5a853fa15d988fc9a047f2995f4338d5a670bd2adf28ff3cf8",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "story_activity_designer",
+          "ref": "story-activity-designer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "coloring_page_illustrator",
+          "ref": "coloring-page-illustrator",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "child_experience_reviewer",
+          "ref": "child-experience-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "printable_pack_producer",
+          "ref": "printable-pack-producer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/team-config.json",
+      "sha256": "afc0ef8a0098b59181f4d24c4f554b8ae009234bf5aa92c8045f06b48148b352",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "story_picture_book_author",
+          "ref": "story-picture-book-author",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "picture_book_illustrator",
+          "ref": "picture-book-illustrator",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "picture_book_reviewer",
+          "ref": "picture-book-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "book_production_editor",
+          "ref": "book-production-editor",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/team-config.json",
+      "sha256": "89962509d25def8079d4035a7c6be36712f70a750f07793517f8c098c0cacf2c",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "manga_showrunner",
+          "ref": "manga-showrunner",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "storyboard_director",
+          "ref": "storyboard-director",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "manga_illustrator",
+          "ref": "manga-illustrator",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "voice_video_producer",
+          "ref": "voice-video-producer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team/team-config.json",
+      "sha256": "eb1cb842a00becc53b97463bf4691854a76cebdf9870edb64ce8e99328c5d63c",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "presentation_director",
+          "ref": "presentation-director",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "narration_script_reviewer",
+          "ref": "narration-script-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "slide_video_producer",
+          "ref": "slide-video-producer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/northstar-operating-company/team-config.json",
+      "sha256": "552861b6aa9020fcd5f8452549815167413e24b0fffab5b55d2275401db5de96",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "ceo",
+          "ref": "ceo",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "chief_of_staff",
+          "ref": "chief-of-staff",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "cto",
+          "ref": "cto",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "cpo",
+          "ref": "cpo",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "cmo",
+          "ref": "cmo",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "cro",
+          "ref": "cro",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "coo",
+          "ref": "coo",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "cfo",
+          "ref": "cfo",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "chief_people_officer",
+          "ref": "chief-people-officer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "engineering_org",
+          "ref": "engineering-org",
+          "refScope": "team_local",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        },
+        {
+          "memberName": "product_org",
+          "ref": "product-org",
+          "refScope": "team_local",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        },
+        {
+          "memberName": "marketing_org",
+          "ref": "marketing-org",
+          "refScope": "team_local",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        },
+        {
+          "memberName": "revenue_org",
+          "ref": "revenue-org",
+          "refScope": "team_local",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        },
+        {
+          "memberName": "operations_org",
+          "ref": "operations-org",
+          "refScope": "team_local",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        },
+        {
+          "memberName": "finance_people_org",
+          "ref": "finance-people-org",
+          "refScope": "team_local",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/product-design-prototyping-team/team-config.json",
+      "sha256": "c5504b35e0995a409b07ad3573c9d375f7e806145ba90058eee7da58b1012f01",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "product_prototyper",
+          "ref": "product-prototyper",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "prototype_bootstrapper",
+          "ref": "prototype-bootstrapper",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team/team-config.json",
+      "sha256": "c58aa11ba26547a21a9a76714c4c09a5d7c36bc5e28b4f413463e92e5e99ac0f",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "deep_researcher",
+          "ref": "deep-researcher",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "infographic_powerpoint_designer",
+          "ref": "infographic-powerpoint-designer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "deck_reviewer",
+          "ref": "deck-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-development-department/team-config.json",
+      "sha256": "8419d1729900f76218066d6978d0025f0de84b61050e2bcb6444f2bcc967491f",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "department_head",
+          "ref": "department-head",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "product_design_prototyping_team",
+          "ref": "product-design-prototyping-team",
+          "refScope": "shared",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        },
+        {
+          "memberName": "software_engineering_team",
+          "ref": "software-engineering-team",
+          "refScope": "shared",
+          "sourceRefType": "agent_team",
+          "agentMarkdownExists": false,
+          "teamMarkdownExists": true
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/team-config.json",
+      "sha256": "819913537084483489371df13f5a5c9241678ff7f0e89d849d40b85d7d8d4669",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "solution_designer",
+          "ref": "solution-designer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "architecture_reviewer",
+          "ref": "architecture-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "implementation_engineer",
+          "ref": "implementation-engineer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "code_reviewer",
+          "ref": "code-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "api_e2e_engineer",
+          "ref": "api-e2e-engineer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "delivery_engineer",
+          "ref": "delivery-engineer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/team-config.json",
+      "sha256": "0c25024070bfac8a196f7bf53a79db8f9ad9095700d0614804c15047b1e971bc",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "promo_director",
+          "ref": "promo-director",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "visual_director",
+          "ref": "visual-director",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "visual_reviewer",
+          "ref": "visual-reviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "promo_video_producer",
+          "ref": "promo-video-producer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/team-config.json",
+      "sha256": "9c744cfdf2bbb612324daecffb29054604c3d0464dc13bf31aefed7e3f3f7db1",
+      "defaultLaunchConfigPresent": false,
+      "members": [
+        {
+          "memberName": "topic_research_coordinator",
+          "ref": "topic-research-coordinator",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "perspective_miner",
+          "ref": "perspective-miner",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "expert_interviewer",
+          "ref": "expert-interviewer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "outline_architect",
+          "ref": "outline-architect",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "cited_article_writer",
+          "ref": "cited-article-writer",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        },
+        {
+          "memberName": "article_polisher_verifier",
+          "ref": "article-polisher-verifier",
+          "refScope": "team_local",
+          "sourceRefType": "agent",
+          "agentMarkdownExists": true,
+          "teamMarkdownExists": false
+        }
+      ]
+    }
+  ]
+}

@@ -24,11 +24,20 @@ independently launchable and keep their own coordinator and Team-local handoffs.
   Apollo response metadata such as `__typename` is not echoed into input.
   An omitted optional update remains omitted rather than resetting stored intent.
 
-Authored `org-config.json` and referenced `team-config.json` have no
-`schemaVersion` field. This does not remove required member fields or permit
-retired/nested Team shapes. Normal authoring/import/reload uses strict current
-codecs; only the server-owned startup transition handles supported prior numeric
-configs. Runtime execution-tree versions are unchanged.
+Canonical `org-config.json` and `team-config.json` output has no `schemaVersion`.
+Org input validation remains strict. Referenced Team inputs use the supported-field
+reader described in [Agent Teams](./agent_teams.md); unused metadata and absent
+launch defaults do not bypass required fields or scoped Agent admission.
+
+Startup no longer converts, relocates or cleans authored Team/Org definitions,
+including server-owned definition files. Maintainers own any needed conversion;
+invalid nested Teams remain unavailable and no Org definition is synthesized.
+Existing authoring-migration ledger rows are left inert, not reset, replayed or
+reversed. Ordinary explicit authoring saves/transaction recovery are separate.
+Software-owned execution/history migration retains its stable ID, prerequisites,
+sidecars and history transfer. Stored Org continuation uses persisted enclosing
+scope, while individual Agent restore still requires its appropriate Agent
+definition. See the [runtime migration boundary](../../autobyteus-server-ts/docs/modules/agent_orgs.md#migration-and-external-publication).
 
 AgentOrg has no coordinator field, initial recipient, or implicit first member.
 

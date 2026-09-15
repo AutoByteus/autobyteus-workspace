@@ -14,6 +14,7 @@ import {
   AgentTeamDefinitionConfigParseError,
   buildAgentTeamDefinitionConfig,
   parseAgentTeamDefinitionConfig,
+  readAgentTeamDefinitionConfig,
 } from "./agent-team-definition-config.js";
 import {
   ensureWritableTeamSourcePaths,
@@ -88,7 +89,7 @@ export class FileAgentTeamDefinitionProvider {
       const mdContent = await fs.readFile(source.mdPath, "utf8");
       const configContent = await fs.readFile(source.configPath, "utf8");
       const parsed = parseTeamMd(mdContent, source.mdPath);
-      const config = parseAgentTeamDefinitionConfig(JSON.parse(configContent));
+      const config = readAgentTeamDefinitionConfig(JSON.parse(configContent));
       return new AgentTeamDefinition({
         id: getCanonicalTeamDefinitionIdFromSourcePaths(source),
         name: parsed.name,

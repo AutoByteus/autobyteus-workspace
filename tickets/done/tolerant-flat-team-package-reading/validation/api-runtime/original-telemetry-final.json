@@ -1,0 +1,22 @@
+{
+  "pid": 85976,
+  "at": "2026-09-15T03:30:08.311Z",
+  "active": [],
+  "pending": [],
+  "events": [
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "professor_f847dd7e540d4065a797f59890d918c1",
+      "startedAt": "2026-09-15T03:26:11.982Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "professor_f847dd7e540d4065a797f59890d918c1"
+    },
+    {
+      "method": "prepareNewAgentRun",
+      "runId": "api_reading_agent_7621ab1d0ee54f1d939412c139673728",
+      "startedAt": "2026-09-15T03:29:05.621Z",
+      "outcome": "prepared",
+      "platformAgentRunId": "api_reading_agent_7621ab1d0ee54f1d939412c139673728"
+    }
+  ]
+}

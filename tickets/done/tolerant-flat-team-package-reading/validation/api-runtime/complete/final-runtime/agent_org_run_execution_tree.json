@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "subjectKind": "agent_org",
+  "createdAt": "2026-09-01T00:00:00.000Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootOrg": {
+    "address": "/",
+    "orgDefinitionId": "api-unconverted-parent",
+    "orgDefinitionName": "API Migrated History",
+    "orgRunId": "api-migrated-org",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+    },
+    "members": [
+      {
+        "address": "/direct",
+        "agentDefinitionId": "api-reading-agent",
+        "role": null,
+        "description": null,
+        "agentRunId": "api-migrated-direct",
+        "platformAgentRunId": "api-migrated-direct",
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+        }
+      },
+      {
+        "address": "/mounted",
+        "teamDefinitionId": "api-no-current-child-definition",
+        "role": null,
+        "description": null,
+        "teamRunId": "api-migrated-mounted",
+        "coordinatorAddress": "/mounted/lead",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+        },
+        "members": [
+          {
+            "address": "/mounted/lead",
+            "agentDefinitionId": "api-reading-agent",
+            "role": null,
+            "description": null,
+            "agentRunId": "api-migrated-worker",
+            "platformAgentRunId": "api-migrated-worker",
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+            }
+          }
+        ],
+        "taskExecutions": []
+      }
+    ],
+    "taskExecutions": []
+  }
+}

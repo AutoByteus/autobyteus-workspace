@@ -1,0 +1,480 @@
+{
+  "label": "after-direct",
+  "externalFilesUnchanged": 552,
+  "ownedFilesUnchanged": 24,
+  "ownedAdditionalFiles": [
+    "agents/autobyteus-memory-compactor/agent-config.json",
+    "agents/autobyteus-memory-compactor/agent.md",
+    "agents/autobyteus-retrospective-skill-improver/agent-config.json",
+    "agents/autobyteus-retrospective-skill-improver/agent.md",
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/SKILL.md",
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/examples.md",
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/high-signal-trace-patterns.md",
+    "agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver/references/package-improvement-playbook.md"
+  ],
+  "orgDirectories": [
+    "api-untouched-org"
+  ],
+  "flatTreeExactUnchanged": true,
+  "flatOtherFiles": {
+    "task_delegation_records.json": {
+      "sha256": "46e1ca577a9e463784550e4bf51d15d5256f15a81ba00cade5e0d45ef07a26f6",
+      "mtime_ns": 1789442975025031940,
+      "inode": 402702979
+    },
+    "team_run_execution_tree.json": {
+      "sha256": "7f514edb20be0a133a309d185aeb46d302d9e0dd59f16c9ca2324d62099dbda2",
+      "mtime_ns": 1789442975024889981,
+      "inode": 402702978
+    },
+    "team_communication_messages.json.backup-1789443017822": {
+      "sha256": "1625b6214c0bcdb2d8157b707a3c2e9e3a878a93d47b23688d4d7815aa7fdca9",
+      "mtime_ns": 1789443017822657949,
+      "inode": 402703869
+    },
+    "team_communication_messages.json": {
+      "sha256": "3671b109427d45b4cf89d46ad1ad035f88eda916f92f21c986526234a4e3c3c3",
+      "mtime_ns": 1789443017822789741,
+      "inode": 402703870
+    }
+  },
+  "migrationRows": [
+    {
+      "id": 1,
+      "migration_id": "20260911_collaboration_definition_authoring_shape",
+      "display_name": "Old authoring fixture",
+      "status": "FAILED",
+      "attempts": 2,
+      "started_at": null,
+      "completed_at": null,
+      "summary": "Preserve old row inert",
+      "error_message": null,
+      "log_path": null,
+      "created_at": "2026-09-15 03:30:08",
+      "updated_at": "2026-09-15 03:30:08"
+    },
+    {
+      "id": 2,
+      "migration_id": "20260727_custom_provider_v1_secret_migration",
+      "display_name": "Custom provider credential migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017630,
+      "completed_at": 1789443017639,
+      "summary": "Scanned 0; migrated 0; skipped 1; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260727_custom_provider_v1_secret_migration-2026-09-15T03-30-17-638Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 3,
+      "migration_id": "20260706_remove_global_skill_discovery_mode",
+      "display_name": "Remove global skill discovery mode migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017641,
+      "completed_at": 1789443017643,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-09-15T03-30-17-643Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 4,
+      "migration_id": "20260517_team_run_metadata_member_tree",
+      "display_name": "Team run metadata member tree migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017644,
+      "completed_at": 1789443017646,
+      "summary": "Scanned 2; migrated 0; skipped 2; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-09-15T03-30-17-646Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 5,
+      "migration_id": "20260814_team_run_execution_tree_v1",
+      "display_name": "TeamRun execution-tree V1 migration",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "started_at": 1789443017648,
+      "completed_at": 1789443017693,
+      "summary": "Scanned 4; migrated 1; skipped 1; failed 2.",
+      "error_message": "2 TeamRun V1 migration warning item(s) were isolated; startup may continue.",
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260814_team_run_execution_tree_v1-2026-09-15T03-30-17-692Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 6,
+      "migration_id": "20260823_repair_team_agent_memory_layout",
+      "display_name": "Repair Team Agent memory layout",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017694,
+      "completed_at": 1789443017697,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260823_repair_team_agent_memory_layout-2026-09-15T03-30-17-696Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 7,
+      "migration_id": "20260824_team_run_execution_tree_v2",
+      "display_name": "Upgrade TeamRun execution trees to V2",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017698,
+      "completed_at": 1789443017700,
+      "summary": "Scanned 2; migrated 0; skipped 2; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260824_team_run_execution_tree_v2-2026-09-15T03-30-17-700Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 8,
+      "migration_id": "20260901_agent_org_flat_team_families_v1",
+      "display_name": "Cut over flat Team and AgentOrg run families",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017701,
+      "completed_at": 1789443017779,
+      "summary": "Scanned 3; migrated 1; skipped 1; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-09-15T03-30-17-779Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 9,
+      "migration_id": "20260731_remove_external_runtime_working_context_snapshots",
+      "display_name": "Remove external runtime WorkingContext snapshots",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017780,
+      "completed_at": 1789443017784,
+      "summary": "Scanned 3; migrated 0; skipped 3; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-09-15T03-30-17-783Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 10,
+      "migration_id": "20260617_raw_trace_rotation_layout",
+      "display_name": "Raw trace rotation layout migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017785,
+      "completed_at": 1789443017786,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-09-15T03-30-17-786Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 11,
+      "migration_id": "20260707_raw_trace_active_file_name",
+      "display_name": "Raw trace active file name migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017787,
+      "completed_at": 1789443017789,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-09-15T03-30-17-788Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 12,
+      "migration_id": "20260731_migrate_native_working_context_snapshots_v5",
+      "display_name": "Migrate native WorkingContext snapshots to strict v5",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "started_at": 1789443017790,
+      "completed_at": 1789443017797,
+      "summary": "Scanned 3; migrated 1; skipped 2; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260731_migrate_native_working_context_snapshots_v5-2026-09-15T03-30-17-797Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 13,
+      "migration_id": "20260905_agent_org_history_first_message_summary_v1",
+      "display_name": "AgentOrg first-message history summaries",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017800,
+      "completed_at": 1789443017820,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260905_agent_org_history_first_message_summary_v1-2026-09-15T03-30-17-820Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 14,
+      "migration_id": "20260701_team_communication_projection_addresses",
+      "display_name": "Team communication execution-address migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017821,
+      "completed_at": 1789443017823,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-09-15T03-30-17-823Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 15,
+      "migration_id": "20260730_token_usage_custom_provider_model_value_backfill",
+      "display_name": "Token usage custom-provider model value backfill",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017824,
+      "completed_at": 1789443017832,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260730_token_usage_custom_provider_model_value_backfill-2026-09-15T03-30-17-827Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 16,
+      "migration_id": "20260730_token_usage_provider_name_snapshot_backfill",
+      "display_name": "Token usage provider-name snapshot backfill",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017833,
+      "completed_at": 1789443017837,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260730_token_usage_provider_name_snapshot_backfill-2026-09-15T03-30-17-837Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 17,
+      "migration_id": "20260819_token_usage_run_records_v1",
+      "display_name": "Token usage one-row run records V1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017839,
+      "completed_at": 1789443017841,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260819_token_usage_run_records_v1-2026-09-15T03-30-17-840Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 18,
+      "migration_id": "20260623_remove_self_evolution_run_metadata",
+      "display_name": "Remove self-evolution run metadata migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017842,
+      "completed_at": 1789443017843,
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-09-15T03-30-17-843Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 19,
+      "migration_id": "20260521_team_run_history_index_v2",
+      "display_name": "Team run history index V2 migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017844,
+      "completed_at": 1789443017857,
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-09-15T03-30-17-857Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 20,
+      "migration_id": "20260521_run_history_index_v2",
+      "display_name": "Standalone run history index V2 migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017858,
+      "completed_at": 1789443017872,
+      "summary": "Scanned 0; migrated 0; skipped 0; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260521_run_history_index_v2-2026-09-15T03-30-17-872Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    },
+    {
+      "id": 21,
+      "migration_id": "20260803_custom_provider_readable_identity",
+      "display_name": "Custom provider readable identity reset",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "started_at": 1789443017874,
+      "completed_at": 1789443017881,
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "error_message": null,
+      "log_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/logs/app-data-migrations/20260803_custom_provider_readable_identity-2026-09-15T03-30-17-881Z.log",
+      "created_at": "2026-09-15 03:30:17",
+      "updated_at": "2026-09-15 03:30:17"
+    }
+  ],
+  "tree": {
+    "schemaVersion": 1,
+    "subjectKind": "agent_org",
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "archivedAt": null,
+    "applicationBinding": null,
+    "handoffs": [],
+    "rootOrg": {
+      "address": "/",
+      "orgDefinitionId": "api-unconverted-parent",
+      "orgDefinitionName": "API Migrated History",
+      "orgRunId": "api-migrated-org",
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+        "llmConfig": null,
+        "autoExecuteTools": false,
+        "skillAccessMode": "PRELOADED_ONLY",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+      },
+      "members": [
+        {
+          "address": "/direct",
+          "agentDefinitionId": "api-reading-agent",
+          "role": null,
+          "description": null,
+          "agentRunId": "api-migrated-direct",
+          "platformAgentRunId": "api-migrated-direct",
+          "launchConfiguration": {
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+            "llmConfig": null,
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+          }
+        },
+        {
+          "address": "/mounted",
+          "teamDefinitionId": "api-no-current-child-definition",
+          "role": null,
+          "description": null,
+          "teamRunId": "api-migrated-mounted",
+          "coordinatorAddress": "/mounted/lead",
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+            "llmConfig": null,
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+          },
+          "members": [
+            {
+              "address": "/mounted/lead",
+              "agentDefinitionId": "api-reading-agent",
+              "role": null,
+              "description": null,
+              "agentRunId": "api-migrated-worker",
+              "platformAgentRunId": "api-migrated-worker",
+              "launchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                "llmConfig": null,
+                "autoExecuteTools": false,
+                "skillAccessMode": "PRELOADED_ONLY",
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace"
+              }
+            }
+          ],
+          "taskExecutions": []
+        }
+      ],
+      "taskExecutions": []
+    }
+  },
+  "oldTrace": {
+    "id": "api-old-user",
+    "ts": 1788220800,
+    "turn_id": "api-old-turn",
+    "seq": 1,
+    "trace_type": "user",
+    "content": "Remember the secret word BLUEBERRY-915 for the next message. This is test history.",
+    "source_event": "AgentRun.postUserMessage",
+    "file_attachments": [
+      {
+        "uri": "/rest/agent-org-runs/api-migrated-org/agent-runs/api-migrated-worker/context-files/ctx_saved__retained-note.txt",
+        "file_type": "text",
+        "file_name": "retained-note.txt"
+      }
+    ]
+  },
+  "history": [
+    {
+      "orgRunId": "api-migrated-org",
+      "orgDefinitionId": "api-unconverted-parent",
+      "orgDefinitionName": "API Migrated History",
+      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/tolerant-flat-team-package-reading/autobyteus-server-ts/tests/.tmp/team-package-complete-api001/temp_workspace",
+      "summary": "Remember the secret word BLUEBERRY-915 for the next message. This is test history.",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "archivedAt": null,
+      "terminatedAt": null
+    }
+  ],
+  "telemetry": {
+    "pid": 96133,
+    "at": "2026-09-15T03:40:26.616Z",
+    "active": [
+      {
+        "runId": "api-migrated-direct",
+        "active": true,
+        "status": {
+          "status": "idle",
+          "agent_id": "api-migrated-direct"
+        }
+      },
+      {
+        "runId": "api-migrated-worker",
+        "active": true,
+        "status": {
+          "status": "idle",
+          "agent_id": "api-migrated-worker"
+        }
+      }
+    ],
+    "pending": [],
+    "events": [
+      {
+        "method": "prepareRestoreAgentRun",
+        "runId": "api-migrated-direct",
+        "startedAt": "2026-09-15T03:39:19.320Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "api-migrated-direct"
+      },
+      {
+        "method": "prepareNewAgentRun",
+        "runId": "api-migrated-worker",
+        "startedAt": "2026-09-15T03:40:14.212Z",
+        "outcome": "prepared",
+        "platformAgentRunId": "api-migrated-worker"
+      }
+    ]
+  }
+}

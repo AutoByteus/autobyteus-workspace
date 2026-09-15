@@ -1,0 +1,7 @@
+migrateRuntimeRoots: exact method body unchanged from source HEAD
+cleanupOrgTargets: exact method body unchanged from source HEAD
+migrateHistoryIndexes: exact method body unchanged from source HEAD
+validateCompleteOrgRunPackage: exact method body unchanged from source HEAD
+add: exact method body unchanged from source HEAD
+Strict canonical parser/builder and provider validatePackage unchanged; normal read calls use new reader.
+Six modified source files, three deleted source files. No other production delta.

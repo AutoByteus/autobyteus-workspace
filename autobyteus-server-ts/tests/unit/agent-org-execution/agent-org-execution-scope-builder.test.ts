@@ -90,14 +90,15 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       communicationStore: {} as never,
       enterPersistenceFailStop: vi.fn(),
     });
+    const enclosingDefinitionLookup = vi.fn(() => { throw new Error("Restore must not read fresh enclosing instructions"); });
     const builder = new AgentOrgExecutionScopeBuilder({
       flatTeamExecutionFactory: {} as never,
       taskExecutionIdentity: {
         agentRuns: { allocateForAgentDefinition: vi.fn() },
         taskTeams: { create: vi.fn() },
       } as never,
-      orgDefinitions: { getDefinitionById: vi.fn() } as never,
-      teamDefinitions: { getDefinitionById: vi.fn() } as never,
+      orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
+      teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       agentRunManager: { prepareNewAgentRun } as never,
       memoryLocator: {
         getLocation: () => ({ memoryDir: `/memory/agent_org/${orgRunId}/${agentRunId}` }),
@@ -124,6 +125,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
 
     releaseDurability();
     expect(await sending).toMatchObject({ accepted: true });
+    expect(enclosingDefinitionLookup).not.toHaveBeenCalled();
 
     expect(run.isActive()).toBe(true);
     expect(run.getExecutionTreeSnapshot().rootOrg.members[0]).toMatchObject({

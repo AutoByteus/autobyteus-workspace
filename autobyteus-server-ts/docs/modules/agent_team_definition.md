@@ -53,23 +53,23 @@ sources, but they still cannot contain Teams.
 | --- | --- | --- |
 | Shared `agent-teams/<id>/` | Standalone reusable Team | Shared Team provider |
 | Application `applications/<app>/agent-teams/<id>/` | Application-owned Team, also inspectable in the Team UI | Owning writable application bundle |
-| Registered external package root | Admitted only when already valid current field-free Team config | Read-only to this repository/process unless that package owner updates it |
+| Registered external package root | Admitted when supported Team fields and scoped references are valid | Read-only to this repository/process unless that package owner updates it |
 
-Normal admission is target-only. A `schemaVersion` field of any value, retired
-Team-member `refType`, missing/unknown keys, or configured nesting is rejected.
-Omitting the version does not make other required keys optional. Diagnostics
-retain package root, definition identity/path, expected family (`expectedFamily`)
-and reason, not `expectedSchemaVersion`. Create/save/export-copy/import/reload
-all use the same current shape; normal readers never strip a version, retry a
-legacy parser, or rewrite an external source.
+Normal Team input readers extract supported root/member/handoff/default fields and
+ignore unused metadata, including `schemaVersion` and member `refType`. Missing
+or null `defaultLaunchConfig` means no package defaults. Other required fields
+(including `avatarUrl`) and supplied value types remain validated; `llmConfig`
+retains its provider-specific contents. Actual scoped Agent resolution and
+handoff validation still determine availability: nested-Team references do not
+become Agents and invalid parents do not suppress valid siblings. Launch still
+requires its applicable execution settings.
 
-The required startup-only `20260911_collaboration_definition_authoring_shape`
-pass removes only the investigated prior numeric definition version from
-writable server-data definitions, preserving all non-version values. Already
-current definitions are zero-write skips. It also inventories physical Org-owned
-Team children, even if their parent's config is invalid. Failures are reported
-for correction/restart; external repositories and runtime memory are not inputs.
-See [AgentOrg migration](./agent_orgs.md#migration-and-external-publication).
+Canonical saves and package transaction validation remain strict and emit the
+current complete internal shape. Normal reads never rewrite source bytes to add
+nulls or strip metadata. Neither server-owned nor external authored definitions
+are automatically converted by startup migrations; maintainers own any needed
+conversion. Ordinary explicit authoring transactions remain supported. See
+[AgentOrg runtime migration](./agent_orgs.md#migration-and-external-publication).
 
 ## Team-Local Handoffs
 

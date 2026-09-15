@@ -1,0 +1,71 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "API Migrated History (1)" [expanded]:
+    - generic: API Migrated History
+    - generic: (1)
+  - treeitem "Running Remember the secret word BLUEBERRY-915 for the next message. This is test history." [expanded]:
+    - generic "Running"
+    - generic: Remember the secret word BLUEBERRY-915 for the next message. This is test history.
+  - button "Stop Agent Org":
+  - generic: 14d
+  - tree "API Migrated History execution hierarchy":
+    - treeitem "direct, idle, /direct, api-migrated-direct" [level=1]:
+      - generic: D
+      - generic: direct
+    - 'treeitem "mounted. Team status: Offline" [expanded] [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: mounted
+    - treeitem "lead, offline, /mounted/lead, api-migrated-worker" [active] [level=2] [selected]:
+      - generic: L
+      - generic: lead
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - button "Edit Config":
+  - button "New Agent":
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

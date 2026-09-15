@@ -1,0 +1,9 @@
+from pathlib import Path
+import json,shutil
+w=Path.cwd();E=w/'tickets/in-progress/tolerant-flat-team-package-reading/validation/api-runtime';D=w/'autobyteus-server-ts/tests/.tmp/team-package-complete-api001';p=D/'memory/agent_orgs/api-migrated-org';out={}
+for id,rel in [('api-migrated-direct','api-migrated-direct'),('api-migrated-worker','api-migrated-mounted/api-migrated-worker')]:
+ rows=[json.loads(s) for s in (p/rel/'raw_traces_active.jsonl').read_text().splitlines()];users=[r for r in rows if r.get('trace_type')=='user'];assert len(users)==(2 if id.endswith('direct') else 1);assert len({r['id'] for r in rows})==len(rows);out[id]={'userInputs':users,'assistantReplies':[r for r in rows if r.get('trace_type')=='assistant'],'uniqueTraceIds':True}
+tele=json.loads((E/'telemetry.json').read_text());assert not tele['active'] and not tele['pending'];assert [e['runId'] for e in tele['events']]==['api-migrated-direct','api-migrated-worker'];assert [e['method'] for e in tele['events']]==['prepareRestoreAgentRun','prepareNewAgentRun'];assert all(e['platformAgentRunId']==e['runId'] for e in tele['events']);out['telemetry']=tele
+out['enclosingOrgDefinitionAbsent']=not (D/'agent-orgs/api-unconverted-parent').exists();out['enclosingMountedTeamDefinitionAbsent']=not (D/'agent-teams/api-no-current-child-definition').exists();assert out['enclosingOrgDefinitionAbsent'] and out['enclosingMountedTeamDefinitionAbsent']
+out['qualification']='Direct used native restore. Mounted no prior raw conversation: normal first work prepareNewAgentRun under retained exact ID, not provider restore. No replay/dedup or old-provider-origin proof beyond observed user journey.'
+(E/'complete/continuation-proof.json').write_text(json.dumps(out,indent=2));shutil.copytree(p,E/'complete/final-runtime',dirs_exist_ok=True);print('PASS: direct remembered native restore; never-used mounted first work exact ID; each input once; no active/pending after Stop')

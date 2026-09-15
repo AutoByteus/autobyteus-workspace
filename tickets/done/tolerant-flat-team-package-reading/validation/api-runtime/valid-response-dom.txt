@@ -1,0 +1,99 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs A api-valid (1)" [expanded]:
+    - img "Active team runs"
+    - generic: A
+    - generic: api-valid
+    - generic: (1)
+  - button "Active team run Reply VALID-DEFAULTS-915 only. No tools." [expanded]:
+    - img "Active team run"
+    - generic: Reply VALID-DEFAULTS-915 only. No tools.
+  - button "Terminate team":
+  - generic: now
+  - tree "Reply VALID-DEFAULTS-915 only. No tools. organization tree":
+    - treeitem "Agent, lead, level 1, idle, /lead" [level=1] [selected]:
+      - generic: L
+      - generic: lead
+      - generic: now
+  - button "No active team runs CS Classroom Simulation Team (1)" [expanded]:
+    - img "No active team runs"
+    - generic: CS
+    - generic: Classroom Simulation Team
+    - generic: (1)
+  - button "Inactive team run This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not star..." [expanded]:
+    - img "Inactive team run"
+    - generic: This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not star...
+  - button "Archive team history":
+  - button "Delete team history permanently":
+  - generic: 3m
+  - tree "This is a harmless package-reading validation. Reply with CLASSROOM-PACKAGE-915 only. Do not star... organization tree":
+    - treeitem "Agent, professor, level 1, offline, /professor" [level=1]:
+      - generic: P
+      - generic: professor
+      - generic: 3m
+    - treeitem "Agent, student, level 1, offline, /student" [level=1]:
+      - generic: S
+      - generic: student
+      - generic: 3m
+  - generic: Orgs
+  - button "API Migrated History (1)":
+    - generic: API Migrated History
+    - generic: (1)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Idle"':
+    - generic: Idle
+  - button "Edit Config":
+  - button "New Agent":
+  - generic: You
+  - generic: Reply VALID-DEFAULTS-915 only. No tools.
+  - generic: L
+  - generic: lead
+  - button "Thinking":
+    - generic: Thinking
+  - paragraph: VALID-DEFAULTS-915
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message..."
+  - button "Send message" [disabled]:
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Team" [selected]: Team
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks
