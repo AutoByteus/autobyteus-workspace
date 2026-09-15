@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "1c1a1db48ade548c71d1d78596efb82eaa28b10b",
+  "passed": true,
+  "results": [
+    {
+      "name": "server/baseServerManager.js",
+      "sha256": "2e47e53efa5eefa5871bf72071962f24f9c96627d84b8501a7e205b26858acf3"
+    },
+    {
+      "name": "server/serverStatusManager.js",
+      "sha256": "c9a2e123d71b406e4291501651371db62142de284bd750b72e2acadabf699167"
+    },
+    {
+      "name": "server/windowsServerManager.js",
+      "sha256": "2a1da1e4e493abf4fe49bf90df25fbcfd926780d1a5011a84c0eabee5f39aa10"
+    }
+  ]
+}

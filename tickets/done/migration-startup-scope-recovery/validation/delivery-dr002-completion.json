@@ -1,0 +1,24 @@
+{
+  "package": "MIGRATION-STARTUP-20260915-001",
+  "source_commit": "1c1a1db48ade548c71d1d78596efb82eaa28b10b",
+  "branch": "requirements/flat-agent-organization-model",
+  "ticket_and_base_push": "confirmed; ls-remote both at source commit before receipt-only update",
+  "build": "Pass exit0",
+  "archive_checks": "DMG and ZIP Pass",
+  "terminal_spawn": "Pass using packaged Electron in Node mode; no GUI/backend launch",
+  "manifest_matches": 11,
+  "artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg",
+      "bytes": 467878443,
+      "sha256": "63974a9001e6154d3328740ba906fe1a45e913a0f63412ddec3fc034e60750ea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip",
+      "bytes": 462647979,
+      "sha256": "83ca9c76ee5eb0ae2fbefbe8e516862f43f55109338399be2af5ac525217ba7f"
+    }
+  ],
+  "cleanup": "dedicated worktree/local branch removed; private22367entries preserved; base retained",
+  "time_utc": "2026-09-15T11:29:17.196985+00:00"
+}
