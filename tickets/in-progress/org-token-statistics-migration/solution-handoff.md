@@ -1,0 +1,32 @@
+# Architecture Design Complete — ORG-TOKEN-MIGRATION-20260915-001
+
+Current solution round SR-004; requirements baseline **Approved SR-003**; DS-001 Ready; task_size **Medium**, architectural_risk **High**. Design requires independent review under applicable rules. No implementation or tests by Designer.
+
+## Request / current authority
+User requests completing missing token ownership conversion within existing unreleased migration `20260901_agent_org_flat_team_families_v1`, not a second migration. Subsequent explicit corrections require treating customer upgrade as first-time: no successful-ledger detection/reopen hook, no migration revision marker, no shipped logic for a locally run development build. Each ordinary rerun phase finds remaining source candidates; empty history source does no history work but token source can remain. Latest user scope explicitly adds candidate-only history scanning and permits lightweight execution-tree/index metadata reads; standalone histories and flat-Team traces/archives/attachments/sidecars excluded. Original counts/costs/conversation/task preservation remains.
+Approval references U-APPROVAL-001, U-CORRECTION-003, U-SCOPE-004 captured in canonical requirements. SR-001 original approved intent is superseded where corrected; SR-003 is the current combined authority. Prior proposed optional success hook in investigation INV-004 is withdrawn by INV-006 and NOT in design. Product/UI supplements N/A.
+
+## Workspace / base / target
+Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration; branch codex/org-token-statistics-migration. Fresh fetch bootstrap base origin/requirements/flat-agent-organization-model at d60f74c21e4e4cf5ee23b97cb51cfa42bed3b009. Eventual integration into that same feature branch, NOT personal/production. No source changes, tests, commit/push/merge/release, runtime launch/stop, profile repair or migration ledger reset performed. Later real-profile rerun/reset would require separate stopped-writer backup and operational approval.
+
+## Full cumulative package
+- Requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/requirements-doc.md
+- Canonical evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/investigation-notes.md (INV-001–007)
+- Technical design: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-spec.md (DS-001)
+- Cumulative solution history: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-revision-record.md (SR-001–004)
+- Historical intake supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/intake-analysis-reference.md (non-normative bootstrap provenance only)
+- This handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-handoff.md
+Independent architecture/source/API reviews, implementation, delivery: N/A — not yet applicable/performed. Product N/A — not requested. Prior archived feature/timeout-ticket artifacts are read-only evidence linked in investigation, not prior approval/review for this package.
+
+## Evidence / design summary
+Observed selected Org Agent is solution_designer_b1a3b7b01d35499d9fa06baf799a2046 in software_development_department_75403d5130584669869fdd59725f6b3e. App log 2026-09-15 12:51:36.640Z and 12:54:49.379Z rejects TOKEN_USAGE_UPDATED because summary claims Team root; Org event handler enters fail-stop, Codex interrupt follows. SQL tuple is scalar old root, single root attribution and identity summary single old root. Read-only profile reconnaissance:1540 current records,68 stale structural candidates in12Org roots, all68 exact tree Agent IDs; zero legacy ledger rows. Counts are not full validation.
+
+DS-001: reuse existing migration definition; move existing token-materialization prerequisite chain before it; build one metadata-only history candidate plan; consume that plan across locator/runtime/cleanup/index phases; remove global standalone/flat history enumeration and global Org-index rebuild. Transform only three attribution fields per exact selected root transaction, preserve all accounting/checkpoint state, leave analytics facets unchanged. Remaining token source discovery is independent of history source and never causes history traversal for a completed root. Retain existing source artifacts through successful cross-store completion/dependency validation. Add narrow token-owned current-schema restore assertion before invalid Org runtime starts; no repair/version branching in normal readers. Runner unchanged. No current startup-wide attachment scan or availability-policy change.
+
+## Review focus / risks / boundaries
+REQ/BEH/SCN-001–005, AC-001–008 map to design paths SP-1–4. Review cross-store retry order/last source-marker retirement, candidate dependencies, strictly selected SQL cohort, existing token migration order, allowed-difference verification, no-op I/O and failed-root restore rejection. Medium scope ~9–12 production files; High persistence/lifecycle risk. Do not add Org stats UI/schema, global scanner, current attachment-availability policy, pricing rewrite, new migration ID or developer-profile recovery hook. Existing synthetic cross-cohort locator test conflicts with newly explicit no-outside-cohort scan; preserve candidate tests and escalate only genuinely supported contrary behavior, not synthetic reachability alone. Separate startup readiness still does broad attachment validation, so no total startup speed guarantee.
+
+## Expected next output
+Independent architecture review of current DS-001 and approved SR-003, with rule-based result routing. No implementation-ready pass claimed by Designer. Routing lookup pending.
+
+Routing decision: get_handoff_rules returned Architecture Design Complete + High risk → /architecture_reviewer. This is the single matching most-specific rule; direct implementation and delivery-receipt routes do not match. Send this cumulative package only to /architecture_reviewer. No duplicate implementation forwarding.

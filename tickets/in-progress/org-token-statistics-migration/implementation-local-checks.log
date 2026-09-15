@@ -1,0 +1,376 @@
+IR-001 local implementation checks; source commit eb306a0916b48e3251f6a2d8176703f9ebf9e1dd
+Node v22.23.1; pnpm 10.28.2
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+pnpm exec tsc -p tsconfig.build.json --noEmit
+Exit: 0 (no diagnostics)
+
+pnpm exec vitest run tests/unit/app-data-migrations tests/unit/token-usage tests/unit/agent-org-execution --no-watch
+Exit: 0
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification
+FAMILY_MIGRATION_IO_ONLY {"addedExcludedBytes":22020096,"small":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":4.242833000000246},"large":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":1.0557909999997719}}
+
+ ✓ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts (11 tests) 1433ms
+(node:14259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts (9 tests) 1171ms
+stdout | tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts (11 tests) 914ms
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > preserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts (11 tests) 666ms
+stdout | tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14262) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts > AgentOrg first-message summary startup migration > is registered after every exact prerequisite as required startup-only
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts (11 tests) 410ms
+stdout | tests/unit/agent-org-execution/agent-org-task-idle-settlement.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-idle-settlement.test.ts (3 tests) 445ms
+stdout | tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts (8 tests) 309ms
+stdout | tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14268) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts > runs the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/authoring-migration-bIkLfS
+
+stdout | tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts > runs the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+prisma:info Starting a sqlite pool with 21 connections.
+
+ ✓ tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts (4 tests) 313ms
+stdout | tests/unit/agent-org-execution/agent-org-run-inspection.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-org-execution/agent-org-run-inspection.test.ts > distinguishes a real empty local task trace from a physical read failure without provider activation
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/org-inspection-Z6uPYH/agent_orgs/org/task-run/raw_traces_active.jsonl
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-inspection.test.ts (6 tests) 263ms
+(node:14271) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts (8 tests) 255ms
+(node:14272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts (3 tests) 174ms
+ ✓ tests/unit/app-data-migrations/team-run-v1-package-promoter.test.ts (3 tests) 135ms
+stdout | tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts (1 test) 104ms
+stdout | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts (6 tests) 89ms
+stdout | tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts > RunHistoryIndexV2AppDataMigration > uses persistence-only label lookup without claiming the process definition service
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts (4 tests) 72ms
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14278) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (6 tests) 56ms
+ ✓ tests/unit/app-data-migrations/team-run-history-index-reconciler.test.ts (3 tests) 62ms
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts (3 tests) 55ms
+ ✓ tests/unit/app-data-migrations/team-run-migration-state-classifier.test.ts (8 tests) 68ms
+ ✓ tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts (6 tests) 81ms
+stdout | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts > TeamRunHistoryIndexV2AppDataMigration > keeps optional persistence label fallback local without claiming the process service
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+stdout | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts > TeamRunHistoryIndexV2AppDataMigration > keeps optional persistence label fallback local without claiming the process service
+Initialized server settings service with 20 predefined settings
+
+ ✓ tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts (3 tests) 51ms
+stdout | tests/unit/token-usage/services/token-usage-run-accumulator.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/services/token-usage-run-accumulator.test.ts (2 tests) 47ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14287) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts > TeamRunExecutionTreeV1AppDataMigration > registers the final TeamRun migration exactly once without the removed intermediate ID
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts (4 tests) 41ms
+stdout | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for invalid-run: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > preserves snapshots when metadata is invalid or mismatched and reports actionable failures
+Failed reading run metadata for mismatched-directory: Run metadata identity or required fields are invalid.
+
+stderr | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-Y6Kqmc/agents/codex-unlink-failure/working_context_snapshot.json
+
+ ✓ tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts (4 tests) 36ms
+ ✓ tests/unit/token-usage/token-usage-team-run-v1-migration-repository.test.ts (2 tests) 36ms
+ ✓ tests/unit/agent-org-execution/agent-org-communication-presentation.test.ts (15 tests) 35ms
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts > TeamRunExecutionTreeV2AppDataMigration > is registered once immediately after its memory-layout prerequisite
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts (4 tests) 30ms
+stdout | tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14293) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts > TeamAgentMemoryLayoutAppDataMigration > registers required-on-startup ANYTIME recovery after V1 and gates canonical snapshot migrations
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts (4 tests) 37ms
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (21 tests) 27ms
+ ✓ tests/unit/app-data-migrations/team-run-predecessor-source-resolver.test.ts (4 tests) 25ms
+ ✓ tests/unit/app-data-migrations/remove-global-skill-discovery-mode-migration.test.ts (1 test) 20ms
+stdout | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts > TeamCommunicationProjectionAddressMigration > is registered as a startup-required app-data migration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts (6 tests) 26ms
+ ✓ tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts (4 tests) 26ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-record-repository.test.ts (1 test) 22ms
+ ✓ tests/unit/token-usage/pricing/token-pricing-schedule-selector.test.ts (14 tests) 17ms
+stdout | tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-status-snapshot-traversal.test.ts (3 tests) 16ms
+stdout | tests/unit/token-usage/projections/token-usage-run-fold.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-run-fold.test.ts (10 tests) 15ms
+ ✓ tests/unit/app-data-migrations/legacy-token-usage-run-fold.test.ts (8 tests) 15ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:14624) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests) 23ms
+stdout | tests/unit/token-usage/pricing/token-price-config-provider.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts (13 tests) 15ms
+stdout | tests/unit/token-usage/projections/token-usage-analytics-contribution.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-analytics-contribution.test.ts (4 tests) 10ms
+stdout | tests/unit/agent-org-execution/agent-org-task-publication.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-task-publication.test.ts (6 tests) 10ms
+stdout | tests/unit/app-data-migrations/custom-provider-migration-name-snapshot.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/custom-provider-migration-name-snapshot.test.ts (2 tests) 11ms
+stdout | tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts (5 tests) 8ms
+stdout | tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/services/token-usage-analytics-aggregation-policy.test.ts (5 tests) 10ms
+stdout | tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts (3 tests) 7ms
+ ✓ tests/unit/agent-org-execution/agent-org-task-settlement-event-retirement.test.ts (1 test) 7ms
+stdout | tests/unit/token-usage/projections/token-usage-pricing-summary.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/projections/token-usage-pricing-summary.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts (2 tests) 6ms
+ ✓ tests/unit/app-data-migrations/predecessor-team-communication-converter.test.ts (2 tests) 6ms
+ ✓ tests/unit/token-usage/projections/token-usage-snapshot-delta-normalizer.test.ts (4 tests) 5ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-service-history-order.test.ts (1 test) 5ms
+stdout | tests/unit/token-usage/pricing/token-cost-calculator.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/token-usage/pricing/token-cost-calculator.test.ts (8 tests) 6ms
+ ✓ tests/unit/agent-org-execution/agent-org-command-execution-kind.test.ts (1 test) 4ms
+ ✓ tests/unit/agent-org-execution/agent-org-run-termination.test.ts (1 test) 4ms
+ ✓ tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts (24 tests) 4ms
+ ✓ tests/unit/app-data-migrations/team-execution-address-normalizer.test.ts (11 tests) 4ms
+ ✓ tests/unit/token-usage/services/token-usage-analytics-range-policy.test.ts (4 tests) 4ms
+ ✓ tests/unit/app-data-migrations/token-usage-team-run-v1-row-planner.test.ts (2 tests) 3ms
+ ✓ tests/unit/app-data-migrations/predecessor-team-metadata-converter.test.ts (2 tests) 3ms
+ ✓ tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts (3 tests) 4ms
+stdout | tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts (3 tests) 3ms
+ ✓ tests/unit/app-data-migrations/app-data-migration-summary-formatter.test.ts (1 test) 3ms
+ ✓ tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts (4 tests) 3ms
+ ✓ tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts (4 tests) 3ms
+ ✓ tests/unit/app-data-migrations/predecessor-team-run-planner.test.ts (3 tests) 3ms
+
+ Test Files  66 passed (66)
+      Tests  359 passed (359)
+   Start at  15:51:27
+   Duration  39.64s (transform 3.28s, setup 263ms, import 25.57s, tests 7.78s, environment 5ms)
