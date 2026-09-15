@@ -1,0 +1,384 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:35734) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+AgentRunManager initialized.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+Creating new workspace for rootPath: /workspace
+Created metadata-only FileSystemWorkspace at /workspace.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Created and registered workspace ID: agent_ws_c52ddf65534b7b46035084358ab7902be4bfef220bdb503ac7039cc861905b05
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Published codex_app_server agent run 'org-lead'.
+
+ ❯ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests | 1 failed | 1 skipped) 5025ms
+     × first-upgrade: preserves usage and conversation through full restore, replay and advancing response 5024ms
+     ↓ token-only-rerun: preserves usage and conversation through full restore, replay and advancing response
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts:47:57
+     45| 
+     46| describe("isolated migrated Org continuation through current server li…
+     47|   it.each(["first-upgrade", "token-only-rerun"] as const)("%s: preserv…
+       |                                                         ^
+     48|     const e = await createOrgMigrationFixture(); fixtures.push(e);
+     49|     const { source, target } = await writeNestedRoot(e.memory);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  16:14:38
+   Duration  8.62s (transform 2.27s, setup 13ms, import 3.10s, tests 5.02s, environment 0ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:37325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+AgentRunManager initialized.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+Creating new workspace for rootPath: /workspace
+Created metadata-only FileSystemWorkspace at /workspace.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Created and registered workspace ID: agent_ws_c52ddf65534b7b46035084358ab7902be4bfef220bdb503ac7039cc861905b05
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Published codex_app_server agent run 'org-lead'.
+
+ ❯ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests | 1 failed | 1 skipped) 275ms
+     × first-upgrade: preserves usage and conversation through full restore, replay and advancing response 274ms
+     ↓ token-only-rerun: preserves usage and conversation through full restore, replay and advancing response
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+AssertionError: expected { run_id: 'org-lead', …(41) } to match object { root_team_run_id: null, …(1) }
+(48 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accounting_total_tokens": 240,
+    "root_team_run_id": null,
+  }
+
+ ❯ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts:122:58
+    120|     const trace = await fs.readFile(path.join(target, "org-team", "org…
+    121|     expect(trace).toContain("historical-user"); expect(trace).toContai…
+    122|     expect(await e.store.getAgentRunSummary("org-lead")).toMatchObject…
+       |                                                          ^
+    123|   }, 20_000);
+    124| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  16:15:36
+   Duration  3.82s (transform 2.27s, setup 15ms, import 3.09s, tests 275ms, environment 0ms)
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+
+(node:38272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+AgentRunManager initialized.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/autobyteus-server-ts
+Creating new workspace for rootPath: /workspace
+Created metadata-only FileSystemWorkspace at /workspace.
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Created and registered workspace ID: agent_ws_c52ddf65534b7b46035084358ab7902be4bfef220bdb503ac7039cc861905b05
+
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+Published codex_app_server agent run 'org-lead'.
+
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests | 1 skipped) 256ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 1 skipped (2)
+   Start at  16:16:04
+   Duration  3.80s (transform 2.20s, setup 13ms, import 3.08s, tests 256ms, environment 0ms)
+

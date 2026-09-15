@@ -32,6 +32,12 @@ const noLookupPricingPolicy: ResolvedTokenPricingPolicy = {
   effective_from: null,
   effective_to: null,
   version: null,
+  pricing_schedule_id: null,
+  pricing_schedule_period_id: null,
+  pricing_schedule_effective_from: null,
+  pricing_schedule_window_timezone: null,
+  pricing_schedule_peak_days: null,
+  pricing_schedule_peak_days_timezone: null,
 };
 
 export const passthroughTokenCostCalculator = {

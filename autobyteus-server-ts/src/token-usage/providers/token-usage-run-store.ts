@@ -1,3 +1,4 @@
+import { isAgentOrgTokenAttributionReady } from "../domain/agent-org-token-attribution.js";
 import type {
   TokenUsageRunSummaryPayload,
   TokenUsageUpdatedPayload,
@@ -16,6 +17,20 @@ export class TokenUsageRunStore {
     private readonly displayFieldCapturer = new TokenUsageDisplayFieldCapturer(),
     private readonly readiness = new TokenUsageMigrationReadiness(),
   ) {}
+
+  async assertAgentOrgRecordsReady(input: { orgRunId: string; agentRunIds: readonly string[] }): Promise<void> {
+    try {
+      this.readiness.assertExistingRunRestoreReady();
+      const records = await this.repository.listAttributionsByRunIds(input.agentRunIds);
+      for (const record of records) {
+        if (!isAgentOrgTokenAttributionReady(record)) {
+          throw new Error(`Agent '${record.runId}' has incompatible Team attribution.`);
+        }
+      }
+    } catch (error) {
+      throw new Error(`AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY: Org '${input.orgRunId}': ${String(error)} Restart after installing a corrected version to retry the family migration; inspect its failure log.`, { cause: error });
+    }
+  }
 
   async recordObservation(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     this.readiness.assertCurrentSchemaReady();

@@ -69,6 +69,15 @@ The server must execute these steps in order:
   atomic writer and accepts a post-rename warning only when reread validates the
   canonical file as exact V2. Runtime, history, API, and stream readers are
   V2-only; they do not scan predecessor metadata or fall back to V1.
+- The unreleased `20260901_agent_org_flat_team_families_v1` declares both Team
+  execution-tree V2 and `20260819_token_usage_run_records_v1` prerequisites. The
+  existing token source-shaping/consolidation chain is registered before this
+  family cutover so later materialization cannot restore stale Team ownership.
+  History candidate planning and remaining token-source discovery are independent;
+  successful ledger entries still skip normally. Org restore checks exact current
+  token ownership before runtime construction. The separate startup attachment
+  readiness scan is unchanged; migration scan narrowing is not a total-startup
+  timing guarantee. See [AgentOrg migration](../modules/agent_orgs.md#migration-and-external-publication).
 - Shutdown drains the default token persistence processor, closes/zeroizes the
   secret runtime, and only then shuts down the shared repository client.
 

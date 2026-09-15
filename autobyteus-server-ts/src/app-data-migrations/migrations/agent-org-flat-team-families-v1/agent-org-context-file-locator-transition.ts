@@ -1,33 +1,24 @@
+import { assertMigrationRootId, migrationPathExists, type HistoryCandidatePlan } from "./agent-org-history-candidate-plan.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import { createStoredCollaborationExecutionLocationService, type CollaborationExecutionLocationService } from "../../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
 import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
-import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-execution-index.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../run-history/store/agent-org-run-execution-tree-schema.js";
-import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
 import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
 import { assertStoredFilename, buildFinalContextFileLocator } from "../../../context-files/domain/context-file-owner-types.js";
 import { listContextFileRecordSources, transformContextFileRecordLocators, type ContextFileRecordSource } from "../../../context-files/services/context-file-record-locators.js";
-import { validateReleasedTeamRunV2 } from "./released-team-run-v2-schema.js";
 import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
 import { validateAgentOrgTaskDelegationRecordsV1 } from "../../../agent-org-execution/persistence/agent-org-task-delegation-records-v1-schema.js";
 import { validateAgentOrgCommunicationMessagesV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
-import { orgTreeTarget } from "./agent-org-runtime-tree-target.js";
 
 type RootPlan = { id: string; source: string; index: AgentOrgExecutionIndex };
 type FilePlan = { source: ContextFileRecordSource; hash: string; targetHash: string; dependencies: Set<string> };
 const digest = (text: string) => createHash("sha256").update(text).digest("hex");
 const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
-const directories = async (root: string) => (await fs.readdir(root, { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
-  if (error.code === "ENOENT") return [];
-  throw error;
-})).filter((entry) => entry.isDirectory()).map((entry) => path.join(root, entry.name)).sort();
 const fileExists = async (file: string) => fs.stat(file).then((stat) => stat.isFile()).catch((error: NodeJS.ErrnoException) => {
   if (error.code === "ENOENT") return false;
   throw error;
@@ -36,19 +27,37 @@ const fileExists = async (file: string) => fs.stat(file).then((stat) => stat.isF
 /** Initial-family-cutover only: old selector knowledge never enters normal file readers. */
 export class AgentOrgContextFileLocatorTransition {
   private readonly layout: AgentMemoryLayout;
-  private readonly locations: CollaborationExecutionLocationService;
+  readonly dependencies = new Map<string, Set<string>>();
+  private readonly referencedRoots = new Map<string, RootPlan>();
   private readonly roots = new Map<string, RootPlan>();
   readonly failures = new Map<string, string>();
   private readonly recordRoots = new Map<string, string>();
   private readonly agentDirectories: string[] = [];
   constructor(memoryDir: string, private readonly writer: AtomicRunPackageFileCommitWriter, private readonly baseUrl: () => string) {
     this.layout = new AgentMemoryLayout(memoryDir);
-    this.locations = createStoredCollaborationExecutionLocationService(memoryDir);
   }
 
-  async prepareAndCommit(): Promise<void> {
-    await this.inventory();
-    const sources = await listContextFileRecordSources({ rootDirectories: [...this.recordRoots.keys()], agentDirectories: this.agentDirectories });
+  async prepareAndCommit(plans: readonly HistoryCandidatePlan[]): Promise<void> {
+    // Keep every selected owner's metadata, even when its sidecar preflight fails:
+    // referrers using a mounted Team selector must still acquire that dependency.
+    for (const plan of plans) if (plan.kind !== "index-only") {
+      this.roots.set(plan.id, { id: plan.id, source: plan.source, index: plan.index });
+    }
+    for (const plan of plans) {
+      if (plan.kind === "index-only") continue;
+      this.recordRoots.set(plan.source, plan.id);
+      this.dependencies.set(plan.id, new Set([plan.id]));
+      try { await this.addRoot({ id: plan.id, source: plan.source, index: plan.index }, plan.kind !== "source-root"); }
+      catch (error) { this.fail(new Set([plan.id]), plan.source, error); }
+    }
+    const sources: ContextFileRecordSource[] = [];
+    for (const [directory, id] of this.recordRoots) {
+      if (this.failures.has(id)) continue;
+      try {
+        sources.push(...await listContextFileRecordSources({ rootDirectories: [directory],
+          agentDirectories: this.agentDirectories.filter((agent) => agent.startsWith(`${directory}${path.sep}`)) }));
+      } catch (error) { this.fail(new Set([id]), directory, error); }
+    }
     const plan: FilePlan[] = [];
     // Complete ownership/physical proof for every file before the first record write.
     for (const source of sources) {
@@ -62,8 +71,10 @@ export class AgentOrgContextFileLocatorTransition {
         const target = await transformContextFileRecordLocators(source, text, (uri, field) => this.transform(uri, dependencies).catch((error) => {
           throw new Error(`${field}: ${error instanceof Error ? error.message : String(error)}`);
         }));
+        if (own) for (const id of dependencies) this.dependencies.get(own)?.add(id);
         plan.push({ source, hash: digest(text), targetHash: digest(target), dependencies });
       } catch (error) {
+        if (own) for (const id of dependencies) this.dependencies.get(own)?.add(id);
         this.fail(dependencies, source.filePath, error);
       }
     }
@@ -106,44 +117,6 @@ export class AgentOrgContextFileLocatorTransition {
     // The current physical slot becomes authoritative only after successful validation.
   }
 
-  private async inventory(): Promise<void> {
-    const orgDirectories = await directories(this.layout.getOrgRootDirPath());
-    const orgIds = new Set(orgDirectories.map((dir) => path.basename(dir)));
-    for (const directory of await directories(this.layout.getTeamRootDirPath())) {
-      const id = path.basename(directory);
-      this.recordRoots.set(directory, id);
-      try {
-        const raw = await readJson(getTeamRunExecutionTreePath(directory));
-        let flat: ReturnType<typeof validateTeamRunExecutionTreePayload> | undefined;
-        try { flat = validateTeamRunExecutionTreePayload(raw, id); } catch { /* migration-only released classifier below */ }
-        if (flat) {
-          const index = new TeamExecutionIndex(flat);
-          const visit = (teamRunId: string): void => {
-            for (const agent of index.listDirectAgentExecutions(teamRunId)) {
-              this.agentDirectories.push(this.layout.getRootedAgentRunDirPath(index.getTeamRunPhysicalScope(teamRunId), agent.agentRunId));
-            }
-            index.listDirectTeamExecutions(teamRunId).forEach((team) => visit(team.teamRunId));
-          };
-          visit(id);
-          continue;
-        }
-        if (orgIds.has(id)) throw new Error("Root exists in both Team and Org families.");
-        const released = validateReleasedTeamRunV2(raw, id);
-        const tree = validateAgentOrgRunExecutionTreePayload(orgTreeTarget(released), id);
-        await this.addRoot({ id, source: directory, index: new AgentOrgExecutionIndex(tree) }, false);
-      } catch (error) { this.fail(new Set([id]), directory, error); }
-    }
-    for (const directory of orgDirectories) {
-      const id = path.basename(directory);
-      this.recordRoots.set(directory, id);
-      try {
-        const tree = validateAgentOrgRunExecutionTreePayload(await readJson(getAgentOrgRunExecutionTreePath(directory)), id);
-        await this.addRoot({ id, source: directory, index: new AgentOrgExecutionIndex(tree) }, true);
-      } catch (error) { this.fail(new Set([id]), directory, error); }
-    }
-    this.agentDirectories.push(...await directories(this.layout.getStandaloneRootDirPath()));
-  }
-
   private validateSidecar(source: ContextFileRecordSource, text: string, id: string): void {
     const value = JSON.parse(text);
     const org = path.basename(source.filePath).startsWith("agent_org_");
@@ -166,7 +139,6 @@ export class AgentOrgContextFileLocatorTransition {
       : validateAgentOrgCommunicationMessagesV1({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: plan.id,
         messages: validateTeamCommunicationMessagesV1Payload(rawMessages, plan.id).messages }, plan.id);
     validateAgentOrgStatePackage({ executionTree: plan.index.tree, taskRecords, communicationMessages });
-    if (this.roots.has(plan.id)) throw new Error("Duplicate physical root in locator plan.");
     this.roots.set(plan.id, plan);
     this.agentDirectories.push(...plan.index.listAgents().map((agent) => this.agentDirectory(plan, agent.agentRunId)));
   }
@@ -200,14 +172,27 @@ export class AgentOrgContextFileLocatorTransition {
     const rootOrTeam = decodeURIComponent(old ? old[2]! : current![1]!);
     const selector = decodeURIComponent(old ? old[3]! : current![2]!);
     const filename = assertStoredFilename(decodeURIComponent(old ? old[4]! : current![3]!));
-    const plans = [...this.roots.values()].filter((plan) => old?.[1] === "team-runs"
+    assertMigrationRootId(rootOrTeam);
+    const candidates = [...this.roots.values()];
+    if (!candidates.some((plan) => plan.id === rootOrTeam || old?.[1] === "team-runs" && plan.index.getTeam(rootOrTeam))) {
+      let referenced = this.referencedRoots.get(rootOrTeam);
+      if (!referenced && await migrationPathExists(this.layout.getOrgDirPath(rootOrTeam))) {
+        if (await migrationPathExists(this.layout.getTeamDirPath({ rootTeamRunId: rootOrTeam, ancestorTeamRunIds: [] }))) throw new Error("Referenced root has a family collision.");
+        const source = this.layout.getOrgDirPath(rootOrTeam);
+        const tree = validateAgentOrgRunExecutionTreePayload(await readJson(getAgentOrgRunExecutionTreePath(source)), rootOrTeam);
+        referenced = { id: rootOrTeam, source, index: new AgentOrgExecutionIndex(tree) };
+        this.referencedRoots.set(rootOrTeam, referenced);
+      }
+      if (referenced) candidates.push(referenced);
+    }
+    const plans = candidates.filter((plan) => old?.[1] === "team-runs"
       ? plan.id === rootOrTeam || plan.index.getTeam(rootOrTeam) !== null : plan.id === rootOrTeam);
     if (!plans.length) {
       if (old?.[1] === "team-runs" && !this.failures.has(rootOrTeam)) return uri; // Unchanged flat Team family.
       dependencies.add(rootOrTeam);
       throw new Error("Referenced Org root is missing or invalid.");
     }
-    plans.forEach((plan) => dependencies.add(plan.id));
+    plans.forEach((plan) => { if (this.roots.has(plan.id)) dependencies.add(plan.id); });
     const matches: { plan: RootPlan; agentRunId: string }[] = [];
     for (const plan of plans) {
       for (const agent of plan.index.listAgents()) {
@@ -218,17 +203,13 @@ export class AgentOrgContextFileLocatorTransition {
     }
     if (matches.length !== 1) throw new Error(`Expected one physical attachment owner; found ${matches.length}.`);
     const match = matches[0]!;
-    if (match.plan.source === this.layout.getOrgDirPath(match.plan.id)) {
-      const published = await this.locations.findAgent({ rootSubjectKind: "agent_org", rootRunId: match.plan.id, agentRunId: match.agentRunId });
-      if (!published || published.memoryDir !== this.agentDirectory(match.plan, match.agentRunId)) throw new Error("Published current attachment location differs from the planned physical owner.");
-    }
     if (current) return uri;
     const target = buildFinalContextFileLocator({ kind: "org_member_final", orgRunId: match.plan.id, agentRunId: match.agentRunId }, filename);
     return (prefix === "relative" ? target.slice(1) : prefix + target) + suffix;
   }
   private fail(dependencies: Set<string>, file: string, error: unknown): void {
     const reason = `${file}: ${error instanceof Error ? error.message : String(error)}`;
-    // A malformed unrelated file is reported, not silently declared migrated.
+    // A malformed selected file blocks its owner and known candidate dependencies.
     for (const id of dependencies.size ? dependencies : [file]) this.failures.set(id, reason);
   }
 }

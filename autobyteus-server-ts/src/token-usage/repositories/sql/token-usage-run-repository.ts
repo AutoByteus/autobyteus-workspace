@@ -46,6 +46,28 @@ export class SqlTokenUsageRunRepository {
     return record ? fromPrismaTokenUsageRunRecord(record) : null;
   }
 
+  async listAttributionsByRunIds(runIds: readonly string[]): Promise<Array<{
+    runId: string; rootTeamRunId: string | null; rootAttributionStatus: string;
+    identitySummary: { rootTeamRunIds?: unknown };
+  }>> {
+    const ids = [...new Set(runIds)];
+    const result = [];
+    for (let start = 0; start < ids.length; start += 250) {
+      const records = await this.client.tokenUsageRunRecord.findMany({
+        where: { runId: { in: ids.slice(start, start + 250) } }, orderBy: { runId: "asc" },
+        select: { runId: true, rootTeamRunId: true, rootAttributionStatus: true, identitySummaryJson: true },
+      });
+      for (const { identitySummaryJson, ...record } of records) {
+        const identitySummary = JSON.parse(identitySummaryJson);
+        if (!identitySummary || typeof identitySummary !== "object" || Array.isArray(identitySummary)) {
+          throw new Error(`Malformed token identity for '${record.runId}'.`);
+        }
+        result.push({ ...record, identitySummary });
+      }
+    }
+    return result;
+  }
+
   async listByRootTeamRunId(rootTeamRunId: string): Promise<TokenUsageRunRecord[]> {
     const normalized = rootTeamRunId.trim();
     if (!normalized) return [];

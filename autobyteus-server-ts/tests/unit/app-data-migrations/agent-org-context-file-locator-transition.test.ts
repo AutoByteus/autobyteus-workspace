@@ -1,3 +1,7 @@
+import { AgentOrgTokenAttributionTransition } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.js";
+const emptyTokens = (memory: string) => new AgentOrgTokenAttributionTransition(memory, {
+  async *listClaimedRoots() {}, async convertRoot() { return 0; },
+});
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -41,12 +45,12 @@ const env = async () => {
   }] }));
   await put(path.join(source, 'team_communication_messages.json'), json({ schemaVersion: 1, rootTeamRunId: 'org', messages: [] }));
   await fs.mkdir(config.getAgentTeamsDir(), { recursive: true }); await fs.mkdir(config.getAgentOrgsDir(), { recursive: true });
-  const migrate = (writer = new AtomicRunPackageFileCommitWriter()) => new AgentOrgFlatTeamFamiliesV1AppDataMigration(memory, config, writer).execute();
+  const migrate = (writer = new AtomicRunPackageFileCommitWriter()) => new AgentOrgFlatTeamFamiliesV1AppDataMigration(memory, config, writer, emptyTokens(memory)).execute();
   return { root, memory, source, target, tree, migrate };
 };
 
 describe('initial family locator transition: actual files, no user data', () => {
-  it('preserves cross-view owner, archived/active line bytes and flat tree bytes, then strictly reads final bytes after the root move', async () => {
+  it('preserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move', async () => {
     const e = await env();
     const uri = old('mounted', '/team/lead'), absolute = 'https://installation.test' + uri + '?download=1#ref';
     const leadFile = path.join(e.source, 'mounted', 'lead', 'context_files', 'ctx_x__image.png');
@@ -84,8 +88,8 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(output.split('\r\n')[0]).toBe(sourceTrace.split('\r\n')[0]);
     const changed = JSON.parse(output.split('\r\n')[1]!);
     expect(changed).toEqual({ ...JSON.parse(trace(absolute)), media: { images: ['https://installation.test' + current('lead') + '?download=1#ref'] } });
-    expect(JSON.parse(await fs.readFile(standalone, 'utf8')).media.images).toEqual([current('lead')]);
-    expect(JSON.parse(await fs.readFile(flatTrace, 'utf8')).media.images).toEqual([current('lead')]);
+    expect(JSON.parse(await fs.readFile(standalone, 'utf8')).media.images).toEqual([uri]);
+    expect(JSON.parse(await fs.readFile(flatTrace, 'utf8')).media.images).toEqual([uri]);
     expect(JSON.parse(await fs.readFile(path.join(e.target, 'direct', 'raw_traces_000001.jsonl'), 'utf8')).media.images).toEqual([current('task', 'ctx_task__a.txt')]);
     expect(await fs.readFile(path.join(e.target, 'mounted', 'lead', 'context_files', 'ctx_x__image.png'))).toEqual(payload);
     expect(new RunMemoryFileStore(path.join(e.target, 'direct')).readCompleteRawTraceArchiveSegmentDictsByFileName('raw_traces_000001.jsonl'))
@@ -95,6 +99,7 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect('memoryDir' in owner && owner.memoryDir).toBe(path.join(e.target, 'mounted', 'lead'));
     write.mockClear(); expect((await e.migrate(writer)).status).toBe('SUCCEEDED');
     expect(write.mock.calls.filter(([input]) => input.file === 'context_file_locators')).toHaveLength(0);
+    await put(standalone, trace('/not-an-attachment')); await put(flatTrace, trace('/not-an-attachment'));
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']); expect(readiness.listAdmitted('agent_team')).toEqual(['flat']);
   });

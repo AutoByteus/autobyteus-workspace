@@ -268,12 +268,50 @@ task rows without discarding retained inspection or introducing a second cache.
 ## Migration And External Publication
 
 Required startup migration
-`20260901_agent_org_flat_team_families_v1` performs the approved fixed-depth
-cutover for software-owned memory run packages and history only. It
-preflights candidates before writes, uses atomic replacement or same-root
-family rename, rereads and validates target families, updates the two history
-indexes, and reports per-item failures for restart Retry. Normal readers admit only the current family shape; no retired-shape decoder,
-dual write, or request-time migration fallback is available.
+`20260901_agent_org_flat_team_families_v1` performs the fixed-depth cutover for
+software-owned memory run packages, history and token ownership. This remains
+one unreleased migration identity, not a follow-up repair migration. The existing
+token source-shaping chain and `20260819_token_usage_run_records_v1` run before
+it; both current token materialization and Team execution-tree V2 are declared
+prerequisites. Authored definitions are not migration inputs.
+
+One metadata-only plan selects nested-Team sources, partial Org targets retaining
+retired Team authorities, and exact pending history-index transfers. Root directory
+enumeration, execution trees, index metadata and source-marker existence checks
+are allowed. Standalone histories are not inventoried. Once a Team is classified
+as flat, its member traces, archives, attachments and sidecars are not traversed.
+A flat configured Team with delegated task Teams remains a non-candidate.
+
+That plan governs locator conversion, runtime package conversion, selected index
+updates and cleanup. Index files are atomic whole-file stores: unselected rows
+remain semantically unchanged, unchanged indexes are not rewritten, and no
+candidate means no history-content work or global Org-index rebuild. Invalid
+metadata is diagnosed rather than guessed into a conversion candidate.
+
+The migration preflights selected references, uses atomic replacement or same-root
+family rename, and rereads target packages. It retains source authorities through
+token correction, paired index publication/reread and candidate-dependency
+validation, retiring the Team execution tree last. Per-root SQL transactions and
+staged filesystem/index commits are distinct recovery boundaries, not one
+cross-store transaction. Failures remain truthful and ordinary retries finish
+remaining source work without duplicating accounting.
+
+Token candidates are discovered independently from history candidates using
+bounded SQL root selection and exact Org execution-tree membership. An ordinary
+invocation with no history source can still correct stale token ownership without
+history traversal. Only the three ownership fields change; counts, costs,
+checkpoints, identities and analytics facets are preserved. See
+[Token usage — Org family ownership](token_usage.md#org-family-ownership).
+Successful migration ledger records retain ordinary skip semantics: no version
+marker, successful-record detection/reopening hook or automatic ledger reset was
+added. Normal readers remain current-only, with no repair on access.
+
+Before restoring an Org runtime, `TokenUsageRunStore.assertAgentOrgRecordsReady`
+checks existing records for the exact tree Agent IDs, in batches, before scope
+construction/provider startup. Incompatible ownership is rejected with
+`AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`; absent usage records are not fabricated.
+The separate startup attachment-readiness scan is unchanged. Candidate-only
+migration I/O does not imply a global startup-speed guarantee.
 
 The later required startup migration
 `20260905_agent_org_history_first_message_summary_v1` reconciles only empty
@@ -291,8 +329,8 @@ stored under server-data paths. The family migration no longer converts, moves,
 or cleans Team/Org definitions. The former definition-only authoring migration
 is unregistered and removed; existing ledger rows remain inert, without reset,
 replay, reversal, or automatic repair of partial authored conversions. The
-runtime family ID, prerequisite order, context locators, sidecar validation and
-history transfer remain unchanged.
+runtime family ID remains unchanged; token prerequisite ordering and
+candidate-scoped history behavior are described above.
 
 Team readers accept unused metadata and omitted package launch defaults while
 preserving required-field and real scoped Agent admission. Org input validation
@@ -323,9 +361,12 @@ Missing/invalid ownership and internal failures retain distinct error outcomes.
 Native Team attachment ownership and physical layout remain native Team paths.
 
 The existing initial family migration owns the bounded saved-reference
-transition. Its typed JSON/JSONL visitor covers recognized attachment fields in
-current traces and complete archived segments, preserving unrelated values,
-lines and file bytes. Strict source/target package and unique physical-file
+transition within selected candidates. Its typed JSON/JSONL visitor covers
+recognized attachment fields in selected traces and complete archived segments,
+preserving unrelated values, lines and file bytes. An exact current-Org owner
+referenced from a candidate permits owner-tree metadata and attachment stat
+checks, not enumeration or rewriting of that owner's history. No global
+cross-cohort reference repair is promised. Strict source/target package and unique physical-file
 proof precede writes. Committed atomic writes, strict reread, root move and
 cleanup must succeed; current packages are zero-write. Readiness checks saved
 context references before admitting the affected package, without a second

@@ -1,3 +1,7 @@
+import { AgentOrgTokenAttributionTransition } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.js";
+const emptyTokens = (memory: string) => new AgentOrgTokenAttributionTransition(memory, {
+  async *listClaimedRoots() {}, async convertRoot() { return 0; },
+});
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -59,8 +63,8 @@ const runnerFor = async (env: Awaited<ReturnType<typeof environment>>) => {
   const repository = new AppDataMigrationRecordRepository(db);
   const prerequisite = { id: PREREQUISITE, displayName: "Current runtime prerequisite", description: "already current", requiredOnStartup: true,
     execute: async () => ({ status: "SUCCEEDED" as const, summary: { scannedCount: 0, migratedCount: 0, skippedCount: 0, failedCount: 0, details: [] }, errorMessage: null }) };
-  const family = new AgentOrgFlatTeamFamiliesV1AppDataMigration(env.memory, env.config);
-  const registry = new AppDataMigrationRegistry([prerequisite, family]);
+  const family = new AgentOrgFlatTeamFamiliesV1AppDataMigration(env.memory, env.config, undefined, emptyTokens(env.memory));
+  const registry = new AppDataMigrationRegistry([prerequisite, { ...prerequisite, id: "20260819_token_usage_run_records_v1" }, family]);
   const runner = new AppDataMigrationRunner(registry, repository, { logsDir: path.join(env.root, "logs") });
   return { runner, registry, repository, family };
 };
@@ -135,6 +139,14 @@ it("runs the complete production registry on a fresh pre-ticket data root, prese
   await fs.writeFile(path.join(nativeDir, "task_delegation_records.json"), json({ schemaVersion: 1, rootTeamRunId: "native-flat", records: [] }));
   await fs.writeFile(path.join(nativeDir, "team_communication_messages.json"), json({ schemaVersion: 1, rootTeamRunId: "native-flat", messages: [] }));
   const registry = new AppDataMigrationRegistry();
+  const ids = registry.listDefinitions().map((definition) => definition.id);
+  const tokenId = "20260819_token_usage_run_records_v1";
+  expect(ids.filter((id) => id === FAMILY)).toHaveLength(1);
+  expect(ids.indexOf(tokenId)).toBeLessThan(ids.indexOf(FAMILY));
+  expect(registry.getDefinition(FAMILY)?.prerequisiteMigrationIds).toContain(tokenId);
+  for (const prerequisite of registry.getDefinition(tokenId)!.prerequisiteMigrationIds ?? []) {
+    expect(ids.indexOf(prerequisite)).toBeLessThan(ids.indexOf(tokenId));
+  }
   const runner = new AppDataMigrationRunner(registry, repository, { logsDir: path.join(env.root, "production-logs") });
   const results = await runner.runPending();
   expect(results.map((result) => result.migrationId)).toEqual(registry.listDefinitions().map((definition) => definition.id));

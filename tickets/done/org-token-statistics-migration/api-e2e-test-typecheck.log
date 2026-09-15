@@ -1,0 +1,2 @@
+Targeted selected-test compile: pnpm -C autobyteus-server-ts exec tsc -p .api-e2e-tsconfig.json --noEmit
+Exit 0, no diagnostics. Temporary config extends ./tsconfig.build.json, rootDir=., noEmit=true, include=four added test/helper files, exclude=[]; see report for reproduction.
