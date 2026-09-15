@@ -1,3 +1,7 @@
+import { AgentOrgTokenAttributionTransition } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.js";
+const emptyTokens = (memory: string) => new AgentOrgTokenAttributionTransition(memory, {
+  async *listClaimedRoots() {}, async convertRoot() { return 0; },
+});
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -37,7 +41,7 @@ const createEnvironment = async () => {
     orgDefinitions,
     layout: new AgentMemoryLayout(memoryDir),
     migration: (writer?: AtomicRunPackageFileCommitWriter) =>
-      new AgentOrgFlatTeamFamiliesV1AppDataMigration(memoryDir, config, writer),
+      new AgentOrgFlatTeamFamiliesV1AppDataMigration(memoryDir, config, writer, emptyTokens(memoryDir)),
   };
 };
 

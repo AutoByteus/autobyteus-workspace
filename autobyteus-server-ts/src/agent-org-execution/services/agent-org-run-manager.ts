@@ -1,3 +1,4 @@
+import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { ActiveCollaborationRootDirectory, getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -22,6 +23,7 @@ export type AgentOrgRunManagerOptions = Readonly<{
   executionTreeStore?: AgentOrgRunExecutionTreeStore;
   taskRecordsStore?: AgentOrgTaskDelegationRecordsV1Store;
   communicationStore?: AgentOrgCommunicationMessagesV1Store;
+  tokenUsageRunStore?: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
 }>;
 
@@ -33,6 +35,7 @@ export type AgentOrgCollaborationRecordsSnapshot = Readonly<{
 /** Org-family lifecycle/registry owner. Mounted Teams never enter the Team root manager. */
 export class AgentOrgRunManager {
   private static instance: AgentOrgRunManager | null = null;
+  private readonly tokenUsageRunStore: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
   private readonly layout: AgentMemoryLayout;
   private readonly scopeBuilder: AgentOrgExecutionScopeBuilder;
   private readonly executionTreeStore: AgentOrgRunExecutionTreeStore;
@@ -60,6 +63,7 @@ export class AgentOrgRunManager {
     if (!options.scopeBuilder) throw new Error("AgentOrgExecutionScopeBuilder is required.");
     this.layout = new AgentMemoryLayout(options.memoryDir);
     this.scopeBuilder = options.scopeBuilder;
+    this.tokenUsageRunStore = options.tokenUsageRunStore ?? new TokenUsageRunStore();
     this.executionTreeStore = options.executionTreeStore ?? new AgentOrgRunExecutionTreeStore();
     this.taskRecordsStore = options.taskRecordsStore ?? new AgentOrgTaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new AgentOrgCommunicationMessagesV1Store();
@@ -102,6 +106,9 @@ export class AgentOrgRunManager {
         messages: this.communicationStore,
       }).loadAndRepair({ orgMemoryDir: this.layout.getOrgDirPath(orgRunId), orgRunId });
       if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
+      await this.tokenUsageRunStore.assertAgentOrgRecordsReady({
+        orgRunId, agentRunIds: loaded.state.index.listAgents().map((agent) => agent.agentRunId),
+      });
       return this.materialize(loaded.state, "restore", false);
     });
   }

@@ -42,6 +42,9 @@ export class AppDataMigrationRegistry {
       new TeamRunExecutionTreeV2AppDataMigration(
         appConfigProvider.config.getMemoryDir(),
       ),
+      new TokenUsageCustomProviderModelValueBackfillMigration(),
+      new TokenUsageProviderNameSnapshotBackfillMigration(),
+      new TokenUsageRunRecordsV1AppDataMigration(),
       new AgentOrgFlatTeamFamiliesV1AppDataMigration(
         appConfigProvider.config.getMemoryDir(),
       ),
@@ -58,9 +61,6 @@ export class AppDataMigrationRegistry {
         appConfigProvider.config.getMemoryDir(),
       ),
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
-      new TokenUsageCustomProviderModelValueBackfillMigration(),
-      new TokenUsageProviderNameSnapshotBackfillMigration(),
-      new TokenUsageRunRecordsV1AppDataMigration(),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
