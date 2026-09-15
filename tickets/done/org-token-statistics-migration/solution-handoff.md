@@ -10,12 +10,12 @@ Approval references U-APPROVAL-001, U-CORRECTION-003, U-SCOPE-004 captured in ca
 Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration; branch codex/org-token-statistics-migration. Fresh fetch bootstrap base origin/requirements/flat-agent-organization-model at d60f74c21e4e4cf5ee23b97cb51cfa42bed3b009. Eventual integration into that same feature branch, NOT personal/production. No source changes, tests, commit/push/merge/release, runtime launch/stop, profile repair or migration ledger reset performed. Later real-profile rerun/reset would require separate stopped-writer backup and operational approval.
 
 ## Full cumulative package
-- Requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/requirements-doc.md
-- Canonical evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/investigation-notes.md (INV-001–007)
-- Technical design: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-spec.md (DS-001)
-- Cumulative solution history: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-revision-record.md (SR-001–004)
-- Historical intake supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/intake-analysis-reference.md (non-normative bootstrap provenance only)
-- This handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-handoff.md
+- Requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/requirements-doc.md
+- Canonical evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/investigation-notes.md (INV-001–007)
+- Technical design: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/design-spec.md (DS-001)
+- Cumulative solution history: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/solution-revision-record.md (SR-001–004)
+- Historical intake supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/intake-analysis-reference.md (non-normative bootstrap provenance only)
+- This handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/solution-handoff.md
 Independent architecture/source/API reviews, implementation, delivery: N/A — not yet applicable/performed. Product N/A — not requested. Prior archived feature/timeout-ticket artifacts are read-only evidence linked in investigation, not prior approval/review for this package.
 
 ## Evidence / design summary

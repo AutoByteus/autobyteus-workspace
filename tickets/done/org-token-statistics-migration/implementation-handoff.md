@@ -1,18 +1,18 @@
 # Implementation Handoff — ORG-TOKEN-MIGRATION-20260915-001
 
 ## Upstream Artifact Package
-- Requirements authority: approved SR-003; /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/requirements-doc.md.
-- Canonical investigation, including INV-006 withdrawal: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/investigation-notes.md.
-- Cumulative solution history SR-001–004: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-revision-record.md.
-- Completed design DS-001 / SR-004: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-spec.md.
-- Historical, non-normative intake supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/intake-analysis-reference.md.
-- Incoming package: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-handoff.md.
-- Independent architecture review: Pass, no findings, ARCH-REV-001; /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-review-report.md and /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/architecture-review-revision-record.md.
+- Requirements authority: approved SR-003; /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/requirements-doc.md.
+- Canonical investigation, including INV-006 withdrawal: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/investigation-notes.md.
+- Cumulative solution history SR-001–004: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/solution-revision-record.md.
+- Completed design DS-001 / SR-004: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/design-spec.md.
+- Historical, non-normative intake supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/intake-analysis-reference.md.
+- Incoming package: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/solution-handoff.md.
+- Independent architecture review: Pass, no findings, ARCH-REV-001; /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/design-review-report.md and /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/architecture-review-revision-record.md.
 - Product/UI supplements: N/A — not applicable. Rework trigger: N/A — initial reviewed package.
 
 ## Current Implementation Summary
 **Implementation Complete — ready for independent Code Review; not API/E2E or delivery sign-off.**
-Initial implementation cycle, IR-001: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/implementation-revision-record.md.
+Initial implementation cycle, IR-001: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/implementation-revision-record.md.
 Related SR-001–004 (current requirements SR-003); ARCH-REV-001; CRR/API-REV/DR: N/A — not yet performed. Triggering finding IDs: N/A.
 
 Extended the same unreleased `20260901_agent_org_flat_team_families_v1` definition. One metadata plan now governs all history work; the independent token transition corrects exact selected ownership inside per-root transactions. Source authorities remain until target validation, SQL, indexes and candidate dependencies finish. Org restore now checks current token readiness through TokenUsageRunStore before scope construction.
@@ -82,7 +82,7 @@ Node v22.23.1; pnpm 10.28.2. Dependencies installed from frozen lockfile in this
 - New tests explicitly inject disposable SQLite databases and memory roots. Existing suite setup resets only this worktree's `tests/.tmp/autobyteus-server-test.db`.
 - Earlier local runs caught invalid synthetic JSONL/task-status fixtures; corrected test fixtures now pass. No failing local behavior is being deferred as a pass.
 
-Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/implementation-checks.md; final raw local log: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/implementation-local-checks.log.
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/implementation-checks.md; final raw local log: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/implementation-local-checks.log.
 
 ## Frontend Rendered-Result Check
 **Not Applicable** — backend migration and restore admission only. No rendered UI changed; UI/provider continuation proof remains downstream.

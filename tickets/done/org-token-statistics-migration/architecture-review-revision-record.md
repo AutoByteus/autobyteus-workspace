@@ -1,6 +1,6 @@
 # Architecture Review Revision Record
 
-The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-review-report.md` is authoritative. This record indexes review history, not executable validation.
+The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/design-review-report.md` is authoritative. This record indexes review history, not executable validation.
 
 ## Revision Index
 
@@ -12,9 +12,9 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistic
 
 ### ARCH-REV-001 — Initial independent design baseline
 
-- Canonical design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-review-report.md
+- Canonical design review report: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/design-review-report.md
 - Review round and trigger: Round 1, 2026-09-15; Solution Designer completed DS-001 and selected Architecture Review.
-- Triggering role, report path, and finding IDs: solution_designer; /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-handoff.md; no prior findings.
+- Triggering role, report path, and finding IDs: solution_designer; /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/solution-handoff.md; no prior findings.
 - Relevant solution revision IDs: SR-001–004; approved behavior SR-003; design completion SR-004.
 - Prior authoritative decision: N/A. No prior report or record existed; no prior Pass inferred.
 - Current authoritative decision: Pass; material-premise gate Pass.

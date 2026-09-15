@@ -347,6 +347,44 @@ empty and its SQLite pages reusable. It does not run startup `VACUUM`, and the
 physical legacy table/model contract remains for a separately sequenced future
 contraction.
 
+### Org Family Ownership
+
+The existing unreleased `20260901_agent_org_flat_team_families_v1` runs after
+token source shaping and one-row consolidation. Its migration-only repository
+selects claimed roots with 250-root keyset pages and proves exact Agent membership
+from selected or exact current Org execution trees. Native flat-Team and
+standalone ownership outside that cohort is unchanged.
+
+For each selected Org, one SQL transaction validates claimant membership and
+member records, then changes only:
+
+- `root_team_run_id`: the exact old root ID to `NULL`;
+- `root_attribution_status`: `single` to `unknown`; and
+- `identity_summary_json.rootTeamRunIds`: the exact single old root to
+  `{ "status": "unknown" }`.
+
+This is the native Org representation, not a new Org statistics schema. The
+remaining identity-summary dimensions are preserved. Already-correct rows are
+zero-write; absent rows stay absent; contradictory ownership fails rather than
+being guessed. A full-row allowed-difference reread protects exact stored numbers,
+costs, timestamps, revisions, cumulative-series checkpoints and deduplication
+state. No domain upsert, usage refold, repricing or analytics-facet rebuild performs
+this correction. Historical display names remain descriptive, not ownership
+routing authorities; existing statistics readers naturally stop grouping these
+Agent records under the retired Team root.
+
+History and token source discovery are independent. An ordinary retry/invocation
+can have no history candidates but remaining stale token rows. It reads exact
+ownership metadata rather than traversing completed histories. Successful ledger
+entries still skip normally; there is no automatic success replay or reset.
+
+Org restore checks existing current records for the exact execution-tree Agent
+IDs through `TokenUsageRunStore.assertAgentOrgRecordsReady`, in batches of 250,
+before runtime materialization. Invalid Team attribution or unavailable token
+readiness yields `AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`, not a runtime repair or a
+weakened event validator. See [AgentOrg migration](agent_orgs.md#migration-and-external-publication)
+for staged filesystem recovery and the separate attachment-readiness boundary.
+
 ### Additive Analytics Schema
 
 Migration `20260822090000_add_token_usage_analytics` adds the empty daily-facet

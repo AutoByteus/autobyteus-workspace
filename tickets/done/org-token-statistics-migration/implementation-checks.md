@@ -18,7 +18,7 @@ From autobyteus-server-ts:
 pnpm exec tsc -p tsconfig.build.json --noEmit
 pnpm exec vitest run tests/unit/app-data-migrations tests/unit/token-usage tests/unit/agent-org-execution --no-watch
 ```
-**Pass:** source compile exit 0, no diagnostics; tests 359 passed across 66 files, 39.64 seconds. `git diff --check` passed. Final raw output: `/Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/implementation-local-checks.log`.
+**Pass:** source compile exit 0, no diagnostics; tests 359 passed across 66 files, 39.64 seconds. `git diff --check` passed. Final raw output: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/implementation-local-checks.log`.
 
 ## Focused evidence
 - `agent-org-token-attribution-transition.test.ts` (11): actual isolated SQLite narrow updates and rollback; all other persisted fields match exactly, including a >2^53 BigInt sentinel, snapshot/digest strings, timestamps/revision/costs; facets unchanged. Native controls, absent usage, source-only token retry, exact unexpected claimant/wrong root/mixed/scalar-only/malformed failures, settled direct/task-Team Agents, duplicate suppression and advancing cumulative accounting. Current presentation adapter publishes corrected duplicate/advancing events. Real current-package load rejects invalid attribution before injected scope build; inspection stays available, materialization-readiness errors reject too.

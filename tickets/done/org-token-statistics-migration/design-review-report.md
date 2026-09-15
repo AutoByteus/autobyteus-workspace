@@ -4,13 +4,13 @@ Package ORG-TOKEN-MIGRATION-20260915-001 — independent architecture review, 20
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/requirements-doc.md
-- Upstream Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/investigation-notes.md (INV-001–007)
-- Upstream Solution Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/solution-revision-record.md
-- Reviewed Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/design-spec.md (DS-001)
+- Upstream Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/requirements-doc.md
+- Upstream Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/investigation-notes.md (INV-001–007)
+- Upstream Solution Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/solution-revision-record.md
+- Reviewed Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/design-spec.md (DS-001)
 - Supplemental Task Artifacts Reviewed: intake-analysis-reference.md (historical provenance); solution-handoff.md (routing/package manifest).
 - Relevant Solution Revision IDs: SR-001–004; current intended-behavior authority SR-003, design completion SR-004.
-- Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/org-token-statistics-migration/tickets/in-progress/org-token-statistics-migration/architecture-review-revision-record.md
+- Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/tickets/done/org-token-statistics-migration/architecture-review-revision-record.md
 - Current Architecture Review Revision ID: ARCH-REV-001
 - Current Review Round: 1
 - Trigger: Solution Designer requests independent review of Medium / High completed architecture.
