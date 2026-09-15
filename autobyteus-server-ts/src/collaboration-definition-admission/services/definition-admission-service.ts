@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { CollaborationHandoffCompiler } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
 import type { AgentOrgDefinition } from "../../agent-org-definition/domain/agent-org-definition.js";
-import { parseAgentOrgDefinitionConfig } from "../../agent-org-definition/providers/agent-org-definition-config.js";
+import { readAgentOrgDefinitionConfig } from "../../agent-org-definition/providers/agent-org-definition-config.js";
 import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
 import { AgentOrgDefinitionResolver } from "../../agent-org-definition/services/agent-org-definition-resolver.js";
 import type { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
@@ -118,7 +118,7 @@ export class DefinitionAdmissionService {
     try {
       const raw = JSON.parse(await fs.readFile(source.configPath, "utf8")) as unknown;
       if (source.subjectKind === "agent_team") readAgentTeamDefinitionConfig(raw);
-      else parseAgentOrgDefinitionConfig(raw);
+      else readAgentOrgDefinitionConfig(raw);
       await fs.access(source.markdownPath);
       const definition = source.subjectKind === "agent_team"
         ? await this.dependencies.teams.getFreshDefinitionById(source.definitionId)

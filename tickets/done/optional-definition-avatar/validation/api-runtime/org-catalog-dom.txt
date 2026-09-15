@@ -1,0 +1,73 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs" [active]:
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Agent Orgs" [level=1]
+  - generic: Search Agent Orgs
+  - textbox "Search Agent Orgs":
+    - /placeholder: Search organizations by name
+  - button "Reload":
+    - text: Reload
+  - button "Create Agent Org"
+  - heading "Featured organizations" [level=2]
+  - article:
+    - generic: AO
+    - heading "Avatar Org null" [level=3]
+    - paragraph: API owned optional avatar avatar-org-null
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent agent-org-owned-agent:avatar-org-null:direct":
+      - generic: agent-org-owned-agent:avatar-org-null:direct
+    - generic "Team agent-org-owned-team:avatar-org-null:owned-team":
+      - generic: agent-org-owned-team:avatar-org-null:owned-team
+    - generic "Team Avatar Team null":
+      - generic: Avatar Team null
+  - article:
+    - generic: AO
+    - heading "Avatar Org omitted" [level=3]
+    - paragraph: API owned optional avatar avatar-org-omitted
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent agent-org-owned-agent:avatar-org-omitted:direct":
+      - generic: agent-org-owned-agent:avatar-org-omitted:direct
+    - generic "Team agent-org-owned-team:avatar-org-omitted:owned-team":
+      - generic: agent-org-owned-team:avatar-org-omitted:owned-team
+    - generic "Team Avatar Team omitted":
+      - generic: Avatar Team omitted
+  - article:
+    - generic: AO
+    - heading "Avatar Org supplied" [level=3]
+    - paragraph: API owned optional avatar avatar-org-supplied
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent agent-org-owned-agent:avatar-org-supplied:direct":
+      - generic: agent-org-owned-agent:avatar-org-supplied:direct
+    - generic "Team agent-org-owned-team:avatar-org-supplied:owned-team":
+      - generic: agent-org-owned-team:avatar-org-supplied:owned-team
+    - generic "Team Avatar Team supplied":
+      - generic: Avatar Team supplied

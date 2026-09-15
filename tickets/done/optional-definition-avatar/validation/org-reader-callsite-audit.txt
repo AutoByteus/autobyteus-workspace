@@ -1,0 +1,13 @@
+autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts:5:import { readAgentOrgDefinitionConfig } from "../../agent-org-definition/providers/agent-org-definition-config.js";
+autobyteus-server-ts/src/collaboration-definition-admission/services/definition-admission-service.ts:121:      else readAgentOrgDefinitionConfig(raw);
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts:3:import { readAgentOrgDefinitionConfig } from "./agent-org-definition-config.js";
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts:44:      let config: ReturnType<typeof readAgentOrgDefinitionConfig>;
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-source-index.ts:47:        config = readAgentOrgDefinitionConfig(JSON.parse(await fs.readFile(path.join(orgDir, "org-config.json"), "utf8")));
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts:108:export const parseAgentOrgDefinitionConfig = (
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts:138:export const readAgentOrgDefinitionConfig = (value: unknown): AgentOrgDefinitionConfigFile => {
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts:141:  return parseAgentOrgDefinitionConfig(candidate);
+autobyteus-server-ts/src/agent-org-definition/providers/agent-org-definition-config.ts:146:): AgentOrgDefinitionConfigFile => parseAgentOrgDefinitionConfig({
+autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts:17:  parseAgentOrgDefinitionConfig,
+autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts:18:  readAgentOrgDefinitionConfig,
+autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts:64:    parseAgentOrgDefinitionConfig(JSON.parse(await fs.readFile(path.join(packagePath, "org-config.json"), "utf8")));
+autobyteus-server-ts/src/agent-org-definition/providers/file-agent-org-definition-provider.ts:80:      const config = readAgentOrgDefinitionConfig(JSON.parse(json));

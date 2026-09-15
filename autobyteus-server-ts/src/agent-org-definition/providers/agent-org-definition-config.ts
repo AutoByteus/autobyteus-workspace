@@ -134,6 +134,13 @@ export const parseAgentOrgDefinitionConfig = (
   });
 };
 
+/** Normalize optional input metadata without weakening canonical write validation. */
+export const readAgentOrgDefinitionConfig = (value: unknown): AgentOrgDefinitionConfigFile => {
+  const candidate = { ...asRecord(value, "AgentOrg Definition Config") };
+  if (candidate["avatarUrl"] === undefined) candidate["avatarUrl"] = null;
+  return parseAgentOrgDefinitionConfig(candidate);
+};
+
 export const buildAgentOrgDefinitionConfig = (
   definition: AgentOrgDefinition,
 ): AgentOrgDefinitionConfigFile => parseAgentOrgDefinitionConfig({

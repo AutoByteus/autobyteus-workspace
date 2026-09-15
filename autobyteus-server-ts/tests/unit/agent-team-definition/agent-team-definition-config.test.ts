@@ -21,7 +21,7 @@ describe('Team input projection, separate from canonical writer validation', () 
     expect(read(input)).toEqual(config());
     if (mode !== 'null') expect(() => parse(input)).toThrow();
   });
-  it.each(['coordinatorMemberName', 'members', 'handoffs', 'avatarUrl'])('does not invent required %s', key => {
+  it.each(['coordinatorMemberName', 'members', 'handoffs'])('does not invent required %s', key => {
     const input: Record<string, unknown> = config(); delete input[key]; expect(() => read(input)).toThrow();
   });
   it.each([null, [], 'bad', 1])('rejects non-object root %j', value => { expect(() => read(value)).toThrow(); });

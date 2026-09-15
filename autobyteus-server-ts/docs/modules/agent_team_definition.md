@@ -57,8 +57,8 @@ sources, but they still cannot contain Teams.
 
 Normal Team input readers extract supported root/member/handoff/default fields and
 ignore unused metadata, including `schemaVersion` and member `refType`. Missing
-or null `defaultLaunchConfig` means no package defaults. Other required fields
-(including `avatarUrl`) and supplied value types remain validated; `llmConfig`
+or null `defaultLaunchConfig` means no package defaults. Missing or null `avatarUrl` means no image. Other required fields
+and supplied value types remain validated; `llmConfig`
 retains its provider-specific contents. Actual scoped Agent resolution and
 handoff validation still determine availability: nested-Team references do not
 become Agents and invalid parents do not suppress valid siblings. Launch still
@@ -128,3 +128,11 @@ See [Agent Team Execution](./agent_team_execution.md),
 - `src/agent-team-definition/services/flat-team-definition-validator.ts`
 - `src/api/graphql/types/agent-team-definition.ts`
 - `src/agent-tools/agent-team-management`
+
+### Optional Avatar Input
+
+Normal Team reads normalize an omitted avatar to null without writing the source.
+A supplied string retains its value; malformed non-null Team values still fail.
+Canonical builders and transaction validation retain their complete strict output
+contract. Optional images do not relax scoped Agent references, coordinator,
+handoffs or launch configuration. No image generation or migration is needed.

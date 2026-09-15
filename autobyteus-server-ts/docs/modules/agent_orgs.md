@@ -42,6 +42,18 @@ and **no authored `schemaVersion` field**:
 The adjacent `org.md` owns authored name, description, category, and
 instructions.
 
+The example is canonical output. Normal Org reads permit omitted `avatarUrl`,
+normalizing it to null without source writes; explicit null means the same thing.
+A supplied string is preserved and malformed non-null values remain rejected.
+The same input reader serves the provider, admission and owned-source index, so
+an omitted parent image does not hide otherwise valid owned Agents or Teams.
+Only this optional field is defaulted: unknown Org keys and missing required
+`defaultLaunchConfig` remain invalid. Builders/transaction validation stay strict.
+Agent inputs already normalize omitted/null avatars, including their supported
+owned placements; their existing non-string-to-null policy is unchanged rather
+than tightened to match Team/Org validation.
+
+
 - `refType` is exactly `agent` or `agent_team`.
 - Authored `refScope` is `shared`, `org_local`, or `application_owned` when
   valid for the source owner. Internal source tags remain `agent_org_owned`,

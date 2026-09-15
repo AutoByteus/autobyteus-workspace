@@ -1,0 +1,871 @@
+{
+  "data": {
+    "agentTeamDefinitions": [
+      {
+        "id": "article-writing-team",
+        "name": "Article Writing Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "article_writer",
+            "ref": "article-writer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "article_reviewer",
+            "ref": "article-reviewer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "avatar-team-null",
+        "name": "Avatar Team null",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "lead",
+            "ref": "worker",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "avatar-team-omitted",
+        "name": "Avatar Team omitted",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "lead",
+            "ref": "worker",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "avatar-team-supplied",
+        "name": "Avatar Team supplied",
+        "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+        "nodes": [
+          {
+            "memberName": "lead",
+            "ref": "worker",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "classroom-simulation-team",
+        "name": "Classroom Simulation Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "professor",
+            "ref": "professor",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "student",
+            "ref": "student",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "evidence-driven-delivery-team",
+        "name": "Evidence-Driven Delivery Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "investigator",
+            "ref": "investigator",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "planner",
+            "ref": "planner",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "implementer",
+            "ref": "implementer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "validator",
+            "ref": "validator",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "kids-coloring-story-team",
+        "name": "Kids Coloring Story Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "story_activity_designer",
+            "ref": "story-activity-designer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "coloring_page_illustrator",
+            "ref": "coloring-page-illustrator",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "child_experience_reviewer",
+            "ref": "child-experience-reviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "printable_pack_producer",
+            "ref": "printable-pack-producer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "kids-picture-story-team",
+        "name": "Kids Picture Story Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "story_picture_book_author",
+            "ref": "story-picture-book-author",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "picture_book_illustrator",
+            "ref": "picture-book-illustrator",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "picture_book_reviewer",
+            "ref": "picture-book-reviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "book_production_editor",
+            "ref": "book-production-editor",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "manga-video-studio-team",
+        "name": "Manga Video Studio Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "manga_showrunner",
+            "ref": "manga-showrunner",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "storyboard_director",
+            "ref": "storyboard-director",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "manga_illustrator",
+            "ref": "manga-illustrator",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "voice_video_producer",
+            "ref": "voice-video-producer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "narrated-presentation-video-team",
+        "name": "Narrated Presentation Video Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "presentation_director",
+            "ref": "presentation-director",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "narration_script_reviewer",
+            "ref": "narration-script-reviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "slide_video_producer",
+            "ref": "slide-video-producer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "product-design-prototyping-team",
+        "name": "Product Design & Prototyping Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "product_prototyper",
+            "ref": "product-prototyper",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "prototype_bootstrapper",
+            "ref": "prototype-bootstrapper",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "research-to-deck-team",
+        "name": "Research To Deck Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "deep_researcher",
+            "ref": "deep-researcher",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "infographic_powerpoint_designer",
+            "ref": "infographic-powerpoint-designer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "deck_reviewer",
+            "ref": "deck-reviewer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "software-engineering-team",
+        "name": "Software Engineering Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "solution_designer",
+            "ref": "solution-designer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "architecture_reviewer",
+            "ref": "architecture-reviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "implementation_engineer",
+            "ref": "implementation-engineer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "code_reviewer",
+            "ref": "code-reviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "api_e2e_engineer",
+            "ref": "api-e2e-engineer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "delivery_engineer",
+            "ref": "delivery-engineer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "software-product-promo-video-team",
+        "name": "Software Product Promo Video Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "promo_director",
+            "ref": "promo-director",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "visual_director",
+            "ref": "visual-director",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "visual_reviewer",
+            "ref": "visual-reviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "promo_video_producer",
+            "ref": "promo-video-producer",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      },
+      {
+        "id": "storm-team",
+        "name": "STORM Team",
+        "avatarUrl": null,
+        "nodes": [
+          {
+            "memberName": "topic_research_coordinator",
+            "ref": "topic-research-coordinator",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "perspective_miner",
+            "ref": "perspective-miner",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "expert_interviewer",
+            "ref": "expert-interviewer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "outline_architect",
+            "ref": "outline-architect",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "cited_article_writer",
+            "ref": "cited-article-writer",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "article_polisher_verifier",
+            "ref": "article-polisher-verifier",
+            "refScope": "TEAM_LOCAL"
+          }
+        ]
+      }
+    ],
+    "agentOrgDefinitions": [
+      {
+        "id": "avatar-org-null",
+        "name": "Avatar Org null",
+        "avatarUrl": null,
+        "members": [
+          {
+            "memberName": "direct",
+            "ref": "agent-org-owned-agent:avatar-org-null:direct",
+            "refType": "AGENT",
+            "refScope": "AGENT_ORG_OWNED"
+          },
+          {
+            "memberName": "owned",
+            "ref": "agent-org-owned-team:avatar-org-null:owned-team",
+            "refType": "AGENT_TEAM",
+            "refScope": "AGENT_ORG_OWNED"
+          },
+          {
+            "memberName": "mounted",
+            "ref": "avatar-team-null",
+            "refType": "AGENT_TEAM",
+            "refScope": "SHARED"
+          }
+        ]
+      },
+      {
+        "id": "avatar-org-omitted",
+        "name": "Avatar Org omitted",
+        "avatarUrl": null,
+        "members": [
+          {
+            "memberName": "direct",
+            "ref": "agent-org-owned-agent:avatar-org-omitted:direct",
+            "refType": "AGENT",
+            "refScope": "AGENT_ORG_OWNED"
+          },
+          {
+            "memberName": "owned",
+            "ref": "agent-org-owned-team:avatar-org-omitted:owned-team",
+            "refType": "AGENT_TEAM",
+            "refScope": "AGENT_ORG_OWNED"
+          },
+          {
+            "memberName": "mounted",
+            "ref": "avatar-team-omitted",
+            "refType": "AGENT_TEAM",
+            "refScope": "SHARED"
+          }
+        ]
+      },
+      {
+        "id": "avatar-org-supplied",
+        "name": "Avatar Org supplied",
+        "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+        "members": [
+          {
+            "memberName": "direct",
+            "ref": "agent-org-owned-agent:avatar-org-supplied:direct",
+            "refType": "AGENT",
+            "refScope": "AGENT_ORG_OWNED"
+          },
+          {
+            "memberName": "owned",
+            "ref": "agent-org-owned-team:avatar-org-supplied:owned-team",
+            "refType": "AGENT_TEAM",
+            "refScope": "AGENT_ORG_OWNED"
+          },
+          {
+            "memberName": "mounted",
+            "ref": "avatar-team-supplied",
+            "refType": "AGENT_TEAM",
+            "refScope": "SHARED"
+          }
+        ]
+      }
+    ],
+    "agentDefinitions": [
+      {
+        "id": "autobyteus-memory-compactor",
+        "name": "Memory Compactor",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "autobyteus-retrospective-skill-improver",
+        "name": "Retrospective Skill Improver",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "agent-team-architect",
+        "name": "Agent Team Architect",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "codex",
+        "name": "Codex",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "daily-assistant",
+        "name": "Daily Assistant",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "product-prototyper",
+        "name": "Product Prototyper",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "research-engineer",
+        "name": "research engineer",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "resume-designer",
+        "name": "Resume Designer",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "skill-optimizer",
+        "name": "Skill Optimizer",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "software-tutorial-video-maker",
+        "name": "Software Tutorial Video Maker",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "avatar-agent-null",
+        "name": "Avatar Agent null",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "avatar-agent-omitted",
+        "name": "Avatar Agent omitted",
+        "avatarUrl": null,
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "avatar-agent-supplied",
+        "name": "Avatar Agent supplied",
+        "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+        "ownershipScope": "SHARED"
+      },
+      {
+        "id": "team-local-agent:article-writing-team:article-reviewer",
+        "name": "article reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:article-writing-team:article-writer",
+        "name": "article writer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:classroom-simulation-team:professor",
+        "name": "Professor",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:classroom-simulation-team:student",
+        "name": "Student",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:evidence-driven-delivery-team:implementer",
+        "name": "implementer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:evidence-driven-delivery-team:investigator",
+        "name": "investigator",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:evidence-driven-delivery-team:planner",
+        "name": "planner",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:evidence-driven-delivery-team:validator",
+        "name": "validator",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:child-experience-reviewer",
+        "name": "child-experience-reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:coloring-page-illustrator",
+        "name": "coloring-page-illustrator",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:printable-pack-producer",
+        "name": "printable-pack-producer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-coloring-story-team:story-activity-designer",
+        "name": "story-activity-designer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:book-production-editor",
+        "name": "book-production-editor",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:picture-book-illustrator",
+        "name": "picture-book-illustrator",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:picture-book-reviewer",
+        "name": "picture-book-reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:kids-picture-story-team:story-picture-book-author",
+        "name": "story-picture-book-author",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:manga-illustrator",
+        "name": "manga illustrator",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:manga-showrunner",
+        "name": "manga showrunner",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:storyboard-director",
+        "name": "storyboard director",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:manga-video-studio-team:voice-video-producer",
+        "name": "voice and video producer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:narrated-presentation-video-team:narration-script-reviewer",
+        "name": "narration-script-reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:narrated-presentation-video-team:presentation-director",
+        "name": "presentation-director",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:narrated-presentation-video-team:slide-video-producer",
+        "name": "slide-video-producer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:ceo",
+        "name": "CEO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cfo",
+        "name": "CFO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:chief-of-staff",
+        "name": "Chief of Staff",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:chief-people-officer",
+        "name": "Chief People Officer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cmo",
+        "name": "CMO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:coo",
+        "name": "COO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cpo",
+        "name": "CPO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cro",
+        "name": "CRO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:northstar-operating-company:cto",
+        "name": "CTO",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:product-design-prototyping-team:product-prototyper",
+        "name": "product prototyper",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:product-design-prototyping-team:prototype-bootstrapper",
+        "name": "prototype bootstrapper",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:research-to-deck-team:deck-reviewer",
+        "name": "deck reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:research-to-deck-team:deep-researcher",
+        "name": "deep researcher",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:research-to-deck-team:infographic-powerpoint-designer",
+        "name": "infographic PowerPoint designer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-development-department:department-head",
+        "name": "department head",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:api-e2e-engineer",
+        "name": "api e2e engineer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:architecture-reviewer",
+        "name": "architecture reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:code-reviewer",
+        "name": "code reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:delivery-engineer",
+        "name": "delivery engineer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:implementation-engineer",
+        "name": "implementation engineer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-engineering-team:solution-designer",
+        "name": "solution designer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:promo-director",
+        "name": "promo-director",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:promo-video-producer",
+        "name": "promo-video-producer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:visual-director",
+        "name": "visual-director",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:software-product-promo-video-team:visual-reviewer",
+        "name": "visual-reviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:storm-team:article-polisher-verifier",
+        "name": "article polisher verifier",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:storm-team:cited-article-writer",
+        "name": "cited article writer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:storm-team:expert-interviewer",
+        "name": "expert interviewer",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:storm-team:outline-architect",
+        "name": "outline architect",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:storm-team:perspective-miner",
+        "name": "perspective miner",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:storm-team:topic-research-coordinator",
+        "name": "topic research coordinator",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:avatar-team-null:worker",
+        "name": "Avatar Local Worker null",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:avatar-team-omitted:worker",
+        "name": "Avatar Local Worker omitted",
+        "avatarUrl": null,
+        "ownershipScope": "TEAM_LOCAL"
+      },
+      {
+        "id": "team-local-agent:avatar-team-supplied:worker",
+        "name": "Avatar Local Worker supplied",
+        "avatarUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTQ2YjQ4Ii8+PHRleHQgeD0iMTAiIHk9IjQyIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIzMCI+QVY8L3RleHQ+PC9zdmc+",
+        "ownershipScope": "TEAM_LOCAL"
+      }
+    ],
+    "definitionAdmissionDiagnostics": [
+      {
+        "subjectKind": "agent_org",
+        "definitionId": "avatar-org-invalid",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "avatarUrl must be a non-empty trimmed string."
+      },
+      {
+        "subjectKind": "agent_team",
+        "definitionId": "avatar-team-invalid",
+        "code": "DEFINITION_CONTRACT_INVALID",
+        "reason": "avatarUrl must be a non-empty trimmed string."
+      },
+      {
+        "subjectKind": "agent_team",
+        "definitionId": "northstar-operating-company",
+        "code": "DEFINITION_REFERENCE_UNRESOLVED",
+        "reason": "Team 'Northstar Operating Company' member 'engineering_org' references missing agent 'engineering-org'."
+      },
+      {
+        "subjectKind": "agent_team",
+        "definitionId": "software-development-department",
+        "code": "DEFINITION_REFERENCE_UNRESOLVED",
+        "reason": "Team 'Software Development Department' member 'product_design_prototyping_team' references missing agent 'product-design-prototyping-team'."
+      }
+    ]
+  }
+}

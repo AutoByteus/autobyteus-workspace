@@ -1,7 +1,16 @@
+import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { FileAgentDefinitionProvider } from "../../../src/agent-definition/providers/file-agent-definition-provider.js";
+import { FileAgentTeamDefinitionProvider } from "../../../src/agent-team-definition/providers/file-agent-team-definition-provider.js";
+import { FileAgentOrgDefinitionProvider } from "../../../src/agent-org-definition/providers/file-agent-org-definition-provider.js";
+import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
+import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
+import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
+import type { AppConfig } from "../../../src/config/app-config.js";
+import type { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
 import {
   BUILT_IN_APPLICATION_PACKAGE_ID,
   FileApplicationBundleProvider,
@@ -256,6 +265,76 @@ describe("FileApplicationBundleProvider", () => {
     );
   };
 
+
+  it.each(["omitted", "null", "supplied", "agent-non-string"])("reads %s avatars via real application discovery, providers and scoped admission", async mode => {
+    await writeBundle();
+    const applicationRoot = path.join(builtInRoot, "applications", "sample-app");
+    const teamFile = path.join(applicationRoot, "agent-teams", "sample-team", "team-config.json");
+    const localAgentFile = path.join(applicationRoot, "agent-teams", "sample-team", "agents", "sample-agent", "agent-config.json");
+    const directAgentFile = path.join(applicationRoot, "agents", "direct", "agent-config.json");
+    const image = "https://example.test/avatar.svg";
+    const agentConfig = mode === "omitted" ? {} : { avatarUrl: mode === "agent-non-string" ? 42 : mode === "null" ? null : image };
+    const teamConfig = JSON.parse(await fs.readFile(teamFile, "utf8"));
+    if (mode === "omitted") delete teamConfig.avatarUrl;
+    else teamConfig.avatarUrl = mode === "supplied" ? image : null;
+    await writeFile(teamFile, JSON.stringify(teamConfig));
+    await writeFile(localAgentFile, JSON.stringify(agentConfig));
+    await writeFile(directAgentFile, JSON.stringify(agentConfig));
+    await writeFile(path.join(applicationRoot, "agents", "direct", "agent.md"), "---\nname: Direct\ndescription: Test\n---\n\nExact instructions.\n");
+    const files = [teamFile, localAgentFile, directAgentFile];
+    const before = await Promise.all(files.map(file => fs.readFile(file)));
+    const bundleProvider = buildProvider();
+    const snapshot = await bundleProvider.getCatalogSnapshot();
+    expect(snapshot.diagnostics).toEqual([]);
+    const [bundle] = await bundleProvider.listBundles();
+    expect(bundle).toBeDefined();
+    const agentSources = bundleProvider.buildApplicationOwnedAgentSources(bundle!);
+    const teamSources = bundleProvider.buildApplicationOwnedTeamSources(bundle!);
+    expect(agentSources).toHaveLength(1); expect(teamSources).toHaveLength(1);
+    const appSources = {
+      getApplicationOwnedAgentSourceById: async (id: string) => agentSources.find(source => source.definitionId === id) ?? null,
+      getApplicationOwnedTeamSourceById: async (id: string) => teamSources.find(source => source.definitionId === id) ?? null,
+    } as unknown as ApplicationBundleService;
+    const config = {
+      getAgentsDir: () => path.join(appDataRoot, "agents"), getAgentTeamsDir: () => path.join(appDataRoot, "agent-teams"),
+      getAgentOrgsDir: () => path.join(appDataRoot, "agent-orgs"), getAdditionalAgentPackageRoots: () => [],
+    } as AppConfig;
+    const agents = new FileAgentDefinitionProvider({ appConfig: config, applicationBundleService: appSources });
+    const teams = new FileAgentTeamDefinitionProvider({ appConfig: config, applicationBundleService: appSources });
+    const orgs = new FileAgentOrgDefinitionProvider(config);
+    const agentId = agentSources[0]!.definitionId, teamId = teamSources[0]!.definitionId;
+    const localId = buildTeamLocalAgentDefinitionId(teamId, "sample-agent");
+    const expectedAvatar = mode === "supplied" ? image : null;
+    // Agent and Team as application-owned Org placements; parent itself omits avatar.
+    await writeFile(path.join(config.getAgentOrgsDir(), "app-org", "org.md"), "---\nname: App Org\ndescription: Test\n---\n\nExact instructions.\n");
+    await writeFile(path.join(config.getAgentOrgsDir(), "app-org", "org-config.json"), JSON.stringify({
+      members: [
+        { memberName: "direct", ref: agentId, refType: "agent", refScope: "application_owned" },
+        { memberName: "team", ref: teamId, refType: "agent_team", refScope: "application_owned" },
+      ], handoffs: [], defaultLaunchConfig: null,
+    }));
+    const admission = new DefinitionAdmissionService({
+      registry: new DefinitionSourceRegistry({ appConfig: config, implementationPackageRoots: [], listImplementationOwnedTeamSources: async () => teamSources }),
+      agents: { getFreshAgentDefinitionById: id => agents.getById(id) },
+      teams: { getFreshDefinitionById: id => teams.getById(id) },
+      orgs: { getDefinitionById: id => orgs.getById(id) },
+    });
+    for (let reload = 0; reload < 2; reload++) {
+      expect(await agents.getById(agentId)).toMatchObject({ id: agentId, avatarUrl: expectedAvatar, ownershipScope: "application_owned" });
+      expect(await agents.getById(localId)).toMatchObject({ id: localId, avatarUrl: expectedAvatar, ownershipScope: "team_local", ownerTeamId: teamId });
+      expect(await teams.getById(teamId)).toMatchObject({ id: teamId, avatarUrl: expectedAvatar, ownershipScope: "application_owned" });
+      expect((await admission.requireAvailable("agent_team", teamId)).status).toBe("available");
+      expect((await admission.requireAvailable("agent_org", "app-org")).status).toBe("available");
+      expect(await bundleProvider.getCatalogSnapshot()).toMatchObject({ diagnostics: [] });
+    }
+    for (let i = 0; i < files.length; i++) expect(await fs.readFile(files[i]!)).toEqual(before[i]);
+
+    // Malformed present Team image still fails actual application resource admission.
+    await writeFile(teamFile, JSON.stringify({ ...teamConfig, avatarUrl: 42 }));
+    expect((await bundleProvider.getCatalogSnapshot()).diagnostics.length).toBeGreaterThan(0);
+    await expect(teams.getById(teamId)).rejects.toThrow(/avatarUrl/);
+    await expect(admission.requireAvailable("agent_team", teamId)).rejects.toThrow(/avatarUrl/);
+  });
 
   it("treats an empty managed built-in application root as a valid steady state", async () => {
     const provider = buildProvider();

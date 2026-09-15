@@ -1,0 +1,28 @@
+{
+  "sourceFilesUnchanged": {
+    "external": 661,
+    "fixture": 41
+  },
+  "telemetry": {
+    "pid": 37198,
+    "at": "2026-09-15T06:08:00.251Z",
+    "active": [],
+    "pending": [],
+    "events": []
+  },
+  "memoryFiles": [
+    "memory/agent_org_run_history_index.json",
+    "memory/run_history_index.json",
+    "memory/team_run_history_index.json"
+  ],
+  "manifestMatches": 10,
+  "externalHead": "f5534cf5eda505ade3dc5493001991c4970c823b",
+  "currentExternalTeams": 12,
+  "externalExcluded": 2,
+  "fixtureAvailable": {
+    "sharedAgents": 3,
+    "sharedTeams": 3,
+    "Orgs": 3
+  },
+  "invalidFixtureExcluded": 2
+}

@@ -15,6 +15,7 @@ import {
   AgentOrgDefinitionConfigParseError,
   buildAgentOrgDefinitionConfig,
   parseAgentOrgDefinitionConfig,
+  readAgentOrgDefinitionConfig,
 } from "./agent-org-definition-config.js";
 
 const FILES = ["org.md", "org-config.json"] as const;
@@ -76,7 +77,7 @@ export class FileAgentOrgDefinitionProvider {
       const md = await fs.readFile(source.mdPath, "utf8");
       const json = await fs.readFile(source.configPath, "utf8");
       const authored = parseOrgMd(md, source.mdPath);
-      const config = parseAgentOrgDefinitionConfig(JSON.parse(json));
+      const config = readAgentOrgDefinitionConfig(JSON.parse(json));
       return new AgentOrgDefinition({
         id: source.id, name: authored.name, description: authored.description,
         category: authored.category, instructions: authored.instructions,

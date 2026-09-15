@@ -41,6 +41,14 @@ definition. See the [runtime migration boundary](../../autobyteus-server-ts/docs
 
 AgentOrg has no coordinator field, initial recipient, or implicit first member.
 
+`avatarUrl` is optional presentation metadata: omission and null both mean no
+avatar and do not affect admission or exact owned-member discovery. Supplied
+values keep their existing meaning. The current Org catalog/detail continues to
+use initials even when an avatar value is supplied; this is not new image UI.
+Agent and Team cards/details retain their existing image-or-initials behavior.
+No package rewrite or runtime activation is required to inspect these definitions.
+
+
 ### Exact Owned References
 
 Authored Org-local references use `org_local`; GraphQL/internal ownership tags

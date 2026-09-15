@@ -1,0 +1,60 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - textbox "Search agents by name or description..." [active]: Avatar Agent
+  - button "Reload":
+    - text: Reload
+  - button "Create Agent"
+  - generic: AA
+  - heading "Avatar Agent null" [level=3]
+  - paragraph: API owned optional avatar avatar-agent-null
+  - generic: Tools 0
+  - generic: None
+  - generic: Skills 0
+  - generic: None
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic: AA
+  - heading "Avatar Agent omitted" [level=3]
+  - paragraph: API owned optional avatar avatar-agent-omitted
+  - generic: Tools 0
+  - generic: None
+  - generic: Skills 0
+  - generic: None
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - img "Avatar Agent supplied avatar"
+  - heading "Avatar Agent supplied" [level=3]
+  - paragraph: API owned optional avatar avatar-agent-supplied
+  - generic: Tools 0
+  - generic: None
+  - generic: Skills 0
+  - generic: None
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →

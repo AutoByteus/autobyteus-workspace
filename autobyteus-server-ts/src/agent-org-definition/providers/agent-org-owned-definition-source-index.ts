@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { parseAgentOrgDefinitionConfig } from "./agent-org-definition-config.js";
+import { readAgentOrgDefinitionConfig } from "./agent-org-definition-config.js";
 import { parseOrgMd } from "../utils/org-md-parser.js";
 import { buildAgentOrgOwnedDefinitionId } from "../utils/agent-org-owned-definition-id.js";
 
@@ -41,10 +41,10 @@ export const listAgentOrgOwnedDefinitionSources = async (input: {
     for (const orgEntry of orgEntries.sort((left, right) => left.name.localeCompare(right.name))) {
       if (!orgEntry.isDirectory() || orgEntry.name.startsWith("_")) continue;
       const orgDir = path.join(orgRoot, orgEntry.name);
-      let config: ReturnType<typeof parseAgentOrgDefinitionConfig>;
+      let config: ReturnType<typeof readAgentOrgDefinitionConfig>;
       let orgDefinitionName: string;
       try {
-        config = parseAgentOrgDefinitionConfig(JSON.parse(await fs.readFile(path.join(orgDir, "org-config.json"), "utf8")));
+        config = readAgentOrgDefinitionConfig(JSON.parse(await fs.readFile(path.join(orgDir, "org-config.json"), "utf8")));
         orgDefinitionName = parseOrgMd(await fs.readFile(path.join(orgDir, "org.md"), "utf8"), path.join(orgDir, "org.md")).name;
       } catch {
         continue;

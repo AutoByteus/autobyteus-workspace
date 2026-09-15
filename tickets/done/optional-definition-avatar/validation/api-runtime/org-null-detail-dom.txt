@@ -1,0 +1,46 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Orgs":
+    - text: Back to Agent Orgs
+  - generic: AO
+  - heading "Avatar Org null" [level=1]
+  - button "Run"
+  - button "Edit"
+  - heading "Description" [level=2]
+  - paragraph: API owned optional avatar avatar-org-null
+  - heading "Members" [level=2]
+  - heading "Agents (1)" [level=3]
+  - list:
+    - generic: AO
+    - paragraph: Avatar Owned Direct null
+  - heading "Teams (2)" [level=3]
+  - list:
+    - paragraph: Avatar Owned Team null
+    - paragraph: "Coordinator: Avatar Agent null"
+    - button "View ↗"
+    - paragraph: Avatar Team null
+    - paragraph: "Coordinator: Avatar Local Worker null"
+    - button "View ↗"
+  - heading "Handoffs" [level=2]
+  - paragraph: No handoffs yet

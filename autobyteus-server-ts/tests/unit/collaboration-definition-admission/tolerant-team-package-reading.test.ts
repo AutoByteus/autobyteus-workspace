@@ -48,12 +48,12 @@ it('reads mixed external packages through real scoped providers, admission, cata
     teams: { getFreshDefinitionById: id => teams.getById(id) }, orgs: { getDefinitionById: id => orgs.getById(id) }, agents: { getFreshAgentDefinitionById: id => agents.getById(id) } });
   bound.admission = admission; bound.teams = teams;
   const rows = await admission.scan();
-  expect(rows.filter(r => r.status === 'available').map(r => r.definitionId).sort()).toEqual(['flat', 'local', 'null-defaults']);
+  expect(rows.filter(r => r.status === 'available').map(r => r.definitionId).sort()).toEqual(['flat', 'local', 'missing-avatar', 'null-defaults']);
   expect(rows.find(r => r.definitionId === 'nested-parent')).toMatchObject({ status: 'unavailable', code: 'DEFINITION_REFERENCE_UNRESOLVED' });
   expect(rows.find(r => r.definitionId === 'wrong-scope')).toMatchObject({ status: 'unavailable', code: 'DEFINITION_REFERENCE_UNRESOLVED' });
-  expect(rows.find(r => r.definitionId === 'missing-avatar')).toMatchObject({ status: 'unavailable', code: 'DEFINITION_CONTRACT_INVALID' });
+  expect(rows.find(r => r.definitionId === 'missing-avatar')).toMatchObject({ status: 'available', definition: expect.objectContaining({ avatarUrl: null }) });
   const catalog = new AgentTeamDefinitionResolver();
-  expect((await catalog.agentTeamDefinitions()).map(d => d.id).sort()).toEqual(['flat', 'local', 'null-defaults']);
+  expect((await catalog.agentTeamDefinitions()).map(d => d.id).sort()).toEqual(['flat', 'local', 'missing-avatar', 'null-defaults']);
   expect(await catalog.agentTeamDefinition('nested-parent')).toBeNull();
   const flat = await teams.getById('flat'); expect(flat!.defaultLaunchConfig).toBeNull(); expect(flat!.nodes[0]).not.toHaveProperty('refType');
   const revision = flat!.revision;

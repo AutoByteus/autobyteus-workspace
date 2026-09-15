@@ -151,6 +151,7 @@ const pickOwnKeys = (value: Record<string, unknown>, keys: readonly string[]): R
 export const readAgentTeamDefinitionConfig = (value: unknown): AgentTeamDefinitionConfigFile => {
   const source = asRecord(value, "AgentTeam Definition Config");
   const candidate = pickOwnKeys(source, ["coordinatorMemberName", "members", "handoffs", "avatarUrl", "defaultLaunchConfig"]);
+  if (candidate['avatarUrl'] === undefined) candidate['avatarUrl'] = null;
   if (candidate['defaultLaunchConfig'] === undefined) candidate['defaultLaunchConfig'] = null;
   if (Array.isArray(candidate['members'])) {
     candidate['members'] = candidate['members'].map((member, index) =>

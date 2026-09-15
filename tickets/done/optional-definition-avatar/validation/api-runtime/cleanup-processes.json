@@ -1,0 +1,27 @@
+[
+  {
+    "pid": 37515,
+    "ppid": 37211,
+    "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 50562"
+  },
+  {
+    "pid": 37516,
+    "ppid": 37515,
+    "command": "node ./node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 50562"
+  },
+  {
+    "pid": 37525,
+    "ppid": 37516,
+    "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.27.3 --ping"
+  },
+  {
+    "pid": 37526,
+    "ppid": 37516,
+    "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50562"
+  },
+  {
+    "pid": 37527,
+    "ppid": 37516,
+    "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 127.0.0.1 --port 50562"
+  }
+]

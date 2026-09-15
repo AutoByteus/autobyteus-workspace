@@ -1,0 +1,253 @@
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/.env
+[dotenv@17.3.1] injecting env (4) from tests/.tmp/avatar-api001/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50561
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50561
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/memory
+============================================================
+AppConfig initialization completed successfully
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "avatar-api001.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/db/avatar-api001.db"
+
+SQLite database avatar-api001.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/db/avatar-api001.db
+
+24 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:37198) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-15T06:02:09.750Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-15T06:02:09.883Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-15T06:02:09.883Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1789452129890,"pid":37198,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:57802"}
+{"level":30,"time":1789452129920,"pid":37198,"hostname":"normys-MacBook-Pro.local","msg":"Server listening at http://127.0.0.1:50561"}
+[2026-09-15T06:02:09.921Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50561
+[2026-09-15T06:02:09.922Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:50561
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 28 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 10 items.
+[2026-09-15T06:03:28.810Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-15T06:03:28.824Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 14 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 10 items.
+[2026-09-15T06:03:32.964Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-15T06:03:32.971Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 14 items.
+Created terminal session 1017a5cd-ce0a-45bb-b688-2342a398a37f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 1017a5cd-ce0a-45bb-b688-2342a398a37f
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 1017a5cd-ce0a-45bb-b688-2342a398a37f
+Terminal WebSocket disconnected: 1017a5cd-ce0a-45bb-b688-2342a398a37f
+Discovering LM Studio models from host: http://localhost:1234
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+Discovering Ollama models from host: http://localhost:11434
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[WatcherRuntime:38555:stdout] AgentFactory (Singleton) initialized.
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7cbb8fb5-2db5-4f8f-aa6c-8218afc193c7 for workspace temp_ws_default
+Created file explorer session 7cbb8fb5-2db5-4f8f-aa6c-8218afc193c7 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 7cbb8fb5-2db5-4f8f-aa6c-8218afc193c7 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace
+FileExplorerSession closed: 7cbb8fb5-2db5-4f8f-aa6c-8218afc193c7
+Closed file explorer session 7cbb8fb5-2db5-4f8f-aa6c-8218afc193c7. Active sessions: 0
+File explorer WebSocket disconnected: 7cbb8fb5-2db5-4f8f-aa6c-8218afc193c7
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 13 items.
+[2026-09-15T06:04:46.305Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'avatar-team-invalid' at '/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001-package/agent-teams/avatar-team-invalid/team-config.json'; expected current Team Definition Config: avatarUrl must be a non-empty trimmed string.
+[2026-09-15T06:04:46.316Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 17 items.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 13 items.
+[2026-09-15T06:04:55.500Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+DEFINITION_CONTRACT_INVALID: skipped Team 'avatar-team-invalid' at '/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001-package/agent-teams/avatar-team-invalid/team-config.json'; expected current Team Definition Config: avatarUrl must be a non-empty trimmed string.
+[2026-09-15T06:04:55.508Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 17 items.
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[WatcherRuntime:38887:stdout] AgentFactory (Singleton) initialized.
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ff5f6bbe-baf2-4d34-8a44-fd61fbffe60c for workspace temp_ws_default
+Created file explorer session ff5f6bbe-baf2-4d34-8a44-fd61fbffe60c for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: ff5f6bbe-baf2-4d34-8a44-fd61fbffe60c for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/optional-definition-avatar/autobyteus-server-ts/tests/.tmp/avatar-api001/temp_workspace
+FileExplorerSession closed: ff5f6bbe-baf2-4d34-8a44-fd61fbffe60c
+Closed file explorer session ff5f6bbe-baf2-4d34-8a44-fd61fbffe60c. Active sessions: 0
+File explorer WebSocket disconnected: ff5f6bbe-baf2-4d34-8a44-fd61fbffe60c
+[2026-09-15T06:08:18.849Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-15T06:08:19.025Z] [INFO] [server.runtime] Server closed cleanly.
