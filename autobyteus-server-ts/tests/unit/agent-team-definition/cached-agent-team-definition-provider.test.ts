@@ -142,4 +142,18 @@ describe("CachedAgentTeamDefinitionProvider", () => {
     const missing = await provider.getById("1");
     expect(missing).toBeNull();
   });
+  it("reads owned identities without populating catalog, preserves null/error, and retries without negative caching", async () => {
+    const id = "agent-org-owned-team:org:squad";
+    const getById = vi.fn().mockResolvedValueOnce(null).mockRejectedValueOnce(new Error("read failed")).mockResolvedValue({ ...sampleDefs[0], id, ownershipScope: "agent_org_owned" });
+    const provider = new CachedAgentTeamDefinitionProvider({ ...persistenceProvider, getById } as never);
+    expect(await provider.getById(id)).toBeNull();
+    await expect(provider.getById(id)).rejects.toThrow("read failed");
+    expect(await provider.getById(id)).toMatchObject({ id });
+    expect(persistenceProvider.getAll).not.toHaveBeenCalled();
+    await provider.refresh();
+    expect(await provider.getById(id)).toMatchObject({ id });
+    expect((await provider.getAll()).map(definition => definition.id)).not.toContain(id);
+    expect(getById).toHaveBeenCalledTimes(4);
+  });
+
 });

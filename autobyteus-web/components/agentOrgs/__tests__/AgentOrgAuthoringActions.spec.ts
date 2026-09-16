@@ -9,7 +9,7 @@ vi.mock('vue-router', () => ({ useRoute: () => mocks.route, useRouter: () => ({ 
 vi.mock('~/services/api', () => ({ default: { post: mocks.post } }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => mocks.store }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ sharedAgentDefinitions: [], getAgentDefinitionById: vi.fn(), fetchAllAgentDefinitions: vi.fn() }) }))
-vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => ({ sharedAgentTeamDefinitions: [], getAgentTeamDefinitionById: vi.fn(), fetchAllAgentTeamDefinitions: vi.fn() }) }))
+vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => ({ sharedAgentTeamDefinitions: [], getCatalogAgentTeamDefinitionById: vi.fn(), fetchAllAgentTeamDefinitions: vi.fn() }) }))
 const org = (id = 'one') => ({ id, name: id === 'one' ? '<img src=x> Research Org' : 'Second Org', description: 'Description', instructions: 'Hidden', revision: 'r1', avatarUrl: `/${id}.png`, members: [], handoffs: [], category: 'retained', defaultLaunchConfig: null })
 let wrapper: VueWrapper
 const open = async (view = 'org-edit') => { mocks.route.query = { view, id: 'one' }; wrapper = mount(Experience, { global: { stubs: { teleport: true } } }); await flushPromises() }

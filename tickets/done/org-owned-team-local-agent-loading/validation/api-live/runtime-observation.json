@@ -1,0 +1,53 @@
+{
+  "operations": {
+    "GetApplicationsCapability": 3,
+    "GetAllWorkspaces": 4,
+    "GetAgentDefinitions": 5,
+    "ListWorkspaceRunHistory": 41,
+    "ListCollaborationRootHistory": 41,
+    "GetAgentTeamDefinitions": 5,
+    "GetAgentOrgDefinitions": 4,
+    "GetServerSettings": 3,
+    "GetAgentOrgReferencedAgent": 6,
+    "GetAgentOrgReferencedTeam": 3,
+    "GetRuntimeAvailabilities": 3,
+    "GetProviderModelCatalogSnapshots": 3,
+    "EnsureProviderModelCatalog": 3,
+    "GetProviderCredentialSettings": 1,
+    "GetAgentPackages": 1,
+    "ImportAgentPackage": 2,
+    "ReloadAgentPackage": 1
+  },
+  "mutations": [
+    {
+      "id": 88,
+      "operation": "EnsureProviderModelCatalog"
+    },
+    {
+      "id": 89,
+      "operation": "EnsureProviderModelCatalog"
+    },
+    {
+      "id": 90,
+      "operation": "EnsureProviderModelCatalog"
+    },
+    {
+      "id": 149,
+      "operation": "ImportAgentPackage"
+    },
+    {
+      "id": 151,
+      "operation": "ImportAgentPackage"
+    },
+    {
+      "id": 154,
+      "operation": "ReloadAgentPackage"
+    }
+  ],
+  "history": {
+    "agent_org_run_history_index.json": [],
+    "run_history_index.json": [],
+    "team_run_history_index.json": []
+  },
+  "qualification": "No runtime create/Send commands in observed browser transport, and all persisted run-history indexes empty. This is not a direct in-memory active/candidate count. Settings opened provider catalog discovery against isolated configuration, distinct from agent execution/provider preparation."
+}

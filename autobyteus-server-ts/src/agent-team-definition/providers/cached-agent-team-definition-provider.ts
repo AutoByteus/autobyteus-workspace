@@ -1,6 +1,7 @@
 import { AgentTeamDefinition } from "../domain/agent-team-definition.js";
 import { AgentTeamDefinitionPersistenceProvider } from "./agent-team-definition-persistence-provider.js";
 import { createServerLogger } from "../../logging/server-app-logger.js";
+import { isAgentOrgOwnedTeamDefinitionId } from "../../agent-org-definition/utils/agent-org-owned-definition-id.js";
 
 const logger = createServerLogger("agent-team-definition.cache");
 
@@ -50,6 +51,11 @@ export class CachedAgentTeamDefinitionProvider {
   }
 
   async getById(objId: string): Promise<AgentTeamDefinition | null> {
+    // Parent-owned definitions are not part of the public catalog snapshot.
+    // Exact reads must not populate or publish them into that catalog.
+    if (isAgentOrgOwnedTeamDefinitionId(objId)) {
+      return this.persistenceProvider.getById(objId);
+    }
     await this.ensureCachePopulated();
     const definition = this.cache.get(objId) ?? null;
     if (definition) {

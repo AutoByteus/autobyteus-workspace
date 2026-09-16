@@ -8,28 +8,30 @@ import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 type AgentSummary = Pick<AgentDefinition, 'id' | 'name' | 'description'>
 type TeamSummary = AgentTeamDefinition
 type Ownership = { ownershipScope?: string | null; ownerOrgId?: string | null; ownerTeamId?: string | null }
-type Catalog = {
-  agent: (id: string) => (AgentSummary & Ownership) | null | undefined
-  team: (id: string) => (Pick<AgentTeamDefinition, 'id' | 'name' | 'description' | 'coordinatorMemberName' | 'nodes'> & Ownership) | null | undefined
+export type AgentOrgReferenceCatalogLookup = {
+  getCatalogAgentById: (id: string) => (AgentSummary & Ownership) | null | undefined
+  getCatalogTeamById: (id: string) => (Pick<AgentTeamDefinition, 'id' | 'name' | 'description' | 'coordinatorMemberName' | 'nodes'> & Ownership) | null | undefined
 }
-export type AgentOrgAuthoringReferences = {
+export type AgentOrgDefinitionReferences = {
   agents: Record<string, AgentSummary>
   teams: Record<string, TeamSummary>
   unavailable: string[]
 }
 
-// A read for this authoring projection, not an insertion into the shared catalog.
+// A read for the selected Org projection, not an insertion into the shared catalog.
 // The existing Apollo client remains the only query/cache boundary.
-export async function loadAgentOrgAuthoringReferences(
-  orgId: string, members: readonly AgentOrgMember[], catalog: Catalog,
-): Promise<AgentOrgAuthoringReferences> {
-  const result: AgentOrgAuthoringReferences = { agents: {}, teams: {}, unavailable: [] }
+export async function loadAgentOrgDefinitionReferences(
+  orgId: string, members: readonly AgentOrgMember[], catalogLookup: AgentOrgReferenceCatalogLookup,
+): Promise<AgentOrgDefinitionReferences> {
+  const result: AgentOrgDefinitionReferences = { agents: {}, teams: {}, unavailable: [] }
   const read = async <T extends AgentSummary & Ownership>(
     id: string, scope: string, ownerId: string, kind: 'agent' | 'team',
   ): Promise<T | null> => {
     try {
       // Owned references are never resolved through shared catalog eligibility.
-      let definition = scope === 'AGENT_ORG_OWNED' || scope === 'TEAM_LOCAL' ? null : catalog[kind](id)
+      let definition = scope === 'AGENT_ORG_OWNED' || scope === 'TEAM_LOCAL'
+        ? null
+        : kind === 'agent' ? catalogLookup.getCatalogAgentById(id) : catalogLookup.getCatalogTeamById(id)
       if (!definition) {
         const { data, errors } = await getApolloClient().query({
           query: kind === 'agent' ? GetAgentOrgReferencedAgent : GetAgentOrgReferencedTeam,

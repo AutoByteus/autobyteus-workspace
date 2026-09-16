@@ -1,0 +1,34 @@
+[
+  {
+    "memberRunId": "readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab",
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_alpha_d1ff1e5d1f56461cbcc3a075a9d8d4d1/readfix_alpha_squad_2afe8174b0524871b30fd0130432b4b8/readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab/raw_traces_active.jsonl",
+    "traceCount": 3,
+    "traceTypes": [
+      "system_instruction",
+      "user",
+      "llm_request_recovery"
+    ],
+    "userCount": 1,
+    "agentMarker": true,
+    "teamMarker": true,
+    "otherOwnerMarkerAbsent": true,
+    "canonicalAddress": true,
+    "providerResponse": "not completed; missing OPENAI key"
+  },
+  {
+    "memberRunId": "readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4",
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/memory/agent_orgs/readfix_beta_5a5172a18ee64e48acff25c6d89bb449/readfix_beta_squad_ff3858e1ddb24586999c369ffb5c31a9/readfix_beta_squad_worker_6a90457160a947488e5a31b7df8473d4/raw_traces_active.jsonl",
+    "traceCount": 3,
+    "traceTypes": [
+      "system_instruction",
+      "user",
+      "llm_request_recovery"
+    ],
+    "userCount": 1,
+    "agentMarker": true,
+    "teamMarker": true,
+    "otherOwnerMarkerAbsent": true,
+    "canonicalAddress": true,
+    "providerResponse": "not completed; missing OPENAI key"
+  }
+]

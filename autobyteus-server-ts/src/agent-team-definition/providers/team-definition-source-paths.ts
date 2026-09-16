@@ -14,7 +14,8 @@ type ApplicationOwnedTeamSourcePaths = {
   localApplicationId: string;
   localTeamId: string;
 };
-import type { AgentOrgOwnedDefinitionSourcePaths } from "../../agent-org-definition/providers/agent-org-owned-definition-source-index.js";
+import { findAgentOrgOwnedDefinitionSource, type AgentOrgOwnedDefinitionSourcePaths } from "../../agent-org-definition/providers/agent-org-owned-definition-source-index.js";
+import { isAgentOrgOwnedTeamDefinitionId } from "../../agent-org-definition/utils/agent-org-owned-definition-id.js";
 
 export type SharedTeamSourcePaths = {
   kind: "shared";
@@ -143,7 +144,19 @@ export const findTeamSourcePaths = async (
   teamId: string,
   readTeamRoots: string[],
   applicationBundleService: ApplicationOwnedTeamSourceLookup,
+  readOrgRoots: readonly string[] = [],
 ): Promise<ResolvedTeamSourcePaths | null> => {
+  if (isAgentOrgOwnedTeamDefinitionId(teamId)) {
+    const source = await findAgentOrgOwnedDefinitionSource({
+      definitionId: teamId,
+      subject: "agent_team",
+      orgRoots: readOrgRoots,
+    });
+    // A missing indexed owner must never borrow a similarly named shared source.
+    return source
+      ? { ...source, subject: "agent_team", teamDir: source.definitionDir, localTeamId: source.localDefinitionId }
+      : null;
+  }
   if (parseCanonicalApplicationOwnedTeamId(teamId)) {
     return findApplicationOwnedTeamSourcePaths(applicationBundleService, teamId);
   }

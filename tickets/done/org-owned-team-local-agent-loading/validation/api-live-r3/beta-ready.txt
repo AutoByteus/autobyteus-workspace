@@ -1,0 +1,93 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "Readfix Alpha (2)" [expanded]:
+    - generic: Readfix Alpha
+    - generic: (2)
+  - button "Collapse Readfix Alpha descendants" [expanded]:
+  - treeitem "Running New - Readfix Alpha":
+    - generic "Running"
+    - generic: New - Readfix Alpha
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Readfix Alpha execution hierarchy":
+    - treeitem "guide, offline, /guide, readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06" [level=1]:
+      - generic: G
+      - generic: guide
+    - 'treeitem "group. Team status: Offline" [expanded] [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: group
+    - treeitem "lead, offline, /group/lead, readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab" [level=2]:
+      - generic: L
+      - generic: lead
+  - button "Expand This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p... descendants":
+  - treeitem "Stopped This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...":
+    - generic "Stopped"
+    - generic: This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...
+  - generic: 25m
+  - button "Readfix Beta (1)":
+    - generic: Readfix Beta
+    - generic: (1)
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: Agent Org
+  - generic: Readfix Beta
+  - generic: Runtime
+  - combobox "Runtime":
+    - option "AutoByteus" [selected]
+    - option "Codex App Server"
+    - option "Claude Agent SDK"
+  - paragraph: Selects the runtime used by this organization run.
+  - generic: Default LLM Model
+  - button "OpenAI / gpt-5.4-mini" [active]:
+    - generic: OpenAI / gpt-5.4-mini
+  - paragraph: Used across the organization unless a placement is customized.
+  - generic: Thinking
+  - button "Use setting":
+    - generic: Use setting
+  - button "Advanced":
+    - generic: Advanced
+  - generic: Workspace Directory
+  - tablist:
+    - tab "Existing" [selected]:
+      - generic: Existing
+    - tab "New":
+      - generic: New
+  - button "📁 Temp Workspace (Default) Default temporary workspace":
+    - generic: 📁 Temp Workspace (Default)
+    - generic: Default temporary workspace
+  - paragraph: "Workspace: Temp Workspace"
+  - generic: Auto approve tools
+  - paragraph: Automatically allows tool calls and access requests for this run.
+  - switch "Auto approve tools":
+    - generic: Auto approve tools
+  - button "Member overrides (2)":
+    - generic: Member overrides (2)
+  - button "Run Agent Org"
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":

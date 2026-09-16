@@ -1,0 +1,34 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentTeamDefinitionStore.spec.ts components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-web
+
+stderr | stores/__tests__/agentTeamDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentTeamDefinitionStore.spec.ts (7 tests) 7ms
+ ✓ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts (16 tests) 151ms
+
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+   Start at  10:11:39
+   Duration  5.08s (transform 2.84s, setup 8.30s, collect 380ms, tests 157ms, environment 281ms, prepare 224ms)
+

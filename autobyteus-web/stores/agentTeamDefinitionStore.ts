@@ -200,7 +200,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' }).then((result: { data: { agentTeamDefinitions?: AgentTeamDefinition[] } }) => {
         agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
       })
-      return getAgentTeamDefinitionById.value(data.createAgentTeamDefinition.id)
+      return getCatalogAgentTeamDefinitionById.value(data.createAgentTeamDefinition.id)
     } catch (cause) {
       error.value = cause
       console.error('Failed to create agent team definition:', cause)
@@ -235,7 +235,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
       await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' }).then((result: { data: { agentTeamDefinitions?: AgentTeamDefinition[] } }) => {
         agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
       })
-      return getAgentTeamDefinitionById.value(data.updateAgentTeamDefinition.id)
+      return getCatalogAgentTeamDefinitionById.value(data.updateAgentTeamDefinition.id)
     } catch (cause) {
       error.value = cause
       console.error('Failed to update agent team definition:', cause)
@@ -278,11 +278,13 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     }
   }
 
-  const getAgentTeamDefinitionById = computed(() => (
+  // Synchronous catalog lookups only. A miss does not mean absent storage or
+  // invalid ownership; selected Org references use the exact scoped reader.
+  const getCatalogAgentTeamDefinitionById = computed(() => (
     (id: string) => agentTeamDefinitions.value.find((definition) => definition.id === id) || null
   ))
 
-  const getAgentTeamDefinitionByName = computed(() => (
+  const getCatalogAgentTeamDefinitionByName = computed(() => (
     (name: string) => agentTeamDefinitions.value.find((definition) => definition.name === name) || null
   ))
 
@@ -328,8 +330,8 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     updateAgentTeamDefinition,
     deleteAgentTeamDefinition,
     invalidateAgentTeamDefinitions,
-    getAgentTeamDefinitionById,
-    getAgentTeamDefinitionByName,
+    getCatalogAgentTeamDefinitionById,
+    getCatalogAgentTeamDefinitionByName,
     getApplicationOwnedTeamDefinitionsByOwnerApplicationId,
   }
 })

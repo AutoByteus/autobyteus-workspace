@@ -448,3 +448,21 @@ are only a trigger; inspection, not a history status string or absent row, deter
 Org liveness. Scheduled/in-flight recovery and local stop/continuation remain
 coalesced under their existing owners. Standalone Team history reconciliation is
 unchanged. Root observation and member readiness remain separate responsibilities.
+
+
+## Catalog Lookups Versus Exact Org References
+
+`agentTeamDefinitionStore.getCatalogAgentTeamDefinitionById` and
+`getCatalogAgentTeamDefinitionByName` synchronously search the current catalog
+snapshot. A `null` result is a catalog miss, not proof that a definition is absent
+from storage. These getters do not query or add owned definitions to the catalog.
+
+Org detail/editor, Org-owned Team detail and enclosing Org launch use
+`loadAgentOrgDefinitionReferences` for exact, scope/owner-validated references.
+Its required `AgentOrgReferenceCatalogLookup` callbacks,
+`getCatalogAgentById` and `getCatalogTeamById`, supply only eligible catalog
+matches; owned references use exact reads. The selected reference graph remains
+local to its view and does not change shared/application catalog membership.
+Reading a definition does not grant shared visibility, independent mutation or
+new standalone run permissions. This boundary does not change the existing
+independent Run/Edit policy for owned Teams.

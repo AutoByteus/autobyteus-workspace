@@ -84,7 +84,7 @@ import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.v
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore'
-import { loadAgentOrgAuthoringReferences, type AgentOrgAuthoringReferences } from '~/services/agentOrgDefinition/agentOrgAuthoringReferences'
+import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
 import { useRunActions } from '~/composables/useRunActions'
 import { useLocalization } from '~/composables/useLocalization'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
@@ -101,10 +101,10 @@ const { t } = useLocalization()
 const loading = ref(false)
 const referenceError = ref('')
 const showDeleteConfirm = ref(false)
-const orgReferences = ref<AgentOrgAuthoringReferences | null>(null)
+const orgReferences = ref<AgentOrgDefinitionReferences | null>(null)
 const teamDef = computed(() => returnToOrgId.value
   ? orgReferences.value?.teams[teamDefinitionId.value] ?? null
-  : teamStore.getAgentTeamDefinitionById(teamDefinitionId.value))
+  : teamStore.getCatalogAgentTeamDefinitionById(teamDefinitionId.value))
 const isShared = computed(() => (teamDef.value?.ownershipScope ?? 'SHARED') === 'SHARED')
 type TeamNode = AgentTeamDefinition['nodes'][number]
 const agentId = (node: TeamNode): string => node.refScope === 'TEAM_LOCAL' && teamDef.value
@@ -126,8 +126,8 @@ watch([teamDefinitionId, returnToOrgId], async ([teamId, orgId], _, onCleanup) =
       await orgStore.fetchAll()
       const member = orgStore.byId(orgId)?.members.find(member => member.refType === 'AGENT_TEAM' && member.ref === teamId)
       if (!member) return
-      const resolved = await loadAgentOrgAuthoringReferences(orgId, [member], {
-        agent: agentStore.getAgentDefinitionById, team: teamStore.getAgentTeamDefinitionById,
+      const resolved = await loadAgentOrgDefinitionReferences(orgId, [member], {
+        getCatalogAgentById: agentStore.getAgentDefinitionById, getCatalogTeamById: teamStore.getCatalogAgentTeamDefinitionById,
       })
       if (current && !resolved.unavailable.length) orgReferences.value = resolved
     }

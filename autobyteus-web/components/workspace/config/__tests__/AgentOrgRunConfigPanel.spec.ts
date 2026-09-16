@@ -106,6 +106,9 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
       toolNames: [], inputProcessorNames: [], llmResponseProcessorNames: [],
       toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [],
     }]
+    for (const id of ['designer-agent', 'prototyper-agent', 'architect-agent', 'implementer-agent']) {
+      agentStore.agentDefinitions.push({ ...agentStore.agentDefinitions[0]!, id, name: id })
+    }
     useWorkspaceStore().workspacesFetched = true
   })
 
@@ -254,7 +257,7 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
   it('fails closed and disables Run when a referenced Team is unavailable', async () => {
     useAgentTeamDefinitionStore().agentTeamDefinitions = teams.filter((team) => team.id !== 'software-team')
     const wrapper = await mountPanel()
-    expect(wrapper.get('[data-test="org-config-projection-error"]').text()).toContain("cannot resolve Team '/software'")
+    expect(wrapper.get('[data-test="org-config-reference-diagnostic"]').text()).toContain('Unable to load organization members: software-team')
     expect(wrapper.get('[data-test="run-agent-org"]').attributes('disabled')).toBeDefined()
     expect(wrapper.find('[data-test="org-member-overrides-toggle"]').exists()).toBe(false)
   })

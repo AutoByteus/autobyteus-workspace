@@ -191,6 +191,7 @@ export class FileAgentDefinitionProvider {
       teamId,
       this.getReadTeamRoots(),
       this.applicationBundleService,
+      this.getReadOrgRoots(),
     );
     if (!teamSourcePaths) {
       return null;

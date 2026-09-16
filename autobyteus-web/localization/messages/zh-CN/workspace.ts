@@ -83,6 +83,8 @@ const messages = {
     "自动允许本次运行中的工具调用和访问请求。",
   "workspace.agentOrg.runConfig.workspaceRequired": "运行智能体组织需要工作区。",
   "workspace.agentOrg.runConfig.memberOverrides": "成员覆盖",
+  "workspace.agentOrg.runConfig.referencesLoading": "正在加载组织成员…",
+  "workspace.agentOrg.runConfig.referencesUnavailable": "无法加载组织成员：{references}",
   "workspace.agentOrg.runConfig.schemaLoading": "正在验证 {address} 的模型配置…",
   "workspace.agentOrg.runConfig.schemaBlocked": "{address} 的模型配置尚未就绪：{error}",
   "workspace.agentOrg.runConfig.schemaUnavailable": "有效模型配置不可用。",

@@ -1,0 +1,58 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "Readfix Alpha (1)" [expanded]:
+    - generic: Readfix Alpha
+    - generic: (1)
+  - button "Collapse Readfix Alpha descendants" [expanded]:
+  - treeitem "Running New - Readfix Alpha" [selected]:
+    - generic "Running"
+    - generic: New - Readfix Alpha
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Readfix Alpha execution hierarchy":
+    - treeitem "guide, offline, /guide, readfix_alpha_guide_acbc5793736b47dc8cd318b13cd347ca" [level=1]:
+      - generic: G
+      - generic: guide
+    - 'treeitem "group. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: group
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Choose an Agent or Team" [level=2]
+  - paragraph: Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Terminal" [selected]: Terminal
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - textbox "Terminal input"
+  - generic: ➜ Terminal initialized
+  - generic: The default interactive shell is now zsh.
+  - generic: "To update your account to use zsh, please run `chsh"
+  - generic: "-s /bin/zsh`."
+  - generic: For more details, please visit https://support.apple
+  - generic: .com/kb/HT208050.
+  - generic: ~ $

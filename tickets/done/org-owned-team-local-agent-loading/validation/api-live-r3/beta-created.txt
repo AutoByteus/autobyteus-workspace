@@ -1,0 +1,79 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "Readfix Alpha (2)" [expanded]:
+    - generic: Readfix Alpha
+    - generic: (2)
+  - button "Collapse Readfix Alpha descendants" [expanded]:
+  - treeitem "Running New - Readfix Alpha":
+    - generic "Running"
+    - generic: New - Readfix Alpha
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Readfix Alpha execution hierarchy":
+    - treeitem "guide, offline, /guide, readfix_alpha_guide_6cd89f27ab6a4020884205cca6e56a06" [level=1]:
+      - generic: G
+      - generic: guide
+    - 'treeitem "group. Team status: Offline" [expanded] [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: group
+    - treeitem "lead, offline, /group/lead, readfix_alpha_squad_worker_57aa8ad5a40e42a2a1709ae29c45dfab" [level=2]:
+      - generic: L
+      - generic: lead
+  - button "Expand This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p... descendants":
+  - treeitem "Stopped This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...":
+    - generic "Stopped"
+    - generic: This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...
+  - generic: 25m
+  - button "Readfix Beta (2)" [expanded]:
+    - generic: Readfix Beta
+    - generic: (2)
+  - button "Collapse Readfix Beta descendants" [expanded]:
+  - treeitem "Running New - Readfix Beta" [selected]:
+    - generic "Running"
+    - generic: New - Readfix Beta
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Readfix Beta execution hierarchy":
+    - treeitem "guide, offline, /guide, readfix_beta_guide_364994d6309e4702a7435a2e2827e6df" [level=1]:
+      - generic: G
+      - generic: guide
+    - 'treeitem "group. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: group
+  - button "Expand This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p... descendants":
+  - treeitem "Stopped This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...":
+    - generic "Stopped"
+    - generic: This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...
+  - generic: 24m
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Choose an Agent or Team" [level=2]
+  - paragraph: Select a member from the active Agent Org in the sidebar. Teams focus their coordinator first.
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":

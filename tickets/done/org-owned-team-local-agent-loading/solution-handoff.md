@@ -1,0 +1,41 @@
+# Revised Architecture Design Complete — ORG-LOCAL-AGENT-20260916-001
+
+## Result and approval
+**SR-006 / DS-REV-003 Architecture Design Complete; Medium / Low**, reassessed cumulatively. Approved SR-001 intended behavior unchanged. User explicitly asks to update the design after original-personal comparison and improvement assessment. This is a bounded internal contract refinement, not a new ticket or new intended behavior. API-REV-001 remains **Fail77.9% validation confidence (not pass rate)** until independent actual retest. IR-001 and IR-002 implementation/evidence are preserved, not invalidated or claimed accepted.
+
+## Original request, evidence and accountable recovery
+Self-contained Orgs must resolve Org-local Teams and their Team-local Agents without extraction, mutation or public catalog insertion. Backend IR-001 corrected owner-aware source/cache lookup. Actual API Alpha(server-data)/Beta(external) detail -> Run -> valid configuration exposed F-001: public list-only projection cannot resolve owned Team; shared control enables. CRR-001 confirmed a pre-existing frontend defect and DS-001's missing initiating UI gate, not an IR-001 regression. SR-003/DS-REV-002 completed selected-Org reference resolution; IR-002 implemented it. No actual Create/Send acceptance claimed yet.
+
+Original-personal5645b49d6 populated nested-Team inventory while separately filtering root visibility. That demonstrates separation of inventory, visibility and ownership—not that cached owned data becomes shared. Current exact-demand design need not restore recursive Teams or preload all definitions. Designer inspected historical/current source and specialist evidence; no historical runtime replay or new browser/test pass.
+
+## New authoritative delta — preserve completed implementation
+1. Rename Team store `getAgentTeamDefinitionById` / `getAgentTeamDefinitionByName` to `getCatalogAgentTeamDefinitionById` / `getCatalogAgentTeamDefinitionByName`. Same synchronous values and list semantics; null means catalog miss, not absent storage. Remove old exports/aliases and migrate all current TS/Vue consumers/tests, not historical records.
+2. Existing `loadAgentOrgDefinitionReferences` remains the one exact selected-Org reader for detail/editor/owned Team detail/launch. Its catalog callback input becomes `AgentOrgReferenceCatalogLookup` with required `getCatalogAgentById` / `getCatalogTeamById` callbacks (nullable results). Same eligibility, exact queries, identity/owner checks and result. Agent store callback adaptation only; no global Agent-store rename.
+3. Preserve IR-002 snapshot/readiness/draft guards, exact-reference query behavior and pure projector. No global store/cache, normalized inventory, new resolver, list insertion, schema/writer/runtime policy or definition changes. The pure utility callback `getTeamDefinitionById` is a distinct contract: do not bulk-rename it or reintroduce recursion.
+4. DS-REV-003 contains audited 11-file production owner/consumer map, file responsibilities, regression and removal plan. Existing standalone/mobile/history lookups get mechanical names only, not asynchronous Org traversal. Independent Run/Edit from an owned Team detail is an unverified separate policy/reachability concern; no authorization to alter that policy or claim every caller safe for all identities.
+
+## Validation and expected output
+Implementation: retain all IR-001/002 work; apply bounded refinement, add a regression proving owned ID misses public catalog without query/insertion while exact scoped reader resolves it and catalog remains unchanged. Preserve shared/application/missing/wrong-owner controls and real panel/Pinia/projector/reader/Apollo-seam tests; do not mask with owned data seeded into public arrays. Run impacted consumers/test mocks and retain rendered-result obligations proportionately. Return cumulative implementation revision and actual commands/results/limits.
+API: F-001/B02 FIRST for both placements: normal frontend Run/model/workspace -> enabled Run -> actual Create -> mounted worker Send -> correct enclosing instructions. No direct API workaround, hidden detail prerequisite or replay-only acceptance. Preserve non-publication, file hashes, owner isolation, missing/error, no eager provider startup and prior runtime protections. IR-002 reports81frontend/11files and169backend/15files plus web build Pass; carried, not rerun by Designer. Its unavailable vue-tsc exit254 and inherited server strict/expanded limits remain. No full-suite/global-clean/Electron claim.
+
+## Coordination and preservation
+A refinement hold was DELIVERED to existing Implementation run implementation_engineer_f84b5074541a47fea830604d1bcb77c3; requested preservation and coordination with existing API if already forwarded. Do not infer acknowledged API hold or create duplicate execution. This revised authoritative package permits dependent implementation after successful delivery. Designer independently rehashed all15 IR-002 manifest files and checked prior-module deletion: unchanged. Incoming API/CRR documents and SDK outputs untouched. No designer production/test edits or runtime actions.
+
+## Workspace / safety / classification
+Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading; branch codex/org-owned-team-local-agent-loading; base/HEAD65fc02a99d0a9608ba4da195cf108dc8aef255e7 plus uncommitted work. Eventual target origin/requirements/flat-agent-organization-model, NOT personal. No new bootstrap, stage/commit/push/merge/release authorization. No user's Electron/server/conversations/auth/private package changes. Synthetic fixtures only; preserve external package bytes. No migration/data repair/startup work.
+Medium size reflects cumulative backend/frontend work and mechanical consumer migration. Low architectural risk because exact read/ownership authority, wire/storage/runtime contracts and catalog contents remain unchanged. Escalate if schema/security/identity/global cache/lifecycle or new standalone-owned behavior is needed; do not invent it. Independent architecture/full source review N/A on this direct classification; CRR-001 is a focused failure-origin result, not full source Pass. No Product redesign or Delivery result.
+
+## Cumulative artifact authority
+Canonical root: /Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/tickets/in-progress/org-owned-team-local-agent-loading
+- requirements-doc.md Approved SR-001 with SR-006 applicability; investigation-notes.md including caller audit/source limits.
+- design-spec.md DS-REV-003; solution-revision-record.md SR001–006; definition-resolution-design-assessment.md with current applicability; bootstrap-handoff.md.
+- implementation-handoff.md and implementation-revision-record.md IR001/002, externally owned; validation/ir002-source-manifest.json, ir002 checks/render README and source preservation evidence.
+- code-review-report.md and code-review-revision-record.md CRR-001 focused failure-origin; API coverage investigation, execution report, test-case-ledger and revision-record API-REV-001 Fail, all externally owned.
+- validation/README.md, validation/crr001-failure-origin-attribution.json and validation/api-live/README.md index actual Alpha/Beta/shared-control DOM/screenshots/transport/hash/laziness/cleanup evidence.
+- history/design-spec-ds001.md, history/solution-handoff-sr002.md, history/design-spec-dsrev002.md, history/solution-handoff-sr003.md: superseded historical authority, not current instructions.
+External package and personal comparison sources remain indexed in investigation. No copied private bytes, invented specialist result or new behavior supplement.
+
+## Routing
+Persisted complete result before current rule lookup. Select the sole most-specific applicable rule and record it here; transport success only from send_message_to confirmation.
+
+Current get_handoff_rules evaluated: sole applicable Architecture Design Complete / Medium / Low rule -> /software_engineering_team/implementation_engineer. Product, Large/High review and Delivery-gap rules do not apply. Direct implementation route selected; only that recipient is notified. This revised basis supersedes the refinement hold upon confirmed delivery; no independent review Pass claimed.

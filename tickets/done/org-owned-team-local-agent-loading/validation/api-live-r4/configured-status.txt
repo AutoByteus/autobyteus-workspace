@@ -1,0 +1,94 @@
+- navigation:
+  - list:
+    - button "Back to workspace":
+      - generic: Back to Workspace
+    - button "API Keys":
+      - generic: API Keys
+    - button "Token Statistics":
+      - generic: Token Statistics
+    - button "Messaging":
+      - generic: Messaging
+    - button "Display":
+      - generic: Display
+    - button "Language":
+      - generic: Language
+    - button "Local Tools":
+      - generic: Local Tools
+    - button "MCP Servers":
+      - generic: MCP Servers
+    - button "Application Packages":
+      - generic: Application Packages
+    - button "Agent Packages":
+      - generic: Agent Packages
+    - button "Server Settings":
+      - generic: Server Settings
+    - button "Extensions":
+      - generic: Extensions
+    - button "Updates":
+      - generic: Updates
+- separator "Resize Settings menu"
+- heading "API Key Management" [level=2]
+- paragraph: Manage provider keys and provider-specific model discovery
+- navigation "Providers":
+  - generic: Providers
+  - button "Anthropic 6":
+    - generic: Anthropic
+    - generic: "6"
+  - button "AutoByteus Model count loading":
+    - generic: AutoByteus
+    - generic "Model count loading": —
+  - button "DeepSeek 2":
+    - generic: DeepSeek
+    - generic: "2"
+  - button "Gemini 11":
+    - generic: Gemini
+    - generic: "11"
+  - button "GLM 1":
+    - generic: GLM
+    - generic: "1"
+  - button "Grok 1":
+    - generic: Grok
+    - generic: "1"
+  - button "Kimi 1":
+    - generic: Kimi
+    - generic: "1"
+  - button "LM Studio Model count loading":
+    - generic: LM Studio
+    - generic "Model count loading": —
+  - button "MiniMax 1":
+    - generic: MiniMax
+    - generic: "1"
+  - button "Mistral 2":
+    - generic: Mistral
+    - generic: "2"
+  - button "Ollama Model count loading":
+    - generic: Ollama
+    - generic "Model count loading": —
+  - button "OpenAI 9" [active]:
+    - generic: OpenAI
+    - generic: "9"
+  - button "Qwen 6":
+    - generic: Qwen
+    - generic: "6"
+  - button "New Provider Model count loading":
+    - generic: New Provider
+    - generic "Model count loading": —
+- generic: OpenAI
+- generic: Configured
+- textbox "Enter new key to update..."
+- button:
+- button "Save Key" [disabled]
+- region "Models":
+  - heading "Models" [level=3]
+  - heading "LLM Models" [level=4]
+  - generic: gpt-5.4
+  - generic: gpt-5.4-mini
+  - generic: gpt-5.5
+  - generic: gpt-5.6-luna
+  - generic: gpt-5.6-sol
+  - generic: gpt-5.6-terra
+  - heading "Audio Models" [level=4]
+  - generic: gpt-4o-mini-tts
+  - heading "Image Models" [level=4]
+  - generic: gpt-image-1.5
+  - generic: gpt-image-2

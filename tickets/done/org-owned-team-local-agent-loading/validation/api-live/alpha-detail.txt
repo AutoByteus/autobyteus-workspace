@@ -1,0 +1,58 @@
+Browser tab: 1211480558, Title: "127.0.0.1:50683/agent-orgs?view=org-detail&id=readfix-alpha", URL: "http://127.0.0.1:50683/agent-orgs?view=org-detail&id=readfix-alpha".
+0 AXWebArea 127.0.0.1:50683/agent-orgs?view=org-detail&id=readfix-alpha
+	1 container app
+		2 container
+			3 container Agents & teams
+				4 container Primary navigation
+					5 content list
+						6 container
+							7 button Agents
+							8 button Collapse left panel
+								9 image
+						10 button Agent Teams
+						11 button Agent Orgs
+						12 button Skills
+						13 button Memory
+						14 button Nodes
+				15 container
+					16 heading Workspaces, Value: 3
+						17 text Workspaces
+					18 button Add workspace
+					19 button (collapsed) Temp Workspace, Secondary Actions: Expand
+				20 button Settings
+			21 button Back to Agent Orgs
+			22 container
+				23 text RA
+				24 heading Readfix Alpha, Value: 1
+					25 text Readfix Alpha
+				26 button Run
+				27 button Edit
+				28 button Delete
+			29 container
+				30 heading Description, Value: 2
+					31 text Description
+				32 text Synthetic ownership validation.
+			33 container
+				34 heading Members, Value: 2
+					35 text Members
+				36 heading Agents (1), Value: 3
+					37 text Agents (1)
+				38 content list
+					39 container
+						40 text RA Readfix Alpha Guide
+				41 heading Teams (1), Value: 3
+					42 text Teams (1)
+				43 content list
+					44 container
+						45 text Readfix Alpha Squad Coordinator: Readfix Alpha Squad Worker
+						46 button View ↗
+			47 container
+				48 heading Handoffs, Value: 2
+					49 text Handoffs
+				50 content list
+					51 container
+						52 text FROM Readfix Alpha Guide /guide TO Readfix Alpha Squad /group WHEN
+						53 content list
+							54 text Delegate only when explicitly asked.
+
+The focused UI element is 0 AXWebArea 127.0.0.1:50683/agent-orgs?view=org-detail&id=readfix-alpha

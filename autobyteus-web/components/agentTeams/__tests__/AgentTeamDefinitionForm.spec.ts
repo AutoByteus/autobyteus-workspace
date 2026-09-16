@@ -64,7 +64,7 @@ const {
       agentTeamDefinitions: [],
       sharedAgentTeamDefinitions: [],
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
-      getAgentTeamDefinitionById: vi.fn(() => null),
+      getCatalogAgentTeamDefinitionById: vi.fn(() => null),
       getApplicationOwnedTeamDefinitionsByOwnerApplicationId: vi.fn(() => []),
       getTeamLocalTeamDefinitionsByOwnerTeamId: vi.fn(() => []),
     },

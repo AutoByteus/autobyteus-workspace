@@ -80,6 +80,15 @@
           />
         </MemberOverridesDisclosure>
 
+        <p
+          v-if="referenceDiagnostic"
+          :role="referenceDiagnostic.unavailable ? 'alert' : 'status'"
+          class="rounded-md border p-3 text-sm"
+          :class="referenceDiagnostic.unavailable ? 'border-red-200 bg-red-50 text-red-700' : 'border-blue-100 bg-blue-50 text-blue-700'"
+          data-test="org-config-reference-diagnostic"
+        >
+          {{ referenceDiagnostic.message }}
+        </p>
         <p v-if="projectionError" role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-test="org-config-projection-error">
           {{ projectionError }}
         </p>
@@ -142,6 +151,7 @@ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { projectEditableAgentOrgRunFormModel } from '~/utils/editableAgentOrgRunFormModel'
 import { hasMeaningfulLaunchOverride } from '~/utils/teamRunConfigUtils'
+import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
 import { toAgentOrgPlacementLaunchConfiguration } from '~/utils/agentOrgLaunchPatch'
 
 const route = useRoute()
@@ -180,6 +190,50 @@ watch(org, (value) => {
   })
 }, { immediate: true })
 
+// A public catalog is not an inventory of the selected Org's owned definitions.
+const referenceKey = computed(() => org.value ? JSON.stringify([
+  org.value.id, org.value.revision,
+  org.value.members.map(({ memberName, ref, refType, refScope }) => [memberName, ref, refType, refScope]),
+]) : null)
+const references = ref<{
+  key: string | null
+  status: 'loading' | 'ready' | 'unavailable'
+  snapshot: AgentOrgDefinitionReferences | null
+}>({ key: null, status: 'loading', snapshot: null })
+const referencesReady = computed(() => Boolean(referenceKey.value
+  && references.value.key === referenceKey.value && references.value.status === 'ready'))
+const referenceDiagnostic = computed(() => {
+  if (!org.value || referencesReady.value) return null
+  const unavailable = references.value.key === referenceKey.value && references.value.status === 'unavailable'
+  return {
+    unavailable,
+    message: unavailable
+      ? t('workspace.agentOrg.runConfig.referencesUnavailable', {
+          references: references.value.snapshot?.unavailable.join(', ') || org.value.name,
+        })
+      : t('workspace.agentOrg.runConfig.referencesLoading'),
+  }
+})
+watch(referenceKey, async (key, _previous, onCleanup) => {
+  let current = true
+  onCleanup(() => { current = false })
+  references.value = { key, status: 'loading', snapshot: null }
+  if (!key || !org.value) return
+  const selected = { id: org.value.id, members: org.value.members.map(member => ({ ...member })) }
+  try {
+    const snapshot = await loadAgentOrgDefinitionReferences(selected.id, selected.members, {
+      getCatalogAgentById: agentStore.getAgentDefinitionById,
+      getCatalogTeamById: teamStore.getCatalogAgentTeamDefinitionById,
+    })
+    if (!current || referenceKey.value !== key) return
+    references.value = { key, status: snapshot.unavailable.length ? 'unavailable' : 'ready', snapshot }
+  } catch {
+    if (current && referenceKey.value === key) {
+      references.value = { key, status: 'unavailable', snapshot: null }
+    }
+  }
+}, { immediate: true })
+
 const workspaceMetadata = (workspaceId: string | null): WorkspaceMetadata | null => {
   if (!workspaceId) return null
   const workspace = workspaceStore.workspaces[workspaceId]
@@ -203,14 +257,14 @@ const rootConfig = computed<Readonly<ResolvedTeamRunLaunchConfig>>(() => Object.
   skillAccessMode: 'PRELOADED_ONLY',
 }))
 const projection = computed(() => {
-  if (!org.value) return null
+  if (!org.value || !referencesReady.value) return null
   return projectEditableAgentOrgRunFormModel({
     orgDefinition: org.value,
     rootConfig: rootConfig.value,
     teamOverrides: teamOverrides.value,
     agentOverrides: agentOverrides.value,
-    getTeamDefinitionById: teamStore.getAgentTeamDefinitionById,
-    getAgentDisplayNameById: (id) => agentStore.getAgentDefinitionById(id)?.name ?? null,
+    getTeamDefinitionById: (id) => references.value.snapshot?.teams[id] ?? null,
+    getAgentDisplayNameById: (id) => references.value.snapshot?.agents[id]?.name ?? null,
     workspaceSelectionFor: (address, effective) => configStore.teamWorkspaceSelectionFor(address) ?? {
       mode: effective.workspaceId ? 'existing' : 'new',
       existingWorkspaceId: effective.workspaceId,
@@ -227,11 +281,12 @@ watch(projection, (result) => {
 }, { immediate: true })
 const formModel = computed(() => projection.value?.status === 'ready' ? projection.value.model : null)
 watch(formModel, (model) => {
-  configStore.reconcileModelSchemaScopes(model ? [
+  if (!model) return
+  configStore.reconcileModelSchemaScopes([
     '/',
     ...model.directAgents.map((agent) => agent.address),
     ...model.mountedTeams.flatMap((team) => [team.address, ...team.children.map((agent) => agent.address)]),
-  ] : ['/'])
+  ])
 }, { immediate: true })
 const modelSchemaBlockingDiagnostic = computed(() => {
   const blocked = firstModelSchemaBlock.value
@@ -252,7 +307,7 @@ const teamWorkspacesReady = computed(() => Object.entries(configStore.teamWorksp
   },
 ))
 const canRun = computed(() => Boolean(
-  org.value && formModel.value && runtimeKind.value && llmModelIdentifier.value && workspaceReady.value
+  org.value && referencesReady.value && formModel.value && runtimeKind.value && llmModelIdentifier.value && workspaceReady.value
     && teamWorkspacesReady.value && allModelSchemaScopesReady.value,
 ))
 
@@ -341,7 +396,7 @@ const prepareTeamWorkspacePaths = async (): Promise<Record<AgentTeamAddress, str
   return paths
 }
 const runOrg = async () => {
-  if (!org.value || !formModel.value || !canRun.value) return
+  if (!org.value || !formModel.value || !canRun.value || orgRunStore.launching) return
   configStore.setLaunchError(null)
   try {
     const workspaceRootPath = await resolveRootWorkspacePath()

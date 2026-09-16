@@ -335,10 +335,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const drafts = useTeamRunConfigStore();
       const definitions = useAgentTeamDefinitionStore();
       const resolveMemberTree = () => {
-        const definition = definitions.getAgentTeamDefinitionById(draft.config.teamDefinitionId);
+        const definition = definitions.getCatalogAgentTeamDefinitionById(draft.config.teamDefinitionId);
         if (!definition) throw new Error(`Team definition '${draft.config.teamDefinitionId}' was not found.`);
         return buildTeamMemberTreeFromDefinition(definition, {
-          getTeamDefinitionById: (id) => definitions.getAgentTeamDefinitionById(id),
+          getTeamDefinitionById: (id) => definitions.getCatalogAgentTeamDefinitionById(id),
         });
       };
       const preparation = drafts.reconcileAndPlanSelectedDraftLaunch(draft, resolveMemberTree());

@@ -1,0 +1,16 @@
+{
+  "renderer": "real Nuxt dev",
+  "transport": "synthetic read-response replay",
+  "viewports": [
+    "1280x900",
+    "900x800"
+  ],
+  "checks": [
+    "loading disables Run",
+    "model/approval choices retained through reference completion",
+    "ready enables Run",
+    "member disclosure opens",
+    "unavailable disables Run"
+  ],
+  "createOrSend": false
+}

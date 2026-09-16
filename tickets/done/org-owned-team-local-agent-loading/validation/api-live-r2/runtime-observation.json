@@ -1,0 +1,49 @@
+{
+  "operations": {
+    "GetApplicationsCapability": 1,
+    "GetAllWorkspaces": 1,
+    "GetAgentDefinitions": 2,
+    "ListWorkspaceRunHistory": 50,
+    "ListCollaborationRootHistory": 58,
+    "GetAgentTeamDefinitions": 2,
+    "GetAgentOrgDefinitions": 2,
+    "GetAgentOrgReferencedAgent": 5,
+    "GetRuntimeAvailabilities": 1,
+    "GetProviderModelCatalogSnapshots": 1,
+    "GetAgentOrgReferencedTeam": 2,
+    "EnsureProviderModelCatalog": 3,
+    "CreateAgentOrgRun": 2,
+    "GetAgentOrgRunInspection": 4,
+    "GetAgentOrgMemberRunProjection": 12,
+    "GetAgentOrgExecutionCheckpoint": 4,
+    "RefreshAgentTeamDefinitionCatalog": 1,
+    "RefreshAgentDefinitionCatalog": 1
+  },
+  "note": "Observer restart resets numeric IDs; correlations are sequentially paired. No direct API writes. Browser Create and Send only. No authenticated response yet.",
+  "history": {
+    "agent_org_run_history_index.json": [
+      {
+        "orgRunId": "readfix_beta_474e27cd43844b08a6d5e478be82f4c1",
+        "orgDefinitionId": "readfix-beta",
+        "orgDefinitionName": "Readfix Beta",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace",
+        "summary": "This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...",
+        "createdAt": "2026-09-16T07:50:05.841Z",
+        "archivedAt": null,
+        "terminatedAt": null
+      },
+      {
+        "orgRunId": "readfix_alpha_522adceee21048c3bb61de96d3d114ea",
+        "orgDefinitionId": "readfix-alpha",
+        "orgDefinitionName": "Readfix Alpha",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/.local/api-org-local/data/temp_workspace",
+        "summary": "This is an isolated validation. Reply with the AGENT_INSTRUCTION_ and TEAM_INSTRUCTION_ markers p...",
+        "createdAt": "2026-09-16T07:49:13.810Z",
+        "archivedAt": null,
+        "terminatedAt": null
+      }
+    ],
+    "run_history_index.json": [],
+    "team_run_history_index.json": []
+  }
+}

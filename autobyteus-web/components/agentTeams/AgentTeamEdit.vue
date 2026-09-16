@@ -51,7 +51,7 @@ const emit = defineEmits(['navigate']);
 const store = useAgentTeamDefinitionStore();
 const { t: $t } = useLocalization();
 
-const teamDef = computed(() => store.getAgentTeamDefinitionById(teamDefinitionId.value));
+const teamDef = computed(() => store.getCatalogAgentTeamDefinitionById(teamDefinitionId.value));
 const initialFormData = computed(() => {
   if (!teamDef.value) {
     return null;

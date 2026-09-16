@@ -1,0 +1,16 @@
+{
+  "ownedPidsTerminated": [
+    76955,
+    74838,
+    74853
+  ],
+  "portsClosed": {
+    "50681": true,
+    "50682": true,
+    "50683": true
+  },
+  "ownedBrowserTabClosed": "1211480564",
+  "uiStopBoth": "root Stopped and lead Offline, answers retained",
+  "retained": "Ignored isolated test DB/vault and synthetic data retained locally, never attached or copied to evidence; source .env not modified.",
+  "userServicesTouched": false
+}

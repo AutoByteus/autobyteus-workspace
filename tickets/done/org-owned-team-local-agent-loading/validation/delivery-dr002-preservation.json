@@ -1,0 +1,13 @@
+{
+  "private_backup": "/Users/normy/autobyteus_org/delivery-retained/ORG-LOCAL-AGENT-20260916-001-DR002",
+  "mode": "0700",
+  "verified_entries": 180,
+  "scope": "Isolated secure vault/data, local config and other-owner SDKdist; contents never attached/committed",
+  "excluded_rebuildable": [
+    "node_modules directories",
+    "web .nuxt/dist",
+    "server dist",
+    "autobyteus-ts dist"
+  ],
+  "symlinks": "Preserved as links; no target traversal"
+}

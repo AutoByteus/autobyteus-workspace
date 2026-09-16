@@ -1,0 +1,53 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Orgs":
+    - text: Back to Agent Orgs
+  - generic: RB
+  - heading "Readfix Beta" [level=1]
+  - button "Run"
+  - button "Edit"
+  - button "Delete"
+  - heading "Description" [level=2]
+  - paragraph: Synthetic ownership validation.
+  - heading "Members" [level=2]
+  - heading "Agents (1)" [level=3]
+  - list:
+    - generic: RB
+    - paragraph: Readfix Beta Guide
+  - heading "Teams (1)" [level=3]
+  - list:
+    - paragraph: Readfix Beta Squad
+    - paragraph: "Coordinator: Readfix Beta Squad Worker"
+    - button "View ↗"
+  - heading "Handoffs" [level=2]
+  - list:
+    - paragraph: From
+    - generic: Readfix Beta Guide
+    - paragraph: /guide
+    - paragraph: To
+    - generic: Readfix Beta Squad
+    - paragraph: /group
+    - paragraph: When
+    - list:
+      - listitem: Delegate only when explicitly asked.

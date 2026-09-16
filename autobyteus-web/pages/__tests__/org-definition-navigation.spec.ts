@@ -102,7 +102,7 @@ describe('definition inspection return through actual pages and stores', () => {
     expectLocation('/agent-teams', { view: 'team-detail', id: ownedTeamId, returnToOrg: orgId })
     expect(wrapper.text()).toContain('Exact bundled Team')
     expect(wrapper.text()).not.toContain('Agent team not found')
-    expect(useAgentTeamDefinitionStore().getAgentTeamDefinitionById(ownedTeamId)).toBeNull()
+    expect(useAgentTeamDefinitionStore().getCatalogAgentTeamDefinitionById(ownedTeamId)).toBeNull()
     await click(/Back to Agent Orgs/i)
     expectLocation('/agent-orgs', { view: 'org-detail', id: orgId })
     expect(wrapper.text()).toContain('Org description')

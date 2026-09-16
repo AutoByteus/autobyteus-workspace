@@ -140,7 +140,7 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
     expect(wrapper.text()).toContain('Exact coordinator')
     expect(wrapper.text()).toContain('Worker')
     expect(wrapper.text()).not.toContain('not found')
-    expect(useAgentTeamDefinitionStore().getAgentTeamDefinitionById('owned-team')).toBeNull()
+    expect(useAgentTeamDefinitionStore().getCatalogAgentTeamDefinitionById('owned-team')).toBeNull()
     expect(mutations()).toHaveLength(0)
   })
 

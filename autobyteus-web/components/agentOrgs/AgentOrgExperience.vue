@@ -174,7 +174,7 @@ import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import { useRoute, useRouter } from 'vue-router'
 import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.vue'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
-import { loadAgentOrgAuthoringReferences, type AgentOrgAuthoringReferences } from '~/services/agentOrgDefinition/agentOrgAuthoringReferences'
+import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
 import { useLocalization } from '~/composables/useLocalization'
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
@@ -226,7 +226,7 @@ const deleteNotice = ref('')
 onBeforeUnmount(() => { formGeneration += 1; deleteTarget.value = null })
 const formMembers = ref<AgentOrgMember[]>([])
 const formOrgHandoffs = ref<EditableHandoff[]>([])
-const references = ref<AgentOrgAuthoringReferences>({ agents: {}, teams: {}, unavailable: [] })
+const references = ref<AgentOrgDefinitionReferences>({ agents: {}, teams: {}, unavailable: [] })
 const referencesLoading = ref(false)
 
 const emptyOrg: AgentOrgDefinition = {
@@ -244,7 +244,7 @@ const toAgentView = (definition: Pick<AgentDefinition, 'id' | 'name' | 'descript
 }
 const agentById = (id: string): AgentView => toAgentView(references.value.agents[id] ?? agentStore.getAgentDefinitionById(id), id)
 const teamById = (id: string): TeamView => {
-  const team = references.value.teams[id] ?? teamStore.getAgentTeamDefinitionById(id)
+  const team = references.value.teams[id] ?? teamStore.getCatalogAgentTeamDefinitionById(id)
   if (!team) return { id, name: id, description: '', coordinatorId: '' }
   const coordinator = team.nodes.find((member) => member.memberName === team.coordinatorMemberName)
   return { id: team.id, name: team.name, description: team.description, coordinatorId: coordinator?.refScope === 'TEAM_LOCAL' ? buildTeamLocalAgentDefinitionId(team.id, coordinator.ref) : coordinator?.ref || team.coordinatorMemberName }
@@ -289,7 +289,7 @@ const buildHandoffOptions = (members: readonly AgentOrgMember[]) => {
       const option = { id: member.memberName, kind: 'agent' as const, label: agentById(member.ref).name, address: `/${member.memberName}`, group: t('agentOrgs.experience.form.directAgentsGroup') }
       from.push(option); to.push(option); continue
     }
-    const team = references.value.teams[member.ref] ?? teamStore.getAgentTeamDefinitionById(member.ref)
+    const team = references.value.teams[member.ref] ?? teamStore.getCatalogAgentTeamDefinitionById(member.ref)
     if (!team) continue
     const teamAddress = `/${member.memberName}`
     const teamOption = { id: member.memberName, kind: 'team' as const, label: team.name, address: teamAddress, group: t('agentOrgs.experience.form.teamsGroup'), coordinatorAddress: `${teamAddress}/${team.coordinatorMemberName}` }
@@ -325,8 +325,8 @@ watch(() => JSON.stringify([selectedOrg.value.id, selectedOrg.value.revision, re
   onCleanup(() => { current = false })
   referencesLoading.value = true
   references.value = { agents: {}, teams: {}, unavailable: [] }
-  const resolved = await loadAgentOrgAuthoringReferences(selectedOrg.value.id, referencedMembers.value, {
-    agent: agentStore.getAgentDefinitionById, team: teamStore.getAgentTeamDefinitionById,
+  const resolved = await loadAgentOrgDefinitionReferences(selectedOrg.value.id, referencedMembers.value, {
+    getCatalogAgentById: agentStore.getAgentDefinitionById, getCatalogTeamById: teamStore.getCatalogAgentTeamDefinitionById,
   })
   if (!current) return
   references.value = resolved

@@ -263,3 +263,21 @@ still apply.
 
 For Agent/Org parity, failure-state preservation and historical-control limits,
 see [Retained Activity After Termination](./agent_execution_architecture.md#retained-activity-after-termination).
+
+
+## Catalog Lookups Versus Exact Org References
+
+`agentTeamDefinitionStore.getCatalogAgentTeamDefinitionById` and
+`getCatalogAgentTeamDefinitionByName` synchronously search the current catalog
+snapshot. A `null` result is a catalog miss, not proof that a definition is absent
+from storage. These getters do not query or add owned definitions to the catalog.
+
+Org detail/editor, Org-owned Team detail and enclosing Org launch use
+`loadAgentOrgDefinitionReferences` for exact, scope/owner-validated references.
+Its required `AgentOrgReferenceCatalogLookup` callbacks,
+`getCatalogAgentById` and `getCatalogTeamById`, supply only eligible catalog
+matches; owned references use exact reads. The selected reference graph remains
+local to its view and does not change shared/application catalog membership.
+Reading a definition does not grant shared visibility, independent mutation or
+new standalone run permissions. This boundary does not change the existing
+independent Run/Edit policy for owned Teams.

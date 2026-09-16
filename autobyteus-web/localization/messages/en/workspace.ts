@@ -83,6 +83,8 @@ const messages = {
     "Automatically allows tool calls and access requests for this run.",
   "workspace.agentOrg.runConfig.workspaceRequired": "Workspace is required to run an Agent Org.",
   "workspace.agentOrg.runConfig.memberOverrides": "Member overrides",
+  "workspace.agentOrg.runConfig.referencesLoading": "Loading organization members…",
+  "workspace.agentOrg.runConfig.referencesUnavailable": "Unable to load organization members: {references}",
   "workspace.agentOrg.runConfig.schemaLoading": "Validating model configuration for {address}…",
   "workspace.agentOrg.runConfig.schemaBlocked": "Model configuration for {address} is not ready: {error}",
   "workspace.agentOrg.runConfig.schemaUnavailable": "The effective model configuration is unavailable.",

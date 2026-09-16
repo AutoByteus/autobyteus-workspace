@@ -243,7 +243,7 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
       teamRunConfigStore.clearConfig()
       return
     }
-    const definition = teamDefinitionStore.getAgentTeamDefinitionById(selectedTeamId.value)
+    const definition = teamDefinitionStore.getCatalogAgentTeamDefinitionById(selectedTeamId.value)
     if (!definition) {
       return
     }

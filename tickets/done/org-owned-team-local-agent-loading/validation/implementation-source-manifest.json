@@ -1,0 +1,12 @@
+{
+  "head": "65fc02a99d0a9608ba4da195cf108dc8aef255e7",
+  "files": {
+    "autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts": "9d839c603ead6154b648863bd1c882ad8912cc538d5054f37e0f77fd1c40e003",
+    "autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts": "bef4af541b054501f30f7ccf7846bd8e524eed9594f4277e3e3029ab64e3fbbd",
+    "autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts": "a82752732845affc624d56d52bc93f59e2c0e6100ecabdd944a4926f81e6bb80",
+    "autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts": "a7724c9176e0e79f8548daad8a482e3b383033ec5381419b7e241017add98dec",
+    "autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts": "f8c48d4c3934783c0b1eaa765608cf4a9bb1e350d78dde6546fb76c650617e00",
+    "autobyteus-server-ts/tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts": "4e1e947127502bf8efe5550e8bf059926e9d1a36f5eba3d2dcafd375cf5b89df",
+    "autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts": "740a82ecbda9325ce63b96e01a0c266be5887a6777ca4bbf52b608a40d0e9542"
+  }
+}

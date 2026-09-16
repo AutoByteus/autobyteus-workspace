@@ -151,15 +151,9 @@ export class FileAgentTeamDefinitionProvider {
 
   async getById(id: string): Promise<AgentTeamDefinition | null> {
     if (id.startsWith("_")) return null;
-    const orgSource = await findAgentOrgOwnedDefinitionSource({
-      definitionId: id,
-      subject: "agent_team",
-      orgRoots: this.getReadOrgRoots(),
-    });
-    if (orgSource) {
-      return this.readDefinition({ ...orgSource, subject: "agent_team", teamDir: orgSource.definitionDir, localTeamId: orgSource.localDefinitionId });
-    }
-    const source = await findTeamSourcePaths(id, this.getReadTeamRoots(), this.applicationBundleService);
+    const source = await findTeamSourcePaths(
+      id, this.getReadTeamRoots(), this.applicationBundleService, this.getReadOrgRoots(),
+    );
     return source ? this.readDefinition(source) : null;
   }
 

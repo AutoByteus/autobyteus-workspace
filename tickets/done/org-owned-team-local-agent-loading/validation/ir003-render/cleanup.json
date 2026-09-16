@@ -1,0 +1,9 @@
+{
+  "ownedPortsStopped": {
+    "50782": true,
+    "50783": true
+  },
+  "browserClosed": true,
+  "liveBackendStarted": false,
+  "userServerTouched": false
+}

@@ -66,6 +66,37 @@ than tightened to match Team/Org validation.
   unavailable external dependencies fail target admission without mutation or
   legacy fallback.
 
+## Exact Org-Owned Team And Team-Local Agent Reads
+
+A self-contained Org can keep its Team definition beneath the Org package and
+that Team's local Agents beneath its own `agents/` directory. Exact reads use
+`findTeamSourcePaths` with the registered Org read roots as well as Team and
+application source context. An Org-owned Team ID is only a family discriminator;
+the exact owned-source index, not a decoded name or guessed path, establishes
+its owner and physical directory. Missing indexed owners return no definition
+rather than borrowing a same-named shared Team. The Agent provider supplies the
+same Org-root context when reading a Team-local Agent.
+
+The Team cache delegates Org-owned exact IDs directly to persistence without
+inserting them into the public catalog snapshot. Exact readability and shared
+catalog visibility are separate facts: valid self-contained packages need no
+extraction, publication, copying or migration. Reads leave authored files intact.
+Existing source writability and mutation boundaries are unchanged.
+
+Frontend catalog getters likewise describe only the current public inventory.
+Org detail/editor, owned Team detail and enclosing Org launch use the selected
+Org's exact reference reader, including Team-local Agents. Launch must resolve
+that graph independently; visiting detail first is not a prerequisite. The
+selected-key loading/ready/unavailable snapshot blocks Create until complete and
+rejects stale completions without replacing another selection's draft. Runtime,
+model, Workspace and override validation still apply afterward. See the
+[frontend read contract](../../../autobyteus-web/docs/agent_orgs.md#catalog-lookups-versus-exact-org-references).
+
+This does not grant independent Run/Edit permissions for owned Teams, add a
+global recursive inventory, or change configured topology, runtime identity,
+provider behavior or schema. Ordinary enclosing Org execution retains the exact
+Agent and enclosing Team instruction sources.
+
 ## Addresses And Handoffs
 
 Configured placement addresses are root-relative and exact:

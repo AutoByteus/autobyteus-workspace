@@ -53,7 +53,13 @@ sources, but they still cannot contain Teams.
 | --- | --- | --- |
 | Shared `agent-teams/<id>/` | Standalone reusable Team | Shared Team provider |
 | Application `applications/<app>/agent-teams/<id>/` | Application-owned Team, also inspectable in the Team UI | Owning writable application bundle |
+| Org package-owned Team | Exact scoped read, excluded from public Team catalog | Existing Org-owned package authority; no independent write permission inferred |
 | Registered external package root | Admitted when supported Team fields and scoped references are valid | Read-only to this repository/process unless that package owner updates it |
+
+Org-owned Team exact reads and their Team-local Agent reads share the indexed
+owner/source lookup. An unavailable owner does not fall back to a same-named
+shared Team, and exact reads do not populate the public Team cache. See
+[Org-owned source resolution](./agent_orgs.md#exact-org-owned-team-and-team-local-agent-reads).
 
 Normal Team input readers extract supported root/member/handoff/default fields and
 ignore unused metadata, including `schemaVersion` and member `refType`. Missing

@@ -1,0 +1,13 @@
+{
+  "count": 7,
+  "allUnchanged": true,
+  "files": {
+    "autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts": true,
+    "autobyteus-server-ts/src/agent-org-definition/utils/agent-org-owned-definition-id.ts": true,
+    "autobyteus-server-ts/src/agent-team-definition/providers/cached-agent-team-definition-provider.ts": true,
+    "autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts": true,
+    "autobyteus-server-ts/src/agent-team-definition/providers/team-definition-source-paths.ts": true,
+    "autobyteus-server-ts/tests/unit/agent-team-definition/cached-agent-team-definition-provider.test.ts": true,
+    "autobyteus-server-ts/tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts": true
+  }
+}

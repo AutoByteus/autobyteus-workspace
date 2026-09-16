@@ -17,3 +17,7 @@ export const buildAgentOrgOwnedDefinitionId = (
 /** Family classification only. Ownership and physical paths still require the exact source index. */
 export const isAgentOrgOwnedAgentDefinitionId = (id: string): boolean =>
   /^agent-org-owned-agent:[^:/\\]+:[^:/\\]+$/.test(id);
+
+/** Team family classification only; source discovery remains index-owned. */
+export const isAgentOrgOwnedTeamDefinitionId = (id: string): boolean =>
+  /^agent-org-owned-team:[^:/\\]+:[^:/\\]+$/.test(id);

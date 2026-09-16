@@ -52,7 +52,7 @@ const { route, push, org, orgStore, agentStore, teamStore } = vi.hoisted(() => {
     },
     teamStore: {
       rootAgentTeamDefinitions: [team], sharedAgentTeamDefinitions: [team],
-      getAgentTeamDefinitionById: vi.fn((id: string) => id === team.id ? team : null),
+      getCatalogAgentTeamDefinitionById: vi.fn((id: string) => id === team.id ? team : null),
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
     },
   }

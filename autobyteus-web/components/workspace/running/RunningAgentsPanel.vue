@@ -179,7 +179,7 @@ const createAgentRun = (definitionId: string) => {
 
 const createTeamRun = (definitionId: string) => {
   selectionStore.beginSelectionIntent();
-  const definition = teamDefinitionStore.getAgentTeamDefinitionById(definitionId);
+  const definition = teamDefinitionStore.getCatalogAgentTeamDefinitionById(definitionId);
   if (!definition) return;
 
   const group = teamGroups.value.find(g => g.definitionId === definitionId);

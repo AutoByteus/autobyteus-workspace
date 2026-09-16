@@ -147,7 +147,7 @@ vi.mock('~/stores/agentTeamDefinitionStore', async () => {
   teamDefinitionRevision.current = revision
   return {
     useAgentTeamDefinitionStore: () => ({
-      getAgentTeamDefinitionById: (id: string) => {
+      getCatalogAgentTeamDefinitionById: (id: string) => {
         revision.value
         return teamDefinitions.get(id) ?? null
       },

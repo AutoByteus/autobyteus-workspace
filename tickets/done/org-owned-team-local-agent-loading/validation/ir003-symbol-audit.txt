@@ -1,0 +1,3 @@
+Live TS/Vue old Team store getter names: zero matches (rg exit1).
+Pure utility getTeamDefinitionById unchanged; git diff for editableAgentOrgRunFormModel.ts empty.
+No obsolete getter compatibility aliases added.

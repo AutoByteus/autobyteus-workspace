@@ -119,7 +119,7 @@ export function useMobileRunLaunchCoordinator() {
   }
 
   function ensureTeamDraftConfig(draft: Extract<MobileRunCreationDraft, { kind: 'team' }>): AgentTeamDefinition {
-    const definition = teamDefinitionStore.getAgentTeamDefinitionById(draft.teamDefinitionId);
+    const definition = teamDefinitionStore.getCatalogAgentTeamDefinitionById(draft.teamDefinitionId);
     if (!definition) {
       throw new Error('Choose a team before creating the run.');
     }

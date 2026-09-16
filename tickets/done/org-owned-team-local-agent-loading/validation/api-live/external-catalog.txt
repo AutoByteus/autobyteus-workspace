@@ -1,0 +1,67 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Agent Orgs" [level=1]
+  - generic: Search Agent Orgs
+  - textbox "Search Agent Orgs":
+    - /placeholder: Search organizations by name
+  - button "Reload":
+    - text: Reload
+  - button "Create Agent Org"
+  - heading "Featured organizations" [level=2]
+  - article:
+    - generic: RA
+    - heading "Readfix Alpha" [level=3]
+    - paragraph: Synthetic ownership validation.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent agent-org-owned-agent:readfix-alpha:guide":
+      - generic: agent-org-owned-agent:readfix-alpha:guide
+    - generic "Team agent-org-owned-team:readfix-alpha:squad":
+      - generic: agent-org-owned-team:readfix-alpha:squad
+  - article:
+    - generic: RB
+    - heading "Readfix Beta" [level=3]
+    - paragraph: Synthetic ownership validation.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent agent-org-owned-agent:readfix-beta:guide":
+      - generic: agent-org-owned-agent:readfix-beta:guide
+    - generic "Team agent-org-owned-team:readfix-beta:squad":
+      - generic: agent-org-owned-team:readfix-beta:squad
+  - article:
+    - generic: RS
+    - heading "Readfix Shared Control" [level=3]
+    - paragraph: Synthetic ownership validation.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent agent-org-owned-agent:readfix-shared-control:guide":
+      - generic: agent-org-owned-agent:readfix-shared-control:guide
+    - generic "Team Readfix Shared Squad":
+      - generic: Readfix Shared Squad

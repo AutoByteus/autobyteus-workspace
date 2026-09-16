@@ -23,7 +23,7 @@ const { team, teamStore, agentStore, prepareTeamRun, push } = vi.hoisted(() => {
   return {
     team,
     teamStore: {
-      getAgentTeamDefinitionById: vi.fn((id: string) => id === 'team-1' ? team : null),
+      getCatalogAgentTeamDefinitionById: vi.fn((id: string) => id === 'team-1' ? team : null),
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
       deleteAgentTeamDefinition: vi.fn().mockResolvedValue(true),
     },

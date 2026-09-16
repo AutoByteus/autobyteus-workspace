@@ -1,0 +1,26 @@
+{
+  "pid": 43248,
+  "cmd": [
+    "node",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-web/node_modules/nuxt/bin/nuxt.mjs",
+    "dev",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/org-owned-team-local-agent-loading/autobyteus-web",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "50683"
+  ],
+  "environment_keys": [
+    "PATH",
+    "TMPDIR",
+    "LANG",
+    "LC_ALL",
+    "SHELL",
+    "USER",
+    "LOGNAME",
+    "HOME",
+    "OLLAMA_HOSTS",
+    "LMSTUDIO_HOSTS",
+    "BACKEND_NODE_BASE_URL"
+  ]
+}
