@@ -1,5 +1,17 @@
 # Delivery / Release / Deployment Report — SIDEBAR-ORG-20260916-001
 
+## Latest local build result — DR-004 Completed (2026-09-16)
+
+User confirmed “i just quit, now continue to build”. Verified no processes from the previous exact bundle remained; only then moved old electron-dist intact to `.local/electron-sidebar-build-20260916/previous-electron-dist`. Resumed existing prepared build using `node build/dist/build.js --mac` with signing credentials blank and auto-discovery disabled, publishnever. Preparation had separately completed the same canonical build: guards/audit, prepare-server, generate:electron, transpile-electron and build TypeScript. Both preparation and packaging exit0. No source edits.
+
+Built from latest fetched base `8e162d843f804d5f09e81a3881f547ce912803d3` in retained base worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base`. AutoByteus1.4.69/Electron42.4.1 enterprise macOSARM64; unsigned/unnotarized local build, no version bump/tag/release/publication/install. DMG and ZIP checks pass; packaged node-pty spawn passes using Electron Node mode without GUI/backend launch. All238packaged Electron/renderer files byte-match fresh generated output;34implementation hashes still match. This is not a new user-profile startup/provider/migration acceptance or full strict-clean test claim. Existing API limits and L-001 remain.
+
+App: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg` (SHA256 `c0bf1b176b2c1bfabeb4aa0023bb426590b6b0f038d74f1ec3d214a6b33315a6`).
+ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip` (SHA256 `11552473dedd46c1a55dcf851f31d3b8f032c0c215a5b3dad6249c196b25519e`).
+Logs, byte sizes and checksums: `validation/delivery-dr004-electron-build.json` and `delivery-dr004-*`. Private data and unrelated base files retained. Dedicated ticket worktree/local branch cleanup already completed in DR-002; base worktree and requested outputs intentionally retained. All new build/check processes exited. Earlier DR-003 hold resolved, prior Git finalization not replayed. Final receipt-only documentation commit changes no packaged source.
+
+
 ## Current authoritative state — DR-002 finalization complete
 
 2026-09-16: explicit user acceptance and requested cleanup completed. Archived package commit `6ed3e38b29c6376ac4b8877bc98c8ae4435a5906` pushed first to `origin/codex/sidebar-team-icon-org-history-collapse`, then fast-forwarded and pushed to `origin/requirements/flat-agent-organization-model`; both remote refs independently verified at that commit. Base worktree is `/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base`. No new target commits, conflicts or effective behavior changes;34implementation hashes match on the actual base after integration, API executable evidence carried rather than rerun.
@@ -41,3 +53,7 @@ Current get_handoff_rules queried after DR-001. No rule applies to a routine use
 Explicit user verification/finalization/cleanup authorization received2026-09-16, quoted in handoff-summary.md. Latest target fetched again, unchanged75a42f18b3cf8555bef2496b03679c41575ad915. No new integration/check rerun needed; all34implementation fingerprints and diff-check still pass. Archive before commit. Restricted private preservation verified (delivery-dr002-preservation.json). Target worktree retains unrelated untracked SDKdist and org-history-resume-offline-analysis ticket; do not stage or clean these. Finalization and cleanup execution receipts pending; successful terminal not yet eligible. Release, publication, Electron rebuild and deployment Not required.
 
 Staging audit:193 exact allowlisted files (34implementation,2canonicaldocs,157archived artifacts); no private/generated state included. Full staged whitespace check exits2 solely for preserved raw validation evidence (488 diagnostic locations); source/tests/canonical docs and top-level artifact markdown staged check exit0. Evidence bytes intentionally not normalized; earlier diff-check Pass referred to tracked working diff, not full newly staged raw logs.
+
+
+## DR-003 — Additional user-requested local build
+Latest base fetched, already current8e162d843. Preparation completed (server/shared/Prisma/mobile/renderer/Electron/build compilation plus guards), no source change. **New packaging not completed:** existing output app PID87475 is still running. User asked to quit normally before the exact output bundle is replaced; no user process/data touched. Prior DR-002 finalization/cleanup is complete, not reopened. Local build logs/status `.local/electron-sidebar-build-20260916/`; no new artifact/path/checksum claim yet. This build-status update is local/uncommitted while waiting, not a release/publication.

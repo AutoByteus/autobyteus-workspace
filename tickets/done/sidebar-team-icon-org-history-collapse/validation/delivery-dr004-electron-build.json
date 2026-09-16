@@ -1,0 +1,38 @@
+{
+  "completed_at_utc": "2026-09-16T06:23:11.234141+00:00",
+  "source_commit": "8e162d843f804d5f09e81a3881f547ce912803d3",
+  "branch": "requirements/flat-agent-organization-model",
+  "base_worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base",
+  "version": "1.4.69",
+  "electron_version": "42.4.1",
+  "platform": "macOS arm64",
+  "flavor": "enterprise",
+  "signed": false,
+  "notarized": false,
+  "publication": "never",
+  "preparation_exit": 0,
+  "packaging_exit": 0,
+  "dmg_integrity": "Pass",
+  "zip_integrity": "Pass",
+  "packaged_node_pty_spawn": "Pass using ELECTRON_RUN_AS_NODE; no GUI or backend launched",
+  "packaged_electron_and_renderer_matches": 238,
+  "implementation_manifest_matches": 34,
+  "previous_build": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/.local/electron-sidebar-build-20260916/previous-electron-dist",
+  "artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg",
+      "bytes": 467776574,
+      "sha256": "c0bf1b176b2c1bfabeb4aa0023bb426590b6b0f038d74f1ec3d214a6b33315a6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip",
+      "bytes": 462700328,
+      "sha256": "11552473dedd46c1a55dcf851f31d3b8f032c0c215a5b3dad6249c196b25519e"
+    }
+  ],
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "production_profile_or_data_modified_by_delivery": false,
+  "user_normal_quit_observed_before_packaging": true,
+  "gui_runtime_validation": "Not performed; archive/native-helper/content checks only",
+  "receipt_commit": "Following documentation-only commit; build source hash unchanged"
+}
