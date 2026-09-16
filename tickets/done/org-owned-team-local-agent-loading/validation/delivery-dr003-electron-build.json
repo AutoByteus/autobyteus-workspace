@@ -1,0 +1,46 @@
+{
+  "ticket": "ORG-LOCAL-AGENT-20260916-001",
+  "delivery_revision": "DR-003",
+  "completed_at_utc": "2026-09-16T08:55:07.769619+00:00",
+  "status": "Delivery Completed",
+  "build_source": "9db0b074d1568221cba9d1298f775dc2ced18c23",
+  "packaging_head": "fbe91f532611b375a31709a706a78972650ea68a",
+  "head_delta": "receipt-only documentation; no build input change",
+  "branch": "requirements/flat-agent-organization-model",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base",
+  "version": "1.4.69",
+  "electron": "42.4.1",
+  "platform": "darwin arm64",
+  "flavor": "enterprise",
+  "signed": false,
+  "notarized": false,
+  "publish": "never",
+  "preparation_exit": 0,
+  "packaging_exit": 0,
+  "dmg_verify": "Pass",
+  "zip_verify": "Pass",
+  "native_terminal_spawn": "Pass using packaged Electron Node mode, not GUI/backend",
+  "packaged_electron_renderer_files_match": 239,
+  "packaged_changed_backend_owner_files_match": 5,
+  "implementation_manifest_match": 35,
+  "previous_output": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/.local/electron-org-local-build-20260916/previous-electron-dist",
+  "artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.dmg",
+      "size": 467996581,
+      "sha256": "3ed7a781424758ea18b8eeeec7abf00d8fbe050595e43232a7e145da2e4976a8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.69.zip",
+      "size": 462709931,
+      "sha256": "0bd8d204114cc85bd2c829bc0635dce3e7aab2ef4843dd0c2e0317adb66664c5"
+    }
+  ],
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/flat-agent-organization-model-base/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "normal_quit_confirmed": true,
+  "user_profile_data_mutation_by_delivery": false,
+  "gui_launch_install_deploy": "Not performed",
+  "private_preservation": "DR-002180entries previously reverified, not reopened",
+  "ticket_cleanup": "Completed DR-002; not replayed",
+  "receipt_commit": "following documentation-only commit; exact revision in Git/terminal message"
+}
