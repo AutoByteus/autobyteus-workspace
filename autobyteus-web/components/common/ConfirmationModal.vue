@@ -2,16 +2,16 @@
   <Teleport to="body">
     <Transition name="modal-fade">
       <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div class="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl" role="dialog" aria-modal="true">
+        <div class="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl" role="dialog" aria-modal="true" :aria-label="title || confirmButtonText" :aria-busy="pending">
           <h3 v-if="title" class="font-semibold" :class="[titleSizeClass, titleClass]">{{ title }}</h3>
           <div :class="title ? 'mt-2' : ''">
-            <p :class="[messageSizeClass, 'text-gray-600']" v-html="message"></p>
+            <slot><p :class="[messageSizeClass, 'text-gray-600']" v-html="message"></p></slot>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
-            <button @click="$emit('cancel')" type="button" class="rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" :class="buttonSizeClass">
+            <button @click="!pending && $emit('cancel')" :disabled="pending" type="button" class="rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" :class="buttonSizeClass">
               {{ $t('common.components.common.ConfirmationModal.cancel') }}
             </button>
-            <button @click="$emit('confirm')" type="button" class="inline-flex justify-center rounded-md border border-transparent px-4 py-2 font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" :class="[buttonSizeClass, confirmButtonClass]">
+            <button @click="!pending && $emit('confirm')" :disabled="pending" type="button" class="inline-flex justify-center rounded-md border border-transparent px-4 py-2 font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2" :class="[buttonSizeClass, confirmButtonClass]">
               {{ confirmButtonText }}
             </button>
           </div>
@@ -30,12 +30,15 @@ type TypographySize = 'default' | 'large';
 const props = withDefaults(defineProps<{
   show: boolean;
   title?: string;
-  message: string;
+  message?: string;
+  pending?: boolean;
   confirmButtonText?: string;
   variant?: ModalVariant;
   typographySize?: TypographySize;
 }>(), {
   title: '',
+  message: '',
+  pending: false,
   confirmButtonText: 'Confirm',
   variant: 'primary',
   typographySize: 'default',

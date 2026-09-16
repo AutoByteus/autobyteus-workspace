@@ -1,0 +1,17 @@
+{
+  "backup": "/Users/normy/autobyteus_org/delivery-retained/SIDEBAR-ORG-20260916-001-DR002",
+  "private_backup_mode": "0700",
+  "verified_file_and_link_count": 1163,
+  "retained": [
+    ".local including isolated data/db/keys/media",
+    "autobyteus-web/.nuxtrc"
+  ],
+  "excluded_rebuildable": [
+    "node_modules directories",
+    "autobyteus-web/.nuxt",
+    "autobyteus-web/dist",
+    "autobyteus-server-ts/dist",
+    "autobyteus-ts/dist"
+  ],
+  "no_symlink_targets_followed": true
+}

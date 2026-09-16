@@ -61,6 +61,8 @@ const messages = {
   "workspace.agentOrg.history.running": "运行中",
   "workspace.agentOrg.history.stopped": "已停止",
   "workspace.agentOrg.history.newRun": "新建 - {{name}}",
+  "workspace.agentOrg.history.expandRun": "展开 {{name}} 下的成员",
+  "workspace.agentOrg.history.collapseRun": "折叠 {{name}} 下的成员",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} 执行层级",
   "workspace.agentOrg.history.taskLabel": "任务：{{name}}",
   "workspace.agentOrg.history.empty": "暂无智能体组织运行历史记录。",

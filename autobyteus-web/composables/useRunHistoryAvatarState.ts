@@ -7,7 +7,7 @@ interface AgentDefinitionAvatarLike {
   avatarUrl?: string | null;
 }
 
-interface TeamDefinitionAvatarLike {
+interface DefinitionAvatarLike {
   id: string;
   avatarUrl?: string | null;
 }
@@ -44,9 +44,11 @@ const toTeamMemberDisplayName = (member: TeamMemberTreeRow): string => {
 export const useRunHistoryAvatarState = (params: {
   loading: Ref<boolean> | ComputedRef<boolean>;
   agentDefinitions: ComputedRef<AgentDefinitionAvatarLike[]>;
-  teamDefinitions: ComputedRef<TeamDefinitionAvatarLike[]>;
+  teamDefinitions: ComputedRef<DefinitionAvatarLike[]>;
+  orgDefinitions: ComputedRef<DefinitionAvatarLike[]>;
 }) => {
   const brokenAvatarByAgentKey = ref<Record<string, boolean>>({});
+  const brokenAvatarByOrgKey = ref<Record<string, boolean>>({});
   const brokenAvatarByTeamKey = ref<Record<string, boolean>>({});
   const brokenAvatarByTeamMemberKey = ref<Record<string, boolean>>({});
 
@@ -64,9 +66,9 @@ export const useRunHistoryAvatarState = (params: {
 
   const getAgentInitials = (agentName: string): string => toInitials(agentName || 'Agent', 'AG');
 
-  const teamAvatarByDefinitionId = computed(() => {
+  const avatarMap = (definitions: DefinitionAvatarLike[]) => {
     const next: Record<string, string> = {};
-    for (const definition of params.teamDefinitions.value) {
+    for (const definition of definitions) {
       const key = (definition.id || '').trim();
       const avatarUrl = (definition.avatarUrl || '').trim();
       if (key && avatarUrl && !next[key]) {
@@ -74,7 +76,18 @@ export const useRunHistoryAvatarState = (params: {
       }
     }
     return next;
-  });
+  };
+  const teamAvatarByDefinitionId = computed(() => avatarMap(params.teamDefinitions.value));
+  const orgAvatarByDefinitionId = computed(() => avatarMap(params.orgDefinitions.value));
+  const getOrgAvatarUrl = (definitionId: string): string => orgAvatarByDefinitionId.value[definitionId.trim()] || '';
+  const orgAvatarKey = (definitionId: string, url: string) => JSON.stringify([definitionId.trim(), url.trim()]);
+  const showOrgAvatar = (definitionId: string): boolean => {
+    const url = getOrgAvatarUrl(definitionId);
+    return Boolean(url) && !brokenAvatarByOrgKey.value[orgAvatarKey(definitionId, url)];
+  };
+  const onOrgAvatarError = (definitionId: string, failedUrl: string): void => {
+    if (failedUrl.trim()) brokenAvatarByOrgKey.value[orgAvatarKey(definitionId, failedUrl)] = true;
+  };
 
   const memberAvatarByName = computed(() => {
     const next: Record<string, string> = {};
@@ -87,8 +100,6 @@ export const useRunHistoryAvatarState = (params: {
     }
     return next;
   });
-
-  const getTeamInitials = (teamName: string): string => getAgentInitials(teamName || 'Team');
 
   const getTeamAvatarUrl = (team: TeamTreeNode): string => {
     return teamAvatarByDefinitionId.value[(team.teamDefinitionId || '').trim()] || '';
@@ -107,8 +118,7 @@ export const useRunHistoryAvatarState = (params: {
     return !brokenAvatarByTeamKey.value[key];
   };
 
-  const onTeamAvatarError = (team: TeamTreeNode): void => {
-    const avatarUrl = getTeamAvatarUrl(team);
+  const onTeamAvatarError = (team: TeamTreeNode, avatarUrl: string): void => {
     if (!avatarUrl) {
       return;
     }
@@ -184,14 +194,17 @@ export const useRunHistoryAvatarState = (params: {
       if (previousLoading && !loading) {
         brokenAvatarByAgentKey.value = {};
         brokenAvatarByTeamKey.value = {};
+        brokenAvatarByOrgKey.value = {};
         brokenAvatarByTeamMemberKey.value = {};
       }
     },
   );
 
   return {
+    getOrgAvatarUrl,
+    showOrgAvatar,
+    onOrgAvatarError,
     getAgentInitials,
-    getTeamInitials,
     getTeamAvatarUrl,
     getTeamMemberDisplayName,
     getTeamMemberInitials,

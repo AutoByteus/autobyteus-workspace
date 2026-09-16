@@ -1,0 +1,119 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs Sidebar Broken Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: Sidebar Broken Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Broken Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Broken Team
+  - button "Terminate team":
+  - generic: now
+  - tree "New - Sidebar Broken Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: now
+  - button "Active team runs Sidebar Empty Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: Sidebar Empty Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Empty Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Empty Team
+  - button "Terminate team":
+  - generic: now
+  - tree "New - Sidebar Empty Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: now
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: now
+  - button "Active team runs Sidebar Image Team avatar Sidebar Image Team (1)" [expanded]:
+    - img "Active team runs"
+    - img "Sidebar Image Team avatar"
+    - generic: Sidebar Image Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Image Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Image Team
+  - button "Terminate team":
+  - generic: 1m
+  - tree "New - Sidebar Image Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 1m
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 1m
+  - generic: Orgs
+  - button "Sidebar Broken Org (1)" [expanded]:
+    - generic: Sidebar Broken Org
+    - generic: (1)
+  - button "Expand Sidebar Broken Org descendants":
+  - treeitem "Running New - Sidebar Broken Org":
+    - generic "Running"
+    - generic: New - Sidebar Broken Org
+  - button "Stop Agent Org":
+  - generic: now
+  - button "Sidebar Image Org Sidebar Image Org (1)" [expanded]:
+    - img "Sidebar Image Org"
+    - generic: Sidebar Image Org
+    - generic: (1)
+  - button "Expand Sidebar Image Org descendants":
+  - treeitem "Stopped New - Sidebar Image Org":
+    - generic "Stopped"
+    - generic: New - Sidebar Image Org
+  - generic: 6m
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Orgs":
+    - text: Back to Agent Orgs
+  - generic: SR
+  - heading "Sidebar Readonly Org" [level=1]
+  - button "Run"
+  - button "Edit"
+  - button "Delete"
+  - heading "Description" [level=2]
+  - paragraph: Disposable current-schema fixture.
+  - heading "Members" [level=2]
+  - heading "Agents (1)" [level=3]
+  - list:
+    - generic: SS
+    - paragraph: Sidebar Shared Agent
+  - heading "Teams (1)" [level=3]
+  - list:
+    - paragraph: Sidebar Image Team
+    - paragraph: "Coordinator: Sidebar Shared Agent"
+    - button "View ↗"
+  - heading "Handoffs" [level=2]
+  - paragraph: No handoffs yet

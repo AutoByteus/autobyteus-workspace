@@ -1,0 +1,87 @@
+{
+  "start": "2026-09-15T23:21:21Z",
+  "window": [
+    {
+      "at": "2026-09-15T23:21:24.943Z",
+      "kind": "request",
+      "id": 678,
+      "method": "GET",
+      "url": "/rest/health",
+      "bytes": 0
+    },
+    {
+      "at": "2026-09-15T23:21:24.947Z",
+      "kind": "response",
+      "id": 678,
+      "status": 200,
+      "bytes": 45
+    },
+    {
+      "at": "2026-09-15T23:21:24.951Z",
+      "kind": "request",
+      "id": 679,
+      "method": "OPTIONS",
+      "url": "/graphql",
+      "bytes": 0
+    },
+    {
+      "at": "2026-09-15T23:21:24.952Z",
+      "kind": "request",
+      "id": 680,
+      "method": "OPTIONS",
+      "url": "/graphql",
+      "bytes": 0
+    },
+    {
+      "at": "2026-09-15T23:21:24.953Z",
+      "kind": "response",
+      "id": 679,
+      "status": 204,
+      "bytes": 0
+    },
+    {
+      "at": "2026-09-15T23:21:24.954Z",
+      "kind": "response",
+      "id": 680,
+      "status": 204,
+      "bytes": 0
+    },
+    {
+      "at": "2026-09-15T23:21:24.956Z",
+      "kind": "request",
+      "id": 681,
+      "method": "POST",
+      "url": "/graphql",
+      "bytes": 1155,
+      "operation": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": "2026-09-15T23:21:24.957Z",
+      "kind": "request",
+      "id": 682,
+      "method": "POST",
+      "url": "/graphql",
+      "bytes": 467,
+      "operation": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "at": "2026-09-15T23:21:24.960Z",
+      "kind": "response",
+      "id": 681,
+      "status": 200,
+      "bytes": 9432
+    },
+    {
+      "at": "2026-09-15T23:21:24.961Z",
+      "kind": "response",
+      "id": 682,
+      "status": 200,
+      "bytes": 6410
+    }
+  ],
+  "inspection_or_command_requests": 0
+}

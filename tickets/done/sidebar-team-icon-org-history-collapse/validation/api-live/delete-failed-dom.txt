@@ -1,0 +1,147 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Teams
+  - button "Active team runs Sidebar Broken Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: Sidebar Broken Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Broken Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Broken Team
+  - button "Terminate team":
+  - generic: 10m
+  - tree "New - Sidebar Broken Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 10m
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 10m
+  - button "Active team runs Sidebar Empty Team (1)" [expanded]:
+    - img "Active team runs"
+    - generic: Sidebar Empty Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Empty Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Empty Team
+  - button "Terminate team":
+  - generic: 10m
+  - tree "New - Sidebar Empty Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 10m
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 10m
+  - button "Active team runs Sidebar Image Team avatar Sidebar Image Team (1)" [expanded]:
+    - img "Active team runs"
+    - img "Sidebar Image Team avatar"
+    - generic: Sidebar Image Team
+    - generic: (1)
+  - button "Active team run New - Sidebar Image Team" [expanded]:
+    - img "Active team run"
+    - generic: New - Sidebar Image Team
+  - button "Terminate team":
+  - generic: 11m
+  - tree "New - Sidebar Image Team organization tree":
+    - treeitem "Agent, lead, level 1, offline, /lead" [level=1]:
+      - generic: L
+      - generic: lead
+      - generic: 11m
+    - treeitem "Agent, worker, level 1, offline, /worker" [level=1]:
+      - generic: W
+      - generic: worker
+      - generic: 11m
+  - generic: Orgs
+  - button "Sidebar Broken Org (1)" [expanded]:
+    - generic: Sidebar Broken Org
+    - generic: (1)
+  - button "Expand Sidebar Broken Org descendants":
+  - treeitem "Running New - Sidebar Broken Org":
+    - generic "Running"
+    - generic: New - Sidebar Broken Org
+  - button "Stop Agent Org":
+  - generic: 1m
+  - button "Sidebar Image Org Sidebar Image Org (1)" [expanded]:
+    - img "Sidebar Image Org"
+    - generic: Sidebar Image Org
+    - generic: (1)
+  - button "Expand Sidebar Image Org descendants":
+  - treeitem "Stopped New - Sidebar Image Org":
+    - generic "Stopped"
+    - generic: New - Sidebar Image Org
+  - generic: 7m
+  - button "Sidebar Readonly Org (1)" [expanded]:
+    - generic: Sidebar Readonly Org
+    - generic: (1)
+  - button "Collapse Sidebar Readonly Org descendants" [expanded]:
+  - treeitem "Running New - Sidebar Readonly Org":
+    - generic "Running"
+    - generic: New - Sidebar Readonly Org
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Sidebar Readonly Org execution hierarchy":
+    - treeitem "direct, offline, /direct, sidebar_shared_agent_69c197e9ee9b401c96be0912a589de14" [level=1]:
+      - generic: D
+      - generic: direct
+    - 'treeitem "team. Team status: Offline" [level=1]':
+      - 'img "Team status: Offline"'
+      - generic: team
+  - button "Settings":
+    - generic: Settings
+- main:
+  - button "Back to Agent Orgs":
+    - text: Back to Agent Orgs
+  - generic: SA
+  - heading "Sidebar Authoring Org" [level=1]
+  - button "Run"
+  - button "Edit"
+  - button "Delete"
+  - heading "Description" [level=2]
+  - paragraph: Disposable current-schema fixture.
+  - heading "Members" [level=2]
+  - heading "Agents (2)" [level=3]
+  - list:
+    - generic: SS
+    - paragraph: Sidebar Shared Agent
+    - generic: SO
+    - paragraph: Sidebar Owned Worker
+  - heading "Teams (2)" [level=3]
+  - list:
+    - paragraph: Sidebar Image Team
+    - paragraph: "Coordinator: Sidebar Shared Agent"
+    - button "View ↗"
+    - paragraph: Sidebar Owned Team
+    - paragraph: "Coordinator: Sidebar Shared Agent"
+    - button "View ↗"
+  - heading "Handoffs" [level=2]
+  - paragraph: No handoffs yet
+- dialog "Delete Agent Org":
+  - heading "Delete Agent Org" [level=3]
+  - paragraph: Permanently delete “Sidebar Authoring Org”? This cannot be undone.
+  - paragraph: This removes the Org package and any Agent or Team definitions stored inside it. Separately shared Agent/Team definitions, running conversations, history and attachments are not deleted or stopped.
+  - alert: Failed to fetch
+  - button "Cancel"
+  - button "Delete"

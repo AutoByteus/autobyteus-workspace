@@ -1,0 +1,8 @@
+{
+  "external_fixture_chat_count": 2,
+  "traces": {
+    "data/memory/agent_orgs/sidebar_image_org_05ae8745075749618286b3f94b3e7a82/sidebar_image_team_c09a4ed6fe9547af879e9f5818b7ae6e/sidebar_shared_agent_e01bff342d7d4d139befffb513fc2500/raw_traces_active.jsonl": "2748f46f56b58dedaaaac5bcb6f66af6f8bf0c82b2c910dbf0c43859065bb73c",
+    "data/memory/agent_orgs/sidebar_image_org_05ae8745075749618286b3f94b3e7a82/sidebar_shared_agent_665b7a097d204e5e82e6bc0ad909d045/raw_traces_active.jsonl": "b97782f7fe32aa97f0b517ff90671a4852326e07c60e4f9e006a955cd011607f"
+  },
+  "source_manifest_all_unchanged": true
+}

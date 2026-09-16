@@ -130,6 +130,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
+import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useToasts } from '~/composables/useToasts';
@@ -163,6 +164,7 @@ const teamRunStore = useAgentTeamRunStore();
 const { stopPendingTeamIds } = storeToRefs(teamRunStore);
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
+const agentOrgDefinitionStore = useAgentOrgDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
@@ -189,8 +191,10 @@ const treeState = useWorkspaceHistoryTreeState({
 const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
 const { execute: executeSubjectAction } = useWorkspaceHistorySubjectActions();
 const {
+  getOrgAvatarUrl,
+  showOrgAvatar,
+  onOrgAvatarError,
   getAgentInitials,
-  getTeamInitials,
   getTeamAvatarUrl,
   getTeamMemberDisplayName,
   getTeamMemberInitials,
@@ -205,6 +209,7 @@ const {
   loading: computed(() => runHistoryStore.loading),
   agentDefinitions: computed(() => agentDefinitionStore.agentDefinitions),
   teamDefinitions: computed(() => agentTeamDefinitionStore.agentTeamDefinitions),
+  orgDefinitions: computed(() => agentOrgDefinitionStore.definitions),
 });
 
 const {
@@ -382,11 +387,13 @@ const sectionState: WorkspaceHistorySectionState = {
 const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
   showAgentAvatar,
   onAgentAvatarError,
+  getOrgAvatarUrl,
+  showOrgAvatar,
+  onOrgAvatarError,
   getAgentInitials,
   showTeamAvatar,
   getTeamAvatarUrl,
   onTeamAvatarError,
-  getTeamInitials,
   showTeamMemberAvatar,
   getTeamMemberAvatarUrl,
   onTeamMemberAvatarError,
@@ -428,6 +435,7 @@ onMounted(async () => {
     runHistoryStore.fetchTree().catch(() => undefined),
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
+    agentOrgDefinitionStore.fetchAll().catch(() => undefined),
   ]);
   refreshTimerId = setInterval(() => {
     void runHistoryStore.refreshTreeQuietly();

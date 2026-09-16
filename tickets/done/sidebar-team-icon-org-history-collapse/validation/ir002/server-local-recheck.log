@@ -1,0 +1,24 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-server-ts
+
+stdout | tests/unit/collaboration-definition-admission/org-avatar-delete.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/collaboration-definition-admission/org-avatar-delete.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/collaboration-definition-admission/org-avatar-delete.test.ts [ tests/unit/collaboration-definition-admission/org-avatar-delete.test.ts ]
+Error: Cannot find module '.prisma/client/default'
+Require stack:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/default.js
+ ❯ Object.<anonymous> ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/default.js:2:6
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  01:00:42
+   Duration  2.24s (transform 1.36s, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

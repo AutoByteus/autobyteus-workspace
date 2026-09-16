@@ -29,9 +29,13 @@ Canonical Team saves/exports remain strict and contain no `schemaVersion` or
 member `refType`. Normal package reads/import/reload extract supported fields
 and ignore unused metadata, including those fields, without rewriting source
 files. Missing or null `defaultLaunchConfig` means no package defaults; valid
-supplied defaults keep their values. Omitted or null `avatarUrl` means no image and uses the existing initials fallback.
-Valid supplied avatars retain normal image rendering. Other required fields,
-value types and launch settings remain validated.
+supplied defaults keep their values. Omitted or null `avatarUrl` means no image.
+Catalog cards/details keep their existing initials fallback; sidebar Team
+definition headers use the Team group glyph when the image is absent or broken.
+Valid supplied avatars retain normal image rendering. Sidebar Org definition
+headers use the analogous image-first/building-glyph fallback, without changing
+Agent avatars. Other required fields, value types and launch settings remain
+validated.
 
 Agent member rows use `memberName`, `ref`, and explicit `refScope`. Actual scoped
 Agent lookup and handoff validation determine availability: ignoring `refType`

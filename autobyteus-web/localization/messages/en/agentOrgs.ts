@@ -56,6 +56,20 @@ const messages = {
   'agentOrgs.experience.form.handoffsInvalid': 'Resolve the highlighted handoffs before saving this Agent Org.',
   'agentOrgs.experience.form.referencesLoading': 'Loading referenced definitions…',
   'agentOrgs.experience.form.referencesUnavailable': 'Referenced definitions are unavailable or do not match this Org: {{refs}}.',
+  "agentOrgs.avatar.label": "Avatar (optional)",
+  "agentOrgs.avatar.upload": "Upload image",
+  "agentOrgs.avatar.remove": "Remove image",
+  "agentOrgs.avatar.formats": "JPEG, PNG, GIF or WebP. Saved with the Org.",
+  "agentOrgs.avatar.uploading": "Uploading image…",
+  "agentOrgs.avatar.invalidType": "Choose a JPEG, PNG, GIF or WebP image.",
+  "agentOrgs.avatar.uploadFailed": "Image upload failed. Please try again.",
+  "agentOrgs.delete.action": "Delete",
+  "agentOrgs.delete.title": "Delete Agent Org",
+  "agentOrgs.delete.pending": "Deleting…",
+  "agentOrgs.delete.confirm": "Permanently delete “{{name}}”? This cannot be undone.",
+  "agentOrgs.delete.scope": "This removes the Org package and any Agent or Team definitions stored inside it. Separately shared Agent/Team definitions, running conversations, history and attachments are not deleted or stopped.",
+  "agentOrgs.delete.failed": "The Org was not deleted. Please try again or reload the catalog.",
+  "agentOrgs.delete.navigationFailed": "The Org was deleted, but the catalog could not be opened. Return to the Org list; do not retry deletion.",
 } satisfies TranslationCatalog;
 
 export default messages;

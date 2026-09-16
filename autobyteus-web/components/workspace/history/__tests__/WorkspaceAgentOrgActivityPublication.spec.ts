@@ -126,6 +126,7 @@ async function open(address: string) {
       return stopResult
     } } as WorkspaceHistorySectionActions
     return () => h(WorkspaceAgentOrgHistoryCollection, {
+      avatars: { getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {} },
       workspaceId: 'history', groups: history.getTreeNodes().flatMap((node) => node.agentOrgDefinitions), state, actions,
     })
   } }), { global: { stubs: { Icon: true } } })

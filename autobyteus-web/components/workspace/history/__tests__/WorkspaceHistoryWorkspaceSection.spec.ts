@@ -1,7 +1,8 @@
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { reactive, ref } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref } from 'vue';
+import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
@@ -16,6 +17,8 @@ import {
   testSubTeamNode,
   testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
+
+vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
 
 const stableAgent = (
   memberAddress: string,
@@ -105,6 +108,7 @@ const mountSubject = (options: {
   liveContext?: ReturnType<typeof buildTestTeamContext>;
   workspaceTeams?: TeamTreeNode[];
   agentOrgDefinitions?: AgentOrgHistoryDefinitionGroup[];
+  avatars?: ReturnType<typeof useRunHistoryAvatarState>;
   teamExpanded?: boolean;
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
@@ -197,16 +201,15 @@ const mountSubject = (options: {
         stableKey: 'workspace:/ws/a', agentOrgDefinitions: options.agentOrgDefinitions ?? [],
       },
       workspaceTeams: options.workspaceTeams ?? [team], workspaceTeamHistoryGroups: [], state,
-      avatars: {
+      avatars: options.avatars ?? {
         showAgentAvatar: () => false, onAgentAvatarError: vi.fn(), getAgentInitials: () => 'A',
-        showTeamAvatar: () => false, getTeamAvatarUrl: () => '', onTeamAvatarError: vi.fn(), getTeamInitials: () => 'TA',
+        showTeamAvatar: () => false, getTeamAvatarUrl: () => '', getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {}, onTeamAvatarError: vi.fn(),
         showTeamMemberAvatar: () => false, getTeamMemberAvatarUrl: () => '', onTeamMemberAvatarError: vi.fn(),
         getTeamMemberDisplayName: (member: any) => member.displayName, getTeamMemberInitials: () => 'W',
       },
       actions,
     },
     global: {
-      stubs: { Icon: { template: '<span data-test="icon" />' } },
       mocks: { $t: (key: string) => ({
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title': 'Temporary task execution',
         'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs': 'Active team runs',
@@ -227,6 +230,27 @@ const mountSubject = (options: {
 };
 
 describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
+  it('keeps supplied Team images and uses the group glyph for missing or broken images', async () => {
+    const definitions = ref<{id: string; avatarUrl?: string}[]>([]);
+    const scope = effectScope();
+    const avatars = scope.run(() => useRunHistoryAvatarState({loading: ref(false),
+      agentDefinitions: computed(() => []), orgDefinitions: computed(() => []), teamDefinitions: computed(() => definitions.value),
+    }))!;
+    const {wrapper} = mountSubject({avatars});
+    const header = () => wrapper.get('[data-test^="workspace-team-definition-row-"]');
+    expect(header().find('img').exists()).toBe(false);
+    expect(header().find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
+    definitions.value = [{id:'team-def-1', avatarUrl:'/team-old.png'}]; await nextTick();
+    const old = header().get('img');
+    definitions.value = [{id:'team-def-1', avatarUrl:'/team-new.png'}]; await nextTick();
+    await old.trigger('error');
+    expect(header().get('img').attributes('src')).toBe('/team-new.png');
+    await header().get('img').trigger('error');
+    expect(header().find('img').exists()).toBe(false);
+    expect(header().find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
+    wrapper.unmount(); scope.stop();
+  });
+
   it('renders Orgs directly after standalone Teams and delegates exact root/member actions', async () => {
     const group = agentOrgDefinitionGroup()
     const { wrapper, actions, state } = mountSubject({ agentOrgDefinitions: [group] })

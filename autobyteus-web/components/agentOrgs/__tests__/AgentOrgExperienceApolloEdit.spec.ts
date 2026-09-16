@@ -34,7 +34,7 @@ const { route, push, mockQuery, mockMutate, agentStore, teamStore } = vi.hoisted
 
 vi.mock('vue-router', () => ({ useRoute: () => route, useRouter: () => ({ push }) }))
 vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: () => ({ query: mockQuery, mutate: mockMutate }),
+  getApolloClient: () => ({ query: mockQuery, mutate: mockMutate, cache: { updateQuery: vi.fn() } }),
 }))
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ waitForBoundBackendReady: vi.fn().mockResolvedValue(true) }),
@@ -77,6 +77,7 @@ describe('AgentOrgExperience Apollo edit boundary', () => {
 
     expect(mockMutate).toHaveBeenCalledWith({
       mutation: UpdateAgentOrgDefinition,
+      fetchPolicy: 'no-cache',
       variables: { input: {
         id: 'software-org',
         expectedRevision: 'org-rev-7',

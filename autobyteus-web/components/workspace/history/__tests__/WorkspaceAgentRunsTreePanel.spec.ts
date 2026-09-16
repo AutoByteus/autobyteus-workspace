@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { nextTick } from 'vue';
+import { nextTick, reactive } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
 
 const routerHarness = vi.hoisted(() => ({
@@ -367,6 +367,9 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => agentDefinitionStoreMock,
 }));
 
+const orgCatalog = vi.hoisted(() => ({ definitions: [] as any[], fetchAll: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => orgCatalog }));
+
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
 }));
@@ -393,6 +396,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    orgCatalog.definitions = [];
+    orgCatalog.fetchAll.mockResolvedValue(undefined);
     routerHarness.route.query = {};
     runHistoryState.loading = false;
     runHistoryState.error = null;
@@ -2263,4 +2268,23 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(addToastMock).toHaveBeenCalledWith('Failed to delete run. Please try again.', 'error');
   });
+  it('fetches Org metadata nonfatally and keeps history available on catalog failure', async () => {
+    orgCatalog.fetchAll.mockRejectedValueOnce(new Error('catalog unavailable'));
+    orgCatalog.definitions = reactive([]);
+    runHistoryState.nodes[0].agentOrgDefinitions = [{stableKey: 'org-def', definitionId: 'org-def', name: 'Retained Org', runs: []}];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    const header = () => wrapper.get('[data-test="agent-org-definition-org-def"]');
+    expect(header().text()).toContain('Retained Org');
+    expect(header().find('img').exists()).toBe(false);
+    orgCatalog.definitions.push({id: 'org-def', avatarUrl: '/arrived.png'});
+    await nextTick();
+    expect(header().get('img').attributes('src')).toBe('/arrived.png');
+    expect(orgCatalog.fetchAll).toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalled();
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
 });

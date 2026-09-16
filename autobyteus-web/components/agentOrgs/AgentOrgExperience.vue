@@ -34,9 +34,7 @@
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
               <article v-for="org in section.orgs" :key="org.id" class="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md" :data-test="`org-card-${org.id}`">
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-start">
-                  <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 text-slate-700">
-                    <span class="text-2xl font-semibold tracking-wide">{{ orgInitials(org.name) }}</span>
-                  </div>
+                  <AgentOrgAvatar :name="org.name" :avatar-url="org.avatarUrl" />
                   <div class="min-w-0">
                     <h3 class="truncate text-xl font-semibold text-slate-900">{{ org.name }}</h3>
                     <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ org.description }}</p>
@@ -69,12 +67,13 @@
         <header class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div class="flex min-w-0 items-start gap-4">
-              <span class="inline-flex h-16 w-16 flex-none items-center justify-center rounded-xl bg-slate-100 text-2xl font-semibold tracking-wide text-slate-700">{{ orgInitials(selectedOrg.name) }}</span>
+              <AgentOrgAvatar :name="selectedOrg.name" :avatar-url="selectedOrg.avatarUrl" />
               <div class="min-w-0"><h1 class="text-3xl font-bold tracking-tight text-slate-950">{{ selectedOrg.name }}</h1></div>
             </div>
-            <div class="flex shrink-0 gap-2">
+            <div class="flex shrink-0 flex-wrap gap-2">
               <button type="button" class="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" data-test="run-organization" @click="openLaunch(selectedOrg.id)">{{ t('agentOrgs.experience.actions.run') }}</button>
               <button type="button" class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="go('org-edit', selectedOrg.id)">{{ t('agentOrgs.experience.actions.edit') }}</button>
+              <button type="button" data-test="delete-org" class="rounded-lg border border-red-300 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50" :disabled="deletePending || !selectedOrg.id" @click="requestDelete">{{ t('agentOrgs.delete.action') }}</button>
             </div>
           </div>
         </header>
@@ -107,6 +106,9 @@
         <button type="button" class="mb-5 inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="go('org-list')"><Icon icon="heroicons:arrow-left-20-solid" class="mr-2 h-4 w-4" /> {{ t('agentOrgs.experience.detail.back') }}</button>
         <header class="mb-6"><h1 class="text-3xl font-bold tracking-tight text-slate-950">{{ view === 'org-create' ? t('agentOrgs.experience.catalog.create') : t('agentOrgs.experience.form.editTitle', { name: selectedOrg.name }) }}</h1><p class="mt-2 max-w-3xl text-base text-slate-600">{{ t('agentOrgs.experience.form.description') }}</p></header>
         <form class="space-y-4" @submit.prevent="saveOrg">
+          <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <AgentOrgAvatarEditor :key="`${view}:${selectedOrg.id}`" v-model="formAvatarUrl" :name="formName" :disabled="saving" @pending="avatarPending = $event" />
+          </section>
           <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"><h2 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.form.basics') }}</h2><div class="mt-4 space-y-4"><label class="block"><span class="text-sm font-medium text-slate-700">{{ t('agentOrgs.experience.form.name') }}</span><input v-model="formName" required class="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></label><label class="block"><span class="text-sm font-medium text-slate-700">{{ t('agentOrgs.experience.detail.description') }}</span><textarea v-model="formDescription" rows="3" class="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></textarea></label></div></section>
 
           <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -150,17 +152,25 @@
           <div v-show="!referencesLoading"><HandoffManager ref="orgHandoffManager" v-model="formOrgHandoffs" :from-options="formOrgHandoffOptions.from" :to-options="formOrgHandoffOptions.to" mode="edit" scope="org" /></div>
           <section v-if="saveError" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700" role="alert">{{ saveError }}</section>
           <section v-if="saved" class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800" role="status">{{ t('agentOrgs.experience.form.saved') }}</section>
-          <div class="flex justify-end gap-3"><button type="button" class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="go('org-list')">{{ t('agentOrgs.experience.actions.cancel') }}</button><button type="submit" :disabled="saving || referencesLoading || references.unavailable.length > 0" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">{{ view === 'org-create' ? t('agentOrgs.experience.actions.createOrg') : t('agentOrgs.experience.actions.saveChanges') }}</button></div>
+          <div class="flex justify-end gap-3"><button type="button" class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="go('org-list')">{{ t('agentOrgs.experience.actions.cancel') }}</button><button type="submit" :disabled="saving || avatarPending || referencesLoading || references.unavailable.length > 0" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">{{ view === 'org-create' ? t('agentOrgs.experience.actions.createOrg') : t('agentOrgs.experience.actions.saveChanges') }}</button></div>
         </form>
       </template>
     </div>
-
+    <p v-if="deleteNotice" class="mx-6 mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">{{ deleteNotice }}</p>
+    <ConfirmationModal :show="Boolean(deleteTarget)" :title="t('agentOrgs.delete.title')" :confirm-button-text="deletePending ? t('agentOrgs.delete.pending') : t('agentOrgs.delete.action')" variant="danger" :pending="deletePending" @cancel="cancelDelete" @confirm="confirmDelete">
+      <p class="text-sm text-slate-700">{{ t('agentOrgs.delete.confirm', { name: deleteTarget?.name || '' }) }}</p>
+      <p class="mt-3 text-sm text-slate-600">{{ t('agentOrgs.delete.scope') }}</p>
+      <p v-if="deleteError" class="mt-3 text-sm text-red-700" role="alert">{{ deleteError }}</p>
+    </ConfirmationModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
+import AgentOrgAvatar from './AgentOrgAvatar.vue'
+import AgentOrgAvatarEditor from './AgentOrgAvatarEditor.vue'
+import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import { useRoute, useRouter } from 'vue-router'
 import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.vue'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
@@ -205,6 +215,15 @@ const memberPickerTab = ref<'agents' | 'teams'>('agents')
 const memberSearch = ref('')
 const formName = ref('')
 const formDescription = ref('')
+const formAvatarUrl = ref('')
+const initialAvatarUrl = ref('')
+const avatarPending = ref(false)
+let formGeneration = 0
+const deleteTarget = ref<{ id: string; name: string } | null>(null)
+const deletePending = ref(false)
+const deleteError = ref('')
+const deleteNotice = ref('')
+onBeforeUnmount(() => { formGeneration += 1; deleteTarget.value = null })
 const formMembers = ref<AgentOrgMember[]>([])
 const formOrgHandoffs = ref<EditableHandoff[]>([])
 const references = ref<AgentOrgAuthoringReferences>({ agents: {}, teams: {}, unavailable: [] })
@@ -288,6 +307,10 @@ const formOrgHandoffOptions = computed(() => buildHandoffOptions(formMembers.val
 
 const hydrateForm = (): void => {
   const org = selectedOrg.value
+  formGeneration += 1
+  formAvatarUrl.value = view.value === 'org-create' ? '' : org.avatarUrl || ''
+  initialAvatarUrl.value = formAvatarUrl.value
+  avatarPending.value = false
   formName.value = view.value === 'org-create' ? '' : org.name
   formDescription.value = view.value === 'org-create' ? '' : org.description
   formMembers.value = view.value === 'org-create' ? [] : org.members.map((member) => ({ ...member }))
@@ -310,6 +333,31 @@ watch(() => JSON.stringify([selectedOrg.value.id, selectedOrg.value.revision, re
   referencesLoading.value = false
 }, { immediate: true })
 const go = (nextView: OrgView, id?: string) => router.push({ path: '/agent-orgs', query: { view: nextView, ...(id ? { id } : {}) } })
+watch([view, () => route.query.id], () => { deleteTarget.value = null; deleteError.value = ''; deleteNotice.value = '' }, { flush: 'sync' })
+const requestDelete = () => {
+  if (deletePending.value || !selectedOrg.value.id) return
+  deleteTarget.value = { id: selectedOrg.value.id, name: selectedOrg.value.name }
+  deleteError.value = ''; deleteNotice.value = ''
+}
+const cancelDelete = () => { if (!deletePending.value) deleteTarget.value = null }
+const confirmDelete = async () => {
+  const target = deleteTarget.value
+  if (!target || deletePending.value) return
+  deletePending.value = true; deleteError.value = ''
+  try {
+    const deleted = await orgStore.remove(target.id)
+    if (deleteTarget.value !== target) return
+    if (!deleted) { deleteError.value = t('agentOrgs.delete.failed'); return }
+    deleteTarget.value = null
+    // The mutation has committed. Navigation failure must never offer another deletion.
+    const reportNavigationFailure = () => {
+      if (view.value === 'org-detail' && String(route.query.id) === target.id) deleteNotice.value = t('agentOrgs.delete.navigationFailed')
+    }
+    try { if (await go('org-list')) reportNavigationFailure() } catch { reportNavigationFailure() }
+  } catch (cause) {
+    if (deleteTarget.value === target) deleteError.value = cause instanceof Error ? cause.message : String(cause)
+  } finally { deletePending.value = false }
+}
 const openTeam = (id: string) => router.push({ path: '/agent-teams', query: { view: 'team-detail', id, returnToOrg: selectedOrg.value.id } })
 const openLaunch = (id: string) => router.push({ path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: id, mode: 'configuration' } })
 const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.fetchAll(true) } finally { reloading.value = false } }
@@ -326,9 +374,12 @@ const removeMember = (ref: string, refType: AgentOrgMember['refType']): void => 
 const removeOrgAgent = (id: string) => removeMember(id, 'AGENT')
 const removeOrgTeam = (id: string) => removeMember(id, 'AGENT_TEAM')
 const saveOrg = async (): Promise<void> => {
-  if (saving.value || referencesLoading.value || references.value.unavailable.length) return
+  if (saving.value || avatarPending.value || referencesLoading.value || references.value.unavailable.length) return
   if (!formName.value.trim()) { saveError.value = t('agentOrgs.experience.form.nameRequired'); return }
   if (!orgHandoffManager.value?.validateAll()) { saveError.value = t('agentOrgs.experience.form.handoffsInvalid'); return }
+  const generation = formGeneration
+  const editedOrg = selectedOrg.value
+  const creating = view.value === 'org-create'
   saving.value = true; saved.value = false; saveError.value = ''
   const visibleInput = {
     name: formName.value.trim(),
@@ -337,21 +388,29 @@ const saveOrg = async (): Promise<void> => {
     handoffs: toDefinitionHandoffs(formOrgHandoffs.value),
   }
   try {
-    if (view.value === 'org-create') {
+    if (creating) {
       const createInput: AgentOrgDefinitionDraft = {
         ...visibleInput,
         instructions: '',
         category: null,
-        avatarUrl: null,
+        avatarUrl: formAvatarUrl.value || null,
         defaultLaunchConfig: null,
       }
       const created = await orgStore.create(createInput)
+      if (generation !== formGeneration) return
       await go('org-edit', created.id)
+      if (String(view.value) !== 'org-edit' || String(route.query.id) !== created.id) return
     } else {
-      await orgStore.update(selectedOrg.value.id, selectedOrg.value.revision, visibleInput)
+      const updated = await orgStore.update(editedOrg.id, editedOrg.revision, {
+        ...visibleInput,
+        ...(formAvatarUrl.value !== initialAvatarUrl.value ? { avatarUrl: formAvatarUrl.value } : {}),
+      })
+      if (generation !== formGeneration) return
+      initialAvatarUrl.value = updated.avatarUrl || ''
+      formAvatarUrl.value = initialAvatarUrl.value
     }
     await nextTick(); orgHandoffManager.value?.clearStatus(); saved.value = true
-  } catch (error) { saveError.value = error instanceof Error ? error.message : String(error) } finally { saving.value = false }
+  } catch (error) { if (generation === formGeneration) saveError.value = error instanceof Error ? error.message : String(error) } finally { saving.value = false }
 }
 onMounted(async () => {
   await Promise.allSettled([orgStore.fetchAll(), agentStore.fetchAllAgentDefinitions(), teamStore.fetchAllAgentTeamDefinitions()])

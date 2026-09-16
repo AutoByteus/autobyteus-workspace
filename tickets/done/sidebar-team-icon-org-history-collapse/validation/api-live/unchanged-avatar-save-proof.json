@@ -1,0 +1,36 @@
+{
+  "update": {
+    "at": "2026-09-15T23:16:14.594Z",
+    "kind": "request",
+    "id": 341,
+    "method": "POST",
+    "url": "/graphql",
+    "bytes": 1094,
+    "operation": "UpdateAgentOrgDefinition",
+    "variables": {
+      "input": {
+        "id": "sidebar-image-org",
+        "expectedRevision": "fe278325c1a6d805e9b0c8c39e5e20a5aa067f6b5437d13fe3eb495a20dff541",
+        "name": "Sidebar Image Org",
+        "description": "Disposable current-schema fixture. Browser-edited description.",
+        "members": [
+          {
+            "memberName": "direct",
+            "ref": "sidebar-shared-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED"
+          },
+          {
+            "memberName": "team",
+            "ref": "sidebar-team-image",
+            "refType": "AGENT_TEAM",
+            "refScope": "SHARED"
+          }
+        ],
+        "handoffs": []
+      }
+    }
+  },
+  "hidden_fields_preserved": true,
+  "cancel_sent_no_delete": true
+}

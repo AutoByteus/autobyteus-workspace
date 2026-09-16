@@ -37,6 +37,18 @@ const toMutationMembers = (members: readonly AgentOrgMember[]): AgentOrgMemberIn
   refScope: member.refScope,
 }))
 
+const mutationDefinition = (value: unknown, expectedId?: string): AgentOrgDefinition => {
+  const definition = value as AgentOrgDefinition | null | undefined
+  if (!definition || typeof definition.id !== 'string' || !definition.id.trim()
+    || (expectedId !== undefined && definition.id !== expectedId)
+    || typeof definition.revision !== 'string' || !definition.revision
+    || typeof definition.name !== 'string' || typeof definition.description !== 'string'
+    || typeof definition.instructions !== 'string' || !Array.isArray(definition.members) || !Array.isArray(definition.handoffs)) {
+    throw new Error('Invalid Agent Org mutation response.')
+  }
+  return definition
+}
+
 export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () => {
   const definitions = ref<AgentOrgDefinition[]>([])
   const loading = ref(false)
@@ -52,27 +64,40 @@ export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () =
       definitions.value = data.agentOrgDefinitions ?? []
     } catch (cause) { error.value = cause; throw cause } finally { loading.value = false }
   }
+  const publish = (id: string, definition: AgentOrgDefinition | null): void => {
+    const client = getApolloClient()
+    const replace = (items: AgentOrgDefinition[]) => definition
+      ? items.some(item => item.id === id) ? items.map(item => item.id === id ? definition : item) : [...items, definition]
+      : items.filter(item => item.id !== id)
+    client.cache.updateQuery<{ agentOrgDefinitions: AgentOrgDefinition[] }>({ query: GetAgentOrgDefinitions }, (cached: { agentOrgDefinitions: AgentOrgDefinition[] } | null) =>
+      cached ? { ...cached, agentOrgDefinitions: replace(cached.agentOrgDefinitions) } : cached)
+    if (!definition) {
+      const entityId = client.cache.identify({ __typename: 'AgentOrgDefinition', id })
+      if (entityId) client.cache.evict({ id: entityId })
+    }
+    definitions.value = replace(definitions.value)
+  }
   const create = async (input: AgentOrgDefinitionDraft): Promise<AgentOrgDefinition> => {
     const mutationInput = { ...input, members: toMutationMembers(input.members) }
-    const { data, errors } = await getApolloClient().mutate({ mutation: CreateAgentOrgDefinition, variables: { input: mutationInput } })
+    const { data, errors } = await getApolloClient().mutate({ mutation: CreateAgentOrgDefinition, fetchPolicy: 'no-cache', variables: { input: mutationInput } })
     if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-    const created = data.createAgentOrgDefinition as AgentOrgDefinition
-    definitions.value = [...definitions.value, created]
+    const created = mutationDefinition(data?.createAgentOrgDefinition)
+    publish(created.id, created)
     return created
   }
   const update = async (id: string, expectedRevision: string, input: Partial<AgentOrgDefinitionDraft>): Promise<AgentOrgDefinition> => {
     const mutationInput = input.members === undefined ? input : { ...input, members: toMutationMembers(input.members) }
-    const { data, errors } = await getApolloClient().mutate({ mutation: UpdateAgentOrgDefinition, variables: { input: { id, expectedRevision, ...mutationInput } } })
+    const { data, errors } = await getApolloClient().mutate({ mutation: UpdateAgentOrgDefinition, fetchPolicy: 'no-cache', variables: { input: { id, expectedRevision, ...mutationInput } } })
     if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-    const updated = data.updateAgentOrgDefinition as AgentOrgDefinition
-    definitions.value = definitions.value.map((item) => item.id === id ? updated : item)
+    const updated = mutationDefinition(data?.updateAgentOrgDefinition, id)
+    publish(id, updated)
     return updated
   }
   const remove = async (id: string): Promise<boolean> => {
-    const { data, errors } = await getApolloClient().mutate({ mutation: DeleteAgentOrgDefinition, variables: { id } })
+    const { data, errors } = await getApolloClient().mutate({ mutation: DeleteAgentOrgDefinition, fetchPolicy: 'no-cache', variables: { id } })
     if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-    const deleted = Boolean(data.deleteAgentOrgDefinition)
-    if (deleted) definitions.value = definitions.value.filter((item) => item.id !== id)
+    const deleted = data?.deleteAgentOrgDefinition === true
+    if (deleted) publish(id, null)
     return deleted
   }
   return { definitions, loading, error, byId, fetchAll, create, update, remove }

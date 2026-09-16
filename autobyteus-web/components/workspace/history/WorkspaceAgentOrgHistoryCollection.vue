@@ -7,11 +7,17 @@
       <button
         type="button"
         class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        :data-test="`agent-org-definition-${group.definitionId}`"
         :aria-expanded="isDefinitionExpanded(group.definitionId)"
         @click="toggleDefinition(group.definitionId)"
       >
         <Icon icon="heroicons:chevron-down-20-solid" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform" :class="isDefinitionExpanded(group.definitionId) ? '' : '-rotate-90'" />
-        <span class="mr-1.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded bg-gray-100 text-gray-600"><Icon icon="heroicons:building-office-2-20-solid" class="h-3.5 w-3.5" /></span>
+        <span class="mr-1.5 inline-flex h-5 w-5 flex-none items-center justify-center overflow-hidden rounded bg-gray-100 text-gray-600">
+          <img v-if="avatars.showOrgAvatar(group.definitionId)" :key="avatars.getOrgAvatarUrl(group.definitionId)"
+            :src="avatars.getOrgAvatarUrl(group.definitionId)" :alt="group.name" class="h-full w-full object-cover"
+            @error="avatars.onOrgAvatarError(group.definitionId, ($event.target as HTMLImageElement).getAttribute('src') || '')" >
+          <Icon v-else icon="heroicons:building-office-2-20-solid" class="h-3.5 w-3.5" />
+        </span>
         <span class="truncate font-medium">{{ group.name }}</span>
         <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
       </button>
@@ -21,15 +27,25 @@
           <div class="group/org-row flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50">
             <button
               type="button"
+              class="mr-1 inline-flex h-5 w-5 flex-none items-center justify-center rounded text-gray-400 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-indigo-500"
+              :data-test="`agent-org-run-disclosure-${run.rootRunId}`"
+              :aria-expanded="isRunExpanded(run.rootRunId)"
+              :aria-controls="isRunExpanded(run.rootRunId) ? hierarchyId(run.rootRunId) : undefined"
+              :aria-label="t(isRunExpanded(run.rootRunId) ? 'workspace.agentOrg.history.collapseRun' : 'workspace.agentOrg.history.expandRun', { name: run.summary || group.name })"
+              @click.stop="state.toggleAgentOrgRun?.(run.rootRunId)"
+            >
+              <Icon icon="heroicons:chevron-down-20-solid" class="h-3.5 w-3.5 transition-transform" :class="isRunExpanded(run.rootRunId) ? '' : '-rotate-90'" />
+            </button>
+            <button
+              type="button"
+              :data-test="`agent-org-run-open-${run.rootRunId}`"
               class="flex min-w-0 flex-1 items-center text-left"
               :class="isRunSelected(run.rootRunId) ? 'text-indigo-900' : ''"
-              :aria-expanded="isRunExpanded(run.rootRunId)"
               :aria-current="isRunSelected(run.rootRunId) ? 'true' : undefined"
               :aria-selected="isRunSelected(run.rootRunId)"
               role="treeitem"
               @click="openRun(run)"
             >
-              <Icon icon="heroicons:chevron-down-20-solid" class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform" :class="isRunExpanded(run.rootRunId) ? '' : '-rotate-90'" />
               <span class="mr-1.5 h-2 w-2 flex-none rounded-full" :class="run.isActive ? 'bg-emerald-500' : 'bg-gray-300'" :aria-label="run.isActive ? t('workspace.agentOrg.history.running') : t('workspace.agentOrg.history.stopped')" />
               <span class="truncate font-medium">{{ run.summary || t('workspace.agentOrg.history.newRun', { name: group.name }) }}</span>
             </button>
@@ -50,7 +66,7 @@
             {{ terminationError(run.rootRunId) }}
           </p>
 
-          <div v-if="isRunExpanded(run.rootRunId)" class="team-execution-tree ml-3 space-y-0.5" role="tree" :aria-label="t('workspace.agentOrg.history.executionHierarchy', { name: group.name })">
+          <div v-if="isRunExpanded(run.rootRunId)" :id="hierarchyId(run.rootRunId)" :data-test="`agent-org-run-children-${run.rootRunId}`" class="team-execution-tree ml-3 space-y-0.5" role="tree" :aria-label="t('workspace.agentOrg.history.executionHierarchy', { name: group.name })">
             <template v-for="display in rowsFor(run)" :key="display.row.key">
               <button
                 v-if="display.row.kind === 'agent'"
@@ -117,7 +133,7 @@ import { Icon } from '@iconify/vue'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
 import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
 import WorkspaceHierarchyBranches from './WorkspaceHierarchyBranches.vue'
-import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
+import type { WorkspaceHistoryAvatarBindings, WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import type { AgentStatus } from '~/types/agent/AgentStatus'
@@ -127,9 +143,11 @@ const props = defineProps<{
   workspaceId: string
   groups: AgentOrgHistoryDefinitionGroup[]
   state: WorkspaceHistorySectionState
+  avatars: Pick<WorkspaceHistoryAvatarBindings, 'getOrgAvatarUrl' | 'showOrgAvatar' | 'onOrgAvatarError'>
   actions: WorkspaceHistorySectionActions
 }>()
 const { t } = useLocalization()
+const hierarchyId = (rootRunId: string) => `org-hierarchy-${encodeURIComponent(props.workspaceId)}-${encodeURIComponent(rootRunId)}`
 const isDefinitionExpanded = (definitionId: string) => props.state.isAgentOrgDefinitionExpanded?.(props.workspaceId, definitionId) ?? false
 const toggleDefinition = (definitionId: string) => props.state.toggleAgentOrgDefinition?.(props.workspaceId, definitionId)
 const isRunExpanded = (rootRunId: string) => props.state.isAgentOrgRunExpanded?.(rootRunId) ?? false
@@ -159,7 +177,7 @@ const rowsFor = (run: AgentOrgRunHistoryItem) => projectAgentOrgHistoryRows({
   isTeamExpanded: (address) => isTeamExpanded(run.rootRunId, address),
 })
 const openRun = (run: AgentOrgRunHistoryItem) => {
-  if (!run.isActive || !isRunExpanded(run.rootRunId)) props.state.toggleAgentOrgRun?.(run.rootRunId)
+  if (!isRunExpanded(run.rootRunId)) props.state.toggleAgentOrgRun?.(run.rootRunId)
   return props.actions.onOpenAgentOrgRun?.(run)
 }
 const selectTeam = (run: AgentOrgRunHistoryItem, address: string) => {

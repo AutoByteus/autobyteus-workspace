@@ -1,0 +1,24 @@
+{
+  "head": "75a42f18b3cf8555bef2496b03679c41575ad915",
+  "files": {
+    "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue": "fe0fb4c9528ee83956d7432cf565861b04ac1ed24da67800f34de7db0044acfe",
+    "autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue": "71e577cacafcba6f2dade3afa7426145a582560ba511c8b51cb2b782ab2d55c0",
+    "autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue": "b14d995673016599245fb5d47bb2af3c9cf55a043e92bbb566ce7b718d892e72",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts": "c3072d008068ffc9950c529c35d1c656eb8cd357deaac0ca50a69fd67513fa5e",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts": "202959aa05648307544dba1441dbc1599cc411e4446d52a0dfbd216440dbf5f1",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts": "af6da06fb44f43d2dacf08c6b4b45c51de2da8b300e3f706ea87e82e40166f7c",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts": "55eaf29c9354f828f1382ab65f972aa5ca4b4014338a26fbf8d84b85f62d5982",
+    "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts": "ba6ecac06fa61cfc22c66272ca40971c0143d53c6069425a8dda106b5f15da78",
+    "autobyteus-web/composables/useRunHistoryAvatarState.ts": "830de4389882ce521357ea316bda9f8d0458efb8a03d80792c971f9d688eed0d",
+    "autobyteus-web/localization/messages/en/workspace.ts": "5d6c44d4e68d7713b252929ead4d1caa80a3fdecf335acb14392b3596d1db775",
+    "autobyteus-web/localization/messages/zh-CN/workspace.ts": "c5232ac72e8e4e1e5d65135929e950efaa3c392f0a170274a45cb7be4df853aa",
+    "autobyteus-web/stores/__tests__/agentOrgHistoryApollo.spec.ts": "799586ac120c98ab318739cc97e2abe04323dbcd887eb847ade6dbd0c82cb466",
+    "autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue": "cdff5c69b1699028532ad1550d574f8fecf0cc18566f7ad9ae9baf8be9b4c275",
+    "autobyteus-web/tests/e2e/fixtures/nested-team-aggregate-status.page.vue": "6ccd70fdd33d556264cc706062ebcd2f850e9b0ea2a931a9c11cb93dc2a88d20",
+    "autobyteus-web/tests/e2e/fixtures/nested-team-hierarchy.page.vue": "162e2ff4bbdc48184f0547fd1365a892540503e206b7863d0864e1e08b8d9862",
+    "autobyteus-web/tests/e2e/fixtures/standalone-agent-error-stop.page.vue": "a763fa96856d418b1f4a9a629072a1ca2dd7b4aca4eef77513577e399271b8a4",
+    "autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue": "f3e521abf90588d88303a126241fcee888b14f5ae63dc063da5702abba6abf8e",
+    "autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts": "9c59bbfb2181ed9973ab3403203ed123e4ddd3ef87128e5548f86096aa52bd3a",
+    "autobyteus-web/composables/__tests__/useRunHistoryAvatarState.spec.ts": "7005c31bf45a474f09ec99dfef6d40893339d393de31845c6e23e31111c11fd3"
+  }
+}

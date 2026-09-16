@@ -200,7 +200,7 @@ describe('cold Org-owned authoring through real stores and Apollo', () => {
 
   it('hydrates from the Org read without waiting for the unrelated shared Team list or overwriting edits afterward', async () => {
     holdCatalog = true; await open('org-edit')
-    expect((wrapper!.get('form input').element as HTMLInputElement).value).toBe('Owned organization')
+    expect((wrapper!.get('form input:not([type=file])').element as HTMLInputElement).value).toBe('Owned organization')
     expect(wrapper!.text()).toContain('Coordinator: Exact coordinator')
     await wrapper!.get('textarea').setValue('Draft before catalog completion')
     holdCatalog = false; heldCatalog!(); await flushPromises()

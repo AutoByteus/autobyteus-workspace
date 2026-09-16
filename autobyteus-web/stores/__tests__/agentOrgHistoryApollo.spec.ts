@@ -26,7 +26,8 @@ beforeEach(() => {
   recovery = vi.spyOn(useAgentOrgContextsStore(), 'reconcileRetainedHistory')
   store = useRunHistoryStore(); store.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
   expect(row().isActive).toBe(true)
-  wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions), state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {} }) }), { global: { stubs: { Icon: true } } })
+  wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, {
+      avatars: { getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {} }, workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions), state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {} }) }), { global: { stubs: { Icon: true } } })
   expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
 })
 afterEach(() => { wrapper.unmount(); transport.client.stop(); vi.restoreAllMocks() })

@@ -1,0 +1,76 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace" [expanded]:
+    - generic: Temp Workspace
+  - generic: Orgs
+  - button "Sidebar Image Org Sidebar Image Org (1)" [expanded]:
+    - img "Sidebar Image Org"
+    - generic: Sidebar Image Org
+    - generic: (1)
+  - button "Collapse Sidebar Image Org descendants" [expanded] [active]:
+  - treeitem "Running New - Sidebar Image Org":
+    - generic "Running"
+    - generic: New - Sidebar Image Org
+  - button "Stop Agent Org":
+  - generic: now
+  - tree "Sidebar Image Org execution hierarchy":
+    - treeitem "direct, offline, /direct, sidebar_shared_agent_38de388dc35b463aa510e0b641053e7d" [level=1]:
+      - generic: D
+      - generic: direct
+    - 'treeitem "team. Team status: Offline" [expanded] [level=1] [selected]':
+      - 'img "Team status: Offline"'
+      - generic: team
+    - treeitem "lead, offline, /team/lead, sidebar_shared_agent_474d55aa8e394a40be89fe4179510f7d" [level=2]:
+      - generic: L
+      - generic: lead
+    - treeitem "worker, offline, /team/worker, sidebar_shared_agent_afa81e90e10445ed930e5ae416601fcc" [level=2]:
+      - generic: W
+      - generic: worker
+  - button "Settings":
+    - generic: Settings
+- main:
+  - generic: L
+  - heading "lead" [level=4]
+  - 'generic "Agent Status: Offline"':
+    - generic: Offline
+  - button "Edit Config":
+  - button "New Agent":
+  - button "Context Files (0) (drag, paste, or upload)" [expanded]:
+    - generic: Context Files (0)
+    - generic: (drag, paste, or upload)
+  - button "Upload files":
+  - textbox "Type a message...": UNSENT mounted lead draft — retain me
+  - button "Send message":
+  - tablist "Workspace tools":
+    - tab "Files"
+    - tab "Agent Org" [selected]: Org
+    - tab "Terminal"
+    - tab "Activity"
+    - tab "Token"
+    - tab "Artifacts"
+    - tab "VNC Viewer"
+  - button "Toggle Sidebar":
+  - button "Messages 0 Messages" [expanded]:
+    - heading "Messages" [level=3]
+    - generic: 0 Messages
+  - paragraph: No team messages yet
+  - paragraph: Accepted inter-agent messages will appear here with their reference files.
+  - button "Tasks 0 tasks":
+    - generic: Tasks
+    - generic: 0 tasks

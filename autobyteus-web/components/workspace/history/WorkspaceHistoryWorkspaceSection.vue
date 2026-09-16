@@ -210,12 +210,13 @@
             >
               <img
                 v-if="avatars.showTeamAvatar(group.representativeRun)"
+                :key="avatars.getTeamAvatarUrl(group.representativeRun)"
                 :src="avatars.getTeamAvatarUrl(group.representativeRun)"
                 :alt="`${group.teamDefinitionName} avatar`"
                 class="h-full w-full object-cover"
-                @error="avatars.onTeamAvatarError(group.representativeRun)"
+                @error="avatars.onTeamAvatarError(group.representativeRun, ($event.target as HTMLImageElement).getAttribute('src') || '')"
               >
-              <span v-else>{{ avatars.getTeamInitials(group.teamDefinitionName) }}</span>
+              <Icon v-else icon="heroicons:user-group-20-solid" class="h-3.5 w-3.5" />
             </span>
             <span class="truncate font-medium">{{ group.teamDefinitionName }}</span>
             <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
@@ -307,6 +308,7 @@
       </div>
 
       <WorkspaceAgentOrgHistoryCollection
+        :avatars="avatars"
         :workspace-id="workspacePresentationId"
         :groups="workspaceNode.agentOrgDefinitions ?? []"
         :state="state"

@@ -41,12 +41,35 @@ definition. See the [runtime migration boundary](../../autobyteus-server-ts/docs
 
 AgentOrg has no coordinator field, initial recipient, or implicit first member.
 
-`avatarUrl` is optional presentation metadata: omission and null both mean no
-avatar and do not affect admission or exact owned-member discovery. Supplied
-values keep their existing meaning. The current Org catalog/detail continues to
-use initials even when an avatar value is supplied; this is not new image UI.
-Agent and Team cards/details retain their existing image-or-initials behavior.
-No package rewrite or runtime activation is required to inspect these definitions.
+`avatarUrl` remains optional presentation metadata: omission and null in stored
+packages mean no avatar and do not affect admission or exact owned-member
+discovery. Org catalog/detail shows the supplied image, falling back to initials
+when absent or broken. Sidebar Org definition headers instead fall back to the
+Org building glyph; Team headers use the Team group glyph. Agent and Team
+catalog cards/details keep their existing image-or-initials behavior. Inspection
+requires no package rewrite or runtime activation.
+
+### Org Avatar Editing And Package Deletion
+
+Create/Edit supports image upload, preview and Remove through the existing upload
+service. Save waits while upload is pending; failed upload/save retains the draft
+for correction or retry. Cancel does not save the avatar reference, and a late
+upload from a retired editor cannot update another Org. An unchanged edit omits
+`avatarUrl`; an explicit removal sends the empty-string clear intent through the
+existing writer (a null update is not a clear). Removing a reference does not
+delete the uploaded media file. Existing members, handoffs and hidden metadata
+retain their normal save semantics.
+
+Detail **Delete** captures the selected Org identity and asks for named,
+irreversible confirmation. It removes that definition package, including
+physically owned Agent/Team definitions inside it—not shared referenced
+definitions, runtime/history records, attachments or media. It does not Stop a
+runtime or recursively delete referenced packages. Source writability and server
+transaction guards remain authoritative. Cancel leaves the package unchanged;
+pending confirmation prevents duplicate submission, and an error/false result
+retains the item with a retryable error. Only confirmed success removes catalog
+and cache membership and returns to the catalog. Deleting required definitions
+does not guarantee that affected history can subsequently launch or restore.
 
 
 ### Exact Owned References
@@ -280,6 +303,15 @@ Workspaces hierarchy. AgentTeam and AgentOrg roots keep explicit root kinds and
 family-specific loaders; a failure in one family retains the other family and
 the last good slice instead of blanking the entire navigation tree.
 
+Each individual Org run has an independent native disclosure button supporting
+Enter/Space and `aria-expanded`. It can collapse active or stopped, selected or
+unselected runs without inspection, navigation, Stop or runtime activation.
+Collapse preserves the selected conversation and draft, mounted-Team expansion
+and sibling run state. History refresh does not undo a manual collapse. Title
+selection still opens/reveals the run and Stop remains a separate action;
+explicit member navigation can reveal its owning hierarchy. Expansion state is
+local UI state, not persisted across application restart.
+
 - A new AgentOrg row displays `New - <AgentOrg name>` until the first
   successfully accepted non-empty external user message reaches an exact
   configured direct Agent or an Agent inside a mounted Team.
@@ -373,7 +405,10 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
   hydration.
-- `components/agentOrgs/AgentOrgExperience.vue`: catalog/detail/authoring.
+- `components/agentOrgs/AgentOrgExperience.vue`: catalog/detail/authoring and
+  captured-identity Delete confirmation.
+- `components/agentOrgs/AgentOrgAvatar.vue` and `AgentOrgAvatarEditor.vue`:
+  Org image/initials presentation and draft upload/preview/remove.
 - `components/workspace/config/AgentOrgRunConfigPanel.vue`: launch form.
 - `components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue`:
   AgentOrg rows within the unified Workspaces projection. The separate

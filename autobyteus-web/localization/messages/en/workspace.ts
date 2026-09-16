@@ -61,6 +61,8 @@ const messages = {
   "workspace.agentOrg.history.running": "Running",
   "workspace.agentOrg.history.stopped": "Stopped",
   "workspace.agentOrg.history.newRun": "New - {{name}}",
+  "workspace.agentOrg.history.expandRun": "Expand {{name}} descendants",
+  "workspace.agentOrg.history.collapseRun": "Collapse {{name}} descendants",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} execution hierarchy",
   "workspace.agentOrg.history.taskLabel": "Task: {{name}}",
   "workspace.agentOrg.history.empty": "No Agent Org run history yet.",

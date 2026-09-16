@@ -1,0 +1,83 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs" [active]:
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Agent Orgs" [level=1]
+  - generic: Search Agent Orgs
+  - textbox "Search Agent Orgs":
+    - /placeholder: Search organizations by name
+  - button "Reload":
+    - text: Reload
+  - button "Create Agent Org"
+  - heading "Featured organizations" [level=2]
+  - article:
+    - generic: SB
+    - heading "Sidebar Broken Org" [level=3]
+    - paragraph: Disposable current-schema fixture.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent Sidebar Shared Agent":
+      - generic: Sidebar Shared Agent
+    - generic "Team Sidebar Image Team":
+      - generic: Sidebar Image Team
+  - article:
+    - generic: SA
+    - heading "Sidebar Authoring Org" [level=3]
+    - paragraph: Disposable current-schema fixture.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent Sidebar Shared Agent":
+      - generic: Sidebar Shared Agent
+    - generic "Team Sidebar Image Team":
+      - generic: Sidebar Image Team
+    - generic "Agent agent-org-owned-agent:sidebar-edit-org:owned-worker":
+      - generic: agent-org-owned-agent:sidebar-edit-org:owned-worker
+    - generic "Team agent-org-owned-team:sidebar-edit-org:owned-team":
+      - generic: agent-org-owned-team:sidebar-edit-org:owned-team
+  - article:
+    - img "Sidebar Image Org"
+    - heading "Sidebar Image Org" [level=3]
+    - paragraph: Disposable current-schema fixture.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent Sidebar Shared Agent":
+      - generic: Sidebar Shared Agent
+    - generic "Team Sidebar Image Team":
+      - generic: Sidebar Image Team
+  - article:
+    - generic: SR
+    - heading "Sidebar Readonly Org" [level=3]
+    - paragraph: Disposable current-schema fixture.
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Agent Sidebar Shared Agent":
+      - generic: Sidebar Shared Agent
+    - generic "Team Sidebar Image Team":
+      - generic: Sidebar Image Team

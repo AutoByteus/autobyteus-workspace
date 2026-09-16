@@ -1,0 +1,52 @@
+{
+  "upload_transport": [
+    {
+      "at": "2026-09-15T23:18:01.146Z",
+      "kind": "request",
+      "id": 439,
+      "method": "POST",
+      "url": "/rest/upload-file",
+      "bytes": 2730034
+    },
+    {
+      "at": "2026-09-15T23:18:01.156Z",
+      "kind": "response",
+      "id": 439,
+      "status": 200,
+      "bytes": 73
+    }
+  ],
+  "config": {
+    "members": [
+      {
+        "memberName": "direct",
+        "ref": "sidebar-shared-agent",
+        "refType": "agent",
+        "refScope": "shared"
+      },
+      {
+        "memberName": "team",
+        "ref": "sidebar-team-image",
+        "refType": "agent_team",
+        "refScope": "shared"
+      },
+      {
+        "memberName": "owned",
+        "ref": "agent-org-owned-agent:sidebar-edit-org:owned-worker",
+        "refType": "agent",
+        "refScope": "org_local"
+      },
+      {
+        "memberName": "ownedteam",
+        "ref": "agent-org-owned-team:sidebar-edit-org:owned-team",
+        "refType": "agent_team",
+        "refScope": "org_local"
+      }
+    ],
+    "handoffs": [],
+    "avatarUrl": "/rest/files/images/3b398165-cb4e-414d-b4a0-37c5d318c6d8.png",
+    "defaultLaunchConfig": null
+  },
+  "hidden_fields_preserved": true,
+  "saved_file_sha256": "978e0aa7d131d1e046e36bedbb7cbe6f20246455e446b54def0599a8cc4bc72a"
+}

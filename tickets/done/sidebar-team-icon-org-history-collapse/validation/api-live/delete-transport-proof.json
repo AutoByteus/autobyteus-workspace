@@ -1,0 +1,44 @@
+[
+  {
+    "at": "2026-09-15T23:32:11.282Z",
+    "kind": "request",
+    "id": 1235,
+    "method": "POST",
+    "url": "/graphql",
+    "bytes": 182,
+    "operation": "DeleteAgentOrgDefinition",
+    "variables": {
+      "id": "sidebar-edit-org"
+    }
+  },
+  {
+    "at": "2026-09-15T23:32:11.282Z",
+    "kind": "fault-reject",
+    "id": 1235
+  },
+  {
+    "at": "2026-09-15T23:32:16.879Z",
+    "kind": "request",
+    "id": 1240,
+    "method": "POST",
+    "url": "/graphql",
+    "bytes": 182,
+    "operation": "DeleteAgentOrgDefinition",
+    "variables": {
+      "id": "sidebar-edit-org"
+    }
+  },
+  {
+    "at": "2026-09-15T23:32:16.900Z",
+    "kind": "response",
+    "id": 1240,
+    "status": 200,
+    "bytes": 42
+  },
+  {
+    "at": "2026-09-15T23:32:16.900Z",
+    "kind": "response-delayed",
+    "id": 1240,
+    "ms": 15000
+  }
+]

@@ -1,0 +1,55 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (6 tests | 2 failed) 692ms
+   ✓ Org activity publication with selected /director > publishes Stop before history I/O (stopped inspection available=true) 158ms
+   ✓ Org activity publication with selected /director > publishes Stop before history I/O (stopped inspection available=false) 131ms
+   × Org activity publication with selected /director > keeps active controls and exact selection/conversation when Stop is rejected 75ms
+     → expected 'reopen_required' to be 'live' // Object.is equality
+   ✓ Org activity publication with selected /team/lead > publishes Stop before history I/O (stopped inspection available=true) 129ms
+   ✓ Org activity publication with selected /team/lead > publishes Stop before history I/O (stopped inspection available=false) 128ms
+   × Org activity publication with selected /team/lead > keeps active controls and exact selection/conversation when Stop is rejected 70ms
+     → expected 'reopen_required' to be 'live' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /director > keeps active controls and exact selection/conversation when Stop is rejected
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts > Org activity publication with selected /team/lead > keeps active controls and exact selection/conversation when Stop is rejected
+AssertionError: expected 'reopen_required' to be 'live' // Object.is equality
+
+Expected: "live"
+Received: "reopen_required"
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts:201:23
+    199|     expect(stopButton().attributes('disabled')).toBeUndefined()
+    200|     expect(wrapper!.get('[role="alert"]').text()).toBe('Stop rejected')
+    201|     expect(org.phase).toBe('live')
+       |                       ^
+    202|     expect(org.isActive).toBe(true)
+    203|     expect(org.selection).toEqual(selection)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  00:35:25
+   Duration  5.42s (transform 2.69s, setup 4.07s, collect 188ms, tests 692ms, environment 127ms, prepare 128ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

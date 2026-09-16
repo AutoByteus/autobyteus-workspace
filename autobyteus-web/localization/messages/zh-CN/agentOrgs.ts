@@ -56,6 +56,20 @@ const messages = {
   'agentOrgs.experience.form.handoffsInvalid': '保存此智能体组织前，请先解决突出显示的交接规则问题。',
   'agentOrgs.experience.form.referencesLoading': '正在加载引用的定义…',
   'agentOrgs.experience.form.referencesUnavailable': '引用的定义不可用或与此组织不匹配：{{refs}}。',
+  "agentOrgs.avatar.label": "头像（可选）",
+  "agentOrgs.avatar.upload": "上传图片",
+  "agentOrgs.avatar.remove": "移除图片",
+  "agentOrgs.avatar.formats": "支持 JPEG、PNG、GIF 或 WebP。随组织一起保存。",
+  "agentOrgs.avatar.uploading": "正在上传图片…",
+  "agentOrgs.avatar.invalidType": "请选择 JPEG、PNG、GIF 或 WebP 图片。",
+  "agentOrgs.avatar.uploadFailed": "图片上传失败，请重试。",
+  "agentOrgs.delete.action": "删除",
+  "agentOrgs.delete.title": "删除智能体组织",
+  "agentOrgs.delete.pending": "正在删除…",
+  "agentOrgs.delete.confirm": "永久删除“{{name}}”？此操作无法撤销。",
+  "agentOrgs.delete.scope": "将删除该组织包及存储在其中的智能体或团队定义。单独共享的智能体/团队定义、运行中的会话、历史和附件不会被删除或停止。",
+  "agentOrgs.delete.failed": "未能删除组织。请重试或重新加载目录。",
+  "agentOrgs.delete.navigationFailed": "组织已删除，但无法打开目录。请返回组织列表，不要再次删除。",
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -1,0 +1,34 @@
+
+> autobyteus@1.4.69 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useRunHistoryAvatarState.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/sidebar-team-icon-org-history-collapse/autobyteus-web
+
+stderr | composables/__tests__/useRunHistoryAvatarState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRunHistoryAvatarState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useRunHistoryAvatarState.spec.ts (5 tests) 4ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts (8 tests) 97ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  00:40:59
+   Duration  6.45s (transform 3.55s, setup 10.99s, collect 296ms, tests 101ms, environment 397ms, prepare 291ms)
+

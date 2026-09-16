@@ -9,7 +9,7 @@ const mockMutate = vi.fn()
 const mockWaitForBoundBackendReady = vi.fn()
 
 vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: () => ({ query: mockQuery, mutate: mockMutate }),
+  getApolloClient: () => ({ query: mockQuery, mutate: mockMutate, cache: { updateQuery: vi.fn() } }),
 }))
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -74,6 +74,7 @@ describe('agentOrgDefinitionStore', () => {
     expect(mockQuery).toHaveBeenCalledWith({ query: GetAgentOrgDefinitions, fetchPolicy: 'cache-first' })
     expect(mockMutate).toHaveBeenCalledWith({
       mutation: UpdateAgentOrgDefinition,
+      fetchPolicy: 'no-cache',
       variables: {
         input: {
           id: 'software-org',
