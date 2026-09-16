@@ -1,0 +1,31 @@
+{
+  "members": [
+    {
+      "memberName": "research_group",
+      "ref": "agent-org-owned-team:names-beta:squad",
+      "refType": "agent_team",
+      "refScope": "org_local"
+    },
+    {
+      "memberName": "lead_agent",
+      "ref": "agent-org-owned-agent:names-beta:guide",
+      "refType": "agent",
+      "refScope": "org_local"
+    },
+    {
+      "memberName": "shared_group",
+      "ref": "shared-team",
+      "refType": "agent_team",
+      "refScope": "shared"
+    },
+    {
+      "memberName": "shared_worker",
+      "ref": "shared-agent",
+      "refType": "agent",
+      "refScope": "shared"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

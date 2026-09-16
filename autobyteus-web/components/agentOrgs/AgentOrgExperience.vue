@@ -45,12 +45,7 @@
                   </div>
                 </div>
 
-                <div class="mt-4 flex flex-wrap items-center gap-2">
-                  <span v-for="member in org.members" :key="`${member.kind}-${member.ref}`" :data-test="`org-member-${member.kind}-${member.ref}`" class="inline-flex max-w-[14rem] items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium" :class="member.kind === 'team' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700'" :aria-label="memberAriaLabel(member)">
-                    <Icon :icon="member.kind === 'team' ? 'heroicons:user-group-20-solid' : 'heroicons:user-20-solid'" class="h-4 w-4 flex-none" />
-                    <span class="truncate">{{ member.kind === 'team' ? teamById(member.ref).name : agentById(member.ref).name }}</span>
-                  </span>
-                </div>
+                <AgentOrgCatalogMemberChips :org="org" :refresh-key="catalogRefreshKey" />
 
               </article>
             </div>
@@ -168,6 +163,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
+import AgentOrgCatalogMemberChips from './AgentOrgCatalogMemberChips.vue'
 import AgentOrgAvatar from './AgentOrgAvatar.vue'
 import AgentOrgAvatarEditor from './AgentOrgAvatarEditor.vue'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
@@ -195,8 +191,6 @@ type OrgView = 'org-list' | 'org-detail' | 'org-create' | 'org-edit'
 type HandoffManagerExpose = { validateAll: () => boolean; clearStatus: () => void }
 type AgentView = { id: string; name: string; description: string; initials: string }
 type TeamView = { id: string; name: string; description: string; coordinatorId: string }
-type CatalogMember = { kind: 'agent' | 'team'; ref: string }
-type CatalogOrg = Omit<AgentOrgDefinition, 'members'> & { members: CatalogMember[] }
 
 const route = useRoute()
 const router = useRouter()
@@ -206,6 +200,7 @@ const agentStore = useAgentDefinitionStore()
 const teamStore = useAgentTeamDefinitionStore()
 const search = ref('')
 const reloading = ref(false)
+const catalogRefreshKey = ref(0)
 const saved = ref(false)
 const saveError = ref('')
 const saving = ref(false)
@@ -249,14 +244,7 @@ const teamById = (id: string): TeamView => {
   const coordinator = team.nodes.find((member) => member.memberName === team.coordinatorMemberName)
   return { id: team.id, name: team.name, description: team.description, coordinatorId: coordinator?.refScope === 'TEAM_LOCAL' ? buildTeamLocalAgentDefinitionId(team.id, coordinator.ref) : coordinator?.ref || team.coordinatorMemberName }
 }
-const memberAriaLabel = (member: CatalogMember): string => member.kind === 'team'
-  ? t('agentOrgs.experience.member.teamLabel', { name: teamById(member.ref).name })
-  : t('agentOrgs.experience.member.agentLabel', { name: agentById(member.ref).name })
-const toCatalogOrg = (org: AgentOrgDefinition): CatalogOrg => ({
-  ...org,
-  members: org.members.map((member) => ({ kind: member.refType === 'AGENT_TEAM' ? 'team' : 'agent', ref: member.ref })),
-})
-const catalogOrgs = computed(() => orgStore.definitions.map(toCatalogOrg))
+const catalogOrgs = computed(() => orgStore.definitions)
 const filteredOrgs = computed(() => {
   const query = search.value.trim().toLowerCase()
   return query ? catalogOrgs.value.filter((org) => `${org.name} ${org.description}`.toLowerCase().includes(query)) : catalogOrgs.value
@@ -360,7 +348,7 @@ const confirmDelete = async () => {
 }
 const openTeam = (id: string) => router.push({ path: '/agent-teams', query: { view: 'team-detail', id, returnToOrg: selectedOrg.value.id } })
 const openLaunch = (id: string) => router.push({ path: '/workspace', query: { rootSubjectKind: 'agent_org', definitionId: id, mode: 'configuration' } })
-const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.fetchAll(true) } finally { reloading.value = false } }
+const reloadOrgs = async (): Promise<void> => { reloading.value = true; try { await orgStore.fetchAll(true) } finally { reloading.value = false; catalogRefreshKey.value += 1 } }
 const openMemberPicker = (): void => { memberPickerTab.value = 'agents'; memberSearch.value = ''; memberPickerOpen.value = true }
 const closeMemberPicker = (): void => { memberPickerOpen.value = false; memberSearch.value = '' }
 const addMember = (ref: string, refType: AgentOrgMember['refType'], displayName: string): void => {

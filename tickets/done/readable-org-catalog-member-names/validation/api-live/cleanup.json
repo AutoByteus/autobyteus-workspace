@@ -1,0 +1,19 @@
+{
+  "knownOwnedPidsTerminated": [
+    21341,
+    21647,
+    21951
+  ],
+  "portsClosed": {
+    "50981": true,
+    "50982": true,
+    "50983": true
+  },
+  "bothOwnedTabsClosed": true,
+  "generatedAbsentAtIntakeSDKOutputsRemoved": [
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-application-backend-sdk/dist"
+  ],
+  "testData": "ignored .local/api-catalog-names retained; no credentials imported",
+  "userProcessesTouched": false
+}

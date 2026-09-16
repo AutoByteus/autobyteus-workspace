@@ -11,6 +11,12 @@ independently launchable and keep their own coordinator and Team-local handoffs.
 
 `AgentOrgExperience.vue` provides list, detail, create, and edit views.
 
+- Catalog member chips read the exact definition name for both shared and
+  Org-owned Agents/Teams. While a reference is pending or unavailable, they show
+  the readable Org member role (or localized type), never its internal ID.
+  Reload refreshes referenced names even when the Org revision has not changed.
+  These immediate reads do not traverse Team children, populate public catalogs,
+  activate runtimes, or replace full detail/launch validation.
 - Member selection has separate Agent and Team tabs.
 - A referenced Team remains a reference to the admitted Team definition; the Org
   editor does not copy or mutate it.

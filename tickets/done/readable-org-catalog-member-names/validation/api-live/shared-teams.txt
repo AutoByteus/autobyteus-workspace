@@ -1,0 +1,42 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams" [active]:
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - textbox "Search teams by name"
+  - button "Reload":
+    - text: Reload
+  - button "Create Team"
+  - generic: SD
+  - heading "Shared Delivery Team" [level=3]
+  - paragraph: Synthetic catalog-name validation
+  - generic: testing
+  - button "Run"
+  - button "View Details":
+    - text: View Details
+    - generic: →
+  - generic "lead":
+    - generic: L
+    - generic: lead
+  - paragraph: Coordinator
+  - paragraph: lead
+  - paragraph: Members
+  - paragraph: "1"

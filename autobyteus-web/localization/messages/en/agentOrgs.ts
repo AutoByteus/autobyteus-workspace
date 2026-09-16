@@ -20,6 +20,8 @@ const messages = {
   'agentOrgs.experience.actions.done': 'Done',
   'agentOrgs.experience.actions.saveChanges': 'Save changes',
   'agentOrgs.experience.actions.createOrg': 'Create Org',
+  'agentOrgs.experience.member.agentFallback': 'Agent',
+  'agentOrgs.experience.member.teamFallback': 'Team',
   'agentOrgs.experience.member.agentLabel': 'Agent {{name}}',
   'agentOrgs.experience.member.teamLabel': 'Team {{name}}',
   'agentOrgs.experience.member.coordinator': 'Coordinator: {{name}}',

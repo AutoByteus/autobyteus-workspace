@@ -1,0 +1,47 @@
+- navigation "Agents & teams":
+  - navigation "Primary navigation":
+    - list:
+      - button "Agents":
+        - generic: Agents
+      - button "Collapse left panel":
+      - button "Agent Teams":
+        - generic: Agent Teams
+      - button "Agent Orgs":
+        - generic: Agent Orgs
+      - button "Skills":
+        - generic: Skills
+      - button "Memory":
+        - generic: Memory
+      - button "Nodes":
+        - generic: Nodes
+  - heading "Workspaces" [level=3]
+  - button "Add workspace":
+  - button "Temp Workspace":
+    - generic: Temp Workspace
+  - button "Settings":
+    - generic: Settings
+- main:
+  - heading "Agent Orgs" [level=1]
+  - generic: Search Agent Orgs
+  - textbox "Search Agent Orgs" [active]:
+    - /placeholder: Search organizations by name
+    - text: Beta
+  - button "Reload":
+    - text: Reload
+  - button "Create Agent Org"
+  - article:
+    - generic: CB
+    - heading "Catalog Beta" [level=3]
+    - paragraph: Synthetic catalog-name validation
+    - button "Run"
+    - button "View Details":
+      - text: View Details
+      - generic: →
+    - generic "Team Beta Research-Team":
+      - generic: Beta Research-Team
+    - generic "Agent Beta Director":
+      - generic: Beta Director
+    - generic "Team Shared Delivery Team Renamed":
+      - generic: Shared Delivery Team Renamed
+    - generic "Agent Common Researcher":
+      - generic: Common Researcher

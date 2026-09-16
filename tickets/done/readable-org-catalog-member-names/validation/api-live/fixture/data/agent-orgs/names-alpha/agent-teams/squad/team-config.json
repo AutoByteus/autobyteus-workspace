@@ -1,0 +1,13 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    {
+      "memberName": "lead",
+      "ref": "worker",
+      "refScope": "team_local"
+    }
+  ],
+  "handoffs": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

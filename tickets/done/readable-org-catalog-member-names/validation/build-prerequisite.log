@@ -1,0 +1,4 @@
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/readable-org-catalog-member-names/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+

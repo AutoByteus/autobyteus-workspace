@@ -20,6 +20,8 @@ const messages = {
   'agentOrgs.experience.actions.done': '完成',
   'agentOrgs.experience.actions.saveChanges': '保存更改',
   'agentOrgs.experience.actions.createOrg': '创建组织',
+  'agentOrgs.experience.member.agentFallback': '智能体',
+  'agentOrgs.experience.member.teamFallback': '团队',
   'agentOrgs.experience.member.agentLabel': '智能体 {{name}}',
   'agentOrgs.experience.member.teamLabel': '团队 {{name}}',
   'agentOrgs.experience.member.coordinator': '协调员：{{name}}',

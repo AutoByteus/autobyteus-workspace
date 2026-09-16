@@ -1,3 +1,4 @@
+import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import AgentOrgExperience from '../AgentOrgExperience.vue'
@@ -58,6 +59,8 @@ const { route, push, org, orgStore, agentStore, teamStore } = vi.hoisted(() => {
   }
 })
 
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: any) => ({ data: { agentDefinition: agentStore.getAgentDefinitionById(variables.id), agentTeamDefinition: teamStore.getCatalogAgentTeamDefinitionById(variables.id) } }) }) }))
+
 vi.mock('vue-router', () => ({ useRoute: () => route, useRouter: () => ({ push }) }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => orgStore }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => agentStore }))
@@ -71,7 +74,7 @@ const mountExperience = async (view: string, id?: string) => {
 }
 
 describe('AgentOrgExperience', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => { vi.clearAllMocks(); setActivePinia(createPinia()) })
 
   it('renders the baseline-native catalog with Run, member chips, and no fabricated run facts', async () => {
     const wrapper = await mountExperience('org-list')

@@ -1,0 +1,275 @@
+[
+  {
+    "id": 17,
+    "data": {
+      "agentOrgDefinitions": [
+        {
+          "id": "names-alpha",
+          "name": "Catalog Alpha",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.\n",
+          "category": "testing",
+          "avatarUrl": null,
+          "revision": "0a69aa00c434f153a641a0381c3e874b753a5d6e588d581f04a13ddff4b7279f",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "research_group",
+              "ref": "agent-org-owned-team:names-alpha:squad",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "lead_agent",
+              "ref": "agent-org-owned-agent:names-alpha:guide",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_group",
+              "ref": "shared-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_worker",
+              "ref": "shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "__typename": "AgentOrgDefinition"
+        },
+        {
+          "id": "names-beta",
+          "name": "Catalog Beta",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.\n",
+          "category": "testing",
+          "avatarUrl": null,
+          "revision": "33e8b54786bf4108e864e0704147aa1887b42b4232e27fd0c4370b1404bb0568",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "research_group",
+              "ref": "agent-org-owned-team:names-beta:squad",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "lead_agent",
+              "ref": "agent-org-owned-agent:names-beta:guide",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_group",
+              "ref": "shared-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_worker",
+              "ref": "shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "__typename": "AgentOrgDefinition"
+        }
+      ]
+    }
+  },
+  {
+    "id": 79,
+    "data": {
+      "agentOrgDefinitions": [
+        {
+          "id": "names-alpha",
+          "name": "Catalog Alpha",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.\n",
+          "category": "testing",
+          "avatarUrl": null,
+          "revision": "0a69aa00c434f153a641a0381c3e874b753a5d6e588d581f04a13ddff4b7279f",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "research_group",
+              "ref": "agent-org-owned-team:names-alpha:squad",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "lead_agent",
+              "ref": "agent-org-owned-agent:names-alpha:guide",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_group",
+              "ref": "shared-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_worker",
+              "ref": "shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "__typename": "AgentOrgDefinition"
+        },
+        {
+          "id": "names-beta",
+          "name": "Catalog Beta",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.\n",
+          "category": "testing",
+          "avatarUrl": null,
+          "revision": "33e8b54786bf4108e864e0704147aa1887b42b4232e27fd0c4370b1404bb0568",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "research_group",
+              "ref": "agent-org-owned-team:names-beta:squad",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "lead_agent",
+              "ref": "agent-org-owned-agent:names-beta:guide",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_group",
+              "ref": "shared-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_worker",
+              "ref": "shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "__typename": "AgentOrgDefinition"
+        }
+      ]
+    }
+  },
+  {
+    "id": 150,
+    "data": {
+      "agentOrgDefinitions": [
+        {
+          "id": "names-alpha",
+          "name": "Catalog Alpha",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.\n",
+          "category": "testing",
+          "avatarUrl": null,
+          "revision": "0a69aa00c434f153a641a0381c3e874b753a5d6e588d581f04a13ddff4b7279f",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "research_group",
+              "ref": "agent-org-owned-team:names-alpha:squad",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "lead_agent",
+              "ref": "agent-org-owned-agent:names-alpha:guide",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_group",
+              "ref": "shared-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_worker",
+              "ref": "shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "__typename": "AgentOrgDefinition"
+        },
+        {
+          "id": "names-beta",
+          "name": "Catalog Beta",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.\n",
+          "category": "testing",
+          "avatarUrl": null,
+          "revision": "33e8b54786bf4108e864e0704147aa1887b42b4232e27fd0c4370b1404bb0568",
+          "handoffs": [],
+          "members": [
+            {
+              "memberName": "research_group",
+              "ref": "agent-org-owned-team:names-beta:squad",
+              "refType": "AGENT_TEAM",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "lead_agent",
+              "ref": "agent-org-owned-agent:names-beta:guide",
+              "refType": "AGENT",
+              "refScope": "AGENT_ORG_OWNED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_group",
+              "ref": "shared-team",
+              "refType": "AGENT_TEAM",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            },
+            {
+              "memberName": "shared_worker",
+              "ref": "shared-agent",
+              "refType": "AGENT",
+              "refScope": "SHARED",
+              "__typename": "AgentOrgMember"
+            }
+          ],
+          "defaultLaunchConfig": null,
+          "__typename": "AgentOrgDefinition"
+        }
+      ]
+    }
+  }
+]

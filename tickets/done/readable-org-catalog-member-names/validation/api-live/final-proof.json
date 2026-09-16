@@ -1,0 +1,99 @@
+{
+  "source": {
+    "autobyteus-web/components/agentOrgs/AgentOrgCatalogMemberChips.vue": true,
+    "autobyteus-web/components/agentOrgs/AgentOrgExperience.vue": true,
+    "autobyteus-web/components/agentOrgs/__tests__/AgentOrgCatalogNames.spec.ts": true,
+    "autobyteus-web/components/agentOrgs/__tests__/AgentOrgExperience.spec.ts": true,
+    "autobyteus-web/docs/agent_orgs.md": true,
+    "autobyteus-web/localization/messages/en/agentOrgs.ts": true,
+    "autobyteus-web/localization/messages/zh-CN/agentOrgs.ts": true,
+    "autobyteus-web/services/agentOrgDefinition/__tests__/agentOrgDefinitionReferences.spec.ts": true,
+    "autobyteus-web/services/agentOrgDefinition/agentOrgDefinitionReferences.ts": true
+  },
+  "postIntentionalRenameAuthored": {
+    "data/agents/shared-agent/agent.md": true,
+    "data/agents/shared-agent/agent-config.json": true,
+    "data/agent-teams/shared-team/team-config.json": true,
+    "data/agent-teams/shared-team/team.md": true,
+    "data/agent-teams/shared-team/agents/worker/agent.md": true,
+    "data/agent-teams/shared-team/agents/worker/agent-config.json": true,
+    "data/agent-orgs/names-beta/org-config.json": true,
+    "data/agent-orgs/names-beta/org.md": true,
+    "data/agent-orgs/names-beta/agents/guide/agent.md": true,
+    "data/agent-orgs/names-beta/agents/guide/agent-config.json": true,
+    "data/agent-orgs/names-beta/agent-teams/squad/team-config.json": true,
+    "data/agent-orgs/names-beta/agent-teams/squad/team.md": true,
+    "data/agent-orgs/names-beta/agent-teams/squad/agents/worker/agent.md": true,
+    "data/agent-orgs/names-beta/agent-teams/squad/agents/worker/agent-config.json": true,
+    "data/agent-orgs/names-alpha/org-config.json": true,
+    "data/agent-orgs/names-alpha/org.md": true,
+    "data/agent-orgs/names-alpha/agents/guide/agent.md": true,
+    "data/agent-orgs/names-alpha/agents/guide/agent-config.json": true,
+    "data/agent-orgs/names-alpha/agent-teams/squad/team-config.json": true,
+    "data/agent-orgs/names-alpha/agent-teams/squad/team.md": true,
+    "data/agent-orgs/names-alpha/agent-teams/squad/agents/worker/agent.md": true,
+    "data/agent-orgs/names-alpha/agent-teams/squad/agents/worker/agent-config.json": true
+  },
+  "onlyAuthoredSeedDelta": [
+    "data/agent-teams/shared-team/team.md"
+  ],
+  "mutations": [
+    {
+      "at": "2026-09-16T09:28:35.200Z",
+      "operation": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "AUTOBYTEUS",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": "2026-09-16T09:28:35.201Z",
+      "operation": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "LMSTUDIO",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": "2026-09-16T09:28:35.203Z",
+      "operation": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "OLLAMA",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "at": "2026-09-16T09:28:43.913Z",
+      "operation": "UpdateAgentTeamDefinition",
+      "variables": {
+        "input": {
+          "id": "shared-team",
+          "expectedRevision": "6a35a00d545cef01cbaa293b332b84b7fc49efb17bfb153eaf6de851c13506a8",
+          "name": "Shared Delivery Team Renamed",
+          "category": "testing",
+          "description": "Synthetic catalog-name validation",
+          "instructions": "Synthetic instructions; never launched in this test.",
+          "coordinatorMemberName": "lead",
+          "nodes": [
+            {
+              "memberName": "lead",
+              "ref": "worker",
+              "refScope": "TEAM_LOCAL"
+            }
+          ],
+          "handoffs": [],
+          "avatarUrl": "",
+          "defaultLaunchConfig": null
+        }
+      }
+    }
+  ],
+  "runtimeCreateOrSendOperations": [],
+  "historyIndexes": {
+    "agent_org_run_history_index.json": [],
+    "run_history_index.json": [],
+    "team_run_history_index.json": []
+  },
+  "nativeTraceFiles": 0,
+  "qualification": "Initial catalog browsing zero mutation. Later Team editor/model controls issue3 EnsureProviderModelCatalog metadata operations plus1 explicit Team rename; none is inference or runtime creation."
+}

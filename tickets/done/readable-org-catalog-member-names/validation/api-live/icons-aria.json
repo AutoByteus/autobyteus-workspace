@@ -1,0 +1,60 @@
+[
+  {
+    "chips": [
+      {
+        "aria": "Team Alpha Research-Team",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Alpha Research-Team"
+      },
+      {
+        "aria": "Agent Alpha Director",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Alpha Director"
+      },
+      {
+        "aria": "Team Shared Delivery Team Renamed",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Shared Delivery Team Renamed"
+      },
+      {
+        "aria": "Agent Common Researcher",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Common Researcher"
+      }
+    ],
+    "name": "Catalog Alpha"
+  },
+  {
+    "chips": [
+      {
+        "aria": "Team Beta Research-Team",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Beta Research-Team"
+      },
+      {
+        "aria": "Agent Beta Director",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Beta Director"
+      },
+      {
+        "aria": "Team Shared Delivery Team Renamed",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Shared Delivery Team Renamed"
+      },
+      {
+        "aria": "Agent Common Researcher",
+        "paths": 1,
+        "svgClass": "iconify iconify--heroicons h-4 w-4 flex-none",
+        "text": "Common Researcher"
+      }
+    ],
+    "name": "Catalog Beta"
+  }
+]
