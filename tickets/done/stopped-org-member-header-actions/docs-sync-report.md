@@ -20,3 +20,6 @@ Docs sync Pass. User-verification hold; no commit/archive/push/finalmerge/rebuil
 
 ## DR-002 finalization update
 User accepted current candidate; archive and package commit00f601de5 integrated/pushed to target; safe cleanup completed. Docs/source unchanged after DR001 except final receipt artifacts. Historical user-hold text above superseded. Full evidence whitespace preserved; source/docs whitespace Pass. See current release-deployment-report and handoff-summary headers.
+
+## DR-003 build supplement
+Requested local Electron rebuild from latest base ef56fc733 completed; no production or long-lived-doc delta. Packaging checks and artifact hashes in validation/electron-dr003/README.md; current handoff/release reports updated. Prior API limitations unchanged; no full GUI/profile smoke claim.

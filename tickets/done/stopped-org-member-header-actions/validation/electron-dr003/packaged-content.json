@@ -1,0 +1,962 @@
+{
+  "result": "Pass",
+  "fileCount": 239,
+  "files": [
+    {
+      "path": "dist/electron/appDataPaths.js",
+      "sha256": "c6c318b5544d0f181c9b5b256f5fcd51dc1db3eb3efb43e5299df2772743013a"
+    },
+    {
+      "path": "dist/electron/application/electronApplication.js",
+      "sha256": "3127f62fbb6b60f780861f91e118efe43f73511db9d1c7a920afb11515b1a2f0"
+    },
+    {
+      "path": "dist/electron/browser/browser-bridge-auth-registry.js",
+      "sha256": "e87b825a02ce3bd7a304cb4eed28504565dca2dbb1e926916beedbf5d7eecbaf"
+    },
+    {
+      "path": "dist/electron/browser/browser-bridge-server.js",
+      "sha256": "45a135773ca3e67e3f054abdf79157f7f79b5c22e8ca97e582a6e0e77ff20d31"
+    },
+    {
+      "path": "dist/electron/browser/browser-device-emulation.js",
+      "sha256": "b5b2ef083a1dd52d428ca8b118509d4ed26daab7969a37d6ba903041aa633846"
+    },
+    {
+      "path": "dist/electron/browser/browser-dom-snapshot-script.js",
+      "sha256": "62e64bdcdb74ce68962407d5124e97e3c1c62f6af36db21d2d6a83afbd4727f8"
+    },
+    {
+      "path": "dist/electron/browser/browser-page-cleaner.js",
+      "sha256": "9ed8a16f2e835d3ed6ca74865d95c4b9d62526ad5b82498b1678ff4cdf051502"
+    },
+    {
+      "path": "dist/electron/browser/browser-runtime.js",
+      "sha256": "0ad91d6c50c1a478556fe4cda39fc420c14a555c72a36b265aab8ab9c2bf98be"
+    },
+    {
+      "path": "dist/electron/browser/browser-screenshot-artifact-writer.js",
+      "sha256": "d8ed4e3ccdbc6611426e1cde4cd1b61bb61d73155a517a73f0d9f402155ed948"
+    },
+    {
+      "path": "dist/electron/browser/browser-session-profile.js",
+      "sha256": "7129546ed708d7da850d3574e7eaba95f81687f6d559b8892939965d5d74eaf8"
+    },
+    {
+      "path": "dist/electron/browser/browser-shell-controller.js",
+      "sha256": "c8e6ffc31cdf49ad6a10227e760f1d52c7d8b354c3acc52bbc98daf926efc0c8"
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-manager.js",
+      "sha256": "03566e784b7958cd8a3c6d790857d07cf6d6d7e630af5b5226cf3cd88c7e5680"
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-navigation.js",
+      "sha256": "117624360c84960013ad16a59646dce22eeb78f350c9614ca2499070ae1ee2a4"
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-page-operations.js",
+      "sha256": "d45ff46e17c2e8ab62d3e7a5d6fb47154026e982d8bbc5f5cd297278300ec334"
+    },
+    {
+      "path": "dist/electron/browser/browser-tab-types.js",
+      "sha256": "95f2ae757f185cf6c921ff1a538322f2ebc60a2e16905191502f281b98eaa0c4"
+    },
+    {
+      "path": "dist/electron/browser/browser-view-factory.js",
+      "sha256": "d2a60cfc304fcbbf212f7fab950ac4423f2c48926ff7a1c810d1fd92b139eb42"
+    },
+    {
+      "path": "dist/electron/browser/register-browser-shell-ipc-handlers.js",
+      "sha256": "66d6c9f49862f177af012ca1e61b5da2e86fd848a2110ca371a8a20bba7f6c9c"
+    },
+    {
+      "path": "dist/electron/extensionIpcHandlers.js",
+      "sha256": "c5df846e518c430b0f0f5349b661072a35b1236c162d705d50ac95b67bbcb86c"
+    },
+    {
+      "path": "dist/electron/extensions/extensionCatalog.js",
+      "sha256": "f0e809f0fc39c72b8ba33c66a380f41a64d26af3a78a80d7b59d44a8ed914be2"
+    },
+    {
+      "path": "dist/electron/extensions/managedExtensionService.js",
+      "sha256": "9f004f34bdcfb720535ed7031791fc503939c89da260f20458148385c7682dd2"
+    },
+    {
+      "path": "dist/electron/extensions/types.js",
+      "sha256": "d43aa81f5bc89faa359e0f97c814ba25155591ff078fbb9bfd40f8c7c9683230"
+    },
+    {
+      "path": "dist/electron/extensions/voice-input/voiceInputRuntimeService.js",
+      "sha256": "1c470c184b054fc22275273af4b0911136191f99cfa66cd13764c3f5da4522ba"
+    },
+    {
+      "path": "dist/electron/extensions/voice-input/voiceInputRuntimeSupport.js",
+      "sha256": "0a76e727431020cb838447e266c1f9beaf164ecc1c9590d62ad3f85f9b3d4bd6"
+    },
+    {
+      "path": "dist/electron/launch-profile/e2eDataRootSafety.js",
+      "sha256": "d9f6c2de80571db59516494969a17aa52a836008409d4869cf778f70dc12199c"
+    },
+    {
+      "path": "dist/electron/launch-profile/e2eLaunchPreflight.js",
+      "sha256": "7ccfd35c80ec461fdd99eba7a9971ff826d2387ed5bfd40c6ee30e58846be63c"
+    },
+    {
+      "path": "dist/electron/launch-profile/electronLaunchProfile.js",
+      "sha256": "3f8ef7a12874ae6f9fa5dcaf8b68d526635adc8364cf2fcc03bb6810b84caef2"
+    },
+    {
+      "path": "dist/electron/launch-profile/electronLaunchProfilePaths.js",
+      "sha256": "e2de58ffe2b567e0f88a0af875e071e944d5db6b8fafb1965ab028b7d40b6183"
+    },
+    {
+      "path": "dist/electron/local-file-protocol/file-byte-stream.js",
+      "sha256": "d8a910877de36fdf91bce359efbb9fdaebc724dc435d03b6547be303d24ae7db"
+    },
+    {
+      "path": "dist/electron/local-file-protocol/local-file-protocol.js",
+      "sha256": "cd8158065bbecd5339557605c7f1daa72c99ba67dfdd2cbf098eee6655002de7"
+    },
+    {
+      "path": "dist/electron/local-file-protocol/local-file-response.js",
+      "sha256": "edfbd7af9762c809d911e827b65078ed61bf6f692fa7b569a47f3ad44643ad72"
+    },
+    {
+      "path": "dist/electron/local-file-protocol/register-local-file-scheme.js",
+      "sha256": "cec624328a138284e8f92ebdd48aba608db641fa1fa81c524e1f479f499f5110"
+    },
+    {
+      "path": "dist/electron/localFileValidation.js",
+      "sha256": "1797e8ec33001d626f106c9747810827f8402f9e3ca6693d6a0668f6bf3d8e7e"
+    },
+    {
+      "path": "dist/electron/logger.js",
+      "sha256": "0d938c841ac463072a962d97f8afcb9f4390df340b1e0a5a4ccc0627234882cb"
+    },
+    {
+      "path": "dist/electron/main.js",
+      "sha256": "224977e6b0f1c1b589a0397be9bcf6f27e4cc0e04276c496bfc7cc5343865ee8"
+    },
+    {
+      "path": "dist/electron/nodeRegistryStore.js",
+      "sha256": "fb61a1b0cf88310b4f7df465a4cb9db7cf258a3cd88b8c86b130ecfb4e36bae4"
+    },
+    {
+      "path": "dist/electron/nodeRegistryTypes.js",
+      "sha256": "65fa97a75c0922d4242972500ec7b0c6ea4ae2bd74559fd9e80d6a359e348ae3"
+    },
+    {
+      "path": "dist/electron/preload.js",
+      "sha256": "a630e158a426cb4f5b8eecb86899fe517e9b85e8afa7c38faf5f8b92eb76a5e8"
+    },
+    {
+      "path": "dist/electron/rendererConsoleDiagnostics.js",
+      "sha256": "68e2645a21b317a078a1a267cf668c5b4235d29212899b2466117294c7563e2b"
+    },
+    {
+      "path": "dist/electron/server/baseServerManager.js",
+      "sha256": "2e47e53efa5eefa5871bf72071962f24f9c96627d84b8501a7e205b26858acf3"
+    },
+    {
+      "path": "dist/electron/server/embeddedServerLaunchConfig.js",
+      "sha256": "d43aa81f5bc89faa359e0f97c814ba25155591ff078fbb9bfd40f8c7c9683230"
+    },
+    {
+      "path": "dist/electron/server/embeddedServerPlatformFatal.js",
+      "sha256": "4f55797b9161e1ce5e9307cd12f1506454f7623c04e007985b83eb4f47f497f6"
+    },
+    {
+      "path": "dist/electron/server/linuxServerManager.js",
+      "sha256": "c79662c7510a7d4016b16501b9cfd1342bff1f90d2a0df91ea9e9bf5dcb72589"
+    },
+    {
+      "path": "dist/electron/server/macOSServerManager.js",
+      "sha256": "1f3653dc911ee5548bbe88553c2dc5d00779f1926f68d2cec0fdff9af0f6b119"
+    },
+    {
+      "path": "dist/electron/server/prismaSqliteUrl.js",
+      "sha256": "5e02e85baf4c14eea95ee55839bbf8d91c992de2c5f41328794c2db5ca66cd56"
+    },
+    {
+      "path": "dist/electron/server/serverManagerFactory.js",
+      "sha256": "db5c0d11be2f646c6f24e938b04159929465f5ac3310cb2eda7aa022cc531cea"
+    },
+    {
+      "path": "dist/electron/server/serverOutputLogging.js",
+      "sha256": "a0528ee989ed1ff0e61ed83f6cd9d0af0d799a677cf8f1e40e8f2128e0add407"
+    },
+    {
+      "path": "dist/electron/server/serverRuntimeEnv.js",
+      "sha256": "1ac0eaeb0d17d6d0e07789cdef74e99a65d74d6ee29d1dc4a64a34e3ef8a81eb"
+    },
+    {
+      "path": "dist/electron/server/serverStatusManager.js",
+      "sha256": "c9a2e123d71b406e4291501651371db62142de284bd750b72e2acadabf699167"
+    },
+    {
+      "path": "dist/electron/server/services/AppDataService.js",
+      "sha256": "6474b5a38e65a7958a2d3578f1d687346daf32479713b84ac42be14b98b40803"
+    },
+    {
+      "path": "dist/electron/server/services/HealthChecker.js",
+      "sha256": "4b4674d5835d65d72dc1b8e4771c4c8f92832e254d6a4dab7ae0ef4423ba75ab"
+    },
+    {
+      "path": "dist/electron/server/services/index.js",
+      "sha256": "94f9c2d5e22c933370574f6b87c5a1b05254d1e4706dc0753199584ccd23ea5d"
+    },
+    {
+      "path": "dist/electron/server/windowsServerManager.js",
+      "sha256": "2a1da1e4e493abf4fe49bf90df25fbcfd926780d1a5011a84c0eabee5f39aa10"
+    },
+    {
+      "path": "dist/electron/shell/workspace-shell-window-registry.js",
+      "sha256": "d9a9f3919b97558ca7280548c7f97c3a389096c73d9d4de6918ba4b1f70deefe"
+    },
+    {
+      "path": "dist/electron/shell/workspace-shell-window.js",
+      "sha256": "a76a82e491731ff259f984c274578cd53db9adc9c5fac59b2c9fc4357f4d8e5d"
+    },
+    {
+      "path": "dist/electron/updater/appUpdateErrorClassifier.js",
+      "sha256": "feff584c8992b41f8a36c22161e0f43b2efc2ae69ab55b7c9cdb07757d8bf9a0"
+    },
+    {
+      "path": "dist/electron/updater/appUpdater.js",
+      "sha256": "f78c1f5d82c451d3a8cebab6b76c4526c6e8204fe9240eced7f13f9b2fa7e725"
+    },
+    {
+      "path": "dist/electron/utils/shellEnv.js",
+      "sha256": "ffe4447bbc8e9b3cb8c468a0878c02b4095ebcc424688533639dedce2c1f7cf6"
+    },
+    {
+      "path": "dist/renderer/200.html",
+      "sha256": "f10f810bfb0b8fb8863467699c761256e64504032ad105a180aad0be0041a9be"
+    },
+    {
+      "path": "dist/renderer/404.html",
+      "sha256": "2b30425cf354190c2a507a685c6600568798d43199f15e2de9afddf3597da729"
+    },
+    {
+      "path": "dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt",
+      "sha256": "399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/ConfirmationModal.CoeV6O6i.js",
+      "sha256": "c65361a6699f3005a2d9ea314d94a37031523bf52d8ca860ea382a115d2773c5"
+    },
+    {
+      "path": "dist/renderer/_nuxt/ConfirmationModal.DtxxR2Ew.css",
+      "sha256": "372d73d13fe2d05584e7745e8da08a75dbd1f72f7f934a73dc1b1fc74087074f"
+    },
+    {
+      "path": "dist/renderer/_nuxt/DefinitionLaunchPreferencesSection.B4uhkLvJ.css",
+      "sha256": "7e734b83a58c3abecc6f3c58e38739f7d0017eab06747ca436269db4ab0ff4bf"
+    },
+    {
+      "path": "dist/renderer/_nuxt/DefinitionLaunchPreferencesSection.vue.CGVUwrRL.js",
+      "sha256": "52b996a1c5bdcf69c8788e3e7bc68ea68a531087485c4dd1e87136c9751cbc59"
+    },
+    {
+      "path": "dist/renderer/_nuxt/FileExplorerTabs.BrK5oVEn.css",
+      "sha256": "77379f3150cb653456007ec00e98773101a05806c44a85d356f7a827a457aea5"
+    },
+    {
+      "path": "dist/renderer/_nuxt/FileExplorerTabs.vue.X3iSIMAL.js",
+      "sha256": "4ca01fb2859eea7c429cfa32a81e007cdd907e389204e3c9767a9c50d1f01e05"
+    },
+    {
+      "path": "dist/renderer/_nuxt/FullScreenImageModal.BO-N6GU7.js",
+      "sha256": "a00b98577eeab5980b778eaab72bc1946ff9b49b3f3ed98c26624b7d079b49a8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/FullScreenImageModal.aod6xn15.css",
+      "sha256": "a42299b2577129150e2987e117a72463a2ffa6d46066abaece12c05ab1b801b3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2",
+      "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff",
+      "sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf",
+      "sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf",
+      "sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff",
+      "sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2",
+      "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff",
+      "sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2",
+      "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf",
+      "sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf",
+      "sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff",
+      "sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2",
+      "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf",
+      "sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2",
+      "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff",
+      "sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2",
+      "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff",
+      "sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf",
+      "sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2",
+      "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf",
+      "sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff",
+      "sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf",
+      "sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff",
+      "sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2",
+      "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2",
+      "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff",
+      "sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf",
+      "sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf",
+      "sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2",
+      "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff",
+      "sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff",
+      "sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf",
+      "sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2",
+      "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf",
+      "sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2",
+      "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff",
+      "sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2",
+      "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff",
+      "sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf",
+      "sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf",
+      "sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff",
+      "sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2",
+      "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf",
+      "sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2",
+      "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Script-Regular.D5yQViql.woff",
+      "sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size1-Regular.C195tn64.woff",
+      "sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf",
+      "sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2",
+      "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf",
+      "sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2",
+      "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff",
+      "sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff",
+      "sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf",
+      "sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff",
+      "sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf",
+      "sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2",
+      "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff",
+      "sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2",
+      "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf",
+      "sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa"
+    },
+    {
+      "path": "dist/renderer/_nuxt/MobileRemoteAccessShell.vue.Cl_XHLkv.js",
+      "sha256": "5bd7d5b42dcb342dd2de5e01c18ef70ede99645984c6ef88ef6bcadc08a3b1bc"
+    },
+    {
+      "path": "dist/renderer/_nuxt/ModelConfigSection.vue.CjjihqvW.js",
+      "sha256": "dbdc8dd487e51d5a03bd2224ee069c01a71db10497a0c54e29042ddc981e15dd"
+    },
+    {
+      "path": "dist/renderer/_nuxt/RuntimeModelConfigFields.vue.b4i02W6E.js",
+      "sha256": "857d66f89b598116bb608ec20fc07668f1bee0b3c30d0e0539d18d060825ed2d"
+    },
+    {
+      "path": "dist/renderer/_nuxt/SearchableSelect.vue.CVxS8m3K.js",
+      "sha256": "274eefb250035673b214940bb1b7845dfeadd3e3f9860bf8a357b8eb6a190d80"
+    },
+    {
+      "path": "dist/renderer/_nuxt/ToolsManagementWorkspace.vue.CHWodAuw.js",
+      "sha256": "5b2bf03e04d08f66f5b6a412b5cf0e66d77a9235f1e5bf030d90e398a160f24e"
+    },
+    {
+      "path": "dist/renderer/_nuxt/_basePickBy.BCssBM1_.js",
+      "sha256": "47393ed47a9985ad838c6538e998e95c3bd81bfa6298057263791b04b07e2631"
+    },
+    {
+      "path": "dist/renderer/_nuxt/_baseUniq.C0TnJxER.js",
+      "sha256": "d82bf2d76a67dc6787d667c8f9df8e2ed6d98144a68c31bbcd7a8677d1c0507b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/_commonjsHelpers.CE1G-McA.js",
+      "sha256": "df711f06c8ecd70bc0a4c0a00936e7be2473fef133ba86c470caaed4bd438455"
+    },
+    {
+      "path": "dist/renderer/_nuxt/_id_.BPhVvSsQ.js",
+      "sha256": "33deb2b80318367ac9dc6ae8bfeffebf276e4a6e73178a1bb89965bdb907e1d8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agent-orgs.D6u-sgS9.js",
+      "sha256": "17330f67a336a958bbaebd9ff8a3d144f58a63a4eac5647f279000a0e0b5d41d"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agent-teams.JKEvzg7E.js",
+      "sha256": "e2ab2ea44eafc89610d00debe0838a5f839ce90bcc29bd0a2b7d95bad0a563d2"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentDefinitionStore.BPO4kMC_.js",
+      "sha256": "93a2b4f22521db699d40e53e76541e349c0ec1103e7801d13cbb7770459ae71e"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentOrgDefinitionReferences.voyA8vll.js",
+      "sha256": "aec49eb5f1a07285303bea8a772a0faa24aaa7db894eb2f05deb40e6421ab8b6"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentOrgDefinitionStore.CXo5Tkwa.js",
+      "sha256": "d98a546b1f9a11cd968e2f83bf16be7c5b2decc0d2c64bf1f653f24df165de92"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agentTeamContextsStore.C2RFY2c3.js",
+      "sha256": "703a1aa90c139add7ec67b0e7c0fd9b054d1335ba5db2e6a57c5f10c86f513ec"
+    },
+    {
+      "path": "dist/renderer/_nuxt/agents.B_Hjy4eW.js",
+      "sha256": "73bb40fb59d1d829378e7edaee8e41832bbe622e5211867901d64e15807dc76b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/api.CUQPLxX5.js",
+      "sha256": "794b9cfa8c3cb4c4451b47160409073e775e3c79edc93385a5ad8eeba57cf089"
+    },
+    {
+      "path": "dist/renderer/_nuxt/applicationAssetUrl.BxcXMT3m.js",
+      "sha256": "65b4b23073362df56ed3d02bdbf7d326bbc84d925bd4cac99fe10a86dd83a640"
+    },
+    {
+      "path": "dist/renderer/_nuxt/applicationStore.C9iyOvrS.js",
+      "sha256": "4532e63fa3378ac467dd3dda9b27e94716a9dc319fbf5c0c93008026d1ed8749"
+    },
+    {
+      "path": "dist/renderer/_nuxt/arc.exjJy6JH.js",
+      "sha256": "2ab3a3bb3746d60f6831c45903d16ed8d6beb78fee570ef547fccad61b3ed9a8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/architectureDiagram-VXUJARFQ.eB3brJ2A.js",
+      "sha256": "31cb16b04e74d093f01ca0fc07be14434f2e06552491e57600f2e27816c989d2"
+    },
+    {
+      "path": "dist/renderer/_nuxt/blockDiagram-VD42YOAC.Gj7qG72L.js",
+      "sha256": "582188dbdac23f8f72ddb3b62aa10c35b4165fbb2461a7f6abd2adbd4dcb68a3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/builds/latest.json",
+      "sha256": "075fcb10e5c75c1a284746ba951366f001a78a6d267715a2bebb326387cf4afc"
+    },
+    {
+      "path": "dist/renderer/_nuxt/builds/meta/5212ada7-5a50-4ded-bce1-91fa4ea11db7.json",
+      "sha256": "0682085387790ddc072c907549fe0b6d8c97a009f500375f2fa70b3f5a1f2950"
+    },
+    {
+      "path": "dist/renderer/_nuxt/c4Diagram-YG6GDRKO.ZUzKcE0z.js",
+      "sha256": "e3edc256314bf07d70b5998ef19286c11e7dc93eae582a7e1e704b870fef7949"
+    },
+    {
+      "path": "dist/renderer/_nuxt/channel.Cv-topP2.js",
+      "sha256": "858fb7d21abc5fe115c7adbba41553c8af3942c73692c4e428cbaba1b0aa49f2"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-4BX2VUAB.DtC33Ybx.js",
+      "sha256": "65fab1dfc59ae9b5d6888fcfcbf4e065fa6da7755eda34d53d6f1e2c69e64ec1"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-55IACEB6.DDOzoyUZ.js",
+      "sha256": "b4529654ef608c39cdb60ec8e34106e0d5ac89078dcbd4e7753afe69df07c238"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-B4BG7PRW.DCP_1hnB.js",
+      "sha256": "767534b491ed4589ae188df6fbc806a43d486fd252441d580176a804fd98b611"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-DI55MBZ5.CEOyOkGL.js",
+      "sha256": "b4c777b43d724ecfe5849f2dae7e6d5cef8282e1a765e49021cb8014d0951ee8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-FMBD7UC4.CC1Qa5jR.js",
+      "sha256": "8358bc28366f3babd0a4f35fb2860435bfc9da4fb24ee3eb8dcf6f5f009b2f65"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-QN33PNHL.BdEBsR1f.js",
+      "sha256": "5acc452e9fbfc5ee5503b0a621071fd953d59ae6203cc648c07db434f0bf80c5"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-QZHKN3VN.DPfSKU3a.js",
+      "sha256": "dee0c28445004adb73cbfd945b6c4d009b98270fbb320b2595de320c5ff32fab"
+    },
+    {
+      "path": "dist/renderer/_nuxt/chunk-TZMSLE5B.DC4vl50j.js",
+      "sha256": "16238d55ea9adff0a041830095041a8b4a9b4a32f7dce1ee92bf520c8312dc58"
+    },
+    {
+      "path": "dist/renderer/_nuxt/classDiagram-2ON5EDUG.Ct_MBb6S.js",
+      "sha256": "2f4842c8d1d9644e4b92acf3ee5c265f3a73a666011158c37baaf98abb5741e3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/classDiagram-v2-WZHVMYZB.Ct_MBb6S.js",
+      "sha256": "2f4842c8d1d9644e4b92acf3ee5c265f3a73a666011158c37baaf98abb5741e3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/clone.X9jO_lt3.js",
+      "sha256": "d87f40c483441aa220123e6b56a819abccd2458937755de1a7686eb7c2cc22af"
+    },
+    {
+      "path": "dist/renderer/_nuxt/cose-bilkent-S5V4N54A.B45uS-pM.js",
+      "sha256": "1aff4350fa018a57d15202e92ea92c6791012c990b8939def96b10c3e5a60719"
+    },
+    {
+      "path": "dist/renderer/_nuxt/cytoscape.esm.5J0xJHOV.js",
+      "sha256": "38944c926eef34939819338782c1f5a9000e0f4c92208d73d6eb1c5b57cb2695"
+    },
+    {
+      "path": "dist/renderer/_nuxt/dagre-6UL2VRFP.8MzwDXfM.js",
+      "sha256": "7c98368f444f6ba5a4f09314b4f0f483c1ec8456d3282e0b36740c96c4fc1244"
+    },
+    {
+      "path": "dist/renderer/_nuxt/default.XPQMn80y.js",
+      "sha256": "1ecb8f4afb0f5f255a3441bef790635386f0a247df64f2803b795e143055bce6"
+    },
+    {
+      "path": "dist/renderer/_nuxt/default.pB70Vdxh.css",
+      "sha256": "0e52c18d2d9c88c82e1a068bb93f39b123985b97b3e657d4018fd6cc35cf86e2"
+    },
+    {
+      "path": "dist/renderer/_nuxt/defaultLocale.DX6XiGOO.js",
+      "sha256": "0cefbd76f932c4eea4758d28169802589b1ad15b46607253de4bd82328998ece"
+    },
+    {
+      "path": "dist/renderer/_nuxt/diagram-PSM6KHXK.DyGEf5gk.js",
+      "sha256": "12c3b3a2dd5f66a592db98eb5b579703e01bdddcbbf453198bbf11a124c3748a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/diagram-QEK2KX5R.B8l4Tfu4.js",
+      "sha256": "0d65dd5d4ec3b6c296596b86555ace95ab66fb75fa79e844f60e0cfcedc433d4"
+    },
+    {
+      "path": "dist/renderer/_nuxt/diagram-S2PKOQOG.D0CLtZC0.js",
+      "sha256": "f751ba4eb88deb57837e7750e9cf5190192372ef093b5c9e2a60e8bd88b7560a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/entry.Bg2jRjxU.js",
+      "sha256": "8168ce14a42f8038e8c394676f10c43d767ea0e40434695075e971a3dad5ebdf"
+    },
+    {
+      "path": "dist/renderer/_nuxt/entry.C9perMrs.css",
+      "sha256": "86c6cbd8ca7b223c0ae7a7b76b3ea4f3733a4d7c5df9fce866aee4d4e898f219"
+    },
+    {
+      "path": "dist/renderer/_nuxt/erDiagram-Q2GNP2WA.BWTAkHA_.js",
+      "sha256": "bc0f029eb9b13f3973c540b440e0812cd4489da985e74104371c9d00a393cff7"
+    },
+    {
+      "path": "dist/renderer/_nuxt/featuredCatalogItems.Bv4L8bhO.js",
+      "sha256": "bcb14c2521fe16203129dd490139c01e0f4348f81fed2febd2d344c1396dd26b"
+    },
+    {
+      "path": "dist/renderer/_nuxt/fileUploadStore.7OMP98jS.js",
+      "sha256": "ac00ff20fe8a00341c639c7227b395da354ffd257c1711b78ccdafbf4fbf725d"
+    },
+    {
+      "path": "dist/renderer/_nuxt/flowDiagram-NV44I4VS.C2cXpLqC.js",
+      "sha256": "21f95a55a6dcaab3076b01eeae0804a09dab4b6756285e254efe67c7718d00a6"
+    },
+    {
+      "path": "dist/renderer/_nuxt/ganttDiagram-JELNMOA3.BypuVN2b.js",
+      "sha256": "c6bc508dd259822d37a3d3625cbbb8bc0522779a3eeec67ae0c24b2788ce012c"
+    },
+    {
+      "path": "dist/renderer/_nuxt/gitGraphDiagram-V2S2FVAM.DywPyn8D.js",
+      "sha256": "9c3427f0220224a3ff2108f88ea89fdc9941be3ce614f68c01717da9f5983a3f"
+    },
+    {
+      "path": "dist/renderer/_nuxt/graph.BMZ9QiPU.js",
+      "sha256": "a4744993a7e2f28713dff5e44feef90b632d48365692a0aa901d15b0ac511d5e"
+    },
+    {
+      "path": "dist/renderer/_nuxt/handoffs.IajwE1lb.js",
+      "sha256": "b4784ca02e2f4bb6ecbad5e8007576a5f0365428ab2e5dd932ce6202bfcc8bcf"
+    },
+    {
+      "path": "dist/renderer/_nuxt/iconify.D5qDObf6.js",
+      "sha256": "287eda8b403d4ee5ed048039b18543a514c8521b498c8b384933eea22d9b8890"
+    },
+    {
+      "path": "dist/renderer/_nuxt/index.Ba8Bdwwz.js",
+      "sha256": "289bf703950a8d517e1d2ba72c762727212350725bf51c2316612e3a42d1dad1"
+    },
+    {
+      "path": "dist/renderer/_nuxt/index.CImW650C.js",
+      "sha256": "84cc47eebdbff4efb4c083e1db4407f98b2709a07ffacfd58bca66705301b791"
+    },
+    {
+      "path": "dist/renderer/_nuxt/infoDiagram-HS3SLOUP.Cq7P39MZ.js",
+      "sha256": "fec30db8b3f84e4df80c9f714edd6df908dbaff514d74ed848f16cb98d7f5b64"
+    },
+    {
+      "path": "dist/renderer/_nuxt/init.Gi6I4Gst.js",
+      "sha256": "379fa880c14ad48f43b0c23ff56b30b2b808e8460fd9f9cad8bf7cb278c5b814"
+    },
+    {
+      "path": "dist/renderer/_nuxt/journeyDiagram-XKPGCS4Q.hlNtnLgg.js",
+      "sha256": "333b36448526820d6670313667ff04e6699b381a13c939331d9fca5c59e563a0"
+    },
+    {
+      "path": "dist/renderer/_nuxt/kanban-definition-3W4ZIXB7.CaytAvZ-.js",
+      "sha256": "9371291f229f3737a68d5650bd488237a7658dff654e05dd3e45b86cb48eb9b0"
+    },
+    {
+      "path": "dist/renderer/_nuxt/layout.BWN8APmE.js",
+      "sha256": "a82a6e3c0b3bb58d91ff498110a426d97852db8e62776c9cb74fef052859fe13"
+    },
+    {
+      "path": "dist/renderer/_nuxt/linear.CCF1_3QO.js",
+      "sha256": "70c36c68038d4fcc2d318b8fbdcd27333b544d69c1df0c434a3ddbc199b5462c"
+    },
+    {
+      "path": "dist/renderer/_nuxt/media.8QGPIfxK.js",
+      "sha256": "4d7680a30a071f6f148db8a9eb127d74b45ebf0f5144ccf9fd843e032476cb60"
+    },
+    {
+      "path": "dist/renderer/_nuxt/media.yjOJmL4q.css",
+      "sha256": "9483f2f9728a4ed6592e228d329d0d42ed5fd0b2c31bcfa421ecb37bfcf2c9e3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/memory.B1KsW5lu.js",
+      "sha256": "a29d16b4e9e798a76b774bd0229617105c3ad76b849c7f87d2d79655b05c45d7"
+    },
+    {
+      "path": "dist/renderer/_nuxt/mindmap-definition-VGOIOE7T.bgtbdf1-.js",
+      "sha256": "3172561d72df9dcb66862fd75e6196196fde8d8c667b713fdcb33b5db89aacce"
+    },
+    {
+      "path": "dist/renderer/_nuxt/mobile.S0OO2Y-i.js",
+      "sha256": "3058a4e11827d393ce4bd0b28fdac4de8b468cfa81bf6bfbdcc53a0b0b6c6c92"
+    },
+    {
+      "path": "dist/renderer/_nuxt/mobileWorkStore.B02LvUl6.js",
+      "sha256": "cb03fd2484acaea603b40c4e55a48365058a2986a1e0e57ea9b7fb8543b496da"
+    },
+    {
+      "path": "dist/renderer/_nuxt/modelSelectionLabel.DfYBGU2Z.js",
+      "sha256": "cae6ab407292539b4c534704e7d3eae3640c3b6ee9cfd0be4b536c914e0b08ec"
+    },
+    {
+      "path": "dist/renderer/_nuxt/nodes.Du0PZOq3.js",
+      "sha256": "3a9d2ad01c0363b1ba4be7dfa38aaab58c80efcb8ab33bac9ef2d15a66afa4f0"
+    },
+    {
+      "path": "dist/renderer/_nuxt/ordinal.BYWQX77i.js",
+      "sha256": "2d709ed005d15eefb9082ea378bc864a8f043a1afae448cc87aa66b71b6c0eb8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/pieDiagram-ADFJNKIX.DxWK8skR.js",
+      "sha256": "5934df7264b16a848ce1b7787ba43df51ed1311add5a569531b4116a43ddb736"
+    },
+    {
+      "path": "dist/renderer/_nuxt/qrCodeDataUrlService.BInqJ4D7.js",
+      "sha256": "e2f8723e7996fa57b23cf960fa2121f06300215f1750264575ca0ffbdc19dab5"
+    },
+    {
+      "path": "dist/renderer/_nuxt/quadrantDiagram-AYHSOK5B.BQunCULW.js",
+      "sha256": "30bb22a4599894c50722b9e792f3e3bb8551a81c55b2e6b9f666254ee4f58fff"
+    },
+    {
+      "path": "dist/renderer/_nuxt/requirementDiagram-UZGBJVZJ.Di2dFqs8.js",
+      "sha256": "ce360804d8399b48987f45688939e443d3f14b2741ec328b328ee83eeaaa1ed9"
+    },
+    {
+      "path": "dist/renderer/_nuxt/sankeyDiagram-TZEHDZUN.BAZXyT7i.js",
+      "sha256": "46769a360dabeaec911c0e7e78c9f1ac0ca622b69de85a74fd9197350bb6b6c9"
+    },
+    {
+      "path": "dist/renderer/_nuxt/sequenceDiagram-WL72ISMW.BS_o27vp.js",
+      "sha256": "eca91aa2d3e0f5f0d33bc00c14dd7fc2ecee162875b102f7dee13d3281456af5"
+    },
+    {
+      "path": "dist/renderer/_nuxt/serverSettings.BJwmXNa2.js",
+      "sha256": "93ddf19223f2d615dc46b25bf0544e109070bae50f9342f620fa6c2e4c30a1dc"
+    },
+    {
+      "path": "dist/renderer/_nuxt/settings.BL092Mpb.js",
+      "sha256": "4aba9a7803c06c6b9a61058e8d53e4a6dccffcd57d710002d7b7b3a29c9f7cfc"
+    },
+    {
+      "path": "dist/renderer/_nuxt/settings.C_j_9X3K.js",
+      "sha256": "9156ac43b984a4c4c3a7e71d51cdca6d1af6a306e66e4485e6e4754cd2da939f"
+    },
+    {
+      "path": "dist/renderer/_nuxt/settings.DOZ4oBRp.css",
+      "sha256": "62ac57cb73f52fec6980c9633fb3e5de8b5788dd97f2c6904f5aa3bd1e45ba9a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/skillImprovementCapabilityStore.i8Mrz3Wu.js",
+      "sha256": "48bd5d01735ed86b57d43adda3e67b818ef3bc20e21429c5eec34935846d1d24"
+    },
+    {
+      "path": "dist/renderer/_nuxt/skillStore.DYqneJuO.js",
+      "sha256": "006336a2c4fec5323f161df45cfdbaa65c3dd46fb518655385876884e5b00912"
+    },
+    {
+      "path": "dist/renderer/_nuxt/skills.DuOOe4ln.js",
+      "sha256": "b0fe539da35b2ed93c2d99673ff0d80c8b1398c1c87a964bdbdb1e6dbb56dbc7"
+    },
+    {
+      "path": "dist/renderer/_nuxt/skills.hZg4z6X7.css",
+      "sha256": "39a9dc1b3061df2946c19732ce11b19a0ec401fec262f1da14d673970849fc41"
+    },
+    {
+      "path": "dist/renderer/_nuxt/stateDiagram-FKZM4ZOC.BJKcjNyV.js",
+      "sha256": "144c1bcfb316847e5da8ed4c405389734151585f7300f136133903da83104877"
+    },
+    {
+      "path": "dist/renderer/_nuxt/stateDiagram-v2-4FDKWEC3.CZ2VKPp1.js",
+      "sha256": "3d09b97035f73dcd1ba0629ced2d4f7d6f222dfeaaf3e269337a10b5ececd533"
+    },
+    {
+      "path": "dist/renderer/_nuxt/timeline-definition-IT6M3QCI.BsvCe0hA.js",
+      "sha256": "0798e67df614609a892094c8bdf6828d80aaa1eafc06122810302fe3650115ec"
+    },
+    {
+      "path": "dist/renderer/_nuxt/toolManagementStore.Du4flGAF.js",
+      "sha256": "a10c6709e8e2aa6a215a1a15cbd219fa98ed8dfc61f2438da44fa86906d6a3e8"
+    },
+    {
+      "path": "dist/renderer/_nuxt/tools.CMJ-KF61.js",
+      "sha256": "0c24e6baea3eb45035d13721a17b95f08b98704e776d3352dce13454d87b54c3"
+    },
+    {
+      "path": "dist/renderer/_nuxt/treemap-GDKQZRPO.DMMFAMA7.js",
+      "sha256": "d6253ac29332ea40416cab3ad8810b8d61898d1b4feda8d236066b329ac9498d"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useEventMonitorFilePreview.Gy3jZMbV.js",
+      "sha256": "1f9db4604ee8a69f6d8ccb95110a37247052d92afd7128a3d55edd81873c3f8a"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useNativeFolderDialog.BDyFQA4X.js",
+      "sha256": "d3206089e3b1c4316eaa20b7dd4fe8c1aa468f3c6f07db1e29cf716de41df227"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useRightPanel.D0ULdNBi.js",
+      "sha256": "770f254fbd1eb4371e5839ef7a7ecf3317842bc346d41c191dd184da3fc69d61"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useRuntimeScopedModelSelection.CrxhLjmc.js",
+      "sha256": "150b25d3a910eac0975a2e47b256bd3f3a20e92fdc81b9b6fb3ad5b773a1b8e1"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useShellPrimaryNavigation.e6mwubUo.js",
+      "sha256": "8e618cc43ad072108afde789662dc3cb1d018bacf35ecc74172d0f0d5a1497be"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useTeamRunRuntimeCatalogSync.CYR_-KzE.css",
+      "sha256": "5f694144056ad845a05ced4fb4bbc5c9e79b4be69308cbfa0cf3b1ad94a1bf10"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useTeamRunRuntimeCatalogSync.DxrU8cbF.js",
+      "sha256": "0a8c426f512e793dce63c7a1c189838756f3c2cbe53f3f36210e5bfc22eff7dd"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useWorkspaceFileExplorer.Kr8OOoy4.css",
+      "sha256": "8b1b36ecd23f3416c45401b988b38527026c9cb70897e7aa6ba72dab03725659"
+    },
+    {
+      "path": "dist/renderer/_nuxt/useWorkspaceFileExplorer.rbb9-Uwa.js",
+      "sha256": "9d70e7bd428bd1d5f88a49f2ac7f34e1828c85bcded337d51c85f18a8c675050"
+    },
+    {
+      "path": "dist/renderer/_nuxt/voiceInputStore.Dyzqw3gu.js",
+      "sha256": "69b0d96dbb417c6b67bb86d3fdad7ce1354397528e0feb439b3d2ee074b01714"
+    },
+    {
+      "path": "dist/renderer/_nuxt/workspace.C5l5DyaL.js",
+      "sha256": "9208b7f3ace73eda275b8511475cb0d87d054738ab78f8c3d16baa9c38edc68d"
+    },
+    {
+      "path": "dist/renderer/_nuxt/workspace.D_BM_T2O.css",
+      "sha256": "9c143a539cdad3741075e47cd1e895aa55bbc02255dae1d593aeb616676b64ea"
+    },
+    {
+      "path": "dist/renderer/_nuxt/xychartDiagram-PRI3JC2R.sySXulHt.js",
+      "sha256": "16b59e798374ae20a44b65516d208fcdccdf73ad5b413fd7223945ee1369e371"
+    },
+    {
+      "path": "dist/renderer/autobyteus-icon.svg",
+      "sha256": "4beb7ce71c78ee575fee236b17052a1796440469b5e6831bc4b12aa5fbab1b2a"
+    },
+    {
+      "path": "dist/renderer/icons/autobyteus-mobile-192.png",
+      "sha256": "27d6e070b627d0615d4d837334db090cc938aa0eb5b7a43b7617187f1cba1804"
+    },
+    {
+      "path": "dist/renderer/icons/autobyteus-mobile-512.png",
+      "sha256": "6334e131f169d03e0cbb8922812334c87a7d78a95b61a9f0d78fa5571d0a17c0"
+    },
+    {
+      "path": "dist/renderer/index.html",
+      "sha256": "2b30425cf354190c2a507a685c6600568798d43199f15e2de9afddf3597da729"
+    },
+    {
+      "path": "dist/renderer/mobile.webmanifest",
+      "sha256": "49c3fad92b6f02433f01810f02c2d864204b1ad6dc0fd2541e0b82400c5e0959"
+    }
+  ]
+}
